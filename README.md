@@ -11,6 +11,9 @@ To extend the set of components:
 - finish the component
 - launch!
 
+## Docker image
+The docker image may need to be run in interactive mode e.g. "docker run -it -p 3000:3000 cherrytwist/client-web "
+
 ## Available Scripts
 
 In the project directory, you can run:
