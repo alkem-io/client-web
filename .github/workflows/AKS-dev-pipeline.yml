@@ -44,6 +44,8 @@ jobs:
           with:
             manifests: |
               manifests/deployment.yml
+              manifests/service.yml
+              manifests/imgress.yml
             images: |
               ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
             imagepullsecrets: |
