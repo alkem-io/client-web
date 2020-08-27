@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ct-web-deployment
+  labels:
+    app: ct-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ct-web
+  template:
+    metadata:
+      labels:
+        app: ct-web
+    spec:
+      containers:
+      - name: ct-web
+        image: ctdev.azurecr.io/ct-web:latest
+        ports:
+        - containerPort: 80
+
