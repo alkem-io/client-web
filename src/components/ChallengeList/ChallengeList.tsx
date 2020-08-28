@@ -2,22 +2,26 @@ import * as React from 'react';
 import { ChallengeListQuery } from '../../generated/graphql';
 import './styles.css';
 
-interface Props {
+export interface OwnProps {
+  handleIdChange: (newId: number) => void;
+}
+
+interface Props extends OwnProps {
   data: ChallengeListQuery;
 }
 
 const className = 'ChallengeList';
 
-const ChallengeList: React.FC<Props> = ({ data }) => (
+const ChallengeList: React.FC<Props> = ({ data, handleIdChange }) => (
   <div className={className}>
     <h3>Challenges</h3>
     <ol className={`${className}__list`}>
-      {!!data.allChallenges &&
-        data.allChallenges.map(
+      {!!data.challenges &&
+        data.challenges.map(
           (Challenge, i) =>
             !!Challenge && (
-              <li key={i} className={`${className}__item`}>
-                {Challenge.name} desc({Challenge.description})
+              <li key={i} className={`${className}__item`} onClick={() => handleIdChange(2.0)}>
+                {Challenge.name} 
               </li>
             ),
         )}

@@ -18,22 +18,40 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  allTags: Array<Tag>;
-  allUsers: Array<User>;
-  allChallenges: Array<Challenge>;
-  allEcoverse: Array<Ecoverse>;
-  allAgreements: Array<Agreement>;
-  allContexts: Array<Context>;
-  allDIDs: Array<Did>;
-  allOrganisations: Array<Organisation>;
-  allProjects: Array<Project>;
-  allUserGroups: Array<UserGroup>;
-  getEcoverseUnion: Array<EcoverseUnion>;
+  name: Scalars['String'];
+  host: Organisation;
+  context: Context;
+  user: User;
+  users: Array<User>;
+  userGroup: UserGroup;
+  userGroups: Array<UserGroup>;
+  organisations: Array<Organisation>;
+  challenge: Challenge;
+  challenges: Array<Challenge>;
+  tags: Array<Tag>;
 };
 
 
-export type QueryGetEcoverseUnionArgs = {
+export type QueryUserArgs = {
+  ID: Scalars['String'];
+};
+
+
+export type QueryUserGroupArgs = {
+  ID: Scalars['String'];
+};
+
+
+export type QueryChallengeArgs = {
+  ID: Scalars['String'];
+};
+
+export type Organisation = {
+  __typename?: 'Organisation';
+  id: Scalars['ID'];
   name: Scalars['String'];
+  tags: Array<Tag>;
+  members: Array<User>;
 };
 
 export type Tag = {
@@ -46,34 +64,19 @@ export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
-  account: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
-  DID: Did;
   tags: Array<Tag>;
 };
 
-export type Did = {
-  __typename?: 'DID';
+export type Context = {
+  __typename?: 'Context';
   id: Scalars['ID'];
-  DID: Scalars['String'];
-  DDO: Scalars['String'];
-};
-
-export type Challenge = {
-  __typename?: 'Challenge';
-  id: Scalars['ID'];
-  name: Scalars['String'];
   description: Scalars['String'];
-  lifecyclePhase: Scalars['String'];
-  challengeLeads: UserGroup;
-  context: Context;
-  groups: Array<UserGroup>;
-  contributors: Array<User>;
-  tags: Array<Tag>;
-  projects: Array<Project>;
-  DID: Did;
+  vision: Scalars['String'];
+  principles: Scalars['String'];
+  referenceLinks: Scalars['String'];
 };
 
 export type UserGroup = {
@@ -85,74 +88,127 @@ export type UserGroup = {
   members: Array<User>;
 };
 
-export type Context = {
-  __typename?: 'Context';
-  id: Scalars['ID'];
-  description: Scalars['String'];
-  vision: Scalars['String'];
-  principles: Scalars['String'];
-  referenceLinks: Scalars['String'];
-  tags: Array<Tag>;
-  ecoverse: Ecoverse;
-  challenge: Challenge;
-};
-
-export type Ecoverse = {
-  __typename?: 'Ecoverse';
+export type Challenge = {
+  __typename?: 'Challenge';
   id: Scalars['ID'];
   name: Scalars['String'];
-  challenges: Array<Challenge>;
-  partners: Array<Organisation>;
-  members: Array<UserGroup>;
-  DID: Did;
-  ecoverseHost: Organisation;
   context: Context;
-};
-
-export type Organisation = {
-  __typename?: 'Organisation';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  DID: Did;
-  ecoverseHost: Ecoverse;
-  tags: Array<Tag>;
-  members: Array<User>;
-};
-
-export type Project = {
-  __typename?: 'Project';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
+  challengeLeads: UserGroup;
+  groups: Array<UserGroup>;
+  contributors: Array<User>;
   lifecyclePhase: Scalars['String'];
   tags: Array<Tag>;
-  DID: Did;
-  agreements: Array<Agreement>;
 };
 
-export type Agreement = {
-  __typename?: 'Agreement';
-  id: Scalars['ID'];
+export type Mutation = {
+  __typename?: 'Mutation';
+  createContext: Context;
+  createUser: User;
+  createUserGroup: UserGroup;
+  createOrganisation: Organisation;
+  createChallenge: Challenge;
+  createTag: Tag;
+};
+
+
+export type MutationCreateContextArgs = {
+  contextData: ContextInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  userData: UserInput;
+};
+
+
+export type MutationCreateUserGroupArgs = {
+  userGroupData: UserGroupInput;
+};
+
+
+export type MutationCreateOrganisationArgs = {
+  organisationData: OrganisationInput;
+};
+
+
+export type MutationCreateChallengeArgs = {
+  challengeData: ChallengeInput;
+};
+
+
+export type MutationCreateTagArgs = {
+  tagData: TagInput;
+};
+
+export type ContextInput = {
   name: Scalars['String'];
-  description: Scalars['String'];
-  tags: Array<Tag>;
+  description?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  principles?: Maybe<Scalars['String']>;
+  referenceLinks?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<TagInput>>;
 };
 
-export type EcoverseUnion = Ecoverse | Organisation | UserGroup | Challenge;
+export type TagInput = {
+  name: Scalars['String'];
+};
+
+export type UserInput = {
+  name: Scalars['String'];
+  account?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  tags?: Maybe<Array<TagInput>>;
+};
+
+export type UserGroupInput = {
+  name: Scalars['String'];
+  focalPoint?: Maybe<UserInput>;
+  members?: Maybe<Array<UserInput>>;
+  tags?: Maybe<Array<TagInput>>;
+};
+
+export type OrganisationInput = {
+  name: Scalars['String'];
+  members?: Maybe<Array<UserInput>>;
+  tags?: Maybe<Array<TagInput>>;
+};
+
+export type ChallengeInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<TagInput>>;
+  context?: Maybe<ContextInput>;
+};
 
 export type ChallengeListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ChallengeListQuery = (
   { __typename?: 'Query' }
-  & { allChallenges: Array<(
+  & { challenges: Array<(
     { __typename?: 'Challenge' }
-    & Pick<Challenge, 'name' | 'description'>
-    & { tags: Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'name'>
-    )> }
+    & Pick<Challenge, 'name'>
   )> }
+);
+
+export type ChallengeProfileQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ChallengeProfileQuery = (
+  { __typename?: 'Query' }
+  & { challenge: (
+    { __typename?: 'Challenge' }
+    & Pick<Challenge, 'id' | 'name'>
+    & { context: (
+      { __typename?: 'Context' }
+      & Pick<Context, 'description'>
+    ) }
+  ) }
 );
 
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never; }>;
@@ -160,21 +216,14 @@ export type EcoverseListQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type EcoverseListQuery = (
   { __typename?: 'Query' }
-  & { allEcoverse: Array<(
-    { __typename?: 'Ecoverse' }
-    & Pick<Ecoverse, 'name'>
-  )> }
+  & Pick<Query, 'name'>
 );
 
 
 export const ChallengeListDocument = gql`
     query challengeList {
-  allChallenges {
+  challenges {
     name
-    description
-    tags {
-      name
-    }
   }
 }
     `;
@@ -222,11 +271,65 @@ export function useChallengeListLazyQuery(baseOptions?: ApolloReactHooks.LazyQue
 export type ChallengeListQueryHookResult = ReturnType<typeof useChallengeListQuery>;
 export type ChallengeListLazyQueryHookResult = ReturnType<typeof useChallengeListLazyQuery>;
 export type ChallengeListQueryResult = ApolloReactCommon.QueryResult<ChallengeListQuery, ChallengeListQueryVariables>;
+export const ChallengeProfileDocument = gql`
+    query challengeProfile($id: String!) {
+  challenge(ID: $id) {
+    id
+    name
+    context {
+      description
+    }
+  }
+}
+    `;
+export type ChallengeProfileComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>, 'query'> & ({ variables: ChallengeProfileQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const ChallengeProfileComponent = (props: ChallengeProfileComponentProps) => (
+      <ApolloReactComponents.Query<ChallengeProfileQuery, ChallengeProfileQueryVariables> query={ChallengeProfileDocument} {...props} />
+    );
+    
+export type ChallengeProfileProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<ChallengeProfileQuery, ChallengeProfileQueryVariables>
+    } & TChildProps;
+export function withChallengeProfile<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  ChallengeProfileQuery,
+  ChallengeProfileQueryVariables,
+  ChallengeProfileProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, ChallengeProfileQuery, ChallengeProfileQueryVariables, ChallengeProfileProps<TChildProps, TDataName>>(ChallengeProfileDocument, {
+      alias: 'challengeProfile',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useChallengeProfileQuery__
+ *
+ * To run a query within a React component, call `useChallengeProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeProfileQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
+        return ApolloReactHooks.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
+      }
+export function useChallengeProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
+        }
+export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
+export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
+export type ChallengeProfileQueryResult = ApolloReactCommon.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
 export const EcoverseListDocument = gql`
     query ecoverseList {
-  allEcoverse {
-    name
-  }
+  name
 }
     `;
 export type EcoverseListComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<EcoverseListQuery, EcoverseListQueryVariables>, 'query'>;
