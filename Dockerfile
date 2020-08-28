@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:12-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -15,7 +15,16 @@ RUN npm install
 
 # Everything for now
 COPY . .
+RUN npm run-script build
 
-EXPOSE 3000
+FROM nginx:alpine as production-build
+COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 
-CMD [ "npm", "start" ]
+## Remove default nginx index page
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy from the stage 1
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
