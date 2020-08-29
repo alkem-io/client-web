@@ -8,6 +8,9 @@ export const QUERY_CHALLENGE_PROFILE = gql`
             context {
                 description
             }
+            tags {
+                name
+            }
         }
         
     }

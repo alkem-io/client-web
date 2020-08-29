@@ -73,10 +73,10 @@ export type User = {
 export type Context = {
   __typename?: 'Context';
   id: Scalars['ID'];
-  description: Scalars['String'];
-  vision: Scalars['String'];
-  principles: Scalars['String'];
-  referenceLinks: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  principles?: Maybe<Scalars['String']>;
+  refernceLinks?: Maybe<Scalars['String']>;
 };
 
 export type UserGroup = {
@@ -92,7 +92,7 @@ export type Challenge = {
   __typename?: 'Challenge';
   id: Scalars['ID'];
   name: Scalars['String'];
-  context: Context;
+  context?: Maybe<Context>;
   challengeLeads: UserGroup;
   groups: Array<UserGroup>;
   contributors: Array<User>;
@@ -190,7 +190,11 @@ export type ChallengeListQuery = (
   { __typename?: 'Query' }
   & { challenges: Array<(
     { __typename?: 'Challenge' }
-    & Pick<Challenge, 'name'>
+    & Pick<Challenge, 'id' | 'name'>
+    & { context?: Maybe<(
+      { __typename?: 'Context' }
+      & Pick<Context, 'description'>
+    )> }
   )> }
 );
 
@@ -204,10 +208,13 @@ export type ChallengeProfileQuery = (
   & { challenge: (
     { __typename?: 'Challenge' }
     & Pick<Challenge, 'id' | 'name'>
-    & { context: (
+    & { context?: Maybe<(
       { __typename?: 'Context' }
       & Pick<Context, 'description'>
-    ) }
+    )>, tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )> }
   ) }
 );
 
@@ -217,13 +224,21 @@ export type EcoverseListQueryVariables = Exact<{ [key: string]: never; }>;
 export type EcoverseListQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'name'>
+  & { context: (
+    { __typename?: 'Context' }
+    & Pick<Context, 'description'>
+  ) }
 );
 
 
 export const ChallengeListDocument = gql`
     query challengeList {
   challenges {
+    id
     name
+    context {
+      description
+    }
   }
 }
     `;
@@ -279,6 +294,9 @@ export const ChallengeProfileDocument = gql`
     context {
       description
     }
+    tags {
+      name
+    }
   }
 }
     `;
@@ -330,6 +348,9 @@ export type ChallengeProfileQueryResult = ApolloReactCommon.QueryResult<Challeng
 export const EcoverseListDocument = gql`
     query ecoverseList {
   name
+  context {
+    description
+  }
 }
     `;
 export type EcoverseListComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<EcoverseListQuery, EcoverseListQueryVariables>, 'query'>;

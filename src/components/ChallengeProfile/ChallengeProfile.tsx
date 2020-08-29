@@ -9,28 +9,44 @@ interface Props {
 const className = 'ChallengeProfile';
 
 const ChallengeProfile: React.FC<Props> = ({ data }) => {
-  return <div>No challenge available</div>;
-  /*if (!data.challenge) {
+  
+  if (!data.challenge) {
     return <div>No challenge available</div>;
-  }
+  } 
+
+  console.log("Challenge data available!");
 
   return (
     <div className={className}>
       <div className={`${className}__status`}>
-        <span>Challenge {data.challenge.name}: </span>
+        <span>Challenge loading: </span>
         {data.challenge.name ? (
           <span className={`${className}__success`}>Success</span>
         ) : (
           <span className={`${className}__failed`}>Failed</span>
         )}
       </div>
-      <h1 className={`${className}__title`}>
-        {data.challenge.name}
-        
-      </h1>
+      <p>
+      <span className={`${className}__title`}>
+        <b>Description: </b>
+        <i>{data.challenge.context?.description}</i>
+      </span>
+      </p>
+      <p>
+      <b>Tags: </b>
+      {!!data.challenge.tags &&
+        data.challenge.tags.map(
+          (Tag, i) =>
+            !!Tag && (
+              <li key={i} className={`${className}__item`} >
+                {Tag.name} &nbsp;
+              </li>
+            ),
+        )}
+      </p>
       
     </div>
-  );*/
+  );
 };
 
 export default ChallengeProfile;
