@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useChallengeListQuery } from '../../generated/graphql';
-import  ChallengeList  from './ChallengeList';
+import  ChallengeList, { OwnProps }  from './ChallengeList';
 
-const ChallengeListContainer = () => {
+const ChallengeListContainer = (props: OwnProps) => {
   const { data, error, loading } = useChallengeListQuery();
 
   if (loading) {
@@ -17,7 +17,8 @@ const ChallengeListContainer = () => {
     return <div>NO DATA {data}</div>;
   }
 
-  return <ChallengeList data={data} />;
+  //handleIdChange={() => 2.0}
+  return <ChallengeList data={data} {...props} />;
 };
 
 export default ChallengeListContainer;

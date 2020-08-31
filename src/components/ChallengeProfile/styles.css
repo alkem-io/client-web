@@ -1,0 +1,37 @@
+.ChallengeProfile {
+  height: 100vh;
+  max-height: 100%;
+  width: calc(100vw - 300px);
+  overflow: hidden auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.ChallengeProfile__status {
+  margin-top: 40px;
+}
+
+.ChallengeProfile__title {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.ChallengeProfile__success {
+  color: #2cb84b;
+}
+
+.ChallengeProfile__failed {
+  color: #ff695e;
+}
+
+.ChallengeProfile__image-list {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 40px;
+  padding-bottom: 100px;
+}
+
+.ChallengeProfile__image {
+  width: 100%;
+}
