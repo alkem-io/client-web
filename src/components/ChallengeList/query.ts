@@ -6,7 +6,7 @@ export const QUERY_CHALLENGES_LIST = gql`
             id
             name  
             context {
-                description
+                tagline
             }       
         }
     }

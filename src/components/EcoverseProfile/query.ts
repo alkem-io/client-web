@@ -4,7 +4,7 @@ export const QUERY_ECOVERSES_LIST = gql`
     query ecoverseList {
         name 
         context {
-            description
+            tagline
         }
     }
 `;
