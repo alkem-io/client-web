@@ -3,6 +3,8 @@ This is a simple React web client for interacting with a Cherrytwist server.
 
 It is in part inspired by the following article: https://blog.logrocket.com/build-a-graphql-react-app-with-typescript/
 
+The intention is that this repository contains over time a selection of React components for working with Cherrytwist instances, as well as a sample web client that uses those components. 
+
 ## Extending
 To extend the set of components:
 - create a new folder per component
@@ -11,20 +13,36 @@ To extend the set of components:
 - finish the component
 - launch!
 
-## Docker image
-The docker image may need to be run in interactive mode e.g. "docker run -it -p 3000:3000 cherrytwist/client-web "
-
-## Available Scripts
+## Launching the client Scripts
 
 In the project directory, you can run:
+* `npm install`
+* `npm start`
 
-### `npm start`
-
-Runs the app in the development mode.<br />
+This runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
+
+## Known issues
+* 
+
+## Development stack
+The client development stack includes:
+* [React documentation](https://reactjs.org/).
+* Typescript
+* Apollo Client
+
+For Typescript, the Javascript generated is ES2016. 
+
+## Supported web browsers
+The Javascript generated is ES2016, which is widely supported. 
+
+In addition the client looks to support the primary web browsers active in the market i.e. Edge, Chrome, Mozilla etc. Details of what versions are supported are in the package.json file. 
+
+## React Web App Framework
+The project is created using the React Web App framework, and still leverages that infrastructure for builds etc. Additional build targets provided from this framework are shown below.
 
 ### `npm test`
 
@@ -51,8 +69,12 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Docker 
+The repo is also set up to generate a Docker image.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To create the docker image: `docker build -t cherrytwist/client-web:0.1.1` 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:0.1.1`
+
+And then navigate with a browser to `http://localhost:80`
+
