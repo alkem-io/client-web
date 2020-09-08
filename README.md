@@ -26,7 +26,7 @@ The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ## Known issues
-* If using a Docker image for the client, then it may need to be run in interactive mode e.g. "docker run -it -p 3000:3000 cherrytwist/client-web"
+* 
 
 ## Development stack
 The client development stack includes:
@@ -68,4 +68,13 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Docker 
+The repo is also set up to generate a Docker image.
+
+To create the docker image: `docker build -t cherrytwist/client-web:0.1.1` 
+
+To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:0.1.1`
+
+And then navigate with a browser to `http://localhost:80`
 
