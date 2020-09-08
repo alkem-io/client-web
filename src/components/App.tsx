@@ -5,7 +5,7 @@ import EcoverseProfile from './EcoverseProfile';
 import '../styles/App.css';
 
 const App = () => {
-  const [id, setId] = React.useState(42);
+  const [id, setId] = React.useState(2);
   const handleIdChange = React.useCallback(newId => {
     setId(newId);
   }, []);
@@ -14,6 +14,7 @@ const App = () => {
     <div className="App">
       <EcoverseProfile />
       <ChallengeList handleIdChange={handleIdChange}/>
+      <ChallengeProfile id={id} />
     </div>
   );
 };

@@ -18,16 +18,27 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** The name for this ecoverse */
   name: Scalars['String'];
+  /** The host organisation for the ecoverse */
   host: Organisation;
+  /** The shared understanding for this ecoverse */
   context: Context;
+  /** A particular user */
   user: User;
+  /** The set of users associated with this ecoverse */
   users: Array<User>;
+  /** A particualr user group */
   userGroup: UserGroup;
+  /** All groups of users */
   userGroups: Array<UserGroup>;
+  /** All organisations */
   organisations: Array<Organisation>;
+  /** A particular challenge */
   challenge: Challenge;
+  /** All challenges */
   challenges: Array<Challenge>;
+  /** All tags associated with this Ecoverse */
   tags: Array<Tag>;
 };
 
@@ -50,8 +61,10 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  tags: Array<Tag>;
-  members: Array<User>;
+  /** The set of tags applied to this organisation. */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of users that are associated with this organisation */
+  members?: Maybe<Array<User>>;
 };
 
 export type Tag = {
@@ -67,37 +80,76 @@ export type User = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
-  tags: Array<Tag>;
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type Context = {
   __typename?: 'Context';
   id: Scalars['ID'];
+  /** A one line description */
+  tagline?: Maybe<Scalars['String']>;
+  /** A detailed description of the current situation */
+  background?: Maybe<Scalars['String']>;
+  /** The goal that is being pursued */
+  vision?: Maybe<Scalars['String']>;
+  /** What is the potential impact? */
+  impact?: Maybe<Scalars['String']>;
+  /** Who should get involved in this challenge */
+  who?: Maybe<Scalars['String']>;
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
   description: Scalars['String'];
-  vision: Scalars['String'];
-  principles: Scalars['String'];
-  referenceLinks: Scalars['String'];
 };
 
 export type UserGroup = {
   __typename?: 'UserGroup';
   id: Scalars['ID'];
   name: Scalars['String'];
-  focalPoint: User;
-  tags: Array<Tag>;
-  members: Array<User>;
+  /** The set of users that are members of this group */
+  members?: Maybe<Array<User>>;
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  /** The set of tags for this group e.g. Team, Nature etc. */
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type Challenge = {
   __typename?: 'Challenge';
   id: Scalars['ID'];
+  /** The name of the challenge */
   name: Scalars['String'];
-  context: Context;
-  challengeLeads: UserGroup;
-  groups: Array<UserGroup>;
-  contributors: Array<User>;
-  lifecyclePhase: Scalars['String'];
-  tags: Array<Tag>;
+  /** The shared understanding for the challenge */
+  context?: Maybe<Context>;
+  /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
+  challengeLeads: Array<Organisation>;
+  /** Groups of users related to a challenge; each group also results in a role that is assigned to users in the group. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** The community of users, including challenge leads, that are contributing. */
+  contributors?: Maybe<Array<User>>;
+  /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  /** The set of tags to label the challenge */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of projects within the context of this challenge */
+  projects?: Maybe<Array<Project>>;
+};
+
+export type Project = {
+  __typename?: 'Project';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  /** The set of tags for this Project */
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type Mutation = {
@@ -142,11 +194,19 @@ export type MutationCreateTagArgs = {
 
 export type ContextInput = {
   name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
-  principles?: Maybe<Scalars['String']>;
-  referenceLinks?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  referenceLinks?: Maybe<Array<ReferenceInput>>;
   tags?: Maybe<Array<TagInput>>;
+};
+
+export type ReferenceInput = {
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type TagInput = {
@@ -190,7 +250,11 @@ export type ChallengeListQuery = (
   { __typename?: 'Query' }
   & { challenges: Array<(
     { __typename?: 'Challenge' }
-    & Pick<Challenge, 'name'>
+    & Pick<Challenge, 'id' | 'name'>
+    & { context?: Maybe<(
+      { __typename?: 'Context' }
+      & Pick<Context, 'tagline'>
+    )> }
   )> }
 );
 
@@ -204,10 +268,17 @@ export type ChallengeProfileQuery = (
   & { challenge: (
     { __typename?: 'Challenge' }
     & Pick<Challenge, 'id' | 'name'>
-    & { context: (
+    & { context?: Maybe<(
       { __typename?: 'Context' }
-      & Pick<Context, 'description'>
-    ) }
+      & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'>
+      & { references?: Maybe<Array<(
+        { __typename?: 'Reference' }
+        & Pick<Reference, 'name' | 'uri' | 'description'>
+      )>> }
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )>> }
   ) }
 );
 
@@ -217,13 +288,21 @@ export type EcoverseListQueryVariables = Exact<{ [key: string]: never; }>;
 export type EcoverseListQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'name'>
+  & { context: (
+    { __typename?: 'Context' }
+    & Pick<Context, 'tagline'>
+  ) }
 );
 
 
 export const ChallengeListDocument = gql`
     query challengeList {
   challenges {
+    id
     name
+    context {
+      tagline
+    }
   }
 }
     `;
@@ -277,7 +356,19 @@ export const ChallengeProfileDocument = gql`
     id
     name
     context {
-      description
+      tagline
+      background
+      vision
+      impact
+      who
+      references {
+        name
+        uri
+        description
+      }
+    }
+    tags {
+      name
     }
   }
 }
@@ -330,6 +421,9 @@ export type ChallengeProfileQueryResult = ApolloReactCommon.QueryResult<Challeng
 export const EcoverseListDocument = gql`
     query ecoverseList {
   name
+  context {
+    tagline
+  }
 }
     `;
 export type EcoverseListComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<EcoverseListQuery, EcoverseListQueryVariables>, 'query'>;

@@ -6,7 +6,19 @@ export const QUERY_CHALLENGE_PROFILE = gql`
             id
             name
             context {
-                description
+                tagline
+                background
+                vision
+                impact
+                who
+                references {
+                    name
+                    uri
+                    description
+                }
+            }
+            tags {
+                name
             }
         }
         
