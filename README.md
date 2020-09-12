@@ -3,6 +3,9 @@ This is a simple React web client for interacting with a Cherrytwist server.
 
 It is in part inspired by the following article: https://blog.logrocket.com/build-a-graphql-react-app-with-typescript/
 
+# Configure data source endpoint
+Data is fed into the client through a graphql endpoint. Endpoint url is configured via the REACT_APP_GRAPHQL_ENDPOINT environment variable. Add an .env file in project's root folder and set the variable to point to the graphql server
+
 ## Extending
 To extend the set of components:
 - create a new folder per component

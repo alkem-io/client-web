@@ -6,8 +6,10 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import './styles/index.css';
 import App from './components/App';
 
+require('dotenv').config();
+
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
 });
 
 ReactDOM.render(
