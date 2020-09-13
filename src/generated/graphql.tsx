@@ -5,7 +5,7 @@ import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -16,88 +16,55 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  name: Scalars['String'];
-  host: Organisation;
-  context: Context;
-  user: User;
-  users: Array<User>;
-  userGroup: UserGroup;
-  userGroups: Array<UserGroup>;
-  organisations: Array<Organisation>;
-  challenge: Challenge;
-  challenges: Array<Challenge>;
-  tags: Array<Tag>;
-};
-
-
-export type QueryUserArgs = {
-  ID: Scalars['String'];
-};
-
-
-export type QueryUserGroupArgs = {
-  ID: Scalars['String'];
-};
-
-
-export type QueryChallengeArgs = {
-  ID: Scalars['String'];
-};
-
-export type Organisation = {
-  __typename?: 'Organisation';
+export type Challenge = {
+  __typename?: 'Challenge';
   id: Scalars['ID'];
+  /** The name of the challenge */
   name: Scalars['String'];
-  tags: Array<Tag>;
-  members: Array<User>;
+  /** The shared understanding for the challenge */
+  context?: Maybe<Context>;
+  /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
+  challengeLeads?: Maybe<UserGroup>;
+  /** Groups of users related to a challenge; each group also results in a role that is assigned to users in the group. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** The community of users, including challenge leads, that are contributing. */
+  contributors?: Maybe<Array<User>>;
+  /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  /** The set of tags to label the challenge */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of projects within the context of this challenge */
+  projects?: Maybe<Array<Project>>;
 };
 
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['ID'];
+export type ChallengeInput = {
   name: Scalars['String'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  tags: Array<Tag>;
+  description?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<TagInput>>;
+  context?: Maybe<ContextInput>;
 };
 
 export type Context = {
   __typename?: 'Context';
   id: Scalars['ID'];
+  /** A one line description */
+  description?: Maybe<Scalars['String']>;
+  /** The goal that is being pursued */
+  vision?: Maybe<Scalars['String']>;
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+  /** The norms for contributors to follow */
+  principles?: Maybe<Scalars['String']>;
+};
+
+export type ContextInput = {
+  name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
   principles?: Maybe<Scalars['String']>;
-  refernceLinks?: Maybe<Scalars['String']>;
-};
-
-export type UserGroup = {
-  __typename?: 'UserGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  focalPoint: User;
-  tags: Array<Tag>;
-  members: Array<User>;
-};
-
-export type Challenge = {
-  __typename?: 'Challenge';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  context?: Maybe<Context>;
-  challengeLeads: UserGroup;
-  groups: Array<UserGroup>;
-  contributors: Array<User>;
-  lifecyclePhase: Scalars['String'];
-  tags: Array<Tag>;
+  referenceLinks?: Maybe<Array<ReferenceInput>>;
+  tags?: Maybe<Array<TagInput>>;
 };
 
 export type Mutation = {
@@ -140,26 +107,118 @@ export type MutationCreateTagArgs = {
   tagData: TagInput;
 };
 
-export type ContextInput = {
+export type Organisation = {
+  __typename?: 'Organisation';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of tags applied to this organisation. */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of users that are associated with this organisation */
+  members?: Maybe<Array<User>>;
+};
+
+export type OrganisationInput = {
+  name: Scalars['String'];
+  members?: Maybe<Array<UserInput>>;
+  tags?: Maybe<Array<TagInput>>;
+};
+
+export type Project = {
+  __typename?: 'Project';
+  id: Scalars['ID'];
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  vision?: Maybe<Scalars['String']>;
-  principles?: Maybe<Scalars['String']>;
-  referenceLinks?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<TagInput>>;
+  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  /** The set of tags for this Project */
+  tags?: Maybe<Array<Tag>>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  /** The name for this ecoverse */
+  name: Scalars['String'];
+  /** The host organisation for the ecoverse */
+  host: Organisation;
+  /** The shared understanding for this ecoverse */
+  context: Context;
+  /** A particular user */
+  user: User;
+  /** The set of users associated with this ecoverse */
+  users: Array<User>;
+  /** A particualr user group */
+  userGroup: UserGroup;
+  /** All groups of users */
+  userGroups: Array<UserGroup>;
+  /** All organisations */
+  organisations: Array<Organisation>;
+  /** A particular challenge */
+  challenge: Challenge;
+  /** All challenges */
+  challenges: Array<Challenge>;
+  /** All tags associated with this Ecoverse */
+  tags: Array<Tag>;
+};
+
+
+export type QueryUserArgs = {
+  ID: Scalars['String'];
+};
+
+
+export type QueryUserGroupArgs = {
+  ID: Scalars['String'];
+};
+
+
+export type QueryChallengeArgs = {
+  ID: Scalars['String'];
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type ReferenceInput = {
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type TagInput = {
   name: Scalars['String'];
 };
 
-export type UserInput = {
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
   name: Scalars['String'];
-  account?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
   email: Scalars['String'];
-  tags?: Maybe<Array<TagInput>>;
+  tags: Array<Tag>;
+};
+
+export type UserGroup = {
+  __typename?: 'UserGroup';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of users that are members of this group */
+  members?: Maybe<Array<User>>;
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  /** The set of tags for this group e.g. Team, Nature etc. */
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type UserGroupInput = {
@@ -169,18 +228,13 @@ export type UserGroupInput = {
   tags?: Maybe<Array<TagInput>>;
 };
 
-export type OrganisationInput = {
+export type UserInput = {
   name: Scalars['String'];
-  members?: Maybe<Array<UserInput>>;
+  account?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
   tags?: Maybe<Array<TagInput>>;
-};
-
-export type ChallengeInput = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  lifecyclePhase?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<TagInput>>;
-  context?: Maybe<ContextInput>;
 };
 
 export type ChallengeListQueryVariables = Exact<{ [key: string]: never; }>;
@@ -211,10 +265,10 @@ export type ChallengeProfileQuery = (
     & { context?: Maybe<(
       { __typename?: 'Context' }
       & Pick<Context, 'description'>
-    )>, tags: Array<(
+    )>, tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'name'>
-    )> }
+    )>> }
   ) }
 );
 
