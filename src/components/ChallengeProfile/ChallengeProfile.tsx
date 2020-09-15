@@ -28,9 +28,43 @@ const ChallengeProfile: React.FC<Props> = ({ data }) => {
       </div>
       <p>
       <span className={`${className}__title`}>
-        <b>Description: </b>
-        <i>{data.challenge.context?.description}</i>
+        <b>Tagline: </b>
+        <i>{data.challenge.context?.tagline}</i>
       </span>
+      </p>
+      <span className={`${className}__background`}>
+        <b>Background: </b>
+        <i>{data.challenge.context?.background}</i>
+      </span>
+      <p>
+      <span className={`${className}__vision`}>
+        <b>Vision: </b>
+        <i>{data.challenge.context?.vision}</i>
+      </span>
+      </p>
+      <p>
+      <span className={`${className}__impact`}>
+        <b>Impact: </b>
+        <i>{data.challenge.context?.impact}</i>
+      </span>
+      </p>
+      <p>
+      <span className={`${className}__who`}>
+        <b>Who should get engaged?: </b>
+        <i>{data.challenge.context?.who}</i>
+      </span>
+      </p>
+      <p>
+      <b>References: </b>
+      {!!data.challenge.context?.references &&
+        data.challenge.context?.references.map(
+          (Reference, i) =>
+            !!Reference && (
+              <li key={i} className={`${className}__item`} >
+                <b><a href={Reference.uri}>{Reference.name}</a></b> - {Reference.description} &nbsp;
+              </li>
+            ),
+        )}
       </p>
       <p>
       <b>Tags: </b>
