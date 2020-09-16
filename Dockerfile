@@ -16,17 +16,6 @@ RUN npm install
 # Everything for now
 COPY . .
 
-# define server graphql endpoint argument with default value
-ARG GRAPHQL_ENDPOINT_ARG="http://localhost:4000/graphql"
-RUN echo ${GRAPHQL_ENDPOINT_ARG}
-# save build-time argument to an .env file and save it to application work directory (it is used at runtime)
-RUN echo "REACT_APP_GRAPHQL_ENDPOINT="${GRAPHQL_ENDPOINT_ARG} > /app/.env
-
-#RUN cat .env
-#COPY .env /app/.env
-#RUN echo $PWD
-
-RUN npm run-script codegen
 RUN npm run-script build
 
 FROM nginx:alpine as production-build
