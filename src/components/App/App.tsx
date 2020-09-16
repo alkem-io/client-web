@@ -1,8 +1,8 @@
 import React from 'react';
-import ChallengeList from './ChallengeList';
-import ChallengeProfile from './ChallengeProfile';
-import EcoverseProfile from './EcoverseProfile';
-import '../styles/App.css';
+import ChallengeList from '../ChallengeList';
+import ChallengeProfile from '../ChallengeProfile';
+import EcoverseProfile from '../EcoverseProfile';
+import './App.css';
 
 const App = () => {
   const [id, setId] = React.useState(2);
