@@ -5,8 +5,6 @@ import { ApolloProvider } from "@apollo/client";
 import "./styles/index.css";
 import App from "./components/App";
 
-require("dotenv").config();
-
 const graphQLEndpoint = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql'; 
 
 const client = new ApolloClient({
