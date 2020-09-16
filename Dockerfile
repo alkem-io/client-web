@@ -15,6 +15,7 @@ RUN npm install
 
 # Everything for now
 COPY . .
+
 RUN npm run-script build
 
 FROM nginx:alpine as production-build
@@ -25,6 +26,9 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy from the stage 1
 COPY --from=builder /app/build /usr/share/nginx/html
+
+ARG GRAPHQL_ENDPOINT_ARG="http://localhost:4000/graphql"
+ENV REACT_APP_GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_ARG}
 
 EXPOSE 80
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
