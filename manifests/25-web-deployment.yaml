@@ -18,7 +18,10 @@ spec:
     spec:
       containers:
         - name: ct-web
-          image: cherrytwist/client-web:0.1.1
+          image: ctdev.azurecr.io/ct-web:e1c6f2e518053a7e6dafd27840b53130927cbb3b
+          envFrom:
+          - secretRef:
+              name: server-secret
           ports:
             - name: web
               containerPort: 80
