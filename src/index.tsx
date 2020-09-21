@@ -1,8 +1,8 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import React from 'react';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import AppContainer from './containers/AppContainer';
+import App from './components/App';
 import configureStore from './store';
 import './styles/index.css';
 
@@ -16,7 +16,7 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={client}>
     <Provider store={configureStore()}>
-      <AppContainer />
+      <App />
     </Provider>
   </ApolloProvider>,
   document.getElementById('root')

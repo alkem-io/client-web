@@ -22,143 +22,143 @@ const isIE = () => {
 
 // If you support IE, our recommendation is that you sign-in using Redirect flow
 
-const useRedirectFlow = isIE();
+// const useRedirectFlow = isIE();
 
-const msalApp = new PublicClientApplication(msalConfig);
+// const msalApp = new PublicClientApplication(msalConfig);
 
-const AuthHOC = <P extends Record<string, unknown>>(WrappedComponent: ComponentType<P>) =>
-  class AuthProvider extends Component {
-    constructor(props: any) {
-      super(props);
+// const AuthHOC = <P extends Record<string, unknown>>(WrappedComponent: ComponentType<P>) =>
+//   class AuthProvider extends Component {
+//     constructor(props: any) {
+//       super(props);
 
-      this.state = {
-        account: null,
-        error: null,
-        username: null,
-        isAuthenticated: false,
-      };
-    }
+//       this.state = {
+//         account: null,
+//         error: null,
+//         username: null,
+//         isAuthenticated: false,
+//       };
+//     }
 
-    componentDidMount = () => {
-      if (useRedirectFlow) {
-        msalApp
-          .handleRedirectPromise()
-          .then(this.handleResponse)
-          .catch(err => {
-            this.setState({ error: err.errorMessage });
-            console.error(err);
-          });
-      }
+//     componentDidMount = () => {
+//       if (useRedirectFlow) {
+//         msalApp
+//           .handleRedirectPromise()
+//           .then(this.handleResponse)
+//           .catch(err => {
+//             this.setState({ error: err.errorMessage });
+//             console.error(err);
+//           });
+//       }
 
-      this.getAccounts();
-    };
+//       this.getAccounts();
+//     };
 
-    getAccounts = () => {
-      /**
-       * See here for more info on account retrieval:
-       * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
-       */
-      const currentAccounts = msalApp.getAllAccounts();
+//     getAccounts = () => {
+//       /**
+//        * See here for more info on account retrieval:
+//        * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
+//        */
+//       const currentAccounts = msalApp.getAllAccounts();
 
-      if (currentAccounts === null) {
-        console.error('No accounts detected!');
-      } else if (currentAccounts.length > 1) {
-        console.warn('Multiple accounts detected.');
-        // Add choose account code here
-        this.setState({
-          username: currentAccounts[0].username,
-          account: msalApp.getAccountByUsername(currentAccounts[0].username),
-          isAuthenticated: true,
-        });
-      } else if (currentAccounts.length === 1) {
-        this.setState({
-          username: currentAccounts[0].username,
-          account: msalApp.getAccountByUsername(currentAccounts[0].username),
-          isAuthenticated: true,
-        });
-      }
-    };
+//       if (currentAccounts === null) {
+//         console.error('No accounts detected!');
+//       } else if (currentAccounts.length > 1) {
+//         console.warn('Multiple accounts detected.');
+//         // Add choose account code here
+//         this.setState({
+//           username: currentAccounts[0].username,
+//           account: msalApp.getAccountByUsername(currentAccounts[0].username),
+//           isAuthenticated: true,
+//         });
+//       } else if (currentAccounts.length === 1) {
+//         this.setState({
+//           username: currentAccounts[0].username,
+//           account: msalApp.getAccountByUsername(currentAccounts[0].username),
+//           isAuthenticated: true,
+//         });
+//       }
+//     };
 
-    handleResponse = (response: any) => {
-      if (response !== null) {
-        this.setState({
-          account: response.account,
-          username: response.account.username,
-          isAuthenticated: true,
-        });
-      } else {
-        this.getAccounts();
-      }
-    };
+//     handleResponse = (response: any) => {
+//       if (response !== null) {
+//         this.setState({
+//           account: response.account,
+//           username: response.account.username,
+//           isAuthenticated: true,
+//         });
+//       } else {
+//         this.getAccounts();
+//       }
+//     };
 
-    acquireToken = async () => {
-      /**
-       * See here for more info on account retrieval:
-       * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
-       */
-      const { username } = this.state as any;
-      const sr = {
-        scopes: [...silentRequest.scopes],
-        account: msalApp.getAccountByUsername(username),
-      } as SilentRequest;
+//     acquireToken = async () => {
+//       /**
+//        * See here for more info on account retrieval:
+//        * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
+//        */
+//       const { username } = this.state as any;
+//       const sr = {
+//         scopes: [...silentRequest.scopes],
+//         account: msalApp.getAccountByUsername(username),
+//       } as SilentRequest;
 
-      return msalApp.acquireTokenSilent(sr).catch(error => {
-        console.warn('silent token acquisition fails. acquiring token using interactive method');
-        if (error) {
-          // fallback to interaction when silent call fails
-          const tr = {
-            scopes: [...tokenRequest.scopes],
-            account: msalApp.getAccountByUsername(username),
-          } as AuthorizationUrlRequest;
+//       return msalApp.acquireTokenSilent(sr).catch(error => {
+//         console.warn('silent token acquisition fails. acquiring token using interactive method');
+//         if (error) {
+//           // fallback to interaction when silent call fails
+//           const tr = {
+//             scopes: [...tokenRequest.scopes],
+//             account: msalApp.getAccountByUsername(username),
+//           } as AuthorizationUrlRequest;
 
-          return msalApp
-            .acquireTokenPopup(tr)
-            .then(this.handleResponse)
-            .catch((err: any) => {
-              console.error(err);
-            });
-        }
-        console.warn(error);
-      });
-    };
+//           return msalApp
+//             .acquireTokenPopup(tr)
+//             .then(this.handleResponse)
+//             .catch((err: any) => {
+//               console.error(err);
+//             });
+//         }
+//         console.warn(error);
+//       });
+//     };
 
-    signIn = async (redirect: any) => {
-      if (redirect) {
-        return msalApp.loginRedirect(loginRequest);
-      }
+//     signIn = async (redirect: any) => {
+//       if (redirect) {
+//         return msalApp.loginRedirect(loginRequest);
+//       }
 
-      return msalApp
-        .loginPopup(loginRequest)
-        .then(this.handleResponse)
-        .catch(err => {
-          this.setState({ error: err.errorMessage });
-        });
-    };
+//       return msalApp
+//         .loginPopup(loginRequest)
+//         .then(this.handleResponse)
+//         .catch(err => {
+//           this.setState({ error: err.errorMessage });
+//         });
+//     };
 
-    signOut = async () => {
-      const { username } = this.state as any;
-      const logoutRequest = {
-        account: msalApp.getAccountByUsername(username),
-      } as EndSessionRequest;
+//     signOut = async () => {
+//       const { username } = this.state as any;
+//       const logoutRequest = {
+//         account: msalApp.getAccountByUsername(username),
+//       } as EndSessionRequest;
 
-      return msalApp.logout(logoutRequest);
-    };
+//       return msalApp.logout(logoutRequest);
+//     };
 
-    render() {
-      return (
-        <WrappedComponent
-          {...this.props}
-          account={this.state.account}
-          error={this.state.error}
-          isAuthenticated={this.state.isAuthenticated}
-          signIn={() => this.signIn(useRedirectFlow)}
-          signOut={() => this.signOut()}
-          acquireToken={() => this.acquireToken()}
-        />
-      );
-    }
-  };
+//     render() {
+//       return (
+//         <WrappedComponent
+//           {...this.props}
+//           account={this.state.account}
+//           error={this.state.error}
+//           isAuthenticated={this.state.isAuthenticated}
+//           signIn={() => this.signIn(useRedirectFlow)}
+//           signOut={() => this.signOut()}
+//           acquireToken={() => this.acquireToken()}
+//         />
+//       );
+//     }
+//   };
 
-const mapStateToProps = state => state;
+// const mapStateToProps = state => state;
 
-export default compose(connect(mapStateToProps), AuthHOC);
+// export default compose(connect(mapStateToProps), AuthHOC);
