@@ -1,71 +1,60 @@
-import React, { Component } from 'react';
+import { AuthenticationResult } from '@azure/msal-browser';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateToken } from '../reducers/auth/actions';
+import { getProfile } from '../actions/serviceActions';
 
-// import { updateProfile, updateUI } from '../actions/updateActions';
-
-// import { getProfile, postProfile, putProfile } from '../actions/serviceActions';
-class ProfileContainer extends Component {
-  componentDidMount = () => {
-    // acquire the token and update the store
-    // this.props.acquireToken().then(response => {
-    //   if (response) {
-    //     // set access token
-    //     this.props.updateToken(response);
-    //     if (this.props.auth.idToken) {
-    //       // Our mock database assign user Ids based on MS Graph API account id, which corresponds to the "oid" claim in the id_token
-    //       // visit https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens for more information
-    //       let tokenOID = this.props.auth.idToken.oid.replace(/-/gi, ''); // removing dashes
-    //       // check if user already exists
-    //       try {
-    //         this.props.getProfile(tokenOID);
-    //       } catch (err) {
-    //         console.log(err);
-    //       }
-    //     }
-    //   }
-    // });
-  };
-
-  render(): JSX.Element {
-    let component = null;
-
-    // switch (this.props.ui.component) {
-    // switch (renderComponent) {
-    //   case 1:
-    //     component = <ProfileRegister {...this.props} />;
-    //     break;
-    //   case 2:
-    //     component = <ProfileEdit {...this.props} />;
-    //     break;
-    //   case 3:
-    //     component = <ProfileView {...this.props} />;
-    //     break;
-    //   default:
-    component = <div>No Content</div>;
-    // }
-
-    return <div>{component}</div>;
-  }
+interface ProfileContainerProps {
+  acquireToken: () => Promise<void | AuthenticationResult | undefined>;
 }
 
-// const mapStateToProps = (state) => state;
+const ProfileContainer: React.FC<ProfileContainerProps> = props => {
+  const dispatch = useDispatch();
+  const { acquireToken } = props;
 
-// const mapDispatchToProps = (dispatch) => ({
-//     updateProfile: (payload) => {
-//         dispatch(updateProfile(payload));
-//     },
-//     updateUI: (payload) => {
-//         dispatch(updateUI(payload));
-//     },
-//     getProfile: (id) => {
-//         dispatch(getProfile(id));
-//     },
-//     postProfile: (profile) => {
-//         dispatch(postProfile(profile));
-//     },
-//     putProfile: (profile) => {
-//         dispatch(putProfile(profile));
-//     },
-// });
+  useEffect(() => {
+    acquireToken().then(response => {
+      if (response) {
+        // set access token
+        dispatch(updateToken(response));
 
-// export default connect(mapStateToProps, mapDispatchToProps)(ProfileContainer);
+        if (response.idTokenClaims) {
+          const idToken = response.idTokenClaims as Record<string, any>;
+          // Our mock database assign user Ids based on MS Graph API account id, which corresponds to the "oid" claim in the id_token
+          // visit https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens for more information
+          const tokenOID = idToken.oid.replace(/-/gi, ''); // removing dashes
+
+          // check if user already exists
+          try {
+            dispatch(getProfile(tokenOID));
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+    });
+  });
+
+  return (
+    <div>
+      {(() => {
+        // let component = null;
+        //   switch (renderComponent) {
+        //     case 1:
+        //       component = <ProfileRegister {...this.props} />;
+        //       break;
+        //     case 2:
+        //       component = <ProfileEdit {...this.props} />;
+        //       break;
+        //     case 3:
+        //       component = <ProfileView {...this.props} />;
+        //       break;
+        //     default:
+        return <div>No Content</div>;
+        // }
+      })()}
+    </div>
+  );
+};
+
 export default ProfileContainer;

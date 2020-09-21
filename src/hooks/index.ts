@@ -1,1 +1,1 @@
-export * from './useAuthentication';
+export * from './useClientConfig';

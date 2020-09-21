@@ -37,6 +37,7 @@
       "single"
     ],
     "no-multiple-empty-lines": "error",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-console": "off"
   }
 }

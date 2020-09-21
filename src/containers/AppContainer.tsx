@@ -1,33 +1,21 @@
-/* eslint-disable react/jsx-props-no-spreading */
+import { ApolloProvider } from '@apollo/client';
 import React from 'react';
+import { useClientConfig } from '../hooks/useClientConfig';
 import App from '../components/App/App';
-// import AuthProvider from '../utils/authProvider';
 
-// import { updateAccount, updateError, updateToken } from '../actions/updateActions';
+export interface IAppContainerProps {
+  graphQLEndpoint: string;
+}
 
-const AppContainer = (props: any) => {
+const AppContainer: React.FC<IAppContainerProps> = (props): JSX.Element => {
+  const { graphQLEndpoint } = props;
+  const client = useClientConfig(graphQLEndpoint);
+
   return (
-    <div>
-      <App {...props} />
-    </div>
+    <ApolloProvider client={client}>
+      <App />;
+    </ApolloProvider>
   );
 };
 
-// const mapStateToProps = state => state;
-
-// const mapDispatchToProps = dispatch => ({
-//   updateAccount: account => {
-//     dispatch(updateAccount(account));
-//   },
-//   updateError: error => {
-//     dispatch(updateError(error));
-//   },
-//   updateToken: token => {
-//     dispatch(updateToken(token));
-//   },
-// });
-
-// // AppContainer is a container component wrapped by HOC AuthProvider
-// export default connect(mapStateToProps, mapDispatchToProps)(AuthProvider(AppContainer));
-// export default AuthProvider(AppContainer);
 export default AppContainer;

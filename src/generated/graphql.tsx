@@ -15,6 +15,10 @@ export type Query = {
   __typename?: 'Query';
   /** The name for this ecoverse */
   name: Scalars['String'];
+  /** The name for this ecoverse */
+  members: Array<UserGroup>;
+  /** The name for this ecoverse */
+  challengeMembers: Array<UserGroup>;
   /** The host organisation for the ecoverse */
   host: Organisation;
   /** The shared understanding for this ecoverse */
@@ -38,6 +42,11 @@ export type Query = {
 };
 
 
+export type QueryChallengeMembersArgs = {
+  ID: Scalars['Float'];
+};
+
+
 export type QueryUserArgs = {
   ID: Scalars['String'];
 };
@@ -52,20 +61,16 @@ export type QueryChallengeArgs = {
   ID: Scalars['String'];
 };
 
-export type Organisation = {
-  __typename?: 'Organisation';
+export type UserGroup = {
+  __typename?: 'UserGroup';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags applied to this organisation. */
-  tags?: Maybe<Array<Tag>>;
-  /** The set of users that are associated with this organisation */
+  /** The set of users that are members of this group */
   members?: Maybe<Array<User>>;
-};
-
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['ID'];
-  name: Scalars['String'];
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  /** The set of tags for this group e.g. Team, Nature etc. */
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type User = {
@@ -76,6 +81,22 @@ export type User = {
   lastName: Scalars['String'];
   email: Scalars['String'];
   tags?: Maybe<Array<Tag>>;
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type Organisation = {
+  __typename?: 'Organisation';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of tags applied to this organisation. */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of users that are associated with this organisation */
+  members?: Maybe<Array<User>>;
 };
 
 export type Context = {
@@ -101,18 +122,6 @@ export type Reference = {
   name: Scalars['String'];
   uri: Scalars['String'];
   description: Scalars['String'];
-};
-
-export type UserGroup = {
-  __typename?: 'UserGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The set of users that are members of this group */
-  members?: Maybe<Array<User>>;
-  /** The focal point for this group */
-  focalPoint?: Maybe<User>;
-  /** The set of tags for this group e.g. Team, Nature etc. */
-  tags?: Maybe<Array<Tag>>;
 };
 
 export type Challenge = {
@@ -284,8 +293,6 @@ export type Ecoverse = {
   ecoverseHost?: Maybe<Organisation>;
   /** The shared understanding for the Ecoverse */
   context?: Maybe<Context>;
-  /** The community for the ecoverse */
-  members?: Maybe<Array<User>>;
   groups?: Maybe<Array<UserGroup>>;
   /** The set of partner organisations associated with this Ecoverse */
   partners?: Maybe<Array<Organisation>>;

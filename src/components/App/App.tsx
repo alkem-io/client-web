@@ -1,5 +1,7 @@
 import {
   AccountInfo,
+  AuthenticationResult,
+  AuthError,
   AuthorizationUrlRequest,
   EndSessionRequest,
   PublicClientApplication,
@@ -7,31 +9,30 @@ import {
 } from '@azure/msal-browser';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
-import { Button, Jumbotron, Nav, Navbar } from 'react-bootstrap';
-import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../../utils/authConfig';
+import { Button, Nav, Navbar } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import EcoverseContainer from '../../containers/EcoverseContainer';
 import ProfileContainer from '../../containers/ProfileContainer';
+import { IRootState } from '../../reducers';
+import { updateAccount, updateError } from '../../reducers/auth/actions';
+import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../../utils/authConfig';
 import './App.css';
-
-export interface AppProps {
-  signOut: () => Promise<void>;
-  isAuthenticated: boolean;
-  account: any;
-  error: Error | undefined;
-  signIn: () => Promise<void>;
-  updateAccount: (account: any) => void;
-  updateError: (error: Error) => void;
-}
 
 const useRedirectFlow = false;
 
 const App = (): React.ReactElement => {
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  // const [isAuthenticated, setAuthenticated] = useState(false);
 
   const [account, setAccount] = useState<AccountInfo | null>(null);
 
   const [username, setUsername] = useState('');
 
+  const [error, setError] = useState<AuthError | null>(null);
   const msalApp = new PublicClientApplication(msalConfig);
+  // const account = useSelector<IRootState, AccountInfo | null>(state => state.auth.account);
+  // const username = useSelector<IRootState, string>(state => (state.auth.account ? state.auth.account.username : ''));
+  const isAuthenticated = useSelector<IRootState, boolean>(state => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
   const getAccounts = () => {
     /**
@@ -45,21 +46,24 @@ const App = (): React.ReactElement => {
     } else if (currentAccounts.length > 1) {
       console.warn('Multiple accounts detected.');
       // Add choose account code here
+      dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
       setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
       setUsername(currentAccounts[0].username);
-      setAuthenticated(true);
+      // setAuthenticated(true);
     } else if (currentAccounts.length === 1) {
+      dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
       setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
       setUsername(currentAccounts[0].username);
-      setAuthenticated(true);
+      // setAuthenticated(true);
     }
   };
 
-  const handleResponse = (response: any) => {
+  const handleResponse = (response: AuthenticationResult | null) => {
     if (response !== null) {
+      dispatch(updateAccount(response.account));
       setAccount(response.account);
       setUsername(response.account.username);
-      setAuthenticated(true);
+      // setAuthenticated(true);
     } else {
       getAccounts();
     }
@@ -74,7 +78,7 @@ const App = (): React.ReactElement => {
       .loginPopup(loginRequest)
       .then(handleResponse)
       .catch(err => {
-        console.error(err);
+        setError(err);
       });
   };
 
@@ -86,33 +90,27 @@ const App = (): React.ReactElement => {
     return msalApp.logout(logoutRequest);
   };
 
-  // const { isAuthenticated } = props;
   const handleSignIn = () => {
-    setAuthenticated(true);
     signIn(useRedirectFlow).then(() => {
-      console.log('Sign in success!');
-      //   if (props.account) {
-      //     console.log(props);
-      //     props.updateAccount(props.account);
-      //   } else if (props.error) {
-      //     props.updateError(props.error);
-      //   } else {
-      //     props.updateError(new Error('Sign-in failed. Please try again.'));
-      //   }
+      if (account) {
+        dispatch(updateAccount(account));
+      } else if (error) {
+        dispatch(updateError(error));
+      } else {
+        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+      }
     });
   };
 
   const handleSignOut = () => {
-    setAuthenticated(false);
     signOut().then(() => {
-      console.log('Sign out success!');
-      //   if (!props.account) {
-      //     props.updateAccount(null);
-      //   } else if (props.error) {
-      //     props.updateError(props.error);
-      //   } else {
-      //     props.updateError(new Error('Sign-out failed. Please try again.'));
-      //   }
+      if (account) {
+        dispatch(updateAccount(null));
+      } else if (error) {
+        dispatch(updateError(error));
+      } else {
+        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+      }
     });
   };
 
@@ -126,9 +124,10 @@ const App = (): React.ReactElement => {
       account: msalApp.getAccountByUsername(username),
     } as SilentRequest;
 
-    return msalApp.acquireTokenSilent(sr).catch(error => {
+    // eslint-disable-next-line consistent-return
+    return msalApp.acquireTokenSilent(sr).catch(err => {
       console.warn('silent token acquisition fails. acquiring token using interactive method');
-      if (error) {
+      if (err) {
         // fallback to interaction when silent call fails
         const tr = {
           scopes: [...tokenRequest.scopes],
@@ -138,11 +137,11 @@ const App = (): React.ReactElement => {
         return msalApp
           .acquireTokenPopup(tr)
           .then(handleResponse)
-          .catch((err: any) => {
-            console.error(err);
+          .catch((er: any) => {
+            console.error(er);
           });
       }
-      console.warn(error);
+      console.warn(err);
     });
   };
 
@@ -156,15 +155,16 @@ const App = (): React.ReactElement => {
           console.error(err);
         });
     }
-
+    console.log(account);
     getAccounts();
-  });
+  }, [username]);
 
   return (
     <div className="App">
       <Navbar className="navbar" bg="dark" variant="dark">
         <Navbar.Brand href="/">Cherry Twist</Navbar.Brand>
         <Nav className="mr-auto" />
+        {username}
         {isAuthenticated ? (
           <Button variant="info" onClick={handleSignOut}>
             Logout
@@ -175,15 +175,13 @@ const App = (): React.ReactElement => {
           </Button>
         )}
       </Navbar>
-      {isAuthenticated ? (
-        <ProfileContainer />
-      ) : (
-        // <ChallengeList handleIdChange={handleIdChange}/>
-        // <ChallengeProfile id={id} />
-        <Jumbotron className="welcome">
-          <h1>Cherry twist login test</h1>
-        </Jumbotron>
-      )}
+      {/* {isAuthenticated ? (
+        <ProfileContainer acquireToken={acquireToken}>
+          <EcoverseContainer />
+        </ProfileContainer>
+      ) : ( */}
+      <EcoverseContainer />
+      {/* )} */}
     </div>
   );
 };
