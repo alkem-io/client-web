@@ -1,12 +1,7 @@
-import gql from 'graphql-tag';
-import * as React from 'react';
-import * as ApolloReactCommon from '@apollo/react-common';
-import * as ApolloReactComponents from '@apollo/react-components';
-import * as ApolloReactHoc from '@apollo/react-hoc';
-import * as ApolloReactHooks from '@apollo/react-hooks';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -20,6 +15,10 @@ export type Query = {
   __typename?: 'Query';
   /** The name for this ecoverse */
   name: Scalars['String'];
+  /** The name for this ecoverse */
+  members: Array<UserGroup>;
+  /** The name for this ecoverse */
+  challengeMembers: Array<UserGroup>;
   /** The host organisation for the ecoverse */
   host: Organisation;
   /** The shared understanding for this ecoverse */
@@ -43,6 +42,11 @@ export type Query = {
 };
 
 
+export type QueryChallengeMembersArgs = {
+  ID: Scalars['Float'];
+};
+
+
 export type QueryUserArgs = {
   ID: Scalars['String'];
 };
@@ -57,20 +61,16 @@ export type QueryChallengeArgs = {
   ID: Scalars['String'];
 };
 
-export type Organisation = {
-  __typename?: 'Organisation';
+export type UserGroup = {
+  __typename?: 'UserGroup';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags applied to this organisation. */
-  tags?: Maybe<Array<Tag>>;
-  /** The set of users that are associated with this organisation */
+  /** The set of users that are members of this group */
   members?: Maybe<Array<User>>;
-};
-
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['ID'];
-  name: Scalars['String'];
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  /** The set of tags for this group e.g. Team, Nature etc. */
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type User = {
@@ -81,6 +81,22 @@ export type User = {
   lastName: Scalars['String'];
   email: Scalars['String'];
   tags?: Maybe<Array<Tag>>;
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type Organisation = {
+  __typename?: 'Organisation';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of tags applied to this organisation. */
+  tags?: Maybe<Array<Tag>>;
+  /** The set of users that are associated with this organisation */
+  members?: Maybe<Array<User>>;
 };
 
 export type Context = {
@@ -106,18 +122,6 @@ export type Reference = {
   name: Scalars['String'];
   uri: Scalars['String'];
   description: Scalars['String'];
-};
-
-export type UserGroup = {
-  __typename?: 'UserGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The set of users that are members of this group */
-  members?: Maybe<Array<User>>;
-  /** The focal point for this group */
-  focalPoint?: Maybe<User>;
-  /** The set of tags for this group e.g. Team, Nature etc. */
-  tags?: Maybe<Array<Tag>>;
 };
 
 export type Challenge = {
@@ -160,6 +164,12 @@ export type Mutation = {
   createOrganisation: Organisation;
   createChallenge: Challenge;
   createTag: Tag;
+  updateEcoverse: Ecoverse;
+  updateUser: User;
+  updateUserGroup: UserGroup;
+  updateOrganisation: Organisation;
+  updateChallenge: Challenge;
+  updateContext: Context;
 };
 
 
@@ -192,55 +202,222 @@ export type MutationCreateTagArgs = {
   tagData: TagInput;
 };
 
+
+export type MutationUpdateEcoverseArgs = {
+  ecoverseData: UpdateEcoverseInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  userData: UpdateRootUserInput;
+};
+
+
+export type MutationUpdateUserGroupArgs = {
+  userGroupData: UpdateRootUserGroupInput;
+};
+
+
+export type MutationUpdateOrganisationArgs = {
+  organisationData: UpdateRootOrganisationInput;
+};
+
+
+export type MutationUpdateChallengeArgs = {
+  challengeData: UpdateRootChallengeInput;
+};
+
+
+export type MutationUpdateContextArgs = {
+  contextData: UpdateRootContextInput;
+};
+
 export type ContextInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   background?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
   tagline?: Maybe<Scalars['String']>;
   who?: Maybe<Scalars['String']>;
   impact?: Maybe<Scalars['String']>;
-  referenceLinks?: Maybe<Array<ReferenceInput>>;
+  references?: Maybe<Array<ReferenceInput>>;
   tags?: Maybe<Array<TagInput>>;
 };
 
 export type ReferenceInput = {
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type TagInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UserInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   account?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<TagInput>>;
 };
 
 export type UserGroupInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   focalPoint?: Maybe<UserInput>;
   members?: Maybe<Array<UserInput>>;
   tags?: Maybe<Array<TagInput>>;
 };
 
 export type OrganisationInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   members?: Maybe<Array<UserInput>>;
   tags?: Maybe<Array<TagInput>>;
 };
 
 export type ChallengeInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   lifecyclePhase?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<TagInput>>;
   context?: Maybe<ContextInput>;
+  groups?: Maybe<Array<UserGroupInput>>;
+};
+
+export type Ecoverse = {
+  __typename?: 'Ecoverse';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The organisation that hosts this Ecoverse instance */
+  ecoverseHost?: Maybe<Organisation>;
+  /** The shared understanding for the Ecoverse */
+  context?: Maybe<Context>;
+  groups?: Maybe<Array<UserGroup>>;
+  /** The set of partner organisations associated with this Ecoverse */
+  partners?: Maybe<Array<Organisation>>;
+  /** The Challenges hosted by the Ecoverse */
+  challenges?: Maybe<Array<Challenge>>;
+  /** Set of restricted tags that are used within this ecoverse */
+  tags?: Maybe<Array<Tag>>;
+};
+
+export type UpdateEcoverseInput = {
+  name?: Maybe<Scalars['String']>;
+  challenges?: Maybe<Array<UpdateNestedChallengeInput>>;
+  partners?: Maybe<Array<UpdateNestedOrganisationInput>>;
+  members?: Maybe<Array<UpdateNestedUserInput>>;
+  groups?: Maybe<Array<UpdateNestedUserGroupInput>>;
+  context?: Maybe<UpdateNestedContextInput>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+};
+
+export type UpdateNestedChallengeInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  context?: Maybe<UpdateNestedContextInput>;
+  groups?: Maybe<Array<UpdateNestedUserGroupInput>>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type UpdateNestedTagInput = {
+  name?: Maybe<Scalars['String']>;
+  id: Scalars['Float'];
+};
+
+export type UpdateNestedContextInput = {
+  name?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  references?: Maybe<Array<UpdateReferenceInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type UpdateReferenceInput = {
+  name?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['Float'];
+};
+
+export type UpdateNestedUserGroupInput = {
+  name?: Maybe<Scalars['String']>;
+  focalPoint?: Maybe<UpdateNestedUserInput>;
+  members?: Maybe<Array<UpdateNestedUserInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type UpdateNestedUserInput = {
+  name?: Maybe<Scalars['String']>;
+  account?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type UpdateNestedOrganisationInput = {
+  name?: Maybe<Scalars['String']>;
+  members?: Maybe<Array<UpdateNestedUserInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id?: Maybe<Scalars['Float']>;
+};
+
+export type UpdateRootUserInput = {
+  name?: Maybe<Scalars['String']>;
+  account?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id: Scalars['Float'];
+};
+
+export type UpdateRootUserGroupInput = {
+  name?: Maybe<Scalars['String']>;
+  focalPoint?: Maybe<UpdateNestedUserInput>;
+  members?: Maybe<Array<UpdateNestedUserInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id: Scalars['Float'];
+};
+
+export type UpdateRootOrganisationInput = {
+  name?: Maybe<Scalars['String']>;
+  members?: Maybe<Array<UpdateNestedUserInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id: Scalars['Float'];
+};
+
+export type UpdateRootChallengeInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  context?: Maybe<UpdateNestedContextInput>;
+  groups?: Maybe<Array<UpdateNestedUserGroupInput>>;
+  id: Scalars['Float'];
+};
+
+export type UpdateRootContextInput = {
+  name?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['String']>;
+  lifecyclePhase?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  references?: Maybe<Array<UpdateReferenceInput>>;
+  tags?: Maybe<Array<UpdateNestedTagInput>>;
+  id: Scalars['Float'];
 };
 
 export type ChallengeListQueryVariables = Exact<{ [key: string]: never; }>;
@@ -306,25 +483,6 @@ export const ChallengeListDocument = gql`
   }
 }
     `;
-export type ChallengeListComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<ChallengeListQuery, ChallengeListQueryVariables>, 'query'>;
-
-    export const ChallengeListComponent = (props: ChallengeListComponentProps) => (
-      <ApolloReactComponents.Query<ChallengeListQuery, ChallengeListQueryVariables> query={ChallengeListDocument} {...props} />
-    );
-    
-export type ChallengeListProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<ChallengeListQuery, ChallengeListQueryVariables>
-    } & TChildProps;
-export function withChallengeList<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  ChallengeListQuery,
-  ChallengeListQueryVariables,
-  ChallengeListProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, ChallengeListQuery, ChallengeListQueryVariables, ChallengeListProps<TChildProps, TDataName>>(ChallengeListDocument, {
-      alias: 'challengeList',
-      ...operationOptions
-    });
-};
 
 /**
  * __useChallengeListQuery__
@@ -341,15 +499,15 @@ export function withChallengeList<TProps, TChildProps = {}, TDataName extends st
  *   },
  * });
  */
-export function useChallengeListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
-        return ApolloReactHooks.useQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+export function useChallengeListQuery(baseOptions?: Apollo.QueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
+        return Apollo.useQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
       }
-export function useChallengeListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+export function useChallengeListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
+          return Apollo.useLazyQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
         }
 export type ChallengeListQueryHookResult = ReturnType<typeof useChallengeListQuery>;
 export type ChallengeListLazyQueryHookResult = ReturnType<typeof useChallengeListLazyQuery>;
-export type ChallengeListQueryResult = ApolloReactCommon.QueryResult<ChallengeListQuery, ChallengeListQueryVariables>;
+export type ChallengeListQueryResult = Apollo.QueryResult<ChallengeListQuery, ChallengeListQueryVariables>;
 export const ChallengeProfileDocument = gql`
     query challengeProfile($id: String!) {
   challenge(ID: $id) {
@@ -373,25 +531,6 @@ export const ChallengeProfileDocument = gql`
   }
 }
     `;
-export type ChallengeProfileComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>, 'query'> & ({ variables: ChallengeProfileQueryVariables; skip?: boolean; } | { skip: boolean; });
-
-    export const ChallengeProfileComponent = (props: ChallengeProfileComponentProps) => (
-      <ApolloReactComponents.Query<ChallengeProfileQuery, ChallengeProfileQueryVariables> query={ChallengeProfileDocument} {...props} />
-    );
-    
-export type ChallengeProfileProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<ChallengeProfileQuery, ChallengeProfileQueryVariables>
-    } & TChildProps;
-export function withChallengeProfile<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  ChallengeProfileQuery,
-  ChallengeProfileQueryVariables,
-  ChallengeProfileProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, ChallengeProfileQuery, ChallengeProfileQueryVariables, ChallengeProfileProps<TChildProps, TDataName>>(ChallengeProfileDocument, {
-      alias: 'challengeProfile',
-      ...operationOptions
-    });
-};
 
 /**
  * __useChallengeProfileQuery__
@@ -409,15 +548,15 @@ export function withChallengeProfile<TProps, TChildProps = {}, TDataName extends
  *   },
  * });
  */
-export function useChallengeProfileQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
-        return ApolloReactHooks.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
+export function useChallengeProfileQuery(baseOptions?: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
+        return Apollo.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
       }
-export function useChallengeProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
+export function useChallengeProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
+          return Apollo.useLazyQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
         }
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
-export type ChallengeProfileQueryResult = ApolloReactCommon.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
 export const EcoverseListDocument = gql`
     query ecoverseList {
   name
@@ -426,25 +565,6 @@ export const EcoverseListDocument = gql`
   }
 }
     `;
-export type EcoverseListComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<EcoverseListQuery, EcoverseListQueryVariables>, 'query'>;
-
-    export const EcoverseListComponent = (props: EcoverseListComponentProps) => (
-      <ApolloReactComponents.Query<EcoverseListQuery, EcoverseListQueryVariables> query={EcoverseListDocument} {...props} />
-    );
-    
-export type EcoverseListProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<EcoverseListQuery, EcoverseListQueryVariables>
-    } & TChildProps;
-export function withEcoverseList<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  EcoverseListQuery,
-  EcoverseListQueryVariables,
-  EcoverseListProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, EcoverseListQuery, EcoverseListQueryVariables, EcoverseListProps<TChildProps, TDataName>>(EcoverseListDocument, {
-      alias: 'ecoverseList',
-      ...operationOptions
-    });
-};
 
 /**
  * __useEcoverseListQuery__
@@ -461,12 +581,12 @@ export function withEcoverseList<TProps, TChildProps = {}, TDataName extends str
  *   },
  * });
  */
-export function useEcoverseListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
-        return ApolloReactHooks.useQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
+export function useEcoverseListQuery(baseOptions?: Apollo.QueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
+        return Apollo.useQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
       }
-export function useEcoverseListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
+export function useEcoverseListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
+          return Apollo.useLazyQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
         }
 export type EcoverseListQueryHookResult = ReturnType<typeof useEcoverseListQuery>;
 export type EcoverseListLazyQueryHookResult = ReturnType<typeof useEcoverseListLazyQuery>;
-export type EcoverseListQueryResult = ApolloReactCommon.QueryResult<EcoverseListQuery, EcoverseListQueryVariables>;
+export type EcoverseListQueryResult = Apollo.QueryResult<EcoverseListQuery, EcoverseListQueryVariables>;

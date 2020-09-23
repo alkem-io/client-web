@@ -1,0 +1,10 @@
+.welcome {
+  margin: 10%;
+}
+
+.ecoverse-container {
+  display: flex;
+  width: 99vw;
+  height: 94vh;
+  overflow: hidden;
+}

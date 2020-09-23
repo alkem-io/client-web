@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useChallengeProfileQuery } from '../../generated/graphql';
-import  ChallengeProfile  from './ChallengeProfile';
+import ChallengeProfile from './ChallengeProfile';
 
 interface OwnProps {
   id: number;
@@ -12,7 +12,7 @@ const ChallengeProfileContainer = ({ id }: OwnProps) => {
   });
   React.useEffect(() => {
     refetch();
-  }, [id]);
+  }, [id, refetch]);
 
   if (loading) {
     return <div>Loading...</div>;
