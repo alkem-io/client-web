@@ -2,8 +2,8 @@
 // visit https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md
 export const msalConfig = {
   auth: {
-    clientId: '279502ba-5997-4c74-896d-c229c02f4dad',
-    authority: 'https://login.microsoftonline.com/2570f136-86fa-4ec4-b18d-cb07a1755e35',
+    clientId: process.env.REACT_APP_AUTH_CLIENT_ID || '',
+    authority: `https://login.microsoftonline.com/${process.env.REACT_APP_AUTH_TENANT_ID}`,
     redirectUri: 'http://localhost:3000',
   },
   cache: {
@@ -15,7 +15,7 @@ export const msalConfig = {
 // Coordinates and required scopes for your web api
 export const apiConfig = {
   resourceUri: 'http://localhost:4000/api/profile',
-  resourceScope: 'api://1400d97a-a25d-46e7-8d67-a67cbe2f4fb2/.default',
+  resourceScope: process.env.REACT_APP_AUTH_API_SCOPE || '',
 };
 
 /**
