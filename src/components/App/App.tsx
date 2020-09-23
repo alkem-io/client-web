@@ -12,9 +12,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Nav, Navbar } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
-import ProfileContainer from '../../containers/ProfileContainer';
 import { IRootState } from '../../reducers';
-import { updateAccount, updateError } from '../../reducers/auth/actions';
+import { updateAccount, updateError, updateToken } from '../../reducers/auth/actions';
 import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../../utils/authConfig';
 import './App.css';
 
@@ -151,12 +150,20 @@ const App = (): React.ReactElement => {
         .handleRedirectPromise()
         .then(handleResponse)
         .catch(err => {
-          // this.setState({ error: err.errorMessage });
+          dispatch(updateError(new Error(err.message)));
           console.error(err);
         });
     }
-    console.log(account);
     getAccounts();
+  }, [username]);
+
+  useEffect(() => {
+    acquireToken().then(response => {
+      if (response) {
+        // set access token
+        dispatch(updateToken(response));
+      }
+    });
   }, [username]);
 
   return (
@@ -175,13 +182,7 @@ const App = (): React.ReactElement => {
           </Button>
         )}
       </Navbar>
-      {/* {isAuthenticated ? (
-        <ProfileContainer acquireToken={acquireToken}>
-          <EcoverseContainer />
-        </ProfileContainer>
-      ) : ( */}
       <EcoverseContainer />
-      {/* )} */}
     </div>
   );
 };

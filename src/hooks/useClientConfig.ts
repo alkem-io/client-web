@@ -4,9 +4,12 @@ import { setContext } from '@apollo/client/link/context';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../reducers';
 
-export const useClientConfig = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
+export const useClientConfig = (
+  graphQLEndpoint: string,
+  enableAuthentication: boolean
+): ApolloClient<NormalizedCacheObject> => {
   const token = useSelector<IRootState, string | null>(state => state.auth.accessToken);
-
+  console.log('Token: ', token);
   const httpLink = createHttpLink({
     uri: graphQLEndpoint,
   });
@@ -21,7 +24,7 @@ export const useClientConfig = (graphQLEndpoint: string): ApolloClient<Normalize
   });
 
   return new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: enableAuthentication ? authLink.concat(httpLink) : httpLink,
     cache: new InMemoryCache(),
   });
 };

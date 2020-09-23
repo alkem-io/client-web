@@ -4,6 +4,8 @@ export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
 export const UPDATE_ERROR = 'UPDATE_ERROR';
 export const UPDATE_TOKEN = 'UPDATE_TOKEN';
 
+export type ErrorPayload = AuthError | Error | null;
+
 export interface UpdateAccountAction {
   type: typeof UPDATE_ACCOUNT;
   payload: AccountInfo | null;
@@ -11,7 +13,7 @@ export interface UpdateAccountAction {
 
 export interface UpdateErrorAction {
   type: typeof UPDATE_ERROR;
-  payload: AuthError;
+  payload: ErrorPayload;
 }
 
 export interface UpdateToken {
@@ -21,7 +23,7 @@ export interface UpdateToken {
 
 export interface AuthState {
   account: AccountInfo | null;
-  error: AuthError | null;
+  error: ErrorPayload;
   idToken: Record<string, never> | null;
   accessToken: string | null;
   isAuthenticated: boolean;

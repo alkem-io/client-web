@@ -10,7 +10,7 @@ const EcoverseContainer = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="App">
+    <div className="ecoverse-container">
       <EcoverseProfile />
       <ChallengeList handleIdChange={handleIdChange} />
       <ChallengeProfile id={id} />
