@@ -29,7 +29,8 @@
   "env": {
     "browser": true,
     "es6": true,
-    "jest": true
+    "jest": true,
+    "serviceworker": true
   },
   "rules": {
     "quotes": [
@@ -38,6 +39,8 @@
     ],
     "no-multiple-empty-lines": "error",
     "react/prop-types": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "import/prefer-default-export": "off"
   }
 }

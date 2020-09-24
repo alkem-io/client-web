@@ -1,7 +1,5 @@
 import { AuthenticationResult } from '@azure/msal-browser';
-import React, { ReactNode, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { updateToken } from '../reducers/auth/actions';
+import React, { ReactNode } from 'react';
 
 interface ProfileContainerProps {
   acquireToken: () => Promise<void | AuthenticationResult | undefined>;
@@ -10,7 +8,7 @@ interface ProfileContainerProps {
 
 const ProfileContainer: React.FunctionComponent<ProfileContainerProps> = props => {
   // const dispatch = useDispatch();
-  const { acquireToken, children } = props;
+  const { children } = props;
 
   // useEffect(() => {
   //   acquireToken().then(response => {

@@ -6,7 +6,7 @@ interface OwnProps {
   id: number;
 }
 
-const ChallengeProfileContainer = ({ id }: OwnProps) => {
+const ChallengeProfileContainer: React.FC<OwnProps> = ({ id }) => {
   const { data, error, loading, refetch } = useChallengeProfileQuery({
     variables: { id: String(id) },
   });
