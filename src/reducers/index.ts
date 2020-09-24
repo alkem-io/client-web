@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import auth from './auth/reducers';
+import { AuthActionTypes } from './auth/types';
 import profile from './profile/reducers';
+import { ProfileActionTypes } from './profile/types';
 
 const rootReducer = combineReducers({
   auth,
@@ -9,4 +11,5 @@ const rootReducer = combineReducers({
 
 export default rootReducer;
 
-export type IRootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;
+export type StoreActions = AuthActionTypes | ProfileActionTypes;

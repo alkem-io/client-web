@@ -1,4 +1,3 @@
-import { act } from 'react-dom/test-utils';
 import { ProfileActionTypes, ProfileState, UPDATE_PROFILE } from './types';
 
 const initialState: ProfileState = {
@@ -25,7 +24,7 @@ export default function profileReducer(state = initialState, action: ProfileActi
         mobilePhone: action.payload.mobilePhone,
         preferredLanguage: action.payload.preferredLanguage,
         firstLogin: false,
-      }
+      };
     default:
       return state;
   }

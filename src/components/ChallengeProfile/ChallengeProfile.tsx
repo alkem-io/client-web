@@ -1,19 +1,19 @@
-import * as React from "react";
-import { ChallengeProfileQuery } from "../../generated/graphql";
-import "./styles.css";
+import * as React from 'react';
+import { ChallengeProfileQuery } from '../../generated/graphql';
+import './styles.css';
 
 interface Props {
   data: ChallengeProfileQuery;
 }
 
-const className = "ChallengeProfile";
+const className = 'ChallengeProfile';
 
 const ChallengeProfile: React.FC<Props> = ({ data }) => {
   if (!data.challenge) {
     return <div>No challenge available</div>;
   }
 
-  console.log("Challenge data available!");
+  console.log('Challenge data available!');
 
   return (
     <div className={className}>
@@ -57,12 +57,12 @@ const ChallengeProfile: React.FC<Props> = ({ data }) => {
         <b>References: </b>
         {!!data.challenge.context?.references &&
           data.challenge.context?.references.map(
-            (Reference, i) =>
+            Reference =>
               !!Reference && (
-                <li key={i} className={`${className}__item`}>
+                <li key={Reference.name} className={`${className}__item`}>
                   <b>
                     <a href={Reference.uri}>{Reference.name}</a>
-                  </b>{" "}
+                  </b>{' '}
                   - {Reference.description} &nbsp;
                 </li>
               )
@@ -72,9 +72,9 @@ const ChallengeProfile: React.FC<Props> = ({ data }) => {
         <b>Tags: </b>
         {!!data.challenge.tags &&
           data.challenge.tags.map(
-            (Tag, i) =>
+            Tag =>
               !!Tag && (
-                <li key={i} className={`${className}__item`}>
+                <li key={Tag.name} className={`${className}__item`}>
                   {Tag.name} &nbsp;
                 </li>
               )
