@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -41,21 +42,17 @@ export type Query = {
   tags: Array<Tag>;
 };
 
-
 export type QueryChallengeMembersArgs = {
   ID: Scalars['Float'];
 };
-
 
 export type QueryUserArgs = {
   ID: Scalars['String'];
 };
 
-
 export type QueryUserGroupArgs = {
   ID: Scalars['String'];
 };
-
 
 export type QueryChallengeArgs = {
   ID: Scalars['String'];
@@ -172,61 +169,49 @@ export type Mutation = {
   updateContext: Context;
 };
 
-
 export type MutationCreateContextArgs = {
   contextData: ContextInput;
 };
-
 
 export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-
 export type MutationCreateUserGroupArgs = {
   userGroupData: UserGroupInput;
 };
-
 
 export type MutationCreateOrganisationArgs = {
   organisationData: OrganisationInput;
 };
 
-
 export type MutationCreateChallengeArgs = {
   challengeData: ChallengeInput;
 };
-
 
 export type MutationCreateTagArgs = {
   tagData: TagInput;
 };
 
-
 export type MutationUpdateEcoverseArgs = {
   ecoverseData: UpdateEcoverseInput;
 };
-
 
 export type MutationUpdateUserArgs = {
   userData: UpdateRootUserInput;
 };
 
-
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateRootUserGroupInput;
 };
-
 
 export type MutationUpdateOrganisationArgs = {
   organisationData: UpdateRootOrganisationInput;
 };
 
-
 export type MutationUpdateChallengeArgs = {
   challengeData: UpdateRootChallengeInput;
 };
-
 
 export type MutationUpdateContextArgs = {
   contextData: UpdateRootContextInput;
@@ -420,69 +405,48 @@ export type UpdateRootContextInput = {
   id: Scalars['Float'];
 };
 
-export type ChallengeListQueryVariables = Exact<{ [key: string]: never; }>;
+export type ChallengeListQueryVariables = Exact<{ [key: string]: never }>;
 
-
-export type ChallengeListQuery = (
-  { __typename?: 'Query' }
-  & { challenges: Array<(
-    { __typename?: 'Challenge' }
-    & Pick<Challenge, 'id' | 'name'>
-    & { context?: Maybe<(
-      { __typename?: 'Context' }
-      & Pick<Context, 'tagline'>
-    )> }
-  )> }
-);
+export type ChallengeListQuery = { __typename?: 'Query' } & {
+  challenges: Array<
+    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+        context?: Maybe<{ __typename?: 'Context' } & Pick<Context, 'tagline'>>;
+      }
+  >;
+};
 
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
+export type ChallengeProfileQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+          }
+      >;
+      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'name'>>>;
+    };
+};
 
-export type ChallengeProfileQuery = (
-  { __typename?: 'Query' }
-  & { challenge: (
-    { __typename?: 'Challenge' }
-    & Pick<Challenge, 'id' | 'name'>
-    & { context?: Maybe<(
-      { __typename?: 'Context' }
-      & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'>
-      & { references?: Maybe<Array<(
-        { __typename?: 'Reference' }
-        & Pick<Reference, 'name' | 'uri' | 'description'>
-      )>> }
-    )>, tags?: Maybe<Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'name'>
-    )>> }
-  ) }
-);
+export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoverseListQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type EcoverseListQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'name'>
-  & { context: (
-    { __typename?: 'Context' }
-    & Pick<Context, 'tagline'>
-  ) }
-);
-
+export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
+    context: { __typename?: 'Context' } & Pick<Context, 'tagline'>;
+  };
 
 export const ChallengeListDocument = gql`
-    query challengeList {
-  challenges {
-    id
-    name
-    context {
-      tagline
+  query challengeList {
+    challenges {
+      id
+      name
+      context {
+        tagline
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useChallengeListQuery__
@@ -499,38 +463,42 @@ export const ChallengeListDocument = gql`
  *   },
  * });
  */
-export function useChallengeListQuery(baseOptions?: Apollo.QueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
-        return Apollo.useQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
-      }
-export function useChallengeListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>) {
-          return Apollo.useLazyQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
-        }
+export function useChallengeListQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+}
+export function useChallengeListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+}
 export type ChallengeListQueryHookResult = ReturnType<typeof useChallengeListQuery>;
 export type ChallengeListLazyQueryHookResult = ReturnType<typeof useChallengeListLazyQuery>;
 export type ChallengeListQueryResult = Apollo.QueryResult<ChallengeListQuery, ChallengeListQueryVariables>;
 export const ChallengeProfileDocument = gql`
-    query challengeProfile($id: String!) {
-  challenge(ID: $id) {
-    id
-    name
-    context {
-      tagline
-      background
-      vision
-      impact
-      who
-      references {
+  query challengeProfile($id: String!) {
+    challenge(ID: $id) {
+      id
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          name
+          uri
+          description
+        }
+      }
+      tags {
         name
-        uri
-        description
       }
     }
-    tags {
-      name
-    }
   }
-}
-    `;
+`;
 
 /**
  * __useChallengeProfileQuery__
@@ -548,23 +516,30 @@ export const ChallengeProfileDocument = gql`
  *   },
  * });
  */
-export function useChallengeProfileQuery(baseOptions?: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
-        return Apollo.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
-      }
-export function useChallengeProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>) {
-          return Apollo.useLazyQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
-        }
+export function useChallengeProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
+}
+export function useChallengeProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(
+    ChallengeProfileDocument,
+    baseOptions
+  );
+}
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
 export const EcoverseListDocument = gql`
-    query ecoverseList {
-  name
-  context {
-    tagline
+  query ecoverseList {
+    name
+    context {
+      tagline
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useEcoverseListQuery__
@@ -581,12 +556,16 @@ export const EcoverseListDocument = gql`
  *   },
  * });
  */
-export function useEcoverseListQuery(baseOptions?: Apollo.QueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
-        return Apollo.useQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
-      }
-export function useEcoverseListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>) {
-          return Apollo.useLazyQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
-        }
+export function useEcoverseListQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
+}
+export function useEcoverseListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
+}
 export type EcoverseListQueryHookResult = ReturnType<typeof useEcoverseListQuery>;
 export type EcoverseListLazyQueryHookResult = ReturnType<typeof useEcoverseListLazyQuery>;
 export type EcoverseListQueryResult = Apollo.QueryResult<EcoverseListQuery, EcoverseListQueryVariables>;

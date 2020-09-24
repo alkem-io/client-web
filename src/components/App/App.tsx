@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Nav, Navbar } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
-import { IRootState } from '../../reducers';
+import { RootState } from '../../reducers';
 import { updateAccount, updateError, updateToken } from '../../reducers/auth/actions';
 import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../../utils/authConfig';
 import './App.css';
@@ -30,7 +30,7 @@ const App = (): React.ReactElement => {
   const msalApp = new PublicClientApplication(msalConfig);
   // const account = useSelector<IRootState, AccountInfo | null>(state => state.auth.account);
   // const username = useSelector<IRootState, string>(state => (state.auth.account ? state.auth.account.username : ''));
-  const isAuthenticated = useSelector<IRootState, boolean>(state => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector<RootState, boolean>(state => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
   const getAccounts = () => {
@@ -68,7 +68,7 @@ const App = (): React.ReactElement => {
     }
   };
 
-  const signIn = async (redirect: any) => {
+  const signIn = async (redirect: boolean) => {
     if (redirect) {
       return msalApp.loginRedirect(loginRequest);
     }
@@ -136,7 +136,7 @@ const App = (): React.ReactElement => {
         return msalApp
           .acquireTokenPopup(tr)
           .then(handleResponse)
-          .catch((er: any) => {
+          .catch((er: AuthError) => {
             console.error(er);
           });
       }

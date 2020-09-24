@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 import { useChallengeListQuery } from '../../generated/graphql';
-import  ChallengeList, { OwnProps }  from './ChallengeList';
+import ChallengeList, { OwnProps } from './ChallengeList';
 
-const ChallengeListContainer = (props: OwnProps) => {
+const ChallengeListContainer: FC<OwnProps> = props => {
   const { data, error, loading } = useChallengeListQuery();
 
   if (loading) {
@@ -17,7 +17,8 @@ const ChallengeListContainer = (props: OwnProps) => {
     return <div>NO DATA {data}</div>;
   }
 
-  //handleIdChange={() => 2.0}
+  // handleIdChange={() => 2.0}
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <ChallengeList data={data} {...props} />;
 };
 
