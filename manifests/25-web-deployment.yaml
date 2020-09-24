@@ -22,6 +22,8 @@ spec:
           envFrom:
           - secretRef:
               name: server-secret
+          - secretRef:
+              name: aad-secret
           ports:
             - name: web
               containerPort: 80
