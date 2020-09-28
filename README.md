@@ -12,9 +12,7 @@ Data is fed into the client through a graphql endpoint. Endpoint url is configur
 
 ## Configure authentication
 
-- `REACT_APP_AUTH_CLIENT_ID` - the Client Id from Azure
-- `REACT_APP_AUTH_TENANT_ID` - the Tenant Id from Azure
-- `REACT_APP_AUTH_API_SCOPE` - the configured scope
+TBD
 
 ## Extending
 

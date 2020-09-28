@@ -4,7 +4,7 @@ export const msalConfig = {
   auth: {
     clientId: process.env.REACT_APP_AUTH_CLIENT_ID || '',
     authority: `https://login.microsoftonline.com/${process.env.REACT_APP_AUTH_TENANT_ID}`,
-    redirectUri: 'http://localhost:3000',
+    redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || 'http://localhost:3000',
   },
   cache: {
     cacheLocation: 'localStorage', // This configures where your cache will be stored
@@ -14,7 +14,7 @@ export const msalConfig = {
 
 // Coordinates and required scopes for your web api
 export const apiConfig = {
-  resourceUri: 'http://localhost:4000/api/profile',
+  resourceUri: process.env.REACT_APP_AUTH_RESOURCE_URI || 'http://localhost:4000/api/profile',
   resourceScope: process.env.REACT_APP_AUTH_API_SCOPE || '',
 };
 
