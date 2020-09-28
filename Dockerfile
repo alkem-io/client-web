@@ -6,6 +6,9 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
+ARG GRAPHQL_ENDPOINT_ARG="http://localhost:4000/graphql"
+ENV REACT_APP_GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_ARG}
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
@@ -26,9 +29,6 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy from the stage 1
 COPY --from=builder /app/build /usr/share/nginx/html
-
-ARG GRAPHQL_ENDPOINT_ARG="http://localhost:4000/graphql"
-ENV REACT_APP_GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_ARG}
 
 EXPOSE 80
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
