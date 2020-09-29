@@ -24,7 +24,7 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG}} --build-arg ARG_AUTH_REDIRECT_URI=${{ secrets.ARG_AUTH_REDIRECT_URI}} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
+            docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG}} --build-arg ARG_AUTH_REDIRECT_URI=${{ secrets.ARG_AUTH_REDIRECT_URI}} --build-arg ARG_AUTHENTICATION_ENABLE=${{ secrets.ARG_AUTHENTICATION_ENABLE}} --build-arg ARG_AUTH_CLIENT_ID=${{ secrets.ARG_AUTH_CLIENT_ID}} --build-arg ARG_AUTH_TENANT_ID=${{ secrets.ARG_AUTH_TENANT_ID}} --build-arg ARG_AUTH_API_SCOPE=${{ secrets.ARG_AUTH_API_SCOPE}} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
 
         - uses: Azure/aks-set-context@v1
