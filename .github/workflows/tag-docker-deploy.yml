@@ -2,7 +2,7 @@ name: push to docker
 
 on:
   release:
-    types: [published, created, updated]
+    types: [published, created, edited]
 
 jobs:
   push_to_registry:
