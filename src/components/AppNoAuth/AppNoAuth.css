@@ -1,6 +1,10 @@
-.AppNoAuth {
+.welcome {
+  margin: 10%;
+}
+
+.ecoverse-container {
   display: flex;
-  width: 100vw;
-  height: 100vh;
+  width: 99vw;
+  height: 94vh;
   overflow: hidden;
 }
