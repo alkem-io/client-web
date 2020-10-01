@@ -14,8 +14,8 @@ const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOu
   return (
     <div>
       <Navbar className="navbar" bg="dark" variant="dark">
-        <Navbar.Brand href="#home">
-          <img alt="" src="/logo-white.png" height="30" />
+        <Navbar.Brand href="/">
+          <img alt="" src="/logo-white-cropped.png" height="30" />
         </Navbar.Brand>
         <Nav className="mr-auto" />
         {userName}
