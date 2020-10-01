@@ -1,3 +1,7 @@
+Build Quality:
+[![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
+
+
 # Cherrytwist Web Client
 
 This is a simple React web client for interacting with a Cherrytwist server.
