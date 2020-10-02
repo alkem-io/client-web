@@ -8,23 +8,19 @@ import {
   SilentRequest,
 } from '@azure/msal-browser';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../reducers';
-import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
+import { useDispatch } from 'react-redux';
 import { updateAccount, updateError, updateToken } from '../reducers/auth/actions';
+import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
 
 const useRedirectFlow = false;
 
-export const useAuthentication = () => {
+export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: () => void } => {
   const [account, setAccount] = useState<AccountInfo | null>(null);
 
   const [username, setUsername] = useState('');
 
   const [error, setError] = useState<AuthError | null>(null);
   const msalApp = new PublicClientApplication(msalConfig);
-  // const account = useSelector<IRootState, AccountInfo | null>(state => state.auth.account);
-  // const username = useSelector<IRootState, string>(state => (state.auth.account ? state.auth.account.username : ''));
-  const isAuthenticated = useSelector<RootState, boolean>(state => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
   const getAccounts = () => {

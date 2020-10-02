@@ -1,10 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
+import { Toast } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
 import { useAuthentication } from '../../hooks';
 import { RootState } from '../../reducers';
 import Header from '../Header';
+import { Message } from '../Message';
+
 import './App.css';
 
 const App = (): React.ReactElement => {

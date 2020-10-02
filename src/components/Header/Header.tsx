@@ -11,23 +11,32 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }) => {
+  // three state configuration
+  let loginButton = <div />;
+
+  if (isAuthenticated === true) {
+    loginButton = (
+      <Button variant="info" onClick={onSignOut}>
+        Logout
+      </Button>
+    );
+  } else if (isAuthenticated === false) {
+    loginButton = (
+      <Button variant="outline-info" onClick={onSignIn}>
+        Login
+      </Button>
+    );
+  }
+
   return (
     <div>
       <Navbar className="navbar" bg="dark" variant="dark">
         <Navbar.Brand href="/">
-          <img alt="" src="/logo-white-cropped.png" height="30" />
+          <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>
         <Nav className="mr-auto" />
         {userName}
-        {isAuthenticated ? (
-          <Button variant="info" onClick={onSignOut}>
-            Logout
-          </Button>
-        ) : (
-          <Button variant="outline-info" onClick={onSignIn}>
-            Login
-          </Button>
-        )}
+        {loginButton}
       </Navbar>
     </div>
   );
