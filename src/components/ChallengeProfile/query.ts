@@ -17,8 +17,9 @@ export const QUERY_CHALLENGE_PROFILE = gql`
           description
         }
       }
-      tags {
+      tagset {
         name
+        tags
       }
     }
   }

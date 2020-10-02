@@ -70,12 +70,12 @@ const ChallengeProfile: React.FC<Props> = ({ data }) => {
       </p>
       <p>
         <b>Tags: </b>
-        {!!data.challenge.tags &&
-          data.challenge.tags.map(
-            Tag =>
-              !!Tag && (
-                <li key={Tag.name} className={`${className}__item`}>
-                  {Tag.name} &nbsp;
+        {!!data.challenge.tagset &&
+          data.challenge.tagset.tags.map(
+            tag =>
+              !!tag && (
+                <li key={tag} className={`${className}__item`}>
+                  {tag} &nbsp;
                 </li>
               )
           )}
