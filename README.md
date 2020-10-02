@@ -1,5 +1,4 @@
-Build Quality:
-[![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
+
 
 
 # Cherrytwist Web Client
@@ -9,6 +8,12 @@ This is a simple React web client for interacting with a Cherrytwist server.
 It is in part inspired by the following article: https://blog.logrocket.com/build-a-graphql-react-app-with-typescript/
 
 The intention is that this repository contains over time a selection of React components for working with Cherrytwist instances, as well as a sample web client that uses those components.
+
+Build Status
+![AKS dev CI/CD pipeline](https://github.com/cherrytwist/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
+
+Build Quality:
+[![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
 
 ## Configure data source endpoint
 
