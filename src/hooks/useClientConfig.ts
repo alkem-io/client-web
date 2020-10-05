@@ -1,8 +1,9 @@
 import { onError } from '@apollo/client/link/error';
-import { createHttpLink, from, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { useDispatch, useSelector } from 'react-redux';
+import { RetryLink } from '@apollo/client/link/retry';
 import { RootState } from '../reducers';
 import { pushError } from '../reducers/error/actions';
 
@@ -26,6 +27,7 @@ export const useClientConfig = (
       });
 
     if (networkError) {
+      // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
       console.log(newMessage);
       errors.push(new Error(newMessage));
@@ -47,8 +49,26 @@ export const useClientConfig = (
     uri: graphQLEndpoint,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const retryIf = (error: any, _operation: Operation) => {
+    const doNotRetryCodes = [500, 400];
+    return !!error && !doNotRetryCodes.includes(error.statusCode);
+  };
+
+  const retryLink = new RetryLink({
+    delay: {
+      initial: 1000,
+      max: 60000,
+      jitter: true,
+    },
+    attempts: {
+      max: 25,
+      retryIf,
+    },
+  });
+
   return new ApolloClient({
-    link: from([authLink, errorLink, httpLink]),
+    link: from([authLink, errorLink, retryLink, httpLink]),
     cache: new InMemoryCache(),
   });
 };
