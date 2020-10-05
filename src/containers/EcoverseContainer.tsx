@@ -3,7 +3,6 @@ import { Col, Row } from 'react-bootstrap';
 import ChallengeList from '../components/ChallengeList';
 import ChallengeProfile from '../components/ChallengeProfile';
 import EcoverseProfile from '../components/EcoverseProfile';
-import { Message } from '../components/Message';
 
 const EcoverseContainer = (): JSX.Element => {
   const [id, setId] = React.useState(2);

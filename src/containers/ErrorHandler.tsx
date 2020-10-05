@@ -1,17 +1,17 @@
+import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
 import React, { FC } from 'react';
 import { Toast } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
-import { RootState } from '../reducers';
+import { useDispatch } from 'react-redux';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import { clearError } from '../reducers/error/actions';
 import { ErrorBoundary } from './ErrorBoundary';
 
 export const ErrorHandler: FC = ({ children }) => {
-  const error = useSelector<RootState, Error | undefined>(state => {
+  const error = useTypedSelector<Error | undefined>(state => {
     return state.error.errors[0];
   });
 
-  const count = useSelector<RootState, number>(state => state.error.errors.length);
+  const count = useTypedSelector<number>(state => state.error.errors.length);
 
   const dispatch = useDispatch();
 
@@ -20,7 +20,6 @@ export const ErrorHandler: FC = ({ children }) => {
   };
 
   const show = !!error;
-
   const message = error?.message;
 
   return (

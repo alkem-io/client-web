@@ -9,7 +9,8 @@ import {
 } from '@azure/msal-browser';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateAccount, updateError, updateToken } from '../reducers/auth/actions';
+import { updateAccount, updateToken } from '../reducers/auth/actions';
+import { pushError } from '../reducers/error/actions';
 import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
 
 const useRedirectFlow = false;
@@ -29,7 +30,6 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
      */
     const currentAccounts = msalApp.getAllAccounts();
-
     if (currentAccounts === null) {
       console.error('No accounts detected!');
     } else if (currentAccounts.length > 1) {
@@ -84,9 +84,9 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
       if (account) {
         dispatch(updateAccount(account));
       } else if (error) {
-        dispatch(updateError(error));
+        dispatch(pushError(error));
       } else {
-        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
       }
     });
   };
@@ -96,9 +96,9 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
       if (account) {
         dispatch(updateAccount(null));
       } else if (error) {
-        dispatch(updateError(error));
+        dispatch(pushError(error));
       } else {
-        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
       }
     });
   };
@@ -127,6 +127,7 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
           .acquireTokenPopup(tr)
           .then(handleResponse)
           .catch((er: AuthError) => {
+            dispatch(pushError(new Error(er.errorMessage)));
             console.error(er);
           });
       }
@@ -140,7 +141,7 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
         .handleRedirectPromise()
         .then(handleResponse)
         .catch(err => {
-          dispatch(updateError(new Error(err.message)));
+          dispatch(pushError(new Error(err.message)));
           console.error(err);
         });
     }

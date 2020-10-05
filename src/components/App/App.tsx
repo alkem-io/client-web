@@ -1,24 +1,28 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
 import { ErrorHandler } from '../../containers/ErrorHandler';
 import { useAuthentication } from '../../hooks';
-import { RootState } from '../../reducers';
+import { useTypedSelector } from '../../hooks/useTypedSelector';
+import { Home } from '../../pages';
 import Header from '../Header';
 import './App.css';
 
 const App = (): React.ReactElement => {
   const { handleSignIn, handleSignOut } = useAuthentication();
 
-  const username = useSelector<RootState, string>(state => (state.auth.account ? state.auth.account.username : ''));
-  const isAuthenticated = useSelector<RootState, boolean>(state => state.auth.isAuthenticated);
+  const username = useTypedSelector<string>(state => (state.auth.account ? state.auth.account.username : ''));
+  const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
+
+  let page = <Home />;
+
+  if (isAuthenticated) {
+    page = <EcoverseContainer />;
+  }
 
   return (
     <div className="App">
       <Header userName={username} isAuthenticated={isAuthenticated} onSignIn={handleSignIn} onSignOut={handleSignOut} />
-      <ErrorHandler>
-        <EcoverseContainer />
-      </ErrorHandler>
+      <ErrorHandler>{page}</ErrorHandler>
     </div>
   );
 };
