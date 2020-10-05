@@ -1,11 +1,10 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
+import { ErrorHandler } from '../../containers/ErrorHandler';
 import { useAuthentication } from '../../hooks';
 import { RootState } from '../../reducers';
 import Header from '../Header';
-import { ErrorHandler } from '../../containers/ErrorHandler';
 import './App.css';
 
 const App = (): React.ReactElement => {

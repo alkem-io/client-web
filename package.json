@@ -13,6 +13,7 @@
     "@types/react": "^16.9.47",
     "@types/react-dom": "^16.9.8",
     "bootstrap": "^4.5.2",
+    "bootstrap-icons": "^1.0.0",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
     "react": "^16.13.1",
