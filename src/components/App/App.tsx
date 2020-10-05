@@ -1,13 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Toast } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import EcoverseContainer from '../../containers/EcoverseContainer';
 import { useAuthentication } from '../../hooks';
 import { RootState } from '../../reducers';
 import Header from '../Header';
-import { Message } from '../Message';
-
+import { ErrorHandler } from '../../containers/ErrorHandler';
 import './App.css';
 
 const App = (): React.ReactElement => {
@@ -19,7 +17,9 @@ const App = (): React.ReactElement => {
   return (
     <div className="App">
       <Header userName={username} isAuthenticated={isAuthenticated} onSignIn={handleSignIn} onSignOut={handleSignOut} />
-      <EcoverseContainer />
+      <ErrorHandler>
+        <EcoverseContainer />
+      </ErrorHandler>
     </div>
   );
 };

@@ -1,7 +1,11 @@
 import React, { FC, useState } from 'react';
 import { Toast } from 'react-bootstrap';
 
-export const Message: FC = () => {
+interface MessageProps {
+  message: string;
+}
+
+export const Message: FC<MessageProps> = ({ message }) => {
   const [show, setShow] = useState(true);
 
   const closeMessage = () => {
@@ -14,17 +18,16 @@ export const Message: FC = () => {
       aria-atomic="true"
       style={{
         position: 'relative',
-        minHeight: '100px',
+        minHeight: '0px',
+        zIndex: 999,
       }}
     >
-      <div style={{ position: 'absolute', top: 0, right: 10 }}>
+      <div style={{ position: 'absolute', top: 10, right: 10 }}>
         <Toast show={show} onClose={closeMessage}>
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
-            <strong className="mr-auto">Bootstrap</strong>
-            <small>11 mins ago</small>
+            <span>{message}</span>
           </Toast.Header>
-          <Toast.Body>Woohoo, you&apos;re reading this text in a Toast!</Toast.Body>
         </Toast>
       </div>
     </div>
