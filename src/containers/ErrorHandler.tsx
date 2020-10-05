@@ -11,6 +11,8 @@ export const ErrorHandler: FC = ({ children }) => {
     return state.error.errors[0];
   });
 
+  const count = useSelector<RootState, number>(state => state.error.errors.length);
+
   const dispatch = useDispatch();
 
   const closeMessage = () => {
@@ -36,7 +38,7 @@ export const ErrorHandler: FC = ({ children }) => {
           <Toast show={show} onClose={closeMessage}>
             <Toast.Header>
               <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />
-              <strong className="mr-auto">Error</strong>
+              <strong className="mr-auto">Error ({count})</strong>
             </Toast.Header>
             <Toast.Body>{message}</Toast.Body>
           </Toast>
