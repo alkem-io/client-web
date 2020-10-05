@@ -103,3 +103,12 @@ The repo is also set up to generate a Docker image.
 - To add build arguments - docker build --build-arg [argument]=[value]
   - Argument can be one of the following: ARG_GRAPHQL_ENDPOINT, ARG_AUTHENTICATION_ENABLE, ARG_AUTH_CLIENT_ID, ARG_AUTH_TENANT_ID, ARG_AUTH_API_SCOPE, ARG_AUTH_REDIRECT_URI
 - To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
+
+
+## Pushing code the dockerhub
+
+We have automated the creation and deployment of containers to docker hub via a github action. To automaticly trigger the build up to dockerhub the following steps should be taken:
+
+- Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
+- Create a github release and tag it with the appropriate version number ie. `v0.1.3`
+- Go to github actions and view the `push to docker` action to see if everything ran correctly. 
