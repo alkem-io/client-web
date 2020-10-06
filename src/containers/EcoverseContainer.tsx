@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import ChallengeList from '../components/ChallengeList';
 import ChallengeProfile from '../components/ChallengeProfile';
 import EcoverseProfile from '../components/EcoverseProfile';
 
-const EcoverseContainer = (): JSX.Element => {
+const EcoverseContainer: FC = () => {
   const [id, setId] = React.useState(2);
   const handleIdChange = React.useCallback(newId => {
     setId(newId);

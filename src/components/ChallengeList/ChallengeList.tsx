@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import * as React from 'react';
+import React from 'react';
 import { ChallengeListQuery } from '../../generated/graphql';
 import './styles.css';
 
@@ -25,7 +25,7 @@ const ChallengeList: React.FC<Props> = ({ data, handleIdChange }) => (
               <li
                 key={Challenge.id}
                 className={`${className}__item`}
-                onClick={() => handleIdChange(Number(Challenge.id))}
+                onClick={(): void => handleIdChange(Number(Challenge.id))}
               >
                 <b>{Challenge.name}</b>
               </li>

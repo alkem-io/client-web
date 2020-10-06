@@ -9,15 +9,13 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint", "react", "react-hooks", "jest"],
+  "plugins": ["@typescript-eslint", "prettier", "react", "jest"],
   "extends": [
-    "airbnb-typescript",
-    "airbnb/hooks",
+    "react-app",
     "plugin:@typescript-eslint/recommended",
     "plugin:jest/recommended",
     "prettier",
     "prettier/react",
-    "plugin:react-hooks/recommended",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
@@ -38,6 +36,8 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "@typescript-eslint/explicit-function-return-type": "off"
   }
 }

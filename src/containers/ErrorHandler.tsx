@@ -15,7 +15,7 @@ export const ErrorHandler: FC = ({ children }) => {
 
   const dispatch = useDispatch();
 
-  const closeMessage = () => {
+  const closeMessage = (): void => {
     dispatch(clearError());
   };
 

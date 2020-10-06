@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import { CLEAR_ERROR, ErrorActionTypes, ErrorState, PUSH_ERROR } from './types';
 
 const initialState: ErrorState = {

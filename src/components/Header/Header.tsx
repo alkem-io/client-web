@@ -4,13 +4,13 @@ import Nav from 'react-bootstrap/esm/Nav';
 import './Header.css';
 
 interface HeaderProps {
-  onSignIn: () => void;
-  onSignOut: () => void;
+  onSignIn?: () => void;
+  onSignOut?: () => void;
   isAuthenticated?: boolean;
   userName: string;
 }
 
-const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }) => {
+const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }: HeaderProps) => {
   // three state configuration
   let loginButton = <div />;
 

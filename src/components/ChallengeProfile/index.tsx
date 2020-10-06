@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useChallengeProfileQuery } from '../../generated/graphql';
 import ChallengeProfile from './ChallengeProfile';
 
