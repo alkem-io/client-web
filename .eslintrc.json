@@ -9,12 +9,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jest"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jest"],
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
@@ -33,14 +28,16 @@
     "serviceworker": true
   },
   "rules": {
-    "quotes": [
-      "error",
-      "single"
-    ],
+    "quotes": ["error", "single"],
     "no-multiple-empty-lines": "error",
     "react/prop-types": "off",
     "no-console": "off",
-    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "import/prefer-default-export": "off"
   }
 }

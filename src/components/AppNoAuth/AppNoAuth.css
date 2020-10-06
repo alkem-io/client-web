@@ -3,6 +3,7 @@
 }
 
 .ecoverse-container {
+  padding: 0;
   display: flex;
   width: 99vw;
   height: 94vh;

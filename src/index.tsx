@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import AppContainer from './containers/AppContainer';
 import configureStore from './store';
 import './styles/index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const graphQLEndpoint =
   process.env.NODE_ENV === 'production'

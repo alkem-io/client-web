@@ -8,23 +8,20 @@ import {
   SilentRequest,
 } from '@azure/msal-browser';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../reducers';
+import { useDispatch } from 'react-redux';
+import { updateAccount, updateToken } from '../reducers/auth/actions';
+import { pushError } from '../reducers/error/actions';
 import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
-import { updateAccount, updateError, updateToken } from '../reducers/auth/actions';
 
 const useRedirectFlow = false;
 
-export const useAuthentication = () => {
+export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: () => void } => {
   const [account, setAccount] = useState<AccountInfo | null>(null);
 
   const [username, setUsername] = useState('');
 
   const [error, setError] = useState<AuthError | null>(null);
   const msalApp = new PublicClientApplication(msalConfig);
-  // const account = useSelector<IRootState, AccountInfo | null>(state => state.auth.account);
-  // const username = useSelector<IRootState, string>(state => (state.auth.account ? state.auth.account.username : ''));
-  const isAuthenticated = useSelector<RootState, boolean>(state => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
   const getAccounts = () => {
@@ -33,7 +30,6 @@ export const useAuthentication = () => {
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
      */
     const currentAccounts = msalApp.getAllAccounts();
-
     if (currentAccounts === null) {
       console.error('No accounts detected!');
     } else if (currentAccounts.length > 1) {
@@ -88,9 +84,9 @@ export const useAuthentication = () => {
       if (account) {
         dispatch(updateAccount(account));
       } else if (error) {
-        dispatch(updateError(error));
+        dispatch(pushError(error));
       } else {
-        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
       }
     });
   };
@@ -100,9 +96,9 @@ export const useAuthentication = () => {
       if (account) {
         dispatch(updateAccount(null));
       } else if (error) {
-        dispatch(updateError(error));
+        dispatch(pushError(error));
       } else {
-        dispatch(updateError(new Error('Sign-in failed. Please try again.') as AuthError));
+        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
       }
     });
   };
@@ -131,6 +127,7 @@ export const useAuthentication = () => {
           .acquireTokenPopup(tr)
           .then(handleResponse)
           .catch((er: AuthError) => {
+            dispatch(pushError(new Error(er.errorMessage)));
             console.error(er);
           });
       }
@@ -144,7 +141,7 @@ export const useAuthentication = () => {
         .handleRedirectPromise()
         .then(handleResponse)
         .catch(err => {
-          dispatch(updateError(new Error(err.message)));
+          dispatch(pushError(new Error(err.message)));
           console.error(err);
         });
     }
