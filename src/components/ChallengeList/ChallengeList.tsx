@@ -25,7 +25,7 @@ const ChallengeList: React.FC<Props> = ({ data, handleIdChange }) => (
               <li
                 key={Challenge.id}
                 className={`${className}__item`}
-                onClick={() => handleIdChange(Number(Challenge.id))}
+                onClick={(): void => handleIdChange(Number(Challenge.id))}
               >
                 <b>{Challenge.name}</b>
               </li>

@@ -5,10 +5,9 @@ import { ErrorHandler } from '../../containers/ErrorHandler';
 import './AppNoAuth.css';
 
 const AppNoAuth = (): React.ReactElement => {
-  const noOp = () => {};
   return (
     <div>
-      <Header userName="No Logged User" isAuthenticated={false} onSignIn={noOp} onSignOut={noOp} />
+      <Header userName="No Logged User" isAuthenticated={false} />
       <ErrorHandler>
         <EcoverseContainer />
       </ErrorHandler>

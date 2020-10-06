@@ -6,12 +6,12 @@ import AppNoAuth from '../components/AppNoAuth';
 import { useClientConfig } from '../hooks/useClientConfig';
 import { FourOuFour } from '../pages/FourOuFour';
 
-export interface IAppContainerProps {
+export interface AppContainerProps {
   graphQLEndpoint: string;
   enableAuthentication: boolean;
 }
 
-const AppContainer: React.FC<IAppContainerProps> = props => {
+const AppContainer: React.FC<AppContainerProps> = props => {
   const { graphQLEndpoint, enableAuthentication } = props;
   const client = useClientConfig(graphQLEndpoint, enableAuthentication);
   return (

@@ -4,8 +4,8 @@ import Nav from 'react-bootstrap/esm/Nav';
 import './Header.css';
 
 interface HeaderProps {
-  onSignIn: () => void;
-  onSignOut: () => void;
+  onSignIn?: () => void;
+  onSignOut?: () => void;
   isAuthenticated?: boolean;
   userName: string;
 }
