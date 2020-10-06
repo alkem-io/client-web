@@ -11,7 +11,7 @@ export interface IAppContainerProps {
   enableAuthentication: boolean;
 }
 
-const AppContainer: React.FC<IAppContainerProps> = (props): JSX.Element => {
+const AppContainer: React.FC<IAppContainerProps> = props => {
   const { graphQLEndpoint, enableAuthentication } = props;
   const client = useClientConfig(graphQLEndpoint, enableAuthentication);
   return (

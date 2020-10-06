@@ -10,7 +10,7 @@ interface HeaderProps {
   userName: string;
 }
 
-const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }) => {
+const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }: HeaderProps) => {
   // three state configuration
   let loginButton = <div />;
 

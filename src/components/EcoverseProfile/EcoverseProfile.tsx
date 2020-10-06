@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { EcoverseListQuery } from '../../generated/graphql';
 import './styles.css';
 
