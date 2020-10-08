@@ -1,2 +1,2 @@
-export * from './useClientConfig';
+export * from './useGraphQLClient';
 export * from './useAuthentication';

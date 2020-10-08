@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import App from '../components/App';
 import AppNoAuth from '../components/AppNoAuth';
-import { useClientConfig } from '../hooks/useClientConfig';
+import { useGraphQLClient } from '../hooks/useGraphQLClient';
 import { FourOuFour } from '../pages/FourOuFour';
 
 export interface AppContainerProps {
@@ -13,7 +13,7 @@ export interface AppContainerProps {
 
 const AppContainer: React.FC<AppContainerProps> = props => {
   const { graphQLEndpoint, enableAuthentication } = props;
-  const client = useClientConfig(graphQLEndpoint, enableAuthentication);
+  const client = useGraphQLClient(graphQLEndpoint, enableAuthentication);
   return (
     <ApolloProvider client={client}>
       <Router>
