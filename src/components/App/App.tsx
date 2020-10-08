@@ -5,7 +5,6 @@ import { useAuthentication } from '../../hooks';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 import { Home } from '../../pages';
 import Header from '../Header';
-import './App.css';
 
 const App = (): React.ReactElement => {
   const { handleSignIn, handleSignOut } = useAuthentication();
