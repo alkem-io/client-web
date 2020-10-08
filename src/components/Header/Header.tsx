@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { Button, Navbar } from 'react-bootstrap';
 import Nav from 'react-bootstrap/esm/Nav';
-import './Header.css';
 
 interface HeaderProps {
   onSignIn?: () => void;
