@@ -1,6 +1,5 @@
 import React from 'react';
 import EcoverseContainer from '../../containers/EcoverseContainer';
-import { ErrorHandler } from '../../containers/ErrorHandler';
 import { useAuthentication } from '../../hooks';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 import { Home } from '../../pages';
@@ -21,7 +20,7 @@ const App = (): React.ReactElement => {
   return (
     <div className="App">
       <Header userName={username} isAuthenticated={isAuthenticated} onSignIn={handleSignIn} onSignOut={handleSignOut} />
-      <ErrorHandler>{page}</ErrorHandler>
+      {page}
     </div>
   );
 };

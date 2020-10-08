@@ -1,13 +1,10 @@
 import React from 'react';
-import EcoverseContainer from '../../containers/EcoverseContainer';
-import { ErrorHandler } from '../../containers/ErrorHandler';
+import { EcoversePage } from '../../components/EcoversePage';
 
 const AppNoAuth = (): React.ReactElement => {
   return (
     <div>
-      <ErrorHandler>
-        <EcoverseContainer />
-      </ErrorHandler>
+      <EcoversePage ecoverse={{ name: 'Test Ecoverse' }} />
     </div>
   );
 };

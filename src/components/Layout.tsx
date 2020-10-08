@@ -1,22 +1,32 @@
 import React, { FC } from 'react';
-import { Col, Nav, Row } from 'react-bootstrap';
+import { Col, ProgressBar, Row } from 'react-bootstrap';
+import { ErrorHandler } from '../containers/ErrorHandler';
+import { useEcoverseListQuery } from '../generated/graphql';
 import Header from './Header';
+import Navigation from './Navigation';
 
 export const Layout: FC = ({ children }) => {
+  const challenges = [
+    { id: 1, name: 'Challenge 1' },
+    { id: 2, name: 'Challenge 2' },
+    { id: 3, name: 'Challenge 4' },
+  ];
+
+  const { data } = useEcoverseListQuery();
+
+  const ecoverse = data ? data.name : '';
   return (
     <>
-      <Header userName="" />
-      <Row>
-        <Col sm={1}>
-          <Nav className="flex-column">
-            <Nav.Link href="/challenge">Challange</Nav.Link>
-            <Nav.Link href="/connect">Connect</Nav.Link>
-            <Nav.Link href="/messages">Messages</Nav.Link>
-            <Nav.Link href="/explore">Explore</Nav.Link>
-          </Nav>
-        </Col>
-        <Col>{children ? children : <div></div>}</Col>
-      </Row>
+      <Header userName="Pesho" />
+      <ErrorHandler>
+        <ProgressBar now={60} style={{ height: '1px' }} />
+        <Row>
+          <Col sm={1} className="ct-nav">
+            <Navigation ecoverse={ecoverse} challenges={challenges} />
+          </Col>
+          <Col>{children ? children : <div></div>}</Col>
+        </Row>
+      </ErrorHandler>
     </>
   );
 };

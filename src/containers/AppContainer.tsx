@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import App from '../components/App';
 import AppNoAuth from '../components/AppNoAuth';
+import { Challenge } from '../components/Challenge';
 import { Layout } from '../components/Layout';
 import { useGraphQLClient } from '../hooks/useGraphQLClient';
 import { FourOuFour } from '../pages/FourOuFour';
@@ -23,9 +24,7 @@ const AppContainer: React.FC<AppContainerProps> = props => {
             <Route exact path="/">
               {enableAuthentication ? <App /> : <AppNoAuth />}
             </Route>
-            <Route exact path="/challenge">
-              <div>Challenge Page</div>
-            </Route>
+            <Route exact path="/challenge/:id" children={<Challenge />} />
             <Route exact path="/connect">
               <div>Connect Page</div>
             </Route>
@@ -34,6 +33,9 @@ const AppContainer: React.FC<AppContainerProps> = props => {
             </Route>
             <Route exact path="/login">
               <div>Login Page</div>
+            </Route>
+            <Route exact path="/explore">
+              <div>Explore Page</div>
             </Route>
             <Route path="*">
               <FourOuFour />
