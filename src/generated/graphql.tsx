@@ -1,9 +1,7 @@
-/* eslint-disable */
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,8 +15,8 @@ export type Query = {
   __typename?: 'Query';
   /** The name for this ecoverse */
   name: Scalars['String'];
-  /** The name for this ecoverse */
-  members: Array<UserGroup>;
+  /** The members group for this ecoverse */
+  members: UserGroup;
   /** The name for this ecoverse */
   challengeMembers: Array<UserGroup>;
   /** The host organisation for the ecoverse */
@@ -183,7 +181,7 @@ export type Mutation = {
   /** Creates a new user group for the organisation with the given id */
   createGroupOnOrganisation: Organisation;
   /** Creates a new tagset with the specified name for the profile with given id */
-  createTagsetOnProfile: Profile;
+  createTagsetOnProfile: Tagset;
   createOrganisation: Organisation;
   createChallenge: Challenge;
   addUserToGroup: UserGroup;
@@ -297,10 +295,12 @@ export type UserInput = {
   name?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  /** Email address is required for creating a new user */
   email?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
   profile?: Maybe<ProfileInput>;
 };
 
@@ -411,10 +411,12 @@ export type UpdateNestedUserInput = {
   name?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  /** Email address is required for creating a new user */
   email?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
   profile?: Maybe<ProfileInput>;
   id?: Maybe<Scalars['Float']>;
 };
@@ -430,10 +432,12 @@ export type UpdateRootUserInput = {
   name?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  /** Email address is required for creating a new user */
   email?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
   profile?: Maybe<ProfileInput>;
   id: Scalars['Float'];
 };
