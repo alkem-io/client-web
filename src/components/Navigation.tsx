@@ -19,7 +19,7 @@ export const Navigation: FC<NavigationProps> = ({ ecoverse, challenges }) => {
 
   return (
     <Nav className="flex-column">
-      <Nav.Item>{ecoverse}</Nav.Item>
+      <Nav.Link href="/">{ecoverse}</Nav.Link>
       <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Nav.Link} variant="light" eventKey="0">
           Challanges

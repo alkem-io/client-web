@@ -30,3 +30,5 @@ export const Layout: FC = ({ children }) => {
     </>
   );
 };
+
+export default Layout;

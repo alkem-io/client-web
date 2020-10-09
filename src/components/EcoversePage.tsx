@@ -6,5 +6,10 @@ export interface EcoversePageProps {
 }
 
 export const EcoversePage: FC<EcoversePageProps> = ({ ecoverse }) => {
-  return <h1>{ecoverse.name}</h1>;
+  return (
+    <>
+      <h1>{ecoverse.name}</h1>
+      <h2>Challenges:</h2>
+    </>
+  );
 };
