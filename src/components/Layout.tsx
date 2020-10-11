@@ -7,7 +7,7 @@ import Navigation from './Navigation';
 export const Layout: FC = ({ children }) => {
   return (
     <>
-      <Header userName="Pesho" />
+      <Header />
       <ErrorHandler>
         <ProgressBar now={60} style={{ height: '1px' }} />
         <Row>

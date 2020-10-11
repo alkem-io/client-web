@@ -1,20 +1,33 @@
 import React, { FC } from 'react';
 import { useEcoverseListQuery } from '../generated/graphql';
+import { useAuthentication } from '../hooks';
 import { Ecoverse, Challenge } from '../models';
 import { nameToAltId } from '../utils/nameToAltId';
 
 export interface AppContext {
   ecoverse: Ecoverse;
   challenges: Challenge[];
+  handleSignIn: () => void;
+  handleSignOut: () => void;
+  enableAuthentication: boolean;
 }
 
 const appContext = React.createContext<AppContext>({
   ecoverse: { name: '' },
   challenges: [],
+  handleSignIn: () => null,
+  handleSignOut: () => null,
+  enableAuthentication: true,
 });
 
-const AppProvider: FC = ({ children }) => {
+interface AppProviderProps {
+  enableAuthentication: boolean;
+}
+
+const AppProvider: FC<AppProviderProps> = ({ enableAuthentication, children }) => {
   const { data } = useEcoverseListQuery();
+
+  const { handleSignIn, handleSignOut } = useAuthentication(enableAuthentication);
 
   const ecoverse = {
     name: data ? data.name : '',
@@ -33,6 +46,9 @@ const AppProvider: FC = ({ children }) => {
       value={{
         ecoverse,
         challenges,
+        handleSignIn,
+        handleSignOut,
+        enableAuthentication,
       }}
     >
       {children}

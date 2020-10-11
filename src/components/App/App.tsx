@@ -1,28 +1,21 @@
-import React from 'react';
-import EcoverseContainer from '../../containers/EcoverseContainer';
-import { useAuthentication } from '../../hooks';
+import React, { useContext } from 'react';
+import { appContext } from '../../context/AppProvider';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 import { Home } from '../../pages';
-import Header from '../Header';
+import { EcoversePage } from '../EcoversePage';
 
 const App = (): React.ReactElement => {
-  const { handleSignIn, handleSignOut } = useAuthentication();
+  const context = useContext(appContext);
 
-  const username = useTypedSelector<string>(state => (state.auth.account ? state.auth.account.username : ''));
   const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
 
   let page = <Home />;
 
-  if (isAuthenticated) {
-    page = <EcoverseContainer />;
+  if (!context.enableAuthentication || isAuthenticated) {
+    page = <EcoversePage ecoverse={context.ecoverse} challenges={context.challenges} />;
   }
 
-  return (
-    <div className="App">
-      <Header userName={username} isAuthenticated={isAuthenticated} onSignIn={handleSignIn} onSignOut={handleSignOut} />
-      {page}
-    </div>
-  );
+  return <div className="App">{page}</div>;
 };
 
 export default App;

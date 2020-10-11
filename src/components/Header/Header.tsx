@@ -1,32 +1,39 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Button, Navbar } from 'react-bootstrap';
 import Nav from 'react-bootstrap/esm/Nav';
+import { appContext } from '../../context/AppProvider';
+import { useTypedSelector } from '../../hooks/useTypedSelector';
 
-interface HeaderProps {
-  onSignIn?: () => void;
-  onSignOut?: () => void;
-  isAuthenticated?: boolean;
-  userName: string;
-}
+// interface HeaderProps {
+//   onSignIn?: () => void;
+//   onSignOut?: () => void;
+//   isAuthenticated?: boolean;
+//   userName: string;
+// }
 
-const Header: FC<HeaderProps> = ({ userName, isAuthenticated, onSignIn, onSignOut }: HeaderProps) => {
+const Header: FC = () => {
+  const context = useContext(appContext);
+  const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
+  const userName = useTypedSelector<string>(state => state.auth.account?.username || '');
+
   // three state configuration
   let loginButton = <div />;
 
-  if (isAuthenticated === true) {
-    loginButton = (
-      <Button variant="info" onClick={onSignOut}>
-        Logout
-      </Button>
-    );
-  } else if (isAuthenticated === false) {
-    loginButton = (
-      <Button variant="outline-info" onClick={onSignIn}>
-        Login
-      </Button>
-    );
+  if (context.enableAuthentication) {
+    if (isAuthenticated === true) {
+      loginButton = (
+        <Button variant="info" onClick={context.handleSignOut}>
+          Logout
+        </Button>
+      );
+    } else if (isAuthenticated === false) {
+      loginButton = (
+        <Button variant="outline-info" onClick={context.handleSignOut}>
+          Login
+        </Button>
+      );
+    }
   }
-
   return (
     <div>
       <Navbar className="navbar" bg="dark" variant="dark">

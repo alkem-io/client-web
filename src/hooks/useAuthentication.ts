@@ -15,7 +15,7 @@ import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/
 
 const useRedirectFlow = false;
 
-export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: () => void } => {
+export const useAuthentication = (enabled = true): { handleSignIn: () => void; handleSignOut: () => void } => {
   const [account, setAccount] = useState<AccountInfo | null>(null);
 
   const [username, setUsername] = useState('');
@@ -25,36 +25,42 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
   const dispatch = useDispatch();
 
   const getAccounts = () => {
-    /**
-     * See here for more info on account retrieval:
-     * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
-     */
-    const currentAccounts = msalApp.getAllAccounts();
-    if (currentAccounts === null) {
-      console.error('No accounts detected!');
-    } else if (currentAccounts.length > 1) {
-      console.warn('Multiple accounts detected.');
-      // Add choose account code here
-      dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
-      setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
-      setUsername(currentAccounts[0].username);
-      // setAuthenticated(true);
-    } else if (currentAccounts.length === 1) {
-      dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
-      setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
-      setUsername(currentAccounts[0].username);
-      // setAuthenticated(true);
+    if (enabled) {
+      /**
+       * See here for more info on account retrieval:
+       * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
+       */
+      const currentAccounts = msalApp.getAllAccounts();
+      if (currentAccounts === null) {
+        console.error('No accounts detected!');
+      } else if (currentAccounts.length > 1) {
+        console.warn('Multiple accounts detected.');
+        // Add choose account code here
+        dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
+        setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
+        setUsername(currentAccounts[0].username);
+        // setAuthenticated(true);
+      } else if (currentAccounts.length === 1) {
+        dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
+        setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
+        setUsername(currentAccounts[0].username);
+        // setAuthenticated(true);
+      }
+    } else {
+      setDummyAccount();
     }
   };
 
   const handleResponse = (response: AuthenticationResult | null) => {
-    if (response !== null) {
-      dispatch(updateAccount(response.account));
-      setAccount(response.account);
-      setUsername(response.account.username);
-      // setAuthenticated(true);
-    } else {
-      getAccounts();
+    if (enabled) {
+      if (response !== null) {
+        dispatch(updateAccount(response.account));
+        setAccount(response.account);
+        setUsername(response.account.username);
+        // setAuthenticated(true);
+      } else {
+        getAccounts();
+      }
     }
   };
 
@@ -79,28 +85,45 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
     return msalApp.logout(logoutRequest);
   };
 
+  const setDummyAccount = () => {
+    dispatch(
+      updateAccount({
+        username: 'Dummy account',
+        environment: '',
+        tenantId: '',
+        homeAccountId: '',
+      })
+    );
+  };
+
   const handleSignIn = () => {
-    signIn(useRedirectFlow).then(() => {
-      if (account) {
-        dispatch(updateAccount(account));
-      } else if (error) {
-        dispatch(pushError(error));
-      } else {
-        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
-      }
-    });
+    if (enabled) {
+      signIn(useRedirectFlow).then(() => {
+        if (account) {
+          dispatch(updateAccount(account));
+        } else if (error) {
+          dispatch(pushError(error));
+        } else {
+          dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
+        }
+      });
+    } else {
+      setDummyAccount();
+    }
   };
 
   const handleSignOut = () => {
-    signOut().then(() => {
-      if (account) {
-        dispatch(updateAccount(null));
-      } else if (error) {
-        dispatch(pushError(error));
-      } else {
-        dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
-      }
-    });
+    if (enabled) {
+      signOut().then(() => {
+        if (account) {
+          dispatch(updateAccount(null));
+        } else if (error) {
+          dispatch(pushError(error));
+        } else {
+          dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
+        }
+      });
+    }
   };
 
   const acquireToken = async () => {
@@ -136,25 +159,29 @@ export const useAuthentication = (): { handleSignIn: () => void; handleSignOut: 
   };
 
   useEffect(() => {
-    if (useRedirectFlow) {
-      msalApp
-        .handleRedirectPromise()
-        .then(handleResponse)
-        .catch(err => {
-          dispatch(pushError(new Error(err.message)));
-          console.error(err);
-        });
+    if (enabled) {
+      if (useRedirectFlow) {
+        msalApp
+          .handleRedirectPromise()
+          .then(handleResponse)
+          .catch(err => {
+            dispatch(pushError(new Error(err.message)));
+            console.error(err);
+          });
+      }
     }
     getAccounts();
   }, [username]);
 
   useEffect(() => {
-    acquireToken().then(response => {
-      if (response) {
-        // set access token
-        dispatch(updateToken(response));
-      }
-    });
+    if (enabled) {
+      acquireToken().then(response => {
+        if (response) {
+          // set access token
+          dispatch(updateToken(response));
+        }
+      });
+    }
   }, [username]);
 
   return {
