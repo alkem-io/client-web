@@ -515,6 +515,7 @@ export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
     context: { __typename?: 'Context' } & Pick<Context, 'tagline'>;
+    challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
   };
 
 export const ChallengeListDocument = gql`
@@ -619,6 +620,10 @@ export const EcoverseListDocument = gql`
     name
     context {
       tagline
+    }
+    challenges {
+      id
+      name
     }
   }
 `;
