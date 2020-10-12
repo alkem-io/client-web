@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { AdminPage } from '../components/AdminPage';
 import App from '../components/App';
 import { ChallengePage } from '../components/ChallengePage';
@@ -24,10 +24,15 @@ const AppContainer: React.FC<AppContainerProps> = props => {
       <AppProvider enableAuthentication={enableAuthentication}>
         <Router>
           <Switch>
+            <Route exact path="/404" component={FourOuFour} />
             <Route path="/admin/:path?" exact>
               <AdminLayout>
                 <Switch>
                   <Route path="/admin" exact component={AdminPage} />
+                  <Route path="/admin/users" exact component={AdminPage} />
+                  <Route path="/admin/*">
+                    <Redirect to="/404" />
+                  </Route>
                 </Switch>
               </AdminLayout>
             </Route>
@@ -50,11 +55,11 @@ const AppContainer: React.FC<AppContainerProps> = props => {
                   <Route exact path="/explore">
                     <div>Explore Page</div>
                   </Route>
+                  <Route path="*">
+                    <Redirect to="/404" />
+                  </Route>
                 </Switch>
               </Layout>
-            </Route>
-            <Route path="*">
-              <FourOuFour />
             </Route>
           </Switch>
         </Router>
