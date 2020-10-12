@@ -486,14 +486,10 @@ export type TagsInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type ChallengeListQueryVariables = Exact<{ [key: string]: never }>;
+export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChallengeListQuery = { __typename?: 'Query' } & {
-  challenges: Array<
-    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
-        context?: Maybe<{ __typename?: 'Context' } & Pick<Context, 'tagline'>>;
-      }
-  >;
+export type UsersQuery = { __typename?: 'Query' } & {
+  users: Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email'>>;
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
@@ -518,46 +514,40 @@ export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> &
     challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
   };
 
-export const ChallengeListDocument = gql`
-  query challengeList {
-    challenges {
+export const UsersDocument = gql`
+  query users {
+    users {
       id
       name
-      context {
-        tagline
-      }
+      email
     }
   }
 `;
 
 /**
- * __useChallengeListQuery__
+ * __useUsersQuery__
  *
- * To run a query within a React component, call `useChallengeListQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeListQuery({
+ * const { data, loading, error } = useUsersQuery({
  *   variables: {
  *   },
  * });
  */
-export function useChallengeListQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>
-) {
-  return Apollo.useQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+  return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
 }
-export function useChallengeListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeListQuery, ChallengeListQueryVariables>
-) {
-  return Apollo.useLazyQuery<ChallengeListQuery, ChallengeListQueryVariables>(ChallengeListDocument, baseOptions);
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+  return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
 }
-export type ChallengeListQueryHookResult = ReturnType<typeof useChallengeListQuery>;
-export type ChallengeListLazyQueryHookResult = ReturnType<typeof useChallengeListLazyQuery>;
-export type ChallengeListQueryResult = Apollo.QueryResult<ChallengeListQuery, ChallengeListQueryVariables>;
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: String!) {
     challenge(ID: $id) {
