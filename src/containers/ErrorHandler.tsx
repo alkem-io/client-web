@@ -1,6 +1,6 @@
 import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
 import React, { FC } from 'react';
-import { Toast } from 'react-bootstrap';
+import { Badge, Toast } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { clearError } from '../reducers/error/actions';
@@ -37,7 +37,9 @@ export const ErrorHandler: FC = ({ children }) => {
           <Toast show={show} onClose={closeMessage}>
             <Toast.Header>
               <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />
-              <strong className="mr-auto">Error ({count})</strong>
+              <strong className="mr-auto">
+                Error <Badge variant="light">{count}</Badge>
+              </strong>
             </Toast.Header>
             <Toast.Body>{message}</Toast.Body>
           </Toast>

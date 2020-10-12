@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.welcome {
+  margin: 10%;
+}
+
+.ecoverse-container {
+  padding: 0;
+  display: flex;
+  width: 99vw;
+  height: 94vh;
+  overflow: hidden;
+}
+
+.logo {
+  height: 30px;
+}
+
+.ct-nav {
+  min-width: 260px;
+}
+
+@import '~bootstrap/scss/bootstrap.scss';

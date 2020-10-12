@@ -6,5 +6,9 @@ export const QUERY_ECOVERSES_LIST = gql`
     context {
       tagline
     }
+    challenges {
+      id
+      name
+    }
   }
 `;

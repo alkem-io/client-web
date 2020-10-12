@@ -7,7 +7,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { RootState } from '../reducers';
 import { pushError } from '../reducers/error/actions';
 
-export const useClientConfig = (
+export const useGraphQLClient = (
   graphQLEndpoint: string,
   enableAuthentication: boolean
 ): ApolloClient<NormalizedCacheObject> => {
@@ -73,4 +73,4 @@ export const useClientConfig = (
   });
 };
 
-export default useClientConfig;
+export default useGraphQLClient;
