@@ -1,11 +1,10 @@
 import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import { AdminPage } from '../components/AdminPage';
+import { AdminPage } from '../components/Admin/AdminPage';
 import App from '../components/App';
 import { ChallengePage } from '../components/ChallengePage';
 import { Layout } from '../components/Layout';
-import { AdminLayout } from '../components/AdminLayout';
 import { AppProvider } from '../context/AppProvider';
 import { useGraphQLClient } from '../hooks/useGraphQLClient';
 import { FourOuFour } from '../pages/FourOuFour';
@@ -25,16 +24,20 @@ const AppContainer: React.FC<AppContainerProps> = props => {
         <Router>
           <Switch>
             <Route exact path="/404" component={FourOuFour} />
-            <Route path="/admin/:path?" exact>
+            {/* <Route path="/admin">
               <AdminLayout>
                 <Switch>
                   <Route path="/admin" exact component={AdminPage} />
+                  <Route path="/admin/user/:id" children={<AdminPage />} />
                   <Route path="/admin/users" exact component={AdminPage} />
-                  <Route path="/admin/*">
+                  <Route path="/*">
                     <Redirect to="/404" />
                   </Route>
                 </Switch>
               </AdminLayout>
+            </Route> */}
+            <Route path="/admin">
+              <AdminPage />
             </Route>
             <Route>
               <Layout>
