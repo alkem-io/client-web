@@ -18,11 +18,11 @@ export const AdminPage: FC = () => {
       <Container>
         <h1>Admin Page</h1>
 
-        <Row>
-          <Col sm={2}>
-            {loading ? (
-              <div>Loading...</div>
-            ) : (
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <Row>
+            <Col sm={2}>
               <ListGroup>
                 {users.map(u => (
                   <ListGroup.Item action key={u.id} href={`${url}/user/${u.id}`}>
@@ -30,16 +30,16 @@ export const AdminPage: FC = () => {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-            )}
-          </Col>
-          <Col>
-            <Switch>
-              <Route path={`${path}/user/:userId`}>
-                <User users={users} />
-              </Route>
-            </Switch>
-          </Col>
-        </Row>
+            </Col>
+            <Col>
+              <Switch>
+                <Route path={`${path}/user/:userId`}>
+                  <User users={users} />
+                </Route>
+              </Switch>
+            </Col>
+          </Row>
+        )}
       </Container>
     </AdminLayout>
   );
