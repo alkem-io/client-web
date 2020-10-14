@@ -1,46 +1,47 @@
+import { useMutation } from '@apollo/client';
 import React, { FC } from 'react';
-import { Col, Container, ListGroup, Row } from 'react-bootstrap';
-import Switch from 'react-bootstrap/esm/Switch';
-import { Route, useRouteMatch } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
-import { User } from './User';
+import { MUTATION_SAVE_USER } from './query';
+import { EditMode, UserInput } from './UserInput';
+import { UserList } from './UserList';
 
 export const AdminPage: FC = () => {
-  const { path, url } = useRouteMatch();
+  const { path } = useRouteMatch();
   const { data, loading } = useUsersQuery();
-
+  // const [createUser, newUser] = useCreateUserMutation();
   const users = (data?.users || []) as UserModel[];
+
+  const handleSaveUser = (user: UserModel) => {
+    console.log('Saving...');
+  };
 
   return (
     <AdminLayout>
-      <Container>
-        <h1>Admin Page</h1>
-
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <Row>
-            <Col sm={2}>
-              <ListGroup>
-                {users.map(u => (
-                  <ListGroup.Item action key={u.id} href={`${url}/user/${u.id}`}>
-                    {u.name}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Col>
-            <Col>
-              <Switch>
-                <Route path={`${path}/user/:userId`}>
-                  <User users={users} />
-                </Route>
-              </Switch>
-            </Col>
-          </Row>
-        )}
-      </Container>
+      <h1 style={{ textAlign: 'center' }}>Admin Page</h1>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <Container>
+          <Switch>
+            <Route exact path={`${path}/users`}>
+              <UserList users={users} />
+            </Route>
+            <Route path={`${path}/users/new`}>
+              <UserInput users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+            </Route>
+            <Route exact path={`${path}/users/:userId/edit`}>
+              <UserInput users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+            </Route>
+            <Route exact path={`${path}/users/:userId`}>
+              <UserInput users={users} onSave={handleSaveUser} />
+            </Route>
+          </Switch>
+        </Container>
+      )}
     </AdminLayout>
   );
 };

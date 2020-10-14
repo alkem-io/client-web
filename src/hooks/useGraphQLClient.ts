@@ -30,7 +30,7 @@ export const useGraphQLClient = (
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
       console.log(newMessage);
-      errors.push(new Error(newMessage));
+      // errors.push(new Error(newMessage));
     }
     errors.forEach(e => dispatch(pushError(e)));
   });

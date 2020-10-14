@@ -9,3 +9,15 @@ export interface UserModel {
   country: string;
   gender: string;
 }
+
+export const defaultUser: UserModel = {
+  id: '',
+  name: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  city: '',
+  country: '',
+  gender: '',
+};

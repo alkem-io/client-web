@@ -8,7 +8,7 @@ interface OwnProps {
 
 const ChallengeProfileContainer: React.FC<OwnProps> = ({ id }) => {
   const { data, error, loading, refetch } = useChallengeProfileQuery({
-    variables: { id: String(id) },
+    variables: { id: Number(id) },
   });
   React.useEffect(() => {
     refetch();
