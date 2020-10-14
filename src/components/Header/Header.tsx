@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { Button, Navbar } from 'react-bootstrap';
 import Nav from 'react-bootstrap/esm/Nav';
+import { Link } from 'react-router-dom';
 import { appContext } from '../../context/AppProvider';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 
@@ -37,7 +38,7 @@ const Header: FC = () => {
   return (
     <div>
       <Navbar className="navbar" bg="dark" variant="dark">
-        <Navbar.Brand href="/">
+        <Navbar.Brand as={Link} to="/">
           <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>
         <Nav className="mr-auto" />

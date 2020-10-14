@@ -24,18 +24,6 @@ const AppContainer: React.FC<AppContainerProps> = props => {
         <Router>
           <Switch>
             <Route exact path="/404" component={FourOuFour} />
-            {/* <Route path="/admin">
-              <AdminLayout>
-                <Switch>
-                  <Route path="/admin" exact component={AdminPage} />
-                  <Route path="/admin/user/:id" children={<AdminPage />} />
-                  <Route path="/admin/users" exact component={AdminPage} />
-                  <Route path="/*">
-                    <Redirect to="/404" />
-                  </Route>
-                </Switch>
-              </AdminLayout>
-            </Route> */}
             <Route path="/admin">
               <AdminPage />
             </Route>
