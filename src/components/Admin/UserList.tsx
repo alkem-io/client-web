@@ -23,7 +23,7 @@ export const UserList: FC<UserListProps> = ({ users }) => {
       </Row>
       <ListGroup>
         {users.map(u => (
-          <ListGroup.Item as={Link} action key={u.id} to={`${path}/${u.id}`}>
+          <ListGroup.Item as={Link} action key={u.id} to={`${path}/${u.id}/edit`}>
             {u.name}
           </ListGroup.Item>
         ))}

@@ -5,18 +5,40 @@ export const QUERY_USER_LIST = gql`
     users {
       id
       name
+      firstName
+      lastName
       email
+      phone
+      city
+      country
+      gender
     }
   }
 `;
 
-export const MUTATION_SAVE_USER = gql`
+export const MUTATION_CREATE_USER = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
+      id
       name
       firstName
       lastName
       email
+      phone
+      city
+      country
+      gender
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_USER = gql`
+  mutation updateUser($user: UserInput!, $userId: Float!) {
+    updateUser(userData: $user, userID: $userId) {
+      id
+      name
+      firstName
+      lastName
       phone
       city
       country

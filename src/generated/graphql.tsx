@@ -40,6 +40,13 @@ export type UserGroup = {
   profile?: Maybe<Profile>;
 };
 
+export type Tagset = {
+  __typename?: 'Tagset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  tags: Array<Scalars['String']>;
+};
+
 export type Ecoverse = {
   __typename?: 'Ecoverse';
   id: Scalars['ID'];
@@ -135,13 +142,6 @@ export type Profile = {
   tagsets?: Maybe<Array<Tagset>>;
 };
 
-export type Tagset = {
-  __typename?: 'Tagset';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  tags: Array<Scalars['String']>;
-};
-
 export type MemberOf = {
   __typename?: 'MemberOf';
   email?: Maybe<Scalars['String']>;
@@ -175,6 +175,10 @@ export type Query = {
   challenges: Array<Challenge>;
   /** A particular challenge */
   challenge: Challenge;
+  /** All organisations */
+  organisations: Array<Organisation>;
+  /** A particular organisation */
+  organisation: Organisation;
   /** The tagset associated with this Ecoverse */
   tagset: Tagset;
 };
@@ -191,8 +195,14 @@ export type QueryChallengeArgs = {
   ID: Scalars['Float'];
 };
 
+export type QueryOrganisationArgs = {
+  ID: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Update the base user information. Note: email address cannot be updated. */
+  updateUser: User;
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
   /** Creates a new tagset with the specified name for the profile with given id */
@@ -215,6 +225,8 @@ export type Mutation = {
   updateEcoverse: Ecoverse;
   /** Creates a new user as a member of the ecoverse */
   createUser: User;
+  /** Removes the specified user from the ecoverse */
+  removeUser: Scalars['Boolean'];
   /** Creates a new challenge and registers it with the ecoverse */
   createChallenge: Challenge;
   /** Creates a new organisation and registers it with the ecoverse */
@@ -223,6 +235,11 @@ export type Mutation = {
   createGroupOnOrganisation: UserGroup;
   /** Updates the organisation with the given data */
   updateOrganisation: Organisation;
+};
+
+export type MutationUpdateUserArgs = {
+  userData: UserInput;
+  userID: Scalars['Float'];
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
@@ -276,6 +293,10 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
+export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: ChallengeInput;
 };
@@ -292,6 +313,18 @@ export type MutationCreateGroupOnOrganisationArgs = {
 export type MutationUpdateOrganisationArgs = {
   organisationData: OrganisationInput;
   orgID: Scalars['Float'];
+};
+
+export type UserInput = {
+  name?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  /** Email address is required for creating a new user */
+  email?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
 };
 
 export type TagsInput = {
@@ -331,18 +364,6 @@ export type EcoverseInput = {
   tags?: Maybe<TagsInput>;
 };
 
-export type UserInput = {
-  name?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  /** Email address is required for creating a new user */
-  email?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['String']>;
-};
-
 export type OrganisationInput = {
   /** The new name for this organisation */
   name?: Maybe<Scalars['String']>;
@@ -350,10 +371,20 @@ export type OrganisationInput = {
   tags?: Maybe<TagsInput>;
 };
 
+export type NewUserFragment = { __typename?: 'User' } & Pick<
+  User,
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
+>;
+
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UsersQuery = { __typename?: 'Query' } & {
-  users: Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email'>>;
+  users: Array<
+    { __typename?: 'User' } & Pick<
+      User,
+      'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
+    >
+  >;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -363,7 +394,19 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation' } & {
   createUser: { __typename?: 'User' } & Pick<
     User,
-    'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
+    'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
+  >;
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  user: UserInput;
+  userId: Scalars['Float'];
+}>;
+
+export type UpdateUserMutation = { __typename?: 'Mutation' } & {
+  updateUser: { __typename?: 'User' } & Pick<
+    User,
+    'id' | 'name' | 'firstName' | 'lastName' | 'phone' | 'city' | 'country' | 'gender'
   >;
 };
 
@@ -389,12 +432,31 @@ export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> &
     challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
   };
 
+export const NewUserFragmentDoc = gql`
+  fragment NewUser on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    phone
+    city
+    country
+    gender
+  }
+`;
 export const UsersDocument = gql`
   query users {
     users {
       id
       name
+      firstName
+      lastName
       email
+      phone
+      city
+      country
+      gender
     }
   }
 `;
@@ -426,6 +488,7 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
+      id
       name
       firstName
       lastName
@@ -464,6 +527,48 @@ export function useCreateUserMutation(
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const UpdateUserDocument = gql`
+  mutation updateUser($user: UserInput!, $userId: Float!) {
+    updateUser(userData: $user, userID: $userId) {
+      id
+      name
+      firstName
+      lastName
+      phone
+      city
+      country
+      gender
+    }
+  }
+`;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      user: // value for 'user'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>
+) {
+  return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, baseOptions);
+}
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {

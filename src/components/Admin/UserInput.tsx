@@ -1,7 +1,8 @@
+import gql from 'graphql-tag';
 import React, { FC, FormEvent, useState } from 'react';
 import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
-import { useCreateUserMutation } from '../../generated/graphql';
+import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
 // import { ReactComponent as Pencil } from 'bootstrap-icons/icons/pencil.svg';
 
@@ -19,18 +20,60 @@ interface UserProps {
   onSave?: (user: UserModel) => void;
 }
 
-export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave }) => {
+export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
   const history = useHistory();
   const { userId } = useParams<Parameters>();
   const foundUser = users.find(u => u.id === userId);
 
   const [createUser, { loading: mutationLoading, error: mutationError }] = useCreateUserMutation({
     onError: error => console.log(error),
+    onCompleted: data => {
+      history.replace(`/admin/users/${data.createUser.id}/edit`);
+      setShowSuccess(true);
+    },
+    update: (cache, { data }) => {
+      debugger;
+      if (data) {
+        const { createUser } = data;
+
+        cache.modify({
+          fields: {
+            users(existingTodos = []) {
+              const newUserRef = cache.writeFragment({
+                data: createUser,
+                fragment: gql`
+                  fragment NewUser on User {
+                    id
+                    name
+                    firstName
+                    lastName
+                    email
+                    phone
+                    city
+                    country
+                    gender
+                  }
+                `,
+              });
+              return [...existingTodos, newUserRef];
+            },
+          },
+        });
+      }
+    },
   });
+
+  const [updateUser, { loading: updateMutationLoading, error: updateMutationError }] = useUpdateUserMutation({
+    onError: error => console.log(error),
+    onCompleted: () => setShowSuccess(true),
+  });
+
   const [user, setUser] = useState<UserModel>({
     ...defaultUser,
     ...foundUser,
   });
+
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
@@ -47,13 +90,23 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     console.log(user);
 
     e.preventDefault();
-    const { id: _id, ...newUser } = user;
-    createUser({
-      variables: {
-        user: newUser,
-      },
-    });
-    // if (onSave) onSave(user);
+    const { id, ...newUser } = user;
+
+    if (editMode === EditMode.new) {
+      createUser({
+        variables: {
+          user: newUser,
+        },
+      });
+    } else if (editMode === EditMode.edit) {
+      const { email: _email, ...userToUpdate } = newUser;
+      updateUser({
+        variables: {
+          userId: Number(id),
+          user: userToUpdate,
+        },
+      });
+    }
   };
 
   const handleBack = () => history.push('/admin/users');
@@ -78,22 +131,23 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
   } else {
     return (
       <>
-        {mutationError && (
-          <>
-            <Alert variant="danger">Error saving user!</Alert>
-          </>
-        )}
+        <Alert show={(mutationError || updateMutationError) !== undefined} variant="danger">
+          Error saving user.
+        </Alert>
+        <Alert show={showSuccess} variant="success" onClose={() => setShowSuccess(false)} dismissible>
+          Saved successfully.
+        </Alert>
         <h2>User</h2>
         <Form onSubmit={handleSubmit}>
           <Form.Row>
             <Form.Group as={Col} controlId="userName">
-              <Form.Label>User Name</Form.Label>
+              <Form.Label>Full Name</Form.Label>
               <Form.Control
                 name="name"
                 placeholder="User name"
                 value={user.name}
                 onChange={handleChange}
-                readOnly={!editMode}
+                readOnly={editMode === EditMode.readOnly}
               />
             </Form.Group>
           </Form.Row>
@@ -105,7 +159,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 placeholder="First name"
                 value={user.firstName}
                 onChange={handleChange}
-                readOnly={!editMode}
+                readOnly={editMode === EditMode.readOnly}
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formLastName">
@@ -115,7 +169,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 placeholder="Last name"
                 value={user.lastName}
                 onChange={handleChange}
-                readOnly={!editMode}
+                readOnly={editMode === EditMode.readOnly}
               />
             </Form.Group>
           </Form.Row>
@@ -127,7 +181,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
               placeholder="Email"
               value={user?.email}
               onChange={handleChange}
-              readOnly={!editMode}
+              readOnly={editMode === EditMode.readOnly || editMode === EditMode.edit}
             />
           </Form.Group>
           {editMode !== EditMode.readOnly && (
@@ -138,7 +192,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
             </>
           )}
           {backButton}
-          {mutationLoading && <div>Saving...</div>}
+          {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
         </Form>
       </>
     );

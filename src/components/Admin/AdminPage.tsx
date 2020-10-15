@@ -1,11 +1,9 @@
-import { useMutation } from '@apollo/client';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
-import { MUTATION_SAVE_USER } from './query';
 import { EditMode, UserInput } from './UserInput';
 import { UserList } from './UserList';
 
@@ -15,7 +13,7 @@ export const AdminPage: FC = () => {
   // const [createUser, newUser] = useCreateUserMutation();
   const users = (data?.users || []) as UserModel[];
 
-  const handleSaveUser = (user: UserModel) => {
+  const handleSaveUser = (_user: UserModel) => {
     console.log('Saving...');
   };
 

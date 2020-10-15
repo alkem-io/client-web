@@ -1,5 +1,5 @@
 import { onError } from '@apollo/client/link/error';
-import { createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
+import { ApolloLink, createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -67,9 +67,25 @@ export const useGraphQLClient = (
     },
   });
 
+  const omitTypename = (key: string, value: unknown) => {
+    return key === '__typename' || key === '_id' || /^\$/.test(key) ? undefined : value;
+  };
+
+  /*
+    Apollo automatically sends _typename in the query.  This causes
+    a failure on the server-side because _typename is not specified
+    in the schema. This middleware removes it.
+  */
+  const omitTypenameLink = new ApolloLink((operation, forward) => {
+    if (operation.variables) {
+      operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
+    }
+    return forward ? forward(operation) : null;
+  });
+
   return new ApolloClient({
-    link: from([authLink, errorLink, retryLink, httpLink]),
-    cache: new InMemoryCache(),
+    link: from([authLink, errorLink, retryLink, omitTypenameLink, httpLink]),
+    cache: new InMemoryCache({ addTypename: true }),
   });
 };
 
