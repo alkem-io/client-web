@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Col, ProgressBar, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { ErrorHandler } from '../containers/ErrorHandler';
 import Header from './Header';
 import Navigation from './Navigation';
@@ -9,7 +9,7 @@ export const Layout: FC = ({ children }) => {
     <>
       <Header />
       <ErrorHandler>
-        <ProgressBar now={60} style={{ height: '1px' }} />
+        {/* <ProgressBar now={60} style={{ height: '1px' }} /> */}
         <Row>
           <Col sm={1} className="ct-nav">
             <Navigation />
