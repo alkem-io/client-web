@@ -5,13 +5,15 @@ import AppContainer from './containers/AppContainer';
 import configureStore from './store';
 import './styles/index.scss';
 
-const graphQLEndpoint =
-  process.env.NODE_ENV === 'production'
-    ? '/graphql'
-    : process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql';
+declare global {
+  interface Window {
+    _env_:any;
+  }
+}
+const graphQLEndpoint = window._env_.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql';
 
 const enableAuthentication =
-  process.env.REACT_APP_AUTHENTICATION_ENABLE === undefined || process.env.REACT_APP_AUTHENTICATION_ENABLE === 'true';
+window._env_.REACT_APP_AUTHENTICATION_ENABLE === undefined || window._env_.REACT_APP_AUTHENTICATION_ENABLE === 'true';
 
 console.log('GraphQL Endpoint: ', graphQLEndpoint);
 console.log('Enable Authentication: ', enableAuthentication);
