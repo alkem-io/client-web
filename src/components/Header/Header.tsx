@@ -1,10 +1,11 @@
+import { AccountInfo } from '@azure/msal-browser';
+import { ReactComponent as PersonCircleIcon } from 'bootstrap-icons/icons/person-circle.svg';
 import React, { FC, useContext } from 'react';
-import { Button, Navbar } from 'react-bootstrap';
+import { Button, Dropdown, Navbar } from 'react-bootstrap';
 import Nav from 'react-bootstrap/esm/Nav';
 import { Link } from 'react-router-dom';
 import { appContext } from '../../context/AppProvider';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
-
 // interface HeaderProps {
 //   onSignIn?: () => void;
 //   onSignOut?: () => void;
@@ -15,17 +16,25 @@ import { useTypedSelector } from '../../hooks/useTypedSelector';
 const Header: FC = () => {
   const context = useContext(appContext);
   const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
-  const userName = useTypedSelector<string>(state => state.auth.account?.username || '');
+  const account = useTypedSelector<AccountInfo | null>(state => state.auth.account);
 
   // three state configuration
   let loginButton = <div />;
 
   if (context.enableAuthentication) {
-    if (isAuthenticated === true) {
+    if (isAuthenticated === true && account) {
       loginButton = (
-        <Button variant="info" onClick={context.handleSignOut}>
-          Logout
-        </Button>
+        <Dropdown alignRight>
+          <Dropdown.Toggle as={Button} variant="outline-info" className="btn-circle avatar-button outline-info">
+            <PersonCircleIcon className="bi bi-person-circle" style={{ width: '32px' }} />
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.ItemText className="mb-0">{account.name}</Dropdown.ItemText>
+            <Dropdown.ItemText className="text-muted">{account.username}</Dropdown.ItemText>
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={context.handleSignOut}>Sign out</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       );
     } else if (isAuthenticated === false) {
       loginButton = (
@@ -42,7 +51,6 @@ const Header: FC = () => {
           <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>
         <Nav className="mr-auto" />
-        {userName}
         {loginButton}
       </Navbar>
     </div>
