@@ -1,5 +1,4 @@
 import {
-  AccountInfo,
   AuthenticationResult,
   AuthError,
   AuthorizationUrlRequest,
@@ -7,44 +6,38 @@ import {
   PublicClientApplication,
   SilentRequest,
 } from '@azure/msal-browser';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateAccount, updateToken } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
 import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
+import { useTypedSelector } from './useTypedSelector';
 
 const useRedirectFlow = false;
 
 export const useAuthentication = (enabled = true): { handleSignIn: () => void; handleSignOut: () => void } => {
-  const [account, setAccount] = useState<AccountInfo | null>(null);
+  const username = useTypedSelector(state => state.auth.account?.username || '');
 
-  const [username, setUsername] = useState('');
-
-  const [error, setError] = useState<AuthError | null>(null);
   const msalApp = new PublicClientApplication(msalConfig);
   const dispatch = useDispatch();
 
   const getAccounts = () => {
+    console.log('getting accounts');
     if (enabled) {
       /**
        * See here for more info on account retrieval:
        * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
        */
-      const currentAccounts = msalApp.getAllAccounts();
-      if (currentAccounts === null) {
+      const accounts = msalApp.getAllAccounts();
+      if (accounts === null) {
+        dispatch(updateAccount(null));
         console.error('No accounts detected!');
-      } else if (currentAccounts.length > 1) {
+      } else if (accounts.length > 1) {
         console.warn('Multiple accounts detected.');
         // Add choose account code here
-        dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
-        setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
-        setUsername(currentAccounts[0].username);
-        // setAuthenticated(true);
-      } else if (currentAccounts.length === 1) {
-        dispatch(updateAccount(msalApp.getAccountByUsername(currentAccounts[0].username)));
-        setAccount(msalApp.getAccountByUsername(currentAccounts[0].username));
-        setUsername(currentAccounts[0].username);
-        // setAuthenticated(true);
+        dispatch(updateAccount(msalApp.getAccountByUsername(accounts[0].username)));
+      } else if (accounts.length === 1) {
+        dispatch(updateAccount(msalApp.getAccountByUsername(accounts[0].username)));
       }
     } else {
       setDummyAccount();
@@ -55,9 +48,6 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
     if (enabled) {
       if (response !== null) {
         dispatch(updateAccount(response.account));
-        setAccount(response.account);
-        setUsername(response.account.username);
-        // setAuthenticated(true);
       } else {
         getAccounts();
       }
@@ -68,21 +58,22 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
     if (redirect) {
       return msalApp.loginRedirect(loginRequest);
     }
-
     return msalApp
       .loginPopup(loginRequest)
       .then(handleResponse)
       .catch(err => {
-        setError(err);
+        dispatch(pushError(err));
       });
   };
 
   const signOut = async () => {
-    const logoutRequest = {
-      account: msalApp.getAccountByUsername(username),
-    } as EndSessionRequest;
+    if (username) {
+      const logoutRequest = {
+        account: msalApp.getAccountByUsername(username),
+      } as EndSessionRequest;
 
-    return msalApp.logout(logoutRequest);
+      return msalApp.logout(logoutRequest);
+    }
   };
 
   const setDummyAccount = () => {
@@ -96,37 +87,21 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
     );
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (enabled) {
-      signIn(useRedirectFlow).then(() => {
-        if (account) {
-          dispatch(updateAccount(account));
-        } else if (error) {
-          dispatch(pushError(error));
-        } else {
-          dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
-        }
-      });
+      await signIn(useRedirectFlow);
     } else {
       setDummyAccount();
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     if (enabled) {
-      signOut().then(() => {
-        if (account) {
-          dispatch(updateAccount(null));
-        } else if (error) {
-          dispatch(pushError(error));
-        } else {
-          dispatch(pushError(new Error('Sign-in failed. Please try again.') as AuthError));
-        }
-      });
+      await signOut();
     }
   };
 
-  const acquireToken = async () => {
+  const acquireToken = useCallback(async () => {
     /**
      * See here for more info on account retrieval:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
@@ -156,7 +131,7 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
       }
       console.warn(err);
     });
-  };
+  }, [username]);
 
   useEffect(() => {
     if (enabled) {
@@ -175,12 +150,14 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
 
   useEffect(() => {
     if (enabled) {
-      acquireToken().then(response => {
-        if (response) {
-          // set access token
-          dispatch(updateToken(response));
-        }
-      });
+      if (username) {
+        acquireToken().then(response => {
+          if (response) {
+            // set access token
+            dispatch(updateToken(response));
+          }
+        });
+      }
     }
   }, [username]);
 

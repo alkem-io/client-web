@@ -29,7 +29,7 @@ const Header: FC = () => {
       );
     } else if (isAuthenticated === false) {
       loginButton = (
-        <Button variant="outline-info" onClick={context.handleSignOut}>
+        <Button variant="outline-info" onClick={context.handleSignIn}>
           Login
         </Button>
       );

@@ -32,7 +32,6 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
       setShowSuccess(true);
     },
     update: (cache, { data }) => {
-      debugger;
       if (data) {
         const { createUser } = data;
 
