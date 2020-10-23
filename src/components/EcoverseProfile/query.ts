@@ -12,3 +12,19 @@ export const QUERY_ECOVERSES_LIST = gql`
     }
   }
 `;
+
+export const QUERY_ECOVERSE_NAME = gql`
+  query ecoverseName {
+    name
+  }
+`;
+
+export const QUERY_CHALLENGES = gql`
+  query challenges {
+    challenges {
+      id
+      name
+      textID
+    }
+  }
+`;
