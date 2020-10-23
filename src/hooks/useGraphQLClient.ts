@@ -19,12 +19,20 @@ export const useGraphQLClient = (
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     let errors: Error[] = [];
 
-    if (graphQLErrors)
-      errors = graphQLErrors.map(({ message, locations, path }) => {
-        const newMessage = `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`;
+    if (graphQLErrors) {
+      errors = graphQLErrors.reduce<Error[]>((acc, { message, extensions }) => {
+        const newMessage = `[GraphQL error]: ${message}`;
         console.log(newMessage);
-        return new Error(newMessage);
-      });
+
+        const code = extensions && extensions['code'];
+        if (code === 'UNAUTHENTICATED') {
+          return acc;
+        }
+
+        acc.push(new Error(newMessage));
+        return acc;
+      }, []);
+    }
 
     if (networkError) {
       // TODO [ATS] handle network errors better;

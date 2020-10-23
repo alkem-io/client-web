@@ -14,7 +14,7 @@ export const Navigation: FC = () => {
       </Nav.Link>
       <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Nav.Link} variant="light" eventKey="0">
-          Challange
+          Challenge
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="0">
           <div style={{ marginLeft: '10px' }}>

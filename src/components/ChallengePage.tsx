@@ -6,7 +6,7 @@ import ChallengeProfileContainer from './ChallengeProfile';
 export const ChallengePage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const context = useContext(appContext);
-  const resolvedId = context.challenges.find(x => x.altId === id)?.id;
+  const resolvedId = context.challenges.find(x => x.textID === id)?.id;
 
   if (!resolvedId) return <Redirect to="/404" />;
 

@@ -1,3 +1,4 @@
+import { AuthError } from '@azure/msal-browser';
 import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
 import React, { FC } from 'react';
 import { Badge, Toast } from 'react-bootstrap';
@@ -7,7 +8,7 @@ import { clearError } from '../reducers/error/actions';
 import { ErrorBoundary } from './ErrorBoundary';
 
 export const ErrorHandler: FC = ({ children }) => {
-  const error = useTypedSelector<Error | undefined>(state => {
+  const error = useTypedSelector<Error | AuthError | undefined>(state => {
     return state.error.errors[0];
   });
 
@@ -20,7 +21,7 @@ export const ErrorHandler: FC = ({ children }) => {
   };
 
   const show = !!error;
-  const message = error?.message;
+  const message = error?.message || (error as AuthError)?.errorMessage;
 
   return (
     <>
