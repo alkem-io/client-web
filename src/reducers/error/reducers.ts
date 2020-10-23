@@ -9,7 +9,7 @@ export default function errorReducer(state = initialState, action: ErrorActionTy
     case PUSH_ERROR:
       return {
         ...state,
-        errors: [...state.errors, { ...action.payload }],
+        errors: [...state.errors, action.payload],
       };
     case CLEAR_ERROR:
       return {

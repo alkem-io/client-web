@@ -140,7 +140,7 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
           .handleRedirectPromise()
           .then(handleResponse)
           .catch(err => {
-            dispatch(pushError(new Error(err.message)));
+            dispatch(pushError(new Error(err.errorMessage)));
             console.error(err);
           });
       }
