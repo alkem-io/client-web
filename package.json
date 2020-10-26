@@ -1,7 +1,10 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.1.1",
-  "private": true,
+  "version": "0.2.0",
+  "description": "Cherrytwist server, responsible for managing the shared representation of the ecoverse",
+  "author": "Cherrytwist Foundation",
+  "private": false,
+  "license": "EUPL",
   "dependencies": {
     "@apollo/client": "^3.2.4",
     "@azure/msal-browser": "^2.1.0",
