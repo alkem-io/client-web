@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
-import { useEcoverseListQuery } from '../generated/graphql';
+import { useEcoverseNameQuery } from '../generated/graphql';
 import { useAuthentication } from '../hooks';
-import { Ecoverse, Challenge } from '../models';
-import { nameToAltId } from '../utils/nameToAltId';
+import { Challenge, Ecoverse } from '../models';
 
 export interface AppContext {
   ecoverse: Ecoverse;
@@ -25,7 +24,7 @@ interface AppProviderProps {
 }
 
 const AppProvider: FC<AppProviderProps> = ({ enableAuthentication, children }) => {
-  const { data } = useEcoverseListQuery();
+  const { data } = useEcoverseNameQuery();
 
   const { handleSignIn, handleSignOut } = useAuthentication(enableAuthentication);
 
@@ -33,19 +32,11 @@ const AppProvider: FC<AppProviderProps> = ({ enableAuthentication, children }) =
     name: data ? data.name : '',
   };
 
-  const challenges: Challenge[] = data
-    ? data.challenges.map(x => ({
-        id: x.id,
-        name: x.name,
-        altId: nameToAltId(x.name),
-      }))
-    : [];
-
   return (
     <appContext.Provider
       value={{
         ecoverse,
-        challenges,
+        challenges: [],
         handleSignIn,
         handleSignOut,
         enableAuthentication,

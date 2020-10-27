@@ -1,3 +1,3 @@
 export const nameToAltId = (name: string) => {
-  return name && name.toLowerCase().replace(' ', '-');
+  return name && name.toLowerCase().replaceAll(' ', '-');
 };

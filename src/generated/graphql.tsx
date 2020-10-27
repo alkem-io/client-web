@@ -11,6 +11,13 @@ export type Scalars = {
   Float: number;
 };
 
+export type Tagset = {
+  __typename?: 'Tagset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  tags: Array<Scalars['String']>;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -40,11 +47,16 @@ export type UserGroup = {
   profile?: Maybe<Profile>;
 };
 
-export type Tagset = {
-  __typename?: 'Tagset';
+export type Organisation = {
+  __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  tags: Array<Scalars['String']>;
+  /** The set of tags for the organisation */
+  tagset?: Maybe<Tagset>;
+  /** The set of users that are associated with this organisation */
+  members?: Maybe<Array<User>>;
+  /** Groups of users related to an organisation. */
+  groups?: Maybe<Array<UserGroup>>;
 };
 
 export type Ecoverse = {
@@ -64,27 +76,30 @@ export type Ecoverse = {
   tagset?: Maybe<Tagset>;
 };
 
-export type Organisation = {
-  __typename?: 'Organisation';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
-  /** The set of users that are associated with this organisation */
-  members?: Maybe<Array<User>>;
-  /** Groups of users related to an organisation. */
-  groups?: Maybe<Array<UserGroup>>;
-};
-
 export type Project = {
   __typename?: 'Project';
   id: Scalars['ID'];
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
-  lifecyclePhase?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   /** The set of tags for the project */
   tagset?: Maybe<Tagset>;
+};
+
+export type Opportunity = {
+  __typename?: 'Opportunity';
+  id: Scalars['ID'];
+  /** The name of the Opportunity */
+  name: Scalars['String'];
+  /** A short text identifier for this Opportunity */
+  textID: Scalars['String'];
+  /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
+  state?: Maybe<Scalars['String']>;
+  /** The profile for this Opportunity */
+  profile?: Maybe<Profile>;
+  /** The set of projects within the context of this Opportunity */
+  projects?: Maybe<Array<Project>>;
 };
 
 export type Challenge = {
@@ -92,6 +107,8 @@ export type Challenge = {
   id: Scalars['ID'];
   /** The name of the challenge */
   name: Scalars['String'];
+  /** A short text identifier for this challenge */
+  textID: Scalars['String'];
   /** The shared understanding for the challenge */
   context?: Maybe<Context>;
   /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
@@ -101,11 +118,11 @@ export type Challenge = {
   /** The community of users, including challenge leads, that are contributing. */
   contributors?: Maybe<Array<User>>;
   /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
-  lifecyclePhase?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
-  /** The set of projects within the context of this challenge */
-  projects?: Maybe<Array<Project>>;
+  /** The set of opportunities within the context of this challenge */
+  opportunities?: Maybe<Array<Opportunity>>;
 };
 
 export type Context = {
@@ -155,21 +172,25 @@ export type MemberOf = {
 
 export type Query = {
   __typename?: 'Query';
+  /** The currently logged in user */
+  me: User;
+  /** A particular opportunitiy, identified by the ID */
+  opportunity: Opportunity;
   /** The name for this ecoverse */
   name: Scalars['String'];
-  /** The members of this ecoverse */
-  members: Array<User>;
   /** The host organisation for the ecoverse */
   host: Organisation;
   /** The shared understanding for this ecoverse */
   context: Context;
-  /** The users associated with this ecoverse */
+  /** The members of this this ecoverse */
   users: Array<User>;
   /** A particular user, identified by the ID or by email */
   user: User;
-  /** All groups of users at the ecoverse level */
+  /** All groups at the ecoverse level */
   groups: Array<UserGroup>;
-  /** A particualr user group */
+  /** All groups that have the provided tag */
+  groupsWithTag: Array<UserGroup>;
+  /** The user group with the specified id anywhere in the ecoverse */
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
@@ -183,8 +204,16 @@ export type Query = {
   tagset: Tagset;
 };
 
+export type QueryOpportunityArgs = {
+  ID: Scalars['Float'];
+};
+
 export type QueryUserArgs = {
   ID: Scalars['String'];
+};
+
+export type QueryGroupsWithTagArgs = {
+  tag: Scalars['String'];
 };
 
 export type QueryGroupArgs = {
@@ -203,10 +232,18 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
+  /** Creates a new user profile */
+  createUserProfile: User;
+  /** Creates a new user account */
+  createUserAccount: User;
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
+  /** Add the provided tag to the tagset with the given ID */
+  addTagToTagset: Tagset;
   /** Creates a new tagset with the specified name for the profile with given id */
   createTagsetOnProfile: Tagset;
+  /** Creates a new reference with the specified name for the profile with given id */
+  createReferenceOnProfile: Reference;
   /** Adds the user with the given identifier to the specified user group */
   addUserToGroup: UserGroup;
   /** Remove the user with the given identifier to the specified user group */
@@ -217,8 +254,14 @@ export type Mutation = {
   removeGroupFocalPoint?: Maybe<UserGroup>;
   /** Creates a new user group for the challenge with the given id */
   createGroupOnChallenge: UserGroup;
+  /** Creates a new Opportunity for the challenge with the given id */
+  createOpportunityOnChallenge: Opportunity;
   /** Updates the specified Challenge with the provided data (merge) */
   updateChallenge: Challenge;
+  /** Adds the user with the given identifier as a member of the specified challenge */
+  addUserToChallenge: UserGroup;
+  /** Updates the specified Opportunity with the provided data (merge) */
+  updateOpportunity: Opportunity;
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
@@ -242,13 +285,31 @@ export type MutationUpdateUserArgs = {
   userID: Scalars['Float'];
 };
 
+export type MutationCreateUserProfileArgs = {
+  userData: UserInput;
+};
+
+export type MutationCreateUserAccountArgs = {
+  userData: UserInput;
+};
+
 export type MutationReplaceTagsOnTagsetArgs = {
   tags: TagsInput;
   tagsetID: Scalars['Float'];
 };
 
+export type MutationAddTagToTagsetArgs = {
+  tag: Scalars['String'];
+  tagsetID: Scalars['Float'];
+};
+
 export type MutationCreateTagsetOnProfileArgs = {
   tagsetName: Scalars['String'];
+  profileID: Scalars['Float'];
+};
+
+export type MutationCreateReferenceOnProfileArgs = {
+  referenceInput: ReferenceInput;
   profileID: Scalars['Float'];
 };
 
@@ -276,9 +337,24 @@ export type MutationCreateGroupOnChallengeArgs = {
   challengeID: Scalars['Float'];
 };
 
+export type MutationCreateOpportunityOnChallengeArgs = {
+  opportunityData: OpportunityInput;
+  challengeID: Scalars['Float'];
+};
+
 export type MutationUpdateChallengeArgs = {
   challengeData: ChallengeInput;
   challengeID: Scalars['Float'];
+};
+
+export type MutationAddUserToChallengeArgs = {
+  challengeID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationUpdateOpportunityArgs = {
+  opportunityData: OpportunityInput;
+  ID: Scalars['Float'];
 };
 
 export type MutationCreateGroupOnEcoverseArgs = {
@@ -325,22 +401,29 @@ export type UserInput = {
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   gender?: Maybe<Scalars['String']>;
+  aadPassword?: Maybe<Scalars['String']>;
 };
 
 export type TagsInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type ChallengeInput = {
+export type ReferenceInput = {
   name?: Maybe<Scalars['String']>;
-  lifecyclePhase?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type OpportunityInput = {
+  name?: Maybe<Scalars['String']>;
+  textID?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
   tagset?: Maybe<TagsInput>;
 };
 
 export type ContextInput = {
   background?: Maybe<Scalars['String']>;
-  lifecyclePhase?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
   tagline?: Maybe<Scalars['String']>;
   who?: Maybe<Scalars['String']>;
@@ -349,10 +432,12 @@ export type ContextInput = {
   references?: Maybe<Array<ReferenceInput>>;
 };
 
-export type ReferenceInput = {
+export type ChallengeInput = {
   name?: Maybe<Scalars['String']>;
-  uri?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+  textID?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  context?: Maybe<ContextInput>;
+  tagset?: Maybe<TagsInput>;
 };
 
 export type EcoverseInput = {
@@ -431,6 +516,16 @@ export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> &
     context: { __typename?: 'Context' } & Pick<Context, 'tagline'>;
     challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
   };
+
+export type EcoverseNameQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseNameQuery = { __typename?: 'Query' } & Pick<Query, 'name'>;
+
+export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChallengesQuery = { __typename?: 'Query' } & {
+  challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+};
 
 export const NewUserFragmentDoc = gql`
   fragment NewUser on User {
@@ -667,3 +762,73 @@ export function useEcoverseListLazyQuery(
 export type EcoverseListQueryHookResult = ReturnType<typeof useEcoverseListQuery>;
 export type EcoverseListLazyQueryHookResult = ReturnType<typeof useEcoverseListLazyQuery>;
 export type EcoverseListQueryResult = Apollo.QueryResult<EcoverseListQuery, EcoverseListQueryVariables>;
+export const EcoverseNameDocument = gql`
+  query ecoverseName {
+    name
+  }
+`;
+
+/**
+ * __useEcoverseNameQuery__
+ *
+ * To run a query within a React component, call `useEcoverseNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseNameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseNameQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseNameQuery, EcoverseNameQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseNameQuery, EcoverseNameQueryVariables>(EcoverseNameDocument, baseOptions);
+}
+export function useEcoverseNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseNameQuery, EcoverseNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseNameQuery, EcoverseNameQueryVariables>(EcoverseNameDocument, baseOptions);
+}
+export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
+export type EcoverseNameLazyQueryHookResult = ReturnType<typeof useEcoverseNameLazyQuery>;
+export type EcoverseNameQueryResult = Apollo.QueryResult<EcoverseNameQuery, EcoverseNameQueryVariables>;
+export const ChallengesDocument = gql`
+  query challenges {
+    challenges {
+      id
+      name
+      textID
+    }
+  }
+`;
+
+/**
+ * __useChallengesQuery__
+ *
+ * To run a query within a React component, call `useChallengesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChallengesQuery(baseOptions?: Apollo.QueryHookOptions<ChallengesQuery, ChallengesQueryVariables>) {
+  return Apollo.useQuery<ChallengesQuery, ChallengesQueryVariables>(ChallengesDocument, baseOptions);
+}
+export function useChallengesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengesQuery, ChallengesQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengesQuery, ChallengesQueryVariables>(ChallengesDocument, baseOptions);
+}
+export type ChallengesQueryHookResult = ReturnType<typeof useChallengesQuery>;
+export type ChallengesLazyQueryHookResult = ReturnType<typeof useChallengesLazyQuery>;
+export type ChallengesQueryResult = Apollo.QueryResult<ChallengesQuery, ChallengesQueryVariables>;

@@ -12,7 +12,7 @@ const App = (): React.ReactElement => {
   let page = <Home />;
 
   if (!context.enableAuthentication || isAuthenticated) {
-    page = <EcoversePage ecoverse={context.ecoverse} challenges={context.challenges} />;
+    page = <EcoversePage ecoverse={context.ecoverse} />;
   }
 
   return <div className="App">{page}</div>;

@@ -8,6 +8,7 @@ export interface UserModel {
   city: string;
   country: string;
   gender: string;
+  aadPassword: string;
 }
 
 export const defaultUser: UserModel = {
@@ -20,4 +21,5 @@ export const defaultUser: UserModel = {
   city: '',
   country: '',
   gender: '',
+  aadPassword: '',
 };
