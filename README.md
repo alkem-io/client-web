@@ -1,9 +1,6 @@
-
-
-
 # Cherrytwist Web Client
 
-This is a simple React web client for interacting with a Cherrytwist server.
+This is a React web client for interacting with a Cherrytwist server.
 
 It is in part inspired by the following article: https://blog.logrocket.com/build-a-graphql-react-app-with-typescript/
 
@@ -15,13 +12,25 @@ Build Status
 Build Quality:
 [![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
 
-## Configure data source endpoint
+## Configuration
 
-Data is fed into the client through a graphql endpoint. Endpoint url is configured via the REACT_APP_GRAPHQL_ENDPOINT environment variable. Add an .env file in project's root folder and set the variable to point to the graphql server
+### Configure data source endpoint
 
-## Configure authentication
+Data is fed into the client through a graphql endpoint. Endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment variable. Add an .env file in project's root folder and set the variable to point to the graphql server
 
-TBD
+### Configure authentication
+
+Required environment variables for the authentication to work:
+
+```javascpript
+REACT_APP_AUTH_CLIENT_ID
+REACT_APP_AUTH_TENANT_ID
+REACT_APP_AUTH_API_SCOPE
+REACT_APP_AUTH_REDIRECT_URI
+REACT_APP_AUTH_RESOURCE_URI
+```
+
+How to obtain this variables is described here: [Configure Authentication with Azure Active Directory](https://github.com/cherrytwist/Infrastructure#to-configure-authentication-with-azure-active-directory-aad)
 
 ## Extending
 
@@ -104,11 +113,10 @@ The repo is also set up to generate a Docker image.
   - Argument can be one of the following: ARG_GRAPHQL_ENDPOINT, ARG_AUTHENTICATION_ENABLE, ARG_AUTH_CLIENT_ID, ARG_AUTH_TENANT_ID, ARG_AUTH_API_SCOPE, ARG_AUTH_REDIRECT_URI
 - To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
-
 ## Pushing code the dockerhub
 
 We have automated the creation and deployment of containers to docker hub via a github action. To automaticly trigger the build up to dockerhub the following steps should be taken:
 
 - Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
 - Create a github release and tag it with the appropriate version number ie. `v0.1.3`
-- Go to github actions and view the `push to docker` action to see if everything ran correctly. 
+- Go to github actions and view the `push to docker` action to see if everything ran correctly.
