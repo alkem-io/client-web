@@ -165,7 +165,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
         <Alert show={showSuccess} variant="success" onClose={() => setShowSuccess(false)} dismissible>
           Saved successfully.
         </Alert>
-        <h2>User</h2>
+
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Row>
             <Form.Group as={Col} controlId="userName">

@@ -12,22 +12,17 @@ export const UserList: FC<UserListProps> = ({ users }) => {
   const { path } = useRouteMatch();
   return (
     <>
-      <Row className="justify-content-end">
-        <Col sm={1}>
-          <Link to={`${path}/new`}>
-            <Button>
-              <span>New</span>
-            </Button>
-          </Link>
+      <Row>
+        <Col>
+          <ListGroup>
+            {users.map(u => (
+              <ListGroup.Item as={Link} action key={u.id} to={`${path}/${u.id}/edit`}>
+                {u.name}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
         </Col>
       </Row>
-      <ListGroup>
-        {users.map(u => (
-          <ListGroup.Item as={Link} action key={u.id} to={`${path}/${u.id}/edit`}>
-            {u.name}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
     </>
   );
 };

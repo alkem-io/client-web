@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import { AdminPage } from '../components/Admin/AdminPage';
+import { AdminContainer } from '../components/Admin/AdminContainer';
 import App from '../components/App';
 import { ChallengePage } from '../components/ChallengePage';
 import { Layout } from '../components/Layout';
@@ -25,7 +25,7 @@ const AppContainer: React.FC<AppContainerProps> = props => {
           <Switch>
             <Route exact path="/404" component={FourOuFour} />
             <Route path="/admin">
-              <AdminPage />
+              <AdminContainer />
             </Route>
             <Route>
               <Layout>

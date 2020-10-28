@@ -15,6 +15,9 @@ export const AdminLayout: FC = ({ children }) => {
               <Nav.Link as={Link} to="/admin/users">
                 Users
               </Nav.Link>
+              <Nav.Link as={Link} to="/admin/groups">
+                Groups
+              </Nav.Link>
             </Nav>
           </Col>
           <Col>{children ? children : <div></div>}</Col>
