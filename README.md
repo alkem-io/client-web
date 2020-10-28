@@ -27,10 +27,18 @@ REACT_APP_AUTH_CLIENT_ID
 REACT_APP_AUTH_TENANT_ID
 REACT_APP_AUTH_API_SCOPE
 REACT_APP_AUTH_REDIRECT_URI
-REACT_APP_AUTH_RESOURCE_URI
 ```
 
 How to obtain this variables is described here: [Configure Authentication with Azure Active Directory](https://github.com/cherrytwist/Infrastructure#to-configure-authentication-with-azure-active-directory-aad)
+
+If you have access or invitation to the Cherrytwist's playground directory this settings could be used:
+
+```javascript
+REACT_APP_AUTH_CLIENT_ID=feb6d8b1-8cc2-4e7d-a419-ad7b544b0832
+REACT_APP_AUTH_TENANT_ID=524e761c-d162-4fdf-ab43-2855246d986c
+REACT_APP_AUTH_API_SCOPE=api://505041fc-fca2-4a74-88ee-6d50a6417e38/.default
+REACT_APP_AUTH_REDIRECT_URI=http://localhost:3000
+```
 
 ## Extending
 
