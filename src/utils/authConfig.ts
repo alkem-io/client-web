@@ -1,10 +1,11 @@
 // For a full list of msal.js configuration parameters,
 // visit https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md
+const env = window._env_;
 export const msalConfig = {
   auth: {
-    clientId: process.env.REACT_APP_AUTH_CLIENT_ID || '',
-    authority: `https://login.microsoftonline.com/${process.env.REACT_APP_AUTH_TENANT_ID}`,
-    redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || 'http://localhost:3000',
+    clientId: (env && env.REACT_APP_AUTH_CLIENT_ID) || '',
+    authority: `https://login.microsoftonline.com/${env && env.REACT_APP_AUTH_TENANT_ID}`,
+    redirectUri: (env && env.REACT_APP_AUTH_REDIRECT_URI) || 'http://localhost:3000',
   },
   cache: {
     cacheLocation: 'localStorage', // This configures where your cache will be stored
@@ -14,8 +15,8 @@ export const msalConfig = {
 
 // Coordinates and required scopes for your web api
 export const apiConfig = {
-  resourceUri: process.env.REACT_APP_AUTH_RESOURCE_URI || 'http://localhost:4000/api/profile',
-  resourceScope: process.env.REACT_APP_AUTH_API_SCOPE || '',
+  resourceUri: (env && env.REACT_APP_AUTH_RESOURCE_URI) || 'http://localhost:4000/api/profile',
+  resourceScope: (env && env.REACT_APP_AUTH_API_SCOPE) || '',
 };
 
 /**
