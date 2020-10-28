@@ -46,7 +46,7 @@ const Header: FC = () => {
   }
   return (
     <div>
-      <Navbar className="navbar" bg="dark" variant="dark">
+      <Navbar className="navbar" bg="dark" variant="dark" sticky="top">
         <Navbar.Brand as={Link} to="/">
           <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>

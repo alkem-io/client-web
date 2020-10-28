@@ -46,3 +46,20 @@ export const MUTATION_UPDATE_USER = gql`
     }
   }
 `;
+
+export const QUERY_ECOVERSE_GROUPS = gql`
+  query ecoverseChallengeGroups {
+    groups {
+      id
+      name
+    }
+    challenges {
+      id
+      name
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;

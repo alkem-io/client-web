@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { UserModel } from '../../models/User';

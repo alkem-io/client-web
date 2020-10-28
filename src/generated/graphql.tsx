@@ -245,7 +245,7 @@ export type Mutation = {
   /** Creates a new reference with the specified name for the profile with given id */
   createReferenceOnProfile: Reference;
   /** Adds the user with the given identifier to the specified user group */
-  addUserToGroup: UserGroup;
+  addUserToGroup: Scalars['Boolean'];
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Assign the user with the given ID as focal point for the given group */
@@ -495,6 +495,17 @@ export type UpdateUserMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type EcoverseChallengeGroupsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & {
+  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+  challenges: Array<
+    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+      }
+  >;
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -664,6 +675,60 @@ export function useUpdateUserMutation(
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const EcoverseChallengeGroupsDocument = gql`
+  query ecoverseChallengeGroups {
+    groups {
+      id
+      name
+    }
+    challenges {
+      id
+      name
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseChallengeGroupsQuery__
+ *
+ * To run a query within a React component, call `useEcoverseChallengeGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseChallengeGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseChallengeGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseChallengeGroupsQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
+    EcoverseChallengeGroupsDocument,
+    baseOptions
+  );
+}
+export function useEcoverseChallengeGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
+    EcoverseChallengeGroupsDocument,
+    baseOptions
+  );
+}
+export type EcoverseChallengeGroupsQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsQuery>;
+export type EcoverseChallengeGroupsLazyQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsLazyQuery>;
+export type EcoverseChallengeGroupsQueryResult = Apollo.QueryResult<
+  EcoverseChallengeGroupsQuery,
+  EcoverseChallengeGroupsQueryVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
