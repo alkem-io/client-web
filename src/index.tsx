@@ -29,25 +29,25 @@ const graphQLEndpoint =
 const enableAuthentication = (env && env.REACT_APP_AUTHENTICATION_ENABLE) !== 'false';
 
 let indexPage = (
-  <Provider store={configureStore()}>
-    <AppContainer graphQLEndpoint={graphQLEndpoint} enableAuthentication={enableAuthentication} />
-  </Provider>
+  <div className="container ">
+    <div className="row justify-content-md-center">
+      <h2>Configuration is missing!</h2>
+    </div>
+    <div className="row justify-content-md-center">
+      <p>
+        <a href="https://github.com/cherrytwist/Client.Web#configuration" target="#">
+          More information!
+        </a>
+      </p>
+    </div>
+  </div>
 );
 
-if (!env) {
+if (env) {
   indexPage = (
-    <div className="container ">
-      <div className="row justify-content-md-center">
-        <h2>Configuration is missing!</h2>
-      </div>
-      <div className="row justify-content-md-center">
-        <p>
-          <a href="https://github.com/cherrytwist/Client.Web#configuration" target="#">
-            More information!
-          </a>
-        </p>
-      </div>
-    </div>
+    <Provider store={configureStore()}>
+      <AppContainer graphQLEndpoint={graphQLEndpoint} enableAuthentication={enableAuthentication} />
+    </Provider>
   );
 }
 
