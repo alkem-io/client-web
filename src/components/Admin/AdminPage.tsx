@@ -5,6 +5,7 @@ export const AdminPage: FC = () => {
     <>
       <h2 style={{ textAlign: 'center' }}>Admin Page</h2>
       <hr />
+      <div> Put some data and navigation for the admin page.</div>
     </>
   );
 };

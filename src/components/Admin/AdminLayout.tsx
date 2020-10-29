@@ -13,6 +13,9 @@ export const AdminLayout: FC = ({ children }) => {
           <Row>
             <Col sm={1} className="ct-nav">
               <Nav className="flex-column">
+                <Nav.Link as={Link} to="/admin">
+                  Admin
+                </Nav.Link>
                 <Nav.Link as={Link} to="/admin/users">
                   Users
                 </Nav.Link>

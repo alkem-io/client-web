@@ -51,7 +51,14 @@ const Header: FC = () => {
           <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>
         <Nav className="mr-auto" />
-        {loginButton}
+        <Nav className="ml-auto" as="ul">
+          <Nav.Item as="li">
+            <Nav.Link as={Link} to="/admin">
+              Admin
+            </Nav.Link>
+          </Nav.Item>{' '}
+          <Nav.Item as="li">{loginButton}</Nav.Item>
+        </Nav>
       </Navbar>
     </div>
   );
