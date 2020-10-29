@@ -506,6 +506,16 @@ export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type GroupMembersQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type GroupMembersQuery = { __typename?: 'Query' } & {
+  group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name' | 'email'>>>;
+    };
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -730,6 +740,48 @@ export type EcoverseChallengeGroupsQueryResult = Apollo.QueryResult<
   EcoverseChallengeGroupsQuery,
   EcoverseChallengeGroupsQueryVariables
 >;
+export const GroupMembersDocument = gql`
+  query groupMembers($id: Float!) {
+    group(ID: $id) {
+      id
+      name
+      members {
+        name
+        email
+      }
+    }
+  }
+`;
+
+/**
+ * __useGroupMembersQuery__
+ *
+ * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupMembersQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGroupMembersQuery(
+  baseOptions?: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+) {
+  return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
+}
+export function useGroupMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+) {
+  return Apollo.useLazyQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
+}
+export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
+export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
+export type GroupMembersQueryResult = Apollo.QueryResult<GroupMembersQuery, GroupMembersQueryVariables>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {

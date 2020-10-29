@@ -3,6 +3,7 @@ import { Col, ListGroup, Row } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useEcoverseChallengeGroupsQuery } from '../../generated/graphql';
 import { mapChallenges } from '../../utils';
+import GroupEdit from './GroupEdit';
 import GroupList from './GroupList';
 import SearchableList from './SearchableList';
 
@@ -47,8 +48,12 @@ export const GroupPage: FC = () => {
           <Col>
             <p>Members</p>
             <Switch>
-              <Route path={`${path}/ecoverse/:groupId`}>Ecoverse</Route>
-              <Route path={`${path}/:challengeId/:groupId`}>Challenge</Route>
+              <Route path={`${path}/ecoverse/:groupId`}>
+                <GroupEdit />
+              </Route>
+              <Route path={`${path}/:challengeId/:groupId`}>
+                <GroupEdit />
+              </Route>
             </Switch>
           </Col>
         </Row>

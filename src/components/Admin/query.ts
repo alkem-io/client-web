@@ -66,8 +66,8 @@ export const QUERY_ECOVERSE_GROUPS = gql`
 `;
 
 export const QUERY_GROUP_MEMBERS = gql`
-  query groupMembers(id: Float) {
-    group(ID: $id ) {
+  query groupMembers($id: Float!) {
+    group(ID: $id) {
       id
       name
       members {
@@ -75,6 +75,5 @@ export const QUERY_GROUP_MEMBERS = gql`
         email
       }
     }
-
   }
 `;
