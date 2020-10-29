@@ -32,6 +32,17 @@ export const GroupList: FC<GroupListProps> = ({ data, type }) => {
     return groups;
   }, [challengeId, data, type]);
 
-  return <SearchableList data={groups} url={url} />;
+  const name = useMemo(() => {
+    if (type === 'ecoverse') return 'Ecoverse';
+    const challenge = data?.challenges.find(c => c.textID === challengeId);
+    return `${challenge?.name} (challenge)`;
+  }, [data, type]);
+
+  return (
+    <>
+      <h3>{name}</h3>
+      <SearchableList data={groups} url={url} />
+    </>
+  );
 };
 export default GroupList;

@@ -22,7 +22,11 @@ export const GroupEdit: FC = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return <SearchableList data={members} url={''} />;
+  return (
+    <>
+      <h3>{data?.group.name}</h3> <SearchableList data={members} url={''} />
+    </>
+  );
 };
 
 export default GroupEdit;

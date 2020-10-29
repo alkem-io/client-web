@@ -22,37 +22,30 @@ export const GroupPage: FC = () => {
       <>
         <h2 style={{ textAlign: 'center' }}>Groups</h2>
         <hr />
-
         <Row>
           <Col sm={3}>
-            <p>Challenges</p>
-            <SearchableList data={challenges} url={`${path}`}>
-              <ListGroup>
-                <ListGroup.Item as={Link} action to={`${path}/ecoverse`}>
-                  Ecoverse
-                </ListGroup.Item>
-              </ListGroup>
-            </SearchableList>
-          </Col>
-          <Col sm={3}>
-            <p>Groups</p>
             <Switch>
-              <Route path={`${path}/ecoverse`}>
+              <Route exact path={`${path}/ecoverse`}>
                 <GroupList data={data} type="ecoverse" />
               </Route>
-              <Route path={`${path}/:challengeId`}>
+              <Route exact path={`${path}/ecoverse/:groupId`}>
+                <GroupEdit />
+              </Route>
+              <Route exact path={`${path}/:challengeId/:groupId`}>
+                <GroupEdit />
+              </Route>
+              <Route exact path={`${path}/:challengeId`}>
                 <GroupList data={data} type="challenge" />
               </Route>
-            </Switch>
-          </Col>
-          <Col>
-            <p>Members</p>
-            <Switch>
-              <Route path={`${path}/ecoverse/:groupId`}>
-                <GroupEdit />
-              </Route>
-              <Route path={`${path}/:challengeId/:groupId`}>
-                <GroupEdit />
+              <Route exact path={`${path}`}>
+                <h3>Ecoverse/Challenges</h3>
+                <SearchableList data={challenges} url={`${path}`}>
+                  <ListGroup>
+                    <ListGroup.Item as={Link} action to={`${path}/ecoverse`}>
+                      Ecoverse
+                    </ListGroup.Item>
+                  </ListGroup>
+                </SearchableList>
               </Route>
             </Switch>
           </Col>
