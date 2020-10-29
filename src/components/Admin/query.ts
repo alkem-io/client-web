@@ -56,10 +56,25 @@ export const QUERY_ECOVERSE_GROUPS = gql`
     challenges {
       id
       name
+      textID
       groups {
         id
         name
       }
     }
+  }
+`;
+
+export const QUERY_GROUP_MEMBERS = gql`
+  query groupMembers(id: Float) {
+    group(ID: $id ) {
+      id
+      name
+      members {
+        name
+        email
+      }
+    }
+
   }
 `;

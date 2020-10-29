@@ -8,12 +8,12 @@ interface UserListProps {
 }
 
 export const UserList: FC<UserListProps> = ({ users }) => {
-  const { path } = useRouteMatch();
+  const { url } = useRouteMatch();
 
   const data = users.map(u => ({ id: u.id, value: u.name }));
   return (
     <>
-      <SearchableList data={data} path={path} />
+      <SearchableList data={data} url={url} />
     </>
   );
 };

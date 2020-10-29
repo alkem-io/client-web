@@ -10,7 +10,7 @@ export const AdminContainer: FC = () => {
   const { path } = useRouteMatch();
   return (
     <AdminLayout>
-      <Container style={{ marginTop: '1em' }}>
+      <Container fluid style={{ marginTop: '1em' }}>
         <Switch>
           <Route exact path={`${path}`}>
             <AdminPage />

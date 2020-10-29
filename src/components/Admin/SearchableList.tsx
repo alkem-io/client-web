@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 
 interface SearchableListProps {
   data: { id: number | string; value: string }[];
-  path: string;
+  url: string;
+  edit?: boolean;
+  active?: number | string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], path }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], url: path, edit = false, children, active }) => {
   const [filterBy, setFilterBy] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,15 +22,23 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], path }) => 
     () => data.filter(item => (filterBy ? item.value.toLowerCase().includes(filterBy.toLowerCase()) : true)),
     [filterBy, data]
   );
+  const editSuffix = edit ? '/edit' : '';
   return (
     <>
       <InputGroup>
         <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
       </InputGroup>
       <hr />
+      {children}
       <ListGroup>
         {filteredData.map(item => (
-          <ListGroup.Item as={Link} action key={item.id} to={`${path}/${item.id}/edit`}>
+          <ListGroup.Item
+            as={Link}
+            action
+            key={item.id}
+            to={`${path}/${item.id}${editSuffix}`}
+            active={active !== undefined && item.id === active}
+          >
             {item.value}
           </ListGroup.Item>
         ))}
