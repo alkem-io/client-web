@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/esm/ListGroup';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { UserModel } from '../../models/User';
+import SearchableList from './SearchableList';
 
 interface UserListProps {
   users: UserModel[];
@@ -10,19 +9,11 @@ interface UserListProps {
 
 export const UserList: FC<UserListProps> = ({ users }) => {
   const { path } = useRouteMatch();
+
+  const data = users.map(u => ({ id: u.id, value: u.name }));
   return (
     <>
-      <Row>
-        <Col>
-          <ListGroup>
-            {users.map(u => (
-              <ListGroup.Item as={Link} action key={u.id} to={`${path}/${u.id}/edit`}>
-                {u.name}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Col>
-      </Row>
+      <SearchableList data={data} path={path} />
     </>
   );
 };
