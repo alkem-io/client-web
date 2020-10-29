@@ -71,7 +71,10 @@ export const QUERY_GROUP_MEMBERS = gql`
       id
       name
       members {
+        id
         name
+        firstName
+        lastName
         email
       }
     }

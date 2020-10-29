@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
-import { EditMode, UserInput } from './UserInput';
+import { EditMode, UserInput } from './UserEdit';
 import UserList from './UserList';
 
 export const UserPage: FC = () => {

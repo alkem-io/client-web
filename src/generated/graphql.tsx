@@ -512,7 +512,7 @@ export type GroupMembersQueryVariables = Exact<{
 
 export type GroupMembersQuery = { __typename?: 'Query' } & {
   group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name' | 'email'>>>;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>>;
     };
 };
 
@@ -746,7 +746,10 @@ export const GroupMembersDocument = gql`
       id
       name
       members {
+        id
         name
+        firstName
+        lastName
         email
       }
     }

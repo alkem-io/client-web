@@ -23,7 +23,7 @@ export const GroupPage: FC = () => {
         <h2 style={{ textAlign: 'center' }}>Groups</h2>
         <hr />
         <Row>
-          <Col sm={3}>
+          <Col>
             <Switch>
               <Route exact path={`${path}/ecoverse`}>
                 <GroupList data={data} type="ecoverse" />
