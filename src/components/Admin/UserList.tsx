@@ -13,7 +13,7 @@ export const UserList: FC<UserListProps> = ({ users }) => {
   const data = users.map(u => ({ id: u.id, value: u.name }));
   return (
     <>
-      <SearchableList data={data} url={url} />
+      <SearchableList data={data} url={url} edit={true} />
     </>
   );
 };
