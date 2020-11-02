@@ -1,50 +1,50 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+
+export const USER_DETAILS_FRAGMENT = gql`
+  fragment UserDetails on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    profile {
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+    }
+  }
+`;
 
 export const QUERY_USER_LIST = gql`
   query users {
     users {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${USER_DETAILS_FRAGMENT}
 `;
 
 export const MUTATION_CREATE_USER = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${USER_DETAILS_FRAGMENT}
 `;
 
 export const MUTATION_UPDATE_USER = gql`
   mutation updateUser($user: UserInput!, $userId: Float!) {
     updateUser(userData: $user, userID: $userId) {
-      id
-      name
-      firstName
-      lastName
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${USER_DETAILS_FRAGMENT}
 `;
 
 export const QUERY_ECOVERSE_GROUPS = gql`

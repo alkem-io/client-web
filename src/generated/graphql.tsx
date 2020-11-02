@@ -456,31 +456,30 @@ export type OrganisationInput = {
   tags?: Maybe<TagsInput>;
 };
 
-export type NewUserFragment = { __typename?: 'User' } & Pick<
+export type NewUserFragment = { __typename?: 'User' } & UserDetailsFragment;
+
+export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
->;
+  'id' | 'name' | 'firstName' | 'lastName' | 'email'
+> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+      }
+    >;
+  };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UsersQuery = { __typename?: 'Query' } & {
-  users: Array<
-    { __typename?: 'User' } & Pick<
-      User,
-      'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
-    >
-  >;
-};
+export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
 
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
 }>;
 
 export type CreateUserMutation = { __typename?: 'Mutation' } & {
-  createUser: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
-  >;
+  createUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export type UpdateUserMutationVariables = Exact<{
@@ -489,10 +488,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 export type UpdateUserMutation = { __typename?: 'Mutation' } & {
-  updateUser: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'firstName' | 'lastName' | 'phone' | 'city' | 'country' | 'gender'
-  >;
+  updateUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export type EcoverseChallengeGroupsQueryVariables = Exact<{ [key: string]: never }>;
@@ -559,33 +555,38 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
   challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
 };
 
-export const NewUserFragmentDoc = gql`
-  fragment NewUser on User {
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
     id
     name
     firstName
     lastName
     email
-    phone
-    city
-    country
-    gender
+    profile {
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+    }
   }
+`;
+export const NewUserFragmentDoc = gql`
+  fragment NewUser on User {
+    ...UserDetails
+  }
+  ${UserDetailsFragmentDoc}
 `;
 export const UsersDocument = gql`
   query users {
     users {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 
 /**
@@ -615,17 +616,10 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
@@ -657,16 +651,10 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMut
 export const UpdateUserDocument = gql`
   mutation updateUser($user: UserInput!, $userId: Float!) {
     updateUser(userData: $user, userID: $userId) {
-      id
-      name
-      firstName
-      lastName
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
 
