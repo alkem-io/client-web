@@ -245,7 +245,7 @@ export type Mutation = {
   /** Creates a new reference with the specified name for the profile with given id */
   createReferenceOnProfile: Reference;
   /** Adds the user with the given identifier to the specified user group */
-  addUserToGroup: UserGroup;
+  addUserToGroup: Scalars['Boolean'];
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Assign the user with the given ID as focal point for the given group */
@@ -456,31 +456,30 @@ export type OrganisationInput = {
   tags?: Maybe<TagsInput>;
 };
 
-export type NewUserFragment = { __typename?: 'User' } & Pick<
+export type NewUserFragment = { __typename?: 'User' } & UserDetailsFragment;
+
+export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
->;
+  'id' | 'name' | 'firstName' | 'lastName' | 'email'
+> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+      }
+    >;
+  };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UsersQuery = { __typename?: 'Query' } & {
-  users: Array<
-    { __typename?: 'User' } & Pick<
-      User,
-      'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
-    >
-  >;
-};
+export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
 
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
 }>;
 
 export type CreateUserMutation = { __typename?: 'Mutation' } & {
-  createUser: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'country' | 'gender'
-  >;
+  createUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export type UpdateUserMutationVariables = Exact<{
@@ -489,10 +488,39 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 export type UpdateUserMutation = { __typename?: 'Mutation' } & {
-  updateUser: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'firstName' | 'lastName' | 'phone' | 'city' | 'country' | 'gender'
+  updateUser: { __typename?: 'User' } & UserDetailsFragment;
+};
+
+export type EcoverseChallengeGroupsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & {
+  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+  challenges: Array<
+    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+      }
   >;
+};
+
+export type GroupMembersQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type GroupMembersQuery = { __typename?: 'Query' } & {
+  group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>>;
+    };
+};
+
+export type RemoveUserFromGroupMutationVariables = Exact<{
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
+}>;
+
+export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
+  removeUserFromGroup: { __typename?: 'UserGroup' } & {
+    members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
+  };
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
@@ -527,33 +555,38 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
   challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
 };
 
-export const NewUserFragmentDoc = gql`
-  fragment NewUser on User {
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
     id
     name
     firstName
     lastName
     email
-    phone
-    city
-    country
-    gender
+    profile {
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+    }
   }
+`;
+export const NewUserFragmentDoc = gql`
+  fragment NewUser on User {
+    ...UserDetails
+  }
+  ${UserDetailsFragmentDoc}
 `;
 export const UsersDocument = gql`
   query users {
     users {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 
 /**
@@ -583,17 +616,10 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
-      id
-      name
-      firstName
-      lastName
-      email
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
@@ -625,16 +651,10 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMut
 export const UpdateUserDocument = gql`
   mutation updateUser($user: UserInput!, $userId: Float!) {
     updateUser(userData: $user, userID: $userId) {
-      id
-      name
-      firstName
-      lastName
-      phone
-      city
-      country
-      gender
+      ...UserDetails
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
 
@@ -664,6 +684,152 @@ export function useUpdateUserMutation(
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const EcoverseChallengeGroupsDocument = gql`
+  query ecoverseChallengeGroups {
+    groups {
+      id
+      name
+    }
+    challenges {
+      id
+      name
+      textID
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseChallengeGroupsQuery__
+ *
+ * To run a query within a React component, call `useEcoverseChallengeGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseChallengeGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseChallengeGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseChallengeGroupsQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
+    EcoverseChallengeGroupsDocument,
+    baseOptions
+  );
+}
+export function useEcoverseChallengeGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
+    EcoverseChallengeGroupsDocument,
+    baseOptions
+  );
+}
+export type EcoverseChallengeGroupsQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsQuery>;
+export type EcoverseChallengeGroupsLazyQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsLazyQuery>;
+export type EcoverseChallengeGroupsQueryResult = Apollo.QueryResult<
+  EcoverseChallengeGroupsQuery,
+  EcoverseChallengeGroupsQueryVariables
+>;
+export const GroupMembersDocument = gql`
+  query groupMembers($id: Float!) {
+    group(ID: $id) {
+      id
+      name
+      members {
+        id
+        name
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;
+
+/**
+ * __useGroupMembersQuery__
+ *
+ * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupMembersQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGroupMembersQuery(
+  baseOptions?: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+) {
+  return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
+}
+export function useGroupMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+) {
+  return Apollo.useLazyQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
+}
+export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
+export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
+export type GroupMembersQueryResult = Apollo.QueryResult<GroupMembersQuery, GroupMembersQueryVariables>;
+export const RemoveUserFromGroupDocument = gql`
+  mutation removeUserFromGroup($groupID: Float!, $userID: Float!) {
+    removeUserFromGroup(groupID: $groupID, userID: $userID) {
+      members {
+        id
+      }
+    }
+  }
+`;
+export type RemoveUserFromGroupMutationFn = Apollo.MutationFunction<
+  RemoveUserFromGroupMutation,
+  RemoveUserFromGroupMutationVariables
+>;
+
+/**
+ * __useRemoveUserFromGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
+ *   variables: {
+ *      groupID: // value for 'groupID'
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useRemoveUserFromGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>
+) {
+  return Apollo.useMutation<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>(
+    RemoveUserFromGroupDocument,
+    baseOptions
+  );
+}
+export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
+export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<RemoveUserFromGroupMutation>;
+export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
+  RemoveUserFromGroupMutation,
+  RemoveUserFromGroupMutationVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {

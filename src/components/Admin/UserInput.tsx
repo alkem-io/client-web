@@ -10,6 +10,7 @@ import InputWithCopy from './InputWithCopy';
 import gql from 'graphql-tag';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
+import { USER_DETAILS_FRAGMENT } from './query';
 
 // import { ReactComponent as Pencil } from 'bootstrap-icons/icons/pencil.svg';
 
@@ -98,16 +99,9 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 data: createUser,
                 fragment: gql`
                   fragment NewUser on User {
-                    id
-                    name
-                    firstName
-                    lastName
-                    email
-                    phone
-                    city
-                    country
-                    gender
+                    ...UserDetails
                   }
+                  ${USER_DETAILS_FRAGMENT}
                 `,
               });
               return [...existingTodos, newUserRef];
