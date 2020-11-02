@@ -1,15 +1,18 @@
-import React, { FC, FormEvent, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
-import { Alert, Button, Col, Form, FormControl, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap';
+import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import generator from 'generate-password';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+/*lib imports end*/
 
 import InputWithCopy from './InputWithCopy';
+/*components imports end*/
 
 import gql from 'graphql-tag';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
+/*local files imports end*/
 
 // import { ReactComponent as Pencil } from 'bootstrap-icons/icons/pencil.svg';
 
@@ -39,7 +42,6 @@ interface UserFrom {
 }
 
 export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
-  const [validated, setValidated] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [strongPassword, setStrongPassword] = useState<string>('');
@@ -47,7 +49,12 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
 
   const history = useHistory();
   const { userId } = useParams<Parameters>();
+  const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
+    onError: error => console.log(error),
+    onCompleted: () => setShowSuccess(true),
+  });
 
+  const genders = ['not specified', 'male', 'female'];
   const currentUser = users.find(u => u.id === userId) || defaultUser;
   const { name, firstName, lastName, email, city, gender, phone, country } = currentUser;
 
@@ -60,7 +67,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     city: city || '',
     country: country || '',
     phone: phone || '',
-    avatar: '',
+    // avatar: '',
   };
 
   const validationSchema: yup.ObjectSchema<UserFrom | undefined> = yup.object().shape({
@@ -72,10 +79,8 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     city: yup.string(),
     country: yup.string(),
     phone: yup.string(),
-    avatar: yup.string(),
+    // avatar: yup.string(),
   });
-
-  const genders = ['not specified', 'male', 'female'];
 
   const [createUser, { loading: mutationLoading }] = useCreateUserMutation({
     onError: error => {
@@ -118,38 +123,8 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     },
   });
 
-  const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: error => console.log(error),
-    onCompleted: () => setShowSuccess(true),
-  });
-
-  const [user, setUser] = useState<UserModel>({
-    ...defaultUser,
-    ...currentUser,
-  });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setUser(u => {
-      return {
-        ...u,
-        [name]: value,
-      };
-    });
-  };
-
-  const handleSubmit = (values: UserFrom) => {
-    // const form = e.currentTarget;
-    // console.log('form --->', form);
-    // e.preventDefault();
-    // if (!form.checkValidity()) {
-    //   setValidated(true);
-    //   return;
-    // }
-    const { id, ...newUser } = user;
-
-    console.log('values ---> ', values);
-    /*if (editMode === EditMode.new) {
+  const handleSubmit = (userData: UserFrom) => {
+    if (editMode === EditMode.new) {
       const aadPassword = generator.generate({
         length: 24,
         numbers: true,
@@ -158,23 +133,24 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
         strict: true,
       });
 
-      newUser.aadPassword = aadPassword;
+      const userWithPassword = { ...userData, aadPassword };
+
       setStrongPassword(aadPassword);
       createUser({
         variables: {
-          user: newUser,
+          user: userWithPassword,
         },
       });
-    } else if (editMode === EditMode.edit) {
-      const { email: _email, ...userToUpdate } = newUser;
+    } else if (editMode === EditMode.edit && currentUser.id) {
+      const { email: _email, ...userToUpdate } = userData;
 
       updateUser({
         variables: {
-          userId: Number(id),
+          userId: Number(currentUser.id),
           user: userToUpdate,
         },
       });
-    }*/
+    }
   };
 
   const handleBack = () => history.push('/admin/users');
@@ -218,168 +194,87 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values, handleChange, handleSubmit, handleBlur, isValid, errors }) => (
-            <Form noValidate>
-              <Form.Row>
-                <Form.Group as={Col} controlId="userName">
-                  <Form.Label>Full Name</Form.Label>
-                  <Form.Control
-                    name="name"
-                    placeholder="Full Name"
-                    value={values.name}
-                    onChange={handleChange}
-                    required
-                    readOnly={editMode === EditMode.readOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">Please provide Full Name.</Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formFirstName">
-                  <Form.Label>First Name</Form.Label>
-                  <Form.Control
-                    name="firstName"
-                    placeholder="First name"
-                    value={values.firstName}
-                    onChange={handleChange}
-                    readOnly={editMode === EditMode.readOnly}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="formLastName">
-                  <Form.Label>Last Name</Form.Label>
-                  <FormControl
-                    name="lastName"
-                    placeholder="Last name"
-                    value={values.lastName}
-                    onChange={handleChange}
-                    readOnly={editMode === EditMode.readOnly}
-                  />
-                  {console.log('errors ---> ', errors.lastName)}
-                  <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formEmail">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    required
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={values?.email}
-                    onChange={handleChange}
-                    disabled={true}
-                    readOnly={editMode === EditMode.readOnly || editMode === EditMode.edit}
-                  />
-                  <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Gender</Form.Label>
-                  <Form.Control as={'select'} onChange={handleChange} name={'gender'}>
-                    {genders.map(el => (
-                      <option key={el}>{el}</option>
-                    ))}
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
-                  <FormControl.Feedback type="invalid">Test</FormControl.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Alert show={isBlocked} variant="warning">
-                Please copy the "Generated password". Once form is closed it will be lost forever.
-              </Alert>
-              <Form.Group>
-                <Form.Label> </Form.Label>
-                {editMode !== EditMode.readOnly && (
-                  <>
-                    <Button variant="primary" onClick={() => handleSubmit()}>
-                      Save
-                    </Button>{' '}
-                    <Button variant="primary" onClick={() => console.log(values)}>
-                      values
-                    </Button>{' '}
-                  </>
-                )}
-                {backButton}
-                {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
+          {({ values, handleChange, handleSubmit, handleBlur, errors, touched }) => {
+            const getInputField = (
+              title: string,
+              fieldName: keyof UserFrom,
+              required = false,
+              readOnly = false,
+              type?: string
+            ) => (
+              <Form.Group as={Col}>
+                <Form.Label>{title}</Form.Label>
+                <Form.Control
+                  name={fieldName}
+                  type={type || 'text'}
+                  placeholder={title}
+                  value={values[fieldName]}
+                  onChange={handleChange}
+                  required={required}
+                  readOnly={readOnly}
+                  isValid={!errors[fieldName] && touched[fieldName]}
+                  isInvalid={!!errors[fieldName] && touched[fieldName]}
+                  onBlur={handleBlur}
+                />
+                <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
               </Form.Group>
-            </Form>
-          )}
+            );
+
+            return (
+              <Form noValidate>
+                <Form.Row>{getInputField('Full Name', 'name', true, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>
+                  {getInputField('First Name', 'firstName', true, editMode === EditMode.readOnly)}
+                  {getInputField('Last name', 'lastName', true, editMode === EditMode.readOnly)}
+                </Form.Row>
+                <Form.Row>
+                  {getInputField(
+                    'Email',
+                    'email',
+                    true,
+                    editMode === EditMode.readOnly || editMode === EditMode.edit,
+                    'email'
+                  )}
+                  <Form.Group as={Col}>
+                    <Form.Label>Gender</Form.Label>
+                    <Form.Control as={'select'} onChange={handleChange} name={'gender'}>
+                      {genders.map(el => (
+                        <option key={el}>{el}</option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  {getInputField('City', 'city', false, editMode === EditMode.readOnly)}
+                  {getInputField('Country', 'country', false, editMode === EditMode.readOnly)}
+                </Form.Row>
+                <Form.Row>{getInputField('Phone', 'phone', false, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>{getInputField('Avatar', 'avatar', false, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
+                    <FormControl.Feedback type="invalid">Test</FormControl.Feedback>
+                  </Form.Group>
+                </Form.Row>
+                <Alert show={isBlocked} variant="warning">
+                  Please copy the "Generated password". Once form is closed it will be lost forever.
+                </Alert>
+                <Form.Group>
+                  <Form.Label> </Form.Label>
+                  {editMode !== EditMode.readOnly && (
+                    <>
+                      <Button variant="primary" onClick={() => handleSubmit()}>
+                        Save
+                      </Button>{' '}
+                    </>
+                  )}
+                  {backButton}
+                  {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
+                </Form.Group>
+              </Form>
+            );
+          }}
         </Formik>
-        {/*<Form noValidate onSubmit={handleSubmit}>
-          <Form.Row>
-            <Form.Group as={Col} controlId="userName">
-              <Form.Label>Full Name</Form.Label>
-              <Form.Control
-                name="name"
-                placeholder="Full Name"
-                value={user.name}
-                required
-                onChange={handleChange}
-                readOnly={editMode === EditMode.readOnly}
-              />
-              <Form.Control.Feedback type="invalid">Please provide Full Name.</Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col} controlId="formFirstName">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                name="firstName"
-                placeholder="First name"
-                value={user.firstName}
-                onChange={handleChange}
-                readOnly={editMode === EditMode.readOnly}
-              />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formLastName">
-              <Form.Label>Last Name</Form.Label>
-              <FormControl
-                name="lastName"
-                placeholder="Last name"
-                value={user.lastName}
-                onChange={handleChange}
-                readOnly={editMode === EditMode.readOnly}
-              />
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col} controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                required
-                name="email"
-                type="email"
-                placeholder="Email"
-                value={user?.email}
-                onChange={handleChange}
-                disabled={true}
-                readOnly={editMode === EditMode.readOnly || editMode === EditMode.edit}
-              />
-              <Form.Control.Feedback type="invalid">Please provide e-mail.</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col}>
-              {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
-              <FormControl.Feedback type="invalid">Test</FormControl.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <Alert show={isBlocked} variant="warning">
-            Please copy the "Generated password". Once form is closed it will be lost forever.
-          </Alert>
-          <Form.Group>
-            <Form.Label> </Form.Label>
-            {editMode !== EditMode.readOnly && (
-              <>
-                <Button variant="primary" type="submit">
-                  Save
-                </Button>{' '}
-              </>
-            )}
-            {backButton}
-            {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
-          </Form.Group>
-        </Form>*/}
       </>
     );
   }
