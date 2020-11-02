@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
 import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import generator from 'generate-password';
-import { Formik } from 'formik';
+import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
 /*lib imports end*/
 
@@ -11,10 +11,10 @@ import InputWithCopy from './InputWithCopy';
 
 import gql from 'graphql-tag';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
-import { defaultUser, UserModel } from '../../models/User';
+import { defaultUser, UserModel, UserFromGenerated } from '../../models/User';
+import { USER_DETAILS_FRAGMENT } from './query';
+import './styles.scss';
 /*local files imports end*/
-
-// import { ReactComponent as Pencil } from 'bootstrap-icons/icons/pencil.svg';
 
 interface Parameters {
   userId: string;
@@ -29,38 +29,40 @@ interface UserProps {
   editMode?: EditMode;
   onSave?: (user: UserModel) => void;
 }
-interface UserFrom {
-  name: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  city: string;
-  country: string;
-  gender: string;
-  avatar: string;
-  tags: string[];
-  references: string[];
-}
 
-export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [strongPassword, setStrongPassword] = useState<string>('');
-  const [isBlocked, setIsBlocked] = useState(false);
-
-  const history = useHistory();
+export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
   const { userId } = useParams<Parameters>();
+  const currentUser = users.find(u => u.id === userId) || defaultUser;
+  const skills = currentUser.profile.tagsets[0].tags.map(t => t).join(', ');
+
+  const [userSkills, setUserSkills] = useState<string>(skills);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+  const [strongPassword, setStrongPassword] = useState<string>('');
+  const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const history = useHistory();
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => setShowSuccess(true),
   });
-
   const genders = ['not specified', 'male', 'female'];
-  const currentUser = users.find(u => u.id === userId) || defaultUser;
-  const { name, firstName, lastName, email, city, gender, phone, country, tags, references, avatar } = currentUser;
 
-  const initialValues: UserFrom = {
+  const isEditMode = editMode === EditMode.edit;
+  const isReadOnlyMode = editMode === EditMode.readOnly;
+
+  const {
+    name,
+    firstName,
+    lastName,
+    email,
+    city,
+    gender,
+    phone,
+    country,
+    profile: { tagsets, references, avatar },
+  } = currentUser;
+
+  const initialValues = {
     name: name || '',
     firstName: firstName || '',
     lastName: lastName || '',
@@ -70,11 +72,11 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     country: country || '',
     phone: phone || '',
     avatar: avatar || '',
-    tags: tags || [],
-    references: references || [],
+    tagsets: tagsets,
+    references: references || '',
   };
 
-  const validationSchema: yup.ObjectSchema<UserFrom | undefined> = yup.object().shape({
+  const validationSchema = yup.object().shape({
     name: yup.string().required('This is the required field'),
     firstName: yup.string().required('This is the required field'),
     lastName: yup.string().required('This is the required field'),
@@ -84,8 +86,18 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     country: yup.string(),
     phone: yup.string(),
     avatar: yup.string(),
-    tags: yup.string(),
-    references: yup.string(),
+    tagsets: yup.array().of(
+      yup.object().shape({
+        name: yup.string(),
+        tags: yup.array().of(yup.string()),
+      })
+    ),
+    references: yup.array().of(
+      yup.object().shape({
+        name: yup.string(),
+        uri: yup.string(),
+      })
+    ),
   });
 
   const [createUser, { loading: mutationLoading }] = useCreateUserMutation({
@@ -109,21 +121,9 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 data: createUser,
                 fragment: gql`
                   fragment NewUser on User {
-                    id
-                    name
-                    firstName
-                    lastName
-                    email
-                    phone
-                    city
-                    country
-                    gender
-                    profile {
-                      references
-                      tagsets
-                      avatar
-                    }
+                    ...UserDetails
                   }
+                  ${USER_DETAILS_FRAGMENT}
                 `,
               });
               return [...existingTodos, newUserRef];
@@ -134,7 +134,19 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     },
   });
 
-  const handleSubmit = (userData: UserFrom) => {
+  const handleSubmit = (userData: UserFromGenerated) => {
+    const { tagsets, ...otherData } = userData;
+    const tags = userSkills.split(',').map(t => t && t.trim());
+    const user = {
+      tagsets: [
+        {
+          name: 'Science',
+          tags,
+        },
+      ],
+      ...otherData,
+    };
+
     if (editMode === EditMode.new) {
       const aadPassword = generator.generate({
         length: 24,
@@ -144,7 +156,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
         strict: true,
       });
 
-      const userWithPassword = { ...userData, aadPassword };
+      const userWithPassword = { ...user, aadPassword };
 
       setStrongPassword(aadPassword);
       createUser({
@@ -152,8 +164,8 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
           user: userWithPassword,
         },
       });
-    } else if (editMode === EditMode.edit && currentUser.id) {
-      const { email: _email, ...userToUpdate } = userData;
+    } else if (isEditMode && currentUser.id) {
+      const { email, ...userToUpdate } = user;
 
       updateUser({
         variables: {
@@ -166,13 +178,9 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
 
   const handleBack = () => history.push('/admin/users');
 
-  const backButton = editMode ? (
-    <Button variant="secondary" onClick={handleBack}>
-      Cancel
-    </Button>
-  ) : (
-    <Button variant="primary" onClick={handleBack}>
-      Back
+  const backButton = (
+    <Button variant={editMode ? 'secondary' : 'primary'} onClick={handleBack}>
+      {editMode ? 'Cancel' : 'Back'}
     </Button>
   );
 
@@ -188,7 +196,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
       <>
         <Prompt
           when={isBlocked}
-          message={() =>
+          message={
             'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!'
           }
         />
@@ -205,10 +213,18 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values, handleChange, handleSubmit, handleBlur, errors, touched }) => {
+          {({
+            values: { name, firstName, lastName, email, city, phone, country, references, avatar },
+            handleChange,
+            handleSubmit,
+            handleBlur,
+            errors,
+            touched,
+          }) => {
             const getInputField = (
               title: string,
-              fieldName: keyof UserFrom,
+              value: string,
+              fieldName: string,
               required = false,
               readOnly = false,
               type?: string
@@ -219,33 +235,31 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                   name={fieldName}
                   type={type || 'text'}
                   placeholder={title}
-                  value={values[fieldName]}
-                  onChange={handleChange}
+                  value={value}
+                  onChange={fieldName === 'tagsets' ? handleTagSet : handleChange}
                   required={required}
                   readOnly={readOnly}
-                  isValid={!errors[fieldName] && touched[fieldName]}
-                  isInvalid={!!errors[fieldName] && touched[fieldName]}
+                  isValid={Boolean(!errors[fieldName]) && Boolean(touched[fieldName])}
+                  isInvalid={Boolean(!!errors[fieldName]) && Boolean(touched[fieldName])}
                   onBlur={handleBlur}
                 />
                 <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
               </Form.Group>
             );
 
+            const handleTagSet = ({ target: { value } }) => {
+              setUserSkills(value);
+            };
+
             return (
               <Form noValidate>
-                <Form.Row>{getInputField('Full Name', 'name', true, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>{getInputField('Full Name', name, 'name', true, isReadOnlyMode)}</Form.Row>
                 <Form.Row>
-                  {getInputField('First Name', 'firstName', true, editMode === EditMode.readOnly)}
-                  {getInputField('Last name', 'lastName', true, editMode === EditMode.readOnly)}
+                  {getInputField('First Name', firstName, 'firstName', true, isReadOnlyMode)}
+                  {getInputField('Last name', lastName, 'lastName', true, isReadOnlyMode)}
                 </Form.Row>
                 <Form.Row>
-                  {getInputField(
-                    'Email',
-                    'email',
-                    true,
-                    editMode === EditMode.readOnly || editMode === EditMode.edit,
-                    'email'
-                  )}
+                  {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
                   <Form.Group as={Col}>
                     <Form.Label>Gender</Form.Label>
                     <Form.Control as={'select'} onChange={handleChange} name={'gender'}>
@@ -256,12 +270,48 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                  {getInputField('City', 'city', false, editMode === EditMode.readOnly)}
-                  {getInputField('Country', 'country', false, editMode === EditMode.readOnly)}
+                  {getInputField('City', city, 'city', false, isReadOnlyMode)}
+                  {getInputField('Country', country, 'country', false, isReadOnlyMode)}
                 </Form.Row>
-                <Form.Row>{getInputField('Phone', 'phone', false, editMode === EditMode.readOnly)}</Form.Row>
-                <Form.Row>{getInputField('Avatar', 'avatar', false, editMode === EditMode.readOnly)}</Form.Row>
-                <Form.Row>{getInputField('Tags', 'tags', false, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
+                <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
+                <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
+                <FieldArray name={'references'}>
+                  {({ push, remove }) => (
+                    <>
+                      <Form.Row>
+                        <Form.Group>
+                          <Form.Label>References</Form.Label>{' '}
+                          <Button onClick={() => push({ name: '', uri: '' })}>Add</Button>
+                        </Form.Group>
+                      </Form.Row>
+                      {references.map((ref, index) => (
+                        <Form.Row key={index}>
+                          {getInputField(
+                            'Name',
+                            references[index].name,
+                            `references.${index}.name`,
+                            false,
+                            isReadOnlyMode
+                          )}
+                          {getInputField(
+                            'URI',
+                            references[index].uri,
+                            `references.${index}.uri`,
+                            false,
+                            isReadOnlyMode
+                          )}
+                          <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                            <Form.Label>{'123'}</Form.Label>
+                            <Button onClick={() => remove(index)} variant={'danger'}>
+                              Remove
+                            </Button>
+                          </Form.Group>
+                        </Form.Row>
+                      ))}
+                    </>
+                  )}
+                </FieldArray>
                 <Form.Row>
                   <Form.Group as={Col}>
                     {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
@@ -273,7 +323,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 </Alert>
                 <Form.Group>
                   <Form.Label> </Form.Label>
-                  {editMode !== EditMode.readOnly && (
+                  {!isReadOnlyMode && (
                     <>
                       <Button variant="primary" onClick={() => handleSubmit()}>
                         Save
@@ -291,4 +341,4 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     );
   }
 };
-export default UserInput;
+export default UserFrom;
