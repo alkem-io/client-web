@@ -38,7 +38,9 @@ interface UserFrom {
   city: string;
   country: string;
   gender: string;
-  avatar?: string;
+  avatar: string;
+  tags: string[];
+  references: string[];
 }
 
 export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
@@ -56,7 +58,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
 
   const genders = ['not specified', 'male', 'female'];
   const currentUser = users.find(u => u.id === userId) || defaultUser;
-  const { name, firstName, lastName, email, city, gender, phone, country } = currentUser;
+  const { name, firstName, lastName, email, city, gender, phone, country, tags, references, avatar } = currentUser;
 
   const initialValues: UserFrom = {
     name: name || '',
@@ -67,7 +69,9 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     city: city || '',
     country: country || '',
     phone: phone || '',
-    // avatar: '',
+    avatar: avatar || '',
+    tags: tags || [],
+    references: references || [],
   };
 
   const validationSchema: yup.ObjectSchema<UserFrom | undefined> = yup.object().shape({
@@ -79,7 +83,9 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
     city: yup.string(),
     country: yup.string(),
     phone: yup.string(),
-    // avatar: yup.string(),
+    avatar: yup.string(),
+    tags: yup.string(),
+    references: yup.string(),
   });
 
   const [createUser, { loading: mutationLoading }] = useCreateUserMutation({
@@ -112,6 +118,11 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                     city
                     country
                     gender
+                    profile {
+                      references
+                      tagsets
+                      avatar
+                    }
                   }
                 `,
               });
@@ -250,6 +261,7 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
                 </Form.Row>
                 <Form.Row>{getInputField('Phone', 'phone', false, editMode === EditMode.readOnly)}</Form.Row>
                 <Form.Row>{getInputField('Avatar', 'avatar', false, editMode === EditMode.readOnly)}</Form.Row>
+                <Form.Row>{getInputField('Tags', 'tags', false, editMode === EditMode.readOnly)}</Form.Row>
                 <Form.Row>
                   <Form.Group as={Col}>
                     {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}

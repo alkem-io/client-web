@@ -9,6 +9,9 @@ export interface UserModel {
   country: string;
   gender: string;
   aadPassword: string;
+  avatar: string;
+  tags: string[];
+  references: string[];
 }
 
 export const defaultUser: UserModel = {
@@ -22,4 +25,7 @@ export const defaultUser: UserModel = {
   country: '',
   gender: '',
   aadPassword: '',
+  avatar: '',
+  tags: [],
+  references: [],
 };
