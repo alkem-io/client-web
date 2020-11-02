@@ -7,14 +7,11 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { RootState } from '../reducers';
 import { pushError } from '../reducers/error/actions';
 
-export const useGraphQLClient = (
-  graphQLEndpoint: string,
-  enableAuthentication: boolean
-): ApolloClient<NormalizedCacheObject> => {
+export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const token = useSelector<RootState, string | null>(state => state.auth.accessToken);
   const dispatch = useDispatch();
 
-  console.log('Token: ', token);
+  console.debug('Token: ', token);
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     let errors: Error[] = [];
@@ -44,7 +41,6 @@ export const useGraphQLClient = (
   });
 
   const authLink = setContext((_, { headers }) => {
-    if (!enableAuthentication) return headers;
     return {
       headers: {
         ...headers,

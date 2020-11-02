@@ -16,7 +16,7 @@ export interface AppContainerProps {
 
 const AppContainer: React.FC<AppContainerProps> = props => {
   const { graphQLEndpoint, enableAuthentication } = props;
-  const client = useGraphQLClient(graphQLEndpoint, enableAuthentication);
+  const client = useGraphQLClient(graphQLEndpoint);
 
   return (
     <ApolloProvider client={client}>
