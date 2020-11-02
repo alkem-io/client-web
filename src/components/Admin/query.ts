@@ -80,3 +80,13 @@ export const QUERY_GROUP_MEMBERS = gql`
     }
   }
 `;
+
+export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
+  mutation removeUserFromGroup($groupID: Float!, $userID: Float!) {
+    removeUserFromGroup(groupID: $groupID, userID: $userID) {
+      members {
+        id
+      }
+    }
+  }
+`;
