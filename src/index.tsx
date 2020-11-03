@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './root';
-// import './styles/index.scss';
+import './styles/index.scss';
 import { env } from './env';
 
 let indexPage = <Root />;

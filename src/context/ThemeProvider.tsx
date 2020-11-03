@@ -50,8 +50,8 @@ const defaultPalette: Palette = {
   divider: '#00BCD440',
 };
 
-const monserrat = 'Monserrat';
-const sourceSansPro = 'Source Sans Pro';
+const monserrat = '"MONTSERRAT"';
+const sourceSansPro = '"Source Sans Pro"';
 
 const defaultTypography: Typography = {
   caption: { font: monserrat, size: 12 },
