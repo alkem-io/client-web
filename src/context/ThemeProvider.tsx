@@ -33,10 +33,25 @@ export interface Shape {
   spacing: (x: number) => number;
 }
 
+export interface Breakpoints {
+  xs: number;
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+}
+
+export interface Media {
+  breakpoints: Breakpoints;
+  up: (val: keyof Breakpoints) => string;
+  down: (val: keyof Breakpoints) => string;
+}
+
 export interface Theme {
   palette: Palette;
   typography: Typography;
   shape: Shape;
+  media: Media;
 }
 
 const defaultPalette: Palette = {
@@ -72,10 +87,28 @@ const defaultShape: Shape = {
   },
 };
 
+// as defined in bootstrap
+const defaultMedia: Media = {
+  breakpoints: {
+    xs: 0,
+    sm: 576,
+    md: 768,
+    lg: 992,
+    xl: 1200,
+  },
+  up: function (key: keyof Breakpoints) {
+    return `@media (min-width: ${this.breakpoints[key]}px)`;
+  },
+  down: function (key: keyof Breakpoints) {
+    return `@media (max-width: ${this.breakpoints[key]}px)`;
+  },
+};
+
 const defaultTheme: Theme = {
   palette: defaultPalette,
   typography: defaultTypography,
   shape: defaultShape,
+  media: defaultMedia,
 };
 
 const ThemeContext = React.createContext<Theme>(defaultTheme);

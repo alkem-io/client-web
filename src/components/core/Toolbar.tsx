@@ -9,10 +9,16 @@ const useToolbarStyles = createStyles(theme => ({
     flexDirection: 'row',
   },
   paddingDefault: {
-    padding: `${theme.shape.spacing(4)}px ${theme.shape.spacing(6)}px`,
+    padding: `${theme.shape.spacing(4)}px ${theme.shape.spacing(4)}px`,
   },
   paddingDense: {
-    padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(6)}px`,
+    padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(4)}px`,
+  },
+  responsivePadding: {
+    [theme.media.down('md')]: {
+      paddingLeft: theme.shape.spacing(2),
+      paddingRight: theme.shape.spacing(2),
+    },
   },
 }));
 
@@ -26,7 +32,15 @@ const Toolbar: FC<ToolbarProps> = ({ dense, paddingClass, classes, children }) =
   const styles = useToolbarStyles();
 
   return (
-    <div className={clsx(styles.toolbar, paddingClass || styles.paddingDefault, dense && styles.paddingDense, classes)}>
+    <div
+      className={clsx(
+        styles.toolbar,
+        paddingClass || styles.paddingDefault,
+        dense && styles.paddingDense,
+        styles.responsivePadding,
+        classes
+      )}
+    >
       {children}
     </div>
   );

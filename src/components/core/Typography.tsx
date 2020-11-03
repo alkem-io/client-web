@@ -11,10 +11,13 @@ const useTypographyStyles = createStyles(theme => ({
   h2: {
     fontFamily: theme.typography.h2.font,
     fontSize: theme.typography.h2.size,
+    textTransform: 'uppercase',
+    paddingBottom: theme.shape.spacing(1),
   },
   h3: {
     fontFamily: theme.typography.h3.font,
     fontSize: theme.typography.h3.size,
+    paddingBottom: theme.shape.spacing(1),
   },
   h4: {
     fontFamily: theme.typography.h4.font,
@@ -62,6 +65,9 @@ const useTypographyStyles = createStyles(theme => ({
   background: {
     color: theme.palette.background,
   },
+  inherit: {
+    color: 'inherit',
+  },
 }));
 
 interface FontWeight {
@@ -81,24 +87,27 @@ const fontWeight: FontWeight = {
 interface TypographyProps {
   variant?: keyof Typography;
   className?: string;
-  color?: keyof Palette;
+  color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;
+  as?: string;
 }
 
 const Toolbar: FC<TypographyProps> = ({
   variant = 'body',
   color = 'neutral',
   weight = 'medium',
+  as,
   className,
   children,
 }) => {
   const classes = useTypographyStyles();
+  as = as || 'div';
 
-  return (
-    <div className={clsx(classes[variant], classes[color], className)} style={{ fontWeight: fontWeight[weight] }}>
-      {children}
-    </div>
-  );
+  return React.createElement(as, {
+    className: clsx(classes[variant], classes[color], className),
+    style: { fontWeight: fontWeight[weight] },
+    children,
+  });
 };
 
 export default Toolbar;

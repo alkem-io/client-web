@@ -1,0 +1,22 @@
+{
+  "odyssey": {
+    "header": "Odyssey",
+    "subheader": "Discover the future by building it together",
+    "body": "Odyssey is a non-profit online incubator for multi-stakeholder collaboration that connects governmental, corporate, scientific and nonprofit partners with anyone that can contribute to building open source solutions for complex 21st-century challenges. Together, we create an interconnected, multi-stakeholder ecosystem where we discover the future by building it."
+  },
+  "challenges": {
+    "header": "Challenges",
+    "subheader": "There is no final frontier",
+    "body": "Odyssey 2020 hosts 21 challenges to shape the 21st century. Find out what challenges others are taking on and discover how you can exchange value. Go explore!"
+  },
+  "community": {
+    "header": "Community",
+    "subheader": "Building the future together",
+    "body": "Odyssey brings together a unique international community of more than 6,000 members from around the world. From startups to governments, from scientists to regulators, from developers to legal experts, and many others, each holding a part of the solution to complex global challenges in their hands."
+  },
+  "projects": {
+    "header": "Projects",
+    "headerTag": "$ 1.750.000 allocated IN THIS ECOVERSE",
+    "subheader": "Recently initiated projects from the Odyssey Ecoverse"
+  }
+}

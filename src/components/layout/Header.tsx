@@ -46,7 +46,7 @@ const Header: FC<HeaderProps> = ({ children }) => {
         <Toolbar dense classes={clsx(styles['fixed'], styles.centerContent)}>
           <Container fluid>
             <Row>
-              <Col xs={3}></Col>
+              <Col xs={false} md={3}></Col>
               <Col xs>{children(headerInSight)}</Col>
             </Row>
           </Container>
@@ -56,7 +56,7 @@ const Header: FC<HeaderProps> = ({ children }) => {
         <Toolbar classes={clsx(styles['absolute'], styles.centerContent)}>
           <Container fluid>
             <Row>
-              <Col xs={3}></Col>
+              <Col xs={false} md={3}></Col>
               <Col xs>{children(headerInSight)}</Col>
             </Row>
           </Container>
