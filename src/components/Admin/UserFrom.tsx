@@ -120,9 +120,6 @@ export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, o
               const newUserRef = cache.writeFragment({
                 data: createUser,
                 fragment: gql`
-                  fragment NewUser on User {
-                    ...UserDetails
-                  }
                   ${USER_DETAILS_FRAGMENT}
                 `,
               });
@@ -135,16 +132,21 @@ export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, o
   });
 
   const handleSubmit = (userData: UserFromGenerated) => {
-    const { tagsets, ...otherData } = userData;
+    const { tagsets, avatar, references, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
     const user = {
-      tagsets: [
-        {
-          name: 'Science',
-          tags,
-        },
-      ],
       ...otherData,
+      profileData: {
+        description: 'some description',
+        avatar,
+        tagsetsData: [
+          {
+            name: 'Science',
+            tags,
+          },
+        ],
+        referencesData: references,
+      },
     };
 
     if (editMode === EditMode.new) {
