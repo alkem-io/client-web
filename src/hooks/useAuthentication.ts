@@ -6,23 +6,28 @@ import {
   PublicClientApplication,
   SilentRequest,
 } from '@azure/msal-browser';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { configContext } from '../context/ConfigProvider';
 import { updateAccount, updateToken } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
-import { loginRequest, msalConfig, silentRequest, tokenRequest } from '../utils/authConfig';
 import { useTypedSelector } from './useTypedSelector';
 
 const useRedirectFlow = false;
 
 export const useAuthentication = (enabled = true): { handleSignIn: () => void; handleSignOut: () => void } => {
+  const config = useContext(configContext);
   const username = useTypedSelector(state => state.auth.account?.username || '');
-
-  const msalApp = new PublicClientApplication(msalConfig);
   const dispatch = useDispatch();
 
-  const getAccounts = () => {
-    console.log('getting accounts');
+  const msalApp = useMemo(() => {
+    if (config.loading) return undefined;
+    console.log('Configuring msalApp');
+    return new PublicClientApplication(config.aadConfig.msalConfig);
+  }, [config.loading]);
+
+  const getAccounts = useCallback(() => {
+    if (!msalApp) return;
     if (enabled) {
       /**
        * See here for more info on account retrieval:
@@ -42,7 +47,7 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
     } else {
       setDummyAccount();
     }
-  };
+  }, [msalApp]);
 
   const handleResponse = (response: AuthenticationResult | null) => {
     if (enabled) {
@@ -55,11 +60,12 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   };
 
   const signIn = async (redirect: boolean) => {
+    if (!msalApp) return;
     if (redirect) {
-      return msalApp.loginRedirect(loginRequest);
+      return msalApp.loginRedirect(config.aadConfig.loginRequest);
     }
     return msalApp
-      .loginPopup(loginRequest)
+      .loginPopup(config.aadConfig.loginRequest)
       .then(handleResponse)
       .catch(err => {
         dispatch(pushError(err));
@@ -67,6 +73,7 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   };
 
   const signOut = async () => {
+    if (!msalApp) return;
     if (username) {
       const logoutRequest = {
         account: msalApp.getAccountByUsername(username),
@@ -102,27 +109,29 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   };
 
   const acquireToken = useCallback(async () => {
+    console.log('AcquireToken');
+    if (!msalApp) return;
     /**
      * See here for more info on account retrieval:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
      */
-    const sr = {
-      scopes: [...silentRequest.scopes],
+    const silentRequest = {
+      scopes: [...config.aadConfig.silentRequest.scopes],
       account: msalApp.getAccountByUsername(username),
     } as SilentRequest;
 
     // eslint-disable-next-line consistent-return
-    return msalApp.acquireTokenSilent(sr).catch(err => {
+    return msalApp.acquireTokenSilent(silentRequest).catch(err => {
       console.warn('silent token acquisition fails. acquiring token using interactive method');
       if (err) {
         // fallback to interaction when silent call fails
-        const tr = {
-          scopes: [...tokenRequest.scopes],
+        const tokenRequest = {
+          scopes: [...config.aadConfig.tokenRequest.scopes],
           account: msalApp.getAccountByUsername(username),
         } as AuthorizationUrlRequest;
 
         return msalApp
-          .acquireTokenPopup(tr)
+          .acquireTokenPopup(tokenRequest)
           .then(handleResponse)
           .catch((er: AuthError) => {
             dispatch(pushError(new Error(er.errorMessage)));
@@ -131,9 +140,10 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
       }
       console.warn(err);
     });
-  }, [username]);
+  }, [username, msalApp]);
 
   useEffect(() => {
+    if (!msalApp) return;
     if (enabled) {
       if (useRedirectFlow) {
         msalApp
@@ -146,10 +156,10 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
       }
     }
     getAccounts();
-  }, [username]);
+  }, [username, msalApp]);
 
   useEffect(() => {
-    if (enabled) {
+    if (enabled && msalApp) {
       if (username) {
         acquireToken().then(response => {
           if (response) {
@@ -159,7 +169,7 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
         });
       }
     }
-  }, [username]);
+  }, [username, msalApp]);
 
   return {
     handleSignIn,

@@ -12,9 +12,8 @@ const defaultTaks = cb => {
   });
 
   configuration['REACT_APP_GRAPHQL_ENDPOINT'] =
-    configuration['REACT_APP_GRAPHQL_ENDPOINT'] || env.NODE_ENV === 'production'
-      ? '/graphql'
-      : 'http://localhost:4000/graphql';
+    configuration['REACT_APP_GRAPHQL_ENDPOINT'] ||
+    (env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
 
   fs.writeFile(`./public/${CONFIG_FILE_NAME}`, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, cb);
 };

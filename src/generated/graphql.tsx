@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-export type Maybe<T> = T | null;
+export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -685,6 +685,7 @@ export type ConfigQuery = { __typename?: 'Query' } & {
         auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
         cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
       };
+      apiConfig: { __typename?: 'AadApiConfig' } & Pick<AadApiConfig, 'resourceScope'>;
       loginRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
       tokenRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
       silentRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
@@ -915,6 +916,9 @@ export const ConfigDocument = gql`
           cacheLocation
           storeAuthStateInCookie
         }
+      }
+      apiConfig {
+        resourceScope
       }
       loginRequest {
         scopes

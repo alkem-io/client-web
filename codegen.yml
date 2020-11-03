@@ -9,3 +9,4 @@ generates:
       - "typescript-react-apollo"
     config:
       withHooks: true
+      maybeValue: T | undefined

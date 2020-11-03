@@ -14,6 +14,9 @@ export const QUERY_CONFIG = gql`
           storeAuthStateInCookie
         }
       }
+      apiConfig {
+        resourceScope
+      }
       loginRequest {
         scopes
       }
