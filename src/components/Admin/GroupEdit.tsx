@@ -54,7 +54,7 @@ export const GroupEdit: FC = () => {
   if (loading) return <div>Loading...</div>;
 
   const removeMember = (member: string) => {
-    removeUser({ gro });
+    // removeUser({ gro });
   };
 
   return (

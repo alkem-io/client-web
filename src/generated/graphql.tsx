@@ -18,10 +18,21 @@ export type Tagset = {
   tags: Array<Scalars['String']>;
 };
 
+export type Template = {
+  __typename?: 'Template';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description: Scalars['String'];
+  /** The set of user types that are available within this template */
+  users?: Maybe<Array<User>>;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
+  /** The unique personal identifier (upn) for the account associated with this user profile */
+  accountUpn: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
@@ -31,6 +42,8 @@ export type User = {
   gender: Scalars['String'];
   /** The profile for this user */
   profile?: Maybe<Profile>;
+  /** The last timestamp, in seconds, when this user was modified - either via creation or via update. Note: updating of profile data or group memberships does not update this field. */
+  lastModified?: Maybe<Scalars['Int']>;
   /** An overview of the groups this user is a memberof */
   memberof?: Maybe<MemberOf>;
 };
@@ -53,10 +66,10 @@ export type Organisation = {
   name: Scalars['String'];
   /** The set of tags for the organisation */
   tagset?: Maybe<Tagset>;
-  /** The set of users that are associated with this organisation */
-  members?: Maybe<Array<User>>;
-  /** Groups of users related to an organisation. */
+  /** Groups defined on this organisation. */
   groups?: Maybe<Array<UserGroup>>;
+  /** Users that are contributing to this organisation. */
+  members?: Maybe<Array<User>>;
 };
 
 export type Ecoverse = {
@@ -67,13 +80,46 @@ export type Ecoverse = {
   host?: Maybe<Organisation>;
   /** The shared understanding for the Ecoverse */
   context?: Maybe<Context>;
+  /** The set of groups at the Ecoverse level */
   groups?: Maybe<Array<UserGroup>>;
   /** The set of partner organisations associated with this Ecoverse */
   organisations?: Maybe<Array<Organisation>>;
   /** The Challenges hosted by the Ecoverse */
   challenges?: Maybe<Array<Challenge>>;
+  /** The set of templates registered with this Ecoverse */
+  templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
+};
+
+export type Actor = {
+  __typename?: 'Actor';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** A description of this actor */
+  description?: Maybe<Scalars['String']>;
+  /** A value derived by this actor */
+  value?: Maybe<Scalars['String']>;
+  /** The change / effort required of this actor */
+  impact?: Maybe<Scalars['String']>;
+};
+
+export type ActorGroup = {
+  __typename?: 'ActorGroup';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** A description of this group of actors */
+  description?: Maybe<Scalars['String']>;
+  /** The set of actors in this actor group */
+  actors?: Maybe<Array<Actor>>;
+};
+
+export type Aspect = {
+  __typename?: 'Aspect';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  framing: Scalars['String'];
+  explanation: Scalars['String'];
 };
 
 export type Project = {
@@ -100,6 +146,10 @@ export type Opportunity = {
   profile?: Maybe<Profile>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
+  /** The set of actor groups within the context of this Opportunity */
+  actorGroups?: Maybe<Array<ActorGroup>>;
+  /** The set of solution aspects for this Opportunity */
+  aspects?: Maybe<Array<Aspect>>;
 };
 
 export type Challenge = {
@@ -113,16 +163,16 @@ export type Challenge = {
   context?: Maybe<Context>;
   /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
   challengeLeads: Array<Organisation>;
-  /** Groups of users related to a challenge; each group also results in a role that is assigned to users in the group. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** The community of users, including challenge leads, that are contributing. */
-  contributors?: Maybe<Array<User>>;
   /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
   state?: Maybe<Scalars['String']>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
   /** The set of opportunities within the context of this challenge */
   opportunities?: Maybe<Array<Opportunity>>;
+  /** Groups of users related to a challenge. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** All users that are contributing to this challenge. */
+  contributors?: Maybe<Array<User>>;
 };
 
 export type Context = {
@@ -157,11 +207,12 @@ export type Profile = {
   references?: Maybe<Array<Reference>>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
+  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
+  avatar?: Maybe<Scalars['String']>;
 };
 
 export type MemberOf = {
   __typename?: 'MemberOf';
-  email?: Maybe<Scalars['String']>;
   /** References to the groups the user is in at the ecoverse level */
   groups: Array<UserGroup>;
   /** References to the challenges the user is a member of */
@@ -194,6 +245,8 @@ export type Query = {
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
+  /** All templates */
+  templates: Array<Template>;
   /** A particular challenge */
   challenge: Challenge;
   /** All organisations */
@@ -232,10 +285,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
-  /** Creates a new user profile */
-  createUserProfile: User;
-  /** Creates a new user account */
-  createUserAccount: User;
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
   /** Add the provided tag to the tagset with the given ID */
@@ -244,6 +293,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new reference with the specified name for the profile with given id */
   createReferenceOnProfile: Reference;
+  /** Updates the avatar location (i.e. uri) for the profile with given id */
+  updateAvatar: Scalars['Boolean'];
   /** Adds the user with the given identifier to the specified user group */
   addUserToGroup: Scalars['Boolean'];
   /** Remove the user with the given identifier to the specified user group */
@@ -262,12 +313,20 @@ export type Mutation = {
   addUserToChallenge: UserGroup;
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
+  /** Create a new aspect on the Opportunity identified by the ID */
+  createAspect: Aspect;
+  /** Create a new actor on the ActorGroup with the specified ID */
+  createActor: Actor;
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
   updateEcoverse: Ecoverse;
-  /** Creates a new user as a member of the ecoverse */
+  /** Creates a new user as a member of the ecoverse, including an account if enabled */
   createUser: User;
+  /** Creates a new template for the population of entities within tis ecoverse */
+  createTemplate: Template;
+  /** Creates a new user as a member of the ecoverse, without an account */
+  createUserProfile: User;
   /** Removes the specified user from the ecoverse */
   removeUser: Scalars['Boolean'];
   /** Creates a new challenge and registers it with the ecoverse */
@@ -278,19 +337,13 @@ export type Mutation = {
   createGroupOnOrganisation: UserGroup;
   /** Updates the organisation with the given data */
   updateOrganisation: Organisation;
+  /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
+  createUserAccount: Scalars['Boolean'];
 };
 
 export type MutationUpdateUserArgs = {
   userData: UserInput;
   userID: Scalars['Float'];
-};
-
-export type MutationCreateUserProfileArgs = {
-  userData: UserInput;
-};
-
-export type MutationCreateUserAccountArgs = {
-  userData: UserInput;
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
@@ -310,6 +363,11 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateReferenceOnProfileArgs = {
   referenceInput: ReferenceInput;
+  profileID: Scalars['Float'];
+};
+
+export type MutationUpdateAvatarArgs = {
+  uri: Scalars['String'];
   profileID: Scalars['Float'];
 };
 
@@ -357,6 +415,16 @@ export type MutationUpdateOpportunityArgs = {
   ID: Scalars['Float'];
 };
 
+export type MutationCreateAspectArgs = {
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateActorArgs = {
+  actorData: ActorInput;
+  actorGroupID: Scalars['Float'];
+};
+
 export type MutationCreateGroupOnEcoverseArgs = {
   groupName: Scalars['String'];
 };
@@ -366,6 +434,14 @@ export type MutationUpdateEcoverseArgs = {
 };
 
 export type MutationCreateUserArgs = {
+  userData: UserInput;
+};
+
+export type MutationCreateTemplateArgs = {
+  templateData: TemplateInput;
+};
+
+export type MutationCreateUserProfileArgs = {
   userData: UserInput;
 };
 
@@ -391,7 +467,13 @@ export type MutationUpdateOrganisationArgs = {
   orgID: Scalars['Float'];
 };
 
+export type MutationCreateUserAccountArgs = {
+  password: Scalars['String'];
+  userID: Scalars['Float'];
+};
+
 export type UserInput = {
+  accountUpn?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
@@ -440,6 +522,19 @@ export type ChallengeInput = {
   tagset?: Maybe<TagsInput>;
 };
 
+export type AspectInput = {
+  title?: Maybe<Scalars['String']>;
+  framing?: Maybe<Scalars['String']>;
+  explanation?: Maybe<Scalars['String']>;
+};
+
+export type ActorInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+};
+
 export type EcoverseInput = {
   /** The new name for the ecoverse */
   name?: Maybe<Scalars['String']>;
@@ -447,6 +542,11 @@ export type EcoverseInput = {
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<TagsInput>;
+};
+
+export type TemplateInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type OrganisationInput = {
@@ -460,13 +560,13 @@ export type NewUserFragment = { __typename?: 'User' } & UserDetailsFragment;
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender'
 > & {
     profile?: Maybe<
-      { __typename?: 'Profile' } & {
-        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-      }
+      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+        }
     >;
   };
 
@@ -562,7 +662,9 @@ export const UserDetailsFragmentDoc = gql`
     firstName
     lastName
     email
+    gender
     profile {
+      avatar
       references {
         name
         uri

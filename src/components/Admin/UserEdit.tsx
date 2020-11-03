@@ -1,17 +1,13 @@
-import React, { FC, FormEvent, useState } from 'react';
-import { Prompt, useHistory, useParams } from 'react-router-dom';
-import { Alert, Button, Col, Form, FormControl, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap';
-import generator from 'generate-password';
+import { gql } from '@apollo/client';
 import { Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
+import { Prompt, useHistory, useParams } from 'react-router-dom';
 import * as yup from 'yup';
-
-import InputWithCopy from './InputWithCopy';
-
-import gql from '@apollo/client';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
+import InputWithCopy from './InputWithCopy';
 import { USER_DETAILS_FRAGMENT } from './query';
-
 // import { ReactComponent as Pencil } from 'bootstrap-icons/icons/pencil.svg';
 
 interface Parameters {
