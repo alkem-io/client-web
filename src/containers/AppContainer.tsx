@@ -8,6 +8,7 @@ import { Layout } from '../components/Layout';
 import { AppProvider } from '../context/AppProvider';
 import { useGraphQLClient } from '../hooks/useGraphQLClient';
 import { FourOuFour } from '../pages/FourOuFour';
+import UserProfile from '../components/UserProfile/UserProfile';
 
 export interface AppContainerProps {
   graphQLEndpoint: string;
@@ -45,6 +46,9 @@ const AppContainer: React.FC<AppContainerProps> = props => {
                   </Route>
                   <Route exact path="/explore">
                     <div>Explore Page</div>
+                  </Route>
+                  <Route exact path="/me">
+                    <UserProfile />
                   </Route>
                   <Route path="*">
                     <Redirect to="/404" />
