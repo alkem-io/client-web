@@ -7,7 +7,7 @@ import * as yup from 'yup';
 
 import InputWithCopy from './InputWithCopy';
 
-import gql from 'graphql-tag';
+import gql from '@apollo/client';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
 import { USER_DETAILS_FRAGMENT } from './query';
@@ -98,9 +98,6 @@ export const UserInput: FC<UserProps> = ({ users, editMode = EditMode.readOnly, 
               const newUserRef = cache.writeFragment({
                 data: createUser,
                 fragment: gql`
-                  fragment NewUser on User {
-                    ...UserDetails
-                  }
                   ${USER_DETAILS_FRAGMENT}
                 `,
               });
