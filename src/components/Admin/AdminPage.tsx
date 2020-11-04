@@ -4,13 +4,12 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
-import { EditMode, UserInput } from './UserInput';
+import { EditMode, UserForm } from './UserForm';
 import { UserList } from './UserList';
 
 export const AdminPage: FC = () => {
   const { path } = useRouteMatch();
   const { data, loading } = useUsersQuery();
-  // const [createUser, newUser] = useCreateUserMutation();
   const users = (data?.users || []) as UserModel[];
 
   const handleSaveUser = (_user: UserModel) => {
@@ -29,13 +28,13 @@ export const AdminPage: FC = () => {
               <UserList users={users} />
             </Route>
             <Route path={`${path}/users/new`}>
-              <UserInput users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+              <UserForm users={users} editMode={EditMode.new} onSave={handleSaveUser} />
             </Route>
             <Route exact path={`${path}/users/:userId/edit`}>
-              <UserInput users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+              <UserForm users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
             </Route>
             <Route exact path={`${path}/users/:userId`}>
-              <UserInput users={users} onSave={handleSaveUser} />
+              <UserForm users={users} onSave={handleSaveUser} />
             </Route>
           </Switch>
         </Container>
