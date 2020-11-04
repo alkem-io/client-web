@@ -29,6 +29,9 @@ import Footer from './layout/Footer';
 import Header from './layout/Header';
 import Main from './layout/Main';
 import User from './layout/User';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Switch from 'react-bootstrap/esm/Switch';
+import { AdminPage } from './Admin/AdminPage';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -315,43 +318,52 @@ const App = (): React.ReactElement => {
         )}
       </Header>
       <Main>
-        <Section details={<ActivityCard />}>
-          <SectionHeader text={odyssey.header} />
-          <SubHeader text={odyssey.subheader} />
-          <Body text={odyssey.body}>
-            <Button text="Learn more" onClick={ev => console.log(ev)} />
-          </Body>
-        </Section>
-        <Divider />
-        <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
-          <SectionHeader text={challenges.header} />
-          <SubHeader text={challenges.subheader} />
-          <Body text={challenges.body}></Body>
-        </Section>
-        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-          {challenges.list.map((props, i) => (
-            <ChallengeCard key={i} {...props} />
-          ))}
-        </CardContainer>
-        <Divider />
-        <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
-          <SectionHeader text={community.header} />
-          <SubHeader text={community.subheader} />
-          <Body text={community.body}>
-            <Button variant="primary" text="Explore and connect" onClick={ev => console.log(ev)} />
-          </Body>
-        </Section>
-        <Divider />
-        <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-          <SectionHeader text={projects.header} tagText={projects.headerTag} />
-          <SubHeader text={projects.subheader} />
-        </Section>
-        <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
-          {projects.list.map((props, i) => (
-            <ProjectCard key={i} {...props} />
-          ))}
-        </CardContainer>
-        <Divider />
+        <BrowserRouter>
+          <Switch>
+            <Route path="/admin">
+              <AdminPage />
+            </Route>
+            <Route path="/" exact>
+              <Section details={<ActivityCard />}>
+                <SectionHeader text={odyssey.header} />
+                <SubHeader text={odyssey.subheader} />
+                <Body text={odyssey.body}>
+                  <Button text="Learn more" onClick={ev => console.log(ev)} />
+                </Body>
+              </Section>
+              <Divider />
+              <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
+                <SectionHeader text={challenges.header} />
+                <SubHeader text={challenges.subheader} />
+                <Body text={challenges.body}></Body>
+              </Section>
+              <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+                {challenges.list.map((props, i) => (
+                  <ChallengeCard key={i} {...props} />
+                ))}
+              </CardContainer>
+              <Divider />
+              <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+                <SectionHeader text={community.header} />
+                <SubHeader text={community.subheader} />
+                <Body text={community.body}>
+                  <Button variant="primary" text="Explore and connect" onClick={ev => console.log(ev)} />
+                </Body>
+              </Section>
+              <Divider />
+              <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+                <SectionHeader text={projects.header} tagText={projects.headerTag} />
+                <SubHeader text={projects.subheader} />
+              </Section>
+              <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
+                {projects.list.map((props, i) => (
+                  <ProjectCard key={i} {...props} />
+                ))}
+              </CardContainer>
+              <Divider />
+            </Route>
+          </Switch>
+        </BrowserRouter>
       </Main>
       <Footer>
         <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
