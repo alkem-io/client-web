@@ -17,7 +17,7 @@ const UserProfile = () => {
   const challenges = data?.me?.memberof?.challenges.map(c => c.name).join(', ');
 
   return (
-    <Container>
+    <Container className={'mt-5'}>
       <UserFrom user={data?.me || defaultUser} editMode={EditMode.readOnly} title={'My profile'} />
       <Row>
         <Form.Group as={Col}>

@@ -17,7 +17,7 @@ export const AdminLayout: FC = ({ children }) => {
               </Nav.Link>
             </Nav>
           </Col>
-          <Col>{children ? children : <div></div>}</Col>
+          <Col className={'mt-5'}>{children ? children : <div></div>}</Col>
         </Row>
       </ErrorHandler>
     </>

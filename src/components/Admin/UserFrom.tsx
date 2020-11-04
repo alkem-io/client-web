@@ -225,7 +225,7 @@ export const UserFrom: FC<UserProps> = ({
         <Alert show={showSuccess} variant="success" onClose={() => setShowSuccess(false)} dismissible>
           Saved successfully.
         </Alert>
-        <h2>{title || 'User'}</h2>
+        <h2 className={'mt-4 mb-4'}>{title || 'User'}</h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
