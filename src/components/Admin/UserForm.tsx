@@ -12,7 +12,7 @@ import InputWithCopy from './InputWithCopy';
 
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel, UserFromGenerated } from '../../models/User';
-import { USER_DETAILS_FRAGMENT } from './query';
+import { USER_DETAILS_FRAGMENT } from '../../graphql/admin';
 import './styles.scss';
 /*local files imports end*/
 
