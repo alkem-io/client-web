@@ -7,8 +7,8 @@ import { useUsersQuery } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
 import User from './User';
+import { EditMode, UserForm } from './UserForm';
 import { UserList } from './UserList';
-import UserFrom, { EditMode } from './UserFrom';
 /*local files imports end*/
 
 export const AdminPage: FC = () => {
@@ -28,7 +28,7 @@ export const AdminPage: FC = () => {
               <UserList users={users} />
             </Route>
             <Route path={`${path}/users/new`}>
-              <UserFrom user={defaultUser} editMode={EditMode.new} title={'User creation'} />
+              <UserForm user={defaultUser} editMode={EditMode.new} title={'User creation'} />
             </Route>
             <Route exact path={`${path}/users/:userId/edit`}>
               <User mode={'edit'} />

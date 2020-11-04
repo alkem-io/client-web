@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 /*lib imports end*/
 
-import { EditMode, UserFrom } from './UserFrom';
+import { EditMode, UserForm } from './UserForm';
 /*components files imports end*/
 
 import { QUERY_USER } from './query';
@@ -18,7 +18,7 @@ const User: FC<UserProps> = ({ mode }) => {
   const { userId } = useParams<{ userId: string }>();
   const { data } = useQuery(QUERY_USER, { variables: { id: userId } });
 
-  return <UserFrom user={data?.user || defaultUser} editMode={EditMode[mode]} title={'User edit'} />;
+  return <UserForm user={data?.user || defaultUser} editMode={EditMode[mode]} title={'User edit'} />;
 };
 
 export default User;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 /*lib imports end*/
 
-import UserFrom, { EditMode } from '../Admin/UserFrom';
+import UserFrom, { EditMode } from '../Admin/UserForm';
 /*components imports end*/
 
 import { QUERY_USER_PROFILE } from './query';

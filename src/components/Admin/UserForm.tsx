@@ -4,12 +4,12 @@ import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import generator from 'generate-password';
 import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
+import gql from 'graphql-tag';
 /*lib imports end*/
 
 import InputWithCopy from './InputWithCopy';
 /*components imports end*/
 
-import gql from 'graphql-tag';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel, UserFromGenerated } from '../../models/User';
 import { USER_DETAILS_FRAGMENT } from './query';
@@ -28,7 +28,7 @@ interface UserProps {
   title?: string;
 }
 
-export const UserFrom: FC<UserProps> = ({
+export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
   editMode = EditMode.readOnly,
   onSave: _onSave,
@@ -134,9 +134,6 @@ export const UserFrom: FC<UserProps> = ({
               const newUserRef = cache.writeFragment({
                 data: createUser,
                 fragment: gql`
-                  fragment NewUser on User {
-                    ...UserDetails
-                  }
                   ${USER_DETAILS_FRAGMENT}
                 `,
               });
@@ -381,4 +378,4 @@ export const UserFrom: FC<UserProps> = ({
     );
   }
 };
-export default UserFrom;
+export default UserForm;
