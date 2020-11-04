@@ -310,7 +310,7 @@ const App = (): React.ReactElement => {
             <UserSegment orientation={isVisible ? 'vertical' : 'horizontal'} />
             <div style={{ display: 'flex', flexGrow: 1 }} />
             {isAuthenticated && <NavigationSegment maximize={isVisible} />}
-            {!isAuthenticated && <Button text={'Login'} onClick={context.handleSignIn}></Button>}
+            {!isAuthenticated && <Button text={'Login'} onClick={context.handleSignIn} small></Button>}
           </div>
         )}
       </Header>

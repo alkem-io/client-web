@@ -21,6 +21,9 @@ const useButtonStyles = createStyles(theme => ({
       borderBottomColor: 'transparent',
       borderRadius: 0,
     },
+    '&.small': {
+      padding: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
+    },
   },
   default: {
     color: theme.palette.primary,
@@ -63,15 +66,25 @@ interface ButtonProps {
   text: string;
   variant?: 'default' | 'primary';
   inset?: boolean;
+  small?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({ classes, variant = 'default', inset = false, children, as, onClick, text }) => {
+const Button: FC<ButtonProps> = ({
+  classes,
+  variant = 'default',
+  inset = false,
+  small = false,
+  children,
+  as,
+  onClick,
+  text,
+}) => {
   const styles = useButtonStyles();
   as = as || 'button';
 
   // can always use the bootstrap button internally
   return React.createElement(as, {
-    className: clsx(styles.button, styles[variant], inset && 'inset', classes),
+    className: clsx(styles.button, styles[variant], inset && 'inset', small && 'small', classes),
     children: (
       <>
         <Typography variant="button" color="inherit" weight="boldLight">
