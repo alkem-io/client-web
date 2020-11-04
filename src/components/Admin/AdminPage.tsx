@@ -4,7 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
-import { EditMode, UserFrom } from './UserFrom';
+import { EditMode, UserForm } from './UserForm';
 import { UserList } from './UserList';
 
 export const AdminPage: FC = () => {
@@ -28,13 +28,13 @@ export const AdminPage: FC = () => {
               <UserList users={users} />
             </Route>
             <Route path={`${path}/users/new`}>
-              <UserFrom users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+              <UserForm users={users} editMode={EditMode.new} onSave={handleSaveUser} />
             </Route>
             <Route exact path={`${path}/users/:userId/edit`}>
-              <UserFrom users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+              <UserForm users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
             </Route>
             <Route exact path={`${path}/users/:userId`}>
-              <UserFrom users={users} onSave={handleSaveUser} />
+              <UserForm users={users} onSave={handleSaveUser} />
             </Route>
           </Switch>
         </Container>

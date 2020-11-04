@@ -4,12 +4,12 @@ import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import generator from 'generate-password';
 import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
+import gql from 'graphql-tag';
 /*lib imports end*/
 
 import InputWithCopy from './InputWithCopy';
 /*components imports end*/
 
-import gql from 'graphql-tag';
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
 import { defaultUser, UserModel, UserFromGenerated } from '../../models/User';
 import { USER_DETAILS_FRAGMENT } from './query';
@@ -30,7 +30,7 @@ interface UserProps {
   onSave?: (user: UserModel) => void;
 }
 
-export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
+export const UserForm: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
   const { userId } = useParams<Parameters>();
   const currentUser = users.find(u => u.id === userId) || defaultUser;
   const skills = currentUser.profile?.tagsets[0]?.tags.map(t => t).join(', ');
@@ -343,4 +343,4 @@ export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, o
     );
   }
 };
-export default UserFrom;
+export default UserForm;
