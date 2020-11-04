@@ -7,7 +7,8 @@ import { ReactComponent as GlobeIcon } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-fill.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
-import React, { FC, useRef, useState } from 'react';
+import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
+import React, { FC, ReactElement, useRef, useState } from 'react';
 import { Overlay, Popover } from 'react-bootstrap';
 import { Theme } from '../context/ThemeProvider';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
@@ -299,6 +300,7 @@ const ProjectCard: FC<ProjectCardProps> = ({ caption, title, tag }) => {
 const App = (): React.ReactElement => {
   useGlobalStyles();
   const { context, isAuthenticated } = useAuthenticationContext();
+  const headerRef = useRef<HTMLElement>(null);
 
   let page = <div>Restricted</div>;
 
@@ -308,7 +310,7 @@ const App = (): React.ReactElement => {
 
   return (
     <div id="app">
-      <Header>
+      <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>
             <UserSegment orientation={isVisible ? 'vertical' : 'horizontal'} />
@@ -356,7 +358,11 @@ const App = (): React.ReactElement => {
         </CardContainer>
         <Divider />
       </Main>
-      <Footer></Footer>
+      <Footer>
+        <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+          <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
+        </IconButton>
+      </Footer>
     </div>
   );
 };

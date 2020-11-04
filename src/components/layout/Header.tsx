@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { FC, useState } from 'react';
+import React, { FC, RefObject, useState } from 'react';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
@@ -31,17 +31,19 @@ const useHeaderStyles = createStyles(theme => ({
 }));
 
 interface HeaderProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  innerRef?: RefObject<any>;
   children: (isVisible: boolean) => React.ReactNode;
 }
 
-const Header: FC<HeaderProps> = ({ children }) => {
+const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   const styles = useHeaderStyles();
   const [headerInSight, setHeaderInSight] = useState(true);
 
   return (
     <>
       <ReactVisibilitySensor partialVisibility onChange={setHeaderInSight}>
-        <Toolbar />
+        <Toolbar innerRef={innerRef} />
       </ReactVisibilitySensor>
 
       <Container className={styles[headerInSight ? 'absolute' : 'fixed']}>
