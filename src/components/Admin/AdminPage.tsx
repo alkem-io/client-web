@@ -31,10 +31,10 @@ export const AdminPage: FC = () => {
               <UserForm user={defaultUser} editMode={EditMode.new} title={'User creation'} />
             </Route>
             <Route exact path={`${path}/users/:userId/edit`}>
-              <User mode={'edit'} />
+              <User mode={EditMode.edit} />
             </Route>
             <Route exact path={`${path}/users/:userId`}>
-              <User mode={'readOnly'} />
+              <User mode={EditMode.readOnly} />
             </Route>
           </Switch>
         </Container>

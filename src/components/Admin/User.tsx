@@ -11,14 +11,14 @@ import { defaultUser } from '../../models/User';
 /*local files imports end*/
 
 interface UserProps {
-  mode: 'new' | 'edit' | 'readOnly';
+  mode: EditMode;
 }
 
 const User: FC<UserProps> = ({ mode }) => {
   const { userId } = useParams<{ userId: string }>();
   const { data } = useQuery(QUERY_USER, { variables: { id: userId } });
 
-  return <UserForm user={data?.user || defaultUser} editMode={EditMode[mode]} title={'User edit'} />;
+  return <UserForm user={data?.user || defaultUser} editMode={mode} title={'User edit'} />;
 };
 
 export default User;
