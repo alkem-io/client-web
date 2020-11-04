@@ -2,6 +2,7 @@ node_modules
 build
 npm-debug.log
 .env
+.idea
 .DS_Store# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies

@@ -32,7 +32,20 @@ interface HiddenProps extends Record<string, boolean | undefined | string | Reac
 }
 
 const Hidden: FC<HiddenProps> = props => {
-  const { children, className, component: Component = 'div', ...rest } = props;
+  const {
+    children,
+    className,
+    component: Component = 'div',
+    lgUp,
+    lgDown,
+    mdUp,
+    mdDown,
+    smUp,
+    smDown,
+    xsDown,
+    xsUp,
+    ...rest
+  } = props;
   const hiddenStyles = useHiddenStyles();
 
   const targetClasses = Object.keys(hiddenStyles)

@@ -41,6 +41,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   const authLink = setContext((_, { headers }) => {
+    if (!token) return headers;
     return {
       headers: {
         ...headers,

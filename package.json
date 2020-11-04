@@ -1,6 +1,6 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "private": false,
@@ -16,6 +16,7 @@
     "@types/react": "^16.9.52",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
+    "@types/yup": "^0.29.9",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "bootstrap": "^4.5.3",
@@ -26,6 +27,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jest": "^24.0.1",
     "eslint-plugin-prettier": "^3.1.4",
+    "formik": "^2.2.1",
     "generate-password": "^1.5.1",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
@@ -41,7 +43,8 @@
     "react-visibility-sensor": "^5.1.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "prestart": "gulp",

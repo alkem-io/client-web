@@ -5,6 +5,7 @@ import { Button, Dropdown, Navbar } from 'react-bootstrap';
 import Nav from 'react-bootstrap/esm/Nav';
 import { Link } from 'react-router-dom';
 import { appContext } from '../../context/AppProvider';
+import { configContext } from '../../context/ConfigProvider';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 // interface HeaderProps {
 //   onSignIn?: () => void;
@@ -15,13 +16,14 @@ import { useTypedSelector } from '../../hooks/useTypedSelector';
 
 const Header: FC = () => {
   const context = useContext(appContext);
+  const config = useContext(configContext);
   const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
   const account = useTypedSelector<AccountInfo | null>(state => state.auth.account);
 
   // three state configuration
   let loginButton = <div />;
 
-  if (context.enableAuthentication) {
+  if (config.aadConfig.authEnabled) {
     if (isAuthenticated === true && account) {
       loginButton = (
         <Dropdown alignRight>

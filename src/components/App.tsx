@@ -302,12 +302,6 @@ const App = (): React.ReactElement => {
   const { context, isAuthenticated } = useAuthenticationContext();
   const headerRef = useRef<HTMLElement>(null);
 
-  let page = <div>Restricted</div>;
-
-  if (!context.authenticationEnabled || isAuthenticated) {
-    page = <div>Unrestricted</div>;
-  }
-
   return (
     <div id="app">
       <Header innerRef={headerRef}>
@@ -315,7 +309,8 @@ const App = (): React.ReactElement => {
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>
             <UserSegment orientation={isVisible ? 'vertical' : 'horizontal'} />
             <div style={{ display: 'flex', flexGrow: 1 }} />
-            <NavigationSegment maximize={isVisible} />
+            {isAuthenticated && <NavigationSegment maximize={isVisible} />}
+            {!isAuthenticated && <Button text={'Login'} onClick={context.handleSignIn}></Button>}
           </div>
         )}
       </Header>
