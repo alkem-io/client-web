@@ -33,7 +33,7 @@ interface UserProps {
 export const UserFrom: FC<UserProps> = ({ users, editMode = EditMode.readOnly, onSave: _onSave }) => {
   const { userId } = useParams<Parameters>();
   const currentUser = users.find(u => u.id === userId) || defaultUser;
-  const skills = currentUser.profile.tagsets[0].tags.map(t => t).join(', ');
+  const skills = currentUser.profile?.tagsets[0]?.tags.map(t => t).join(', ');
 
   const [userSkills, setUserSkills] = useState<string>(skills);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
