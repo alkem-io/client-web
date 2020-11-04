@@ -35,11 +35,11 @@ export const UserFrom: FC<UserProps> = ({
   title,
 }) => {
   /**
-   * @name skills
+   * @name skills AkA tags
    * @return string
    * @summary goes through the tagsets and if they exist returns a joined string of tags from tagsets;
    */
-  const skills =
+  const skills = // AKA tags
     currentUser.profile.tagsets.length > 0
       ? currentUser.profile.tagsets.reduce((acc, curr) => [...acc, ...curr.tags], ['']).join(', ')
       : '';
@@ -353,18 +353,17 @@ export const UserFrom: FC<UserProps> = ({
                 <Alert show={isBlocked} variant="warning">
                   Please copy the "Generated password". Once form is closed it will be lost forever.
                 </Alert>
-                <Form.Group>
-                  <Form.Label> </Form.Label>
-                  {!isReadOnlyMode && (
-                    <>
+                {!isReadOnlyMode && (
+                  <>
+                    <Form.Group>
                       <Button variant="primary" onClick={() => handleSubmit()}>
                         Save
                       </Button>{' '}
-                    </>
-                  )}
-                  {backButton}
-                  {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
-                </Form.Group>
+                      {backButton}
+                    </Form.Group>
+                  </>
+                )}
+                {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
               </Form>
             );
           }}

@@ -7,14 +7,30 @@ import UserFrom, { EditMode } from '../Admin/UserFrom';
 
 import { QUERY_USER_PROFILE } from './query';
 import { defaultUser } from '../../models/User';
-import { Container } from 'react-bootstrap';
+import { Col, Container, Form, Row } from 'react-bootstrap';
 /*local files imports end*/
 
 const UserProfile = () => {
   const { data } = useQuery(QUERY_USER_PROFILE);
+
+  const groups = data?.me?.memberof?.groups.map(g => g.name).join(', ');
+  const challenges = data?.me?.memberof?.challenges.map(c => c.name).join(', ');
+
   return (
     <Container>
-      <UserFrom user={data?.me || defaultUser} editMode={EditMode.readOnly} title={'My profile'} />;
+      <UserFrom user={data?.me || defaultUser} editMode={EditMode.readOnly} title={'My profile'} />
+      <Row>
+        <Form.Group as={Col}>
+          <Form.Label>Groups</Form.Label>
+          <Form.Control type={'text'} value={groups} readOnly={true} disabled={true} />
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group as={Col}>
+          <Form.Label>Challenges</Form.Label>
+          <Form.Control type={'text'} value={challenges} readOnly={true} disabled={true} />
+        </Form.Group>
+      </Row>
     </Container>
   );
 };
