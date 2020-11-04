@@ -42,7 +42,7 @@ export const SubHeader: FC<HeaderProps> = ({ text, svg }) => {
   );
 };
 
-const useBodyStyles = createStyles(theme => ({
+const useBodyStyles = createStyles(() => ({
   bodyWrap: {},
 }));
 
