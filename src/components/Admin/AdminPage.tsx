@@ -2,19 +2,19 @@ import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
-import { UserModel } from '../../models/User';
+/*lib imports end*/
+
+import { defaultUser, UserModel } from '../../models/User';
 import AdminLayout from './AdminLayout';
+import User from './User';
 import { EditMode, UserForm } from './UserForm';
 import { UserList } from './UserList';
+/*local files imports end*/
 
 export const AdminPage: FC = () => {
   const { path } = useRouteMatch();
   const { data, loading } = useUsersQuery();
   const users = (data?.users || []) as UserModel[];
-
-  const handleSaveUser = (_user: UserModel) => {
-    console.log('Saving...');
-  };
 
   return (
     <AdminLayout>
@@ -28,13 +28,13 @@ export const AdminPage: FC = () => {
               <UserList users={users} />
             </Route>
             <Route path={`${path}/users/new`}>
-              <UserForm users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+              <UserForm user={defaultUser} editMode={EditMode.new} title={'User creation'} />
             </Route>
             <Route exact path={`${path}/users/:userId/edit`}>
-              <UserForm users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+              <User mode={EditMode.edit} />
             </Route>
             <Route exact path={`${path}/users/:userId`}>
-              <UserForm users={users} onSave={handleSaveUser} />
+              <User mode={EditMode.readOnly} />
             </Route>
           </Switch>
         </Container>

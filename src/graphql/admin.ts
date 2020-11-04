@@ -31,6 +31,15 @@ export const QUERY_USER_LIST = gql`
   ${USER_DETAILS_FRAGMENT}
 `;
 
+export const QUERY_USER = gql`
+  query($id: String!) {
+    user(ID: $id) {
+      ...UserDetails
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+`;
+
 export const MUTATION_CREATE_USER = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {

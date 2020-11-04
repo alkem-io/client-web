@@ -8,6 +8,7 @@ import Loading from '../components/Loading';
 import { appContext } from '../context/AppProvider';
 import { configContext } from '../context/ConfigProvider';
 import { FourOuFour } from '../pages/FourOuFour';
+import UserProfile from '../components/UserProfile/UserProfile';
 
 const AppContainer: FC = () => {
   const appCtx = useContext(appContext);
@@ -39,6 +40,9 @@ const AppContainer: FC = () => {
               </Route>
               <Route exact path="/explore">
                 <div>Explore Page</div>
+              </Route>
+              <Route exact path="/me">
+                <UserProfile />
               </Route>
               <Route path="*">
                 <Redirect to="/404" />
