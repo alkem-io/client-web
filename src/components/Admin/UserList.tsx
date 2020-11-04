@@ -2,7 +2,10 @@ import React, { FC } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link, useRouteMatch } from 'react-router-dom';
+/*lib imports end*/
+
 import { UserModel } from '../../models/User';
+/*local files imports end*/
 
 interface UserListProps {
   users: UserModel[];
@@ -10,6 +13,7 @@ interface UserListProps {
 
 export const UserList: FC<UserListProps> = ({ users }) => {
   const { path } = useRouteMatch();
+
   return (
     <>
       <Row className="justify-content-end">

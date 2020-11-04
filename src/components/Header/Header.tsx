@@ -34,6 +34,10 @@ const Header: FC = () => {
             <Dropdown.ItemText className="mb-0">{account.name}</Dropdown.ItemText>
             <Dropdown.ItemText className="text-muted">{account.username}</Dropdown.ItemText>
             <Dropdown.Divider />
+            <Dropdown.Item as={Link} to={'/me'}>
+              Profile
+            </Dropdown.Item>
+            <Dropdown.Divider />
             <Dropdown.Item onClick={context.handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
