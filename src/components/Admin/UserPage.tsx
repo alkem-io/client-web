@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
-import { EditMode, UserInput } from './UserEdit';
+import UserForm, { EditMode } from './UserForm';
 import UserList from './UserList';
 
 export const UserPage: FC = () => {
@@ -42,13 +42,13 @@ export const UserPage: FC = () => {
                 <UserList users={users} />
               </Route>
               <Route exact path={`${path}/new`}>
-                <UserInput key="new" users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+                <UserForm key="new" users={users} editMode={EditMode.new} onSave={handleSaveUser} />
               </Route>
               <Route exact path={`${path}/:userId/edit`}>
-                <UserInput key="edit" users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+                <UserForm key="edit" users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
               </Route>
               <Route exact path={`${path}/:userId`}>
-                <UserInput key="edit" users={users} onSave={handleSaveUser} />
+                <UserForm key="edit" users={users} onSave={handleSaveUser} />
               </Route>{' '}
             </Switch>
           </Col>

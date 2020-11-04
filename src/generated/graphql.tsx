@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-export type Maybe<T> = T | null;
+export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -209,6 +209,8 @@ export type Profile = {
   tagsets?: Maybe<Array<Tagset>>;
   /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
   avatar?: Maybe<Scalars['String']>;
+  /** A short description of the entity associated with this profile. */
+  description?: Maybe<Scalars['String']>;
 };
 
 export type MemberOf = {
@@ -219,6 +221,60 @@ export type MemberOf = {
   challenges: Array<Challenge>;
   /** References to the orgnaisaitons the user is a member of */
   organisations: Array<Organisation>;
+};
+
+export type AadClientConfig = {
+  __typename?: 'AadClientConfig';
+  /** Config for MSAL authentication library on Cherrytwist Web Client. */
+  msalConfig: MsalConfig;
+  /** Config for accessing the Cherrytwist API. */
+  apiConfig: AadApiConfig;
+  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
+  loginRequest: AadScope;
+  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
+  tokenRequest: AadScope;
+  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
+  silentRequest: AadScope;
+  /** Is the client and server authentication enabled? */
+  authEnabled: Scalars['Boolean'];
+};
+
+export type MsalConfig = {
+  __typename?: 'MsalConfig';
+  /** Azure Active Directory OpenID Connect endpoint configuration. */
+  auth: MsalAuth;
+  /** Token cache configuration.  */
+  cache: MsalCache;
+};
+
+export type MsalAuth = {
+  __typename?: 'MsalAuth';
+  /** Cherrytwist Web Client App Registration Client Id. */
+  clientId: Scalars['String'];
+  /** Azure Active Directory OpenID Connect Authority. */
+  authority: Scalars['String'];
+  /** Cherrytwist Web Client Login Redirect Uri. */
+  redirectUri: Scalars['String'];
+};
+
+export type MsalCache = {
+  __typename?: 'MsalCache';
+  /** Cache location, e.g. localStorage.  */
+  cacheLocation?: Maybe<Scalars['String']>;
+  /** Is the authentication information stored in a cookie? */
+  storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
+};
+
+export type AadApiConfig = {
+  __typename?: 'AadApiConfig';
+  /** Configuration payload for the Cherrytwist API. */
+  resourceScope: Scalars['String'];
+};
+
+export type AadScope = {
+  __typename?: 'AadScope';
+  /** OpenID Scopes. */
+  scopes: Array<Scalars['String']>;
 };
 
 export type Query = {
@@ -255,6 +311,8 @@ export type Query = {
   organisation: Organisation;
   /** The tagset associated with this Ecoverse */
   tagset: Tagset;
+  /** CT Web Client Configuration */
+  clientConfig: AadClientConfig;
 };
 
 export type QueryOpportunityArgs = {
@@ -293,8 +351,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new reference with the specified name for the profile with given id */
   createReferenceOnProfile: Reference;
-  /** Updates the avatar location (i.e. uri) for the profile with given id */
-  updateAvatar: Scalars['Boolean'];
+  /** Updates the fields on the Profile, such as avatar location or description */
+  updateProfile: Scalars['Boolean'];
   /** Adds the user with the given identifier to the specified user group */
   addUserToGroup: Scalars['Boolean'];
   /** Remove the user with the given identifier to the specified user group */
@@ -347,7 +405,7 @@ export type MutationUpdateUserArgs = {
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
-  tags: TagsInput;
+  tags: Array<Scalars['String']>;
   tagsetID: Scalars['Float'];
 };
 
@@ -366,9 +424,9 @@ export type MutationCreateReferenceOnProfileArgs = {
   profileID: Scalars['Float'];
 };
 
-export type MutationUpdateAvatarArgs = {
-  uri: Scalars['String'];
-  profileID: Scalars['Float'];
+export type MutationUpdateProfileArgs = {
+  profileData: ProfileInput;
+  ID: Scalars['Float'];
 };
 
 export type MutationAddUserToGroupArgs = {
@@ -484,9 +542,18 @@ export type UserInput = {
   country?: Maybe<Scalars['String']>;
   gender?: Maybe<Scalars['String']>;
   aadPassword?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
-export type TagsInput = {
+export type ProfileInput = {
+  avatar?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  tagsetsData?: Maybe<Array<TagsetInput>>;
+  referencesData?: Maybe<Array<ReferenceInput>>;
+};
+
+export type TagsetInput = {
+  name?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -501,7 +568,7 @@ export type OpportunityInput = {
   textID?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
-  tagset?: Maybe<TagsInput>;
+  tagset?: Maybe<Array<Scalars['String']>>;
 };
 
 export type ContextInput = {
@@ -519,7 +586,7 @@ export type ChallengeInput = {
   textID?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
-  tagset?: Maybe<TagsInput>;
+  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type AspectInput = {
@@ -541,7 +608,7 @@ export type EcoverseInput = {
   /** Updated context for the ecoverse; will be merged with existing context */
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<TagsInput>;
+  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type TemplateInput = {
@@ -553,10 +620,8 @@ export type OrganisationInput = {
   /** The new name for this organisation */
   name?: Maybe<Scalars['String']>;
   /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<TagsInput>;
+  tags?: Maybe<Array<Scalars['String']>>;
 };
-
-export type NewUserFragment = { __typename?: 'User' } & UserDetailsFragment;
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
@@ -638,6 +703,21 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigQuery = { __typename?: 'Query' } & {
+  clientConfig: { __typename?: 'AadClientConfig' } & Pick<AadClientConfig, 'authEnabled'> & {
+      msalConfig: { __typename?: 'MsalConfig' } & {
+        auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
+        cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
+      };
+      apiConfig: { __typename?: 'AadApiConfig' } & Pick<AadApiConfig, 'resourceScope'>;
+      loginRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
+      tokenRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
+      silentRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
+    };
+};
+
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
@@ -675,12 +755,6 @@ export const UserDetailsFragmentDoc = gql`
       }
     }
   }
-`;
-export const NewUserFragmentDoc = gql`
-  fragment NewUser on User {
-    ...UserDetails
-  }
-  ${UserDetailsFragmentDoc}
 `;
 export const UsersDocument = gql`
   query users {
@@ -989,6 +1063,61 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const ConfigDocument = gql`
+  query config {
+    clientConfig {
+      msalConfig {
+        auth {
+          authority
+          clientId
+          redirectUri
+        }
+        cache {
+          cacheLocation
+          storeAuthStateInCookie
+        }
+      }
+      apiConfig {
+        resourceScope
+      }
+      loginRequest {
+        scopes
+      }
+      tokenRequest {
+        scopes
+      }
+      silentRequest {
+        scopes
+      }
+      authEnabled
+    }
+  }
+`;
+
+/**
+ * __useConfigQuery__
+ *
+ * To run a query within a React component, call `useConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigQuery(baseOptions?: Apollo.QueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useLazyQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
+export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
+export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
