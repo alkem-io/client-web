@@ -73,7 +73,7 @@ const defaultTypography: Typography = {
   button: { font: monserrat, size: 14 },
   body: { font: sourceSansPro, size: 16 },
   h5: { font: sourceSansPro, size: 18 },
-  h4: { font: sourceSansPro, size: 20 },
+  h4: { font: monserrat, size: 22 },
   h3: { font: sourceSansPro, size: 24 },
   h2: { font: monserrat, size: 36 },
   h1: { font: monserrat, size: 48 },

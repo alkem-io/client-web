@@ -90,6 +90,7 @@ interface TypographyProps {
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;
   as?: string;
+  classes?: unknown;
 }
 
 const Toolbar: FC<TypographyProps> = ({
@@ -98,13 +99,14 @@ const Toolbar: FC<TypographyProps> = ({
   weight = 'medium',
   as,
   className,
+  classes,
   children,
 }) => {
-  const classes = useTypographyStyles();
+  const styles = useTypographyStyles(classes);
   as = as || 'div';
 
   return React.createElement(as, {
-    className: clsx(classes[variant], classes[color], className),
+    className: clsx(styles[variant], styles[color], className),
     style: { fontWeight: fontWeight[weight] },
     children,
   });

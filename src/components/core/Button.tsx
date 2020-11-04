@@ -1,26 +1,52 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
 import Typography from './Typography';
 
 const useButtonStyles = createStyles(theme => ({
   button: {
     padding: `${theme.shape.spacing(1.5)}px ${theme.shape.spacing(2)}px`,
-    display: 'flex',
+    display: 'inline-flex',
+    width: 'auto',
     flexDirection: 'row',
     borderRadius: theme.shape.borderRadius,
     borderWidth: 1,
     transition: 'background-color 0.5s ease-out',
     borderStyle: 'double',
+
+    '&.inset': {
+      borderRightColor: 'transparent',
+      borderTopColor: 'transparent',
+      borderBottomColor: 'transparent',
+      borderRadius: 0,
+    },
   },
-  primary: {
+  default: {
     color: theme.palette.primary,
     borderColor: theme.palette.primary,
-    background: 'transparent',
+    background: theme.palette.background,
 
     '&:hover': {
       color: theme.palette.neutralLight,
       background: theme.palette.primary,
+    },
+
+    '&:focus': {
+      outline: `1px auto ${theme.palette.primary}`,
+
+      '&.inset': {
+        outline: 'none',
+      },
+    },
+  },
+  primary: {
+    color: theme.palette.neutralLight,
+    borderColor: theme.palette.primary,
+    background: theme.palette.primary,
+
+    '&:hover': {
+      background: hexToRGBA(theme.palette.primary, 0.7),
     },
 
     '&:focus': {
@@ -35,15 +61,17 @@ interface ButtonProps {
   as?: string;
   onClick: (e: Event) => void;
   text: string;
+  variant?: 'default' | 'primary';
+  inset?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({ classes, children, as, onClick, text }) => {
+const Button: FC<ButtonProps> = ({ classes, variant = 'default', inset = false, children, as, onClick, text }) => {
   const styles = useButtonStyles();
   as = as || 'button';
 
   // can always use the bootstrap button internally
   return React.createElement(as, {
-    className: clsx(styles.button, styles.primary, classes),
+    className: clsx(styles.button, styles[variant], inset && 'inset', classes),
     children: (
       <>
         <Typography variant="button" color="inherit" weight="boldLight">

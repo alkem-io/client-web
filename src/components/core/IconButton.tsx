@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 const useIconButtonStyles = createStyles(theme => ({
   button: {
@@ -14,11 +15,11 @@ const useIconButtonStyles = createStyles(theme => ({
     color: theme.palette.primary,
     borderColor: theme.palette.primary,
     background: 'transparent',
+    transition: 'color 0.5s ease-out',
 
-    // '&:hover': {
-    //   color: theme.palette.neutralLight,
-    //   background: theme.palette.primary,
-    // },
+    '&:hover': {
+      color: hexToRGBA(theme.palette.primary, 0.5),
+    },
 
     '&:focus': {
       outline: 'none',

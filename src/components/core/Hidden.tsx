@@ -27,17 +27,23 @@ interface HiddenProps extends Record<string, boolean | undefined | string | Reac
   xsDown?: boolean;
   className?: string;
   children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component?: React.ComponentType<any>;
 }
 
 const Hidden: FC<HiddenProps> = props => {
-  const { children, className } = props;
+  const { children, className, component: Component = 'div', ...rest } = props;
   const hiddenStyles = useHiddenStyles();
 
   const targetClasses = Object.keys(hiddenStyles)
     .map(key => (Boolean(props[key] as boolean) === true ? hiddenStyles[key] : null))
     .filter(x => x);
 
-  return <div className={clsx(className, ...targetClasses)}>{children}</div>;
+  return (
+    <Component className={clsx(className, ...targetClasses)} {...rest}>
+      {children}
+    </Component>
+  );
 };
 
 export default Hidden;

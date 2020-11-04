@@ -3,8 +3,9 @@ import React, { FC, useState } from 'react';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
+import Container from '../core/Container';
 import hexToRgba from '../../utils/hexToRGBA';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 const appBarZIndex = 100;
 
@@ -42,26 +43,17 @@ const Header: FC<HeaderProps> = ({ children }) => {
       <ReactVisibilitySensor partialVisibility onChange={setHeaderInSight}>
         <Toolbar />
       </ReactVisibilitySensor>
-      {!headerInSight && (
-        <Toolbar dense classes={clsx(styles['fixed'], styles.centerContent)}>
-          <Container fluid>
-            <Row>
-              <Col xs={false} md={3}></Col>
-              <Col xs>{children(headerInSight)}</Col>
-            </Row>
-          </Container>
-        </Toolbar>
-      )}
-      {headerInSight && (
-        <Toolbar classes={clsx(styles['absolute'], styles.centerContent)}>
-          <Container fluid>
-            <Row>
-              <Col xs={false} md={3}></Col>
-              <Col xs>{children(headerInSight)}</Col>
-            </Row>
-          </Container>
-        </Toolbar>
-      )}
+
+      <Container className={styles[headerInSight ? 'absolute' : 'fixed']}>
+        <Row>
+          <Col xs={false} lg={3}></Col>
+          <Col xs>
+            <Toolbar dense={!headerInSight} classes={clsx(styles.centerContent)}>
+              {children(headerInSight)}
+            </Toolbar>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

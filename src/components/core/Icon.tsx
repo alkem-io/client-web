@@ -16,12 +16,15 @@ const useIconStyles = createStyles(theme => ({
 
     return aggr;
   }, {}),
+  inherit: {
+    color: 'inherit',
+  },
 }));
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   component: FunctionComponent<SVGProps<SVGSVGElement>>;
   size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color: keyof Palette;
+  color: keyof Palette | 'inherit';
 }
 
 // would be the preferred way of loading https://stackoverflow.com/questions/61339259/how-to-dynamically-import-svg-and-render-it-inline

@@ -14,7 +14,7 @@ export const useTheme = () => {
 export const createStyles: <C extends string = string>(
   styles: Styles<C> | ((theme: Theme) => Styles<C>)
 ) => (data?: unknown) => Classes<C> = styles => {
-  const useStyles = () => {
+  const useStyles = (props: unknown) => {
     // can explicit theme overrides here
     const theme = useContext(ThemeContext);
     // and merge them
@@ -23,7 +23,7 @@ export const createStyles: <C extends string = string>(
     if (typeof styles === 'function') {
       themedStyles = styles(theme);
     }
-    return createUseStyles(themedStyles)();
+    return createUseStyles(themedStyles)(props);
   };
 
   return useStyles;

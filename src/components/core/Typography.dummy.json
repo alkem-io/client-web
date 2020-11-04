@@ -7,7 +7,26 @@
   "challenges": {
     "header": "Challenges",
     "subheader": "There is no final frontier",
-    "body": "Odyssey 2020 hosts 21 challenges to shape the 21st century. Find out what challenges others are taking on and discover how you can exchange value. Go explore!"
+    "body": "Odyssey 2020 hosts 21 challenges to shape the 21st century. Find out what challenges others are taking on and discover how you can exchange value. Go explore!",
+    "list": [{
+      "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+      "tag": "my challenge"
+    },{
+      "text": "TRANSACTIVE GRIDS",
+      "description": "How might we integrate an inclusive market design utilizing D3A, enabling every producing consumer to asdasd asda sd "
+    },{
+      "text": "INCLUSIVE SAFETY COMMUNITIES",
+      "description": "How might we integrate an inclusive market design utilizing D3A, enabling every producing consumer to asd asdas d"
+    },{
+      "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+      "tag": "my challenge"
+    },{
+      "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+      "tag": "my challenge"
+    },{
+      "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+      "tag": "my challenge"
+    }]
   },
   "community": {
     "header": "Community",
@@ -17,6 +36,33 @@
   "projects": {
     "header": "Projects",
     "headerTag": "$ 1.750.000 allocated IN THIS ECOVERSE",
-    "subheader": "Recently initiated projects from the Odyssey Ecoverse"
+    "subheader": "Recently initiated projects from the Odyssey Ecoverse",
+    "list": [
+      {
+        "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "title": "ACCOUNTABLE FREIGHT",
+        "tag": { "text": "PROPOSED", "status": "negative"}
+      },
+      {
+        "caption": "GIVE BUILDING A PERSONALITY",
+        "title": "SMART QR CODES",
+        "tag": { "text": "IN PROGRESS", "status": "positive"}
+      },
+      {
+        "caption": "GIVE BUILDING A PERSONALITY",
+        "title": "SMART QR CODES",
+        "tag": { "text": "IN PROGRESS", "status": "positive"}
+      },
+      {
+        "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "title": "PRODUCT ID SCANNER",
+        "tag": { "text": "PROPOSED", "status": "negative"}
+      },
+      {
+        "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "title": "VISUAL REBRANDING",
+        "tag": { "text": "PROPOSED", "status": "negative"}
+      }
+    ]
   }
 }

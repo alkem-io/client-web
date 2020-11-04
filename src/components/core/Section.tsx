@@ -1,25 +1,11 @@
 import React, { FC } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import Container from './Container';
+import { Col, Row } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
 import Hidden from './Hidden';
 import Tag from './Tag';
-
-const useSectionStyles = createStyles(theme => ({
-  toolbar: {
-    height: theme.shape.spacing(4),
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  avatar: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-
-    '& > *': {
-      display: 'flex',
-    },
-  },
-}));
+import clsx from 'clsx';
 
 interface HeaderProps {
   text?: string;
@@ -56,9 +42,15 @@ export const SubHeader: FC<HeaderProps> = ({ text, svg }) => {
   );
 };
 
+const useBodyStyles = createStyles(theme => ({
+  bodyWrap: {},
+}));
+
 export const Body: FC<HeaderProps> = ({ text, svg, children }) => {
+  const styles = useBodyStyles();
+
   return (
-    <div>
+    <div className={styles.bodyWrap}>
       <Typography as="p" variant="body" color="neutral" weight="medium">
         {text || svg}
       </Typography>
@@ -69,10 +61,12 @@ export const Body: FC<HeaderProps> = ({ text, svg, children }) => {
 
 const useContentStyles = createStyles(theme => ({
   content: {
-    paddingTop: theme.shape.spacing(8),
-    paddingBottom: theme.shape.spacing(8),
-    paddingLeft: theme.shape.spacing(2),
-    paddingRight: theme.shape.spacing(2),
+    padding: theme.shape.spacing(4),
+
+    [theme.media.down('md')]: {
+      paddingLeft: theme.shape.spacing(2),
+      paddingRight: theme.shape.spacing(2),
+    },
   },
 }));
 
@@ -90,6 +84,25 @@ interface SectionProps {
   hideDetails?: boolean;
 }
 
+const useSectionStyles = createStyles(theme => ({
+  root: {
+    paddingTop: theme.shape.spacing(2),
+    paddingBottom: theme.shape.spacing(2),
+  },
+  avatar: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    paddingTop: theme.shape.spacing(4),
+
+    '& > *': {
+      display: 'flex',
+    },
+  },
+  details: {
+    paddingTop: theme.shape.spacing(4),
+  },
+}));
+
 const Section: FC<SectionProps> = ({
   className,
   children,
@@ -101,23 +114,21 @@ const Section: FC<SectionProps> = ({
   const styles = useSectionStyles();
 
   return (
-    <Container fluid className={className}>
+    <Container className={clsx(styles.root, className)}>
       <Row>
         {!hideAvatar && (
-          <Col xs={false} md={3}>
-            <Hidden mdDown>
-              <Content>
-                <div className={styles.avatar}>{avatar}</div>
-              </Content>
+          <Col xs={false} lg={3}>
+            <Hidden lgDown>
+              <div className={styles.avatar}>{avatar}</div>
             </Hidden>
           </Col>
         )}
-        <Col xs={12} md={6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)}>
+        <Col xs={12} md={8 + (hideDetails ? 4 : 0)} lg={6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)}>
           <Content>{children}</Content>
         </Col>
         {!hideDetails && details && (
-          <Col xs={12} md={3}>
-            <Content>{details}</Content>
+          <Col xs={12} md={4} lg={3}>
+            <div className={styles.details}>{details}</div>
           </Col>
         )}
       </Row>
