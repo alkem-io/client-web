@@ -8,7 +8,7 @@ export interface AppContext {
   challenges: Challenge[];
   handleSignIn: () => void;
   handleSignOut: () => void;
-  enableAuthentication: boolean;
+  loading: boolean;
 }
 
 const appContext = React.createContext<AppContext>({
@@ -16,17 +16,12 @@ const appContext = React.createContext<AppContext>({
   challenges: [],
   handleSignIn: () => null,
   handleSignOut: () => null,
-  enableAuthentication: true,
+  loading: false,
 });
 
-interface AppProviderProps {
-  enableAuthentication: boolean;
-}
-
-const AppProvider: FC<AppProviderProps> = ({ enableAuthentication, children }) => {
-  const { data } = useEcoverseNameQuery();
-
-  const { handleSignIn, handleSignOut } = useAuthentication(enableAuthentication);
+const AppProvider: FC = ({ children }) => {
+  const { data, loading: ecoverseLoading } = useEcoverseNameQuery();
+  const { handleSignIn, handleSignOut } = useAuthentication();
 
   const ecoverse = {
     name: data ? data.name : '',
@@ -39,7 +34,7 @@ const AppProvider: FC<AppProviderProps> = ({ enableAuthentication, children }) =
         challenges: [],
         handleSignIn,
         handleSignOut,
-        enableAuthentication,
+        loading: ecoverseLoading,
       }}
     >
       {children}

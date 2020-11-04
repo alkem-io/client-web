@@ -10,6 +10,11 @@ const defaultTaks = cb => {
   Object.keys(env).forEach(function (key) {
     if (key.startsWith('REACT_APP')) configuration[key] = env[key];
   });
+
+  configuration['REACT_APP_GRAPHQL_ENDPOINT'] =
+    configuration['REACT_APP_GRAPHQL_ENDPOINT'] ||
+    (env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
+
   fs.writeFile(`./public/${CONFIG_FILE_NAME}`, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, cb);
 };
 

@@ -1,6 +1,6 @@
 overwrite: true
 schema: "http://localhost:4000/graphql"
-documents: "./src/components/**/*.{ts,tsx}"
+documents: "src/**/!(*.d).{ts,tsx}"
 generates:
   src/generated/graphql.tsx:
     plugins:
@@ -9,3 +9,4 @@ generates:
       - "typescript-react-apollo"
     config:
       withHooks: true
+      maybeValue: T | undefined
