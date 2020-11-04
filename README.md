@@ -20,25 +20,7 @@ Data is fed into the client through a graphql endpoint. Endpoint url is configur
 
 ### Configure authentication
 
-Required environment variables for the authentication to work:
-
-```javascpript
-REACT_APP_AUTH_CLIENT_ID
-REACT_APP_AUTH_TENANT_ID
-REACT_APP_AUTH_API_SCOPE
-REACT_APP_AUTH_REDIRECT_URI
-```
-
-How to obtain this variables is described here: [Configure Authentication with Azure Active Directory](https://github.com/cherrytwist/Infrastructure#to-configure-authentication-with-azure-active-directory-aad)
-
-If you have access or invitation to the Cherrytwist's playground directory this settings could be used:
-
-```javascript
-REACT_APP_AUTH_CLIENT_ID=feb6d8b1-8cc2-4e7d-a419-ad7b544b0832
-REACT_APP_AUTH_TENANT_ID=524e761c-d162-4fdf-ab43-2855246d986c
-REACT_APP_AUTH_API_SCOPE=api://505041fc-fca2-4a74-88ee-6d50a6417e38/.default
-REACT_APP_AUTH_REDIRECT_URI=http://localhost:3000
-```
+Configuration can be retrieved via GraphQL call to the clientConfig query on the Cherrytwist Server.
 
 ## Extending
 
@@ -118,7 +100,7 @@ The repo is also set up to generate a Docker image.
 
 - To create the docker image: `docker build -t cherrytwist/client-web:[tag]` where [tag] can be any value
 - To add build arguments - docker build --build-arg [argument]=[value]
-  - Argument can be one of the following: ARG_GRAPHQL_ENDPOINT, ARG_AUTHENTICATION_ENABLE, ARG_AUTH_CLIENT_ID, ARG_AUTH_TENANT_ID, ARG_AUTH_API_SCOPE, ARG_AUTH_REDIRECT_URI
+  - Argument can be the following: ARG_GRAPHQL_ENDPOINT
 - To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
 ## Pushing code the dockerhub
