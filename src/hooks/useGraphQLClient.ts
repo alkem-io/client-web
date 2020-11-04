@@ -11,7 +11,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const token = useSelector<RootState, string | null>(state => state.auth.accessToken);
   const dispatch = useDispatch();
 
-  console.log('Token: ', token);
+  console.debug('Token: ', token);
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     let errors: Error[] = [];
