@@ -9,6 +9,20 @@ export interface UserModel {
   country: string;
   gender: string;
   aadPassword: string;
+  profile: {
+    avatar: string;
+    tagsets: Tagset[];
+    references: Array<UserReference>;
+  };
+}
+export interface Tagset {
+  name: string;
+  tags: Array<string>;
+}
+
+export interface UserReference {
+  name: string;
+  uri: string;
 }
 
 export const defaultUser: UserModel = {
@@ -22,4 +36,26 @@ export const defaultUser: UserModel = {
   country: '',
   gender: '',
   aadPassword: '',
+  profile: {
+    avatar: '',
+    tagsets: [],
+    references: [],
+  },
 };
+
+/*
+Generated userForm interface for yup
+*/
+export interface UserFromGenerated {
+  firstName: string;
+  email: string;
+  name: string;
+  avatar: string;
+  tagsets: Tagset[];
+  references: UserReference[];
+  country: string;
+  phone: string;
+  lastName: string;
+  city: string;
+  gender: string;
+}
