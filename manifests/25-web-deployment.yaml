@@ -23,7 +23,7 @@ spec:
           - secretRef:
               name: server-secret
           - secretRef:
-              name: aad-secret
+              name: authentication
           ports:
             - name: web
               containerPort: 80
