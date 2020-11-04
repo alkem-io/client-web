@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Prompt, useHistory } from 'react-router-dom';
 import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
 import generator from 'generate-password';
@@ -34,16 +34,6 @@ export const UserFrom: FC<UserProps> = ({
   onSave: _onSave,
   title,
 }) => {
-  /**
-   * @name skills AkA tags
-   * @return string
-   * @summary goes through the tagsets and if they exist returns a joined string of tags from tagsets;
-   */
-  const skills = // AKA tags
-    currentUser.profile.tagsets.length > 0
-      ? currentUser.profile.tagsets.reduce((acc, curr) => [...acc, ...curr.tags], ['']).join(', ')
-      : '';
-  const [userSkills, setUserSkills] = useState<string>(skills);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const [strongPassword, setStrongPassword] = useState<string>('');
@@ -53,10 +43,26 @@ export const UserFrom: FC<UserProps> = ({
     onError: error => console.log(error),
     onCompleted: () => setShowSuccess(true),
   });
+
   const genders = ['not specified', 'male', 'female'];
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
+
+  /**
+   * @name skills AkA tags
+   * @return string
+   * @summary goes through the tagsets and if they exist returns a joined string of tags from tagsets;
+   */
+  const skills = // AKA tags
+    currentUser.profile.tagsets.length > 0
+      ? currentUser.profile.tagsets
+          .reduce((acc, curr) => [...acc, ...curr.tags], [''])
+          .filter(t => t)
+          .join(', ')
+      : '';
+  const [userSkills, setUserSkills] = useState<string>(skills);
+  useEffect(() => setUserSkills(skills), [skills]);
 
   const {
     name,
@@ -306,17 +312,20 @@ export const UserFrom: FC<UserProps> = ({
                 <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
-                {references.length > 0 && (
-                  <FieldArray name={'references'}>
-                    {({ push, remove }) => (
-                      <>
-                        <Form.Row>
-                          <Form.Group as={Col}>
-                            <Form.Label>References</Form.Label>{' '}
-                            {!isReadOnlyMode && <Button onClick={() => push({ name: '', uri: '' })}>Add</Button>}
-                          </Form.Group>
-                        </Form.Row>
-                        {references.map((ref, index) => (
+
+                <FieldArray name={'references'}>
+                  {({ push, remove }) => (
+                    <>
+                      <Form.Row>
+                        <Form.Group as={Col}>
+                          <Form.Label>References</Form.Label>{' '}
+                          {!isReadOnlyMode && <Button onClick={() => push({ name: '', uri: '' })}>Add</Button>}
+                        </Form.Group>
+                      </Form.Row>
+                      {isReadOnlyMode && references.length === 0 ? (
+                        <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
+                      ) : (
+                        references.map((ref, index) => (
                           <Form.Row key={index}>
                             {getInputField(
                               'Name',
@@ -339,11 +348,11 @@ export const UserFrom: FC<UserProps> = ({
                               </Button>
                             </Form.Group>
                           </Form.Row>
-                        ))}
-                      </>
-                    )}
-                  </FieldArray>
-                )}
+                        ))
+                      )}
+                    </>
+                  )}
+                </FieldArray>
                 <Form.Row>
                   <Form.Group as={Col}>
                     {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
