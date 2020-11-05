@@ -1,2 +1,5 @@
 export * from './FourOuFour';
-export * from './Home';
+export * from './Ecoverse';
+export * from './Challenge';
+export * from './Opportunity';
+export * from './Community';

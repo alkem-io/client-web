@@ -24,6 +24,10 @@ const useButtonStyles = createStyles(theme => ({
     '&.small': {
       padding: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
     },
+
+    '&:hover': {
+      textDecoration: 'none',
+    },
   },
   default: {
     color: theme.palette.primary,
@@ -49,53 +53,88 @@ const useButtonStyles = createStyles(theme => ({
     background: theme.palette.primary,
 
     '&:hover': {
+      color: theme.palette.neutralLight,
       background: hexToRGBA(theme.palette.primary, 0.7),
+    },
+
+    '&.inset': {
+      borderColor: theme.palette.neutralLight,
+      borderRightColor: 'transparent',
+      borderTopColor: 'transparent',
+      borderBottomColor: 'transparent',
+
+      '&:hover': {
+        color: theme.palette.primary,
+        background: theme.palette.background,
+      },
     },
 
     '&:focus': {
       outline: `1px auto ${theme.palette.primary}`,
     },
   },
+  transparent: {
+    color: theme.palette.primary,
+    borderColor: theme.palette.primary,
+    background: 'transparent',
+
+    '&:hover': {
+      color: theme.palette.neutralLight,
+      background: hexToRGBA(theme.palette.primary, 0.7),
+    },
+
+    '&:focus': {
+      outline: `1px auto ${theme.palette.primary}`,
+
+      '&.inset': {
+        outline: 'none',
+      },
+    },
+  },
 }));
 
-interface ButtonProps {
+interface ButtonProps extends Record<string, unknown> {
   paddingClass?: string;
-  classes?: string;
-  as?: string;
-  onClick: (e: Event) => void;
+  className?: string;
+  classes?: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  as?: React.ComponentType<any>;
+  onClick?: (e: Event) => void;
   text: string;
-  variant?: 'default' | 'primary';
+  variant?: 'default' | 'primary' | 'transparent';
   inset?: boolean;
   small?: boolean;
 }
 
 const Button: FC<ButtonProps> = ({
-  classes,
+  className,
+  classes = {},
   variant = 'default',
   inset = false,
   small = false,
   children,
-  as,
-  onClick,
+  as: Component = 'button',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onClick = () => {},
   text,
+  ...rest
 }) => {
-  const styles = useButtonStyles();
-  as = as || 'button';
+  const styles = useButtonStyles(classes);
 
   // can always use the bootstrap button internally
-  return React.createElement(as, {
-    className: clsx(styles.button, styles[variant], inset && 'inset', small && 'small', classes),
-    children: (
-      <>
-        <Typography variant="button" color="inherit" weight="boldLight">
-          {text}
-        </Typography>
-        {children}
-      </>
-    ),
-    type: 'button',
-    onClick,
-  });
+  return (
+    <Component
+      className={clsx(styles.button, styles[variant], inset && 'inset', small && 'small', className)}
+      type="button"
+      onClick={onClick}
+      {...rest}
+    >
+      <Typography variant="button" color="inherit" weight="boldLight">
+        {text}
+      </Typography>
+      {children}
+    </Component>
+  );
 };
 
 export default Button;

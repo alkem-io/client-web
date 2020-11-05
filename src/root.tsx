@@ -9,6 +9,8 @@ import configureStore from './store';
 import { useGraphQLClient } from './hooks/useGraphQLClient';
 import { env } from './env';
 import App from './components/App';
+import { Routing } from './navigation';
+import { BrowserRouter } from 'react-router-dom';
 
 const graphQLEndpoint =
   (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
@@ -30,7 +32,11 @@ const ReduxRoot: FC = () => {
       <ConfigProvider>
         <AuthenticationProvider>
           <ThemeProvider>
-            <App />
+            <BrowserRouter>
+              <App>
+                <Routing />
+              </App>
+            </BrowserRouter>
           </ThemeProvider>
         </AuthenticationProvider>
       </ConfigProvider>

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Palette, Typography } from '../../context/ThemeProvider';
+import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 
 const useTypographyStyles = createStyles(theme => ({
@@ -85,7 +85,7 @@ const fontWeight: FontWeight = {
 };
 
 interface TypographyProps {
-  variant?: keyof Typography;
+  variant?: keyof TypographyContract;
   className?: string;
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;
@@ -93,7 +93,7 @@ interface TypographyProps {
   classes?: unknown;
 }
 
-const Toolbar: FC<TypographyProps> = ({
+const Typography: FC<TypographyProps> = ({
   variant = 'body',
   color = 'neutral',
   weight = 'medium',
@@ -112,4 +112,4 @@ const Toolbar: FC<TypographyProps> = ({
   });
 };
 
-export default Toolbar;
+export default Typography;

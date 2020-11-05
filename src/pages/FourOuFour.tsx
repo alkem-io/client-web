@@ -1,28 +1,20 @@
 import React, { FC } from 'react';
-import './FourOuFour.css';
 import { Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import Button from '../components/core/Button';
+import Section from '../components/core/Section';
+import Typography from '../components/core/Typography';
+import './FourOuFour.css';
 
 export const FourOuFour: FC = () => {
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12">
-          <div className="error-template">
-            <h1>Oops!</h1>
-            <h2>404 Not Found</h2>
-            <div className="error-details">Sorry, an error has occured, Requested page not found!</div>
-            <div className="error-actions">
-              <Link to="/">
-                <Button>
-                  <span className="glyphicon glyphicon-home" />
-                  Take Me Home{' '}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
+    <Section>
+      <Typography as="h1" variant="h1">
+        404
+      </Typography>
+      <Typography as="h5">The resource you are looking for could not be found.</Typography>
+      <div>
+        <Button variant="primary" as={Link} to="/" text="Take me home" />
       </div>
-    </div>
+    </Section>
   );
 };
