@@ -32,6 +32,7 @@ import User from './layout/User';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Switch from 'react-bootstrap/esm/Switch';
 import { AdminPage } from './Admin/AdminPage';
+import MultipleSelect from './core/MultipleSelect';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -331,6 +332,13 @@ const App = (): React.ReactElement => {
                   <Button text="Learn more" onClick={ev => console.log(ev)} />
                 </Body>
               </Section>
+              <Divider />
+              <MultipleSelect
+                label={'search for skills'}
+                onChange={value => console.log('value ---> ', value)} //may be enhanced with debounced callback to fetch new suggestions
+                elements={['one', 'two', 'three', 'javascript', 'java', 'python', 'c#', 'php', 'node.js', 'ruby']} //test data
+                allowUnknownValues
+              />
               <Divider />
               <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
                 <SectionHeader text={challenges.header} />
