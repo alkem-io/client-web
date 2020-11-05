@@ -54,7 +54,7 @@ const Challenge: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: challenges.list.find(c => c.id === id)?.shortText, real: true }],
+    () => [...paths, { value: url, name: challenges.list.find(c => c.id === id)?.shortText || '', real: true }],
     [paths, id]
   );
 
