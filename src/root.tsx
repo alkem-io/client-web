@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { ApolloProvider } from '@apollo/client';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
+import { NavigationProvider } from './context/NavigationProvider';
 
 import { ConfigProvider } from './context/ConfigProvider';
 import configureStore from './store';
@@ -32,11 +33,13 @@ const ReduxRoot: FC = () => {
       <ConfigProvider>
         <AuthenticationProvider>
           <ThemeProvider>
-            <BrowserRouter>
-              <App>
-                <Routing />
-              </App>
-            </BrowserRouter>
+            <NavigationProvider>
+              <BrowserRouter>
+                <App>
+                  <Routing />
+                </App>
+              </BrowserRouter>
+            </NavigationProvider>
           </ThemeProvider>
         </AuthenticationProvider>
       </ConfigProvider>

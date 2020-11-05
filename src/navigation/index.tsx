@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Admin } from './admin';
-import { Ecoverse } from './ecoverse';
+import { Ecoverses } from './ecoverse';
 import { Community } from './community';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
@@ -17,7 +17,7 @@ export const Routing: FC = () => {
         <Redirect to="/ecoverse/1" />
       </Route>
       <Route path="/ecoverse">
-        <Ecoverse />
+        <Ecoverses />
       </Route>
       <Route exact path="/community">
         <Community />

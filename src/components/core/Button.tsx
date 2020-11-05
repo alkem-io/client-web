@@ -66,6 +66,11 @@ const useButtonStyles = createStyles(theme => ({
       '&:hover': {
         color: theme.palette.primary,
         background: theme.palette.background,
+        cursor: 'pointer',
+      },
+
+      '&:focus': {
+        outline: 'none',
       },
     },
 

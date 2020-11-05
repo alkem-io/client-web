@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import React, { FC, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { FC, useMemo, useRef } from 'react';
+import { useParams, useRouteMatch } from 'react-router-dom';
 import { ActivityCard } from '../components/Challenge/Cards';
 import Button from '../components/core/Button';
 import Divider from '../components/core/Divider';
@@ -11,6 +11,8 @@ import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.
 import { Theme } from '../context/ThemeProvider';
 import { createStyles } from '../hooks/useTheme';
 import Icon from '../components/core/Icon';
+import { useUpdateNavigation } from '../hooks/useNavigation';
+import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -22,9 +24,9 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const Opportunity: FC = (): React.ReactElement => {
-  const { id } = useParams<{ id: string }>();
+const Opportunity: FC<PageProps> = ({ paths }): React.ReactElement => {
   const styles = useStyles();
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>

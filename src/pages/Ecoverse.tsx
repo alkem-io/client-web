@@ -1,7 +1,7 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { ActivityCard, ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
@@ -10,10 +10,12 @@ import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { challenges, community, odyssey, projects } from '../components/core/Typography.dummy.json';
 import { useParams, useRouteMatch } from 'react-router-dom';
+import { useUpdateNavigation } from '../hooks/useNavigation';
+import { PageProps } from './common';
 
-const Ecoverse: FC = (): React.ReactElement => {
+const Ecoverse: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { url } = useRouteMatch();
-  const { id } = useParams<{ id: string }>();
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>

@@ -6,9 +6,12 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { people } from '../components/core/Typography.dummy.json';
+import { useUpdateNavigation } from '../hooks/useNavigation';
+import { PageProps } from './common';
 
-const Community: FC = (): React.ReactElement => {
+const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   // load the ecoverse
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     // the switch breaks the layout

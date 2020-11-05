@@ -3,6 +3,7 @@ import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-u
 import React, { FC, useRef } from 'react';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { createStyles } from '../hooks/useTheme';
+import { useNavigation } from '../hooks/useNavigation';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import Button from './core/Button';
 import Icon from './core/Icon';
@@ -12,6 +13,8 @@ import Header from './layout/Header';
 import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
+import Section from './core/Section';
+import Breadcrumbs from './core/Breadcrumbs';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -58,6 +61,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation }) => {
 const App = ({ children }): React.ReactElement => {
   useGlobalStyles();
   const { context, isAuthenticated } = useAuthenticationContext();
+  const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
 
   return (
@@ -72,7 +76,18 @@ const App = ({ children }): React.ReactElement => {
           </div>
         )}
       </Header>
-      <Main>{children}</Main>
+      <Main>
+        <Section
+          hideDetails
+          gutters={{ content: false, details: false, root: true }}
+          classes={{
+            padding: '0',
+          }}
+        >
+          <Breadcrumbs paths={paths} />
+        </Section>
+        {children}
+      </Main>
       <Footer>
         <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
           <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />

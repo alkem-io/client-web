@@ -2,7 +2,7 @@ import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useRef } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { ActivityCard, OpportunityCard } from '../components/Challenge/Cards';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
@@ -11,11 +11,13 @@ import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { challenges, community, opportunities } from '../components/core/Typography.dummy.json';
 import { Theme } from '../context/ThemeProvider';
+import { useUpdateNavigation } from '../hooks/useNavigation';
+import { PageProps } from './common';
 
-const Challenge: FC = (): React.ReactElement => {
+const Challenge: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { url } = useRouteMatch();
-  const { id } = useParams<{ id: string }>();
   const opportunityRef = useRef<HTMLDivElement>(null);
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>

@@ -76,13 +76,15 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
 };
 
 const useContentStyles = createStyles(theme => ({
+  gutters: {
+    padding: theme.shape.spacing(4),
+  },
   content: {
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
-  },
-  gutters: {
-    padding: theme.shape.spacing(4),
+    paddingLeft: theme.shape.spacing(4),
+    paddingRight: theme.shape.spacing(4),
 
     [theme.media.down('md')]: {
       paddingLeft: theme.shape.spacing(2),
@@ -94,7 +96,7 @@ const useContentStyles = createStyles(theme => ({
 const Content: FC<{ gutters?: boolean; classes?: ClassProps }> = ({ children, classes, gutters = true }) => {
   const styles = useContentStyles(classes || {});
 
-  return <div className={clsx(styles.content, gutters && styles.gutters)}>{children}</div>;
+  return <div className={clsx(gutters && styles.gutters, styles.content)}>{children}</div>;
 };
 
 interface ClassProps {
@@ -113,6 +115,7 @@ interface SectionProps {
     root?: boolean;
     content?: boolean;
     details?: boolean;
+    avatar?: boolean;
   };
   classes?: ClassProps;
 }
@@ -126,13 +129,12 @@ const useSectionStyles = createStyles(theme => ({
   avatar: {
     display: 'flex',
     flexDirection: 'row-reverse',
-    paddingTop: theme.shape.spacing(4),
 
     '& > *': {
       display: 'flex',
     },
   },
-  details: {
+  gutter: {
     paddingTop: theme.shape.spacing(4),
   },
 }));
@@ -149,6 +151,7 @@ const Section: FC<SectionProps> = ({
     root: true,
     content: true,
     details: true,
+    avatar: true,
   },
 }) => {
   const styles = useSectionStyles(classes);
@@ -159,7 +162,7 @@ const Section: FC<SectionProps> = ({
         {!hideAvatar && (
           <Col xs={false} lg={3}>
             <Hidden lgDown>
-              <div className={styles.avatar}>{avatar}</div>
+              <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
             </Hidden>
           </Col>
         )}
@@ -173,7 +176,7 @@ const Section: FC<SectionProps> = ({
         </Col>
         {!hideDetails && details && (
           <Col xs={12} md={4} lg={3}>
-            <div className={clsx(gutters.details && styles.details)}>{details}</div>
+            <div className={clsx(gutters.details && styles.gutter)}>{details}</div>
           </Col>
         )}
       </Row>
