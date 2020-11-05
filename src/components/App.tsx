@@ -8,7 +8,7 @@ import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-f
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { FC, ReactElement, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { Overlay, Popover } from 'react-bootstrap';
 import { Theme } from '../context/ThemeProvider';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
@@ -16,7 +16,6 @@ import { createStyles } from '../hooks/useTheme';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import Button from './core/Button';
 import Card from './core/Card';
-import CircleTag from './core/CircleTag';
 import { CardContainer } from './core/Container';
 import Divider from './core/Divider';
 import Hidden from './core/Hidden';
@@ -32,6 +31,10 @@ import User from './layout/User';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Switch from 'react-bootstrap/esm/Switch';
 import { AdminPage } from './Admin/AdminPage';
+import ActivityCard from './ActivityPanel';
+
+// TMP
+import activitiesMock from './ActivityPanel/tempMockActivities';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -182,43 +185,6 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-const ActivityCard: FC = () => {
-  const styles = useCardStyles();
-
-  return (
-    <Card
-      bodyProps={{
-        padding: (theme: Theme, { xs, sm, md }) => {
-          return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
-        },
-        background: (theme: Theme) => theme.palette.background,
-      }}
-      primaryTextProps={{ text: 'ecoverse activity' }}
-    >
-      <div className={styles.item}>
-        <Typography>Challenges:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'21'} />
-      </div>
-      <div className={styles.item}>
-        <Typography>Opportunities:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'94'} color="primary" />
-      </div>
-      <div className={styles.item}>
-        <Typography>Projects:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'118'} color="positive" />
-      </div>
-      <div className={styles.item}>
-        <Typography>Members:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'6171'} color="neutralMedium" />
-      </div>
-    </Card>
-  );
-};
-
 interface ChallengeCardProps {
   text: string;
   tag?: string;
@@ -324,7 +290,7 @@ const App = (): React.ReactElement => {
               <AdminPage />
             </Route>
             <Route path="/" exact>
-              <Section details={<ActivityCard />}>
+              <Section details={<ActivityCard title={'ecoverse activity'} items={activitiesMock} />}>
                 <SectionHeader text={odyssey.header} />
                 <SubHeader text={odyssey.subheader} />
                 <Body text={odyssey.body}>
