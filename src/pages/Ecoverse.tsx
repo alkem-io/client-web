@@ -2,7 +2,7 @@ import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useMemo } from 'react';
-import { ActivityCard, ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
+import { ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
@@ -13,13 +13,16 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 
+import activitiesMock from '../components/ActivityPanel/tempMockActivities';
+import ActivityCard from '../components/ActivityPanel';
+
 const Ecoverse: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>
-      <Section details={<ActivityCard />}>
+      <Section details={<ActivityCard title={'ecoverse activity'} items={activitiesMock} />}>
         <SectionHeader text={odyssey.header} />
         <SubHeader text={odyssey.subheader} />
         <Body text={odyssey.body}>

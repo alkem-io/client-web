@@ -39,10 +39,12 @@ const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items =
   return (
     <Card
       bodyProps={{
-        padding: (theme: Theme, { xs, sm, md }) => {
-          return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
+        classes: {
+          padding: (theme: Theme, { xs, sm, md }) => {
+            return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
+          },
+          background: (theme: Theme) => theme.palette.background,
         },
-        background: (theme: Theme) => theme.palette.background,
       }}
       primaryTextProps={{ text: title }}
     >
