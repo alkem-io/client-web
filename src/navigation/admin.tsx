@@ -11,7 +11,7 @@ export const Admin: FC = () => {
 
   return (
     <Switch>
-      <Route exact path={`${path}`}>
+      <Route path={`${path}`}>
         <AdminPage />
       </Route>
       {/* <Route exact path={`${path}/users`}>
