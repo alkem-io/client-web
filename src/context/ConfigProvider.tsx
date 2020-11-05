@@ -14,7 +14,6 @@ const configContext = React.createContext<ConfigContext>({
 
 const ConfigProvider: FC = ({ children }) => {
   const { data, loading } = useConfigQuery();
-  if (loading) console.log('Loading configuration.');
   const aadConfig = data ? getConfig(data.clientConfig as AadClientConfig) : getConfig();
   return (
     <configContext.Provider
