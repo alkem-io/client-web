@@ -1,20 +1,19 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import React, { FC, useMemo } from 'react';
-import { ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
+import React, { FC } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import ActivityCard from '../components/ActivityPanel';
+import activitiesMock from '../components/ActivityPanel/tempMockActivities';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { challenges, community, odyssey, projects } from '../components/core/Typography.dummy.json';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
-
-import activitiesMock from '../components/ActivityPanel/tempMockActivities';
-import ActivityCard from '../components/ActivityPanel';
 
 const Ecoverse: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { url } = useRouteMatch();

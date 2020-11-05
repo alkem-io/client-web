@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
 import { createStyles } from '../../hooks/useTheme';
@@ -29,7 +29,7 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ paths, classes, className }) => {
     <div className={className}>
       {paths.map((p, i) => {
         return (
-          <>
+          <Fragment key={i}>
             <Typography
               as={p.real ? Link : 'span'}
               to={p.value}
@@ -45,7 +45,7 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ paths, classes, className }) => {
                 /
               </Typography>
             )}
-          </>
+          </Fragment>
         );
       })}
     </div>

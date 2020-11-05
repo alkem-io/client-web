@@ -48,8 +48,8 @@ const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items =
       }}
       primaryTextProps={{ text: title }}
     >
-      {items.map(({ name, digit, color }) => (
-        <div className={styles.item}>
+      {items.map(({ name, digit, color }, i) => (
+        <div className={styles.item} key={i}>
           <Typography as={'p'}>{name}:</Typography>
           <CircleTag text={`${digit}`} color={color || 'neutral'} />
         </div>

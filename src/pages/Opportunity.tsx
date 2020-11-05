@@ -1,17 +1,16 @@
+import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import clsx from 'clsx';
-import React, { FC, useMemo, useRef } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import React, { FC } from 'react';
 import { ActivityCard } from '../components/Challenge/Cards';
 import Button from '../components/core/Button';
 import Divider from '../components/core/Divider';
+import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Tag from '../components/core/Tag';
 import { opportunities } from '../components/core/Typography.dummy.json';
-import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { Theme } from '../context/ThemeProvider';
-import { createStyles } from '../hooks/useTheme';
-import Icon from '../components/core/Icon';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import { createStyles } from '../hooks/useTheme';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
