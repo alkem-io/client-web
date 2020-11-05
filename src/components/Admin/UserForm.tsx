@@ -173,6 +173,7 @@ export const UserForm: FC<UserProps> = ({
         numbers: true,
         symbols: true,
         excludeSimilarCharacters: true,
+        exclude: '"', // avoid causing invalid Json
         strict: true,
       });
 

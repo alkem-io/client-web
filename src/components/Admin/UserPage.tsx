@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import { defaultUser, UserModel } from '../../models/User';
-import Loading from '../Loading';
+import Loading from '../core/Loading';
 import User from './User';
 import UserForm, { EditMode } from './UserForm';
 import UserList from './UserList';

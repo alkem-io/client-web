@@ -10,28 +10,81 @@
     "body": "Odyssey 2020 hosts 21 challenges to shape the 21st century. Find out what challenges others are taking on and discover how you can exchange value. Go explore!",
     "list": [
       {
+        "id": "challenge_1",
+        "shortText": "FREIGHT PACKAGING",
         "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "tag": "my challenge"
       },
       {
+        "id": "challenge_2",
+        "shortText": "TRANSACTIVE GRIDS",
         "text": "TRANSACTIVE GRIDS",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "description": "How might we integrate an inclusive market design utilizing D3A, enabling every producing consumer to asdasd asda sd "
       },
       {
+        "id": "challenge_3",
+        "shortText": "SAFETY COMMUNITIES",
         "text": "INCLUSIVE SAFETY COMMUNITIES",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "description": "How might we integrate an inclusive market design utilizing D3A, enabling every producing consumer to asd asdas d"
       },
       {
+        "id": "challenge_4",
+        "shortText": "FREIGHT PACKAGING",
         "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "tag": "my challenge"
       },
       {
+        "id": "challenge_5",
+        "shortText": "FREIGHT PACKAGING",
         "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "tag": "my challenge"
       },
       {
+        "id": "challenge_6",
+        "shortText": "FREIGHT PACKAGING",
         "text": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
+        "subText": "Why we are looking for your help",
+        "details": "Freight packaging is lost, stolen, or simply not reused. This costs transporters €150,000 to €3,000,000 a year, in addition to the environmental impact of replacing trolleys, pallets, and crates. Reuse or repair often costs more than buying new. Freight packaging may look simple, but involves many factors. It may cost more or less than the actual product, belonging to the transporter, producer or marketplace. One solution won’t fit all, and supply chain stakeholder interests do not align. Who wants to transfer packaging ownership with every delivery?",
         "tag": "my challenge"
+      }
+    ]
+  },
+  "opportunities": {
+    "list": [
+      {
+        "id": 1,
+        "caption": "TEAM THE MILLENIAL A.C.",
+        "title": "Incentivizing everyone to give info to the network"
+      },
+      {
+        "id": 2,
+        "caption": "TEAM DAC. DIGITAL",
+        "title": "MITIGATE POINTLESS SHIPPING OF EMPTY PACKAGING"
+      },
+      {
+        "id": 3,
+        "caption": "TEAM OV SOFTWARE",
+        "title": "USING AI TO BALANCE THE INTERESTS OF EVERY STAKEHOLDER"
+      },
+      {
+        "id": 4,
+        "caption": "TEAM INNOTRACTOR",
+        "title": "Lorem ipsum dolor sit amet consectetur adipiscing elit"
+      },
+      {
+        "id": 5,
+        "caption": "TEAM THE MILLENIAL A.C.",
+        "title": "Incentivizing everyone to give info to the network"
       }
     ]
   },
@@ -46,29 +99,71 @@
     "subheader": "Recently initiated projects from the Odyssey Ecoverse",
     "list": [
       {
+        "id": 1,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "ACCOUNTABLE FREIGHT",
         "tag": { "text": "PROPOSED", "status": "negative" }
       },
       {
+        "id": 2,
         "caption": "GIVE BUILDING A PERSONALITY",
         "title": "SMART QR CODES",
         "tag": { "text": "IN PROGRESS", "status": "positive" }
       },
       {
+        "id": 3,
         "caption": "GIVE BUILDING A PERSONALITY",
         "title": "SMART QR CODES",
         "tag": { "text": "IN PROGRESS", "status": "positive" }
       },
       {
+        "id": 4,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "PRODUCT ID SCANNER",
         "tag": { "text": "PROPOSED", "status": "negative" }
       },
       {
+        "id": 5,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "VISUAL REBRANDING",
         "tag": { "text": "PROPOSED", "status": "negative" }
+      }
+    ]
+  },
+  "people": {
+    "list": [
+      {
+        "id": 1,
+        "name": "SARAH JACKSON",
+        "job": "Javascript Developer",
+        "company": "Facebook",
+        "tag": "jedi"
+      },
+      {
+        "id": 2,
+        "name": "KATE JOHNSON",
+        "job": "Javascript Developer",
+        "company": "Facebook"
+      },
+      {
+        "id": 3,
+        "name": "MIKE TAYLOR",
+        "job": "Frontend Developer ",
+        "company": "Odyssey"
+      },
+      {
+        "id": 4,
+        "name": "MICHELLE DAVIS",
+        "job": "Javascript Developer",
+        "company": "Facebook",
+        "tag": "jedi"
+      },
+      {
+        "id": 5,
+        "name": "JAKE WILSON",
+        "job": "Backend Developer",
+        "company": "Alphabet",
+        "tag": "jedi"
       }
     ]
   }

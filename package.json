@@ -46,11 +46,11 @@
     "yup": "^0.29.3"
   },
   "scripts": {
-    "prestart": "gulp",
+    "prestart": "cross-env NODE_ENV=development gulp buildConfiguration",
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
-    "prebuild": "gulp",
+    "prebuild": "cross-env NODE_ENV=production gulp buildConfiguration",
     "build": "react-scripts build",
-    "pretest": "gulp",
+    "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",

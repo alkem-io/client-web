@@ -39,21 +39,21 @@ const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items =
   return (
     <Card
       bodyProps={{
-        padding: (theme: Theme, { xs, sm, md }) => {
-          return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
+        classes: {
+          padding: (theme: Theme, { xs, sm, md }) => {
+            return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
+          },
+          background: (theme: Theme) => theme.palette.background,
         },
-        background: (theme: Theme) => theme.palette.background,
       }}
       primaryTextProps={{ text: title }}
     >
-      {items.map(({ name, digit, color }) => {
-        return (
-          <div key={digit} className={styles.item}>
-            <Typography as={'p'}>{name}:</Typography>
-            <CircleTag text={`${digit}`} color={color || 'neutral'} />
-          </div>
-        );
-      })}
+      {items.map(({ name, digit, color }, i) => (
+        <div className={styles.item} key={i}>
+          <Typography as={'p'}>{name}:</Typography>
+          <CircleTag text={`${digit}`} color={color || 'neutral'} />
+        </div>
+      ))}
     </Card>
   );
 };
