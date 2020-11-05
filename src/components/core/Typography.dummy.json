@@ -102,31 +102,46 @@
         "id": 1,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "ACCOUNTABLE FREIGHT",
-        "tag": { "text": "PROPOSED", "status": "negative" }
+        "tag": {
+          "text": "PROPOSED",
+          "status": "negative"
+        }
       },
       {
         "id": 2,
         "caption": "GIVE BUILDING A PERSONALITY",
         "title": "SMART QR CODES",
-        "tag": { "text": "IN PROGRESS", "status": "positive" }
+        "tag": {
+          "text": "IN PROGRESS",
+          "status": "positive"
+        }
       },
       {
         "id": 3,
         "caption": "GIVE BUILDING A PERSONALITY",
         "title": "SMART QR CODES",
-        "tag": { "text": "IN PROGRESS", "status": "positive" }
+        "tag": {
+          "text": "IN PROGRESS",
+          "status": "positive"
+        }
       },
       {
         "id": 4,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "PRODUCT ID SCANNER",
-        "tag": { "text": "PROPOSED", "status": "negative" }
+        "tag": {
+          "text": "PROPOSED",
+          "status": "negative"
+        }
       },
       {
         "id": 5,
         "caption": "CIRCULAR ECONOMY FOR FREIGHT PACKAGING",
         "title": "VISUAL REBRANDING",
-        "tag": { "text": "PROPOSED", "status": "negative" }
+        "tag": {
+          "text": "PROPOSED",
+          "status": "negative"
+        }
       }
     ]
   },
