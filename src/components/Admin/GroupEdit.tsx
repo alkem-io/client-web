@@ -1,7 +1,9 @@
+import { gql } from '@apollo/client';
 import React, { FC, useState } from 'react';
 import { Button, Col, FormCheck, Nav, Navbar, Row, Table } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useGroupMembersQuery, useRemoveUserFromGroupMutation } from '../../generated/graphql';
+import { GROUP_MEMBERS_FRAGMENT } from '../../graphql/admin';
 
 interface Parameters {
   groupId: string;
@@ -12,7 +14,7 @@ export const GroupEdit: FC = () => {
   const { data, loading } = useGroupMembersQuery({ variables: { id: Number(groupId) } });
   const [isAddPanelOpen, setAddPanelState] = useState(false);
   const members = (data && data.group && data.group.members) || [];
-  const [removeUser, { loading: removing }] = useRemoveUserFromGroupMutation({
+  const [removeUserFromGroup, { loading: removing }] = useRemoveUserFromGroupMutation({
     onError: error => {
       // setShowError(true);
       console.log(error);
@@ -21,40 +23,43 @@ export const GroupEdit: FC = () => {
       // setIsBlocked(true);
       // setShowSuccess(true);
     },
-    update: (cache, { data }) => {
-      if (data) {
-        const { removeUserFromGroup } = data;
+    // TODO [ATS] Find a way to update the cache instead of doing second query
+    // update: (cache, { data }) => {
+    //   const fragment = GROUP_MEMBERS_FRAGMENT;
+    //   if (data) {
+    //     const { removeUserFromGroup } = data;
 
-        // cache.modify({
-        //   fields: {
-        //     users(existingTodos = []) {
-        //       const newUserRef = cache.writeFragment({
-        //         data: removeUserFromGroup,
-        //         fragment: gql`
-        //           fragment UpdateMembers on Group {
-        //             id
-        //             name
-        //             firstName
-        //             lastName
-        //             email
-        //             phone
-        //             city
-        //             country
-        //             gender
-        //           }
-        //         `,
-        //       });
-        //       return [...existingTodos, newUserRef];
-        //     },
-        //   },
-        // });
-      }
-    },
+    //     cache.modify({
+    //       id: groupId,
+    //       fields: {
+    //         members(existingMembers = [], { readField }) {
+    //           return existingMembers.filter(memberRef => {
+    //             if (!removeUserFromGroup.members) return true;
+    //             return removeUserFromGroup.members.some(m => m.id === readField('id', memberRef));
+    //           });
+    //           // const newMembers = cache.writeFragment({
+    //           //   data: removeUserFromGroup.members,
+    //           //   fragment,
+    //           // });
+    //           // return [newMembers];
+    //         },
+    //       },
+    //     });
+    //   }
+    // },
   });
+
   if (loading) return <div>Loading...</div>;
 
-  const removeMember = (member: string) => {
-    // removeUser({ gro });
+  const removeMember = (userID: string) => {
+    removeUserFromGroup({
+      refetchQueries: ['groupMembers'],
+      awaitRefetchQueries: true,
+      variables: {
+        groupID: Number(groupId),
+        userID: Number(userID),
+      },
+    });
   };
 
   return (
@@ -70,6 +75,7 @@ export const GroupEdit: FC = () => {
         </Nav>
       </Navbar>
       <h3>{data?.group.name}</h3>
+      {removing && <div>Removing...</div>}
       Group members:
       <Row>
         <Col>
@@ -97,7 +103,7 @@ export const GroupEdit: FC = () => {
                   <td>{m.lastName}</td>
                   <td>{m.email}</td>
                   <td>
-                    <Button variant="outline-danger" size="sm" onClick={() => removeMember(m.email)}>
+                    <Button variant="outline-danger" size="sm" onClick={() => removeMember(m.id)}>
                       X
                     </Button>
                   </td>

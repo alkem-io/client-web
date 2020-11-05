@@ -128,14 +128,14 @@ export const UserForm: FC<UserProps> = ({
 
         cache.modify({
           fields: {
-            users(existingTodos = []) {
+            users(existingUsers = []) {
               const newUserRef = cache.writeFragment({
                 data: createUser,
                 fragment: gql`
                   ${USER_DETAILS_FRAGMENT}
                 `,
               });
-              return [...existingTodos, newUserRef];
+              return [...existingUsers, newUserRef];
             },
           },
         });

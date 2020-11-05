@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RetryLink } from '@apollo/client/link/retry';
 import { RootState } from '../reducers';
 import { pushError } from '../reducers/error/actions';
+import { typePolicies } from '../graphql/cache/typePolicies';
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const token = useSelector<RootState, string | null>(state => state.auth.accessToken);
@@ -90,7 +91,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   return new ApolloClient({
     link: from([authLink, errorLink, retryLink, omitTypenameLink, httpLink]),
-    cache: new InMemoryCache({ addTypename: true }),
+    cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
   });
 };
 

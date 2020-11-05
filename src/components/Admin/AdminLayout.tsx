@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import { Col, Container, Nav, Row } from 'react-bootstrap';
+import { Col, Nav, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ErrorHandler } from '../../containers/ErrorHandler';
+import Container from '../core/Container';
 
 export const AdminLayout: FC = ({ children }) => {
   return (
     <>
-      <Container fluid>
+      <Container>
         <ErrorHandler>
           <Row>
             <Col sm={1} className="ct-nav">
