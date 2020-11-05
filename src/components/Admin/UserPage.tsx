@@ -2,7 +2,8 @@ import React, { FC } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
-import { UserModel } from '../../models/User';
+import { defaultUser, UserModel } from '../../models/User';
+import User from './User';
 import UserForm, { EditMode } from './UserForm';
 import UserList from './UserList';
 
@@ -41,15 +42,15 @@ export const UserPage: FC = () => {
               <Route exact path={`${path}`}>
                 <UserList users={users} />
               </Route>
-              <Route exact path={`${path}/new`}>
-                <UserForm key="new" users={users} editMode={EditMode.new} onSave={handleSaveUser} />
+              <Route path={`${path}/users/new`}>
+                <UserForm user={defaultUser} editMode={EditMode.new} title={'User creation'} />
               </Route>
-              <Route exact path={`${path}/:userId/edit`}>
-                <UserForm key="edit" users={users} editMode={EditMode.edit} onSave={handleSaveUser} />
+              <Route exact path={`${path}/users/:userId/edit`}>
+                <User mode={EditMode.edit} />
               </Route>
-              <Route exact path={`${path}/:userId`}>
-                <UserForm key="edit" users={users} onSave={handleSaveUser} />
-              </Route>{' '}
+              <Route exact path={`${path}/users/:userId`}>
+                <User mode={EditMode.readOnly} />
+              </Route>
             </Switch>
           </Col>
         </Row>
