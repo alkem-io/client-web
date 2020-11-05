@@ -1,15 +1,14 @@
 import React, { FC, useContext } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import AdminContainer from '../components/Admin/AdminContainer';
 import { AdminPage } from '../components/Admin/AdminPage';
 import App from '../components/App';
 import { ChallengePage } from '../components/ChallengePage';
 import { Layout } from '../components/Layout';
 import Loading from '../components/Loading';
+import UserProfile from '../components/UserProfile/UserProfile';
 import { appContext } from '../context/AppProvider';
 import { configContext } from '../context/ConfigProvider';
 import { FourOuFour } from '../pages/FourOuFour';
-import UserProfile from '../components/UserProfile/UserProfile';
 
 const AppContainer: FC = () => {
   const appCtx = useContext(appContext);
@@ -21,7 +20,7 @@ const AppContainer: FC = () => {
       <Switch>
         <Route exact path="/404" component={FourOuFour} />
         <Route path="/admin">
-          <AdminContainer />
+          <AdminPage />
         </Route>
         <Route>
           <Layout>

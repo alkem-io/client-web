@@ -2,12 +2,10 @@ import React, { FC } from 'react';
 import { Col, Container, Nav, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ErrorHandler } from '../../containers/ErrorHandler';
-import Header from '../Header';
 
 export const AdminLayout: FC = ({ children }) => {
   return (
     <>
-      <Header />
       <Container fluid>
         <ErrorHandler>
           <Row>

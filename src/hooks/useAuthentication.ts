@@ -6,6 +6,7 @@ import {
   PublicClientApplication,
   SilentRequest,
 } from '@azure/msal-browser';
+import { debug } from 'console';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { configContext } from '../context/ConfigProvider';
