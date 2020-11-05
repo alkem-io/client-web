@@ -4,21 +4,22 @@ import { Col, Container as BootstrapContainer, ContainerProps as BootstrapContai
 import { createStyles } from '../../hooks/useTheme';
 
 const useContainerStyles = createStyles(() => ({
-  root: {
-    // padding: 0,
-    // margin: 0,
+  noGutters: {
+    padding: 0,
+    margin: 0,
   },
 }));
 
 interface ContainerProps extends BootstrapContainerProps {
   classes?: unknown;
+  disableGutters?: boolean;
 }
 
-const Container: FC<ContainerProps> = ({ children, fluid = true, className, classes, ...rest }) => {
+const Container: FC<ContainerProps> = ({ children, fluid = true, className, classes, disableGutters, ...rest }) => {
   const styles = useContainerStyles(classes);
 
   return (
-    <BootstrapContainer className={clsx(fluid && styles.root, className)} fluid={fluid} {...rest}>
+    <BootstrapContainer className={clsx(disableGutters && styles.noGutters, className)} fluid={fluid} {...rest}>
       {children}
     </BootstrapContainer>
   );

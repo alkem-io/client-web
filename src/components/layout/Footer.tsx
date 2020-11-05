@@ -31,7 +31,7 @@ const Footer: FC = ({ children }) => {
         <Typography variant="caption" color="neutralMedium" weight="boldLight">
           Powered by
         </Typography>
-        <img src="logo.png" className={styles.logo} alt="Cherrytwist" />
+        <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
         <div className={styles.spacer} />
         {children}
       </Toolbar>

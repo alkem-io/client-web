@@ -25,8 +25,6 @@ const useHeaderStyles = createStyles(theme => ({
       `${theme.shape.spacing(2)}px ${theme.shape.spacing(6)}px ${theme.shape.spacing(2)}px ${theme.shape.spacing(4)}px`,
 
     '& span': {
-      minHeight: 36,
-
       [theme.media.down('lg')]: {
         minHeight: 0,
       },
@@ -92,32 +90,39 @@ const useBodyStyles = createStyles(theme => ({
     width: '100%',
     flexGrow: 1,
     flexDirection: 'column',
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
-    padding: props => agnosticFunctor(props.padding)(theme, {}) || theme.shape.spacing(4),
+    background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
+    padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, {}) || theme.shape.spacing(4),
 
     [theme.media.down('md')]: {
-      background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight,
-      padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.shape.spacing(4),
+      background: (props: ClassProps) =>
+        agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight,
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { md: true }) || theme.shape.spacing(4),
     },
     [theme.media.down('sm')]: {
-      background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight,
-      padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.shape.spacing(4),
+      background: (props: ClassProps) =>
+        agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight,
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.shape.spacing(4),
     },
     [theme.media.down('xs')]: {
-      background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight,
-      padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.shape.spacing(4),
+      background: (props: ClassProps) =>
+        agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight,
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.shape.spacing(4),
     },
   },
 }));
 
-interface BodyProps {
-  className?: string;
+interface ClassProps {
   background?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
   padding?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
 }
 
-export const Body: FC<BodyProps> = ({ children, className, ...rest }) => {
-  const styles = useBodyStyles(rest);
+interface BodyProps {
+  className?: string;
+  classes?: ClassProps;
+}
+
+export const Body: FC<BodyProps> = ({ children, className, classes }) => {
+  const styles = useBodyStyles(classes);
 
   return <div className={clsx(styles.content, className)}>{children}</div>;
 };
