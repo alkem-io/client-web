@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Palette, Typography } from '../../context/ThemeProvider';
+import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 
 const useTypographyStyles = createStyles(theme => ({
@@ -84,32 +84,37 @@ const fontWeight: FontWeight = {
   bold: 900,
 };
 
-interface TypographyProps {
-  variant?: keyof Typography;
+interface TypographyProps extends Record<string, unknown> {
+  variant?: keyof TypographyContract;
   className?: string;
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;
-  as?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  as?: React.ComponentType<any> | string;
   classes?: unknown;
 }
 
-const Toolbar: FC<TypographyProps> = ({
+const Typography: FC<TypographyProps> = ({
   variant = 'body',
   color = 'neutral',
   weight = 'medium',
-  as,
+  as: Component = 'div',
   className,
   classes,
   children,
+  ...rest
 }) => {
   const styles = useTypographyStyles(classes);
-  as = as || 'div';
 
-  return React.createElement(as, {
-    className: clsx(styles[variant], styles[color], className),
-    style: { fontWeight: fontWeight[weight] },
-    children,
-  });
+  return (
+    <Component
+      {...rest}
+      className={clsx(styles[variant], styles[color], className)}
+      style={{ fontWeight: fontWeight[weight] }}
+    >
+      {children}
+    </Component>
+  );
 };
 
-export default Toolbar;
+export default Typography;

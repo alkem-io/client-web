@@ -12,19 +12,23 @@ const useIconStyles = createStyles(theme => ({
     background: theme.palette.positive,
     color: theme.palette.neutralLight,
   },
+  neutralMedium: {
+    background: theme.palette.neutralMedium,
+    color: theme.palette.background,
+  },
 }));
 
 interface TagProps extends React.SVGProps<SVGSVGElement> {
-  color?: 'positive'; //keyof Palette
+  color?: 'positive' | 'neutralMedium'; //keyof Palette
   text: string;
   className: string;
 }
 
-const Tag: React.FC<TagProps> = ({ text, className }): JSX.Element | null => {
+const Tag: React.FC<TagProps> = ({ text, className, color = 'positive' }): JSX.Element | null => {
   const styles = useIconStyles();
 
   return (
-    <span className={clsx(styles.tag, styles.positive, className)}>
+    <span className={clsx(styles.tag, styles[color], className)}>
       <Typography variant="caption" color="inherit">
         {text}
       </Typography>
