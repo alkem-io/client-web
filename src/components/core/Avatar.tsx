@@ -16,19 +16,24 @@ const useAvatarStyles = createStyles(theme => ({
       width: 15,
       height: 15,
     },
+    '&.big': {
+      width: 80,
+      height: 80,
+    },
   },
 }));
 
 interface AvatarProps {
   src?: string;
-  classes?: string;
-  size: 'default' | 'small';
+  className?: string;
+  classes?: unknown;
+  size: 'default' | 'small' | 'big';
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'default', classes }) => {
-  const styles = useAvatarStyles();
+const Avatar: FC<AvatarProps> = ({ size = 'default', classes, className }) => {
+  const styles = useAvatarStyles(classes);
 
-  return <div className={clsx(styles.avatar, size, classes)} />;
+  return <div className={clsx(styles.avatar, size, className)} />;
 };
 
 export default Avatar;

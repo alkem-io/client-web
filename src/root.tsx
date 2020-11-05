@@ -3,12 +3,15 @@ import { Provider } from 'react-redux';
 import { ApolloProvider } from '@apollo/client';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
+import { NavigationProvider } from './context/NavigationProvider';
 
 import { ConfigProvider } from './context/ConfigProvider';
 import configureStore from './store';
 import { useGraphQLClient } from './hooks/useGraphQLClient';
 import { env } from './env';
 import App from './components/App';
+import { Routing } from './navigation';
+import { BrowserRouter } from 'react-router-dom';
 
 const graphQLEndpoint =
   (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
@@ -30,7 +33,13 @@ const ReduxRoot: FC = () => {
       <ConfigProvider>
         <AuthenticationProvider>
           <ThemeProvider>
-            <App />
+            <NavigationProvider>
+              <BrowserRouter>
+                <App>
+                  <Routing />
+                </App>
+              </BrowserRouter>
+            </NavigationProvider>
           </ThemeProvider>
         </AuthenticationProvider>
       </ConfigProvider>

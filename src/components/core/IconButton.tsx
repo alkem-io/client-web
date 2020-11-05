@@ -10,6 +10,10 @@ const useIconButtonStyles = createStyles(theme => ({
     borderWidth: 0,
     transition: 'background-color 0.5s ease-out',
     borderStyle: 'none',
+
+    '&:hover': {
+      textDecoration: 'none',
+    },
   },
   primary: {
     color: theme.palette.primary,
@@ -27,31 +31,42 @@ const useIconButtonStyles = createStyles(theme => ({
   },
 }));
 
-interface ButtonProps {
+interface ButtonProps extends Record<string, unknown> {
   className?: string;
-  as?: string;
-  onClick: (e: Event) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  as?: React.ComponentType<any>;
+  onClick?: (e: Event) => void;
   hoverIcon?: React.ReactNode;
   children: React.ReactNode;
 }
 
-const IconButton: FC<ButtonProps> = ({ className, children, hoverIcon, as, onClick }) => {
+const IconButton: FC<ButtonProps> = ({
+  className,
+  children,
+  hoverIcon,
+  as: Component = 'button',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onClick = () => {},
+  ...rest
+}) => {
   const styles = useIconButtonStyles();
   const [hover, setHover] = useState(false);
 
   const toggleHover = () => setHover(x => !x);
 
-  as = as || 'button';
-
   // can always use the bootstrap button internally
-  return React.createElement(as, {
-    className: clsx(styles.button, styles.primary, className),
-    children: <>{(hover && hoverIcon) || children}</>,
-    type: 'button',
-    onClick,
-    onMouseEnter: toggleHover,
-    onMouseLeave: toggleHover,
-  });
+  return (
+    <Component
+      className={clsx(styles.button, styles.primary, className)}
+      type={'button'}
+      onClick={onClick}
+      onMouseEnter={toggleHover}
+      onMouseLeave={toggleHover}
+      {...rest}
+    >
+      {(hover && hoverIcon) || children}
+    </Component>
+  );
 };
 
 export default IconButton;
