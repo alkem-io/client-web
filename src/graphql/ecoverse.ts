@@ -28,3 +28,34 @@ export const QUERY_CHALLENGES = gql`
     }
   }
 `;
+
+export const QUERY_ECOVERSE_DETAILS = gql`
+  query ecoverseDetails {
+    name
+    context {
+      tagline
+      vision
+      impact
+      background
+      references {
+        name
+        uri
+      }
+    }
+    challenges {
+      id
+      name
+      textID
+      context {
+        tagline
+        references {
+          name
+          uri
+        }
+      }
+      opportunities {
+        id
+      }
+    }
+  }
+`;

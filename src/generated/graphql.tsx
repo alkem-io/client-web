@@ -44,7 +44,7 @@ export type User = {
   profile?: Maybe<Profile>;
   /** The last timestamp, in seconds, when this user was modified - either via creation or via update. Note: updating of profile data or group memberships does not update this field. */
   lastModified?: Maybe<Scalars['Int']>;
-  /** An overview of the groups this user is a memberof */
+  /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
   memberof?: Maybe<MemberOf>;
 };
 
@@ -167,10 +167,10 @@ export type Challenge = {
   state?: Maybe<Scalars['String']>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
-  /** The set of opportunities within the context of this challenge */
-  opportunities?: Maybe<Array<Opportunity>>;
   /** Groups of users related to a challenge. */
   groups?: Maybe<Array<UserGroup>>;
+  /** The set of opportunities within this challenge. */
+  opportunities?: Maybe<Array<Opportunity>>;
   /** All users that are contributing to this challenge. */
   contributors?: Maybe<Array<User>>;
 };
@@ -373,8 +373,20 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Create a new aspect on the Opportunity identified by the ID */
   createAspect: Aspect;
+  /** Create a new actor group on the Opportunity identified by the ID */
+  createActorGroup: ActorGroup;
+  /** Removes the aspect with the specified ID */
+  removeAspect: Scalars['Boolean'];
+  /** Updates the aspect with the specified ID */
+  updateAspect: Aspect;
+  /** Removes the actor  with the specified ID */
+  removeActor: Scalars['Boolean'];
+  /** Updates the actor with the specified ID with the supplied data */
+  updateActor: Actor;
   /** Create a new actor on the ActorGroup with the specified ID */
   createActor: Actor;
+  /** Removes the actor group with the specified ID */
+  removeActorGroup: Scalars['Boolean'];
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
@@ -478,9 +490,36 @@ export type MutationCreateAspectArgs = {
   opportunityID: Scalars['Float'];
 };
 
+export type MutationCreateActorGroupArgs = {
+  actorGroupData: ActorGroupInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationRemoveAspectArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationUpdateAspectArgs = {
+  aspectData: AspectInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveActorArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationUpdateActorArgs = {
+  actorData: ActorInput;
+  ID: Scalars['Float'];
+};
+
 export type MutationCreateActorArgs = {
   actorData: ActorInput;
   actorGroupID: Scalars['Float'];
+};
+
+export type MutationRemoveActorGroupArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationCreateGroupOnEcoverseArgs = {
@@ -595,6 +634,11 @@ export type AspectInput = {
   explanation?: Maybe<Scalars['String']>;
 };
 
+export type ActorGroupInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
 export type ActorInput = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -623,23 +667,49 @@ export type OrganisationInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type NewUserFragment = { __typename?: 'User' } & UserDetailsFragment;
+export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never }>;
+
+export type Unnamed_1_Query = { __typename?: 'Query' } & {
+  me: { __typename?: 'User' } & Pick<
+    User,
+    'name' | 'firstName' | 'lastName' | 'city' | 'phone' | 'gender' | 'email' | 'country'
+  > & {
+      profile?: Maybe<
+        { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          }
+      >;
+      memberof?: Maybe<
+        { __typename?: 'MemberOf' } & {
+          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+        }
+      >;
+    };
+};
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender'
 > & {
     profile?: Maybe<
-      { __typename?: 'Profile' } & {
-        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-      }
+      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+        }
     >;
   };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
+
+export type UserQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type UserQuery = { __typename?: 'Query' } & { user: { __typename?: 'User' } & UserDetailsFragment };
 
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
@@ -737,6 +807,24 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
   challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
 };
 
+export type EcoverseDetailsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
+    context: { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      };
+    challenges: Array<
+      { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+          context?: Maybe<
+            { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+              }
+          >;
+          opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id'>>>;
+        }
+    >;
+  };
+
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -744,7 +832,9 @@ export const UserDetailsFragmentDoc = gql`
     firstName
     lastName
     email
+    gender
     profile {
+      avatar
       references {
         name
         uri
@@ -756,12 +846,64 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
-export const NewUserFragmentDoc = gql`
-  fragment NewUser on User {
-    ...UserDetails
+export const Document = gql`
+  {
+    me {
+      name
+      firstName
+      lastName
+      city
+      phone
+      gender
+      email
+      country
+      profile {
+        avatar
+        tagsets {
+          name
+          tags
+        }
+        references {
+          name
+          uri
+        }
+      }
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+      }
+    }
   }
-  ${UserDetailsFragmentDoc}
 `;
+
+/**
+ * __useQuery__
+ *
+ * To run a query within a React component, call `useQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useQuery(baseOptions?: Apollo.QueryHookOptions<Query, QueryVariables>) {
+  return Apollo.useQuery<Query, QueryVariables>(Document, baseOptions);
+}
+export function useLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Query, QueryVariables>) {
+  return Apollo.useLazyQuery<Query, QueryVariables>(Document, baseOptions);
+}
+export type QueryHookResult = ReturnType<typeof useQuery>;
+export type LazyQueryHookResult = ReturnType<typeof useLazyQuery>;
+export type QueryResult = Apollo.QueryResult<Query, QueryVariables>;
 export const UsersDocument = gql`
   query users {
     users {
@@ -795,6 +937,40 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UserDocument = gql`
+  query user($id: String!) {
+    user(ID: $id) {
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+  return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+}
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+  return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+}
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
@@ -1235,3 +1411,62 @@ export function useChallengesLazyQuery(
 export type ChallengesQueryHookResult = ReturnType<typeof useChallengesQuery>;
 export type ChallengesLazyQueryHookResult = ReturnType<typeof useChallengesLazyQuery>;
 export type ChallengesQueryResult = Apollo.QueryResult<ChallengesQuery, ChallengesQueryVariables>;
+export const EcoverseDetailsDocument = gql`
+  query ecoverseDetails {
+    name
+    context {
+      tagline
+      vision
+      impact
+      background
+      references {
+        name
+        uri
+      }
+    }
+    challenges {
+      id
+      name
+      textID
+      context {
+        tagline
+        references {
+          name
+          uri
+        }
+      }
+      opportunities {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseDetailsQuery__
+ *
+ * To run a query within a React component, call `useEcoverseDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseDetailsQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>(EcoverseDetailsDocument, baseOptions);
+}
+export function useEcoverseDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>(EcoverseDetailsDocument, baseOptions);
+}
+export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
+export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
+export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;

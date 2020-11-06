@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import CircleTag from '../core/CircleTag';
@@ -68,29 +69,38 @@ export const ActivityCard: FC = () => {
 
 interface ChallengeCardProps {
   id: string | number;
-  text: string;
-  tag?: string;
-  description?: string;
+  name?: string;
+  context?: {
+    tag: string;
+    tagline: string;
+    references?: { name: string; uri: string }[];
+  };
   url: string;
 }
 
-export const ChallengeCard: FC<ChallengeCardProps> = ({ text, tag, description, url }) => {
+export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url }) => {
   const styles = useCardStyles();
+  const { tag, tagline, references } = context;
   const tagProps = tag
     ? {
         text: tag || '',
       }
     : undefined;
+  const visual = references?.find(x => x.name === 'visual');
 
   return (
     <Card
+      classes={{
+        background: (theme: Theme) =>
+          visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+      }}
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.neutral,
+          background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.8),
         },
       }}
       primaryTextProps={{
-        text: text,
+        text: name || '',
         classes: {
           color: (theme: Theme) => theme.palette.neutralLight,
           lineHeight: '36px',
@@ -99,7 +109,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ text, tag, description, 
       tagProps={tagProps}
     >
       <Typography color="neutralLight" className={styles.description}>
-        <span>{description}</span>
+        <span>{tagline}</span>
       </Typography>
       <div>
         <Button text="Explore" as={Link} to={url} />

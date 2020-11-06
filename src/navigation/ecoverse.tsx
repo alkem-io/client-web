@@ -1,13 +1,15 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import Loading from '../components/core/Loading';
+import { challenges, opportunities } from '../components/core/Typography.dummy.json';
+import { useEcoverseDetailsQuery } from '../generated/graphql';
 import {
-  Ecoverse as EcoversePage,
   Challenge as ChallengePage,
+  Ecoverse as EcoversePage,
   FourOuFour,
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
-import { challenges, opportunities, odyssey } from '../components/core/Typography.dummy.json';
 /*local files imports end*/
 
 interface EcoverseParameters {
@@ -33,12 +35,25 @@ export const Ecoverses: FC = () => {
 
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: odyssey.header, real: true }], [paths]);
+  const { id } = useParams<{ id: string }>();
+  const { data: ecoverse, loading } = useEcoverseDetailsQuery({ variables: { id } });
+  const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
+    paths,
+    ecoverse,
+  ]);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!ecoverse) {
+    return <FourOuFour />;
+  }
 
   return (
     <Switch>
       <Route exact path={path}>
-        <EcoversePage paths={currentPaths} />
+        {!loading && <EcoversePage ecoverse={ecoverse} paths={currentPaths} />}
       </Route>
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} />

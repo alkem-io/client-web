@@ -133,19 +133,29 @@ interface CardProps {
   tagProps?: HeaderProps;
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
+  classes?: ClassProps;
 }
 
-const useCardStyles = createStyles(() => ({
+const useCardStyles = createStyles(theme => ({
   root: {
     flexGrow: 1,
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
+    background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
   },
 }));
 
-const Card: FC<CardProps> = ({ className, headerProps, tagProps, bodyProps, primaryTextProps, children }) => {
-  const styles = useCardStyles();
+const Card: FC<CardProps> = ({
+  className,
+  headerProps,
+  tagProps,
+  bodyProps,
+  primaryTextProps,
+  classes = {},
+  children,
+}) => {
+  const styles = useCardStyles(classes);
 
   return (
     <div className={clsx(styles.root, className, 'ct-card')}>
