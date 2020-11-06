@@ -32,8 +32,8 @@ const useMultipleSelectStyles = createStyles(theme => {
     },
     selectContainer: {
       position: 'relative',
-      width: `${theme.shape.spacing(92)}px`,
       height: `${theme.shape.spacing(6)}px`,
+      width: '100%',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -107,7 +107,7 @@ const useMultipleSelectStyles = createStyles(theme => {
       textTransform: 'uppercase',
     },
     suggestions: {
-      width: `${theme.shape.spacing(92)}px`,
+      width: '100%',
       display: 'flex',
       flexWrap: 'wrap',
     },
@@ -222,10 +222,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       setSelected([...selectedElements, value]);
       setNoMatches(false);
       onChange([...selectedElements, value]);
-    } else {
-      const filteredElements = elementsNoFilter.filter(el => el.toLowerCase().includes(value.toLowerCase()));
-      setNoMatches(filteredElements.length === 0);
-      setElements(filteredElements);
     }
   };
 
