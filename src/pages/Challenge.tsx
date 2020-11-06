@@ -112,9 +112,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                     ))}
                   </AvatarContainer>
                   <div style={{ flexBasis: '100%' }}></div>
-                  <Typography variant="h3" as="h3" color="positive">
-                    {`... + ${users.length - populated.length} other members`}
-                  </Typography>
+                  {users.length - populated.length > 0 && (
+                    <Typography variant="h3" as="h3" color="positive">
+                      {`... + ${users.length - populated.length} other members`}
+                    </Typography>
+                  )}
                 </>
               )}
             </UserProvider>
