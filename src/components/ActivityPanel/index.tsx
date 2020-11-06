@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import Card from '../core/Card';
+import Card, { CardProps } from '../core/Card';
 import Typography from '../core/Typography';
 import CircleTag from '../core/CircleTag';
 
@@ -8,7 +8,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Theme } from '../../context/ThemeProvider';
 import activitiesMock from './tempMockActivities';
 
-interface ActivityCardProps {
+interface ActivityCardProps extends CardProps {
   title: string;
   items: Array<{
     name: string;
@@ -33,7 +33,7 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items = activitiesMock }) => {
+const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items = activitiesMock, classes }) => {
   const styles = useCardStyles();
 
   return (
@@ -44,6 +44,7 @@ const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items =
             return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
           },
           background: (theme: Theme) => theme.palette.background,
+          ...classes,
         },
       }}
       primaryTextProps={{ text: title }}

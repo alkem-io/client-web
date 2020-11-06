@@ -96,7 +96,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url 
       }}
       bodyProps={{
         classes: {
-          background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.8),
+          background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
         },
       }}
       primaryTextProps={{

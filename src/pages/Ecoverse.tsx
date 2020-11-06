@@ -5,22 +5,51 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useMemo } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
+import Avatar from '../components/core/Avatar';
+import AvatarContainer from '../components/core/AvatarContainer';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import Loading from '../components/core/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
+import Typography from '../components/core/Typography';
 import { challenges as challengeLabels, community, projects } from '../components/core/Typography.dummy.json';
 import { ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
-import { EcoverseDetailsQuery } from '../generated/graphql';
+import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
+import { EcoverseDetailsQuery, User, useUserAvatarsQuery } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseDetailsQuery;
+  users: User[] | undefined;
 }
 
-const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
+interface UserProviderProps {
+  users?: User[];
+  count?: number;
+  children: (users: User[]) => React.ReactNode;
+}
+
+// will move it to a seperate component later
+export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, children }) => {
+  const targetCount = Math.min(users.length, count);
+  const targetIds = users.slice(0, targetCount).map(x => x.id);
+  const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds } });
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!data) {
+    return <></>;
+  }
+
+  return <>{children(data?.usersById as User[])}</>;
+};
+
+const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
   const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
@@ -36,6 +65,11 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElemen
         name: 'Opportunities',
         digit: challenges.reduce((sum, c) => sum + (c.opportunities || []).length, 0),
         color: 'primary',
+      },
+      {
+        name: 'Members',
+        digit: users.length,
+        color: 'neutralMedium',
       },
     ];
   }, [ecoverse]);
@@ -61,13 +95,30 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElemen
         ))}
       </CardContainer>
       <Divider />
-      <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
-        <SectionHeader text={community.header} />
-        <SubHeader text={community.subheader} />
-        <Body text={community.body}>
-          <Button text="Explore and connect" as={Link} to="/community" />
-        </Body>
-      </Section>
+      <AuthenticationBackdrop>
+        <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+          <SectionHeader text={community.header} />
+          <SubHeader text={'The heroes working on this challenge'} />
+          <Body text={community.body}>
+            <UserProvider users={users}>
+              {populated => (
+                <>
+                  <AvatarContainer className="d-flex" title={'Active community members'}>
+                    {populated.map((u, i) => (
+                      <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
+                    ))}
+                  </AvatarContainer>
+                  <div style={{ flexBasis: '100%' }}></div>
+                  <Typography variant="h3" as="h3" color="positive">
+                    {`... + ${users.length - populated.length} other members`}
+                  </Typography>
+                </>
+              )}
+            </UserProvider>
+            <Button text="Explore and connect" as={Link} to="/community" />
+          </Body>
+        </Section>
+      </AuthenticationBackdrop>
       <Divider />
       {ecoverseProjects.length > 0 && (
         <>

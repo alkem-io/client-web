@@ -127,7 +127,7 @@ export const Body: FC<BodyProps> = ({ children, className, classes }) => {
   return <div className={clsx(styles.content, className)}>{children}</div>;
 };
 
-interface CardProps {
+export interface CardProps {
   className?: string;
   headerProps?: HeaderProps;
   tagProps?: HeaderProps;
