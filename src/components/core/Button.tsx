@@ -105,7 +105,7 @@ interface ButtonProps extends Record<string, unknown> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any>;
   onClick?: (e: Event) => void;
-  text: string;
+  text?: string;
   variant?: 'default' | 'primary' | 'transparent';
   inset?: boolean;
   small?: boolean;

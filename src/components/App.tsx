@@ -15,6 +15,7 @@ import Navigation from './layout/Navigation';
 import User from './layout/User';
 import Section from './core/Section';
 import Breadcrumbs from './core/Breadcrumbs';
+import Loading from './core/Loading';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -63,6 +64,8 @@ const App = ({ children }): React.ReactElement => {
   const { context, isAuthenticated } = useAuthenticationContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
+
+  if (context.loading) return <Loading />;
 
   return (
     <div id="app">
