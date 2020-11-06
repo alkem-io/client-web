@@ -166,5 +166,33 @@
         "tag": "jedi"
       }
     ]
+  },
+  "tags": {
+    "list": [
+      {
+        "name": "react"
+      },
+      {
+        "name": "typescript"
+      },
+      {
+        "name": "sql"
+      },
+      {
+        "name": "authentication"
+      },
+      {
+        "name": "development"
+      },
+      {
+        "name": "api"
+      },
+      {
+        "name": "backend"
+      },
+      {
+        "name": "modules"
+      }
+    ]
   }
 }
