@@ -26,7 +26,7 @@ export const GroupList: FC<GroupListProps> = ({ data, type }) => {
           groups = challenge.groups?.map(mapGroups);
         }
       } else if (type === 'ecoverse') {
-        groups = data?.groups.map(mapGroups);
+        groups = data?.groups.filter(g => g.name !== 'members').map(mapGroups);
       }
     }
     return groups;

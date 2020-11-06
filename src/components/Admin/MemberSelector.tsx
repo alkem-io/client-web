@@ -41,26 +41,28 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
         <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
       </InputGroup>
       <hr />
-      <Table hover size="sm" responsive="sm">
-        <thead className="thead-dark">
-          <tr>
-            <th></th>
-            <th>Full Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map(m => (
-            <tr key={m.email}>
-              <td>
-                <Button variant="outline-info" size="sm" onClick={() => handleOnAddClick(m.id)}>
-                  +
-                </Button>
-              </td>
-              <td>{m.name}</td>
+      <div style={{ height: 400, overflow: 'hidden', overflowY: 'auto' }}>
+        <Table hover size="sm" responsive="sm" style={{ position: 'relative' }}>
+          <thead className="thead-dark">
+            <tr>
+              <th></th>
+              <th>Full Name</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {filteredData.map(m => (
+              <tr key={m.email}>
+                <td>
+                  <Button variant="outline-info" size="sm" onClick={() => handleOnAddClick(m.id)}>
+                    +
+                  </Button>
+                </td>
+                <td>{m.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </>
   );
 };

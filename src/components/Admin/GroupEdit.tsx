@@ -112,38 +112,40 @@ export const GroupEdit: FC = () => {
             <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
           </InputGroup>
           <hr />
-          <Table hover size="sm" responsive="sm">
-            <thead className="thead-dark">
-              <tr>
-                {/* <th>
+          <div style={{ position: 'relative', height: 400, overflow: 'hidden', overflowY: 'auto' }}>
+            <Table hover size="sm" responsive="sm">
+              <thead className="thead-dark">
+                <tr>
+                  {/* <th>
                   <FormCheck id="select-all" />
                 </th> */}
-                <th>Full Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filterdMembers.map(m => (
-                <tr key={m.email}>
-                  {/* <td>
+                  <th>Full Name</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filterdMembers.map(m => (
+                  <tr key={m.email}>
+                    {/* <td>
                     <FormCheck id={m.email} />
                   </td> */}
-                  <td>{m.name}</td>
-                  <td>{m.firstName}</td>
-                  <td>{m.lastName}</td>
-                  <td>{m.email}</td>
-                  <td>
-                    <Button variant="outline-danger" size="sm" onClick={() => removeMember(m.id)}>
-                      X
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                    <td>{m.name}</td>
+                    <td>{m.firstName}</td>
+                    <td>{m.lastName}</td>
+                    <td>{m.email}</td>
+                    <td>
+                      <Button variant="outline-danger" size="sm" onClick={() => removeMember(m.id)}>
+                        X
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Col>
         {isAddPanelOpen && (
           <Col sm={4}>
