@@ -67,6 +67,7 @@ const App = ({ children }): React.ReactElement => {
 
   return (
     <div id="app">
+      <NavRings paths={paths} />
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>
@@ -86,7 +87,6 @@ const App = ({ children }): React.ReactElement => {
           }}
         >
           <Breadcrumbs paths={paths} />
-          <NavRings paths={paths} />
         </Section>
         {children}
       </Main>
