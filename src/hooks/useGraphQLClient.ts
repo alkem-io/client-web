@@ -1,17 +1,29 @@
-import { onError } from '@apollo/client/link/error';
 import { ApolloLink, createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
-import { useDispatch, useSelector } from 'react-redux';
+import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { RootState } from '../reducers';
+import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { pushError } from '../reducers/error/actions';
+import { TOKEN_STORAGE_KEY } from './useAuthentication';
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
-  const token = useSelector<RootState, string | null>(state => state.auth.accessToken);
   const dispatch = useDispatch();
+  let token: string | null;
 
-  console.debug('Token: ', token);
+  const handleStorageChange = useCallback((e: StorageEvent) => {
+    if (e.key === TOKEN_STORAGE_KEY) {
+      token = e.newValue;
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [handleStorageChange]);
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     let errors: Error[] = [];
@@ -19,7 +31,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (graphQLErrors) {
       errors = graphQLErrors.reduce<Error[]>((acc, { message, extensions }) => {
         const newMessage = `[GraphQL error]: ${message}`;
-        console.log(newMessage);
+        console.error(newMessage);
 
         const code = extensions && extensions['code'];
         if (code === 'UNAUTHENTICATED') {
@@ -34,13 +46,16 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (networkError) {
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
-      console.log(newMessage);
+      console.error(newMessage);
       // errors.push(new Error(newMessage));
     }
     errors.forEach(e => dispatch(pushError(e)));
   });
 
   const authLink = setContext((_, { headers }) => {
+    if (!token) {
+      token = localStorage.getItem(TOKEN_STORAGE_KEY);
+    }
     if (!token) return headers;
     return {
       headers: {

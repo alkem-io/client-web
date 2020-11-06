@@ -17,6 +17,10 @@ export default function authReducer(state = initialState, action: AuthActionType
         isAuthenticated: true,
       };
     case UPDATE_TOKEN:
+      // TODO [ATS]: For refactoring - Token storage and propagation
+      localStorage.setItem('accessToken', action.payload.accessToken);
+      console.debug('Token: ', action.payload.accessToken);
+      console.debug('Token ExpirationTime: ', new Date(action.payload.idTokenClaims['exp'] * 1000).toString());
       return {
         ...state,
         idToken: action.payload.idTokenClaims as Record<string, never>,

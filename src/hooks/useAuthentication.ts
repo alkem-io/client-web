@@ -14,6 +14,7 @@ import { pushError } from '../reducers/error/actions';
 import { useTypedSelector } from './useTypedSelector';
 
 const useRedirectFlow = false;
+export const TOKEN_STORAGE_KEY = 'accessToken';
 
 export const useAuthentication = (enabled = true): { handleSignIn: () => void; handleSignOut: () => void } => {
   const config = useContext(configContext);
@@ -21,8 +22,9 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   const dispatch = useDispatch();
 
   const msalApp = useMemo(() => {
-    if (config.loading) return undefined;
     console.log('Configuring msalApp');
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    if (config.loading) return undefined;
     return new PublicClientApplication(config.aadConfig.msalConfig);
   }, [config.loading]);
 
