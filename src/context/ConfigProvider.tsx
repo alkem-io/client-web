@@ -9,13 +9,13 @@ export interface ConfigContext {
 
 const configContext = React.createContext<ConfigContext>({
   aadConfig: getConfig(),
-  loading: false,
+  loading: true,
 });
 
 const ConfigProvider: FC = ({ children }) => {
   const { data, loading } = useConfigQuery();
-  if (loading) console.log('Loading configuration.');
   const aadConfig = data ? getConfig(data.clientConfig as AadClientConfig) : getConfig();
+  // loading ? console.log('Configuration is loading..') : console.log('...done');
   return (
     <configContext.Provider
       value={{

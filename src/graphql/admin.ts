@@ -76,28 +76,45 @@ export const QUERY_ECOVERSE_GROUPS = gql`
   }
 `;
 
+export const GROUP_MEMBERS_FRAGMENT = gql`
+  fragment GroupMembers on User {
+    id
+    name
+    firstName
+    lastName
+    email
+  }
+`;
+
 export const QUERY_GROUP_MEMBERS = gql`
   query groupMembers($id: Float!) {
     group(ID: $id) {
       id
       name
       members {
-        id
-        name
-        firstName
-        lastName
-        email
+        ...GroupMembers
       }
     }
   }
+  ${GROUP_MEMBERS_FRAGMENT}
 `;
 
 export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
   mutation removeUserFromGroup($groupID: Float!, $userID: Float!) {
     removeUserFromGroup(groupID: $groupID, userID: $userID) {
+      id
+      name
       members {
-        id
+        ...GroupMembers
       }
     }
   }
+  ${GROUP_MEMBERS_FRAGMENT}
+`;
+
+export const MUTATION_ADD_USER_TO_GROUP = gql`
+  mutation addUserToGroup($groupID: Float!, $userID: Float!) {
+    addUserToGroup(groupID: $groupID, userID: $userID)
+  }
+  ${GROUP_MEMBERS_FRAGMENT}
 `;

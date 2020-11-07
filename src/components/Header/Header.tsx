@@ -6,6 +6,7 @@ import Nav from 'react-bootstrap/esm/Nav';
 import { Link } from 'react-router-dom';
 import { appContext } from '../../context/AppProvider';
 import { configContext } from '../../context/ConfigProvider';
+import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 // interface HeaderProps {
 //   onSignIn?: () => void;
@@ -15,7 +16,7 @@ import { useTypedSelector } from '../../hooks/useTypedSelector';
 // }
 
 const Header: FC = () => {
-  const context = useContext(appContext);
+  const { context } = useAuthenticationContext();
   const config = useContext(configContext);
   const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
   const account = useTypedSelector<AccountInfo | null>(state => state.auth.account);
@@ -52,12 +53,19 @@ const Header: FC = () => {
   }
   return (
     <div>
-      <Navbar className="navbar" bg="dark" variant="dark">
+      <Navbar className="navbar" bg="dark" variant="dark" sticky="top">
         <Navbar.Brand as={Link} to="/">
           <img alt="" src="/logo-white-cropped.png" className="logo" />
         </Navbar.Brand>
         <Nav className="mr-auto" />
-        {loginButton}
+        <Nav className="ml-auto" as="ul">
+          <Nav.Item as="li">
+            <Nav.Link as={Link} to="/admin">
+              Admin
+            </Nav.Link>
+          </Nav.Item>{' '}
+          <Nav.Item as="li">{loginButton}</Nav.Item>
+        </Nav>
       </Navbar>
     </div>
   );

@@ -6,22 +6,17 @@ import { Challenge, Ecoverse } from '../models';
 export interface AppContext {
   ecoverse: Ecoverse;
   challenges: Challenge[];
-  handleSignIn: () => void;
-  handleSignOut: () => void;
   loading: boolean;
 }
 
 const appContext = React.createContext<AppContext>({
   ecoverse: { name: '' },
   challenges: [],
-  handleSignIn: () => null,
-  handleSignOut: () => null,
   loading: false,
 });
 
 const AppProvider: FC = ({ children }) => {
   const { data, loading: ecoverseLoading } = useEcoverseNameQuery();
-  const { handleSignIn, handleSignOut } = useAuthentication();
 
   const ecoverse = {
     name: data ? data.name : '',
@@ -32,8 +27,6 @@ const AppProvider: FC = ({ children }) => {
       value={{
         ecoverse,
         challenges: [],
-        handleSignIn,
-        handleSignOut,
         loading: ecoverseLoading,
       }}
     >

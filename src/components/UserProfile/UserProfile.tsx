@@ -10,7 +10,7 @@ import { defaultUser } from '../../models/User';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 /*local files imports end*/
 
-const UserProfile = () => {
+export const UserProfile = () => {
   const { data } = useQuery(QUERY_USER_PROFILE);
 
   const groups = data?.me?.memberof?.groups.map(g => g.name).join(', ');

@@ -4,20 +4,23 @@ import { useAuthentication } from '../hooks';
 export interface AuthContext {
   handleSignIn: () => void;
   handleSignOut: () => void;
+  loading: boolean;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
   handleSignIn: () => null,
   handleSignOut: () => null,
+  loading: true,
 });
 const AuthenticationProvider: FC<{}> = ({ children }) => {
-  const { handleSignIn, handleSignOut } = useAuthentication();
+  const { handleSignIn, handleSignOut, loading } = useAuthentication();
 
   return (
     <AuthenticationContext.Provider
       value={{
         handleSignIn,
         handleSignOut,
+        loading,
       }}
     >
       {children}

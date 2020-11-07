@@ -13,8 +13,6 @@ const ChallengeProfile: React.FC<Props> = ({ data }) => {
     return <div>No challenge available</div>;
   }
 
-  console.log('Challenge data available!');
-
   return (
     <div className={className}>
       <div className={`${className}__status`}>
