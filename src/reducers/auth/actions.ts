@@ -15,7 +15,7 @@ export function updateError(error: ErrorPayload): AuthActionTypes {
   };
 }
 
-export function updateToken(authenticationResult: AuthenticationResult): AuthActionTypes {
+export function updateToken(authenticationResult: AuthenticationResult | null): AuthActionTypes {
   return {
     type: UPDATE_TOKEN,
     payload: authenticationResult,
