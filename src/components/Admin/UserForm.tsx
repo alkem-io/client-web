@@ -1,18 +1,16 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Prompt, useHistory } from 'react-router-dom';
-import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
+import { FieldArray, Formik } from 'formik';
 import generator from 'generate-password';
-import { Formik, FieldArray } from 'formik';
-import * as yup from 'yup';
 import gql from 'graphql-tag';
-/*lib imports end*/
-
-import InputWithCopy from './InputWithCopy';
+import React, { FC, useEffect, useState } from 'react';
+import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
+import { Prompt, useHistory } from 'react-router-dom';
+import * as yup from 'yup';
 /*components imports end*/
-
 import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
-import { defaultUser, UserModel, UserFromGenerated } from '../../models/User';
 import { USER_DETAILS_FRAGMENT } from '../../graphql/admin';
+import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
+/*lib imports end*/
+import InputWithCopy from './InputWithCopy';
 import './styles.scss';
 /*local files imports end*/
 
@@ -130,14 +128,14 @@ export const UserForm: FC<UserProps> = ({
 
         cache.modify({
           fields: {
-            users(existingTodos = []) {
+            users(existingUsers = []) {
               const newUserRef = cache.writeFragment({
                 data: createUser,
                 fragment: gql`
                   ${USER_DETAILS_FRAGMENT}
                 `,
               });
-              return [...existingTodos, newUserRef];
+              return [...existingUsers, newUserRef];
             },
           },
         });

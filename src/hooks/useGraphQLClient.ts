@@ -5,6 +5,7 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { typePolicies } from '../graphql/cache/typePolicies';
 import { pushError } from '../reducers/error/actions';
 import { TOKEN_STORAGE_KEY } from './useAuthentication';
 
@@ -105,7 +106,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   return new ApolloClient({
     link: from([authLink, errorLink, retryLink, omitTypenameLink, httpLink]),
-    cache: new InMemoryCache({ addTypename: true }),
+    cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
   });
 };
 

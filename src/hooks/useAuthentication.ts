@@ -16,13 +16,18 @@ import { useTypedSelector } from './useTypedSelector';
 const useRedirectFlow = false;
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
-export const useAuthentication = (enabled = true): { handleSignIn: () => void; handleSignOut: () => void } => {
+interface UseAuthenticationReturn {
+  handleSignIn: () => void;
+  handleSignOut: () => void;
+  loading: boolean;
+}
+
+export const useAuthentication = (enabled = true): UseAuthenticationReturn => {
   const config = useContext(configContext);
   const username = useTypedSelector(state => state.auth.account?.username || '');
   const dispatch = useDispatch();
 
   const msalApp = useMemo(() => {
-    console.log('Configuring msalApp');
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     if (config.loading) return undefined;
     return new PublicClientApplication(config.aadConfig.msalConfig);
@@ -111,7 +116,6 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   };
 
   const acquireToken = useCallback(async () => {
-    console.log('AcquireToken');
     if (!msalApp) return;
     /**
      * See here for more info on account retrieval:
@@ -176,5 +180,6 @@ export const useAuthentication = (enabled = true): { handleSignIn: () => void; h
   return {
     handleSignIn,
     handleSignOut,
+    loading: config.loading,
   };
 };

@@ -1,14 +1,13 @@
 import React, { FC, useContext } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { AdminPage } from '../components/Admin/AdminPage';
-import App from '../components/App';
 import { ChallengePage } from '../components/ChallengePage';
-import { Layout } from '../components/Layout';
 import Loading from '../components/core/Loading';
+import { Layout } from '../components/Layout';
+import { UserProfile } from '../components/UserProfile';
 import { appContext } from '../context/AppProvider';
 import { configContext } from '../context/ConfigProvider';
 import { FourOuFour } from '../pages/FourOuFour';
-import UserProfile from '../components/UserProfile/UserProfile';
 
 const AppContainer: FC = () => {
   const appCtx = useContext(appContext);

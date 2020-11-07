@@ -8,16 +8,17 @@ import { EditMode, UserForm } from './UserForm';
 
 import { QUERY_USER } from '../../graphql/admin';
 import { defaultUser } from '../../models/User';
+import Loading from '../core/Loading';
 /*local files imports end*/
 
 interface UserProps {
   mode: EditMode;
 }
 
-const User: FC<UserProps> = ({ mode }) => {
+export const User: FC<UserProps> = ({ mode }) => {
   const { userId } = useParams<{ userId: string }>();
-  const { data } = useQuery(QUERY_USER, { variables: { id: userId } });
-
+  const { data, loading } = useQuery(QUERY_USER, { variables: { id: userId } });
+  if (loading) return <Loading />;
   return <UserForm user={data?.user || defaultUser} editMode={mode} title={'User edit'} />;
 };
 
