@@ -4,6 +4,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
       id
+      textID
       name
       context {
         tagline
@@ -20,6 +21,11 @@ export const QUERY_CHALLENGE_PROFILE = gql`
       tagset {
         name
         tags
+      }
+      opportunities {
+        id
+        name
+        textID
       }
     }
   }

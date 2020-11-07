@@ -15,6 +15,7 @@ import Navigation from './layout/Navigation';
 import User from './layout/User';
 import Section from './core/Section';
 import Breadcrumbs from './core/Breadcrumbs';
+import NavRings from './NavRings';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -66,6 +67,7 @@ const App = ({ children }): React.ReactElement => {
 
   return (
     <div id="app">
+      <NavRings paths={paths} />
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>

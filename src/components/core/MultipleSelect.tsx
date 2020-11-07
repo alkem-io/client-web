@@ -146,11 +146,17 @@ const useMultipleSelectStyles = createStyles(theme => {
   };
 });
 
+interface Element {
+  name: string;
+  id?: string | number;
+}
+
 interface MultipleSelectProps {
-  elements: Array<string>;
-  onChange: (elements: string[]) => void;
+  elements: Array<Element>;
+  onChange: (elements: Array<Element>) => void;
+  onInput: (value: string) => void;
   allowUnknownValues?: boolean;
-  defaultValue?: string[];
+  defaultValue?: Array<Element>;
   disabled?: boolean;
   label?: string;
   onTop?: boolean;
@@ -160,16 +166,17 @@ interface MultipleSelectProps {
 const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
   onChange,
+  onInput,
   allowUnknownValues,
   defaultValue,
   disabled,
 }) => {
   const select = useRef<HTMLDivElement>(document.createElement('div'));
   const input = useRef<HTMLInputElement>(document.createElement('input'));
-  const [elements, setElements] = useState<Array<string>>(_elements || []);
-  const [elementsNoFilter, setElementsNoFilter] = useState<Array<string>>(_elements || []);
-  const [selectedElements, setSelected] = useState(defaultValue || []);
-  const [isNoMatches, setNoMatches] = useState(false);
+  const [elements, setElements] = useState<Array<Element>>(_elements || []);
+  const [elementsNoFilter, setElementsNoFilter] = useState<Array<Element>>(_elements || []);
+  const [selectedElements, setSelected] = useState<Array<Element>>(defaultValue || []);
+  const [isNoMatches, setNoMatches] = useState<boolean>(false);
   const styles = useMultipleSelectStyles();
 
   useEffect(() => setElements(_elements), [_elements]);
@@ -183,23 +190,24 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     input.current.value = '';
   };
 
-  const handleSelect = (e, value) => {
-    const isAlreadySelected = selectedElements.find(el => el === value);
+  const handleSelect = (e, value: { name }) => {
+    const isAlreadySelected = selectedElements.find(el => el.name === value.name);
     if (isAlreadySelected) return;
 
-    const newSelected = [...selectedElements, value];
-    const newElements = elementsNoFilter.filter(el => el !== value);
+    const newSelected = [...selectedElements, { name: value.name }];
+    const newElements = elementsNoFilter.filter(el => el.name !== value.name);
 
     resetInput();
     setSelected(newSelected);
     setElements(newElements);
     setElementsNoFilter(newElements);
     onChange(newSelected);
+    onInput('');
   };
 
   const handleRemove = (e, value) => {
-    const newSelected = selectedElements.filter(el => el !== value);
-    const newElements = [...elements, value];
+    const newSelected = selectedElements.filter(el => el.name !== value.name);
+    const newElements = [...elements, { name: value.name }];
 
     setSelected(newSelected);
     setElements(newElements);
@@ -209,19 +217,20 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
   const handleInputChange = e => {
     const value = e.target.value.toLowerCase();
-
+    onInput(value);
     if (allowUnknownValues && e.key === 'Enter' && value !== '') {
-      const isAlreadySelected = selectedElements.find(el => el === value);
+      const isAlreadySelected = selectedElements.find(el => el.name === value);
       if (isAlreadySelected) return;
 
-      const newElements = elementsNoFilter.filter(el => el !== value);
+      const newElements = elementsNoFilter.filter(el => el.name !== value);
 
       resetInput();
       setElements(newElements);
       setElementsNoFilter(newElements);
-      setSelected([...selectedElements, value]);
+      setSelected([...selectedElements, { name: value }]);
       setNoMatches(false);
-      onChange([...selectedElements, value]);
+      onChange([...selectedElements, { name: value }]);
+      onInput('');
     }
   };
 
@@ -244,9 +253,12 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
           <div className={styles.elements}>
             {selectedElements.map((selectedEl, index) => (
-              <div key={`${selectedEl}${index}`} className={clsx(styles.selectedElement, disabled && styles.disabled)}>
+              <div
+                key={`${selectedEl.name}${index}`}
+                className={clsx(styles.selectedElement, disabled && styles.disabled)}
+              >
                 <Typography as={'span'} weight={'boldLight'} color={'background'}>
-                  {selectedEl}
+                  {selectedEl.name}
                 </Typography>
                 {!disabled && (
                   <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
@@ -266,7 +278,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             return (
               <div key={index} className={styles.suggestionElement} onClick={e => handleSelect(e, el)}>
                 <Typography as={'span'} weight={'boldLight'} color={'background'}>
-                  {el}
+                  {el.name}
                 </Typography>
               </div>
             );

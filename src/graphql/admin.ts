@@ -32,7 +32,7 @@ export const QUERY_USER_LIST = gql`
 `;
 
 export const QUERY_USER = gql`
-  query($id: String!) {
+  query user($id: String!) {
     user(ID: $id) {
       ...UserDetails
     }

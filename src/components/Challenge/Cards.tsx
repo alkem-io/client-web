@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
+import { Opportunity } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import Card from '../core/Card';
@@ -63,13 +64,11 @@ interface Tag {
   text: string;
 }
 
-interface OpportunityCardProps {
-  caption: string;
-  title: string;
+interface OpportunityCardProps extends Opportunity {
   url: string;
 }
 
-export const OpportunityCard: FC<OpportunityCardProps> = ({ caption, title, url }) => {
+export const OpportunityCard: FC<OpportunityCardProps> = ({ name, url }) => {
   return (
     <Card
       bodyProps={{
@@ -78,10 +77,10 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ caption, title, url 
         },
       }}
       headerProps={{
-        text: caption,
+        text: 'Team',
       }}
       primaryTextProps={{
-        text: title,
+        text: name,
         classes: {
           color: (theme: Theme) => theme.palette.neutralLight,
         },

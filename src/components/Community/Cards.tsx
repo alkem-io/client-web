@@ -8,7 +8,7 @@ interface Tag {
   text: string;
 }
 
-interface ProjectCardProps {
+export interface ProjectCardProps {
   name: string;
   job: string;
   company: string;
