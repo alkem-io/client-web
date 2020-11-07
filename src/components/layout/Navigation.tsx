@@ -5,10 +5,12 @@ import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-f
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
+import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import React, { FC, useRef, useState } from 'react';
 import { Overlay, Popover } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
+import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
@@ -41,7 +43,9 @@ const useNavigationStyles = createStyles(theme => ({
 const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const popoverAnchor = useRef(null);
+  const { context, isAuthenticated } = useAuthenticationContext();
+  const popoverAnchorMdUp = useRef(null);
+  const popoverAnchorMdDown = useRef(null);
 
   return (
     <>
@@ -66,24 +70,50 @@ const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
           >
             <Icon component={ChatIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
           </IconButton>
-          {showAdmin && (
-            <IconButton className={styles.navLinkOffset} as={Link} to="/admin">
-              <Icon component={SlidersIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-            </IconButton>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
+            {(showAdmin || isAuthenticated) && (
+              <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
+                <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
+              </IconButton>
+            )}
+          </div>
+          <Overlay
+            show={dropdownOpen}
+            target={popoverAnchorMdDown}
+            placement="bottom"
+            container={popoverAnchorMdDown.current}
+            containerPadding={20}
+          >
+            <Popover id="popover-contained">
+              <Popover.Content>
+                <div className="d-flex flex-grow-1 flex-column">
+                  {showAdmin && (
+                    <Button text="Admin" as={Link} to="/admin" inset className={styles.menuItem}>
+                      <Icon component={SlidersIcon} color="inherit" size="sm" />
+                    </Button>
+                  )}
+                  {isAuthenticated && (
+                    <Button text="Sign out" onClick={context.handleSignOut} inset className={styles.menuItem}>
+                      <Icon component={DoorOpenIcon} color="inherit" size="sm" />
+                    </Button>
+                  )}
+                </div>
+              </Popover.Content>
+            </Popover>
+          </Overlay>
         </div>
       </Hidden>
       <Hidden mdUp>
-        <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchor}>
+        <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdUp}>
           <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
             <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
           </IconButton>
         </div>
         <Overlay
           show={dropdownOpen}
-          target={popoverAnchor}
+          target={popoverAnchorMdUp}
           placement="bottom"
-          container={popoverAnchor.current}
+          container={popoverAnchorMdUp.current}
           containerPadding={20}
         >
           <Popover id="popover-contained">
