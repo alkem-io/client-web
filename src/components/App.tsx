@@ -2,20 +2,21 @@ import { AccountInfo } from '@azure/msal-browser';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useRef } from 'react';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { createStyles } from '../hooks/useTheme';
 import { useNavigation } from '../hooks/useNavigation';
+import { createStyles } from '../hooks/useTheme';
 import { useTypedSelector } from '../hooks/useTypedSelector';
+import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
 import Icon from './core/Icon';
 import IconButton from './core/IconButton';
+import Loading from './core/Loading';
+import Section from './core/Section';
 import Footer from './layout/Footer';
 import Header from './layout/Header';
 import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
-import Section from './core/Section';
-import Breadcrumbs from './core/Breadcrumbs';
-import Loading from './core/Loading';
+import NavRings from './NavRings';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -69,6 +70,7 @@ const App = ({ children }): React.ReactElement => {
 
   return (
     <div id="app">
+      <NavRings paths={paths} />
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>

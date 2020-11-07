@@ -1,13 +1,13 @@
+import clsx from 'clsx';
 import React, { FC } from 'react';
-import Container from './Container';
 import { Col, Row } from 'react-bootstrap';
+import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
-import Typography from './Typography';
+import { agnosticFunctor } from '../../utils/functor';
+import Container from './Container';
 import Hidden from './Hidden';
 import Tag from './Tag';
-import clsx from 'clsx';
-import { Breakpoints, Theme } from '../../context/ThemeProvider';
-import { agnosticFunctor } from '../../utils/functor';
+import Typography from './Typography';
 
 interface HeaderProps {
   text?: string;
@@ -117,14 +117,31 @@ interface SectionProps {
     details?: boolean;
     avatar?: boolean;
   };
-  classes?: ClassProps;
+  classes?: SectionClassProps;
+}
+
+interface SectionClassProps extends ClassProps {
+  coverBackground?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
 }
 
 const useSectionStyles = createStyles(theme => ({
   root: {
     paddingTop: theme.shape.spacing(2),
     paddingBottom: theme.shape.spacing(2),
-    background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    background: (props: SectionClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    position: 'relative',
+  },
+  cover: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: props => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
+    zIndex: 0,
+  },
+  row: {
+    zIndex: 1,
   },
   avatar: {
     display: 'flex',
@@ -158,7 +175,8 @@ const Section: FC<SectionProps> = ({
 
   return (
     <Container disableGutters={!gutters.root} className={clsx(styles.root, className)}>
-      <Row>
+      <div className={styles.cover}></div>
+      <Row className={styles.row}>
         {!hideAvatar && (
           <Col xs={false} lg={3}>
             <Hidden lgDown>
