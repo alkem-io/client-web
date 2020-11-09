@@ -9,15 +9,9 @@ import UserEdit from './UserEdit';
 import { EditMode } from './UserForm';
 import UserList from './UserList';
 
-// type UserPageProps = PageProps;
-
-// export const UserPage: FC<UserPageProps> = ({ paths }) => {
 export const UserPage: FC = () => {
-  const { path, url } = useRouteMatch();
+  const { path } = useRouteMatch();
   const { data, loading } = useUsersQuery();
-
-  // const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
-  // useUpdateNavigation({ currentPaths });
 
   const users = (data?.users || []) as UserModel[];
 
@@ -47,7 +41,7 @@ export const UserPage: FC = () => {
               <UserList users={users} />
             </Route>
             <Route path={`${path}/new`}>
-              <UserEdit editMode={EditMode.new} title={'User creation'} />
+              <UserEdit editMode={EditMode.new} />
             </Route>
             <Route exact path={`${path}/:userId/edit`}>
               <UserEdit editMode={EditMode.edit} />

@@ -6,6 +6,7 @@ import {
   useGroupMembersQuery,
   useRemoveUserFromGroupMutation,
 } from '../../generated/graphql';
+import Loading from '../core/Loading';
 import MemberSelector from './MemberSelector';
 
 interface Parameters {
@@ -65,7 +66,6 @@ export const GroupEdit: FC = () => {
   // },
   // });
   const existingMembersIds = useMemo(() => members.map(x => x.id), [members]);
-  console.log(existingMembersIds);
   const removeMember = (userID: string) => {
     removeUserFromGroup({
       refetchQueries: ['groupMembers'],
@@ -88,7 +88,7 @@ export const GroupEdit: FC = () => {
     });
   };
 
-  // if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <>
@@ -123,7 +123,7 @@ export const GroupEdit: FC = () => {
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Email</th>
-                  <th>delete</th>
+                  <th>Remove</th>
                 </tr>
               </thead>
               <tbody>

@@ -1,22 +1,21 @@
 import { gql } from '@apollo/client';
 import generator from 'generate-password';
-import React, { FC, useState } from 'react';
-import { Alert, FormGroup } from 'react-bootstrap';
+import React, { FC, useEffect, useState } from 'react';
+import { Alert } from 'react-bootstrap';
 import { Prompt, useHistory } from 'react-router-dom';
 import { EditMode, UserForm } from '.';
 import { useCreateUserMutation, UserInput, useUpdateUserMutation } from '../../generated/graphql';
 import { USER_DETAILS_FRAGMENT } from '../../graphql/admin';
 import { UserModel } from '../../models/User';
 import { Loading } from '../core/Loading';
-import InputWithCopy from './InputWithCopy';
+import PasswordPrompt from './PasswordPrompt';
 import User from './User';
 
 interface UserEditProps {
   editMode?: EditMode;
-  title?: string;
 }
 
-export const UserEdit: FC<UserEditProps> = ({ editMode = EditMode.readOnly, title = 'User' }) => {
+export const UserEdit: FC<UserEditProps> = ({ editMode = EditMode.readOnly }) => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const [strongPassword, setStrongPassword] = useState<string>('');
@@ -27,17 +26,38 @@ export const UserEdit: FC<UserEditProps> = ({ editMode = EditMode.readOnly, titl
     onCompleted: () => setShowSuccess(true),
   });
 
+  useEffect(() => {
+    const handleUnload = e => {
+      if (isBlocked) {
+        const message =
+          'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!';
+
+        if (e) {
+          e.preventDefault(); // Prevent navigation
+          e.returnValue = message; // Works only for old browsers
+        }
+        return message; // Works only for the oldest browsers
+      }
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, [isBlocked]);
+
   const isEditMode = editMode === EditMode.edit;
 
   const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
     onError: error => {
       setShowError(true);
+      setShowSuccess(false);
       console.log(error);
     },
     onCompleted: data => {
       history.replace(`/admin/users/${data.createUser.id}/edit`);
       setIsBlocked(true);
       setShowSuccess(true);
+      setShowError(false);
     },
     update: (cache, { data }) => {
       if (data) {
@@ -120,10 +140,7 @@ export const UserEdit: FC<UserEditProps> = ({ editMode = EditMode.readOnly, titl
           'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!'
         }
       />
-      <FormGroup>{isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}</FormGroup>
-      <Alert show={isBlocked} variant="warning">
-        Please copy the "Generated password". Once form is closed it will be lost forever.
-      </Alert>
+      {isBlocked && <PasswordPrompt password={strongPassword} show={isBlocked} onClose={() => setIsBlocked(false)} />}
       <Alert show={showError} variant="danger" onClose={() => setShowError(false)} dismissible>
         Error saving user.
       </Alert>
