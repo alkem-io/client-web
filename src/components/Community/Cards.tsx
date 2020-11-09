@@ -10,20 +10,22 @@ interface Tag {
 }
 
 export interface ProjectCardProps extends UserModel {
+  __typename: string;
   memberof: {
     groups: Array<{ name: string }>;
   };
 }
 
-export const PeopleCard: FC<ProjectCardProps> = ({ name, ...user }) => {
-  const groups = user.memberof?.groups.map(g => g.name);
+export const PeopleCard: FC<ProjectCardProps> = ({ name, __typename, ...data }) => {
+  const groups = data.memberof?.groups.map(g => g.name);
 
-  const tagProps =
-    groups?.includes('global-admins') || groups?.includes('ecoverse-admins')
-      ? {
-          text: 'admin',
-        }
-      : undefined;
+  const tagProps = () => {
+    if (__typename === 'UserGroup') return { text: 'Group' };
+    if (groups?.includes('global-admins') || groups?.includes('ecoverse-admins')) {
+      return { text: 'admin' };
+    }
+    return undefined;
+  };
 
   return (
     <Card
@@ -38,14 +40,14 @@ export const PeopleCard: FC<ProjectCardProps> = ({ name, ...user }) => {
           lineHeight: '36px',
         },
       }}
-      tagProps={tagProps}
+      tagProps={tagProps()}
     >
       {/*<Typography as="p">{job}</Typography>
       <Typography as="p" weight="bold">
         {user.email}
       </Typography>*/}
       <div className="flex-grow-1"></div>
-      <Avatar size="big" src={user.profile?.avatar} />
+      <Avatar size="big" src={data.profile?.avatar} />
     </Card>
   );
 };

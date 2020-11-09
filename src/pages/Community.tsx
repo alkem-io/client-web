@@ -1,5 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
-import _ from 'lodash';
+import React, { FC, useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
 import { PeopleCard, ProjectCardProps } from '../components/Community/Cards';
@@ -11,43 +10,42 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import MultipleSelect from '../components/core/MultipleSelect';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import { people as _people, tags as _tags } from '../components/core/Typography.dummy.json';
-import { QUERY_COMMUNITY_SEARCH, QUERY_COMMUNITY_USERS_LIST } from '../graphql/community';
+import { tags as _tags } from '../components/core/Typography.dummy.json';
+import { QUERY_COMMUNITY_SEARCH, QUERY_COMMUNITY_LIST } from '../graphql/community';
 import { PageProps } from './common';
-import { useUsersQuery } from '../generated/graphql';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
-  const [people, setPeople] = useState<Array<ProjectCardProps>>([]);
+  const [community, setCommunity] = useState<Array<ProjectCardProps>>([]);
   const [defaultPeople, setDefaultPeople] = useState<Array<ProjectCardProps>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [searchTerm, setSearch] = useState('');
-  const [typesFilter, setTypesFilter] = useState('');
+  const [typesFilter, setTypesFilter] = useState<{ title: string; value: string }>({ title: 'No filters ', value: '' });
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { data: users, loading: isUsersLoading } = useQuery(QUERY_COMMUNITY_USERS_LIST, {
+  const { data } = useQuery(QUERY_COMMUNITY_LIST, {
     onCompleted: data => {
-      setPeople(data.users);
-      setDefaultPeople(data.users);
+      setCommunity([...data.users, ...data.groups]);
+      setDefaultPeople([...data.users, ...data.groups]);
     },
   });
 
   const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
     onCompleted: ({ search: searchData }) => {
-      const _people = searchData.reduce((acc, curr) => {
-        return [...acc, { score: curr.score, ...curr.result }];
-      }, []);
-      // .sort((a, b) => a.scrore > b.score);
-
-      setPeople(_people);
+      const updatedCommunity = searchData
+        .reduce((acc, curr) => {
+          return [...acc, { score: curr.score, ...curr.result }];
+        }, [])
+        .sort((a, b) => a.scrore > b.score);
+      setCommunity(updatedCommunity);
     },
     onError: error => console.log('searched error ---> ', error),
   });
 
   const handleSearch = () => {
     if (searchTerm === '' && tags.length === 0) {
-      setPeople(defaultPeople);
+      setCommunity(defaultPeople);
       return;
     }
     const tagNames = tags.map(t => t.name);
@@ -56,13 +54,14 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         searchData: {
           terms: [searchTerm && searchTerm, ...tagNames],
           // tagsetNames: ['skills'], ------> disabled for now
-          // typesFilter: [typesFilter],
+          ...(typesFilter.value && { typesFilter: [typesFilter.value] }),
         },
       },
     });
   };
 
   useEffect(() => handleSearch(), [tags]);
+  useEffect(() => handleSearch(), [typesFilter.value]);
 
   return (
     <>
@@ -78,15 +77,22 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
           allowUnknownValues
         />
       </Section>
-      <div className={'col-md-3'} />
-      {/*<DropdownButton id="dropdown-basic-button" title="Dropdown button" onChange={() => console.log('casdfd')}>*/}
-      {/*  <Dropdown.Item onClick={() => setTypesFilter('')}>All</Dropdown.Item>*/}
-      {/*  <Dropdown.Item onClick={() => setTypesFilter('users')}>Users only</Dropdown.Item>*/}
-      {/*  <Dropdown.Item onClick={() => setTypesFilter('groups')}>Groups only</Dropdown.Item>*/}
-      {/*</DropdownButton>*/}
       <Divider />
+      <Container>
+        <Row className={'justify-content-md-center mb-5'}>
+          <DropdownButton title={typesFilter.title} variant={'info'}>
+            <Dropdown.Item onClick={() => setTypesFilter({ title: 'No filters ', value: '' })}>All</Dropdown.Item>
+            <Dropdown.Item onClick={() => setTypesFilter({ title: 'Users only ', value: 'user' })}>
+              Users only
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setTypesFilter({ title: 'Groups only ', value: 'group' })}>
+              Groups only
+            </Dropdown.Item>
+          </DropdownButton>
+        </Row>
+      </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-        {people.map((props, i) => (
+        {community.map((props, i) => (
           <PeopleCard key={i} {...props} />
         ))}
       </CardContainer>

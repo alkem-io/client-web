@@ -14,21 +14,35 @@ export const QUERY_COMMUNITY_SEARCH = gql`
           }
           ...UserDetails
         }
+        ... on UserGroup {
+          name
+          profile {
+            avatar
+          }
+        }
       }
     }
   }
   ${USER_DETAILS_FRAGMENT}
 `;
 
-export const QUERY_COMMUNITY_USERS_LIST = gql`
+export const QUERY_COMMUNITY_LIST = gql`
   query {
     users {
+      __typename
       memberof {
         groups {
           name
         }
       }
       ...UserDetails
+    }
+    groups {
+      __typename
+      name
+      profile {
+        avatar
+      }
     }
   }
   ${USER_DETAILS_FRAGMENT}
