@@ -1,16 +1,9 @@
 import { FieldArray, Formik } from 'formik';
-import generator from 'generate-password';
-import gql from 'graphql-tag';
 import React, { FC, useEffect, useState } from 'react';
-import { Alert, Button, Col, Form, FormControl } from 'react-bootstrap';
-import { Prompt, useHistory } from 'react-router-dom';
+import { Button, Col, Form } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-/*components imports end*/
-import { useCreateUserMutation, useUpdateUserMutation } from '../../generated/graphql';
-import { USER_DETAILS_FRAGMENT } from '../../graphql/admin';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
-/*lib imports end*/
-import InputWithCopy from './InputWithCopy';
 import './styles.scss';
 /*local files imports end*/
 
@@ -20,7 +13,7 @@ export enum EditMode {
   new,
 }
 interface UserProps {
-  user: UserModel;
+  user?: UserModel;
   editMode?: EditMode;
   onSave?: (user: UserModel) => void;
   title?: string;
@@ -29,19 +22,10 @@ interface UserProps {
 export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
   editMode = EditMode.readOnly,
-  onSave: _onSave,
-  title,
+  onSave,
+  title = 'User',
 }) => {
-  const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [strongPassword, setStrongPassword] = useState<string>('');
-  const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const history = useHistory();
-  const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: error => console.log(error),
-    onCompleted: () => setShowSuccess(true),
-  });
-
   const genders = ['not specified', 'male', 'female'];
 
   const isEditMode = editMode === EditMode.edit;
@@ -112,37 +96,6 @@ export const UserForm: FC<UserProps> = ({
     ),
   });
 
-  const [createUser, { loading: mutationLoading }] = useCreateUserMutation({
-    onError: error => {
-      setShowError(true);
-      console.log(error);
-    },
-    onCompleted: data => {
-      history.replace(`/admin/users/${data.createUser.id}/edit`);
-      setIsBlocked(true);
-      setShowSuccess(true);
-    },
-    update: (cache, { data }) => {
-      if (data) {
-        const { createUser } = data;
-
-        cache.modify({
-          fields: {
-            users(existingUsers = []) {
-              const newUserRef = cache.writeFragment({
-                data: createUser,
-                fragment: gql`
-                  ${USER_DETAILS_FRAGMENT}
-                `,
-              });
-              return [...existingUsers, newUserRef];
-            },
-          },
-        });
-      }
-    },
-  });
-
   /**
    * @handleSubmit
    * @param userData instance of UserModel
@@ -152,49 +105,21 @@ export const UserForm: FC<UserProps> = ({
   const handleSubmit = (userData: UserFromGenerated): void => {
     const { tagsets, avatar, references, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
-    const user = {
+    const user: UserModel = {
+      ...currentUser,
       ...otherData,
-      profileData: {
-        description: 'some description',
+      profile: {
         avatar,
-        tagsetsData: [
+        references: [...references],
+        tagsets: [
           {
             name: 'Science',
             tags,
           },
         ],
-        referencesData: references,
       },
     };
-
-    if (editMode === EditMode.new) {
-      const aadPassword = generator.generate({
-        length: 24,
-        numbers: true,
-        symbols: true,
-        excludeSimilarCharacters: true,
-        exclude: '"', // avoid causing invalid Json
-        strict: true,
-      });
-
-      const userWithPassword = { ...user, aadPassword };
-
-      setStrongPassword(aadPassword);
-      createUser({
-        variables: {
-          user: userWithPassword,
-        },
-      });
-    } else if (isEditMode && currentUser.id) {
-      const { email, ...userToUpdate } = user;
-
-      updateUser({
-        variables: {
-          userId: Number(currentUser.id),
-          user: userToUpdate,
-        },
-      });
-    }
+    onSave && onSave(user);
   };
 
   const handleBack = () => history.goBack();
@@ -215,19 +140,7 @@ export const UserForm: FC<UserProps> = ({
   } else {
     return (
       <>
-        <Prompt
-          when={isBlocked}
-          message={
-            'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!'
-          }
-        />
-        <Alert show={showError} variant="danger" onClose={() => setShowError(false)} dismissible>
-          Error saving user.
-        </Alert>
-        <Alert show={showSuccess} variant="success" onClose={() => setShowSuccess(false)} dismissible>
-          Saved successfully.
-        </Alert>
-        <h2 className={'mt-4 mb-4'}>{title || 'User'}</h2>
+        <h2 className={'mt-4 mb-4'}>{title}</h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -349,15 +262,6 @@ export const UserForm: FC<UserProps> = ({
                     </>
                   )}
                 </FieldArray>
-                <Form.Row>
-                  <Form.Group as={Col}>
-                    {isBlocked && <InputWithCopy label="Generated Password" text={strongPassword} />}
-                    <FormControl.Feedback type="invalid">Test</FormControl.Feedback>
-                  </Form.Group>
-                </Form.Row>
-                <Alert show={isBlocked} variant="warning">
-                  Please copy the "Generated password". Once form is closed it will be lost forever.
-                </Alert>
                 {!isReadOnlyMode && (
                   <>
                     <Form.Group>
@@ -368,7 +272,6 @@ export const UserForm: FC<UserProps> = ({
                     </Form.Group>
                   </>
                 )}
-                {(mutationLoading || updateMutationLoading) && <div>Saving...</div>}
               </Form>
             );
           }}
