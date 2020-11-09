@@ -15,7 +15,7 @@ import Loading from '../components/core/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { challenges as challengeLabels, community, projects } from '../components/core/Typography.dummy.json';
-import { ChallengeCard, ProjectCard } from '../components/Ecoverse/Cards';
+import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import { EcoverseDetailsQuery, User, useUserAvatarsQuery } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
@@ -55,7 +55,19 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
 
   const { name, context = {}, challenges } = ecoverse;
   const { tagline, impact, vision, background, references } = context;
-  const ecoverseProjects = [];
+  const ecoverseProjects = [
+    {
+      title: 'MORE PROJECTS STARTING SOON',
+      type: 'more',
+    },
+    {
+      title: 'New project',
+      type: 'add',
+      onAdd: () => {
+        console.log('new project');
+      },
+    },
+  ];
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
@@ -65,6 +77,11 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         name: 'Opportunities',
         digit: challenges.reduce((sum, c) => sum + (c.opportunities || []).length, 0),
         color: 'primary',
+      },
+      {
+        name: 'Projects',
+        digit: 0,
+        color: 'positive',
       },
       {
         name: 'Members',
@@ -129,9 +146,10 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
             <SubHeader text={projects.subheader} />
           </Section>
           <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
-            {ecoverseProjects.map((props, i) => (
-              <ProjectCard key={i} {...props} />
-            ))}
+            {ecoverseProjects.map(({ type, ...rest }, i) => {
+              const Component = SwitchCardComponent({ type });
+              return <Component {...rest} key={i} />;
+            })}
           </CardContainer>
           <Divider />
         </>

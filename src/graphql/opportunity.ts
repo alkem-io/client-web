@@ -21,6 +21,13 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
           description
         }
       }
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
       actorGroups {
         id
         name

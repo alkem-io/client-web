@@ -51,14 +51,15 @@ export const Spacer: FC<{ variant?: 'lg' | 'md' }> = ({ variant = 'md' }) => {
   return <div className={styles[`${variant}Spacer`]}></div>;
 };
 
-interface ActorCardProps {
-  name: string;
+interface RelationCardProps {
+  actorName: string;
+  actorRole?: string;
+  actorType?: string;
   description?: string;
-  value?: string;
-  impact?: string;
+  type: string;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact }) => {
+export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, actorType, description, type }) => {
   const styles = useCardStyles();
 
   return (
@@ -66,10 +67,51 @@ export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact
       className={styles.border}
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.background,
+          background: (theme: Theme) => theme.palette.neutralLight,
+        },
+      }}
+      primaryTextProps={{ text: actorName }}
+      tagProps={{
+        text: `${type}: ${actorRole}`,
+        color: type === 'incoming' ? 'positive' : 'neutralMedium',
+      }}
+    >
+      <Spacer />
+      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+        {'REASON FOR COLLABORATIOn'}
+      </Typography>
+      <Typography as="h3" variant="body">
+        {description}
+      </Typography>
+    </Card>
+  );
+};
+
+interface ActorCardProps {
+  name: string;
+  description?: string;
+  value?: string;
+  impact?: string;
+  type?: 'stakeholder' | 'key user' | string;
+}
+
+export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact, type = 'stakeholder' }) => {
+  const styles = useCardStyles();
+
+  return (
+    <Card
+      className={styles.border}
+      bodyProps={{
+        classes: {
+          background: (theme: Theme) =>
+            type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
         },
       }}
       primaryTextProps={{ text: name }}
+      tagProps={{
+        text: type,
+        color: type === 'stakeholder' ? 'neutral' : 'positive',
+      }}
     >
       <Spacer />
       <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>

@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { Col, Container as BootstrapContainer, ContainerProps as BootstrapContainerProps, Row } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
+import Typography from './Typography';
 
 const useContainerStyles = createStyles(() => ({
   noGutters: {
@@ -30,6 +31,7 @@ export default Container;
 interface CardContainerProps extends ContainerProps {
   cardHeight?: unknown;
   children: React.ReactNode[];
+  title?: string;
   xs?: number;
   sm?: number;
   md?: number;
@@ -47,13 +49,25 @@ const useCardContainerStyles = createStyles(theme => ({
     height: theme.shape.spacing(1.5),
     width: '100%',
   },
+  title: {
+    textTransform: 'uppercase',
+  },
 }));
 
-const CardContainer: FC<CardContainerProps> = ({ children, cardHeight, ...rest }) => {
+const CardContainer: FC<CardContainerProps> = ({ children, cardHeight, title, ...rest }) => {
   const styles = useCardContainerStyles({ cardHeight });
 
   return (
     <Container className={styles.root}>
+      {title && (
+        <Row>
+          <Col xs={12}>
+            <Typography variant="h4" color="neutral" weight="bold" className={styles.title}>
+              {title}
+            </Typography>
+          </Col>
+        </Row>
+      )}
       <Row>
         {children.map((c, i) => (
           <Fragment key={i}>

@@ -6,8 +6,10 @@ import Typography from '../components/core/Typography';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import './FourOuFour.css';
 
+const paths = { currentPaths: [] };
+
 export const FourOuFour: FC = () => {
-  useUpdateNavigation({ currentPaths: [] });
+  useUpdateNavigation(paths);
 
   return (
     <Section>

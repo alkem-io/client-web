@@ -48,6 +48,82 @@ export type User = {
   memberof?: Maybe<MemberOf>;
 };
 
+export type Actor = {
+  __typename?: 'Actor';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** A description of this actor */
+  description?: Maybe<Scalars['String']>;
+  /** A value derived by this actor */
+  value?: Maybe<Scalars['String']>;
+  /** The change / effort required of this actor */
+  impact?: Maybe<Scalars['String']>;
+};
+
+export type ActorGroup = {
+  __typename?: 'ActorGroup';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** A description of this group of actors */
+  description?: Maybe<Scalars['String']>;
+  /** The set of actors in this actor group */
+  actors?: Maybe<Array<Actor>>;
+};
+
+export type Aspect = {
+  __typename?: 'Aspect';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  framing: Scalars['String'];
+  explanation: Scalars['String'];
+};
+
+export type Project = {
+  __typename?: 'Project';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
+  state?: Maybe<Scalars['String']>;
+  /** The set of tags for the project */
+  tagset?: Maybe<Tagset>;
+};
+
+export type Relation = {
+  __typename?: 'Relation';
+  id: Scalars['ID'];
+  type: Scalars['String'];
+  actorName: Scalars['String'];
+  actorType: Scalars['String'];
+  actorRole: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type Opportunity = {
+  __typename?: 'Opportunity';
+  id: Scalars['ID'];
+  /** The name of the Opportunity */
+  name: Scalars['String'];
+  /** A short text identifier for this Opportunity */
+  textID: Scalars['String'];
+  /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
+  state?: Maybe<Scalars['String']>;
+  /** The profile for this Opportunity */
+  profile?: Maybe<Profile>;
+  /** The set of projects within the context of this Opportunity */
+  projects?: Maybe<Array<Project>>;
+  /** The set of actor groups within the context of this Opportunity */
+  actorGroups?: Maybe<Array<ActorGroup>>;
+  /** The set of solution aspects for this Opportunity */
+  aspects?: Maybe<Array<Aspect>>;
+  /** The set of relations for this Opportunity */
+  relations?: Maybe<Array<Relation>>;
+  /** Groups of users related to a Opportunity. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** All users that are contributing to this Opportunity. */
+  contributors?: Maybe<Array<User>>;
+};
+
 export type UserGroup = {
   __typename?: 'UserGroup';
   id: Scalars['ID'];
@@ -90,66 +166,6 @@ export type Ecoverse = {
   templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
-};
-
-export type Actor = {
-  __typename?: 'Actor';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** A description of this actor */
-  description?: Maybe<Scalars['String']>;
-  /** A value derived by this actor */
-  value?: Maybe<Scalars['String']>;
-  /** The change / effort required of this actor */
-  impact?: Maybe<Scalars['String']>;
-};
-
-export type ActorGroup = {
-  __typename?: 'ActorGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** A description of this group of actors */
-  description?: Maybe<Scalars['String']>;
-  /** The set of actors in this actor group */
-  actors?: Maybe<Array<Actor>>;
-};
-
-export type Aspect = {
-  __typename?: 'Aspect';
-  id: Scalars['ID'];
-  title: Scalars['String'];
-  framing: Scalars['String'];
-  explanation: Scalars['String'];
-};
-
-export type Project = {
-  __typename?: 'Project';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
-  state?: Maybe<Scalars['String']>;
-  /** The set of tags for the project */
-  tagset?: Maybe<Tagset>;
-};
-
-export type Opportunity = {
-  __typename?: 'Opportunity';
-  id: Scalars['ID'];
-  /** The name of the Opportunity */
-  name: Scalars['String'];
-  /** A short text identifier for this Opportunity */
-  textID: Scalars['String'];
-  /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
-  state?: Maybe<Scalars['String']>;
-  /** The profile for this Opportunity */
-  profile?: Maybe<Profile>;
-  /** The set of projects within the context of this Opportunity */
-  projects?: Maybe<Array<Project>>;
-  /** The set of actor groups within the context of this Opportunity */
-  actorGroups?: Maybe<Array<ActorGroup>>;
-  /** The set of solution aspects for this Opportunity */
-  aspects?: Maybe<Array<Aspect>>;
 };
 
 export type Challenge = {
@@ -277,14 +293,17 @@ export type AadScope = {
   scopes: Array<Scalars['String']>;
 };
 
-export type SearchResult = {
-  __typename?: 'SearchResult';
-  score: Scalars['Float'];
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  /** The score for this search result; more matches means a higher score. */
+  score?: Maybe<Scalars['Float']>;
+  /** The terms that were matched for this result */
+  terms?: Maybe<Array<Scalars['String']>>;
   /** Each search result contains either a User or UserGroup */
-  user?: Maybe<User>;
-  /** Each search result contains either a User or UserGroup */
-  group?: Maybe<UserGroup>;
+  result?: Maybe<SearchResult>;
 };
+
+export type SearchResult = User | UserGroup;
 
 export type Query = {
   __typename?: 'Query';
@@ -325,7 +344,7 @@ export type Query = {
   /** CT Web Client Configuration */
   clientConfig: AadClientConfig;
   /** Search the ecoverse for terms supplied */
-  search: Array<SearchResult>;
+  search: Array<SearchResultEntry>;
 };
 
 export type QueryOpportunityArgs = {
@@ -409,6 +428,12 @@ export type Mutation = {
   createAspect: Aspect;
   /** Create a new actor group on the Opportunity identified by the ID */
   createActorGroup: ActorGroup;
+  /** Create a new relation on the Opportunity identified by the ID */
+  createRelation: Relation;
+  /** Creates a new user group for the opportunity with the given id */
+  createGroupOnOpportunity: UserGroup;
+  /** Adds the user with the given identifier as a member of the specified opportunity */
+  addUserToOpportunity: UserGroup;
   /** Removes the aspect with the specified ID */
   removeAspect: Scalars['Boolean'];
   /** Updates the aspect with the specified ID */
@@ -421,6 +446,8 @@ export type Mutation = {
   createActor: Actor;
   /** Removes the actor group with the specified ID */
   removeActorGroup: Scalars['Boolean'];
+  /** Removes the relation with the specified ID */
+  removeRelation: Scalars['Boolean'];
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
@@ -533,6 +560,21 @@ export type MutationCreateActorGroupArgs = {
   opportunityID: Scalars['Float'];
 };
 
+export type MutationCreateRelationArgs = {
+  relationData: RelationInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateGroupOnOpportunityArgs = {
+  groupName: Scalars['String'];
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationAddUserToOpportunityArgs = {
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
 export type MutationRemoveAspectArgs = {
   ID: Scalars['Float'];
 };
@@ -557,6 +599,10 @@ export type MutationCreateActorArgs = {
 };
 
 export type MutationRemoveActorGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveRelationArgs = {
   ID: Scalars['Float'];
 };
 
@@ -674,6 +720,14 @@ export type AspectInput = {
 
 export type ActorGroupInput = {
   name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type RelationInput = {
+  type?: Maybe<Scalars['String']>;
+  actorName?: Maybe<Scalars['String']>;
+  actorType?: Maybe<Scalars['String']>;
+  actorRole?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
 
@@ -865,6 +919,11 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
         { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
           }
+      >;
+      relations?: Maybe<
+        Array<
+          { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+        >
       >;
       actorGroups?: Maybe<
         Array<
@@ -1561,6 +1620,13 @@ export const OpportunityProfileDocument = gql`
           uri
           description
         }
+      }
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
       }
       actorGroups {
         id

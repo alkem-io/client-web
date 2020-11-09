@@ -49,8 +49,8 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   // const { id } = useParams<{ id: string }>();
   // at some point the ecoverse needs to be queried
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseDetailsQuery({ variables: {} });
-  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ variables: {} });
+  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseDetailsQuery({ variables: {}, errorPolicy: 'all' });
+  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ variables: {}, errorPolicy: 'all' });
   const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
     paths,
     ecoverse,
@@ -70,7 +70,11 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
     <Switch>
       <Route exact path={path}>
         {!loading && (
-          <EcoversePage ecoverse={ecoverse} users={usersQuery?.users as User[] | undefined} paths={currentPaths} />
+          <EcoversePage
+            ecoverse={ecoverse}
+            users={(usersQuery?.users || undefined) as User[] | undefined}
+            paths={currentPaths}
+          />
         )}
       </Route>
       <Route path={`${path}/challenges/:id`}>
@@ -94,9 +98,11 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
   });
   const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
     variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
   });
   const { challenge } = query || {};
 
@@ -121,7 +127,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         {!loading && (
           <ChallengePage
             challenge={challenge as ChallengeType}
-            users={usersQuery?.challenge.contributors as User[] | undefined}
+            users={(usersQuery?.challenge.contributors || undefined) as User[] | undefined}
             paths={currentPaths}
           />
         )}
