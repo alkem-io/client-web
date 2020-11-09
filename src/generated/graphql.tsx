@@ -277,6 +277,15 @@ export type AadScope = {
   scopes: Array<Scalars['String']>;
 };
 
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  score: Scalars['Float'];
+  /** Each search result contains either a User or UserGroup */
+  result?: Maybe<SearchResult>;
+};
+
+export type SearchResult = User | UserGroup;
+
 export type Query = {
   __typename?: 'Query';
   /** The currently logged in user */
@@ -315,6 +324,8 @@ export type Query = {
   tagset: Tagset;
   /** CT Web Client Configuration */
   clientConfig: AadClientConfig;
+  /** Search the ecoverse for terms supplied */
+  search: Array<SearchResultEntry>;
 };
 
 export type QueryOpportunityArgs = {
@@ -345,10 +356,27 @@ export type QueryOrganisationArgs = {
   ID: Scalars['Float'];
 };
 
+export type QuerySearchArgs = {
+  searchData: SearchInput;
+};
+
+export type SearchInput = {
+  /** The terms to be searched for within this Ecoverse. Max 5. */
+  terms: Array<Scalars['String']>;
+  /** Expand the search to includes Tagsets with the provided names. Max 2. */
+  tagsetNames?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified entity types. Values allowed: user, group. Default is both. */
+  typesFilter?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified challenges. Default is all Challenges. */
+  challengesFilter?: Maybe<Array<Scalars['Float']>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
+  /** Removes the reference  with the specified ID */
+  removeReference: Scalars['Boolean'];
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
   /** Add the provided tag to the tagset with the given ID */
@@ -420,6 +448,10 @@ export type Mutation = {
 export type MutationUpdateUserArgs = {
   userData: UserInput;
   userID: Scalars['Float'];
+};
+
+export type MutationRemoveReferenceArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
@@ -675,7 +707,7 @@ export type OrganisationInput = {
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone'
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
@@ -852,6 +884,9 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     gender
+    country
+    city
+    phone
     profile {
       avatar
       references {
