@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import _ from 'lodash';
+import { useLazyQuery } from '@apollo/client';
 
 import { PeopleCard, ProjectCardProps } from '../components/Community/Cards';
 import { CardContainer } from '../components/core/Container';
@@ -11,33 +12,62 @@ import MultipleSelect from '../components/core/MultipleSelect';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { people as _people, tags as _tags } from '../components/core/Typography.dummy.json';
+import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
 import { PageProps } from './common';
+import { useUsersQuery } from '../generated/graphql';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
-  const [people, setPeople] = useState<Array<ProjectCardProps>>(_people.list);
-  const [tags, setTags] = useState<Array<{ name: string }>>(_tags.list);
+  const [people, setPeople] = useState<Array<ProjectCardProps>>([]);
+  const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [searchTerm, setSearch] = useState('');
-  useEffect(() => debouncePeopleSearch(searchTerm), [searchTerm]);
+  const [typesFilter, setTypesFilter] = useState([]);
   useEffect(() => debounceTagsSearch(searchTerm), [tags]);
   useUpdateNavigation({ currentPaths: paths });
 
-  // load the ecoverse
+  const { data: users, loading: isUsersLoading } = useUsersQuery({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    onCompleted: data => setPeople(data.users),
+  });
 
-  const debouncePeopleSearch = useCallback(
-    _.debounce(
-      searchTerm => setPeople(_people.list.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))),
-      500
-    ),
-    []
-  );
+  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
+    onCompleted: ({ search: searchData }) => {
+      const _people = searchData.reduce((acc, curr) => {
+        return [...acc, { score: curr.score, ...curr.result }];
+      }, []);
+
+      console.log(_people);
+      setPeople(_people);
+    },
+    onError: error => console.log('searched error ---> ', error),
+  });
 
   const debounceTagsSearch = useCallback(
     _.debounce(searchTerm => console.log('api call for new tags'), 500),
     []
   );
 
+  const handleSearch = () => {
+    if (searchTerm === '') {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      setPeople(people);
+      return;
+    }
+    search({
+      variables: {
+        searchData: {
+          terms: [searchTerm],
+          // tagsetNames: ['skills'], ------> disabled for now
+          typesFilter: typesFilter,
+        },
+      },
+    });
+  };
+
+  console.log(tags);
+
   return (
-    // the switch breaks the layout
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Community'} />
@@ -46,6 +76,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
           label={'search for skills'}
           onChange={value => setTags(value)}
           onInput={setSearch}
+          onSearch={handleSearch}
           elements={_tags.list}
           allowUnknownValues
         />

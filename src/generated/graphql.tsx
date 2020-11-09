@@ -277,6 +277,15 @@ export type AadScope = {
   scopes: Array<Scalars['String']>;
 };
 
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  score: Scalars['Float'];
+  /** Each search result contains either a User or UserGroup */
+  result?: Maybe<SearchResult>;
+};
+
+export type SearchResult = User | UserGroup;
+
 export type Query = {
   __typename?: 'Query';
   /** The currently logged in user */
@@ -315,6 +324,8 @@ export type Query = {
   tagset: Tagset;
   /** CT Web Client Configuration */
   clientConfig: AadClientConfig;
+  /** Search the ecoverse for terms supplied */
+  search: Array<SearchResultEntry>;
 };
 
 export type QueryOpportunityArgs = {
@@ -345,10 +356,27 @@ export type QueryOrganisationArgs = {
   ID: Scalars['Float'];
 };
 
+export type QuerySearchArgs = {
+  searchData: SearchInput;
+};
+
+export type SearchInput = {
+  /** The terms to be searched for within this Ecoverse. Max 5. */
+  terms: Array<Scalars['String']>;
+  /** Expand the search to includes Tagsets with the provided names. Max 2. */
+  tagsetNames?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified entity types. Values allowed: user, group. Default is both. */
+  typesFilter?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified challenges. Default is all Challenges. */
+  challengesFilter?: Maybe<Array<Scalars['Float']>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
+  /** Removes the reference  with the specified ID */
+  removeReference: Scalars['Boolean'];
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
   /** Add the provided tag to the tagset with the given ID */
@@ -420,6 +448,10 @@ export type Mutation = {
 export type MutationUpdateUserArgs = {
   userData: UserInput;
   userID: Scalars['Float'];
+};
+
+export type MutationRemoveReferenceArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
@@ -770,6 +802,18 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
       tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
       opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'>>>;
     };
+};
+
+export type SearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: Array<
+    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
+        result?: Maybe<{ __typename: 'User' } | { __typename: 'UserGroup' }>;
+      }
+  >;
 };
 
 export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
@@ -1260,6 +1304,42 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      score
+      result {
+        __typename
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+  return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
+}
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+  return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const ConfigDocument = gql`
   query config {
     clientConfig {

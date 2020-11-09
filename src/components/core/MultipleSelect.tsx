@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState, FC } from 'react';
 import clsx from 'clsx';
 
 import Typography from '../../components/core/Typography';
+import Icon from '../core/Icon';
+import IconButton from '../core/IconButton';
 
+import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
 import { createStyles } from '../../hooks/useTheme';
 
 const useMultipleSelectStyles = createStyles(theme => {
@@ -101,6 +104,13 @@ const useMultipleSelectStyles = createStyles(theme => {
         cursor: 'pointer',
       },
     },
+    flexCenterContainer: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    searchButton: {
+      padding: '10px',
+    },
     suggestionsTitle: {
       marginTop: `${theme.shape.spacing(3)}px`,
       marginBottom: `${theme.shape.spacing(2)}px`,
@@ -155,6 +165,7 @@ interface MultipleSelectProps {
   elements: Array<Element>;
   onChange: (elements: Array<Element>) => void;
   onInput: (value: string) => void;
+  onSearch: () => void;
   allowUnknownValues?: boolean;
   defaultValue?: Array<Element>;
   disabled?: boolean;
@@ -167,6 +178,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
   onChange,
   onInput,
+  onSearch,
   allowUnknownValues,
   defaultValue,
   disabled,
@@ -213,6 +225,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     setElements(newElements);
     setElementsNoFilter(newElements);
     onChange(newSelected);
+    onSearch();
   };
 
   const handleInputChange = e => {
@@ -225,11 +238,12 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       const newElements = elementsNoFilter.filter(el => el.name !== value);
 
       resetInput();
-      setElements(newElements);
+      // setElements(newElements);
       setElementsNoFilter(newElements);
       setSelected([...selectedElements, { name: value }]);
       setNoMatches(false);
       onChange([...selectedElements, { name: value }]);
+      onSearch();
       onInput('');
     }
   };
@@ -243,14 +257,18 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           className={clsx(styles.selectContainer, disabled && styles.disabled)}
           onClick={() => input.current.focus()}
         >
-          <input
-            ref={input}
-            className={styles.input}
-            onChange={handleInputChange}
-            onKeyDown={handleInputChange}
-            placeholder={'Search people or skills'}
-          />
-
+          <section className={styles.flexCenterContainer}>
+            <IconButton onClick={onSearch} className={styles.searchButton}>
+              <Icon component={SearchIcon} color="inherit" size={'sm'} />
+            </IconButton>
+            <input
+              ref={input}
+              className={styles.input}
+              onChange={handleInputChange}
+              onKeyDown={handleInputChange}
+              placeholder={'Search people, groups or skills'}
+            />
+          </section>
           <div className={styles.elements}>
             {selectedElements.map((selectedEl, index) => (
               <div
