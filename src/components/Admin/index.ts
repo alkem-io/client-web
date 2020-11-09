@@ -4,6 +4,7 @@ export * from './GroupEdit';
 export * from './GroupList';
 export * from './GroupPage';
 export * from './User';
+export * from './UserEdit';
 export * from './UserForm';
 export * from './UserList';
 export * from './UserPage';
