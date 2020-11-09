@@ -22,6 +22,14 @@ const useAvatarStyles = createStyles(theme => ({
       marginBottom: theme.shape.spacing(1),
     },
   },
+  avatar: {
+    flexBasis: '100%',
+    margin: 0,
+
+    [theme.media.down('xl')]: {
+      flexBasis: '0',
+    },
+  },
 }));
 
 interface AvatarContainerProps {
@@ -51,7 +59,7 @@ const AvatarContainer: FC<AvatarContainerProps> = ({
           i + 1 === itemsPerLine ? (
             <Fragment key={i}>
               {x}
-              <div style={{ flexBasis: '100%', margin: 0 }} />
+              <div className={styles.avatar} />
             </Fragment>
           ) : (
             x

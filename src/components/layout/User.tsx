@@ -51,7 +51,7 @@ const User: FC<UserProps> = ({ orientation = 'vertical', name, title }) => {
 
   return (
     <Link className={clsx(styles.flex, styles.center, styles.horizontal)} to="/profile">
-      <Avatar size={orientation === 'vertical' ? 'default' : 'small'} />
+      <Avatar size={orientation === 'vertical' ? 'md' : 'sm'} />
       <div className={clsx(styles.flex, styles[orientation])}>
         <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
           {name}

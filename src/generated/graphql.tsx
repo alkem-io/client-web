@@ -277,6 +277,15 @@ export type AadScope = {
   scopes: Array<Scalars['String']>;
 };
 
+export type SearchResult = {
+  __typename?: 'SearchResult';
+  score: Scalars['Float'];
+  /** Each search result contains either a User or UserGroup */
+  user?: Maybe<User>;
+  /** Each search result contains either a User or UserGroup */
+  group?: Maybe<UserGroup>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** The currently logged in user */
@@ -315,6 +324,8 @@ export type Query = {
   tagset: Tagset;
   /** CT Web Client Configuration */
   clientConfig: AadClientConfig;
+  /** Search the ecoverse for terms supplied */
+  search: Array<SearchResult>;
 };
 
 export type QueryOpportunityArgs = {
@@ -345,10 +356,27 @@ export type QueryOrganisationArgs = {
   ID: Scalars['Float'];
 };
 
+export type QuerySearchArgs = {
+  searchData: SearchInput;
+};
+
+export type SearchInput = {
+  /** The terms to be searched for within this Ecoverse. Max 5. */
+  terms: Array<Scalars['String']>;
+  /** Expand the search to includes Tagsets with the provided names. Max 2. */
+  tagsetNames?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified entity types. Values allowed: user, group. Default is both. */
+  typesFilter?: Maybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified challenges. Default is all Challenges. */
+  challengesFilter?: Maybe<Array<Scalars['Float']>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
+  /** Removes the reference  with the specified ID */
+  removeReference: Scalars['Boolean'];
   /** Replace the set of tags in a tagset with the provided tags */
   replaceTagsOnTagset: Tagset;
   /** Add the provided tag to the tagset with the given ID */
@@ -420,6 +448,10 @@ export type Mutation = {
 export type MutationUpdateUserArgs = {
   userData: UserInput;
   userID: Scalars['Float'];
+};
+
+export type MutationRemoveReferenceArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationReplaceTagsOnTagsetArgs = {
@@ -821,6 +853,30 @@ export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'
         }
     >;
   };
+
+export type OpportunityProfileQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityProfileQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
+      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+      profile?: Maybe<
+        { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+          }
+      >;
+      actorGroups?: Maybe<
+        Array<
+          { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+              actors?: Maybe<
+                Array<{ __typename?: 'Actor' } & Pick<Actor, 'name' | 'description' | 'value' | 'impact'>>
+              >;
+            }
+        >
+      >;
+    };
+};
 
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1485,6 +1541,80 @@ export function useEcoverseDetailsLazyQuery(
 export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
 export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
 export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;
+export const OpportunityProfileDocument = gql`
+  query opportunityProfile($id: Float!) {
+    opportunity(ID: $id) {
+      id
+      textID
+      name
+      state
+      aspects {
+        title
+        framing
+        explanation
+      }
+      profile {
+        description
+        avatar
+        references {
+          name
+          uri
+          description
+        }
+      }
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityProfileQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export function useOpportunityProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export type OpportunityProfileQueryHookResult = ReturnType<typeof useOpportunityProfileQuery>;
+export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportunityProfileLazyQuery>;
+export type OpportunityProfileQueryResult = Apollo.QueryResult<
+  OpportunityProfileQuery,
+  OpportunityProfileQueryVariables
+>;
 export const EcoverseUserIdsDocument = gql`
   query ecoverseUserIds {
     users {

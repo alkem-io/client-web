@@ -7,6 +7,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Path } from '../../context/NavigationProvider';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 const useNavRingsStyles = createStyles(theme => ({
   wrapper: {
@@ -27,18 +28,18 @@ const useNavRingsStyles = createStyles(theme => ({
     zIndex: 101,
 
     '& > a': {
-      border: '1px solid #e5e5e5',
+      border: `1px solid ${hexToRGBA(theme.palette.primary, 0.5)}`,
       borderRadius: '50%',
       backgroundColor: `${theme.palette.background}`,
       transition: 'border 0.2s ease-in-out',
       position: 'absolute',
 
       '&:last-of-type': {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: hexToRGBA(theme.palette.background, 0.8),
       },
 
       '&:hover': {
-        border: '1px solid #58bfd5',
+        border: `1px solid ${theme.palette.primary}`,
       },
     },
   },

@@ -5,6 +5,11 @@ import Button from '../core/Button';
 import Card from '../core/Card';
 import CircleTag from '../core/CircleTag';
 import Typography from '../core/Typography';
+import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.svg';
+import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
+import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
+import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
+import Icon from '../core/Icon';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -24,30 +29,103 @@ const useCardStyles = createStyles(theme => ({
       overflow: 'hidden',
     },
   },
+  border: {
+    border: `1px solid ${theme.palette.neutralMedium}`,
+  },
+  mdSpacer: {
+    marginTop: theme.shape.spacing(2),
+  },
+  lgSpacer: {
+    marginTop: theme.shape.spacing(4),
+  },
+  iconWrapper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 }));
 
-export const ActivityCard: FC = () => {
+export const Spacer: FC<{ variant?: 'lg' | 'md' }> = ({ variant = 'md' }) => {
+  const styles = useCardStyles();
+
+  return <div className={styles[`${variant}Spacer`]}></div>;
+};
+
+interface ActorCardProps {
+  name: string;
+  description?: string;
+  value?: string;
+  impact?: string;
+}
+
+export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact }) => {
   const styles = useCardStyles();
 
   return (
     <Card
+      className={styles.border}
       bodyProps={{
         classes: {
           background: (theme: Theme) => theme.palette.background,
         },
       }}
-      primaryTextProps={{ text: 'opportunity activity' }}
+      primaryTextProps={{ text: name }}
     >
-      <div className={styles.item}>
-        <Typography>Projects:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'118'} color="positive" />
-      </div>
-      <div className={styles.item}>
-        <Typography>Members:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'6171'} color="neutralMedium" />
-      </div>
+      <Spacer />
+      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+        {'wins how? (juice)'}
+        <Icon component={CupStrawIcon} size="sm" color="neutral" />
+      </Typography>
+      <Typography as="h3" variant="body">
+        {value}
+      </Typography>
+      <Spacer variant="lg" />
+      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+        {'required effort for pilot'}
+        <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
+      </Typography>
+      <Typography as="h3" variant="body">
+        {`${description} ${impact}`}
+      </Typography>
+    </Card>
+  );
+};
+
+interface AspectCardProps {
+  title: string;
+  framing?: string;
+  explanation?: string;
+}
+
+export const AspectCard: FC<AspectCardProps> = ({ title, framing, explanation }) => {
+  const styles = useCardStyles();
+
+  return (
+    <Card
+      className={styles.border}
+      bodyProps={{
+        classes: {
+          background: (theme: Theme) => theme.palette.background,
+        },
+      }}
+      primaryTextProps={{ text: title }}
+    >
+      <Spacer />
+      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+        {'explanation'}
+        <Icon component={InfoSquareIcon} size="sm" color="neutral" />
+      </Typography>
+      <Typography as="h3" variant="body">
+        {explanation}
+      </Typography>
+      <Spacer variant="lg" />
+      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+        {'where we need help'}
+        <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
+      </Typography>
+      <Typography as="h3" variant="body">
+        {framing}
+      </Typography>
     </Card>
   );
 };

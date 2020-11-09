@@ -114,7 +114,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                   <div style={{ flexBasis: '100%' }}></div>
                   {users.length - populated.length > 0 && (
                     <Typography variant="h3" as="h3" color="positive">
-                      {`... + ${users.length - populated.length} other members`}
+                      {`... + ${users.length - populated.length} other contributors`}
                     </Typography>
                   )}
                 </>
@@ -135,7 +135,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       {opportunities && (
         <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
           {opportunities?.map((props, i) => (
-            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.id}`} />
+            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.textID}`} />
           ))}
         </CardContainer>
       )}

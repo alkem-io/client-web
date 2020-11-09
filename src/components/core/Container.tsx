@@ -40,7 +40,7 @@ interface CardContainerProps extends ContainerProps {
 const useCardContainerStyles = createStyles(theme => ({
   root: {
     '& .ct-card': {
-      height: props => (props.cardHeight ? `${props.cardHeight}px` : 'auto'),
+      height: props => (props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.shape.spacing(1.5)}px)`),
     },
   },
   spacer: {

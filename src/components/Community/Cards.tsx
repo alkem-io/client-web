@@ -42,7 +42,7 @@ export const PeopleCard: FC<ProjectCardProps> = ({ name, job, company, tag }) =>
         {company}
       </Typography>
       <div className="flex-grow-1"></div>
-      <Avatar size="big" />
+      <Avatar size="lg" />
     </Card>
   );
 };

@@ -1,13 +1,15 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { opportunities } from '../components/core/Typography.dummy.json';
 import {
   Challenge as ChallengeType,
+  Opportunity as OpportunityType,
   useChallengeProfileQuery,
   useChallengeUserIdsQuery,
   useEcoverseDetailsQuery,
   useEcoverseUserIdsQuery,
+  useOpportunityProfileQuery,
   User,
 } from '../generated/graphql';
 import {
@@ -32,6 +34,9 @@ export const Ecoverses: FC = () => {
     <Switch>
       <Route path={`${path}/:id`}>
         <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+      </Route>
+      <Route exact path={`${path}`}>
+        <Redirect to="/ecoverse/1" />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -122,7 +127,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         )}
       </Route>
       <Route exact path={`${path}/opportunities/:id`}>
-        <Opportnity paths={currentPaths} />
+        <Opportnity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -131,18 +136,40 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   );
 };
 
-const Opportnity: FC<PageProps> = ({ paths }) => {
+interface OpportunityRootProps extends PageProps {
+  opportunities: Pick<OpportunityType, 'id' | 'textID'>[] | undefined;
+}
+
+const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
+  const target = opportunities.find(x => x.textID === id);
+
+  const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
+    variables: { id: Number(target?.id) },
+  });
+
+  const { opportunity } = query || {};
+
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: opportunities.list.find(c => c.id === Number(id))?.title || '', real: true }],
-    [paths, id]
+    () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),
+    [paths, id, opportunity]
   );
+
+  const loading = opportunityLoading; // || usersLoading;
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!opportunity) {
+    return <FourOuFour />;
+  }
 
   return (
     <Switch>
       <Route exact path={path}>
-        <OpportunityPage paths={currentPaths} />
+        <OpportunityPage opportunity={opportunity as OpportunityType} users={[]} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
