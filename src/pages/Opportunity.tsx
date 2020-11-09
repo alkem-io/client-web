@@ -37,15 +37,16 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
   useUpdateNavigation({ currentPaths: paths });
   const { name, aspects, projects = [], profile, actorGroups } = opportunity;
   const team = undefined;
-  const actors = useMemo(() => {
-    const stakeholders = actorGroups?.find(x => x.name === 'stakeholders')?.actors || [];
-    const keyUsers = actorGroups?.find(x => x.name === 'key_users')?.actors || [];
+  const stakeholders = useMemo(
+    () =>
+      actorGroups?.find(x => x.name === 'stakeholders')?.actors?.map(x => ({ ...x, name: `stakeholder \n${x.name}` })),
+    [actorGroups]
+  );
 
-    return [
-      ...stakeholders.map(x => ({ ...x, name: `stakeholder \n${x.name}` })),
-      ...keyUsers.map(x => ({ ...x, name: `key user \n${x.name}` })),
-    ];
-  }, [actorGroups]);
+  const keyUsers = useMemo(
+    () => actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `key user \n${x.name}` })),
+    [actorGroups]
+  );
 
   const activitySummary = useMemo(() => {
     return [
@@ -114,9 +115,16 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
         <SectionHeader text={'ADOPTION ECOSYSTEM'} />
         <SubHeader text={'Stakeholders & Key users'} />
       </Section>
-      {actors && (
+      {stakeholders && stakeholders.length > 0 && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>
-          {actors?.map((props, i) => (
+          {stakeholders?.map((props, i) => (
+            <ActorCard key={i} {...props} />
+          ))}
+        </CardContainer>
+      )}
+      {keyUsers && keyUsers.length > 0 && (
+        <CardContainer xs={12} md={6} lg={4} xl={3}>
+          {keyUsers?.map((props, i) => (
             <ActorCard key={i} {...props} />
           ))}
         </CardContainer>
