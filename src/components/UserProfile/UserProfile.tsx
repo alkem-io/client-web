@@ -8,13 +8,16 @@ import UserFrom, { EditMode } from '../Admin/UserForm';
 import { QUERY_USER_PROFILE } from './query';
 import { defaultUser } from '../../models/User';
 import { Col, Container, Form, Row } from 'react-bootstrap';
+import { Loading } from '../core/Loading';
 /*local files imports end*/
 
 export const UserProfile = () => {
-  const { data } = useQuery(QUERY_USER_PROFILE);
+  const { data, loading } = useQuery(QUERY_USER_PROFILE);
 
-  const groups = data?.me?.memberof?.groups.map(g => g.name).join(', ');
-  const challenges = data?.me?.memberof?.challenges.map(c => c.name).join(', ');
+  const groups = data?.me?.memberof?.groups.map(g => g.name).join(', ') || '';
+  const challenges = data?.me?.memberof?.challenges.map(c => c.name).join(', ') || '';
+
+  if (loading) return <Loading />;
 
   return (
     <Container className={'mt-5'}>
