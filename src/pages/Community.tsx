@@ -16,18 +16,36 @@ import { PageProps } from './common';
 import { Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
+  const filtersConfig = {
+    all: {
+      title: 'No filters',
+      value: '',
+      typename: '',
+    },
+    user: {
+      title: 'Users only',
+      value: 'user',
+      typename: 'User',
+    },
+    group: {
+      title: 'Groups only',
+      value: 'group',
+      typename: 'UserGroup',
+    },
+  };
+
   const [community, setCommunity] = useState<Array<ProjectCardProps>>([]);
-  const [defaultPeople, setDefaultPeople] = useState<Array<ProjectCardProps>>([]);
+  const [defaultCommunity, setDefaultCommunity] = useState<Array<ProjectCardProps>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [searchTerm, setSearch] = useState('');
-  const [typesFilter, setTypesFilter] = useState<{ title: string; value: string }>({ title: 'No filters ', value: '' });
+  const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { data } = useQuery(QUERY_COMMUNITY_LIST, {
+  useQuery(QUERY_COMMUNITY_LIST, {
     onCompleted: data => {
       setCommunity([...data.users, ...data.groups]);
-      setDefaultPeople([...data.users, ...data.groups]);
+      setDefaultCommunity([...data.users, ...data.groups]);
     },
   });
 
@@ -44,10 +62,17 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   });
 
   const handleSearch = () => {
-    if (searchTerm === '' && tags.length === 0) {
-      setCommunity(defaultPeople);
+    if (searchTerm === '' && tags.length === 0 && typesFilter.value) {
+      setCommunity(defaultCommunity.filter(el => el.__typename === typesFilter.typename));
+
       return;
     }
+    if (searchTerm === '' && tags.length === 0) {
+      setCommunity(defaultCommunity);
+
+      return;
+    }
+
     const tagNames = tags.map(t => t.name);
     search({
       variables: {
@@ -81,12 +106,10 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       <Container>
         <Row className={'justify-content-md-center mb-5'}>
           <DropdownButton title={typesFilter.title} variant={'info'}>
-            <Dropdown.Item onClick={() => setTypesFilter({ title: 'No filters ', value: '' })}>All</Dropdown.Item>
-            <Dropdown.Item onClick={() => setTypesFilter({ title: 'Users only ', value: 'user' })}>
-              Users only
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setTypesFilter({ title: 'Groups only ', value: 'group' })}>
-              Groups only
+            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>{filtersConfig.all.title}</Dropdown.Item>
+            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>{filtersConfig.user.title}</Dropdown.Item>
+            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
+              {filtersConfig.group.title}
             </Dropdown.Item>
           </DropdownButton>
         </Row>
