@@ -16,11 +16,14 @@ export interface ProjectCardProps extends UserModel {
 }
 
 export const PeopleCard: FC<ProjectCardProps> = ({ name, ...user }) => {
-  const tagProps = user.memberof?.groups.map(g => g.name).includes('global-admins')
-    ? {
-        text: 'admin',
-      }
-    : undefined;
+  const groups = user.memberof?.groups.map(g => g.name);
+
+  const tagProps =
+    groups?.includes('global-admins') || groups?.includes('ecoverse-admins')
+      ? {
+          text: 'admin',
+        }
+      : undefined;
 
   return (
     <Card

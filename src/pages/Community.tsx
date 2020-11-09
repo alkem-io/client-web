@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import _ from 'lodash';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 import { PeopleCard, ProjectCardProps } from '../components/Community/Cards';
 import { CardContainer } from '../components/core/Container';
@@ -12,22 +12,25 @@ import MultipleSelect from '../components/core/MultipleSelect';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { people as _people, tags as _tags } from '../components/core/Typography.dummy.json';
-import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
+import { QUERY_COMMUNITY_SEARCH, QUERY_COMMUNITY_USERS_LIST } from '../graphql/community';
 import { PageProps } from './common';
 import { useUsersQuery } from '../generated/graphql';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [people, setPeople] = useState<Array<ProjectCardProps>>([]);
+  const [defaultPeople, setDefaultPeople] = useState<Array<ProjectCardProps>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [searchTerm, setSearch] = useState('');
-  const [typesFilter, setTypesFilter] = useState([]);
-  useEffect(() => debounceTagsSearch(searchTerm), [tags]);
+  const [typesFilter, setTypesFilter] = useState('');
+
   useUpdateNavigation({ currentPaths: paths });
 
-  const { data: users, loading: isUsersLoading } = useUsersQuery({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    onCompleted: data => setPeople(data.users),
+  const { data: users, loading: isUsersLoading } = useQuery(QUERY_COMMUNITY_USERS_LIST, {
+    onCompleted: data => {
+      setPeople(data.users);
+      setDefaultPeople(data.users);
+    },
   });
 
   const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
@@ -35,37 +38,31 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       const _people = searchData.reduce((acc, curr) => {
         return [...acc, { score: curr.score, ...curr.result }];
       }, []);
+      // .sort((a, b) => a.scrore > b.score);
 
-      console.log(_people);
       setPeople(_people);
     },
     onError: error => console.log('searched error ---> ', error),
   });
 
-  const debounceTagsSearch = useCallback(
-    _.debounce(searchTerm => console.log('api call for new tags'), 500),
-    []
-  );
-
   const handleSearch = () => {
-    if (searchTerm === '') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      setPeople(people);
+    if (searchTerm === '' && tags.length === 0) {
+      setPeople(defaultPeople);
       return;
     }
+    const tagNames = tags.map(t => t.name);
     search({
       variables: {
         searchData: {
-          terms: [searchTerm],
+          terms: [searchTerm && searchTerm, ...tagNames],
           // tagsetNames: ['skills'], ------> disabled for now
-          typesFilter: typesFilter,
+          // typesFilter: [typesFilter],
         },
       },
     });
   };
 
-  console.log(tags);
+  useEffect(() => handleSearch(), [tags]);
 
   return (
     <>
@@ -81,6 +78,12 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
           allowUnknownValues
         />
       </Section>
+      <div className={'col-md-3'} />
+      {/*<DropdownButton id="dropdown-basic-button" title="Dropdown button" onChange={() => console.log('casdfd')}>*/}
+      {/*  <Dropdown.Item onClick={() => setTypesFilter('')}>All</Dropdown.Item>*/}
+      {/*  <Dropdown.Item onClick={() => setTypesFilter('users')}>Users only</Dropdown.Item>*/}
+      {/*  <Dropdown.Item onClick={() => setTypesFilter('groups')}>Groups only</Dropdown.Item>*/}
+      {/*</DropdownButton>*/}
       <Divider />
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {people.map((props, i) => (

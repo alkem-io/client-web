@@ -215,6 +215,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     setElementsNoFilter(newElements);
     onChange(newSelected);
     onInput('');
+    // onSearch();
   };
 
   const handleRemove = (e, value) => {

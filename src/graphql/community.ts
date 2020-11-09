@@ -7,9 +7,28 @@ export const QUERY_COMMUNITY_SEARCH = gql`
       score
       result {
         ... on User {
+          memberof {
+            groups {
+              name
+            }
+          }
           ...UserDetails
         }
       }
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+`;
+
+export const QUERY_COMMUNITY_USERS_LIST = gql`
+  query {
+    users {
+      memberof {
+        groups {
+          name
+        }
+      }
+      ...UserDetails
     }
   }
   ${USER_DETAILS_FRAGMENT}
