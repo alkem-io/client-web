@@ -1,16 +1,20 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
+import { Modal } from 'react-bootstrap';
+import Button from './Button';
+import PasswordPrompt from '../Admin/PasswordPrompt';
 
 interface HeaderProps {
   text: string;
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
+  color?: 'positive' | 'neutralMedium' | 'primary';
 }
 
 const useHeaderStyles = createStyles(theme => ({
@@ -77,10 +81,46 @@ const useTagStyles = createStyles(() => ({
   },
 }));
 
-export const CardTag: FC<HeaderProps> = ({ text, className }) => {
+export const CardTag: FC<HeaderProps> = ({ text, className, color }) => {
   const styles = useTagStyles();
 
-  return <Tag className={clsx(styles.tag, className)} text={text} />;
+  return <Tag className={clsx(styles.tag, className)} color={color} text={text} />;
+};
+
+const useMatchedTermsStyles = createStyles(theme => ({
+  tagsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxHeight: `${theme.shape.spacing(9)}px`,
+    overflow: 'hidden',
+  },
+  tag: {
+    padding: '5px 10px',
+    width: 'fit-content',
+    borderRadius: 15,
+    textTransform: 'uppercase',
+    backgroundColor: theme.palette.primary,
+    marginRight: `${theme.shape.spacing(1)}px`,
+    marginBottom: `${theme.shape.spacing(1)}px`,
+  },
+}));
+
+interface MatchedTermsProps {
+  terms?: Array<string>;
+}
+
+export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
+  const styles = useMatchedTermsStyles();
+
+  return (
+    <div className={styles.tagsContainer}>
+      {terms?.map(t => (
+        <Typography className={styles.tag} color={'background'}>
+          {t}
+        </Typography>
+      ))}
+    </div>
+  );
 };
 
 const useBodyStyles = createStyles(theme => ({
@@ -131,9 +171,11 @@ export interface CardProps {
   className?: string;
   headerProps?: HeaderProps;
   tagProps?: HeaderProps;
+  matchedTerms?: MatchedTermsProps;
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
+  popUp?: JSX.Element;
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -144,27 +186,48 @@ const useCardStyles = createStyles(theme => ({
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
   },
+  clickable: {
+    cursor: 'pointer',
+  },
 }));
 
 const Card: FC<CardProps> = ({
   className,
   headerProps,
   tagProps,
+  matchedTerms,
   bodyProps,
   primaryTextProps,
   classes = {},
   children,
+  popUp,
 }) => {
   const styles = useCardStyles(classes);
 
+  const [isModalShown, setIsModalShown] = useState<boolean>(false);
+
+  const handleShow = () => popUp && !isModalShown && setIsModalShown(true);
+  const handleClose = () => popUp && setIsModalShown(false);
+
   return (
-    <div className={clsx(styles.root, className, 'ct-card')}>
+    <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow}>
       {headerProps && <HeaderCaption {...headerProps} />}
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
+        <div className="flex-grow-1" />
+        {matchedTerms && <MatchedTerms {...matchedTerms} />}
+        <div className="flex-grow-1" />
         {children}
       </Body>
+      {popUp && (
+        <Modal show={isModalShown} onHide={handleClose} size="lg" centered>
+          {popUp}
+          <Modal.Footer>
+            <Button onClick={handleClose}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -16,10 +16,14 @@ const useIconStyles = createStyles(theme => ({
     background: theme.palette.neutralMedium,
     color: theme.palette.background,
   },
+  primary: {
+    background: theme.palette.primary,
+    color: theme.palette.background,
+  },
 }));
 
 interface TagProps extends React.SVGProps<SVGSVGElement> {
-  color?: 'positive' | 'neutralMedium'; //keyof Palette
+  color?: 'positive' | 'neutralMedium' | 'primary'; //keyof Palette
   text: string;
   className: string;
 }
