@@ -1,23 +1,21 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { useUsersQuery } from '../../generated/graphql';
-import { UserModel } from '../../models/User';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { User } from '../../generated/graphql';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { PageProps } from '../../pages';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
-import UserEdit from './UserEdit';
-import { EditMode } from './UserForm';
 import UserList from './UserList';
 
-export const UserPage: FC = () => {
-  const { path } = useRouteMatch();
-  const { data, loading } = useUsersQuery();
+interface UserPageProps extends PageProps {
+  users: User[];
+}
 
-  const users = (data?.users || []) as UserModel[];
+export const UserPage: FC<UserPageProps> = ({ paths, users }) => {
+  const { path, url } = useRouteMatch();
+  useUpdateNavigation({ currentPaths: paths });
 
   const title = 'Users';
-
-  if (loading) return <Loading />;
 
   return (
     <>
@@ -36,20 +34,7 @@ export const UserPage: FC = () => {
       <hr />
       <Row>
         <Col>
-          <Switch>
-            <Route exact path={`${path}`}>
-              <UserList users={users} />
-            </Route>
-            <Route path={`${path}/new`}>
-              <UserEdit editMode={EditMode.new} />
-            </Route>
-            <Route exact path={`${path}/:userId/edit`}>
-              <UserEdit editMode={EditMode.edit} />
-            </Route>
-            <Route exact path={`${path}/:userId`}>
-              <UserEdit editMode={EditMode.readOnly} />
-            </Route>
-          </Switch>
+          <UserList users={users} />
         </Col>
       </Row>
     </>

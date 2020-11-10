@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { UserModel } from '../../models/User';
+import { User } from '../../generated/graphql';
 import SearchableList from './SearchableList';
 
 interface UserListProps {
-  users: UserModel[];
+  users: User[];
 }
 
 export const UserList: FC<UserListProps> = ({ users }) => {

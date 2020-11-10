@@ -1,4 +1,4 @@
-export * from './AdminLayout';
+export * from './AdminNav';
 export * from './AdminPage';
 export * from './GroupEdit';
 export * from './GroupList';
