@@ -1,0 +1,12 @@
+.form-grp-remove {
+  label {
+    visibility: hidden;
+  }
+  button {
+    margin-top: 32px;
+  }
+}
+th {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+}

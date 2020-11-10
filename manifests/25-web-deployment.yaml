@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: ct-web-deployment
+  labels:
+    app: ct-web
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ct-web
+  template:
+    metadata:
+      labels:
+        app: ct-web
+    spec:
+      containers:
+        - name: ct-web
+          image: ctdev.azurecr.io/ct-web:latest
+          envFrom:
+          - secretRef:
+              name: server-secret
+          - secretRef:
+              name: authentication
+          ports:
+            - name: web
+              containerPort: 80
+

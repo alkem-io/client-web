@@ -1,31 +1,64 @@
 {
-  "name": "Cherrytwist",
-  "version": "0.1.0",
-  "private": true,
+  "name": "cherrytwist-web",
+  "version": "0.3.0",
+  "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
+  "author": "Cherrytwist Foundation",
+  "private": false,
+  "license": "EUPL",
   "dependencies": {
+    "@apollo/client": "^3.2.4",
+    "@azure/msal-browser": "^2.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.54",
-    "@types/react": "^16.9.47",
+    "@types/node": "^12.12.67",
+    "@types/react": "^16.9.52",
     "@types/react-dom": "^16.9.8",
-    "apollo-boost": "^0.4.9",
-    "graphql": "^15.3.0",
-    "graphql-tag": "^2.11.0",
-    "react": "^16.13.1",
-    "react-apollo": "^3.1.5",
-    "react-apollo-hooks": "^0.5.0",
-    "react-dom": "^16.13.1",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/yup": "^0.29.9",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "bootstrap": "^4.5.3",
+    "bootstrap-icons": "^1.0.0",
+    "clsx": "^1.1.1",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^24.0.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "formik": "^2.2.1",
+    "generate-password": "^1.5.1",
+    "graphql": "^15.4.0",
+    "node-sass": "^4.14.1",
+    "react": "^16.14.0",
+    "react-bootstrap": "^1.3.0",
+    "react-copy-to-clipboard": "^5.0.2",
+    "react-dom": "^16.14.0",
+    "react-jss": "^10.4.0",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
-    "typescript": "^3.7.5"
+    "react-visibility-sensor": "^5.1.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "typescript": "^4.0.2",
+    "yup": "^0.29.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "prestart": "cross-env NODE_ENV=development gulp buildConfiguration",
+    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "prebuild": "cross-env NODE_ENV=production gulp buildConfiguration",
     "build": "react-scripts build",
+    "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "postcodegen": "prettier --write src/generated/*.ts{,x}",
+    "format": "prettier --write src/**/*.ts{,x}",
+    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
+    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
+    "gulp": "gulp"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -43,9 +76,25 @@
     ]
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.17.0",
-    "@graphql-codegen/typescript": "^1.17.0",
-    "@graphql-codegen/typescript-operations": "1.17.0",
-    "@graphql-codegen/typescript-react-apollo": "1.17.0"
-  }
+    "@graphql-codegen/cli": "1.17.8",
+    "@graphql-codegen/typescript": "1.17.8",
+    "@graphql-codegen/typescript-operations": "1.17.8",
+    "@graphql-codegen/typescript-react-apollo": "^2.0.6",
+    "@types/react-copy-to-clipboard": "^4.3.0",
+    "@types/react-redux": "^7.1.9",
+    "gulp": "^4.0.2",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "prettier": "^2.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "eslintIgnore": [
+    "src/generated/graphql.tsx",
+    "**/node_modules/**",
+    "**/build**"
+  ]
 }

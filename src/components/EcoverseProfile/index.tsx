@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 import { useEcoverseListQuery } from '../../generated/graphql';
-import  EcoverseProfile  from './EcoverseProfile';
+import EcoverseProfile from './EcoverseProfile';
 
-const EcoverseProfileContainer = () => {
+const EcoverseProfileContainer: FC<Record<string, unknown>> = () => {
   const { data, error, loading } = useEcoverseListQuery();
 
   if (loading) {

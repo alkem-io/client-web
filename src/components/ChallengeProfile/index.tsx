@@ -1,18 +1,18 @@
-import * as React from 'react';
+import React from 'react';
 import { useChallengeProfileQuery } from '../../generated/graphql';
-import  ChallengeProfile  from './ChallengeProfile';
+import ChallengeProfile from './ChallengeProfile';
 
 interface OwnProps {
   id: number;
 }
 
-const ChallengeProfileContainer = ({ id }: OwnProps) => {
+const ChallengeProfileContainer: React.FC<OwnProps> = ({ id }) => {
   const { data, error, loading, refetch } = useChallengeProfileQuery({
-    variables: { id: String(id) },
+    variables: { id: Number(id) },
   });
   React.useEffect(() => {
     refetch();
-  }, [id]);
+  }, [id, refetch]);
 
   if (loading) {
     return <div>Loading...</div>;

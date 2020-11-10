@@ -1,13 +1,13 @@
 ---
 name: User Story
-about: A valuable increment of functionality, testable by the users 
+about: A valuable increment of functionality, testable by the users
 title: ''
-labels: ''
+labels: 'user story, client'
 assignees: ''
-
 ---
 
 ## Description
+
 As a <persona or stakeholder type>
 I want <some software feature>
 So that <some business value>
@@ -18,5 +18,3 @@ So that <some business value>
 - [ ] …
 
 ## Additional Context
-
-
