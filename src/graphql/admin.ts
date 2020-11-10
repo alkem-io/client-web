@@ -8,6 +8,9 @@ export const USER_DETAILS_FRAGMENT = gql`
     lastName
     email
     gender
+    country
+    city
+    phone
     profile {
       avatar
       references {

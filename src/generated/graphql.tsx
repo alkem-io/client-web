@@ -707,7 +707,7 @@ export type OrganisationInput = {
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone'
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
@@ -896,6 +896,9 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     gender
+    country
+    city
+    phone
     profile {
       avatar
       references {
