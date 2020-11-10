@@ -20,10 +20,11 @@ spec:
         - name: ct-web
           image: ctdev.azurecr.io/ct-web:latest
           envFrom:
-          - secretRef:
-              name: server-secret
-          - secretRef:
-              name: authentication
+            - secretRef:
+                name: ct-secrets
+          envFrom:
+            - configMapRef:
+                name: ct-config
           ports:
             - name: web
               containerPort: 80
