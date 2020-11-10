@@ -297,10 +297,7 @@ export type AadScope = {
 
 export type SearchResultEntry = {
   __typename?: 'SearchResultEntry';
-  /** The score for this search result; more matches means a higher score. */
-  score?: Maybe<Scalars['Float']>;
-  /** The terms that were matched for this result */
-  terms?: Maybe<Array<Scalars['String']>>;
+  score: Scalars['Float'];
   /** Each search result contains either a User or UserGroup */
   result?: Maybe<SearchResult>;
 };
@@ -763,7 +760,7 @@ export type OrganisationInput = {
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone'
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
@@ -981,6 +978,9 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     gender
+    country
+    city
+    phone
     profile {
       avatar
       references {

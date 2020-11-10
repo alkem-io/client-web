@@ -1,21 +1,30 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 /*lib imports end*/
-import { AdminPage } from '../components/Admin';
+import { AdminLayout, AdminPage, GroupPage, UserPage } from '../components/Admin';
 import { FourOuFour } from '../pages';
 /*local files imports end*/
 
 export const Admin: FC = () => {
-  const { path } = useRouteMatch();
+  const { path, url } = useRouteMatch();
 
   return (
-    <Switch>
-      <Route path={`${path}`}>
-        <AdminPage />
-      </Route>
-      <Route path="*">
-        <FourOuFour />
-      </Route>
-    </Switch>
+    <AdminLayout>
+      <Switch>
+        <Route exact path={`${path}`}>
+          <AdminPage />
+        </Route>
+        <Route path={`${path}/users`}>
+          {/* <UserPage paths={currentPaths} /> */}
+          <UserPage />
+        </Route>
+        <Route path={`${path}/groups`}>
+          <GroupPage />
+        </Route>
+        <Route path="*">
+          <FourOuFour />
+        </Route>
+      </Switch>
+    </AdminLayout>
   );
 };

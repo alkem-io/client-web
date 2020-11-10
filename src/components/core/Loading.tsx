@@ -1,6 +1,10 @@
 import React, { FC } from 'react';
 
-export const Loading: FC = () => {
-  return <div>Loading...</div>;
+interface LoadingProps {
+  text?: string;
+}
+
+export const Loading: FC<LoadingProps> = ({ text = 'Loading...' }) => {
+  return <div>{text}</div>;
 };
 export default Loading;
