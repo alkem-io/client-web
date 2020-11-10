@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState, FC } from 'react';
 import clsx from 'clsx';
 
 import Typography from '../../components/core/Typography';
+import Icon from '../core/Icon';
+import IconButton from '../core/IconButton';
+import { Tooltip, Overlay } from 'react-bootstrap';
 
+import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
 import { createStyles } from '../../hooks/useTheme';
 
 const useMultipleSelectStyles = createStyles(theme => {
@@ -101,6 +105,13 @@ const useMultipleSelectStyles = createStyles(theme => {
         cursor: 'pointer',
       },
     },
+    flexCenterContainer: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    searchButton: {
+      padding: '10px',
+    },
     suggestionsTitle: {
       marginTop: `${theme.shape.spacing(3)}px`,
       marginBottom: `${theme.shape.spacing(2)}px`,
@@ -124,7 +135,7 @@ const useMultipleSelectStyles = createStyles(theme => {
       },
     },
     input: {
-      width: 275,
+      width: 285,
       border: 'none',
       height: 35,
       padding: '0 15px',
@@ -133,7 +144,7 @@ const useMultipleSelectStyles = createStyles(theme => {
         outline: 'none',
       },
       '&::placeholder': {
-        fontSize: 24,
+        fontSize: 20,
       },
     },
     disabled: {
@@ -155,6 +166,7 @@ interface MultipleSelectProps {
   elements: Array<Element>;
   onChange: (elements: Array<Element>) => void;
   onInput: (value: string) => void;
+  onSearch: () => void;
   allowUnknownValues?: boolean;
   defaultValue?: Array<Element>;
   disabled?: boolean;
@@ -167,6 +179,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
   onChange,
   onInput,
+  onSearch,
   allowUnknownValues,
   defaultValue,
   disabled,
@@ -177,6 +190,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const [elementsNoFilter, setElementsNoFilter] = useState<Array<Element>>(_elements || []);
   const [selectedElements, setSelected] = useState<Array<Element>>(defaultValue || []);
   const [isNoMatches, setNoMatches] = useState<boolean>(false);
+  const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
   const styles = useMultipleSelectStyles();
 
   useEffect(() => setElements(_elements), [_elements]);
@@ -190,7 +204,22 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     input.current.value = '';
   };
 
-  const handleSelect = (e, value: { name }) => {
+  const shouldOpenTooltip = (): boolean => {
+    if (selectedElements.length >= 5) {
+      setTooltipShown(true);
+      setTimeout(() => setTooltipShown(false), 5000);
+
+      return true;
+    } else {
+      setTooltipShown(false);
+
+      return false;
+    }
+  };
+
+  const handleSelect = (e, value: { name }): void => {
+    if (shouldOpenTooltip()) return;
+
     const isAlreadySelected = selectedElements.find(el => el.name === value.name);
     if (isAlreadySelected) return;
 
@@ -209,6 +238,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     const newSelected = selectedElements.filter(el => el.name !== value.name);
     const newElements = [...elements, { name: value.name }];
 
+    setTooltipShown(false);
     setSelected(newSelected);
     setElements(newElements);
     setElementsNoFilter(newElements);
@@ -219,13 +249,14 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     const value = e.target.value.toLowerCase();
     onInput(value);
     if (allowUnknownValues && e.key === 'Enter' && value !== '') {
+      if (shouldOpenTooltip()) return;
+
       const isAlreadySelected = selectedElements.find(el => el.name === value);
       if (isAlreadySelected) return;
 
       const newElements = elementsNoFilter.filter(el => el.name !== value);
 
       resetInput();
-      setElements(newElements);
       setElementsNoFilter(newElements);
       setSelected([...selectedElements, { name: value }]);
       setNoMatches(false);
@@ -243,14 +274,25 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           className={clsx(styles.selectContainer, disabled && styles.disabled)}
           onClick={() => input.current.focus()}
         >
-          <input
-            ref={input}
-            className={styles.input}
-            onChange={handleInputChange}
-            onKeyDown={handleInputChange}
-            placeholder={'Search people or skills'}
-          />
-
+          <section className={styles.flexCenterContainer}>
+            <IconButton onClick={onSearch} className={styles.searchButton}>
+              <Icon component={SearchIcon} color="inherit" size={'sm'} />
+            </IconButton>
+            <input
+              ref={input}
+              className={styles.input}
+              onChange={handleInputChange}
+              onKeyDown={handleInputChange}
+              placeholder={'Search people, groups or skills'}
+            />
+            <Overlay target={input.current} show={isTooltipShown} placement="right">
+              {props => (
+                <Tooltip id="overlay-example" {...props}>
+                  You have reached the tags limit of 5
+                </Tooltip>
+              )}
+            </Overlay>
+          </section>
           <div className={styles.elements}>
             {selectedElements.map((selectedEl, index) => (
               <div

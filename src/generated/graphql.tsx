@@ -911,6 +911,18 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type SearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: Array<
+    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
+        result?: Maybe<{ __typename: 'User' } | { __typename: 'UserGroup' }>;
+      }
+  >;
+};
+
 export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigQuery = { __typename?: 'Query' } & {
@@ -1499,6 +1511,42 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      score
+      result {
+        __typename
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+  return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
+}
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+  return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const ConfigDocument = gql`
   query config {
     clientConfig {
