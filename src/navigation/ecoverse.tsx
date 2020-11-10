@@ -1,13 +1,16 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { opportunities } from '../components/core/Typography.dummy.json';
 import {
   Challenge as ChallengeType,
+  Opportunity as OpportunityType,
   useChallengeProfileQuery,
   useChallengeUserIdsQuery,
   useEcoverseDetailsQuery,
   useEcoverseUserIdsQuery,
+  useOpportunityProfileQuery,
+  useOpportunityUserIdsQuery,
   User,
 } from '../generated/graphql';
 import {
@@ -33,6 +36,9 @@ export const Ecoverses: FC = () => {
       <Route path={`${path}/:id`}>
         <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
       </Route>
+      <Route exact path={`${path}`}>
+        <Redirect to="/ecoverse/1" />
+      </Route>
       <Route path="*">
         <FourOuFour />
       </Route>
@@ -44,8 +50,8 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   // const { id } = useParams<{ id: string }>();
   // at some point the ecoverse needs to be queried
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseDetailsQuery({ variables: {} });
-  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ variables: {} });
+  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseDetailsQuery({ variables: {}, errorPolicy: 'all' });
+  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ variables: {}, errorPolicy: 'all' });
   const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
     paths,
     ecoverse,
@@ -65,7 +71,11 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
     <Switch>
       <Route exact path={path}>
         {!loading && (
-          <EcoversePage ecoverse={ecoverse} users={usersQuery?.users as User[] | undefined} paths={currentPaths} />
+          <EcoversePage
+            ecoverse={ecoverse}
+            users={(usersQuery?.users || undefined) as User[] | undefined}
+            paths={currentPaths}
+          />
         )}
       </Route>
       <Route path={`${path}/challenges/:id`}>
@@ -89,9 +99,11 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
   });
   const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
     variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
   });
   const { challenge } = query || {};
 
@@ -116,13 +128,13 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         {!loading && (
           <ChallengePage
             challenge={challenge as ChallengeType}
-            users={usersQuery?.challenge.contributors as User[] | undefined}
+            users={(usersQuery?.challenge.contributors || undefined) as User[] | undefined}
             paths={currentPaths}
           />
         )}
       </Route>
       <Route exact path={`${path}/opportunities/:id`}>
-        <Opportnity paths={currentPaths} />
+        <Opportnity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -131,18 +143,52 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   );
 };
 
-const Opportnity: FC<PageProps> = ({ paths }) => {
+interface OpportunityRootProps extends PageProps {
+  opportunities: Pick<OpportunityType, 'id' | 'textID'>[] | undefined;
+}
+
+const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
+  const target = opportunities.find(x => x.textID === id);
+
+  const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
+    variables: { id: Number(target?.id) },
+  });
+
+  const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
+    variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
+  });
+
+  const { opportunity } = query || {};
+  const { opportunity: opportunityGroups } = usersQuery || {};
+  const { groups } = opportunityGroups || {};
+  const users = useMemo(() => groups?.flatMap(x => x.members) || [], [groups]);
+
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: opportunities.list.find(c => c.id === Number(id))?.title || '', real: true }],
-    [paths, id]
+    () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),
+    [paths, id, opportunity]
   );
+
+  const loading = opportunityLoading || usersLoading;
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!opportunity) {
+    return <FourOuFour />;
+  }
 
   return (
     <Switch>
       <Route exact path={path}>
-        <OpportunityPage paths={currentPaths} />
+        <OpportunityPage
+          opportunity={opportunity as OpportunityType}
+          users={users as User[] | undefined}
+          paths={currentPaths}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />

@@ -32,7 +32,7 @@ const useCircleTagStyles = createStyles(theme => ({
   },
   tagText: {
     textAlign: 'center',
-    lineHeight: '30px', // - 2 * 2 borders
+    lineHeight: '32px', // - 2 * 2 borders
     width: '100%',
   },
 }));

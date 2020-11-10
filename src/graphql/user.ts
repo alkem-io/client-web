@@ -18,6 +18,18 @@ export const QUERY_CHALLENGE_USER_IDS = gql`
   }
 `;
 
+export const QUERY_OPPORTUNITY_USER_IDS = gql`
+  query opportunityUserIds($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        members {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const QUERY_USER_AVATARS = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {

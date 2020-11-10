@@ -24,7 +24,7 @@ import { UserProvider } from './Ecoverse';
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
-  users: User[] | undefined;
+  users?: User[];
 }
 
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
@@ -41,12 +41,12 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       { name: 'Opportunities', digit: opportunities?.length || 0, color: 'primary' },
       {
         name: 'Projects',
-        digit: opportunities?.reduce((sum, c) => sum + (c.projects || []).length, 0),
+        digit: opportunities?.reduce((sum, c) => sum + (c.projects || []).length, 0) || 0,
         color: 'positive',
       },
       {
         name: 'Members',
-        digit: users.length,
+        digit: users?.length,
         color: 'neutralMedium',
       },
     ];
@@ -114,7 +114,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                   <div style={{ flexBasis: '100%' }}></div>
                   {users.length - populated.length > 0 && (
                     <Typography variant="h3" as="h3" color="positive">
-                      {`... + ${users.length - populated.length} other members`}
+                      {`... + ${users.length - populated.length} other contributors`}
                     </Typography>
                   )}
                 </>
@@ -133,9 +133,9 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           (opportunities.length === 0 && <Body text={'No opportunities found for this challenge'}></Body>)}
       </Section>
       {opportunities && (
-        <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
           {opportunities?.map((props, i) => (
-            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.id}`} />
+            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.textID}`} />
           ))}
         </CardContainer>
       )}

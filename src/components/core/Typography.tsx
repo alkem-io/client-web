@@ -22,6 +22,7 @@ const useTypographyStyles = createStyles(theme => ({
   h4: {
     fontFamily: theme.typography.h4.font,
     fontSize: theme.typography.h4.size,
+    paddingBottom: theme.shape.spacing(1),
   },
   h5: {
     fontFamily: theme.typography.h5.font,

@@ -11,11 +11,49 @@ export type Scalars = {
   Float: number;
 };
 
+export type Context = {
+  __typename?: 'Context';
+  id: Scalars['ID'];
+  /** A one line description */
+  tagline?: Maybe<Scalars['String']>;
+  /** A detailed description of the current situation */
+  background?: Maybe<Scalars['String']>;
+  /** The goal that is being pursued */
+  vision?: Maybe<Scalars['String']>;
+  /** What is the potential impact? */
+  impact?: Maybe<Scalars['String']>;
+  /** Who should get involved in this challenge */
+  who?: Maybe<Scalars['String']>;
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
+};
+
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
   name: Scalars['String'];
   tags: Array<Scalars['String']>;
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  id: Scalars['ID'];
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+  /** A list of named tagsets, each of which has a list of tags. */
+  tagsets?: Maybe<Array<Tagset>>;
+  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
+  avatar?: Maybe<Scalars['String']>;
+  /** A short description of the entity associated with this profile. */
+  description?: Maybe<Scalars['String']>;
 };
 
 export type Template = {
@@ -46,50 +84,6 @@ export type User = {
   lastModified?: Maybe<Scalars['Int']>;
   /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
   memberof?: Maybe<MemberOf>;
-};
-
-export type UserGroup = {
-  __typename?: 'UserGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The set of users that are members of this group */
-  members?: Maybe<Array<User>>;
-  /** The focal point for this group */
-  focalPoint?: Maybe<User>;
-  /** The profile for the user group */
-  profile?: Maybe<Profile>;
-};
-
-export type Organisation = {
-  __typename?: 'Organisation';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
-  /** Groups defined on this organisation. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** Users that are contributing to this organisation. */
-  members?: Maybe<Array<User>>;
-};
-
-export type Ecoverse = {
-  __typename?: 'Ecoverse';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The organisation that hosts this Ecoverse instance */
-  host?: Maybe<Organisation>;
-  /** The shared understanding for the Ecoverse */
-  context?: Maybe<Context>;
-  /** The set of groups at the Ecoverse level */
-  groups?: Maybe<Array<UserGroup>>;
-  /** The set of partner organisations associated with this Ecoverse */
-  organisations?: Maybe<Array<Organisation>>;
-  /** The Challenges hosted by the Ecoverse */
-  challenges?: Maybe<Array<Challenge>>;
-  /** The set of templates registered with this Ecoverse */
-  templates?: Maybe<Array<Template>>;
-  /** The set of tags for the ecoverse */
-  tagset?: Maybe<Tagset>;
 };
 
 export type Actor = {
@@ -133,6 +127,16 @@ export type Project = {
   tagset?: Maybe<Tagset>;
 };
 
+export type Relation = {
+  __typename?: 'Relation';
+  id: Scalars['ID'];
+  type: Scalars['String'];
+  actorName: Scalars['String'];
+  actorType: Scalars['String'];
+  actorRole: Scalars['String'];
+  description: Scalars['String'];
+};
+
 export type Opportunity = {
   __typename?: 'Opportunity';
   id: Scalars['ID'];
@@ -142,14 +146,66 @@ export type Opportunity = {
   textID: Scalars['String'];
   /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
   state?: Maybe<Scalars['String']>;
-  /** The profile for this Opportunity */
-  profile?: Maybe<Profile>;
+  /** The shared understanding for the opportunity */
+  context?: Maybe<Context>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
   /** The set of actor groups within the context of this Opportunity */
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The set of solution aspects for this Opportunity */
   aspects?: Maybe<Array<Aspect>>;
+  /** The set of relations for this Opportunity */
+  relations?: Maybe<Array<Relation>>;
+  /** Groups of users related to a Opportunity. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** All users that are contributing to this Opportunity. */
+  contributors?: Maybe<Array<User>>;
+};
+
+export type UserGroup = {
+  __typename?: 'UserGroup';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of users that are members of this group */
+  members?: Maybe<Array<User>>;
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  /** The profile for the user group */
+  profile?: Maybe<Profile>;
+};
+
+export type Organisation = {
+  __typename?: 'Organisation';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of tags for the organisation */
+  tagset?: Maybe<Tagset>;
+  /** The profile for this organisation */
+  profile?: Maybe<Profile>;
+  /** Groups defined on this organisation. */
+  groups?: Maybe<Array<UserGroup>>;
+  /** Users that are contributing to this organisation. */
+  members?: Maybe<Array<User>>;
+};
+
+export type Ecoverse = {
+  __typename?: 'Ecoverse';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The organisation that hosts this Ecoverse instance */
+  host?: Maybe<Organisation>;
+  /** The shared understanding for the Ecoverse */
+  context?: Maybe<Context>;
+  /** The set of groups at the Ecoverse level */
+  groups?: Maybe<Array<UserGroup>>;
+  /** The set of partner organisations associated with this Ecoverse */
+  organisations?: Maybe<Array<Organisation>>;
+  /** The Challenges hosted by the Ecoverse */
+  challenges?: Maybe<Array<Challenge>>;
+  /** The set of templates registered with this Ecoverse */
+  templates?: Maybe<Array<Template>>;
+  /** The set of tags for the ecoverse */
+  tagset?: Maybe<Tagset>;
 };
 
 export type Challenge = {
@@ -173,44 +229,6 @@ export type Challenge = {
   opportunities?: Maybe<Array<Opportunity>>;
   /** All users that are contributing to this challenge. */
   contributors?: Maybe<Array<User>>;
-};
-
-export type Context = {
-  __typename?: 'Context';
-  id: Scalars['ID'];
-  /** A one line description */
-  tagline?: Maybe<Scalars['String']>;
-  /** A detailed description of the current situation */
-  background?: Maybe<Scalars['String']>;
-  /** The goal that is being pursued */
-  vision?: Maybe<Scalars['String']>;
-  /** What is the potential impact? */
-  impact?: Maybe<Scalars['String']>;
-  /** Who should get involved in this challenge */
-  who?: Maybe<Scalars['String']>;
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-};
-
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
-export type Profile = {
-  __typename?: 'Profile';
-  id: Scalars['ID'];
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-  /** A list of named tagsets, each of which has a list of tags. */
-  tagsets?: Maybe<Array<Tagset>>;
-  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
-  avatar?: Maybe<Scalars['String']>;
-  /** A short description of the entity associated with this profile. */
-  description?: Maybe<Scalars['String']>;
 };
 
 export type MemberOf = {
@@ -409,6 +427,12 @@ export type Mutation = {
   createAspect: Aspect;
   /** Create a new actor group on the Opportunity identified by the ID */
   createActorGroup: ActorGroup;
+  /** Create a new relation on the Opportunity identified by the ID */
+  createRelation: Relation;
+  /** Creates a new user group for the opportunity with the given id */
+  createGroupOnOpportunity: UserGroup;
+  /** Adds the user with the given identifier as a member of the specified opportunity */
+  addUserToOpportunity: UserGroup;
   /** Removes the aspect with the specified ID */
   removeAspect: Scalars['Boolean'];
   /** Updates the aspect with the specified ID */
@@ -421,6 +445,8 @@ export type Mutation = {
   createActor: Actor;
   /** Removes the actor group with the specified ID */
   removeActorGroup: Scalars['Boolean'];
+  /** Removes the relation with the specified ID */
+  removeRelation: Scalars['Boolean'];
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
@@ -533,6 +559,21 @@ export type MutationCreateActorGroupArgs = {
   opportunityID: Scalars['Float'];
 };
 
+export type MutationCreateRelationArgs = {
+  relationData: RelationInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateGroupOnOpportunityArgs = {
+  groupName: Scalars['String'];
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationAddUserToOpportunityArgs = {
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
 export type MutationRemoveAspectArgs = {
   ID: Scalars['Float'];
 };
@@ -557,6 +598,10 @@ export type MutationCreateActorArgs = {
 };
 
 export type MutationRemoveActorGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveRelationArgs = {
   ID: Scalars['Float'];
 };
 
@@ -674,6 +719,14 @@ export type AspectInput = {
 
 export type ActorGroupInput = {
   name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type RelationInput = {
+  type?: Maybe<Scalars['String']>;
+  actorName?: Maybe<Scalars['String']>;
+  actorType?: Maybe<Scalars['String']>;
+  actorRole?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
 
@@ -866,6 +919,35 @@ export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'
     >;
   };
 
+export type OpportunityProfileQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityProfileQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
+      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          }
+      >;
+      relations?: Maybe<
+        Array<
+          { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+        >
+      >;
+      actorGroups?: Maybe<
+        Array<
+          { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+              actors?: Maybe<
+                Array<{ __typename?: 'Actor' } & Pick<Actor, 'name' | 'description' | 'value' | 'impact'>>
+              >;
+            }
+        >
+      >;
+    };
+};
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -878,6 +960,18 @@ export type ChallengeUserIdsQueryVariables = Exact<{
 
 export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & { contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> };
+};
+
+export type OpportunityUserIdsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    groups?: Maybe<
+      Array<{ __typename?: 'UserGroup' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }>
+    >;
+  };
 };
 
 export type UserAvatarsQueryVariables = Exact<{
@@ -1568,6 +1662,89 @@ export function useEcoverseDetailsLazyQuery(
 export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
 export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
 export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;
+export const OpportunityProfileDocument = gql`
+  query opportunityProfile($id: Float!) {
+    opportunity(ID: $id) {
+      id
+      textID
+      name
+      state
+      aspects {
+        title
+        framing
+        explanation
+      }
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          name
+          uri
+        }
+      }
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityProfileQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export function useOpportunityProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export type OpportunityProfileQueryHookResult = ReturnType<typeof useOpportunityProfileQuery>;
+export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportunityProfileLazyQuery>;
+export type OpportunityProfileQueryResult = Apollo.QueryResult<
+  OpportunityProfileQuery,
+  OpportunityProfileQueryVariables
+>;
 export const EcoverseUserIdsDocument = gql`
   query ecoverseUserIds {
     users {
@@ -1646,6 +1823,56 @@ export function useChallengeUserIdsLazyQuery(
 export type ChallengeUserIdsQueryHookResult = ReturnType<typeof useChallengeUserIdsQuery>;
 export type ChallengeUserIdsLazyQueryHookResult = ReturnType<typeof useChallengeUserIdsLazyQuery>;
 export type ChallengeUserIdsQueryResult = Apollo.QueryResult<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>;
+export const OpportunityUserIdsDocument = gql`
+  query opportunityUserIds($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        members {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityUserIdsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityUserIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityUserIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityUserIdsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityUserIdsQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
+    OpportunityUserIdsDocument,
+    baseOptions
+  );
+}
+export function useOpportunityUserIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
+    OpportunityUserIdsDocument,
+    baseOptions
+  );
+}
+export type OpportunityUserIdsQueryHookResult = ReturnType<typeof useOpportunityUserIdsQuery>;
+export type OpportunityUserIdsLazyQueryHookResult = ReturnType<typeof useOpportunityUserIdsLazyQuery>;
+export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
+  OpportunityUserIdsQuery,
+  OpportunityUserIdsQueryVariables
+>;
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
