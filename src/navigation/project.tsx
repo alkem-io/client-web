@@ -45,7 +45,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, projects, opportunityId }) =>
     onError: ({ message }) => {
       pushError(new Error(message));
     },
-    refetchQueries: ['opportunityProfile', 'ecoverseDetails'],
+    refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
     awaitRefetchQueries: true,
   });
 

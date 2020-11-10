@@ -907,7 +907,15 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           }
       >;
       tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
-      opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'>>>;
+      opportunities?: Maybe<
+        Array<
+          { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              projects?: Maybe<
+                Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
+              >;
+            }
+        >
+      >;
     };
 };
 
@@ -918,7 +926,33 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
     { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
-        result?: Maybe<{ __typename: 'User' } | { __typename: 'UserGroup' }>;
+        result?: Maybe<
+          | ({ __typename?: 'User' } & {
+              memberof?: Maybe<
+                { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+              >;
+            } & UserDetailsFragment)
+          | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+                profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+              })
+        >;
+      }
+  >;
+};
+
+export type CommunityListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CommunityListQuery = { __typename?: 'Query' } & {
+  users: Array<
+    { __typename: 'User' } & {
+      memberof?: Maybe<
+        { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+      >;
+    } & UserDetailsFragment
+  >;
+  groups: Array<
+    { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
       }
   >;
 };
@@ -1474,6 +1508,13 @@ export const ChallengeProfileDocument = gql`
         id
         name
         textID
+        projects {
+          id
+          textID
+          name
+          description
+          state
+        }
       }
     }
   }
@@ -1516,10 +1557,24 @@ export const SearchDocument = gql`
     search(searchData: $searchData) {
       score
       result {
-        __typename
+        ... on User {
+          memberof {
+            groups {
+              name
+            }
+          }
+          ...UserDetails
+        }
+        ... on UserGroup {
+          name
+          profile {
+            avatar
+          }
+        }
       }
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 
 /**
@@ -1547,6 +1602,56 @@ export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sea
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export const CommunityListDocument = gql`
+  query communityList {
+    users {
+      __typename
+      memberof {
+        groups {
+          name
+        }
+      }
+      ...UserDetails
+    }
+    groups {
+      __typename
+      name
+      profile {
+        avatar
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityListQuery__
+ *
+ * To run a query within a React component, call `useCommunityListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommunityListQuery(
+  baseOptions?: Apollo.QueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
+) {
+  return Apollo.useQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
+}
+export function useCommunityListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
+) {
+  return Apollo.useLazyQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
+}
+export type CommunityListQueryHookResult = ReturnType<typeof useCommunityListQuery>;
+export type CommunityListLazyQueryHookResult = ReturnType<typeof useCommunityListLazyQuery>;
+export type CommunityListQueryResult = Apollo.QueryResult<CommunityListQuery, CommunityListQueryVariables>;
 export const ConfigDocument = gql`
   query config {
     clientConfig {

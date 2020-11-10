@@ -27,7 +27,7 @@ export const QUERY_COMMUNITY_SEARCH = gql`
 `;
 
 export const QUERY_COMMUNITY_LIST = gql`
-  query {
+  query communityList {
     users {
       __typename
       memberof {
