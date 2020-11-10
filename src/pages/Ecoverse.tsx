@@ -60,13 +60,13 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
       title: 'MORE PROJECTS STARTING SOON',
       type: 'more',
     },
-    {
-      title: 'New project',
-      type: 'add',
-      onAdd: () => {
-        console.log('new project');
-      },
-    },
+    // {
+    //   title: 'New project',
+    //   type: 'add',
+    //   onAdd: () => {
+    //     console.log('new project');
+    //   },
+    // },
   ];
   const more = references?.find(x => x.name === 'website');
 

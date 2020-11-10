@@ -10,6 +10,7 @@ import {
   useEcoverseDetailsQuery,
   useEcoverseUserIdsQuery,
   useOpportunityProfileQuery,
+  useOpportunityUserIdsQuery,
   User,
 } from '../generated/graphql';
 import {
@@ -155,14 +156,22 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
     variables: { id: Number(target?.id) },
   });
 
+  const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
+    variables: { id: Number(target?.id) },
+    errorPolicy: 'all',
+  });
+
   const { opportunity } = query || {};
+  const { opportunity: opportunityGroups } = usersQuery || {};
+  const { groups } = opportunityGroups || {};
+  const users = useMemo(() => groups?.flatMap(x => x.members) || [], [groups]);
 
   const currentPaths = useMemo(
     () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),
     [paths, id, opportunity]
   );
 
-  const loading = opportunityLoading; // || usersLoading;
+  const loading = opportunityLoading || usersLoading;
 
   if (loading) {
     return <Loading />;
@@ -175,7 +184,11 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   return (
     <Switch>
       <Route exact path={path}>
-        <OpportunityPage opportunity={opportunity as OpportunityType} users={[]} paths={currentPaths} />
+        <OpportunityPage
+          opportunity={opportunity as OpportunityType}
+          users={users as User[] | undefined}
+          paths={currentPaths}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />

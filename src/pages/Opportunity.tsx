@@ -3,7 +3,7 @@ import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import clsx from 'clsx';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 import ActivityCard from '../components/ActivityPanel';
 import Button from '../components/core/Button';
 import Divider from '../components/core/Divider';
@@ -43,8 +43,9 @@ interface OpportunityPageProps extends PageProps {
 const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] }): React.ReactElement => {
   const styles = useStyles();
   useUpdateNavigation({ currentPaths: paths });
-  const { name, aspects, projects = [], profile, relations, actorGroups } = opportunity;
-  const team = undefined;
+  const projectRef = useRef<HTMLDivElement>(null);
+  const { name, aspects, projects = [], context, relations = [], actorGroups } = opportunity;
+  const team = relations[0];
   const stakeholders = useMemo(
     () =>
       actorGroups
@@ -132,19 +133,19 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
               inset
               variant="primary"
               text="projects"
-              onClick={() => console.log('projects')}
+              onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
-            <Button className={styles.offset} inset variant="primary" text="demo" onClick={() => console.log('demo')} />
+            {/* <Button className={styles.offset} inset variant="primary" text="demo" onClick={() => console.log('demo')} />
             <Button
               className={styles.offset}
               inset
               variant="primary"
               text="github"
               onClick={() => console.log('github')}
-            />
+            /> */}
           </div>
         </Body>
-        {team && <Tag text={team} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
+        {team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
       </Section>
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={'ADOPTION ECOSYSTEM'} />
@@ -189,22 +190,19 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
         </CardContainer>
       )}
       <Divider />
-      {opportunityProjects.length > 0 && (
-        <>
-          <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-            <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
-            <SubHeader text={'Changing the world one project at a time'} />
-            <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
-          </Section>
-          <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
-            {opportunityProjects.map(({ type, ...rest }, i) => {
-              const Component = SwitchCardComponent({ type });
-              return <Component {...rest} key={i} />;
-            })}
-          </CardContainer>
-          <Divider />
-        </>
-      )}
+      <div ref={projectRef}></div>
+      <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+        <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
+        <SubHeader text={'Changing the world one project at a time'} />
+        <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
+      </Section>
+      <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
+        {opportunityProjects.map(({ type, ...rest }, i) => {
+          const Component = SwitchCardComponent({ type });
+          return <Component {...rest} key={i} />;
+        })}
+      </CardContainer>
+      <Divider />
     </>
   );
 };

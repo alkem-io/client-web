@@ -12,13 +12,15 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         framing
         explanation
       }
-      profile {
-        description
-        avatar
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
         references {
           name
           uri
-          description
         }
       }
       relations {

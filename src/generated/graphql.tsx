@@ -11,11 +11,49 @@ export type Scalars = {
   Float: number;
 };
 
+export type Context = {
+  __typename?: 'Context';
+  id: Scalars['ID'];
+  /** A one line description */
+  tagline?: Maybe<Scalars['String']>;
+  /** A detailed description of the current situation */
+  background?: Maybe<Scalars['String']>;
+  /** The goal that is being pursued */
+  vision?: Maybe<Scalars['String']>;
+  /** What is the potential impact? */
+  impact?: Maybe<Scalars['String']>;
+  /** Who should get involved in this challenge */
+  who?: Maybe<Scalars['String']>;
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
+};
+
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
   name: Scalars['String'];
   tags: Array<Scalars['String']>;
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  id: Scalars['ID'];
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+  /** A list of named tagsets, each of which has a list of tags. */
+  tagsets?: Maybe<Array<Tagset>>;
+  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
+  avatar?: Maybe<Scalars['String']>;
+  /** A short description of the entity associated with this profile. */
+  description?: Maybe<Scalars['String']>;
 };
 
 export type Template = {
@@ -108,8 +146,8 @@ export type Opportunity = {
   textID: Scalars['String'];
   /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
   state?: Maybe<Scalars['String']>;
-  /** The profile for this Opportunity */
-  profile?: Maybe<Profile>;
+  /** The shared understanding for the opportunity */
+  context?: Maybe<Context>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
   /** The set of actor groups within the context of this Opportunity */
@@ -142,6 +180,8 @@ export type Organisation = {
   name: Scalars['String'];
   /** The set of tags for the organisation */
   tagset?: Maybe<Tagset>;
+  /** The profile for this organisation */
+  profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
   groups?: Maybe<Array<UserGroup>>;
   /** Users that are contributing to this organisation. */
@@ -189,44 +229,6 @@ export type Challenge = {
   opportunities?: Maybe<Array<Opportunity>>;
   /** All users that are contributing to this challenge. */
   contributors?: Maybe<Array<User>>;
-};
-
-export type Context = {
-  __typename?: 'Context';
-  id: Scalars['ID'];
-  /** A one line description */
-  tagline?: Maybe<Scalars['String']>;
-  /** A detailed description of the current situation */
-  background?: Maybe<Scalars['String']>;
-  /** The goal that is being pursued */
-  vision?: Maybe<Scalars['String']>;
-  /** What is the potential impact? */
-  impact?: Maybe<Scalars['String']>;
-  /** Who should get involved in this challenge */
-  who?: Maybe<Scalars['String']>;
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-};
-
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
-export type Profile = {
-  __typename?: 'Profile';
-  id: Scalars['ID'];
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-  /** A list of named tagsets, each of which has a list of tags. */
-  tagsets?: Maybe<Array<Tagset>>;
-  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
-  avatar?: Maybe<Scalars['String']>;
-  /** A short description of the entity associated with this profile. */
-  description?: Maybe<Scalars['String']>;
 };
 
 export type MemberOf = {
@@ -915,9 +917,9 @@ export type OpportunityProfileQueryVariables = Exact<{
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
       aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
-      profile?: Maybe<
-        { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           }
       >;
       relations?: Maybe<
@@ -949,6 +951,18 @@ export type ChallengeUserIdsQueryVariables = Exact<{
 
 export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & { contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> };
+};
+
+export type OpportunityUserIdsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    groups?: Maybe<
+      Array<{ __typename?: 'UserGroup' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }>
+    >;
+  };
 };
 
 export type UserAvatarsQueryVariables = Exact<{
@@ -1612,13 +1626,15 @@ export const OpportunityProfileDocument = gql`
         framing
         explanation
       }
-      profile {
-        description
-        avatar
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
         references {
           name
           uri
-          description
         }
       }
       relations {
@@ -1759,6 +1775,56 @@ export function useChallengeUserIdsLazyQuery(
 export type ChallengeUserIdsQueryHookResult = ReturnType<typeof useChallengeUserIdsQuery>;
 export type ChallengeUserIdsLazyQueryHookResult = ReturnType<typeof useChallengeUserIdsLazyQuery>;
 export type ChallengeUserIdsQueryResult = Apollo.QueryResult<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>;
+export const OpportunityUserIdsDocument = gql`
+  query opportunityUserIds($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        members {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityUserIdsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityUserIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityUserIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityUserIdsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityUserIdsQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
+    OpportunityUserIdsDocument,
+    baseOptions
+  );
+}
+export function useOpportunityUserIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
+    OpportunityUserIdsDocument,
+    baseOptions
+  );
+}
+export type OpportunityUserIdsQueryHookResult = ReturnType<typeof useOpportunityUserIdsQuery>;
+export type OpportunityUserIdsLazyQueryHookResult = ReturnType<typeof useOpportunityUserIdsLazyQuery>;
+export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
+  OpportunityUserIdsQuery,
+  OpportunityUserIdsQueryVariables
+>;
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
