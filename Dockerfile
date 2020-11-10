@@ -30,5 +30,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy from the stage 1
 COPY --from=builder /app/build /usr/share/nginx/html
 
+WORKDIR /usr/share/nginx/html
+COPY ./.env.deployment/env.sh .
+COPY ./.env.deployment/.env.base .
+
 EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
