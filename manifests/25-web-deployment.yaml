@@ -20,7 +20,7 @@ spec:
         - name: ct-web
           image: ctdev.azurecr.io/ct-web:latest
           envFrom:
-            - configMapRef:
+            - secretRef:
                 name: ct-secrets
           envFrom:
             - configMapRef:
