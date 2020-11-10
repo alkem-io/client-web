@@ -1,29 +1,24 @@
-import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
-import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
+import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
+import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef } from 'react';
 import ActivityCard from '../components/ActivityPanel';
 import Button from '../components/core/Button';
+import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import {
-  challenges as challengeLabels,
-  community,
-  projects as projectTexts,
-} from '../components/core/Typography.dummy.json';
 import Tag from '../components/core/Tag';
+import { projects as projectTexts } from '../components/core/Typography.dummy.json';
+import { SwitchCardComponent } from '../components/Ecoverse/Cards';
+import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
+import { Opportunity as OpportunityType, Project, User } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { PageProps } from './common';
-import { Opportunity as OpportunityType, User } from '../generated/graphql';
-import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { CardContainer } from '../components/core/Container';
-import Typography from '../components/core/Typography';
-import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -38,12 +33,21 @@ const useStyles = createStyles(theme => ({
 interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
+  onProjectTransition: (project: Project | undefined) => void;
 }
 
-const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] }): React.ReactElement => {
+const Opportunity: FC<OpportunityPageProps> = ({
+  paths,
+  opportunity,
+  users = [],
+  onProjectTransition,
+}): React.ReactElement => {
+  // styles
   const styles = useStyles();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
+
+  // data
   const { name, aspects, projects = [], context, relations = [], actorGroups } = opportunity;
   const team = relations[0];
   const stakeholders = useMemo(
@@ -85,19 +89,27 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
     ];
   }, [projects]);
 
-  const opportunityProjects = [
-    {
-      title: 'MORE PROJECTS STARTING SOON',
-      type: 'more',
-    },
-    {
-      title: 'New project',
-      type: 'add',
-      onAdd: () => {
-        console.log('new project');
+  const opportunityProjects = useMemo(
+    () => [
+      ...projects.map(p => ({
+        title: p.name,
+        description: p.description,
+        // tag: { status: 'positive', text: p.state || 'archive' },
+        type: 'display',
+        onSelect: () => onProjectTransition(p),
+      })),
+      {
+        title: 'MORE PROJECTS STARTING SOON',
+        type: 'more',
       },
-    },
-  ];
+      {
+        title: 'New project',
+        type: 'add',
+        onSelect: () => onProjectTransition(undefined),
+      },
+    ],
+    [projects, onProjectTransition]
+  );
 
   return (
     <>
@@ -196,7 +208,7 @@ const Opportunity: FC<OpportunityPageProps> = ({ paths, opportunity, users = [] 
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
       </Section>
-      <CardContainer cardHeight={480} xs={12} md={6} lg={4} xl={3}>
+      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {opportunityProjects.map(({ type, ...rest }, i) => {
           const Component = SwitchCardComponent({ type });
           return <Component {...rest} key={i} />;

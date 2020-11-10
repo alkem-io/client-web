@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { opportunities } from '../components/core/Typography.dummy.json';
 import {
   Challenge as ChallengeType,
   Opportunity as OpportunityType,
+  Project as ProjectType,
   useChallengeProfileQuery,
   useChallengeUserIdsQuery,
   useEcoverseDetailsQuery,
@@ -20,6 +21,7 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
+import { Project } from './project';
 /*local files imports end*/
 
 interface EcoverseParameters {
@@ -133,7 +135,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
           />
         )}
       </Route>
-      <Route exact path={`${path}/opportunities/:id`}>
+      <Route path={`${path}/opportunities/:id`}>
         <Opportnity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -149,6 +151,7 @@ interface OpportunityRootProps extends PageProps {
 
 const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
   const { path, url } = useRouteMatch();
+  const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const target = opportunities.find(x => x.textID === id);
 
@@ -188,7 +191,13 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
           opportunity={opportunity as OpportunityType}
           users={users as User[] | undefined}
           paths={currentPaths}
+          onProjectTransition={project => {
+            history.push(`${url}/projects/${project ? project.textID : 'new'}`);
+          }}
         />
+      </Route>
+      <Route path={`${path}/projects`}>
+        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={Number(opportunity.id)} />
       </Route>
       <Route path="*">
         <FourOuFour />
