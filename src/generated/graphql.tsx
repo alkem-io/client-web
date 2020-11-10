@@ -108,14 +108,6 @@ export type ActorGroup = {
   actors?: Maybe<Array<Actor>>;
 };
 
-export type Aspect = {
-  __typename?: 'Aspect';
-  id: Scalars['ID'];
-  title: Scalars['String'];
-  framing: Scalars['String'];
-  explanation: Scalars['String'];
-};
-
 export type Project = {
   __typename?: 'Project';
   id: Scalars['ID'];
@@ -125,6 +117,16 @@ export type Project = {
   state?: Maybe<Scalars['String']>;
   /** The set of tags for the project */
   tagset?: Maybe<Tagset>;
+  /** The set of aspects for this Project. Note: likley to change. */
+  aspects?: Maybe<Array<Aspect>>;
+};
+
+export type Aspect = {
+  __typename?: 'Aspect';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  framing: Scalars['String'];
+  explanation: Scalars['String'];
 };
 
 export type Relation = {
@@ -218,7 +220,7 @@ export type Challenge = {
   /** The shared understanding for the challenge */
   context?: Maybe<Context>;
   /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
-  challengeLeads: Array<Organisation>;
+  leadOrganisations: Array<Organisation>;
   /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
   state?: Maybe<Scalars['String']>;
   /** The set of tags for the challenge */
@@ -297,7 +299,10 @@ export type AadScope = {
 
 export type SearchResultEntry = {
   __typename?: 'SearchResultEntry';
-  score: Scalars['Float'];
+  /** The score for this search result; more matches means a higher score. */
+  score?: Maybe<Scalars['Float']>;
+  /** The terms that were matched for this result */
+  terms?: Maybe<Array<Scalars['String']>>;
   /** Each search result contains either a User or UserGroup */
   result?: Maybe<SearchResult>;
 };
@@ -310,6 +315,8 @@ export type Query = {
   me: User;
   /** A particular opportunitiy, identified by the ID */
   opportunity: Opportunity;
+  /** A particular Project, identified by the ID */
+  project: Project;
   /** The name for this ecoverse */
   name: Scalars['String'];
   /** The host organisation for the ecoverse */
@@ -347,6 +354,10 @@ export type Query = {
 };
 
 export type QueryOpportunityArgs = {
+  ID: Scalars['Float'];
+};
+
+export type QueryProjectArgs = {
   ID: Scalars['Float'];
 };
 
@@ -421,8 +432,12 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Adds the user with the given identifier as a member of the specified challenge */
   addUserToChallenge: UserGroup;
+  /** Adds the specified organisation as a lead for the specified challenge */
+  addChallengeLead: Scalars['Boolean'];
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
+  /** Create a new Project on the Opportunity identified by the ID */
+  createProject: Project;
   /** Create a new aspect on the Opportunity identified by the ID */
   createAspect: Aspect;
   /** Create a new actor group on the Opportunity identified by the ID */
@@ -447,6 +462,16 @@ export type Mutation = {
   removeActorGroup: Scalars['Boolean'];
   /** Removes the relation with the specified ID */
   removeRelation: Scalars['Boolean'];
+  /** Removes the Project with the specified ID */
+  removeProject: Scalars['Boolean'];
+  /** Updates the Project with the specified ID */
+  updateProject: Project;
+  /** Create a new aspect on the Project identified by the ID */
+  createAspectOnProject: Aspect;
+  /** Creates a new user group for the organisation with the given id */
+  createGroupOnOrganisation: UserGroup;
+  /** Updates the organisation with the given data */
+  updateOrganisation: Organisation;
   /** Creates a new user group at the ecoverse level */
   createGroupOnEcoverse: UserGroup;
   /** Updates the Ecoverse with the provided data */
@@ -463,10 +488,6 @@ export type Mutation = {
   createChallenge: Challenge;
   /** Creates a new organisation and registers it with the ecoverse */
   createOrganisation: Organisation;
-  /** Creates a new user group for the organisation with the given id */
-  createGroupOnOrganisation: UserGroup;
-  /** Updates the organisation with the given data */
-  updateOrganisation: Organisation;
   /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
   createUserAccount: Scalars['Boolean'];
 };
@@ -544,9 +565,19 @@ export type MutationAddUserToChallengeArgs = {
   userID: Scalars['Float'];
 };
 
+export type MutationAddChallengeLeadArgs = {
+  challengeID: Scalars['Float'];
+  organisationID: Scalars['Float'];
+};
+
 export type MutationUpdateOpportunityArgs = {
   opportunityData: OpportunityInput;
   ID: Scalars['Float'];
+};
+
+export type MutationCreateProjectArgs = {
+  projectData: ProjectInput;
+  opportunityID: Scalars['Float'];
 };
 
 export type MutationCreateAspectArgs = {
@@ -605,6 +636,30 @@ export type MutationRemoveRelationArgs = {
   ID: Scalars['Float'];
 };
 
+export type MutationRemoveProjectArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationUpdateProjectArgs = {
+  projectData: ProjectInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationCreateAspectOnProjectArgs = {
+  aspectData: AspectInput;
+  projectID: Scalars['Float'];
+};
+
+export type MutationCreateGroupOnOrganisationArgs = {
+  groupName: Scalars['String'];
+  orgID: Scalars['Float'];
+};
+
+export type MutationUpdateOrganisationArgs = {
+  organisationData: OrganisationInput;
+  orgID: Scalars['Float'];
+};
+
 export type MutationCreateGroupOnEcoverseArgs = {
   groupName: Scalars['String'];
 };
@@ -635,16 +690,6 @@ export type MutationCreateChallengeArgs = {
 
 export type MutationCreateOrganisationArgs = {
   organisationData: OrganisationInput;
-};
-
-export type MutationCreateGroupOnOrganisationArgs = {
-  groupName: Scalars['String'];
-  orgID: Scalars['Float'];
-};
-
-export type MutationUpdateOrganisationArgs = {
-  organisationData: OrganisationInput;
-  orgID: Scalars['Float'];
 };
 
 export type MutationCreateUserAccountArgs = {
@@ -711,6 +756,12 @@ export type ChallengeInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type ProjectInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+};
+
 export type AspectInput = {
   title?: Maybe<Scalars['String']>;
   framing?: Maybe<Scalars['String']>;
@@ -737,6 +788,13 @@ export type ActorInput = {
   impact?: Maybe<Scalars['String']>;
 };
 
+export type OrganisationInput = {
+  /** The new name for this organisation */
+  name?: Maybe<Scalars['String']>;
+  /** The set of tags to apply to this ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
 export type EcoverseInput = {
   /** The new name for the ecoverse */
   name?: Maybe<Scalars['String']>;
@@ -751,16 +809,9 @@ export type TemplateInput = {
   description?: Maybe<Scalars['String']>;
 };
 
-export type OrganisationInput = {
-  /** The new name for this organisation */
-  name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
@@ -864,7 +915,33 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
     { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
-        result?: Maybe<{ __typename: 'User' } | { __typename: 'UserGroup' }>;
+        result?: Maybe<
+          | ({ __typename?: 'User' } & {
+              memberof?: Maybe<
+                { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+              >;
+            } & UserDetailsFragment)
+          | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+                profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+              })
+        >;
+      }
+  >;
+};
+
+export type CommunityListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CommunityListQuery = { __typename?: 'Query' } & {
+  users: Array<
+    { __typename: 'User' } & {
+      memberof?: Maybe<
+        { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+      >;
+    } & UserDetailsFragment
+  >;
+  groups: Array<
+    { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
       }
   >;
 };
@@ -982,6 +1059,19 @@ export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<{ __typename?: 'User' } & { profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>> }>;
 };
 
+export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserProfileQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'User' } & {
+    memberof?: Maybe<
+      { __typename?: 'MemberOf' } & {
+        groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+      }
+    >;
+  } & UserDetailsFragment;
+};
+
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -993,6 +1083,7 @@ export const UserDetailsFragmentDoc = gql`
     country
     city
     phone
+    accountUpn
     profile {
       avatar
       references {
@@ -1406,10 +1497,24 @@ export const SearchDocument = gql`
     search(searchData: $searchData) {
       score
       result {
-        __typename
+        ... on User {
+          memberof {
+            groups {
+              name
+            }
+          }
+          ...UserDetails
+        }
+        ... on UserGroup {
+          name
+          profile {
+            avatar
+          }
+        }
       }
     }
   }
+  ${UserDetailsFragmentDoc}
 `;
 
 /**
@@ -1437,6 +1542,56 @@ export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sea
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export const CommunityListDocument = gql`
+  query communityList {
+    users {
+      __typename
+      memberof {
+        groups {
+          name
+        }
+      }
+      ...UserDetails
+    }
+    groups {
+      __typename
+      name
+      profile {
+        avatar
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityListQuery__
+ *
+ * To run a query within a React component, call `useCommunityListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommunityListQuery(
+  baseOptions?: Apollo.QueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
+) {
+  return Apollo.useQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
+}
+export function useCommunityListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
+) {
+  return Apollo.useLazyQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
+}
+export type CommunityListQueryHookResult = ReturnType<typeof useCommunityListQuery>;
+export type CommunityListLazyQueryHookResult = ReturnType<typeof useCommunityListLazyQuery>;
+export type CommunityListQueryResult = Apollo.QueryResult<CommunityListQuery, CommunityListQueryVariables>;
 export const ConfigDocument = gql`
   query config {
     clientConfig {
@@ -1912,3 +2067,48 @@ export function useUserAvatarsLazyQuery(
 export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
 export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
 export type UserAvatarsQueryResult = Apollo.QueryResult<UserAvatarsQuery, UserAvatarsQueryVariables>;
+export const UserProfileDocument = gql`
+  query userProfile {
+    me {
+      ...UserDetails
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<UserProfileQuery, UserProfileQueryVariables>
+) {
+  return Apollo.useQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, baseOptions);
+}
+export function useUserProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<UserProfileQuery, UserProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, baseOptions);
+}
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
+export type UserProfileQueryResult = Apollo.QueryResult<UserProfileQuery, UserProfileQueryVariables>;
