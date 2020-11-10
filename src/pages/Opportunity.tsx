@@ -57,12 +57,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
         ?.actors?.map(x => ({ ...x, name: `\n${x.name}`, type: 'stakeholder' })),
     [actorGroups]
   );
-
   const keyUsers = useMemo(
     () =>
       actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
     [actorGroups]
   );
+  const incomming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
+  const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
 
   // const actors = useMemo(() => {
   //   const stakeholders = actorGroups?.find(x => x.name === 'stakeholders')?.actors || [];
@@ -182,9 +183,16 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'Collaborative potential'} />
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
-      {relations && (
-        <CardContainer xs={12} md={6} lg={4} xl={3}>
-          {relations?.map((props, i) => (
+      {incomming && (
+        <CardContainer title={'Incoming relations'} xs={12} md={6} lg={4} xl={3}>
+          {incomming?.map((props, i) => (
+            <RelationCard key={i} {...props} />
+          ))}
+        </CardContainer>
+      )}
+      {outgoing && (
+        <CardContainer title={'Outgoing relations'} xs={12} md={6} lg={4} xl={3}>
+          {outgoing?.map((props, i) => (
             <RelationCard key={i} {...props} />
           ))}
         </CardContainer>

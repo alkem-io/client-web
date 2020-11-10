@@ -8,6 +8,7 @@ import {
   ProjectInput,
 } from '../generated/graphql';
 import { FourOuFour, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage, PageProps } from '../pages';
+import { pushError } from '../reducers/error/actions';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
@@ -37,9 +38,12 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, projects, opportunityId }) =>
   const history = useHistory();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
-  const [createProject, { loading: projectCreationLoading, data: response, error }] = useCreateProjectMutation({
+  const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: project }) => {
       history.push(`${paths[paths.length - 1].value}/projects/${project.textID}`);
+    },
+    onError: ({ message }) => {
+      pushError(new Error(message));
     },
     refetchQueries: ['opportunityProfile', 'ecoverseDetails'],
     awaitRefetchQueries: true,
