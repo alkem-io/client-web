@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import Typography from '../core/Typography';
 import { UserModel } from '../../models/User';
 
 interface Tag {
@@ -42,10 +41,6 @@ export const PeopleCard: FC<ProjectCardProps> = ({ name, __typename, ...data }) 
       }}
       tagProps={tagProps()}
     >
-      {/*<Typography as="p">{job}</Typography>
-      <Typography as="p" weight="bold">
-        {user.email}
-      </Typography>*/}
       <div className="flex-grow-1"></div>
       <Avatar size="big" src={data.profile?.avatar} />
     </Card>

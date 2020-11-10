@@ -40,6 +40,8 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [searchTerm, setSearch] = useState('');
   const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
 
+  useEffect(() => handleSearch(), [tags]);
+  useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
   useQuery(QUERY_COMMUNITY_LIST, {
@@ -62,17 +64,21 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   });
 
   const handleSearch = () => {
+    // no requests, just front filtering
     if (searchTerm === '' && tags.length === 0 && typesFilter.value) {
       setCommunity(defaultCommunity.filter(el => el.__typename === typesFilter.typename));
 
       return;
     }
+
+    // soft reset to default list without request
     if (searchTerm === '' && tags.length === 0) {
       setCommunity(defaultCommunity);
 
       return;
     }
 
+    // actual search
     const tagNames = tags.map(t => t.name);
     search({
       variables: {
@@ -84,9 +90,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       },
     });
   };
-
-  useEffect(() => handleSearch(), [tags]);
-  useEffect(() => handleSearch(), [typesFilter.value]);
 
   return (
     <>
