@@ -63,6 +63,7 @@ export const MUTATION_UPDATE_USER = gql`
 
 export const QUERY_ECOVERSE_GROUPS = gql`
   query ecoverseChallengeGroups {
+    name
     groups {
       id
       name

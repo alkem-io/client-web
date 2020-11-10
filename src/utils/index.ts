@@ -1,4 +1,4 @@
 export * from './authConfig';
 export * from './nameToAltId';
-export * from './mapGroups';
-export * from './mapChallenges';
+export * from './groups-mapper';
+export * from './challenges-mapper';
