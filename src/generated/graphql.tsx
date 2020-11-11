@@ -28,14 +28,6 @@ export type Context = {
   references?: Maybe<Array<Reference>>;
 };
 
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -54,6 +46,14 @@ export type Profile = {
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
   description?: Maybe<Scalars['String']>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type Template = {
@@ -182,8 +182,6 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
   /** The profile for this organisation */
   profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
@@ -792,10 +790,8 @@ export type ActorInput = {
 };
 
 export type OrganisationInput = {
-  /** The new name for this organisation */
+  /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type EcoverseInput = {
@@ -811,18 +807,6 @@ export type TemplateInput = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
-
-export type UserDetailsFragment = { __typename?: 'User' } & Pick<
-  User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
-> & {
-    profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-        }
-    >;
-  };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -915,6 +899,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
               >;
             }
         >
+      >;
+      leadOrganisations: Array<
+        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
+            profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+          }
       >;
     };
 };
@@ -1093,6 +1082,18 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
   createProject: { __typename?: 'Project' } & ProjectDetailsFragment;
 };
 
+export type UserDetailsFragment = { __typename?: 'User' } & Pick<
+  User,
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
+> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+        }
+    >;
+  };
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -1140,31 +1141,6 @@ export type UserProfileQuery = { __typename?: 'Query' } & {
   } & UserDetailsFragment;
 };
 
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    id
-    name
-    firstName
-    lastName
-    email
-    gender
-    country
-    city
-    phone
-    accountUpn
-    profile {
-      avatar
-      references {
-        name
-        uri
-      }
-      tagsets {
-        name
-        tags
-      }
-    }
-  }
-`;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -1189,6 +1165,31 @@ export const ProjectDetailsFragmentDoc = gql`
       title
       framing
       explanation
+    }
+  }
+`;
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    gender
+    country
+    city
+    phone
+    accountUpn
+    profile {
+      avatar
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
     }
   }
 `;
@@ -1548,6 +1549,12 @@ export const ChallengeProfileDocument = gql`
           name
           description
           state
+        }
+      }
+      leadOrganisations {
+        name
+        profile {
+          avatar
         }
       }
     }

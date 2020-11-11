@@ -17,12 +17,59 @@ import Typography from '../components/core/Typography';
 import { community, projects as projectTexts } from '../components/core/Typography.dummy.json';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import { Theme } from '../context/ThemeProvider';
-import { Challenge as ChallengeType, User } from '../generated/graphql';
+import { Challenge as ChallengeType, Organisation, User } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import { UserProvider } from './Ecoverse';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
+  const [first, second, ...rest] = organizations;
+
+  return (
+    <>
+      {first && (
+        <OverlayTrigger placement="left" overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}>
+          <div className={'d-flex'}>
+            <img
+              src={first.profile?.avatar}
+              alt={first.name}
+              height={150}
+              style={{ marginLeft: 'auto', marginRight: 'auto' }}
+            />
+          </div>
+        </OverlayTrigger>
+      )}
+      {second && (
+        <OverlayTrigger
+          placement="left"
+          overlay={<Tooltip id={`challenge-${second.id}-tooltip`}>{second.name}</Tooltip>}
+        >
+          <div className={'d-flex'}>
+            <img
+              src={second.profile?.avatar}
+              alt={second.name}
+              height={150}
+              style={{ marginLeft: 'auto', marginRight: 'auto' }}
+            />
+          </div>
+        </OverlayTrigger>
+      )}
+      {rest.length > 0 && (
+        <OverlayTrigger
+          placement="left"
+          overlay={<Tooltip id="challenge-rest-tooltip">{rest.map(x => x.name).join(', ')}</Tooltip>}
+        >
+          <div className={'d-flex'}>
+            <Typography variant="h3">And more...</Typography>
+          </div>
+        </OverlayTrigger>
+      )}
+    </>
+  );
+};
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
@@ -35,7 +82,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities } = challenge;
+  const { name, context, opportunities, leadOrganisations } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
@@ -126,7 +173,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           </div>
         </Body>
       </Section>
-      <Section avatar={<Icon component={JournalBookmarkIcon} color="primary" size="xl" />}>
+      <Section
+        avatar={<Icon component={JournalBookmarkIcon} color="primary" size="xl" />}
+        details={<OrganisationBanners organizations={leadOrganisations} />}
+      >
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
         <Body text={background}>{video && <Button text="See more" as={'a'} href={video.uri} target="_blank" />}</Body>
