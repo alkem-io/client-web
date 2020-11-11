@@ -42,9 +42,15 @@ const useAvatarStyles = createStyles(theme => ({
       height: 160,
     },
   },
-  fallbackBackground: {
+  dark: {
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralMedium,
     color: theme.palette.background,
+    alignItems: 'center',
+    placeContent: 'center',
+  },
+  light: {
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    color: theme.palette.neutralMedium,
     alignItems: 'center',
     placeContent: 'center',
   },
@@ -55,16 +61,17 @@ interface AvatarProps {
   className?: string;
   classes?: unknown;
   size?: 'md' | 'sm' | 'lg';
+  theme?: 'light' | 'dark';
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src }) => {
+const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark' }) => {
   const styles = useAvatarStyles(classes);
   const [fallback, setFallback] = useState(false);
 
   return (
     <div className={clsx(styles.avatarWrapper, size, className)}>
       {(!src || fallback) && (
-        <div className={clsx(styles.avatar, styles.fallbackBackground, size, className)}>
+        <div className={clsx(styles.avatar, styles[theme], size, className)}>
           <Typography variant="button" color="inherit">
             ?
           </Typography>
