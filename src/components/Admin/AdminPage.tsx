@@ -12,8 +12,6 @@ type AdminPageProps = PageProps;
 const adminPageData = [
   {
     name: 'Users',
-    // url: '/users',
-    // description: 'Edit users',
     buttons: [
       { description: 'New user', url: '/users/new' },
       { description: 'Edit users', url: '/users' },
@@ -21,15 +19,12 @@ const adminPageData = [
   },
   {
     name: 'Groups',
-    // url: '/groups',
-    // description: 'Edit user groups',
     buttons: [{ description: 'Edit groups', url: '/groups' }],
   },
 ];
 
 export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
-  //const styles = useCardStyles();
 
   const { url } = useRouteMatch();
   return (
