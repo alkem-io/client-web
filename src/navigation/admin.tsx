@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import { Container, ListGroup } from 'react-bootstrap';
-import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 /*lib imports end*/
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
-import { SearchableList, SearchableListData } from '../components/Admin/SearchableList';
+import { SearchableListData } from '../components/Admin/SearchableList';
 import Loading from '../components/core/Loading';
 import { EcoverseChallengeGroupsQuery, useEcoverseChallengeGroupsQuery, useUsersQuery } from '../generated/graphql';
 import { UserModel } from '../models/User';
