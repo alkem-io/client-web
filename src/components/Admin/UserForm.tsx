@@ -84,7 +84,7 @@ export const UserForm: FC<UserProps> = ({
     country: yup.string(),
     phone: yup
       .string()
-      .matches(/^[+]?\d+$/, 'Phone number may contain only numbers. Sign "+" ia allowed only at the start'),
+      .matches(/^[+]?\d+$/, 'Phone number may contain only numbers. Sign "+" is allowed only at the start'),
     avatar: yup.string(),
     tagsets: yup.array().of(
       yup.object().shape({
