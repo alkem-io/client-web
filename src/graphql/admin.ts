@@ -1,29 +1,5 @@
 import { gql } from '@apollo/client';
-
-export const USER_DETAILS_FRAGMENT = gql`
-  fragment UserDetails on User {
-    id
-    name
-    firstName
-    lastName
-    email
-    gender
-    country
-    city
-    phone
-    profile {
-      avatar
-      references {
-        name
-        uri
-      }
-      tagsets {
-        name
-        tags
-      }
-    }
-  }
-`;
+import { USER_DETAILS_FRAGMENT } from './user';
 
 export const QUERY_USER_LIST = gql`
   query users {
@@ -63,6 +39,7 @@ export const MUTATION_UPDATE_USER = gql`
 
 export const QUERY_ECOVERSE_GROUPS = gql`
   query ecoverseChallengeGroups {
+    name
     groups {
       id
       name

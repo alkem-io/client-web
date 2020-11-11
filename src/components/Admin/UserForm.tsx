@@ -55,6 +55,7 @@ export const UserForm: FC<UserProps> = ({
     gender,
     phone,
     country,
+    accountUpn,
     profile: { tagsets, references, avatar },
   } = currentUser;
 
@@ -70,6 +71,7 @@ export const UserForm: FC<UserProps> = ({
     avatar: avatar || '',
     tagsets: tagsets,
     references: references || '',
+    accountUpn: accountUpn || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -80,7 +82,9 @@ export const UserForm: FC<UserProps> = ({
     gender: yup.string(),
     city: yup.string(),
     country: yup.string(),
-    phone: yup.string(),
+    phone: yup
+      .string()
+      .matches(/^[+]?\d+$/, 'Phone number may contain only numbers. Sign "+" is allowed only at the start'),
     avatar: yup.string(),
     tagsets: yup.array().of(
       yup.object().shape({
@@ -148,7 +152,7 @@ export const UserForm: FC<UserProps> = ({
           onSubmit={values => handleSubmit(values)}
         >
           {({
-            values: { name, firstName, lastName, email, city, phone, country, references, avatar, gender },
+            values: { name, firstName, lastName, email, city, phone, country, references, avatar, gender, accountUpn },
             handleChange,
             handleSubmit,
             handleBlur,
@@ -178,7 +182,7 @@ export const UserForm: FC<UserProps> = ({
                   readOnly={readOnly}
                   disabled={readOnly}
                   isValid={required ? Boolean(!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
-                  isInvalid={required ? Boolean(!!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
+                  isInvalid={Boolean(!!errors[fieldName]) && Boolean(touched[fieldName])}
                   onBlur={handleBlur}
                 />
                 <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
@@ -198,7 +202,10 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>
                   {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  <Form.Group as={Col}>
+                  {accountUpn !== '' && getInputField('UPN', accountUpn, 'upn', false, true)}
+                </Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col} sm={6}>
                     <Form.Label>Gender</Form.Label>
                     <Form.Control
                       as={'select'}

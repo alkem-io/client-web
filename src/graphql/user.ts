@@ -1,5 +1,31 @@
 import { gql } from '@apollo/client';
 
+export const USER_DETAILS_FRAGMENT = gql`
+  fragment UserDetails on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    gender
+    country
+    city
+    phone
+    accountUpn
+    profile {
+      avatar
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+    }
+  }
+`;
+
 export const QUERY_ECOVERSE_USER_IDS = gql`
   query ecoverseUserIds {
     users {
@@ -40,32 +66,21 @@ export const QUERY_USER_AVATARS = gql`
   }
 `;
 
-export const QUERY_MY_PROFILE = gql`
-  query myProfile {
+export const QUERY_USER_PROFILE = gql`
+  # Write your query or mutation here
+  query userProfile {
     me {
-      name
-      firstName
-      lastName
-      email
-      profile {
-        avatar
-        tagsets {
-          name
-          tags
-        }
-        references {
-          name
-          uri
-        }
-      }
+      ...UserDetails
       memberof {
         groups {
           name
         }
         challenges {
           id
+          name
         }
       }
     }
   }
+  ${USER_DETAILS_FRAGMENT}
 `;
