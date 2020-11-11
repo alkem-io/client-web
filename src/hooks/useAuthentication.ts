@@ -24,7 +24,9 @@ export interface UseAuthenticationResult {
 const signIn = async (msalApp?: PublicClientApplication, aadConfig?: AadClientConfig) => {
   if (!msalApp || !aadConfig) return;
 
-  return await msalApp.loginPopup(aadConfig.loginRequest);
+  return new Promise<AuthenticationResult | undefined>((resolve, reject) =>
+    msalApp.loginPopup(aadConfig.loginRequest).then(resolve).catch(reject)
+  );
 };
 
 const signOut = async (msalApp?: PublicClientApplication, userName?: string) => {
@@ -72,11 +74,11 @@ export const useAuthentication = (): UseAuthenticationResult => {
   const { loading: configLoading, aadConfig } = useContext(configContext);
   const msalApp = useMemo(() => {
     if (configLoading) {
-      localStorage.setItem(TOKEN_STORAGE_KEY, '');
       return undefined;
     }
+
     return new PublicClientApplication(aadConfig.msalConfig);
-  }, [configLoading]);
+  }, [configLoading, aadConfig]);
 
   const acquireTokenWired = useCallback((username: string) => acquireToken(msalApp, aadConfig, username), [
     msalApp,

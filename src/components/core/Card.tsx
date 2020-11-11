@@ -1,13 +1,12 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
+import { Modal } from 'react-bootstrap';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
+import Button from './Button';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
-import { Modal } from 'react-bootstrap';
-import Button from './Button';
-import PasswordPrompt from '../Admin/PasswordPrompt';
 
 interface HeaderProps {
   text: string;
@@ -84,7 +83,7 @@ const useTagStyles = createStyles(theme => ({
 
 interface CardTagProps extends HeaderProps, TagProps {}
 
-export const CardTag: FC<CardTagProps> = ({ text, className, color, classes = {}, ...rest }) => {
+export const CardTag: FC<CardTagProps> = ({ text, className, color, ...rest }) => {
   const styles = useTagStyles({ background: color });
 
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;

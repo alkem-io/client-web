@@ -1,12 +1,10 @@
 import React, { FC } from 'react';
-// import { createStyles } from '../../hooks/useTheme';
-import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
-import Backdrop from '../core/Backdrop';
-import Typography from '../core/Typography';
-import Button from '../core/Button';
-import { createStyles } from '../../hooks/useTheme';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
+import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
+import Backdrop from '../core/Backdrop';
+import Button from '../core/Button';
+import Typography from '../core/Typography';
 
 const useBackdropStyles = createStyles(theme => ({
   backdropContainer: {

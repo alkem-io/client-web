@@ -1,7 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useQueryParams } from '../hooks/useQueryParams';
+import { useUserContext } from '../hooks/useUserContext';
+import { SignIn as SignInPage } from '../pages/SignIn';
 
 interface SignInParams {
   redirect?: string;
@@ -10,31 +12,33 @@ interface SignInParams {
 export const SignIn: FC = () => {
   const params = useQueryParams();
   const redirect = params.get('redirect');
-  const { authenticate, refresh } = useAuthenticate();
-  const [authenticated, setAuthenticated] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [processComplete, setProcessComplete] = useState(false);
+  const [processFailed, setProcessFailed] = useState(false);
+  const { authenticate } = useAuthenticate();
+  const { user } = useUserContext();
 
-  useEffect(() => {
-    async function signIn() {
+  const tryAuthenticate = useCallback(() => {
+    async function runProcess() {
       try {
         await authenticate();
-        setAuthenticated(true);
       } catch (ex) {
         console.error(ex);
-        setFailed(true);
+        setProcessFailed(true);
+      } finally {
+        setProcessComplete(true);
       }
     }
 
-    signIn();
-  }, [setFailed, authenticate, refresh]);
+    runProcess();
+  }, [authenticate, setProcessComplete, setProcessFailed]);
 
-  if (failed && !authenticated) {
-    return <Redirect to={`/restricted?origin=${redirect}`} />;
-  }
-
-  if (authenticated && !failed) {
+  if (processComplete && user) {
     return <Redirect to={`${decodeURI(redirect || '/')}`} />;
   }
 
-  return <div>Attempting to sign you in</div>;
+  if (processComplete && processFailed) {
+    return <Redirect to={`/restricted?origin=${redirect}`} />;
+  }
+
+  return <SignInPage onSignIn={tryAuthenticate} />;
 };
