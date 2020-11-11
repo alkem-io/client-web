@@ -14,15 +14,15 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 const adminGroups = ['admin'];
 
 export const Routing: FC = () => {
-  // const { safeRefresh } = useAuthenticate();
+  const { safeRefresh } = useAuthenticate();
 
-  // useEffect(() => {
-  //   async function signIn() {
-  //     await safeRefresh();
-  //   }
+  useEffect(() => {
+    async function signIn() {
+      await safeRefresh();
+    }
 
-  //   signIn();
-  // }, [safeRefresh]);
+    signIn();
+  }, [safeRefresh]);
 
   return (
     <Switch>

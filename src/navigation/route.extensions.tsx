@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { Route, Redirect, useRouteMatch, useLocation } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks/useUserContext';
 
 interface RestrictedRoutePros extends Record<string, unknown> {
