@@ -1,8 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
-import { FormControl, InputGroup, Table, Button } from 'react-bootstrap';
+import { Button, FormControl, InputGroup, Table } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
-// import Button from '../core/Button';
 import Loading from '../core/Loading';
 
 interface UserListProps {
@@ -34,6 +33,7 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
   };
 
   if (loading) return <Loading />;
+
   return (
     <>
       Available users:
@@ -41,7 +41,7 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
         <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
       </InputGroup>
       <hr />
-      <div style={{ height: 400, overflow: 'hidden', overflowY: 'auto' }}>
+      <div style={{ height: 600, overflow: 'hidden', overflowY: 'auto' }}>
         <Table hover size="sm" responsive="sm" style={{ position: 'relative' }}>
           <thead className="thead-dark">
             <tr>

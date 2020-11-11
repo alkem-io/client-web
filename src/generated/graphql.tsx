@@ -853,14 +853,14 @@ export type UpdateUserMutation = { __typename?: 'Mutation' } & {
 
 export type EcoverseChallengeGroupsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & {
-  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
-  challenges: Array<
-    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
-        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-      }
-  >;
-};
+export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
+    groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+    challenges: Array<
+      { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+          groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+        }
+    >;
+  };
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
   User,
@@ -1313,6 +1313,7 @@ export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const EcoverseChallengeGroupsDocument = gql`
   query ecoverseChallengeGroups {
+    name
     groups {
       id
       name

@@ -4,13 +4,18 @@ import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link } from 'react-router-dom';
 
 interface SearchableListProps {
-  data: { id: number | string; value: string }[];
-  url: string;
+  data: SearchableListData[];
   edit?: boolean;
   active?: number | string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], url: path, edit = false, children, active }) => {
+export interface SearchableListData {
+  id: string;
+  value: string;
+  url: string;
+}
+
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, children, active }) => {
   const [filterBy, setFilterBy] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +41,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], url: path, 
             as={Link}
             action
             key={item.id}
-            to={`${path}/${item.id}${editSuffix}`}
+            to={`${item.url}${editSuffix}`}
             active={active !== undefined && item.id === active}
           >
             {item.value}
