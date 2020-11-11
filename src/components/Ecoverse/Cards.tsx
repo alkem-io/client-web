@@ -130,12 +130,23 @@ interface Tag {
 interface ProjectCardProps extends Record<string, unknown> {
   caption?: string;
   title: string;
+  description?: string;
   tag?: Tag;
   blank?: boolean;
+  onSelect?: () => void;
   children?: React.ReactNode;
 }
 
-export const ProjectCard: FC<ProjectCardProps> = ({ caption, title, tag, blank = false, children, ...rest }) => {
+export const ProjectCard: FC<ProjectCardProps> = ({
+  caption,
+  title,
+  tag,
+  description,
+  blank = false,
+  children,
+  onSelect,
+  ...rest
+}) => {
   const styles = useCardStyles();
   const headerProps = caption ? { text: caption } : undefined;
 
@@ -166,8 +177,12 @@ export const ProjectCard: FC<ProjectCardProps> = ({ caption, title, tag, blank =
               <span>{tag.text}</span>
             </Typography>
           )}
-          <div>
-            <Button text="Project details" onClick={() => alert('Project details: ' + title)} />
+          <div className={clsx('d-flex', 'flex-column', 'flex-grow-1')}>
+            <Typography>{description}</Typography>
+            <div className="flex-grow-1"></div>
+            <div>
+              <Button text="Project details" onClick={onSelect} />
+            </div>
           </div>
         </>
       )}
@@ -204,11 +219,11 @@ export const MoreProjectsCard: FC<ProjectCardProps> = ({ title }) => {
   );
 };
 
-export const AddProjectsCard: FC<ProjectCardProps> = ({ onAdd, title }) => {
+export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
   const styles = useAdditionalCardStyles();
 
   return (
-    <ProjectCard title={title} blank onClick={onAdd} className={styles.activeCard}>
+    <ProjectCard title={title} blank onClick={onSelect} className={styles.activeCard}>
       <div className={clsx('d-flex')} style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Icon component={PlusIcon} color="inherit" size="xxl"></Icon>
       </div>

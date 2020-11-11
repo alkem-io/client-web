@@ -96,6 +96,26 @@ const useButtonStyles = createStyles(theme => ({
       },
     },
   },
+  disabled: {
+    color: theme.palette.background,
+    borderColor: theme.palette.neutralLight,
+    background: theme.palette.neutralMedium,
+    opacity: 0.8,
+    cursor: 'default',
+
+    '&:hover': {
+      color: theme.palette.background,
+      background: hexToRGBA(theme.palette.neutralMedium, 0.7),
+    },
+
+    '&:focus': {
+      outline: `1px auto ${theme.palette.neutralLight}`,
+
+      '&.inset': {
+        outline: 'none',
+      },
+    },
+  },
 }));
 
 interface ButtonProps extends Record<string, unknown> {
@@ -109,6 +129,7 @@ interface ButtonProps extends Record<string, unknown> {
   variant?: 'default' | 'primary' | 'transparent';
   inset?: boolean;
   small?: boolean;
+  disabled?: boolean;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -117,6 +138,7 @@ const Button: FC<ButtonProps> = ({
   variant = 'default',
   inset = false,
   small = false,
+  disabled = false,
   children,
   as: Component = 'button',
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -129,7 +151,14 @@ const Button: FC<ButtonProps> = ({
   // can always use the bootstrap button internally
   return (
     <Component
-      className={clsx(styles.button, styles[variant], inset && 'inset', small && 'small', className)}
+      className={clsx(
+        styles.button,
+        styles[variant],
+        inset && 'inset',
+        small && 'small',
+        disabled && styles.disabled,
+        className
+      )}
       type="button"
       onClick={onClick}
       {...rest}

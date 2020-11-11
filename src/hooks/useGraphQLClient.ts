@@ -31,7 +31,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
     if (graphQLErrors) {
       errors = graphQLErrors.reduce<Error[]>((acc, { message, extensions }) => {
-        const newMessage = `[GraphQL error]: ${message}`;
+        const newMessage = `${message}`;
 
         const code = extensions && extensions['code'];
         if (code === 'UNAUTHENTICATED') {

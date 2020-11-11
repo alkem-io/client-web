@@ -1,8 +1,9 @@
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
+import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useMemo, useRef } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
 import Avatar from '../components/core/Avatar';
@@ -13,7 +14,7 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { community } from '../components/core/Typography.dummy.json';
+import { community, projects as projectTexts } from '../components/core/Typography.dummy.json';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import { Theme } from '../context/ThemeProvider';
 import { Challenge as ChallengeType, User } from '../generated/graphql';
@@ -21,6 +22,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import { UserProvider } from './Ecoverse';
+import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
@@ -29,6 +31,8 @@ interface ChallengePageProps extends PageProps {
 
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { url } = useRouteMatch();
+  const history = useHistory();
+
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
   const { name, context, opportunities } = challenge;
@@ -36,12 +40,42 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
 
+  const projects = useMemo(
+    () =>
+      opportunities?.flatMap(o =>
+        o?.projects?.flatMap(p => ({
+          caption: o.name,
+          url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
+          ...p,
+        }))
+      ),
+    [opportunities]
+  );
+
+  const challengeProjects = useMemo(
+    () => [
+      ...(projects || []).map(p => ({
+        title: p?.name || '',
+        description: p?.description,
+        caption: p?.caption,
+        tag: { status: 'positive', text: p?.state || '' },
+        type: 'display',
+        onSelect: () => history.replace(p?.url || ''),
+      })),
+      {
+        title: 'MORE PROJECTS STARTING SOON',
+        type: 'more',
+      },
+    ],
+    [projects]
+  );
+
   const activitySummary = useMemo(() => {
     return [
       { name: 'Opportunities', digit: opportunities?.length || 0, color: 'primary' },
       {
         name: 'Projects',
-        digit: opportunities?.reduce((sum, c) => sum + (c.projects || []).length, 0) || 0,
+        digit: projects?.length || 0,
         color: 'positive',
       },
       {
@@ -50,7 +84,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         color: 'neutralMedium',
       },
     ];
-  }, [opportunities]);
+  }, [opportunities, projects]);
 
   return (
     <>
@@ -139,6 +173,18 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           ))}
         </CardContainer>
       )}
+      <Divider />
+      <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+        <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
+        <SubHeader text={'Changing the world one project at a time'} />
+        <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
+      </Section>
+      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+        {challengeProjects.map(({ type, ...rest }, i) => {
+          const Component = SwitchCardComponent({ type });
+          return <Component {...rest} key={i} />;
+        })}
+      </CardContainer>
       <Divider />
     </>
   );
