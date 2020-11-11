@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
-import { UserCard, UserCardProps } from '../components/Community/UserCard';
-import { GroupCard, GroupCardProps } from '../components/Community/GroupCard';
+import { UserCard } from '../components/Community/UserCard';
+import { GroupCard } from '../components/Community/GroupCard';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
@@ -15,7 +15,7 @@ import { tags as _tags } from '../components/core/Typography.dummy.json';
 import { QUERY_COMMUNITY_SEARCH, QUERY_COMMUNITY_LIST } from '../graphql/community';
 import { PageProps } from './common';
 import { Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
-import { UserGroup } from '../generated/graphql';
+import { User, UserGroup } from '../generated/graphql';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const filtersConfig = {
@@ -36,11 +36,12 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   };
 
-  const [community, setCommunity] = useState<Array<UserCardProps | UserGroup>>([]);
-  const [defaultCommunity, setDefaultCommunity] = useState<Array<UserCardProps | UserGroup>>([]);
+  const [community, setCommunity] = useState<Array<User | UserGroup>>([]);
+  const [defaultCommunity, setDefaultCommunity] = useState<Array<User | UserGroup>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
-  const [searchTerm, setSearch] = useState('');
   const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
+
+  let searchTerm = '';
 
   useEffect(() => handleSearch(), [tags]);
   useEffect(() => handleSearch(), [typesFilter.value]);
@@ -101,7 +102,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
-          onInput={setSearch}
+          onInput={value => (searchTerm = value)}
           onSearch={handleSearch}
           elements={_tags.list}
           allowUnknownValues
@@ -120,11 +121,11 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Row>
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
-        {community.map((el, i) => {
+        {community.map(el => {
           // It is 100% right, there are differences of __typenames, for that case we split them
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
-          return el.__typename === 'User' ? <UserCard key={i} {...el} /> : <GroupCard key={i} {...el} />;
+          return el.__typename === 'User' ? <UserCard key={el.id} {...el} /> : <GroupCard key={el.name} {...el} />;
         })}
       </CardContainer>
       <Divider />

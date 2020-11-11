@@ -1,25 +1,18 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import { Theme } from '../../context/ThemeProvider';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-
-import { UserModel } from '../../models/User';
-import roles from '../../configs/roles.json';
 import UserPopUp from './UserPopUp';
+
+import roles from '../../configs/roles.json';
 import { User } from '../../generated/graphql';
 
-export interface UserCardProps extends UserModel {
-  __typename: string;
+export interface UserCardProps extends User {
   terms?: Array<string>;
-  memberof?: {
-    groups: Array<{ name: string }>;
-    challenges?: Array<{ name: string }>;
-    organisations?: Array<{ name: string }>;
-  };
 }
 
-export const UserCard: FC<UserCardProps> = ({ name, terms, ...data }) => {
+const UserCardInner: FC<UserCardProps> = ({ name, terms, ...data }) => {
   const groups = data.memberof?.groups.map(g => g.name.toLowerCase());
 
   const role =
@@ -46,3 +39,5 @@ export const UserCard: FC<UserCardProps> = ({ name, terms, ...data }) => {
     </Card>
   );
 };
+
+export const UserCard = memo(UserCardInner);

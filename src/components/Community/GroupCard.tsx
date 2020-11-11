@@ -1,20 +1,13 @@
-import React, { FC } from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import React, { FC, memo } from 'react';
+
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import GroupPopUp from './GroupPopUp';
-import { User } from '../../generated/graphql';
 
-export interface GroupCardProps {
-  __typename: string;
-  name: string;
-  members?: Array<User>;
-  profile?: {
-    avatar: string;
-  };
-}
+import { Theme } from '../../context/ThemeProvider';
+import { UserGroup } from '../../generated/graphql';
 
-export const GroupCard: FC<GroupCardProps> = ({ name, members, __typename, ...data }) => {
+const GroupCardInner: FC<UserGroup> = ({ name, members, __typename, ...data }) => {
   const tag = `${members?.length} Member${members && members.length > 1 ? 's' : ''}`;
 
   return (
@@ -37,3 +30,5 @@ export const GroupCard: FC<GroupCardProps> = ({ name, members, __typename, ...da
     </Card>
   );
 };
+
+export const GroupCard = memo(GroupCardInner);
