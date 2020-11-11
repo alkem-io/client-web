@@ -136,7 +136,12 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
       </Section>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {ecoverse.challenges.map((challenge, i) => (
-          <ChallengeCard key={i} {...(challenge as any)} url={`${url}/challenges/${challenge.textID}`} />
+          <ChallengeCard
+            key={i}
+            {...(challenge as any)}
+            context={{ tag: 'yes' }}
+            url={`${url}/challenges/${challenge.textID}`}
+          />
         ))}
       </CardContainer>
       <Divider />
