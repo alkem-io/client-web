@@ -31,7 +31,10 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
   return (
     <>
       {first && (
-        <OverlayTrigger placement="left" overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}>
+        <OverlayTrigger
+          placement="bottom"
+          overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}
+        >
           <div className={'d-flex'}>
             <img
               src={first.profile?.avatar}
@@ -44,7 +47,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
       )}
       {second && (
         <OverlayTrigger
-          placement="left"
+          placement="bottom"
           overlay={<Tooltip id={`challenge-${second.id}-tooltip`}>{second.name}</Tooltip>}
         >
           <div className={'d-flex'}>
@@ -59,7 +62,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
       )}
       {rest.length > 0 && (
         <OverlayTrigger
-          placement="left"
+          placement="bottom"
           overlay={<Tooltip id="challenge-rest-tooltip">{rest.map(x => x.name).join(', ')}</Tooltip>}
         >
           <div className={'d-flex'}>
