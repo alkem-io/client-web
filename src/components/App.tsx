@@ -1,14 +1,12 @@
-import { AccountInfo } from '@azure/msal-browser';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useRef } from 'react';
 import { ErrorHandler } from '../containers/ErrorHandler';
 import { UserMetadata } from '../context/UserProvider';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { useUserContext } from '../hooks/useUserContext';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
-import { useTypedSelector } from '../hooks/useTypedSelector';
+import { useUserContext } from '../hooks/useUserContext';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
 import Icon from './core/Icon';

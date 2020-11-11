@@ -1,17 +1,16 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { community } from '../components/core/Typography.dummy.json';
+import React, { FC, useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { Community as CommunityPage, FourOuFour } from '../pages';
+import { useQueryParams } from '../hooks/useQueryParams';
 
 interface SignInParams {
   redirect?: string;
 }
 
 export const SignIn: FC = () => {
-  const { redirect } = useParams<SignInParams>();
-  const { authenticate } = useAuthenticate();
+  const params = useQueryParams();
+  const redirect = params.get('redirect');
+  const { authenticate, refresh } = useAuthenticate();
   const [authenticated, setAuthenticated] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -27,7 +26,7 @@ export const SignIn: FC = () => {
     }
 
     signIn();
-  }, [setFailed, authenticate]);
+  }, [setFailed, authenticate, refresh]);
 
   if (failed && !authenticated) {
     return <Redirect to={`/restricted?origin=${redirect}`} />;

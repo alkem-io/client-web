@@ -23,6 +23,7 @@ const refresh = async (context: AuthContext) => {
   localStorage.removeItem(TOKEN_STORAGE_KEY);
   const token = await context.acquireToken(targetAccount.username);
   if (token) {
+    console.debug(token.accessToken);
     localStorage.setItem(TOKEN_STORAGE_KEY, token.accessToken);
   }
 
