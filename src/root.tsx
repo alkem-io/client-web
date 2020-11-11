@@ -7,6 +7,7 @@ import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
+import { UserProvider } from './context/UserProvider';
 import { env } from './env';
 import { useGraphQLClient } from './hooks/useGraphQLClient';
 import { Routing } from './navigation';
@@ -33,11 +34,13 @@ const ReduxRoot: FC = () => {
         <AuthenticationProvider>
           <ThemeProvider>
             <NavigationProvider>
-              <BrowserRouter>
-                <App>
-                  <Routing />
-                </App>
-              </BrowserRouter>
+              <UserProvider>
+                <BrowserRouter>
+                  <App>
+                    <Routing />
+                  </App>
+                </BrowserRouter>
+              </UserProvider>
             </NavigationProvider>
           </ThemeProvider>
         </AuthenticationProvider>

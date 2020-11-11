@@ -62,7 +62,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   const loading = ecoverseLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading ecoverse'} />;
   }
 
   if (!ecoverse) {
@@ -117,7 +117,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const loading = challengeLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading challenge'} />;
   }
 
   if (!challenge) {
@@ -177,7 +177,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const loading = opportunityLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading opportunity'} />;
   }
 
   if (!opportunity) {

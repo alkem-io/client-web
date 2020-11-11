@@ -7,7 +7,7 @@ const useIconStyles = createStyles(theme => ({
   xs: {},
   sm: { fontSize: 24 },
   md: { fontSize: 32 },
-  lg: { fontSize: 40 },
+  lg: { fontSize: 36 },
   xl: {
     fontSize: 80,
   },

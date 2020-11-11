@@ -39,3 +39,33 @@ export const QUERY_USER_AVATARS = gql`
     }
   }
 `;
+
+export const QUERY_MY_PROFILE = gql`
+  query myProfile {
+    me {
+      name
+      firstName
+      lastName
+      email
+      profile {
+        avatar
+        tagsets {
+          name
+          tags
+        }
+        references {
+          name
+          uri
+        }
+      }
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          id
+        }
+      }
+    }
+  }
+`;

@@ -2,7 +2,10 @@ import { AccountInfo } from '@azure/msal-browser';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useRef } from 'react';
 import { ErrorHandler } from '../containers/ErrorHandler';
+import { UserMetadata } from '../context/UserProvider';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
+import { useUserContext } from '../hooks/useUserContext';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useTypedSelector } from '../hooks/useTypedSelector';
@@ -53,32 +56,50 @@ const useGlobalStyles = createStyles(theme => ({
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
+  userMetadata: UserMetadata;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation }) => {
-  const account = useTypedSelector<AccountInfo | null>(state => state.auth.account);
-
-  return account && <User name={account.name || account.username} title={account.username} orientation={orientation} />;
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
+  const { user, roles } = userMetadata;
+  return (
+    user && (
+      <User
+        name={user.name}
+        title={roles[roles.length - 1] || 'unknown'}
+        orientation={orientation}
+        src={user.profile?.avatar}
+      />
+    )
+  );
 };
 
 const App = ({ children }): React.ReactElement => {
   useGlobalStyles();
-  const { context, isAuthenticated } = useAuthenticationContext();
+  const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
+  const { context } = useAuthenticationContext();
+  const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
 
-  if (context.loading) return <Loading />;
+  if (context.loading || loading) return <Loading />;
 
   return (
     <div id="app">
       <NavRings paths={paths} />
       <Header innerRef={headerRef}>
         {isVisible => (
-          <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row' }}>
-            <UserSegment orientation={isVisible ? 'vertical' : 'horizontal'} />
+          <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
+            {user && <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />}
             <div style={{ display: 'flex', flexGrow: 1 }} />
-            {isAuthenticated && <Navigation maximize={isVisible} showAdmin />}
-            {!isAuthenticated && <Button text={'Login'} onClick={context.handleSignIn} small></Button>}
+            <Navigation
+              maximize={isVisible}
+              userMetadata={user}
+              onSignIn={safeAuthenticate}
+              onSignOut={safeUnauthenticate}
+            />
+            {!user && (
+              <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small></Button>
+            )}
           </div>
         )}
       </Header>

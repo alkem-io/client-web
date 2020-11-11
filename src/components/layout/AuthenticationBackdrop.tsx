@@ -5,6 +5,8 @@ import Backdrop from '../core/Backdrop';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
 import { createStyles } from '../../hooks/useTheme';
+import { useAuthenticate } from '../../hooks/useAuthenticate';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const useBackdropStyles = createStyles(theme => ({
   backdropContainer: {
@@ -29,10 +31,11 @@ interface Props {
 }
 
 const AuthenticationBackdrop: FC<Props> = ({ children, open = false }) => {
-  const { context, isAuthenticated } = useAuthenticationContext();
+  const { safeAuthenticate } = useAuthenticate();
+  const { user } = useUserContext();
   const styles = useBackdropStyles();
 
-  if (isAuthenticated && !open) return <>{children}</>;
+  if (user && !open) return <>{children}</>;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -42,7 +45,7 @@ const AuthenticationBackdrop: FC<Props> = ({ children, open = false }) => {
           You need to sign in to check the community out.
         </Typography>
         <div>
-          <Button onClick={context.handleSignIn} text={'Sign in'} />
+          <Button onClick={() => safeAuthenticate()} text={'Sign in'} />
         </div>
       </div>
     </div>

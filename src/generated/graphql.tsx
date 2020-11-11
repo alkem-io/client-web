@@ -28,14 +28,6 @@ export type Context = {
   references?: Maybe<Array<Reference>>;
 };
 
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -54,6 +46,14 @@ export type Profile = {
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
   description?: Maybe<Scalars['String']>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type Template = {
@@ -182,8 +182,6 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
   /** The profile for this organisation */
   profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
@@ -792,10 +790,8 @@ export type ActorInput = {
 };
 
 export type OrganisationInput = {
-  /** The new name for this organisation */
+  /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type EcoverseInput = {
@@ -1106,6 +1102,25 @@ export type UserAvatarsQueryVariables = Exact<{
 
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<{ __typename?: 'User' } & { profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>> }>;
+};
+
+export type MyProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyProfileQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'User' } & Pick<User, 'name' | 'firstName' | 'lastName' | 'email'> & {
+      profile?: Maybe<
+        { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          }
+      >;
+      memberof?: Maybe<
+        { __typename?: 'MemberOf' } & {
+          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id'>>;
+        }
+      >;
+    };
 };
 
 export const UserDetailsFragmentDoc = gql`
@@ -2219,3 +2234,59 @@ export function useUserAvatarsLazyQuery(
 export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
 export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
 export type UserAvatarsQueryResult = Apollo.QueryResult<UserAvatarsQuery, UserAvatarsQueryVariables>;
+export const MyProfileDocument = gql`
+  query myProfile {
+    me {
+      name
+      firstName
+      lastName
+      email
+      profile {
+        avatar
+        tagsets {
+          name
+          tags
+        }
+        references {
+          name
+          uri
+        }
+      }
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useMyProfileQuery__
+ *
+ * To run a query within a React component, call `useMyProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyProfileQuery(baseOptions?: Apollo.QueryHookOptions<MyProfileQuery, MyProfileQueryVariables>) {
+  return Apollo.useQuery<MyProfileQuery, MyProfileQueryVariables>(MyProfileDocument, baseOptions);
+}
+export function useMyProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<MyProfileQuery, MyProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<MyProfileQuery, MyProfileQueryVariables>(MyProfileDocument, baseOptions);
+}
+export type MyProfileQueryHookResult = ReturnType<typeof useMyProfileQuery>;
+export type MyProfileLazyQueryHookResult = ReturnType<typeof useMyProfileLazyQuery>;
+export type MyProfileQueryResult = Apollo.QueryResult<MyProfileQuery, MyProfileQueryVariables>;

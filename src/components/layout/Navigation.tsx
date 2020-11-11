@@ -1,16 +1,16 @@
 import { ReactComponent as ChatFillIcon } from 'bootstrap-icons/icons/chat-fill.svg';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
+import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import { ReactComponent as GlobeIcon } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-fill.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
-import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import React, { FC, useRef, useState } from 'react';
-import { Overlay, Popover } from 'react-bootstrap';
+import { Overlay, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { UserMetadata } from '../../context/UserProvider';
 import { createStyles } from '../../hooks/useTheme';
-import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
@@ -18,12 +18,14 @@ import IconButton from '../core/IconButton';
 
 interface NavigationProps {
   maximize: boolean;
-  showAdmin?: boolean;
+  userMetadata: UserMetadata | undefined;
+  onSignIn: () => void;
+  onSignOut: () => void;
 }
 
 const useNavigationStyles = createStyles(theme => ({
   navLinkOffset: {
-    marginLeft: theme.shape.spacing(4),
+    marginLeft: theme.shape.spacing(3),
 
     [theme.media.down('xl')]: {
       marginLeft: theme.shape.spacing(2),
@@ -40,10 +42,9 @@ const useNavigationStyles = createStyles(theme => ({
   },
 }));
 
-const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
+const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onSignOut }) => {
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { context, isAuthenticated } = useAuthenticationContext();
   const popoverAnchorMdUp = useRef(null);
   const popoverAnchorMdDown = useRef(null);
 
@@ -51,27 +52,37 @@ const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
     <>
       <Hidden mdDown>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton className={styles.navLinkOffset} as={Link} to="/">
-            <Icon component={GlobeIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-          </IconButton>
-          <IconButton
-            className={styles.navLinkOffset}
-            as={Link}
-            to="/community"
-            hoverIcon={<Icon component={PeopleFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
-          >
-            <Icon component={PeopleIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-          </IconButton>
-          <IconButton
-            className={styles.navLinkOffset}
-            as={Link}
-            to="/messages"
-            hoverIcon={<Icon component={ChatFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
-          >
-            <Icon component={ChatIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-          </IconButton>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip id="ecoverse-tooltip">{'Ecoverse'}</Tooltip>}>
+            <IconButton className={styles.navLinkOffset} as={Link} to="/">
+              <Icon component={GlobeIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
+            </IconButton>
+          </OverlayTrigger>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip id="community-tooltip">{'Community'}</Tooltip>}>
+            <span className={styles.navLinkOffset}>
+              <IconButton
+                disabled={!Boolean(userMetadata)}
+                as={Link}
+                to="/community"
+                hoverIcon={<Icon component={PeopleFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
+              >
+                <Icon component={PeopleIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
+              </IconButton>
+            </span>
+          </OverlayTrigger>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip id="messages-tooltip">{'Messages'}</Tooltip>}>
+            <span className={styles.navLinkOffset}>
+              <IconButton
+                disabled={!Boolean(userMetadata)}
+                as={Link}
+                to="/messages"
+                hoverIcon={<Icon component={ChatFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
+              >
+                <Icon component={ChatIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
+              </IconButton>
+            </span>
+          </OverlayTrigger>
           <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
-            {(showAdmin || isAuthenticated) && (
+            {userMetadata && (
               <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
                 <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
               </IconButton>
@@ -87,13 +98,13 @@ const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
             <Popover id="popover-contained">
               <Popover.Content>
                 <div className="d-flex flex-grow-1 flex-column">
-                  {showAdmin && (
+                  {userMetadata && userMetadata.isAdmin && (
                     <Button text="Admin" as={Link} to="/admin" inset className={styles.menuItem}>
                       <Icon component={SlidersIcon} color="inherit" size="sm" />
                     </Button>
                   )}
-                  {isAuthenticated && (
-                    <Button text="Sign out" onClick={context.handleSignOut} inset className={styles.menuItem}>
+                  {userMetadata && (
+                    <Button text="Sign out" onClick={onSignOut} inset className={styles.menuItem}>
                       <Icon component={DoorOpenIcon} color="inherit" size="sm" />
                     </Button>
                   )}
@@ -122,13 +133,27 @@ const Navigation: FC<NavigationProps> = ({ maximize, showAdmin = false }) => {
                 <Button text="Ecoverse" as={Link} to="/" inset className={styles.menuItem}>
                   <Icon component={GlobeIcon} color="inherit" size="sm" />
                 </Button>
-                <Button text="Community" as={Link} to="/community" inset className={styles.menuItem}>
+                <Button
+                  disabled={!Boolean(userMetadata)}
+                  text="Community"
+                  as={Link}
+                  to="/community"
+                  inset
+                  className={styles.menuItem}
+                >
                   <Icon component={PeopleIcon} color="inherit" size="sm" />
                 </Button>
-                <Button text="Messages" as={Link} to="/messages" inset className={styles.menuItem}>
+                <Button
+                  disabled={!Boolean(userMetadata)}
+                  text="Messages"
+                  as={Link}
+                  to="/messages"
+                  inset
+                  className={styles.menuItem}
+                >
                   <Icon component={ChatIcon} color="inherit" size="sm" />
                 </Button>
-                {showAdmin && (
+                {userMetadata && userMetadata.isAdmin && (
                   <Button text="Admin" as={Link} to="/admin" inset className={styles.menuItem}>
                     <Icon component={SlidersIcon} color="inherit" size="sm" />
                   </Button>
