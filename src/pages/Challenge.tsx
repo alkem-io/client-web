@@ -35,7 +35,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           placement="bottom"
           overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}
         >
-          <div className={'d-flex'}>
+          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
             <img
               src={first.profile?.avatar}
               alt={first.name}
@@ -50,7 +50,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           placement="bottom"
           overlay={<Tooltip id={`challenge-${second.id}-tooltip`}>{second.name}</Tooltip>}
         >
-          <div className={'d-flex'}>
+          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
             <img
               src={second.profile?.avatar}
               alt={second.name}
