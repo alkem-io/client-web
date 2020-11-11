@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import UserFrom, { EditMode } from '../Admin/UserForm';
 /*components imports end*/
 
-import { QUERY_USER_PROFILE } from './query';
+import { QUERY_USER_PROFILE } from '../../graphql/user';
 import { defaultUser } from '../../models/User';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { Loading } from '../core/Loading';

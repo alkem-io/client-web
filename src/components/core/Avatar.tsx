@@ -25,17 +25,21 @@ const useAvatarStyles = createStyles(theme => ({
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
 
-    '&.default': {
+    '&.md': {
       width: 40,
       height: 40,
     },
-    '&.small': {
+    '&.sm': {
       width: 15,
       height: 15,
     },
-    '&.big': {
+    '&.lg': {
       width: 80,
       height: 80,
+    },
+    '&.xl': {
+      width: 160,
+      height: 160,
     },
   },
   dark: {
@@ -56,11 +60,11 @@ interface AvatarProps {
   src?: string;
   className?: string;
   classes?: unknown;
-  size?: 'default' | 'small' | 'big';
+  size?: 'md' | 'sm' | 'lg';
   theme?: 'light' | 'dark';
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'default', classes = {}, className, src, theme = 'dark' }) => {
+const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark' }) => {
   const styles = useAvatarStyles(classes);
   const [fallback, setFallback] = useState(false);
 

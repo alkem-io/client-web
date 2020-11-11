@@ -26,6 +26,13 @@ export const QUERY_CHALLENGE_PROFILE = gql`
         id
         name
         textID
+        projects {
+          id
+          textID
+          name
+          description
+          state
+        }
       }
     }
   }

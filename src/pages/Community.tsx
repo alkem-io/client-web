@@ -121,6 +121,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
         {community.map((el, i) => {
+          // It is 100% right, there are differences of __typenames, for that case we split them
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           return el.__typename === 'User' ? <UserCard key={i} {...el} /> : <GroupCard key={i} {...el} />;

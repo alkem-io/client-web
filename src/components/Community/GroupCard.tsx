@@ -33,7 +33,7 @@ export const GroupCard: FC<GroupCardProps> = ({ name, members, __typename, ...da
       tagProps={{ text: tag, color: 'primary' }}
       popUp={<GroupPopUp name={name} members={members} {...data} />}
     >
-      <Avatar size="big" src={data.profile?.avatar} theme={'light'} />
+      <Avatar size="lg" src={data.profile?.avatar} theme={'light'} />
     </Card>
   );
 };

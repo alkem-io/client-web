@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { USER_DETAILS_FRAGMENT } from './admin';
 
 export const QUERY_ECOVERSE_USER_IDS = gql`
   query ecoverseUserIds {
@@ -18,6 +19,18 @@ export const QUERY_CHALLENGE_USER_IDS = gql`
   }
 `;
 
+export const QUERY_OPPORTUNITY_USER_IDS = gql`
+  query opportunityUserIds($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        members {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const QUERY_USER_AVATARS = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
@@ -26,4 +39,22 @@ export const QUERY_USER_AVATARS = gql`
       }
     }
   }
+`;
+
+export const QUERY_USER_PROFILE = gql`
+  # Write your query or mutation here
+  query userProfile {
+    me {
+      ...UserDetails
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+      }
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
 `;

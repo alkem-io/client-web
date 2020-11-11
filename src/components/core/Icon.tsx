@@ -11,6 +11,9 @@ const useIconStyles = createStyles(theme => ({
   xl: {
     fontSize: 80,
   },
+  xxl: {
+    fontSize: 160,
+  },
   ...Object.keys(theme.palette).reduce((aggr: Record<string, {}>, key) => {
     aggr[key] = { color: theme.palette[key as keyof Palette] };
 
@@ -23,7 +26,7 @@ const useIconStyles = createStyles(theme => ({
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   component: FunctionComponent<SVGProps<SVGSVGElement>>;
-  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   color: keyof Palette | 'inherit';
 }
 

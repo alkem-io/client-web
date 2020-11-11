@@ -42,7 +42,7 @@ export const UserCard: FC<UserCardProps> = ({ name, terms, ...data }) => {
       matchedTerms={{ terms }}
       popUp={<UserPopUp name={name} {...data} />}
     >
-      <Avatar size="big" src={data.profile?.avatar} />
+      <Avatar size="lg" src={data.profile?.avatar} />
     </Card>
   );
 };

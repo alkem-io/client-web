@@ -29,7 +29,7 @@ const UserPopUp: FC<UserCardProps> = ({
       </Modal.Header>
       <Modal.Body>
         <div className={'d-flex align-items-center mb-3'}>
-          <Avatar src={profile?.avatar} size={'big'} />
+          <Avatar src={profile?.avatar} size={'lg'} />
           <h4 className={'ml-3'}>{name}</h4>
         </div>
         <Typography weight={'medium'} color={'neutral'} as={'p'}>

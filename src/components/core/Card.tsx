@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Tag from './Tag';
+import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import { Modal } from 'react-bootstrap';
 import Button from './Button';
@@ -14,7 +14,7 @@ interface HeaderProps {
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
-  color?: 'positive' | 'neutralMedium' | 'primary';
+  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative';
 }
 
 const useHeaderStyles = createStyles(theme => ({
@@ -71,20 +71,23 @@ export const PrimaryText: FC<HeaderProps> = ({ text, className, classes }) => {
   );
 };
 
-const useTagStyles = createStyles(() => ({
+const useTagStyles = createStyles(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
     right: 0,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
   },
 }));
 
-export const CardTag: FC<HeaderProps> = ({ text, className, color }) => {
-  const styles = useTagStyles();
+interface CardTagProps extends HeaderProps, TagProps {}
 
-  return <Tag className={clsx(styles.tag, className)} color={color} text={text} />;
+export const CardTag: FC<CardTagProps> = ({ text, className, color, classes = {}, ...rest }) => {
+  const styles = useTagStyles({ background: color });
+
+  return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
 
 const useMatchedTermsStyles = createStyles(theme => ({
@@ -164,13 +167,13 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.content, className)}>{children}</div>;
+  return <div className={clsx(styles.content, 'ct-card-body', className)}>{children}</div>;
 };
 
-export interface CardProps {
+export interface CardProps extends Record<string, unknown> {
   className?: string;
   headerProps?: HeaderProps;
-  tagProps?: HeaderProps;
+  tagProps?: CardTagProps;
   matchedTerms?: MatchedTermsProps;
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
@@ -201,6 +204,7 @@ const Card: FC<CardProps> = ({
   classes = {},
   children,
   popUp,
+  ...rest
 }) => {
   const styles = useCardStyles(classes);
 
@@ -210,7 +214,7 @@ const Card: FC<CardProps> = ({
   const handleClose = () => popUp && setIsModalShown(false);
 
   return (
-    <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow}>
+    <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
