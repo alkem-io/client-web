@@ -82,7 +82,9 @@ export const UserForm: FC<UserProps> = ({
     gender: yup.string(),
     city: yup.string(),
     country: yup.string(),
-    phone: yup.string(),
+    phone: yup
+      .string()
+      .matches(/^[+]?\d+$/, 'Phone number may contain only numbers. Sign "+" ia allowed only at the start'),
     avatar: yup.string(),
     tagsets: yup.array().of(
       yup.object().shape({
@@ -180,7 +182,7 @@ export const UserForm: FC<UserProps> = ({
                   readOnly={readOnly}
                   disabled={readOnly}
                   isValid={required ? Boolean(!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
-                  isInvalid={required ? Boolean(!!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
+                  isInvalid={Boolean(!!errors[fieldName]) && Boolean(touched[fieldName])}
                   onBlur={handleBlur}
                 />
                 <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
