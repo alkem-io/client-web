@@ -25,28 +25,18 @@ export const ErrorHandler: FC = ({ children }) => {
 
   return (
     <>
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        style={{
-          position: 'relative',
-          minHeight: '0px',
-          zIndex: 999,
-        }}
-      >
-        <div style={{ position: 'absolute', top: 10, right: 10 }}>
-          <Toast show={show} onClose={closeMessage}>
-            <Toast.Header>
-              <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />
-              <strong className="mr-auto">
-                Error <Badge variant="light">{count}</Badge>
-              </strong>
-            </Toast.Header>
-            <Toast.Body>{message}</Toast.Body>
-          </Toast>
-        </div>
+      <div style={{ position: 'fixed', bottom: 20, right: 20 }}>
+        <Toast show={show} onClose={closeMessage}>
+          <Toast.Header>
+            <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />
+            <strong className="mr-auto">
+              Error <Badge variant="light">{count}</Badge>
+            </strong>
+          </Toast.Header>
+          <Toast.Body>{message}</Toast.Body>
+        </Toast>
       </div>
-      <ErrorBoundary>{children}</ErrorBoundary>
+      {/* <ErrorBoundary>{children}</ErrorBoundary> */}
     </>
   );
 };

@@ -55,6 +55,14 @@ export const QUERY_ECOVERSE_DETAILS = gql`
       }
       opportunities {
         id
+        textID
+        projects {
+          id
+          textID
+          name
+          description
+          state
+        }
       }
     }
   }

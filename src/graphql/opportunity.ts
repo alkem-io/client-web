@@ -35,11 +35,18 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         name
         description
         actors {
-          name,
-          description,
-          value,
+          name
+          description
+          value
           impact
         }
+      }
+      projects {
+        id
+        textID
+        name
+        description
+        state
       }
     }
   }
