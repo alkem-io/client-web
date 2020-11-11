@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { USER_DETAILS_FRAGMENT } from './admin';
 
 export const QUERY_ECOVERSE_USER_IDS = gql`
   query ecoverseUserIds {
@@ -38,4 +39,22 @@ export const QUERY_USER_AVATARS = gql`
       }
     }
   }
+`;
+
+export const QUERY_USER_PROFILE = gql`
+  # Write your query or mutation here
+  query userProfile {
+    me {
+      ...UserDetails
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+      }
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
 `;

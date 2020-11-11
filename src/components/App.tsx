@@ -1,6 +1,7 @@
 import { AccountInfo } from '@azure/msal-browser';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useRef } from 'react';
+import { ErrorHandler } from '../containers/ErrorHandler';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -98,6 +99,7 @@ const App = ({ children }): React.ReactElement => {
           <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
         </IconButton>
       </Footer>
+      <ErrorHandler />
     </div>
   );
 };
