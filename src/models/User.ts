@@ -9,6 +9,7 @@ export interface UserModel {
   country: string;
   gender: string;
   aadPassword: string;
+  accountUpn: string;
   profile: {
     avatar: string;
     tagsets: Tagset[];
@@ -36,6 +37,7 @@ export const defaultUser: UserModel = {
   country: '',
   gender: '',
   aadPassword: '',
+  accountUpn: '',
   profile: {
     avatar: '',
     tagsets: [],

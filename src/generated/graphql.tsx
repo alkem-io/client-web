@@ -814,7 +814,7 @@ export type TemplateInput = {
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone'
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
@@ -1108,6 +1108,19 @@ export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<{ __typename?: 'User' } & { profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>> }>;
 };
 
+export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserProfileQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'User' } & {
+    memberof?: Maybe<
+      { __typename?: 'MemberOf' } & {
+        groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+      }
+    >;
+  } & UserDetailsFragment;
+};
+
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -1119,6 +1132,7 @@ export const UserDetailsFragmentDoc = gql`
     country
     city
     phone
+    accountUpn
     profile {
       avatar
       references {
@@ -2219,3 +2233,48 @@ export function useUserAvatarsLazyQuery(
 export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
 export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
 export type UserAvatarsQueryResult = Apollo.QueryResult<UserAvatarsQuery, UserAvatarsQueryVariables>;
+export const UserProfileDocument = gql`
+  query userProfile {
+    me {
+      ...UserDetails
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<UserProfileQuery, UserProfileQueryVariables>
+) {
+  return Apollo.useQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, baseOptions);
+}
+export function useUserProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<UserProfileQuery, UserProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, baseOptions);
+}
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
+export type UserProfileQueryResult = Apollo.QueryResult<UserProfileQuery, UserProfileQueryVariables>;
