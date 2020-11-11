@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Tag from './Tag';
+import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 
 interface HeaderProps {
@@ -67,20 +67,23 @@ export const PrimaryText: FC<HeaderProps> = ({ text, className, classes }) => {
   );
 };
 
-const useTagStyles = createStyles(() => ({
+const useTagStyles = createStyles(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
     right: 0,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
   },
 }));
 
-export const CardTag: FC<HeaderProps> = ({ text, className }) => {
-  const styles = useTagStyles();
+interface CardTagProps extends HeaderProps, TagProps {}
 
-  return <Tag className={clsx(styles.tag, className)} text={text} />;
+export const CardTag: FC<CardTagProps> = ({ text, className, classes = {}, ...rest }) => {
+  const styles = useTagStyles(classes);
+
+  return <Tag className={clsx(styles.tag, className)} text={text} {...rest} />;
 };
 
 const useBodyStyles = createStyles(theme => ({
@@ -124,13 +127,13 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.content, className)}>{children}</div>;
+  return <div className={clsx(styles.content, 'ct-card-body', className)}>{children}</div>;
 };
 
-export interface CardProps {
+export interface CardProps extends Record<string, unknown> {
   className?: string;
   headerProps?: HeaderProps;
-  tagProps?: HeaderProps;
+  tagProps?: CardTagProps;
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
@@ -154,11 +157,12 @@ const Card: FC<CardProps> = ({
   primaryTextProps,
   classes = {},
   children,
+  ...rest
 }) => {
   const styles = useCardStyles(classes);
 
   return (
-    <div className={clsx(styles.root, className, 'ct-card')}>
+    <div className={clsx(styles.root, className, 'ct-card')} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}

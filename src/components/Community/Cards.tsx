@@ -42,7 +42,7 @@ export const PeopleCard: FC<ProjectCardProps> = ({ name, __typename, ...data }) 
       tagProps={tagProps()}
     >
       <div className="flex-grow-1"></div>
-      <Avatar size="big" src={data.profile?.avatar} />
+      <Avatar size="lg" src={data.profile?.avatar} />
     </Card>
   );
 };

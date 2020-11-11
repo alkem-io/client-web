@@ -3,9 +3,14 @@ import { Link } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Section from '../components/core/Section';
 import Typography from '../components/core/Typography';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 import './FourOuFour.css';
 
+const paths = { currentPaths: [] };
+
 export const FourOuFour: FC = () => {
+  useUpdateNavigation(paths);
+
   return (
     <Section>
       <Typography as="h1" variant="h1">

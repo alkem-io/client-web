@@ -11,6 +11,7 @@ export const USER_DETAILS_FRAGMENT = gql`
     country
     city
     phone
+    accountUpn
     profile {
       avatar
       references {
@@ -63,6 +64,7 @@ export const MUTATION_UPDATE_USER = gql`
 
 export const QUERY_ECOVERSE_GROUPS = gql`
   query ecoverseChallengeGroups {
+    name
     groups {
       id
       name
