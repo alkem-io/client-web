@@ -8,7 +8,13 @@ import { Theme } from '../../context/ThemeProvider';
 import { UserGroup } from '../../generated/graphql';
 
 const GroupCardInner: FC<UserGroup> = ({ name, members, __typename, ...data }) => {
-  const tag = `${members?.length} Member${members && members.length > 1 ? 's' : ''}`;
+  const tag = (): string => {
+    if (!members || members.length === 0) return 'no members';
+
+    if (members.length > 0) return `${members?.length} Member${members && members.length === 1 ? '' : 's'}`;
+
+    return '';
+  };
 
   return (
     <Card
@@ -23,7 +29,7 @@ const GroupCardInner: FC<UserGroup> = ({ name, members, __typename, ...data }) =
           lineHeight: '36px',
         },
       }}
-      tagProps={{ text: tag, color: 'primary' }}
+      tagProps={{ text: tag(), color: 'primary' }}
       popUp={<GroupPopUp name={name} members={members} {...data} />}
     >
       <Avatar size="lg" src={data.profile?.avatar} theme={'light'} />
