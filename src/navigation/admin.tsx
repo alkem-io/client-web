@@ -6,6 +6,7 @@ import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '..
 import { SearchableListData } from '../components/Admin/SearchableList';
 import Loading from '../components/core/Loading';
 import { EcoverseChallengeGroupsQuery, useEcoverseChallengeGroupsQuery, useUsersQuery } from '../generated/graphql';
+import { useTransactionScope } from '../hooks/useSentry';
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
 import { challengesMapper, groupsMapper } from '../utils';
@@ -13,6 +14,7 @@ import { challengesMapper, groupsMapper } from '../utils';
 /*local files imports end*/
 
 export const Admin: FC = () => {
+  useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
 

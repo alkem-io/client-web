@@ -9,9 +9,11 @@ import { QUERY_USER_PROFILE } from '../../graphql/user';
 import { defaultUser } from '../../models/User';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { Loading } from '../core/Loading';
+import { useTransactionScope } from '../../hooks/useSentry';
 /*local files imports end*/
 
 export const UserProfile = () => {
+  useTransactionScope({ type: 'authentication' });
   const { data, loading } = useQuery(QUERY_USER_PROFILE);
 
   const groups = data?.me?.memberof?.groups.map(g => g.name).join(', ') || '';

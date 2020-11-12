@@ -1,3 +1,4 @@
+// import { ErrorBoundary } from '@sentry/react';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
@@ -56,12 +57,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project, loading = false })
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
         <Body>
-          <Button
-            text="Test Sentry"
-            onClick={() => {
-              throw new Error('this is unhandled');
-            }}
-          />
+          <Button text="Test Sentry" />
         </Body>
       </Section>
       {aspects && (

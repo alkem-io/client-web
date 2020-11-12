@@ -21,38 +21,6 @@ import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
 
-const useGlobalStyles = createStyles(theme => ({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '0.4em',
-    },
-    '*::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px grey',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: theme.palette.primary,
-      outline: `1px solid ${theme.palette.neutral}`,
-    },
-    html: {
-      height: '100%',
-    },
-    body: {
-      height: '100%',
-      margin: 0,
-      fontFamily: '"Source Sans Pro", "Montserrat"',
-    },
-    '#root': {
-      height: '100%',
-    },
-    '#app': {
-      height: '100%',
-      minHeight: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  },
-}));
-
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
@@ -73,7 +41,6 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  useGlobalStyles();
   const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
   const { context } = useAuthenticationContext();
   const { user, loading } = useUserContext();

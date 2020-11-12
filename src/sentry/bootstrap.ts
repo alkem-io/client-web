@@ -3,9 +3,10 @@ import { Integrations } from '@sentry/tracing';
 import { env } from '../env';
 
 const sentryEndpoint = env && env.REACT_APP_SENTRY_ENDPOINT;
+const sentryEnabled = env && env.REACT_APP_SENTRY_ENABLED;
 
 const bootstrap = () => {
-  if (sentryEndpoint) {
+  if (sentryEnabled && sentryEndpoint) {
     Sentry.init({
       dsn: sentryEndpoint,
       integrations: [new Integrations.BrowserTracing()],
