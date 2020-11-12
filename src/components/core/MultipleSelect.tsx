@@ -261,6 +261,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       setSelected([...selectedElements, { name: value }]);
       setNoMatches(false);
       onChange([...selectedElements, { name: value }]);
+      onSearch();
       onInput('');
     }
   };

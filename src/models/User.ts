@@ -11,6 +11,7 @@ export interface UserModel {
   aadPassword: string;
   accountUpn: string;
   profile: {
+    description: string;
     avatar: string;
     tagsets: Tagset[];
     references: Array<UserReference>;
@@ -39,6 +40,7 @@ export const defaultUser: UserModel = {
   aadPassword: '',
   accountUpn: '',
   profile: {
+    description: '',
     avatar: '',
     tagsets: [],
     references: [],
@@ -60,4 +62,5 @@ export interface UserFromGenerated {
   lastName: string;
   city: string;
   gender: string;
+  bio: string;
 }
