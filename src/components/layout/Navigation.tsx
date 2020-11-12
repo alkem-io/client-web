@@ -52,12 +52,20 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onS
     <>
       <Hidden mdDown>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <OverlayTrigger placement="bottom" overlay={<Tooltip id="ecoverse-tooltip">{'Ecoverse'}</Tooltip>}>
+          <OverlayTrigger
+            offset={[100, 100]}
+            placement="bottom"
+            overlay={<Tooltip id="ecoverse-tooltip">{'Ecoverse'}</Tooltip>}
+          >
             <IconButton className={styles.navLinkOffset} as={Link} to="/">
               <Icon component={GlobeIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
             </IconButton>
           </OverlayTrigger>
-          <OverlayTrigger placement="bottom" overlay={<Tooltip id="community-tooltip">{'Community'}</Tooltip>}>
+          <OverlayTrigger
+            offset={[100, 100]}
+            placement="bottom"
+            overlay={<Tooltip id="community-tooltip">{'Community'}</Tooltip>}
+          >
             <span className={styles.navLinkOffset}>
               <IconButton
                 disabled={!Boolean(userMetadata)}
@@ -69,7 +77,11 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onS
               </IconButton>
             </span>
           </OverlayTrigger>
-          <OverlayTrigger placement="bottom" overlay={<Tooltip id="messages-tooltip">{'Messages'}</Tooltip>}>
+          <OverlayTrigger
+            offset={[100, 100]}
+            placement="bottom"
+            overlay={<Tooltip id="messages-tooltip">{'Messages'}</Tooltip>}
+          >
             <span className={styles.navLinkOffset}>
               <IconButton
                 disabled={!Boolean(userMetadata)}

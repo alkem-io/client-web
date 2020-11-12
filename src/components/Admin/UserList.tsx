@@ -15,7 +15,7 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
   const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
-  const data = users.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` }));
+  const data = users.map(u => ({ id: u.id, value: `${u.name} (${u.email})`, url: `${url}/${u.id}` }));
 
   return (
     <>
@@ -24,7 +24,7 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
           New
         </Button>
       </ButtonGroup>
-      <SearchableList data={data} edit={true} />;
+      <SearchableList data={data} edit={true} />
     </>
   );
 };
