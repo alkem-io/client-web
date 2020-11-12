@@ -202,7 +202,7 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>
                   {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  {accountUpn !== '' && getInputField('UPN', accountUpn, 'upn', false, true)}
+                  {getInputField('UPN', accountUpn, 'upn', false, true)}
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} sm={6}>
