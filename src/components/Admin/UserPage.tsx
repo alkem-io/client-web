@@ -4,13 +4,21 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Prompt, useHistory } from 'react-router-dom';
 import { EditMode, UserForm } from '.';
-import { useCreateUserMutation, User, UserInput, useUpdateUserMutation } from '../../generated/graphql';
+import {
+  useCreateUserMutation,
+  User,
+  useRemoveUserMutation,
+  UserInput,
+  useUpdateUserMutation,
+} from '../../generated/graphql';
 import { USER_DETAILS_FRAGMENT } from '../../graphql/user';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { UserModel } from '../../models/User';
 import { PageProps } from '../../pages';
 import { Loading } from '../core/Loading';
 import PasswordPrompt from './PasswordPrompt';
+import Button from '../core/Button';
+import UserRemoveModal from './UserRemoveModal';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
@@ -23,6 +31,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const [showError, setShowError] = useState<boolean>(false);
   const [strongPassword, setStrongPassword] = useState<string>('');
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
 
   const currentPaths = useMemo(() => [...paths, { name: user && user.name ? user.name : 'new', real: false }], [paths]);
@@ -32,6 +41,16 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => setShowSuccess(true),
+  });
+
+  const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
+    refetchQueries: ['users'],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      setModalOpened(false);
+      history.push('/admin/users');
+    },
+    onError: e => console.error('User remove error---> ', e),
   });
 
   useEffect(() => {
@@ -133,6 +152,18 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     }
   };
 
+  const handleRemoveUser = () => {
+    remove({
+      variables: {
+        userID: Number(user?.id),
+      },
+    });
+  };
+
+  const closeModal = (): void => {
+    setModalOpened(false);
+  };
+
   return (
     <div>
       <Prompt
@@ -149,7 +180,20 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         Saved successfully.
       </Alert>
       {isSaving && <Loading text={'Saving...'} />}
+      <div className={'d-flex'}>
+        <div className={'flex-grow-1'} />
+        <Button variant={'negative'} small onClick={() => setModalOpened(true)}>
+          Remove user
+        </Button>
+      </div>
       <UserForm editMode={mode} onSave={handleSave} title={title} user={user} />
+      <UserRemoveModal
+        show={isModalOpened}
+        onCancel={closeModal}
+        onConfirm={handleRemoveUser}
+        name={user?.name}
+        loading={userRemoveLoading}
+      />
     </div>
   );
 };
