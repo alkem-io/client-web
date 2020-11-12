@@ -165,7 +165,8 @@ export const UserForm: FC<UserProps> = ({
               fieldName: string,
               required = false,
               readOnly = false,
-              type?: string
+              type?: string,
+              placeholder?: string
             ) => (
               <Form.Group as={Col}>
                 <Form.Label>
@@ -175,7 +176,7 @@ export const UserForm: FC<UserProps> = ({
                 <Form.Control
                   name={fieldName}
                   type={type || 'text'}
-                  placeholder={title}
+                  placeholder={placeholder || title}
                   value={value}
                   onChange={fieldName === 'tagsets' ? handleTagSet : handleChange}
                   required={required}
@@ -202,7 +203,7 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>
                   {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  {getInputField('UPN', accountUpn, 'upn', false, true)}
+                  {getInputField('Username', accountUpn, 'upn', false, true, 'text', ' ')}
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} sm={6}>
