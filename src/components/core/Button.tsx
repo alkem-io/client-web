@@ -148,6 +148,14 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const styles = useButtonStyles(classes);
 
+  const props = disabled
+    ? {}
+    : {
+        type: 'button',
+        onClick,
+        ...rest,
+      };
+
   // can always use the bootstrap button internally
   return (
     <Component
@@ -159,9 +167,7 @@ const Button: FC<ButtonProps> = ({
         disabled && styles.disabled,
         className
       )}
-      type="button"
-      onClick={onClick}
-      {...rest}
+      {...props}
     >
       <Typography variant="button" color="inherit" weight="boldLight">
         {text}

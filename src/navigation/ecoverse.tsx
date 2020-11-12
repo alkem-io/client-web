@@ -1,11 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { opportunities } from '../components/core/Typography.dummy.json';
 import {
   Challenge as ChallengeType,
   Opportunity as OpportunityType,
-  Project as ProjectType,
   useChallengeProfileQuery,
   useChallengeUserIdsQuery,
   useEcoverseDetailsQuery,
@@ -14,6 +12,7 @@ import {
   useOpportunityUserIdsQuery,
   User,
 } from '../generated/graphql';
+import { useUserContext } from '../hooks/useUserContext';
 import {
   Challenge as ChallengePage,
   Ecoverse as EcoversePage,
@@ -62,7 +61,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   const loading = ecoverseLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading ecoverse'} />;
   }
 
   if (!ecoverse) {
@@ -117,7 +116,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const loading = challengeLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading challenge'} />;
   }
 
   if (!challenge) {
@@ -153,6 +152,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const { path, url } = useRouteMatch();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
+  const { user } = useUserContext();
   const target = opportunities.find(x => x.textID === id);
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
@@ -177,7 +177,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const loading = opportunityLoading || usersLoading;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading opportunity'} />;
   }
 
   if (!opportunity) {
@@ -193,6 +193,9 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
           paths={currentPaths}
           onProjectTransition={project => {
             history.push(`${url}/projects/${project ? project.textID : 'new'}`);
+          }}
+          permissions={{
+            projectWrite: user?.ofGroup('admin', false) || false,
           }}
         />
       </Route>

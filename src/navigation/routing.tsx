@@ -1,29 +1,40 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { Admin } from './admin';
-import { Ecoverses } from './ecoverse';
-import { Community } from './community';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
+import { Admin } from './admin';
+import { Community } from './community';
+import { Ecoverses } from './ecoverse';
+import { Restricted } from './restricted';
+import RestrictedRoute from './route.extensions';
+import { SignIn } from './signin';
 /*local files imports end*/
+
+const adminGroups = ['admin'];
 
 export const Routing: FC = () => {
   return (
     <Switch>
-      <Route path="/admin">
+      <RestrictedRoute path="/admin" allowedGroups={adminGroups} strict={false}>
         <Admin />
-      </Route>
+      </RestrictedRoute>
       <Route exact path="/">
         <Redirect to="/ecoverse/1" />
       </Route>
       <Route path="/ecoverse">
         <Ecoverses />
       </Route>
-      <Route exact path="/community">
+      <RestrictedRoute exact path="/community">
         <Community />
-      </Route>
-      <Route exact path="/profile">
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/profile">
         <UserProfile />
+      </RestrictedRoute>
+      <Route exact path="/signin">
+        <SignIn />
+      </Route>
+      <Route exact path="/restricted">
+        <Restricted />
       </Route>
       <Route path="*">
         <FourOuFour />

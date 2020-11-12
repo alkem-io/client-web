@@ -1,15 +1,11 @@
+import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
+import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
-import Button from '../core/Button';
 import Card from '../core/Card';
-import CircleTag from '../core/CircleTag';
-import Typography from '../core/Typography';
-import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.svg';
-import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
-import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
-import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import Icon from '../core/Icon';
+import Typography from '../core/Typography';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -91,7 +87,7 @@ export const AspectCard: FC<AspectCardProps> = ({ title, framing, explanation })
 };
 
 export const ContentCard: FC<{ title: string }> = ({ title, children }) => {
-  const styles = useCardStyles();
+  // const styles = useCardStyles();
 
   return (
     <Card

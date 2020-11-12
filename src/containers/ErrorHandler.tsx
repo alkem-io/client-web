@@ -5,9 +5,8 @@ import { Badge, Toast } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { clearError } from '../reducers/error/actions';
-import { ErrorBoundary } from './ErrorBoundary';
 
-export const ErrorHandler: FC = ({ children }) => {
+export const ErrorHandler: FC = () => {
   const error = useTypedSelector<Error | AuthError | undefined>(state => {
     return state.error.errors[0];
   });
