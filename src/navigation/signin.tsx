@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import Loading from '../components/core/Loading';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useQueryParams } from '../hooks/useQueryParams';
 import { useUserContext } from '../hooks/useUserContext';
@@ -15,7 +16,7 @@ export const SignIn: FC = () => {
   const [processComplete, setProcessComplete] = useState(false);
   const [processFailed, setProcessFailed] = useState(false);
   const { authenticate } = useAuthenticate();
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
 
   const tryAuthenticate = useCallback(() => {
     async function runProcess() {
@@ -32,7 +33,11 @@ export const SignIn: FC = () => {
     runProcess();
   }, [authenticate, setProcessComplete, setProcessFailed]);
 
-  if (user && !processFailed) {
+  if (loading) {
+    return <Loading text="Authenticating..." />;
+  }
+
+  if (processComplete && user) {
     return <Redirect to={`${decodeURI(redirect || '/')}`} />;
   }
 
