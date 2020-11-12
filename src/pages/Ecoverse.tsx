@@ -142,7 +142,12 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
           <ChallengeCard
             key={i}
             {...(challenge as any)}
-            context={{ tag: user.user?.ofChallenge(challenge.id) ? 'You are in' : null }}
+            context={{
+              ...challenge.context,
+              tag: user.user?.ofChallenge(challenge.id)
+                ? 'You are in'
+                : (challenge.context as Record<string, any>)['tag'],
+            }}
             url={`${url}/challenges/${challenge.textID}`}
           />
         ))}
