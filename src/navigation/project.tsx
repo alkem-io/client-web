@@ -1,14 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import {
-  Project as ProjectType,
-  useProjectProfileQuery,
-  useCreateProjectMutation,
-  ProjectInput,
-} from '../generated/graphql';
-import { FourOuFour, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage, PageProps } from '../pages';
+import { Project as ProjectType, useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { pushError } from '../reducers/error/actions';
+import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
@@ -20,9 +16,9 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
   const { path } = useRouteMatch();
   return (
     <Switch>
-      <Route exact path={`${path}/new`}>
+      <RestrictedRoute exact path={`${path}/new`} allowedGroups={['admin']} strict={false}>
         <ProjectNew paths={paths} projects={projects} opportunityId={opportunityId} />
-      </Route>
+      </RestrictedRoute>
       <Route exact path={`${path}/:id`}>
         <ProjectIndex paths={paths} projects={projects} opportunityId={opportunityId} />
       </Route>
@@ -49,6 +45,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, projects, opportunityId }) =>
     awaitRefetchQueries: true,
   });
 
+  // need to add validation for project name & textID
   return (
     <ProjectNewPage
       paths={currentPaths}
@@ -67,7 +64,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, projects, opportunityId }) =>
 };
 
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
-  const { path, url } = useRouteMatch();
+  const { url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
   const target = projects?.find(x => x.textID === id);
 

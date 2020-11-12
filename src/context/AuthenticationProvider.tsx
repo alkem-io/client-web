@@ -1,25 +1,39 @@
 import React, { FC } from 'react';
-import { useAuthentication } from '../hooks';
+import { useAuthentication, UseAuthenticationResult } from '../hooks';
 
-export interface AuthContext {
-  handleSignIn: () => void;
-  handleSignOut: () => void;
+export interface AuthContext extends UseAuthenticationResult {
   loading: boolean;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
-  handleSignIn: () => null,
-  handleSignOut: () => null,
   loading: true,
+  signIn: () => Promise.resolve(undefined),
+  signOut: () => Promise.resolve(undefined),
+  acquireToken: () => Promise.resolve(undefined),
+  getAccounts: () => [],
+  resetCache: () => Promise.resolve(null),
 });
+
 const AuthenticationProvider: FC<{}> = ({ children }) => {
-  const { handleSignIn, handleSignOut, loading } = useAuthentication();
+  const {
+    signIn,
+    signOut,
+    acquireToken,
+    getAccounts,
+    resetCache,
+    loading: authenticationLoading,
+  } = useAuthentication();
+
+  const loading = authenticationLoading;
 
   return (
     <AuthenticationContext.Provider
       value={{
-        handleSignIn,
-        handleSignOut,
+        signIn,
+        signOut,
+        acquireToken,
+        getAccounts,
+        resetCache,
         loading,
       }}
     >

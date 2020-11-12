@@ -6,3 +6,5 @@ export * from './Community';
 export * from './common';
 export * from './Project/Index';
 export * from './Project/New';
+export * from './Restricted';
+export * from './SignIn';

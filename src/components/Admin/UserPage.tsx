@@ -32,7 +32,7 @@ import { Alert } from 'react-bootstrap';
 import { Prompt, useHistory } from 'react-router-dom';
 import { EditMode, UserForm } from '.';
 import { useCreateUserMutation, User, UserInput, useUpdateUserMutation } from '../../generated/graphql';
-import { USER_DETAILS_FRAGMENT } from '../../graphql/admin';
+import { USER_DETAILS_FRAGMENT } from '../../graphql/user';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { UserModel } from '../../models/User';
 import { PageProps } from '../../pages';

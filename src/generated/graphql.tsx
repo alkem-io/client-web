@@ -925,15 +925,24 @@ export type SearchQueryVariables = Exact<{
 
 export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
-    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
+    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score' | 'terms'> & {
         result?: Maybe<
           | ({ __typename?: 'User' } & {
               memberof?: Maybe<
-                { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+                { __typename?: 'MemberOf' } & {
+                  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+                  challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+                  organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
+                }
               >;
             } & UserDetailsFragment)
           | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-                profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+                profile?: Maybe<
+                  { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+                      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+                      tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+                    }
+                >;
               })
         >;
       }
@@ -946,13 +955,23 @@ export type CommunityListQuery = { __typename?: 'Query' } & {
   users: Array<
     { __typename: 'User' } & {
       memberof?: Maybe<
-        { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+        { __typename?: 'MemberOf' } & {
+          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+          organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
+        }
       >;
     } & UserDetailsFragment
   >;
   groups: Array<
     { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+        members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+        profile?: Maybe<
+          { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+              tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+            }
+        >;
       }
   >;
 };
@@ -1115,7 +1134,7 @@ export type UserProfileQuery = { __typename?: 'Query' } & {
     memberof?: Maybe<
       { __typename?: 'MemberOf' } & {
         groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
       }
     >;
   } & UserDetailsFragment;
@@ -1571,10 +1590,17 @@ export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
       score
+      terms
       result {
         ... on User {
           memberof {
             groups {
+              name
+            }
+            challenges {
+              name
+            }
+            organisations {
               name
             }
           }
@@ -1584,6 +1610,14 @@ export const SearchDocument = gql`
           name
           profile {
             avatar
+            description
+            references {
+              name
+              description
+            }
+            tagsets {
+              name
+            }
           }
         }
       }
@@ -1625,14 +1659,31 @@ export const CommunityListDocument = gql`
         groups {
           name
         }
+        challenges {
+          name
+        }
+        organisations {
+          name
+        }
       }
       ...UserDetails
     }
     groups {
       __typename
       name
+      members {
+        name
+      }
       profile {
         avatar
+        description
+        references {
+          name
+          description
+        }
+        tagsets {
+          name
+        }
       }
     }
   }
@@ -2243,6 +2294,7 @@ export const UserProfileDocument = gql`
           name
         }
         challenges {
+          id
           name
         }
       }

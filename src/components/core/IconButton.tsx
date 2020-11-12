@@ -29,6 +29,22 @@ const useIconButtonStyles = createStyles(theme => ({
       outline: 'none',
     },
   },
+  disabled: {
+    color: theme.palette.neutralMedium,
+    borderColor: theme.palette.neutralLight,
+    background: 'transparent',
+    opacity: 0.8,
+    transition: 'color 0.5s ease-out',
+    cursor: 'default',
+
+    '&:hover': {
+      color: hexToRGBA(theme.palette.neutralMedium, 0.7),
+    },
+
+    '&:focus': {
+      outline: 'none',
+    },
+  },
 }));
 
 interface ButtonProps extends Record<string, unknown> {
@@ -37,6 +53,7 @@ interface ButtonProps extends Record<string, unknown> {
   as?: React.ComponentType<any>;
   onClick?: (e: Event) => void;
   hoverIcon?: React.ReactNode;
+  disabled?: boolean;
   children: React.ReactNode;
 }
 
@@ -44,6 +61,7 @@ const IconButton: FC<ButtonProps> = ({
   className,
   children,
   hoverIcon,
+  disabled,
   as: Component = 'button',
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onClick = () => {},
@@ -54,15 +72,23 @@ const IconButton: FC<ButtonProps> = ({
 
   const toggleHover = () => setHover(x => !x);
 
+  const props = disabled
+    ? {}
+    : {
+        onClick,
+        onMouseEnter: toggleHover,
+        onMouseLeave: toggleHover,
+        ...rest,
+      };
+
+  Component = disabled ? 'button' : Component;
+
   // can always use the bootstrap button internally
   return (
     <Component
-      className={clsx(styles.button, styles.primary, className)}
+      className={clsx(styles.button, styles.primary, disabled && styles.disabled, className)}
       type={'button'}
-      onClick={onClick}
-      onMouseEnter={toggleHover}
-      onMouseLeave={toggleHover}
-      {...rest}
+      {...props}
     >
       {(hover && hoverIcon) || children}
     </Component>

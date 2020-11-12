@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { USER_DETAILS_FRAGMENT } from './admin';
+import { USER_DETAILS_FRAGMENT } from './user';
 
 export const QUERY_COMMUNITY_SEARCH = gql`
   query search($searchData: SearchInput!) {
