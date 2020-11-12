@@ -41,6 +41,18 @@ const UserPopUp: FC<UserCardProps> = ({
         <Typography weight={'medium'} as={'p'}>
           {country} {city}
         </Typography>
+        {profile?.references && profile?.references.length > 0 && (
+          <>
+            <Typography>References: </Typography>
+            {profile?.references?.map(r => (
+              <Typography>
+                <a href={r.uri} rel="noopener noreferrer" target="_blank">
+                  {r.name}
+                </a>
+              </Typography>
+            ))}
+          </>
+        )}
         {groups && groups.length > 0 && (
           <Typography weight={'medium'} as={'p'}>
             Member of groups: {getStringOfNames(groups)}
