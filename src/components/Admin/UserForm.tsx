@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import './styles.scss';
+import Typography from '../core/Typography';
 /*local files imports end*/
 
 export enum EditMode {
@@ -147,7 +148,9 @@ export const UserForm: FC<UserProps> = ({
   } else {
     return (
       <>
-        <h2 className={'mt-4 mb-4'}>{title}</h2>
+        <Typography variant={'h3'} className={'mt-4 mb-4'}>
+          {title}
+        </Typography>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
