@@ -28,14 +28,6 @@ export type Context = {
   references?: Maybe<Array<Reference>>;
 };
 
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -54,6 +46,14 @@ export type Profile = {
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
   description?: Maybe<Scalars['String']>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type Template = {
@@ -182,8 +182,6 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
   /** The profile for this organisation */
   profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
@@ -792,10 +790,8 @@ export type ActorInput = {
 };
 
 export type OrganisationInput = {
-  /** The new name for this organisation */
+  /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type EcoverseInput = {
@@ -903,6 +899,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
               >;
             }
         >
+      >;
+      leadOrganisations: Array<
+        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
+            profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+          }
       >;
     };
 };
@@ -1549,6 +1550,12 @@ export const ChallengeProfileDocument = gql`
           name
           description
           state
+        }
+      }
+      leadOrganisations {
+        name
+        profile {
+          avatar
         }
       }
     }
