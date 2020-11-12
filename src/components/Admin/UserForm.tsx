@@ -182,6 +182,7 @@ export const UserForm: FC<UserProps> = ({
               required = false,
               readOnly = false,
               type?: string,
+              placeholder?: string,
               as?: React.ElementType<any>
             ) => (
               <Form.Group as={Col}>
@@ -193,7 +194,7 @@ export const UserForm: FC<UserProps> = ({
                   name={fieldName}
                   as={as ? as : 'input'}
                   type={type || 'text'}
-                  placeholder={title}
+                  placeholder={placeholder || title}
                   value={value}
                   onChange={fieldName === 'tagsets' ? handleTagSet : handleChange}
                   required={required}
@@ -220,7 +221,7 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>
                   {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  {accountUpn !== '' && getInputField('UPN', accountUpn, 'upn', false, true)}
+                  {getInputField('Username', accountUpn, 'upn', false, true, 'text', ' ')}
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} sm={6}>
@@ -244,7 +245,9 @@ export const UserForm: FC<UserProps> = ({
                   {getInputField('Country', country, 'country', false, isReadOnlyMode)}
                 </Form.Row>
                 <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
-                <Form.Row>{getInputField('Bio', bio, 'bio', false, isReadOnlyMode, undefined, 'textarea')}</Form.Row>
+                <Form.Row>
+                  {getInputField('Bio', bio, 'bio', false, isReadOnlyMode, undefined, 'Bio', 'textarea')}
+                </Form.Row>
                 <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
 
