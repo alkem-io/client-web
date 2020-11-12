@@ -87,7 +87,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       variables: {
         searchData: {
           terms: [searchTerm && searchTerm, ...tagNames],
-          // tagsetNames: ['skills'], ------> disabled for now
+          tagsetNames: ['skills', 'keywords'],
           ...(typesFilter.value && { typesFilter: [typesFilter.value] }),
         },
       },
