@@ -20,7 +20,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = []
     return <Redirect to={`/signin?redirect=${encodeURI(pathname)}`} />;
   }
 
-  if (allowedGroups.every(x => !user.ofGroup(x, strict))) {
+  if (allowedGroups.every(x => !user.ofGroup(x, strict)) && allowedGroups.length !== 0) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 

@@ -56,7 +56,7 @@ export const UserForm: FC<UserProps> = ({
     phone,
     country,
     accountUpn,
-    profile: { tagsets, references, avatar },
+    profile: { description: bio, tagsets, references, avatar },
   } = currentUser;
 
   const initialValues = {
@@ -72,6 +72,7 @@ export const UserForm: FC<UserProps> = ({
     tagsets: tagsets,
     references: references || '',
     accountUpn: accountUpn || '',
+    bio: bio || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -98,6 +99,7 @@ export const UserForm: FC<UserProps> = ({
         uri: yup.string(),
       })
     ),
+    bio: yup.string().max(400),
   });
 
   /**
@@ -107,12 +109,13 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = (userData: UserFromGenerated): void => {
-    const { tagsets, avatar, references, ...otherData } = userData;
+    const { tagsets, avatar, references, bio, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
     const user: UserModel = {
       ...currentUser,
       ...otherData,
       profile: {
+        description: bio,
         avatar,
         references: [...references],
         tagsets: [
@@ -152,7 +155,20 @@ export const UserForm: FC<UserProps> = ({
           onSubmit={values => handleSubmit(values)}
         >
           {({
-            values: { name, firstName, lastName, email, city, phone, country, references, avatar, gender, accountUpn },
+            values: {
+              name,
+              firstName,
+              lastName,
+              email,
+              city,
+              phone,
+              country,
+              references,
+              avatar,
+              gender,
+              accountUpn,
+              bio,
+            },
             handleChange,
             handleSubmit,
             handleBlur,
@@ -166,7 +182,8 @@ export const UserForm: FC<UserProps> = ({
               required = false,
               readOnly = false,
               type?: string,
-              placeholder?: string
+              placeholder?: string,
+              as?: React.ElementType<any>
             ) => (
               <Form.Group as={Col}>
                 <Form.Label>
@@ -175,6 +192,7 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Label>
                 <Form.Control
                   name={fieldName}
+                  as={as ? as : 'input'}
                   type={type || 'text'}
                   placeholder={placeholder || title}
                   value={value}
@@ -227,6 +245,9 @@ export const UserForm: FC<UserProps> = ({
                   {getInputField('Country', country, 'country', false, isReadOnlyMode)}
                 </Form.Row>
                 <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
+                <Form.Row>
+                  {getInputField('Bio', bio, 'bio', false, isReadOnlyMode, undefined, 'Bio', 'textarea')}
+                </Form.Row>
                 <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
 
