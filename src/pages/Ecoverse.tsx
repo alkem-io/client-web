@@ -24,6 +24,7 @@ import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop'
 import { EcoverseDetailsQuery, User, useUserAvatarsQuery } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
+import { useUserContext } from '../hooks/useUserContext';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseDetailsQuery;
@@ -56,6 +57,8 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
 const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
   const { url } = useRouteMatch();
   const history = useHistory();
+  const user = useUserContext();
+
   useUpdateNavigation({ currentPaths: paths });
 
   const { name, context = {}, challenges } = ecoverse;
@@ -139,7 +142,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
           <ChallengeCard
             key={i}
             {...(challenge as any)}
-            context={{ tag: 'yes' }}
+            context={{ tag: user.user?.ofChallenge(challenge.id) ? 'You are in' : null }}
             url={`${url}/challenges/${challenge.textID}`}
           />
         ))}
