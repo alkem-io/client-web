@@ -92,6 +92,12 @@ export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
   ${GROUP_MEMBERS_FRAGMENT}
 `;
 
+export const MUTATION_REMOVE_USER = gql`
+  mutation removeUser($userID: Float!) {
+    removeUser(userID: $userID)
+  }
+`;
+
 export const MUTATION_ADD_USER_TO_GROUP = gql`
   mutation addUserToGroup($groupID: Float!, $userID: Float!) {
     addUserToGroup(groupID: $groupID, userID: $userID)
