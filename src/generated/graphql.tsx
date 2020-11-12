@@ -810,13 +810,17 @@ export type TemplateInput = {
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
+export type UsersQuery = { __typename?: 'Query' } & {
+  users: Array<{ __typename?: 'User' } & UserDetailsFragment & UserMembersFragment>;
+};
 
 export type UserQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
-export type UserQuery = { __typename?: 'Query' } & { user: { __typename?: 'User' } & UserDetailsFragment };
+export type UserQuery = { __typename?: 'Query' } & {
+  user: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
+};
 
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
@@ -1100,6 +1104,15 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
     >;
   };
 
+export type UserMembersFragment = { __typename?: 'User' } & {
+  memberof?: Maybe<
+    { __typename?: 'MemberOf' } & {
+      groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+      challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+    }
+  >;
+};
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -1137,14 +1150,7 @@ export type UserAvatarsQuery = { __typename?: 'Query' } & {
 export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'User' } & {
-    memberof?: Maybe<
-      { __typename?: 'MemberOf' } & {
-        groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
-      }
-    >;
-  } & UserDetailsFragment;
+  me: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
 };
 
 export const GroupMembersFragmentDoc = gql`
@@ -1200,13 +1206,30 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserMembersFragmentDoc = gql`
+  fragment UserMembers on User {
+    memberof {
+      groups {
+        id
+        name
+      }
+      challenges {
+        id
+        name
+        textID
+      }
+    }
+  }
+`;
 export const UsersDocument = gql`
   query users {
     users {
       ...UserDetails
+      ...UserMembers
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserMembersFragmentDoc}
 `;
 
 /**
@@ -1237,9 +1260,11 @@ export const UserDocument = gql`
   query user($id: String!) {
     user(ID: $id) {
       ...UserDetails
+      ...UserMembers
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserMembersFragmentDoc}
 `;
 
 /**
@@ -2335,18 +2360,11 @@ export const UserProfileDocument = gql`
   query userProfile {
     me {
       ...UserDetails
-      memberof {
-        groups {
-          name
-        }
-        challenges {
-          id
-          name
-        }
-      }
+      ...UserMembers
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserMembersFragmentDoc}
 `;
 
 /**

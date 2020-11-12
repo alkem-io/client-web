@@ -27,6 +27,22 @@ export const USER_DETAILS_FRAGMENT = gql`
   }
 `;
 
+export const USER_MEMBER_OF_FRAGMENT = gql`
+  fragment UserMembers on User {
+    memberof {
+      groups {
+        id
+        name
+      }
+      challenges {
+        id
+        name
+        textID
+      }
+    }
+  }
+`;
+
 export const QUERY_ECOVERSE_USER_IDS = gql`
   query ecoverseUserIds {
     users {
@@ -72,16 +88,9 @@ export const QUERY_USER_PROFILE = gql`
   query userProfile {
     me {
       ...UserDetails
-      memberof {
-        groups {
-          name
-        }
-        challenges {
-          id
-          name
-        }
-      }
+      ...UserMembers
     }
   }
   ${USER_DETAILS_FRAGMENT}
+  ${USER_MEMBER_OF_FRAGMENT}
 `;
