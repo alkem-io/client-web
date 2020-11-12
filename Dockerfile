@@ -32,6 +32,7 @@ COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 COPY ./.env.deployment/env.sh .
+RUN chmod +x env.sh
 COPY ./.env.deployment/.env.base .
 
 EXPOSE 80

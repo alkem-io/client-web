@@ -19,9 +19,9 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
       <RestrictedRoute exact path={`${path}/new`} allowedGroups={['admin']} strict={false}>
         <ProjectNew paths={paths} projects={projects} opportunityId={opportunityId} />
       </RestrictedRoute>
-      <Route exact path={`${path}/:id`}>
+      <RestrictedRoute exact path={`${path}/:id`}>
         <ProjectIndex paths={paths} projects={projects} opportunityId={opportunityId} />
-      </Route>
+      </RestrictedRoute>
       <Route path="*">
         <FourOuFour />
       </Route>
