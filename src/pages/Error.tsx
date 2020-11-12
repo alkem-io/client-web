@@ -3,7 +3,7 @@ import Button from '../components/core/Button';
 import Section from '../components/core/Section';
 import Typography from '../components/core/Typography';
 
-export const Error: FC<{ error: Error }> = ({ error: Error }) => {
+export const Error: FC<{ error: Error }> = () => {
   return (
     <div style={{ display: 'flex', height: '100%', alignItems: 'center' }}>
       <Section>

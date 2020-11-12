@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useAuthenticate } from '../hooks/useAuthenticate';
