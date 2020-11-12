@@ -812,18 +812,6 @@ export type TemplateInput = {
   description?: Maybe<Scalars['String']>;
 };
 
-export type UserDetailsFragment = { __typename?: 'User' } & Pick<
-  User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
-> & {
-    profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-        }
-    >;
-  };
-
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
@@ -1093,6 +1081,18 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
   createProject: { __typename?: 'Project' } & ProjectDetailsFragment;
 };
 
+export type UserDetailsFragment = { __typename?: 'User' } & Pick<
+  User,
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
+> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+        }
+    >;
+  };
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -1140,31 +1140,6 @@ export type UserProfileQuery = { __typename?: 'Query' } & {
   } & UserDetailsFragment;
 };
 
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    id
-    name
-    firstName
-    lastName
-    email
-    gender
-    country
-    city
-    phone
-    accountUpn
-    profile {
-      avatar
-      references {
-        name
-        uri
-      }
-      tagsets {
-        name
-        tags
-      }
-    }
-  }
-`;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -1189,6 +1164,32 @@ export const ProjectDetailsFragmentDoc = gql`
       title
       framing
       explanation
+    }
+  }
+`;
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    gender
+    country
+    city
+    phone
+    accountUpn
+    profile {
+      description
+      avatar
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
     }
   }
 `;
