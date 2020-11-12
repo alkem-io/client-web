@@ -1,33 +1,30 @@
 import React, { FC } from 'react';
-import { Nav } from 'react-bootstrap';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '../../pages';
-import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import { CardContainer } from '../core/Container';
-import Typography from '../core/Typography';
 
 type AdminPageProps = PageProps;
 
 const adminPageData = [
   {
     name: 'Users',
-    url: '/users',
-    description: 'Edit users',
+    buttons: [
+      { description: 'New user', url: '/users/new' },
+      { description: 'Edit users', url: '/users' },
+    ],
   },
   {
     name: 'Groups',
-    url: '/groups',
-    description: 'Edit user groups',
+    buttons: [{ description: 'Edit groups', url: '/groups' }],
   },
 ];
 
 export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
-  //const styles = useCardStyles();
 
   const { url } = useRouteMatch();
   return (
@@ -53,7 +50,11 @@ export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
             }}
           >
             <div>
-              <Button text={x.description} as={Link} to={`${url}${x.url}`} />
+              {x.buttons.map(b => (
+                <>
+                  <Button text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
+                </>
+              ))}
             </div>
           </Card>
         ))}

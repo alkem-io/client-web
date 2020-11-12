@@ -1,8 +1,10 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+import { Modal } from 'react-bootstrap';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
+import Button from './Button';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 
@@ -11,6 +13,7 @@ interface HeaderProps {
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
+  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative';
 }
 
 const useHeaderStyles = createStyles(theme => ({
@@ -80,10 +83,46 @@ const useTagStyles = createStyles(theme => ({
 
 interface CardTagProps extends HeaderProps, TagProps {}
 
-export const CardTag: FC<CardTagProps> = ({ text, className, classes = {}, ...rest }) => {
-  const styles = useTagStyles(classes);
+export const CardTag: FC<CardTagProps> = ({ text, className, color, ...rest }) => {
+  const styles = useTagStyles({ background: color });
 
-  return <Tag className={clsx(styles.tag, className)} text={text} {...rest} />;
+  return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
+};
+
+const useMatchedTermsStyles = createStyles(theme => ({
+  tagsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxHeight: `${theme.shape.spacing(9)}px`,
+    overflow: 'hidden',
+  },
+  tag: {
+    padding: '5px 10px',
+    width: 'fit-content',
+    borderRadius: 15,
+    textTransform: 'uppercase',
+    backgroundColor: theme.palette.primary,
+    marginRight: `${theme.shape.spacing(1)}px`,
+    marginBottom: `${theme.shape.spacing(1)}px`,
+  },
+}));
+
+interface MatchedTermsProps {
+  terms?: Array<string>;
+}
+
+export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
+  const styles = useMatchedTermsStyles();
+
+  return (
+    <div className={styles.tagsContainer}>
+      {terms?.map((t, index) => (
+        <Typography key={index} className={styles.tag} color={'background'}>
+          {t}
+        </Typography>
+      ))}
+    </div>
+  );
 };
 
 const useBodyStyles = createStyles(theme => ({
@@ -134,9 +173,11 @@ export interface CardProps extends Record<string, unknown> {
   className?: string;
   headerProps?: HeaderProps;
   tagProps?: CardTagProps;
+  matchedTerms?: MatchedTermsProps;
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
+  popUp?: JSX.Element;
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -147,28 +188,49 @@ const useCardStyles = createStyles(theme => ({
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
   },
+  clickable: {
+    cursor: 'pointer',
+  },
 }));
 
 const Card: FC<CardProps> = ({
   className,
   headerProps,
   tagProps,
+  matchedTerms,
   bodyProps,
   primaryTextProps,
   classes = {},
   children,
+  popUp,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
 
+  const [isModalShown, setIsModalShown] = useState<boolean>(false);
+
+  const handleShow = () => popUp && !isModalShown && setIsModalShown(true);
+  const handleClose = () => popUp && setIsModalShown(false);
+
   return (
-    <div className={clsx(styles.root, className, 'ct-card')} {...rest}>
+    <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
+        <div className="flex-grow-1" />
+        {matchedTerms && <MatchedTerms {...matchedTerms} />}
+        <div className="flex-grow-1" />
         {children}
       </Body>
+      {popUp && (
+        <Modal show={isModalShown} onHide={handleClose} size="lg" centered>
+          {popUp}
+          <Modal.Footer>
+            <Button onClick={handleClose}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };

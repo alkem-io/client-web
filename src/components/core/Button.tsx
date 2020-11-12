@@ -96,6 +96,37 @@ const useButtonStyles = createStyles(theme => ({
       },
     },
   },
+  negative: {
+    color: theme.palette.negative,
+    borderColor: theme.palette.negative,
+    background: theme.palette.background,
+
+    '&:hover': {
+      color: theme.palette.neutralLight,
+      background: hexToRGBA(theme.palette.negative, 0.7),
+    },
+
+    '&.inset': {
+      borderColor: theme.palette.neutralLight,
+      borderRightColor: 'transparent',
+      borderTopColor: 'transparent',
+      borderBottomColor: 'transparent',
+
+      '&:hover': {
+        color: theme.palette.negative,
+        background: theme.palette.background,
+        cursor: 'pointer',
+      },
+
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+
+    '&:focus': {
+      outline: `1px auto ${theme.palette.negative}`,
+    },
+  },
   disabled: {
     color: theme.palette.background,
     borderColor: theme.palette.neutralLight,
@@ -126,7 +157,7 @@ interface ButtonProps extends Record<string, unknown> {
   as?: React.ComponentType<any> | string;
   onClick?: (e: Event) => void;
   text?: string;
-  variant?: 'default' | 'primary' | 'transparent';
+  variant?: 'default' | 'primary' | 'negative' | 'transparent';
   inset?: boolean;
   small?: boolean;
   disabled?: boolean;
@@ -148,6 +179,14 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const styles = useButtonStyles(classes);
 
+  const props = disabled
+    ? {}
+    : {
+        type: 'button',
+        onClick,
+        ...rest,
+      };
+
   // can always use the bootstrap button internally
   return (
     <Component
@@ -159,9 +198,7 @@ const Button: FC<ButtonProps> = ({
         disabled && styles.disabled,
         className
       )}
-      type="button"
-      onClick={onClick}
-      {...rest}
+      {...props}
     >
       <Typography variant="button" color="inherit" weight="boldLight">
         {text}

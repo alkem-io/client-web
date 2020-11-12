@@ -28,14 +28,6 @@ export type Context = {
   references?: Maybe<Array<Reference>>;
 };
 
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -54,6 +46,14 @@ export type Profile = {
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
   description?: Maybe<Scalars['String']>;
+};
+
+export type Reference = {
+  __typename?: 'Reference';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type Template = {
@@ -182,8 +182,6 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of tags for the organisation */
-  tagset?: Maybe<Tagset>;
   /** The profile for this organisation */
   profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
@@ -792,10 +790,8 @@ export type ActorInput = {
 };
 
 export type OrganisationInput = {
-  /** The new name for this organisation */
+  /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type EcoverseInput = {
@@ -811,18 +807,6 @@ export type TemplateInput = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
-
-export type UserDetailsFragment = { __typename?: 'User' } & Pick<
-  User,
-  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
-> & {
-    profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-        }
-    >;
-  };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -888,6 +872,12 @@ export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
     };
 };
 
+export type RemoveUserMutationVariables = Exact<{
+  userID: Scalars['Float'];
+}>;
+
+export type RemoveUserMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUser'>;
+
 export type AddUserToGroupMutationVariables = Exact<{
   groupID: Scalars['Float'];
   userID: Scalars['Float'];
@@ -916,6 +906,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
             }
         >
       >;
+      leadOrganisations: Array<
+        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
+            profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+          }
+      >;
     };
 };
 
@@ -925,15 +920,24 @@ export type SearchQueryVariables = Exact<{
 
 export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
-    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score'> & {
+    { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score' | 'terms'> & {
         result?: Maybe<
           | ({ __typename?: 'User' } & {
               memberof?: Maybe<
-                { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+                { __typename?: 'MemberOf' } & {
+                  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+                  challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+                  organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
+                }
               >;
             } & UserDetailsFragment)
           | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-                profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+                profile?: Maybe<
+                  { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+                      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+                      tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+                    }
+                >;
               })
         >;
       }
@@ -946,13 +950,23 @@ export type CommunityListQuery = { __typename?: 'Query' } & {
   users: Array<
     { __typename: 'User' } & {
       memberof?: Maybe<
-        { __typename?: 'MemberOf' } & { groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>> }
+        { __typename?: 'MemberOf' } & {
+          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
+          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+          organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
+        }
       >;
     } & UserDetailsFragment
   >;
   groups: Array<
     { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+        members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+        profile?: Maybe<
+          { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+              tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+            }
+        >;
       }
   >;
 };
@@ -1074,6 +1088,18 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
   createProject: { __typename?: 'Project' } & ProjectDetailsFragment;
 };
 
+export type UserDetailsFragment = { __typename?: 'User' } & Pick<
+  User,
+  'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
+> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+        }
+    >;
+  };
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -1115,37 +1141,12 @@ export type UserProfileQuery = { __typename?: 'Query' } & {
     memberof?: Maybe<
       { __typename?: 'MemberOf' } & {
         groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
       }
     >;
   } & UserDetailsFragment;
 };
 
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    id
-    name
-    firstName
-    lastName
-    email
-    gender
-    country
-    city
-    phone
-    accountUpn
-    profile {
-      avatar
-      references {
-        name
-        uri
-      }
-      tagsets {
-        name
-        tags
-      }
-    }
-  }
-`;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -1170,6 +1171,32 @@ export const ProjectDetailsFragmentDoc = gql`
       title
       framing
       explanation
+    }
+  }
+`;
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    id
+    name
+    firstName
+    lastName
+    email
+    gender
+    country
+    city
+    phone
+    accountUpn
+    profile {
+      description
+      avatar
+      references {
+        name
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
     }
   }
 `;
@@ -1458,6 +1485,38 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   RemoveUserFromGroupMutation,
   RemoveUserFromGroupMutationVariables
 >;
+export const RemoveUserDocument = gql`
+  mutation removeUser($userID: Float!) {
+    removeUser(userID: $userID)
+  }
+`;
+export type RemoveUserMutationFn = Apollo.MutationFunction<RemoveUserMutation, RemoveUserMutationVariables>;
+
+/**
+ * __useRemoveUserMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserMutation, { data, loading, error }] = useRemoveUserMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useRemoveUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveUserMutation, RemoveUserMutationVariables>
+) {
+  return Apollo.useMutation<RemoveUserMutation, RemoveUserMutationVariables>(RemoveUserDocument, baseOptions);
+}
+export type RemoveUserMutationHookResult = ReturnType<typeof useRemoveUserMutation>;
+export type RemoveUserMutationResult = Apollo.MutationResult<RemoveUserMutation>;
+export type RemoveUserMutationOptions = Apollo.BaseMutationOptions<RemoveUserMutation, RemoveUserMutationVariables>;
 export const AddUserToGroupDocument = gql`
   mutation addUserToGroup($groupID: Float!, $userID: Float!) {
     addUserToGroup(groupID: $groupID, userID: $userID)
@@ -1531,6 +1590,12 @@ export const ChallengeProfileDocument = gql`
           state
         }
       }
+      leadOrganisations {
+        name
+        profile {
+          avatar
+        }
+      }
     }
   }
 `;
@@ -1571,10 +1636,17 @@ export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
       score
+      terms
       result {
         ... on User {
           memberof {
             groups {
+              name
+            }
+            challenges {
+              name
+            }
+            organisations {
               name
             }
           }
@@ -1584,6 +1656,14 @@ export const SearchDocument = gql`
           name
           profile {
             avatar
+            description
+            references {
+              name
+              description
+            }
+            tagsets {
+              name
+            }
           }
         }
       }
@@ -1625,14 +1705,31 @@ export const CommunityListDocument = gql`
         groups {
           name
         }
+        challenges {
+          name
+        }
+        organisations {
+          name
+        }
       }
       ...UserDetails
     }
     groups {
       __typename
       name
+      members {
+        name
+      }
       profile {
         avatar
+        description
+        references {
+          name
+          description
+        }
+        tagsets {
+          name
+        }
       }
     }
   }
@@ -2243,6 +2340,7 @@ export const UserProfileDocument = gql`
           name
         }
         challenges {
+          id
           name
         }
       }

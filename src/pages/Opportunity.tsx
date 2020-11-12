@@ -34,12 +34,14 @@ interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
+  permissions: { projectWrite: boolean };
 }
 
 const Opportunity: FC<OpportunityPageProps> = ({
   paths,
   opportunity,
   users = [],
+  permissions,
   onProjectTransition,
 }): React.ReactElement => {
   // styles
@@ -48,7 +50,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const projectRef = useRef<HTMLDivElement>(null);
 
   // data
-  const { name, aspects, projects = [], context, relations = [], actorGroups } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups } = opportunity;
   const team = relations[0];
   const stakeholders = useMemo(
     () =>
@@ -65,16 +67,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const incomming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
 
-  // const actors = useMemo(() => {
-  //   const stakeholders = actorGroups?.find(x => x.name === 'stakeholders')?.actors || [];
-  //   const keyUsers = actorGroups?.find(x => x.name === 'key_users')?.actors || [];
-
-  //   return [
-  //     ...stakeholders.map(x => ({ ...x, name: `${x.name}`, type: 'stakeholder' })),
-  //     ...keyUsers.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
-  //   ];
-  // }, [actorGroups]);
-
   const activitySummary = useMemo(() => {
     return [
       {
@@ -90,8 +82,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
     ];
   }, [projects]);
 
-  const opportunityProjects = useMemo(
-    () => [
+  const opportunityProjects = useMemo(() => {
+    const projectList = [
       ...projects.map(p => ({
         title: p.name,
         description: p.description,
@@ -103,14 +95,18 @@ const Opportunity: FC<OpportunityPageProps> = ({
         title: 'MORE PROJECTS STARTING SOON',
         type: 'more',
       },
-      {
+    ];
+
+    if (permissions.projectWrite) {
+      projectList.push({
         title: 'New project',
         type: 'add',
         onSelect: () => onProjectTransition(undefined),
-      },
-    ],
-    [projects, onProjectTransition]
-  );
+      });
+    }
+
+    return projectList;
+  }, [projects, onProjectTransition, permissions.projectWrite]);
 
   return (
     <>

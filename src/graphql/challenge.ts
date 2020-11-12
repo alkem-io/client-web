@@ -34,6 +34,12 @@ export const QUERY_CHALLENGE_PROFILE = gql`
           state
         }
       }
+      leadOrganisations {
+        name
+        profile {
+          avatar
+        }
+      }
     }
   }
 `;
