@@ -32,7 +32,7 @@ export const SignIn: FC = () => {
     runProcess();
   }, [authenticate, setProcessComplete, setProcessFailed]);
 
-  if (processComplete && user) {
+  if (user && !processFailed) {
     return <Redirect to={`${decodeURI(redirect || '/')}`} />;
   }
 
