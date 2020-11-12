@@ -116,8 +116,8 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
 
   return (
     <div className={styles.tagsContainer}>
-      {terms?.map(t => (
-        <Typography className={styles.tag} color={'background'}>
+      {terms?.map((t, index) => (
+        <Typography key={index} className={styles.tag} color={'background'}>
           {t}
         </Typography>
       ))}
