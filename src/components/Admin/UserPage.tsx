@@ -1,30 +1,3 @@
-// export const UserPage: FC<UserPageProps> = ({ paths, user }) => {
-//   const { path, url } = useRouteMatch();
-//   useUpdateNavigation({ currentPaths: paths });
-//   const title = 'Users';
-//   return (
-//     <>
-//       <Row className="justify-content-end">
-//         <Col>
-//           <h2 style={{ textAlign: 'center' }}>{title}</h2>
-//         </Col>
-//         <Col sm={1}>
-//           <Link to={`${path}/new`}>
-//             <Button variant="primary" small>
-//               New
-//             </Button>
-//           </Link>
-//         </Col>
-//       </Row>
-//       <hr />
-//       <Row>
-//         <Col></Col>
-//       </Row>
-//     </>
-//   );
-// };
-// export default UserPage;
-
 import { gql } from '@apollo/client';
 import generator from 'generate-password';
 import React, { FC, useEffect, useMemo, useState } from 'react';
@@ -124,7 +97,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       ...rest,
       profileData: {
         avatar: profile.avatar,
-        description: '',
+        description: profile.description,
         referencesData: [...profile.references],
         tagsetsData: [...profile.tagsets],
       },

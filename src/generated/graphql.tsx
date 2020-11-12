@@ -1087,7 +1087,7 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
     profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'avatar'> & {
+      { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
         }
@@ -1181,6 +1181,7 @@ export const UserDetailsFragmentDoc = gql`
     phone
     accountUpn
     profile {
+      description
       avatar
       references {
         name
