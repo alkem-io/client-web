@@ -4,10 +4,12 @@ import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
 import Avatar from '../core/Avatar';
 import { Link } from 'react-router-dom';
+import { UserRoles } from '../UserProfile';
 
 const useUserStyles = createStyles(theme => ({
   flex: {
     display: 'flex',
+    gap: `${theme.shape.spacing(1)}px`,
     padding: theme.shape.spacing(1),
     margin: -theme.shape.spacing(1),
 
@@ -49,10 +51,11 @@ const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src }) => 
   const styles = useUserStyles();
 
   const childrenClasses = clsx(styles.children, orientation);
+  const size = orientation === 'vertical' ? 'md' : 'sm';
 
   return (
     <Link className={clsx(styles.flex, styles.center, styles.horizontal)} to="/profile">
-      <Avatar size={orientation === 'vertical' ? 'md' : 'sm'} src={src} />
+      <Avatar size={size} src={src} />
       <div className={clsx(styles.flex, styles[orientation])}>
         <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
           {name}
@@ -61,6 +64,7 @@ const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src }) => 
           {title}
         </Typography>
       </div>
+      <UserRoles />
     </Link>
   );
 };
