@@ -85,3 +85,23 @@ export const QUERY_USER_PROFILE = gql`
   }
   ${USER_DETAILS_FRAGMENT}
 `;
+
+export const QUERY_USER_CARD = gql`
+  query userCardData($ids: [String!]!) {
+    usersById(IDs: $ids) {
+      __typename
+      memberof {
+        groups {
+          name
+        }
+        challenges {
+          name
+        }
+        organisations {
+          name
+        }
+      }
+      ...UserDetails
+    }
+  }
+`;
