@@ -900,6 +900,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
       opportunities?: Maybe<
         Array<
           { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              context?: Maybe<
+                { __typename?: 'Context' } & {
+                  references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+                }
+              >;
               projects?: Maybe<
                 Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
               >;
@@ -1607,6 +1612,12 @@ export const ChallengeProfileDocument = gql`
         id
         name
         textID
+        context {
+          references {
+            name
+            uri
+          }
+        }
         projects {
           id
           textID
