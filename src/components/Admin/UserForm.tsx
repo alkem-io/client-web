@@ -84,7 +84,7 @@ export const UserForm: FC<UserProps> = ({
     references: references || '',
     accountUpn: accountUpn || '',
     bio: bio || '',
-    challenges: challenges || ';',
+    challenges: challenges || '',
     groups: groups || ';',
   };
 
