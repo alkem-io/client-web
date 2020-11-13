@@ -33,7 +33,7 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, ...data }) => {
       }}
       tagProps={{ text: role }}
       matchedTerms={{ terms }}
-      popUp={<UserPopUp name={name} {...data} />}
+      popUp={<UserPopUp name={name} terms={[...(terms || []), 'skills', 'keywords']} {...data} />}
     >
       <Avatar size="lg" src={data.profile?.avatar} />
     </Card>
