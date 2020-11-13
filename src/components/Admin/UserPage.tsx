@@ -123,14 +123,15 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     };
 
     if (mode === EditMode.new) {
-      const aadPassword = generator.generate({
-        length: 24,
+      const passwordBase = generator.generate({
+        length: 4,
         numbers: true,
-        symbols: true,
+        symbols: false,
         excludeSimilarCharacters: true,
         exclude: '"', // avoid causing invalid Json
         strict: true,
       });
+      const aadPassword = `Cherrytwist-${passwordBase}!`;
 
       userInput.aadPassword = aadPassword;
 
