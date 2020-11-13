@@ -50,9 +50,9 @@ export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
             }}
           >
             <div>
-              {x.buttons.map(b => (
+              {x.buttons.map((b, i) => (
                 <>
-                  <Button text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
+                  <Button key={i} text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
                 </>
               ))}
             </div>

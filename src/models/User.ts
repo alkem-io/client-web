@@ -16,6 +16,20 @@ export interface UserModel {
     tagsets: Tagset[];
     references: Array<UserReference>;
   };
+  memberof: {
+    groups: Group[];
+    challenges: Challenge[];
+  };
+}
+
+interface Challenge {
+  id: string;
+  name: string;
+  textID: string;
+}
+interface Group {
+  id: string;
+  name: string;
 }
 export interface Tagset {
   name: string;
@@ -44,6 +58,10 @@ export const defaultUser: UserModel = {
     avatar: '',
     tagsets: [],
     references: [],
+  },
+  memberof: {
+    challenges: [],
+    groups: [],
   },
 };
 

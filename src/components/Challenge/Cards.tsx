@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { Opportunity } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import CircleTag from '../core/CircleTag';
@@ -68,16 +69,20 @@ interface OpportunityCardProps extends Opportunity {
   url: string;
 }
 
-export const OpportunityCard: FC<OpportunityCardProps> = ({ name, url }) => {
+export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url }) => {
+  const { references } = context || {};
+  const visual = references?.find(x => x.name === 'poster');
+
   return (
     <Card
+      classes={{
+        background: (theme: Theme) =>
+          visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.primary,
+      }}
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.primary,
+          background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
         },
-      }}
-      headerProps={{
-        text: 'Team',
       }}
       primaryTextProps={{
         text: name,
@@ -88,7 +93,7 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ name, url }) => {
     >
       <div className="flex-grow-1"></div>
       <div>
-        <Button text="Project details" as={Link} to={url} />
+        <Button text="Details" as={Link} to={url} />
       </div>
     </Card>
   );

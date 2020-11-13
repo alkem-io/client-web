@@ -1,23 +1,19 @@
-import React, { FC } from 'react';
 import { useQuery } from '@apollo/client';
-import { Col, Container, Form, Row } from 'react-bootstrap';
-/*lib imports end*/
-
-import UserFrom, { EditMode } from '../Admin/UserForm';
-import Typography from '../core/Typography';
-import { Loading } from '../core/Loading';
-/*components imports end*/
-
-import { QUERY_USER_PROFILE } from '../../graphql/user';
-import { defaultUser } from '../../models/User';
-import roles from '../../configs/roles.json';
-import { createStyles } from '../../hooks/useTheme';
-import { User, useUserProfileQuery } from '../../generated/graphql';
 import clsx from 'clsx';
-import Section, { Body, Header, SubHeader } from '../core/Section';
+import React, { FC } from 'react';
+import roles from '../../configs/roles.json';
+import { User, useUserProfileQuery } from '../../generated/graphql';
+/*components imports end*/
+import { QUERY_USER_PROFILE } from '../../graphql/user';
+import { createStyles } from '../../hooks/useTheme';
+import { defaultUser } from '../../models/User';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
+import { Loading } from '../core/Loading';
+import Section, { Body, Header } from '../core/Section';
 import Tag from '../core/Tag';
+import Typography from '../core/Typography';
+
 /*local files imports end*/
 
 const useUserRoleStyles = createStyles(theme => ({
