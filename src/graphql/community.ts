@@ -11,6 +11,10 @@ export const QUERY_COMMUNITY_SEARCH_USERS = gql`
           name
           id
         }
+        ... on UserGroup {
+          name
+          id
+        }
       }
     }
   }
@@ -56,11 +60,34 @@ export const QUERY_COMMUNITY_LIST = gql`
 `;
 
 export const QUERY_COMMUNITY_LIST_USERS = gql`
-  query communityList {
+  query communityListUsers {
     users {
       __typename
       name
       id
+    }
+  }
+`;
+
+export const QUERY_GROUP_CARD = gql`
+  query groupCard($id: Float!) {
+    group(ID: $id) {
+      __typename
+      name
+      members {
+        name
+      }
+      profile {
+        avatar
+        description
+        references {
+          name
+          description
+        }
+        tagsets {
+          name
+        }
+      }
     }
   }
 `;

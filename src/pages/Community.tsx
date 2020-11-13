@@ -20,8 +20,9 @@ import {
   QUERY_COMMUNITY_LIST_USERS,
 } from '../graphql/community';
 import { PageProps } from './common';
-import { Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
+import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { User, UserGroup } from '../generated/graphql';
+import Typography from '../components/core/Typography';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const filtersConfig = {
@@ -42,6 +43,11 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   };
 
+  interface CommunityState {
+    users: Array<User>;
+    groups: Array<UserGroup>;
+  }
+
   const [community, setCommunity] = useState<Array<User | UserGroup>>([]);
   const [defaultCommunity, setDefaultCommunity] = useState<Array<User | UserGroup>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
@@ -53,13 +59,21 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
-  const [getUserList, { data: userListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_USERS, {
+  /*  const [getUserList, { data: userListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_USERS, {
     onCompleted: data => {
-      setCommunity(data.users);
+      setCommunity(x => ({ ...x, users: userListData }));
       // setCommunity([...data.users, ...data.groups]);
       // setDefaultCommunity([...data.users, ...data.groups]);
     },
   });
+
+  const [getUserList, { data: groupListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_GROUP, {
+    onCompleted: data => {
+      setCommunity(x => ({ ...x, groups: groupListData }));
+      // setCommunity([...data.users, ...data.groups]);
+      // setDefaultCommunity([...data.users, ...data.groups]);
+    },
+  });*/
 
   const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH_USERS, {
     onCompleted: ({ search: searchData }) => {
@@ -118,17 +132,28 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       <Divider />
       <Container>
         <Row className={'justify-content-md-center mb-5'}>
-          <DropdownButton title={typesFilter.title} variant={'info'}>
-            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>{filtersConfig.all.title}</Dropdown.Item>
-            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>{filtersConfig.user.title}</Dropdown.Item>
-            <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
-              {filtersConfig.group.title}
-            </Dropdown.Item>
-          </DropdownButton>
+          <Col lg={3}>
+            <DropdownButton title={typesFilter.title} variant={'info'}>
+              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>{filtersConfig.all.title}</Dropdown.Item>
+              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>
+                {filtersConfig.user.title}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
+                {filtersConfig.group.title}
+              </Dropdown.Item>
+            </DropdownButton>
+          </Col>
+          <Col lg={9}>
+            {community.length > 10 && (
+              <Typography>
+                There are more search results. Please use more specific search criteria to narrow down the results
+              </Typography>
+            )}
+          </Col>
         </Row>
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
-        {community.slice(0, 15).map(el => {
+        {community.slice(0, 10).map(el => {
           // It is 100% right, there are differences of __typenames, for that case we split them
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore

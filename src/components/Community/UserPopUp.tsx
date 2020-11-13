@@ -6,6 +6,7 @@ import { UserCardProps } from './UserCard';
 import Tags from './Tags';
 
 const UserPopUp: FC<UserCardProps> = ({
+  id,
   name,
   email,
   gender,
