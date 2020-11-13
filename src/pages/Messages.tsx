@@ -2,9 +2,6 @@ import clsx from 'clsx';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Fade, Spinner } from 'react-bootstrap';
-import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
-import { Link } from 'react-router-dom';
-import Button from '../components/core/Button';
 import Card from '../components/core/Card';
 import Section, { Header, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
@@ -223,6 +220,12 @@ const useContactStyles = createStyles(theme => ({
     '& > h1': {
       color: theme.palette.positive,
     },
+
+    '&:hover': {
+      '& > h1': {
+        color: theme.palette.background,
+      },
+    },
   },
 }));
 
@@ -233,7 +236,7 @@ const DummyChatList: FC = () => {
       bodyProps={{
         classes: {
           background: theme => theme.palette.neutralLight,
-          padding: theme => `${theme.shape.spacing(1)}px`,
+          padding: theme => `${theme.shape.spacing(0.5)}px`,
         },
       }}
     >
