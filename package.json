@@ -21,6 +21,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.0.0",
+    "clamp-js": "^0.7.0",
     "clsx": "^1.1.1",
     "cross-env": "^7.0.2",
     "eslint": "^6.6.0",

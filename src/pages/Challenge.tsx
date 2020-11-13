@@ -232,7 +232,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
       </Section>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+      <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
         {challengeProjects.map(({ type, ...rest }, i) => {
           const Component = SwitchCardComponent({ type });
           return <Component {...rest} key={i} />;
