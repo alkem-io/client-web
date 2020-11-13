@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState, Fragment } from 'react';
-import { FormControl, InputGroup } from 'react-bootstrap';
+import { Form, FormControl, FormGroup, FormLabel, InputGroup } from 'react-bootstrap';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link } from 'react-router-dom';
@@ -7,6 +7,7 @@ import IconButton from '../core/IconButton';
 import Icon from '../core/Icon';
 import UserRemoveModal from './UserRemoveModal';
 import { useRemoveUserMutation } from '../../generated/graphql';
+import Button from '../core/Button';
 
 interface SearchableListProps {
   data: SearchableListData[];
@@ -24,6 +25,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [userToRemove, setUserToRemove] = useState<SearchableListData | null>(null);
+  const [limit, setLimit] = useState(10);
 
   const [remove, { loading }] = useRemoveUserMutation({
     refetchQueries: ['users'],
@@ -44,6 +46,8 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
     () => data.filter(item => (filterBy ? item.value.toLowerCase().includes(filterBy.toLowerCase()) : true)),
     [filterBy, data]
   );
+
+  const slicedData = useMemo(() => filteredData.slice(0, limit), [filteredData, limit]);
   const editSuffix = edit ? '/edit' : '';
 
   const handleRemoveUser = () => {
@@ -67,13 +71,13 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
 
   return (
     <>
-      <InputGroup>
+      <FormGroup style={{ flexDirection: 'column' }} className={'justify-content-end'}>
         <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
-      </InputGroup>
+        <FormLabel> {`Showing ${slicedData.length} of ${data.length}`}</FormLabel>
+      </FormGroup>
       <hr />
-      {children}
       <ListGroup>
-        {filteredData.map(item => (
+        {slicedData.map(item => (
           <Fragment key={item.id}>
             <ListGroup.Item
               as={Link}
@@ -98,6 +102,9 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
         name={userToRemove?.value}
         loading={loading}
       />
+      {filteredData.length > limit && limit < 50 && (
+        <Button onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}>Load more</Button>
+      )}
     </>
   );
 };
