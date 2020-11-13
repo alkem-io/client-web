@@ -12,7 +12,13 @@ import MultipleSelect from '../components/core/MultipleSelect';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { tags as _tags } from '../components/core/Typography.dummy.json';
-import { QUERY_COMMUNITY_SEARCH, QUERY_COMMUNITY_LIST } from '../graphql/community';
+import {
+  // QUERY_COMMUNITY_SEARCH,
+  // QUERY_COMMUNITY_LIST,
+  // QUERY_COMMUNITY_LIST_1,
+  QUERY_COMMUNITY_SEARCH_USERS,
+  QUERY_COMMUNITY_LIST_USERS,
+} from '../graphql/community';
 import { PageProps } from './common';
 import { Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { User, UserGroup } from '../generated/graphql';
@@ -47,14 +53,15 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
-  useQuery(QUERY_COMMUNITY_LIST, {
+  const [getUserList, { data: userListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_USERS, {
     onCompleted: data => {
-      setCommunity([...data.users, ...data.groups]);
-      setDefaultCommunity([...data.users, ...data.groups]);
+      setCommunity(data.users);
+      // setCommunity([...data.users, ...data.groups]);
+      // setDefaultCommunity([...data.users, ...data.groups]);
     },
   });
 
-  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
+  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH_USERS, {
     onCompleted: ({ search: searchData }) => {
       const updatedCommunity = searchData
         .reduce((acc, curr) => {
@@ -121,7 +128,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Row>
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
-        {community.map(el => {
+        {community.slice(0, 15).map(el => {
           // It is 100% right, there are differences of __typenames, for that case we split them
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
