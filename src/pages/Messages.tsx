@@ -272,7 +272,7 @@ export const Messages: FC<PageProps> = () => {
         <Header text="Messages" tagText="coming soon" />
         <SubHeader text="You'll be able to use the messaging system to chat with other members of this ecoverse" />
       </Section>
-      <Section avatar={<DummyChatList />} gutters={{ root: true, avatar: false, content: false }}>
+      <Section details={<DummyChatList />} gutters={{ root: true, avatar: false, content: false }}>
         <DummyChat />
       </Section>
     </>
