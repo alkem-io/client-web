@@ -79,12 +79,24 @@ const useMessageStyles = createStyles(theme => ({
     padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     border: `1px solid ${theme.palette.neutralLight}`,
     borderRadius: theme.shape.borderRadius,
+    cursor: 'pointer',
+
+    '&:hover': {
+      opacity: 0.8,
+    },
+
+    '&.me': {
+      background: theme.palette.neutralMedium,
+    },
+    '&.you': {
+      background: theme.palette.primary,
+    },
   },
   left: {
-    background: theme.palette.neutralMedium,
+    justifyContent: 'flex-start',
   },
   right: {
-    background: theme.palette.primary,
+    justifyContent: 'flex-end',
   },
   loader: {
     color: theme.palette.neutral,
@@ -152,7 +164,9 @@ export const DummyChat: FC = () => {
         {displayedMessages.map((x, i) => (
           <Fade key={i} in appear>
             <div className={clsx(x.left ? styles.containerLeft : styles.containerRight, styles.messageContainer)}>
-              <span className={clsx(x.left ? styles.left : styles.right, styles.message)}>{x.content}</span>
+              <div style={{ display: 'flex' }} className={clsx(x.left ? styles.left : styles.right)}>
+                <span className={clsx(styles.message, x.left ? 'me' : 'you')}>{x.content}</span>
+              </div>
               <Typography className={clsx(x.left ? styles.textLeft : styles.textRight)} variant="caption">
                 {x.date.toLocaleTimeString()}
               </Typography>
@@ -188,9 +202,15 @@ const useContactStyles = createStyles(theme => ({
     height: '100%',
   },
   contact: {
-    padding: `0px ${theme.shape.spacing(2)}px`,
+    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     marginBotton: theme.shape.spacing(1),
     background: theme.palette.background,
+    cursor: 'pointer',
+
+    '&:hover': {
+      background: theme.palette.primary,
+      color: theme.palette.background,
+    },
   },
   divider: {
     background: theme.palette.neutralLight,
@@ -198,6 +218,11 @@ const useContactStyles = createStyles(theme => ({
   },
   active: {
     borderLeft: `2px solid ${theme.palette.primary}`,
+    color: theme.palette.primary,
+
+    '& > h1': {
+      color: theme.palette.positive,
+    },
   },
 }));
 
@@ -213,17 +238,19 @@ const DummyChatList: FC = () => {
       }}
     >
       <div className={clsx(styles.contact, styles.active)}>
-        <Typography variant="h3" color="primary">
+        <Typography variant="h3" color="inherit" as="h3">
           Cherrytwist
         </Typography>
-        <Typography variant="caption" color="positive" as="h1">
-          new message
+        <Typography variant="caption" color="inherit" as="h1">
+          new messages
         </Typography>
       </div>
       <div className={styles.divider}></div>
       <div className={styles.contact}>
-        <Typography variant="h3">Community</Typography>
-        <Typography variant="caption" color="neutral" as="h1">
+        <Typography variant="h3" color="inherit">
+          Community
+        </Typography>
+        <Typography variant="caption" color="inherit" as="h1">
           Work in progress
         </Typography>
       </div>
@@ -242,10 +269,10 @@ export const Messages: FC<PageProps> = () => {
   return (
     <>
       <Section gutters={{ root: true, avatar: false, content: false }}>
-        <Header text="Message" tagText="Under construction" />
+        <Header text="Messages" tagText="coming soon" />
         <SubHeader text="You'll be able to use the messaging system to chat with other members of this ecoverse" />
       </Section>
-      <Section hideDetails avatar={<DummyChatList />} gutters={{ root: true, avatar: false, content: false }}>
+      <Section avatar={<DummyChatList />} gutters={{ root: true, avatar: false, content: false }}>
         <DummyChat />
       </Section>
     </>
