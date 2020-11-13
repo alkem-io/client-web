@@ -5,7 +5,12 @@ import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
 import { SearchableListData } from '../components/Admin/SearchableList';
 import Loading from '../components/core/Loading';
-import { EcoverseChallengeGroupsQuery, useEcoverseChallengeGroupsQuery, useUsersQuery } from '../generated/graphql';
+import {
+  EcoverseChallengeGroupsQuery,
+  useEcoverseChallengeGroupsQuery,
+  useUserQuery,
+  useUsersQuery,
+} from '../generated/graphql';
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
 import { challengesMapper, groupsMapper } from '../utils';
@@ -52,13 +57,13 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
         <UserList users={users} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <UserRoute mode={EditMode.new} paths={currentPaths} users={users} title="New user" />
+        <UserRoute mode={EditMode.new} paths={currentPaths} title="New user" />
       </Route>
       <Route exact path={`${path}/:userId/edit`}>
-        <UserRoute mode={EditMode.edit} paths={currentPaths} users={users} />
+        <UserRoute mode={EditMode.edit} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:userId`}>
-        <UserRoute mode={EditMode.readOnly} paths={currentPaths} users={users} />
+        <UserRoute mode={EditMode.readOnly} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -68,14 +73,16 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
 };
 
 interface UserProps extends PageProps {
-  users: UserModel[];
   mode: EditMode;
   title?: string;
 }
 
-const UserRoute: FC<UserProps> = ({ paths, users, mode, title }) => {
-  const { userId } = useParams<{ userId: string | undefined }>();
-  const user = users.find(u => u.id === userId);
+const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
+  const { userId } = useParams<{ userId: string }>();
+  const { data, loading } = useUserQuery({ variables: { id: userId } });
+
+  if (loading) return <Loading />;
+  const user = data?.user as UserModel;
   return <UserPage user={user} paths={paths} mode={mode} title={title} />;
 };
 
