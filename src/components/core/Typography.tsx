@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
+import _clamp from 'clamp-js';
 
 const useTypographyStyles = createStyles(theme => ({
   h1: {
@@ -12,17 +13,17 @@ const useTypographyStyles = createStyles(theme => ({
     fontFamily: theme.typography.h2.font,
     fontSize: theme.typography.h2.size,
     textTransform: 'uppercase',
-    paddingBottom: theme.shape.spacing(1),
+    marginBottom: theme.shape.spacing(1),
   },
   h3: {
     fontFamily: theme.typography.h3.font,
     fontSize: theme.typography.h3.size,
-    paddingBottom: theme.shape.spacing(1),
+    marginBottom: theme.shape.spacing(1),
   },
   h4: {
     fontFamily: theme.typography.h4.font,
     fontSize: theme.typography.h4.size,
-    paddingBottom: theme.shape.spacing(1),
+    marginBottom: theme.shape.spacing(1),
   },
   h5: {
     fontFamily: theme.typography.h5.font,
@@ -93,6 +94,7 @@ interface TypographyProps extends Record<string, unknown> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any> | string;
   classes?: unknown;
+  clamp?: string | number;
 }
 
 const Typography: FC<TypographyProps> = ({
@@ -103,15 +105,22 @@ const Typography: FC<TypographyProps> = ({
   className,
   classes,
   children,
+  clamp = undefined,
   ...rest
 }) => {
   const styles = useTypographyStyles(classes);
+  const ref = useRef();
+
+  if (ref?.current) {
+    _clamp(ref.current, { clamp });
+  }
 
   return (
     <Component
       {...rest}
       className={clsx(styles[variant], styles[color], className)}
       style={{ fontWeight: fontWeight[weight] }}
+      ref={ref}
     >
       {children}
     </Component>
