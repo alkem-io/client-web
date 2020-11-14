@@ -27,6 +27,42 @@ export const USER_DETAILS_FRAGMENT = gql`
   }
 `;
 
+export const USER_MEMBER_OF_FRAGMENT = gql`
+  fragment UserMembers on User {
+    memberof {
+      groups {
+        id
+        name
+      }
+      challenges {
+        id
+        name
+        textID
+      }
+    }
+  }
+`;
+
+export const QUERY_USER_LIST = gql`
+  query users {
+    users {
+      ...UserDetails
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+`;
+
+export const QUERY_USER = gql`
+  query user($id: String!) {
+    user(ID: $id) {
+      ...UserDetails
+      ...UserMembers
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+  ${USER_MEMBER_OF_FRAGMENT}
+`;
+
 export const QUERY_ECOVERSE_USER_IDS = gql`
   query ecoverseUserIds {
     users {
@@ -72,16 +108,29 @@ export const QUERY_USER_PROFILE = gql`
   query userProfile {
     me {
       ...UserDetails
+      ...UserMembers
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+  ${USER_MEMBER_OF_FRAGMENT}
+`;
+
+export const QUERY_USER_CARD = gql`
+  query userCardData($ids: [String!]!) {
+    usersById(IDs: $ids) {
+      __typename
       memberof {
         groups {
           name
         }
         challenges {
-          id
+          name
+        }
+        organisations {
           name
         }
       }
+      ...UserDetails
     }
   }
-  ${USER_DETAILS_FRAGMENT}
 `;

@@ -4,6 +4,7 @@ import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
 import { Admin } from './admin';
 import { Community } from './community';
+import { Messages } from './messages';
 import { Ecoverses } from './ecoverse';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
@@ -26,6 +27,9 @@ export const Routing: FC = () => {
       </Route>
       <RestrictedRoute exact path="/community">
         <Community />
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/messages">
+        <Messages />
       </RestrictedRoute>
       <RestrictedRoute exact path="/profile">
         <UserProfile />
