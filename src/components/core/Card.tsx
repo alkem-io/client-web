@@ -120,7 +120,7 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
       {terms && terms.length > 0 && (
         <>
           <Typography as={'span'} className={'mr-2'}>
-            Mathed terms:{' '}
+            Matched terms:{' '}
           </Typography>
           {terms?.map((t, index) => (
             <Typography key={index} className={styles.tag} color={'background'}>
