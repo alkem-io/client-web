@@ -12,7 +12,7 @@ interface GroupPopUpProps {
   profile?: {
     description?: string;
     avatar?: string;
-    tagsets?: Array<Tagset>;
+    tagsets?: Tagset[];
   };
 }
 

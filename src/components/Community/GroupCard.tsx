@@ -5,24 +5,22 @@ import Card from '../core/Card';
 import GroupPopUp from './GroupPopUp';
 
 import { Theme } from '../../context/ThemeProvider';
-import { UserGroup } from '../../generated/graphql';
-import { QUERY_GROUP_CARD } from '../../graphql/community';
-import { useQuery } from '@apollo/client';
+import { useGroupCardQuery, UserGroup } from '../../generated/graphql';
 
-const GroupCardInner: FC<UserGroup> = ({ name, __typename, id }) => {
-  const { data: groupData } = useQuery(QUERY_GROUP_CARD, {
+const GroupCardInner: FC<UserGroup> = ({ id }) => {
+  const { data } = useGroupCardQuery({
     variables: {
       id: Number(id),
     },
   });
 
-  const data = groupData?.group;
+  const group = data?.group as UserGroup;
 
   const tag = (): string => {
-    if (!data?.members || data?.members.length === 0) return 'no members';
+    if (!group?.members || group?.members.length === 0) return 'no members';
 
-    if (data?.members.length > 0)
-      return `${data?.members?.length} Member${data?.members && data?.members.length === 1 ? '' : 's'}`;
+    if (group?.members.length > 0)
+      return `${group?.members?.length} Member${group?.members && group?.members.length === 1 ? '' : 's'}`;
 
     return '';
   };
@@ -35,15 +33,15 @@ const GroupCardInner: FC<UserGroup> = ({ name, __typename, id }) => {
         },
       }}
       primaryTextProps={{
-        text: name,
+        text: group?.name || '',
         classes: {
           lineHeight: '36px',
         },
       }}
       tagProps={{ text: tag(), color: 'primary' }}
-      popUp={<GroupPopUp name={name} {...data} />}
+      popUp={<GroupPopUp {...group} />}
     >
-      <Avatar size="lg" src={data?.profile?.avatar} theme={'light'} />
+      <Avatar size="lg" src={group?.profile?.avatar} theme={'light'} />
     </Card>
   );
 };
