@@ -24,46 +24,59 @@ import { PageProps } from './common';
 import { UserProvider } from './Ecoverse';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { createStyles } from '../hooks/useTheme';
+import clsx from 'clsx';
+
+const useOrganizationStyles = createStyles(theme => ({
+  organizationWrapper: {
+    display: 'flex',
+    gap: `${theme.shape.spacing(1)}px`,
+    flexWrap: 'wrap',
+  },
+  column: {
+    flexDirection: 'column',
+  },
+  imgContainer: {
+    display: 'flex',
+    flex: '0 45%',
+    width: '100%',
+    margin: '0 auto',
+  },
+  img: {
+    height: 'initial',
+    maxWidth: '100%',
+    maxHeight: 150,
+    margin: '0 auto',
+    objectFit: 'contain',
+  },
+}));
 
 const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
-  const [first, second, ...rest] = organizations;
+  const styles = useOrganizationStyles();
 
   return (
     <>
-      {first && (
+      <div className={clsx(styles.organizationWrapper, organizations.length === 2 && styles.column)}>
+        {organizations.map((org, index) => {
+          if (index > 4) return null;
+          return (
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.name}</Tooltip>}
+              key={index}
+            >
+              <div className={styles.imgContainer}>
+                <img src={org.profile?.avatar} alt={org.name} className={styles.img} />
+              </div>
+            </OverlayTrigger>
+          );
+        })}
+      </div>
+
+      {organizations.length > 4 && (
         <OverlayTrigger
           placement="bottom"
-          overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}
-        >
-          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
-            <img
-              src={first.profile?.avatar}
-              alt={first.name}
-              height={150}
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            />
-          </div>
-        </OverlayTrigger>
-      )}
-      {second && (
-        <OverlayTrigger
-          placement="bottom"
-          overlay={<Tooltip id={`challenge-${second.id}-tooltip`}>{second.name}</Tooltip>}
-        >
-          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
-            <img
-              src={second.profile?.avatar}
-              alt={second.name}
-              height={150}
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            />
-          </div>
-        </OverlayTrigger>
-      )}
-      {rest.length > 0 && (
-        <OverlayTrigger
-          placement="bottom"
-          overlay={<Tooltip id="challenge-rest-tooltip">{rest.map(x => x.name).join(', ')}</Tooltip>}
+          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.name).join(', ')}</Tooltip>}
         >
           <div className={'d-flex'}>
             <Typography variant="h3">And more...</Typography>
