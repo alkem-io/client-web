@@ -5,9 +5,8 @@ import { UserMetadata } from '../context/UserProvider';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
-import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks/useUserContext';
 import { useUserScope } from '../hooks/useSentry';
+import { useUserContext } from '../hooks/useUserContext';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
 import Icon from './core/Icon';
@@ -42,13 +41,15 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 
 const App = ({ children }): React.ReactElement => {
   const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
-  const { context } = useAuthenticationContext();
+  const {
+    context: { loading: authenticationLoading },
+  } = useAuthenticationContext();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
 
-  if (context.loading || loading) return <Loading />;
+  if (authenticationLoading || loading) return <Loading />;
 
   return (
     <div id="app">

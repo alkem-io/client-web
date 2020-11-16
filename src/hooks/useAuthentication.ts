@@ -24,9 +24,7 @@ export interface UseAuthenticationResult {
 const signIn = async (msalApp?: PublicClientApplication, aadConfig?: AadClientConfig) => {
   if (!msalApp || !aadConfig) return;
 
-  return new Promise<AuthenticationResult | undefined>((resolve, reject) =>
-    msalApp.loginPopup(aadConfig.loginRequest).then(resolve).catch(reject)
-  );
+  return await msalApp.loginPopup(aadConfig.loginRequest);
 };
 
 const signOut = async (msalApp?: PublicClientApplication, userName?: string) => {
@@ -62,11 +60,9 @@ const acquireTokenPopup = async (msalApp?: PublicClientApplication, aadConfig?: 
 };
 
 const acquireToken = async (msalApp?: PublicClientApplication, aadConfig?: AadClientConfig, userName?: string) => {
-  try {
-    return await acquireTokenSilent(msalApp, aadConfig, userName);
-  } catch (ex) {
+  return await acquireTokenSilent(msalApp, aadConfig, userName).catch(async _err => {
     return await acquireTokenPopup(msalApp, aadConfig, userName);
-  }
+  });
 };
 
 export const useAuthentication = (): UseAuthenticationResult => {
