@@ -135,7 +135,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       userInput.aadPassword = aadPassword;
 
       setStrongPassword(aadPassword);
-      debugger;
       createUser({
         variables: {
           user: userInput,
@@ -143,7 +142,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       });
     } else if (isEditMode && user.id) {
       const { email, ...userToUpdate } = userInput;
-      debugger;
       updateUser({
         variables: {
           userId: Number(userID),
