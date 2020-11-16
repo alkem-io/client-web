@@ -184,7 +184,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         <>
           <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
             <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
-            <SubHeader text={projectTexts.subheader} />
+            <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
           </Section>
           <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
             {ecoverseProjects.map(({ type, ...rest }, i) => {
