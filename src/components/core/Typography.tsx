@@ -111,7 +111,7 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
-  if (ref?.current) {
+  if (clamp && ref?.current) {
     _clamp(ref.current, { clamp });
   }
 
