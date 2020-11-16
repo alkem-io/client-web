@@ -42,8 +42,8 @@ export const UserRoles: FC = () => {
 
   return (
     <div className={styles.roleContainer}>
-      {getMyRoles().map(r => (
-        <Typography color={'background'} variant={'caption'} className={clsx(styles.role)}>
+      {getMyRoles().map((r, i) => (
+        <Typography key={i} color={'background'} variant={'caption'} className={clsx(styles.role)}>
           {r}
         </Typography>
       ))}

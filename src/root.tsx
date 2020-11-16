@@ -16,6 +16,7 @@ import * as Sentry from '@sentry/react';
 import sentryBootstrap from './sentry/bootstrap';
 import { Error as ErrorPage } from './pages/Error';
 import { createStyles } from './hooks/useTheme';
+import { AccessProvider } from './context/AccessProvider';
 
 const graphQLEndpoint =
   (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
@@ -78,17 +79,19 @@ const ReduxRoot: FC = () => {
     <ApolloProvider client={client}>
       <ConfigProvider>
         <AuthenticationProvider>
-          <ThemeProvider>
-            <NavigationProvider>
-              <UserProvider>
-                <BrowserRouter>
-                  <App>
-                    <Routing />
-                  </App>
-                </BrowserRouter>
-              </UserProvider>
-            </NavigationProvider>
-          </ThemeProvider>
+          <AccessProvider>
+            <ThemeProvider>
+              <NavigationProvider>
+                <UserProvider>
+                  <BrowserRouter>
+                    <App>
+                      <Routing />
+                    </App>
+                  </BrowserRouter>
+                </UserProvider>
+              </NavigationProvider>
+            </ThemeProvider>
+          </AccessProvider>
         </AuthenticationProvider>
       </ConfigProvider>
     </ApolloProvider>
