@@ -6,7 +6,6 @@ import { Prompt, useHistory } from 'react-router-dom';
 import { EditMode, UserForm } from '.';
 import {
   useCreateUserMutation,
-  User,
   useRemoveUserMutation,
   UserInput,
   useUpdateUserMutation,
@@ -15,9 +14,9 @@ import { USER_DETAILS_FRAGMENT } from '../../graphql/user';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { UserModel } from '../../models/User';
 import { PageProps } from '../../pages';
+import Button from '../core/Button';
 import { Loading } from '../core/Loading';
 import PasswordPrompt from './PasswordPrompt';
-import Button from '../core/Button';
 import UserRemoveModal from './UserRemoveModal';
 
 interface UserPageProps extends PageProps {
@@ -111,7 +110,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const handleSave = (user: UserModel) => {
     // Convert UserModel to UserInput
-    const { id: userID, profile, ...rest } = user;
+    const { id: userID, profile, memberof, ...rest } = user;
     const userInput: UserInput = {
       ...rest,
       profileData: {
@@ -136,6 +135,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       userInput.aadPassword = aadPassword;
 
       setStrongPassword(aadPassword);
+      debugger;
       createUser({
         variables: {
           user: userInput,
@@ -143,7 +143,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       });
     } else if (isEditMode && user.id) {
       const { email, ...userToUpdate } = userInput;
-
+      debugger;
       updateUser({
         variables: {
           userId: Number(userID),

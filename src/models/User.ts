@@ -81,4 +81,6 @@ export interface UserFromGenerated {
   city: string;
   gender: string;
   bio: string;
+  challenges: string;
+  groups: string;
 }
