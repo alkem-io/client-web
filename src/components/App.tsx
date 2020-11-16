@@ -5,7 +5,6 @@ import { UserMetadata } from '../context/UserProvider';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
-import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserScope } from '../hooks/useSentry';
 import Breadcrumbs from './core/Breadcrumbs';
