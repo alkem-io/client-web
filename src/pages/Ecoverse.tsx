@@ -123,7 +123,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         color: 'neutralMedium',
       },
     ];
-  }, [ecoverse]);
+  }, [ecoverse, users]);
 
   return (
     <>
