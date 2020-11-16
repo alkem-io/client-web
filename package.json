@@ -7,7 +7,7 @@
   "license": "EUPL",
   "dependencies": {
     "@apollo/client": "^3.2.4",
-    "@azure/msal-browser": "^2.6.1",
+    "@azure/msal-browser": "^2.7.0",
     "@sentry/react": "^5.27.3",
     "@sentry/tracing": "^5.27.3",
     "@testing-library/jest-dom": "^4.2.4",
