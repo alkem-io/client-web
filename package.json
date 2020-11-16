@@ -3,8 +3,12 @@
   "version": "0.4.1",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cherrytwist/Client.Web.git"
+  },
   "private": false,
-  "license": "EUPL",
+  "license": "EUPL-1.2",
   "dependencies": {
     "@apollo/client": "^3.2.4",
     "@azure/msal-browser": "^2.7.0",
