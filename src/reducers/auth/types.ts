@@ -18,7 +18,7 @@ export interface UpdateErrorAction {
 
 export interface UpdateToken {
   type: typeof UPDATE_TOKEN;
-  payload: AuthenticationResult | null;
+  payload: AuthenticationResult | null | undefined;
 }
 
 export interface AuthState {

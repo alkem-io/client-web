@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { useUserProfileQuery, User } from '../generated/graphql';
+import { useAccessContext } from '../hooks/useAccessContext';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -40,9 +41,9 @@ const UserContext = React.createContext<UserContextContract>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useUserProfileQuery({ errorPolicy: 'all' });
-
+  const { loading: accessContexLoading } = useAccessContext();
   const { me } = data || {};
-  const loading = profileLoading;
+  const loading = profileLoading || accessContexLoading;
 
   return (
     <UserContext.Provider

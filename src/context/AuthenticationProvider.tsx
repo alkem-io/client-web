@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { useAuthentication, UseAuthenticationResult } from '../hooks';
+import React, { FC, useEffect } from 'react';
+import { TOKEN_STORAGE_KEY, useAuthentication, UseAuthenticationResult } from '../hooks';
 
 export interface AuthContext extends UseAuthenticationResult {
   loading: boolean;
@@ -15,6 +15,10 @@ const AuthenticationContext = React.createContext<AuthContext>({
 });
 
 const AuthenticationProvider: FC<{}> = ({ children }) => {
+  useEffect(() => {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+  }, []);
+
   const {
     signIn,
     signOut,

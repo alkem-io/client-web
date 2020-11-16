@@ -17,15 +17,14 @@ export default function authReducer(state = initialState, action: AuthActionType
         isAuthenticated: action.payload !== null,
       };
     case UPDATE_TOKEN:
-      // TODO [ATS]: For refactoring - Token storage and propagation
       console.debug('Token: ', action.payload ? action.payload.accessToken : null);
       if (action.payload) {
-        localStorage.setItem('accessToken', action.payload.accessToken);
         console.debug('Token ExpirationTime: ', new Date(action.payload.idTokenClaims['exp'] * 1000).toString());
         return {
           ...state,
           idToken: action.payload.idTokenClaims as Record<string, never>,
           accessToken: action.payload.accessToken,
+          isAuthenticated: true,
         };
       } else {
         localStorage.removeItem('accessToken');
@@ -33,6 +32,7 @@ export default function authReducer(state = initialState, action: AuthActionType
           ...state,
           idToken: null,
           accessToken: '',
+          isAuthenticated: false,
         };
       }
     case UPDATE_ERROR:
