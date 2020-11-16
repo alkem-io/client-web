@@ -1,11 +1,16 @@
-require('dotenv').config();
+const dotenvFlow = require('dotenv-flow');
+const dotenvExpand = require('dotenv-expand');
 fs = require('fs');
 
 const CONFIG_TEXT = `window._env_ = `;
 const CONFIG_FILE_NAME = 'env-config.js';
 
 const buildConfiguration = cb => {
+  const initialConfig = dotenvFlow.config();
+  dotenvExpand(initialConfig);
+
   const env = process.env;
+
   let configuration = {};
   const nodeEnv= env.NODE_ENV ? env.NODE_ENV : "development";
 

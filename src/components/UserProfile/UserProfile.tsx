@@ -12,6 +12,13 @@ import { defaultUser } from '../../models/User';
 import UserFrom, { EditMode } from '../Admin/UserForm';
 import { Loading } from '../core/Loading';
 import Typography from '../core/Typography';
+import { QUERY_USER_PROFILE } from '../../graphql/user';
+import { defaultUser } from '../../models/User';
+import roles from '../../configs/roles.json';
+import { createStyles } from '../../hooks/useTheme';
+import { useUserProfileQuery } from '../../generated/graphql';
+import clsx from 'clsx';
+import { useTransactionScope } from '../../hooks/useSentry';
 
 /*local files imports end*/
 
@@ -50,6 +57,7 @@ export const UserRoles: FC = () => {
 };
 
 export const UserProfile: FC = () => {
+  useTransactionScope({ type: 'authentication' });
   const { data, loading } = useQuery(QUERY_USER_PROFILE);
 
   if (loading) return <Loading />;

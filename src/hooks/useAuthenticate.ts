@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AuthContext } from '../context/AuthenticationProvider';
 import { pushError } from '../reducers/error/actions';
 import { useAuthenticationContext } from './useAuthenticationContext';
+import { error as logError } from '../sentry/log';
 
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
@@ -67,6 +68,8 @@ export const useAuthenticate = () => {
     try {
       return authenticateWired();
     } catch (ex) {
+      const error = new Error(ex);
+      logError(error, scope => scope.setTag('authentication', 'signin'));
       dispatch(pushError(new Error(ex)));
     }
   }, [authenticateWired, dispatch]);
@@ -75,7 +78,9 @@ export const useAuthenticate = () => {
     try {
       return refreshWired();
     } catch (ex) {
-      dispatch(pushError(new Error(ex)));
+      const error = new Error(ex);
+      logError(error, scope => scope.setTag('authentication', 'refresh-token'));
+      dispatch(pushError(error));
     }
   }, [refreshWired, dispatch]);
 
@@ -83,7 +88,9 @@ export const useAuthenticate = () => {
     try {
       return unauthenticateWired();
     } catch (ex) {
-      dispatch(pushError(new Error(ex)));
+      const error = new Error(ex);
+      logError(error, scope => scope.setTag('authentication', 'signout'));
+      dispatch(pushError(error));
     }
   }, [unauthenticateWired, dispatch]);
 
