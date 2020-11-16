@@ -74,7 +74,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
     [actorGroups]
   );
-  const incomming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
+  const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
 
   const activitySummary = useMemo(() => {
@@ -245,9 +245,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'Collaborative potential'} />
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
-      {incomming && (
+      {incoming && (
         <CardContainer title={'Incoming relations'} xs={12} md={6} lg={4} xl={3}>
-          {incomming?.map((props, i) => (
+          {incoming?.map((props, i) => (
             <RelationCard key={i} {...props} />
           ))}
         </CardContainer>
@@ -274,7 +274,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <div ref={projectRef}></div>
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
+        <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
       </Section>

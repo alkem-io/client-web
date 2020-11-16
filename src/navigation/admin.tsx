@@ -5,6 +5,7 @@ import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
 import { SearchableListData } from '../components/Admin/SearchableList';
 import Loading from '../components/core/Loading';
+import { useTransactionScope } from '../hooks/useSentry';
 import {
   EcoverseChallengeGroupsQuery,
   useEcoverseChallengeGroupsQuery,
@@ -18,6 +19,7 @@ import { challengesMapper, groupsMapper } from '../utils';
 /*local files imports end*/
 
 export const Admin: FC = () => {
+  useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
 
