@@ -59,7 +59,7 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
         <UserList users={users} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <UserRoute mode={EditMode.new} paths={currentPaths} title="New user" />
+        <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
       </Route>
       <Route exact path={`${path}/:userId/edit`}>
         <UserRoute mode={EditMode.edit} paths={currentPaths} />

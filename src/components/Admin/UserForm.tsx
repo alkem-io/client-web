@@ -86,7 +86,7 @@ export const UserForm: FC<UserProps> = ({
     accountUpn: accountUpn || '',
     bio: bio || '',
     challenges: challenges || '',
-    groups: groups || ';',
+    groups: groups || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -123,7 +123,7 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = (userData: UserFromGenerated): void => {
-    const { tagsets, avatar, references, bio, ...otherData } = userData;
+    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
     const user: UserModel = {
       ...currentUser,
