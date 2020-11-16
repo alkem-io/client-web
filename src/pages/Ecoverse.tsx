@@ -186,7 +186,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
             <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
             <SubHeader text={projectTexts.subheader} />
           </Section>
-          <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+          <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
             {ecoverseProjects.map(({ type, ...rest }, i) => {
               const Component = SwitchCardComponent({ type });
               return <Component {...rest} key={i} />;

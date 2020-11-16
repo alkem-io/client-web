@@ -1,28 +1,34 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import Loading from '../components/core/Loading';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useQueryParams } from '../hooks/useQueryParams';
+import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import { SignIn as SignInPage } from '../pages/SignIn';
+import { error as logError } from '../sentry/log';
 
 interface SignInParams {
   redirect?: string;
 }
 
 export const SignIn: FC = () => {
+  useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();
   const redirect = params.get('redirect');
-  const [processComplete, setProcessComplete] = useState(false);
+  const [processStarted, setProcessStarted] = useState(false);
+  const [processCompleted, setProcessComplete] = useState(false);
   const [processFailed, setProcessFailed] = useState(false);
   const { authenticate } = useAuthenticate();
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
 
   const tryAuthenticate = useCallback(() => {
     async function runProcess() {
+      setProcessStarted(true);
       try {
         await authenticate();
       } catch (ex) {
-        console.error(ex);
+        logError(new Error(ex), scope => scope.setTag('authentication', 'signin'));
         setProcessFailed(true);
       } finally {
         setProcessComplete(true);
@@ -32,11 +38,15 @@ export const SignIn: FC = () => {
     runProcess();
   }, [authenticate, setProcessComplete, setProcessFailed]);
 
-  if (processComplete && user) {
+  if (loading) {
+    return <Loading text="Authenticating..." />;
+  }
+
+  if (user && !(processStarted !== processCompleted)) {
     return <Redirect to={`${decodeURI(redirect || '/')}`} />;
   }
 
-  if (processComplete && processFailed) {
+  if (processStarted && processCompleted && processFailed) {
     return <Redirect to={`/restricted?origin=${redirect}`} />;
   }
 
