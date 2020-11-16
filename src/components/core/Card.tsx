@@ -23,6 +23,7 @@ const useHeaderStyles = createStyles(theme => ({
     background: theme.palette.neutralMedium,
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
+    minHeight: '58px',
     padding: props =>
       agnosticFunctor(props.color)(theme, {}) ||
       `${theme.shape.spacing(2)}px ${theme.shape.spacing(6)}px ${theme.shape.spacing(2)}px ${theme.shape.spacing(4)}px`,
@@ -63,7 +64,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, className, classes }) => {
 
   return (
     <div className={styles.wrapper}>
-      <Typography as="h4" variant="h4" weight="bold" color="inherit" className={clsx(styles.text, className)}>
+      <Typography as="h4" variant="h4" weight="bold" color="inherit" className={clsx(styles.text, className)} clamp={2}>
         {text}
       </Typography>
     </div>
@@ -119,7 +120,7 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
       {terms && terms.length > 0 && (
         <>
           <Typography as={'span'} className={'mr-2'}>
-            Mathed terms:{' '}
+            Matched terms:{' '}
           </Typography>
           {terms?.map((t, index) => (
             <Typography key={index} className={styles.tag} color={'background'}>
@@ -226,8 +227,12 @@ const Card: FC<CardProps> = ({
         {tagProps && <CardTag {...tagProps} />}
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         <div className="flex-grow-1" />
-        {matchedTerms && <MatchedTerms {...matchedTerms} />}
-        <div className="flex-grow-1" />
+        {matchedTerms && (
+          <>
+            <MatchedTerms {...matchedTerms} />
+            <div className="flex-grow-1" />
+          </>
+        )}
         {children}
       </Body>
       {popUp && (

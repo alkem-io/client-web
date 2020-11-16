@@ -40,7 +40,7 @@ const AuthenticationBackdrop: FC<Props> = ({ children, open = false }) => {
       <Backdrop>{children}</Backdrop>
       <div className={styles.backdropContainer}>
         <Typography variant="h3" className={styles.message}>
-          You need to sign in to check the community out.
+          Please sign in to check out the community.
         </Typography>
         <div>
           <Button onClick={() => safeAuthenticate()} text={'Sign in'} />
