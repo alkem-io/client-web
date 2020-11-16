@@ -1,13 +1,11 @@
-import React, { FC } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { ReactComponent as ArrowLeft } from 'bootstrap-icons/icons/caret-left.svg';
+import React, { FC, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { createStyles } from '../../hooks/useTheme';
 
 import { Path } from '../../context/NavigationProvider';
-import Icon from '../core/Icon';
-import IconButton from '../core/IconButton';
 import hexToRGBA from '../../utils/hexToRGBA';
+import Typography from '../core/Typography';
 
 const useNavRingsStyles = createStyles(theme => ({
   wrapper: {
@@ -43,10 +41,9 @@ const useNavRingsStyles = createStyles(theme => ({
       },
     },
   },
-  arrowLeft: {
+  hoveredRoute: {
     position: 'fixed',
-    top: `${theme.shape.spacing(4)}px`,
-    left: `${theme.shape.spacing(6)}px`,
+    top: `${theme.shape.spacing(1)}px`,
     zIndex: 120,
   },
 }));
@@ -56,44 +53,40 @@ interface NavRings {
 }
 
 const NavRings: FC<NavRings> = ({ paths }) => {
+  const [hoveredRoute, setHoveredRoute] = useState<string | null>(null);
   const styles = useNavRingsStyles();
-  const history = useHistory();
-
-  /**
-   * @summary looking for previous and real path
-   */
-  const backPath = () => {
-    for (let i = paths.length - 2; i >= 1; i--) {
-      if (paths[i].real) return paths[i].value;
-    }
-    return '';
-  };
+  const realPaths = paths.filter(p => p.real)?.length;
 
   if (paths.length < 2) return null;
 
   return (
     <div className={styles.wrapper}>
-      {backPath() && paths.length > 1 && (
-        <IconButton
-          className={styles.arrowLeft}
-          onClick={() => backPath() && history.push(backPath())}
-          hoverIcon={<Icon component={ArrowLeft} color="inherit" size={'lg'} />}
-        >
-          <Icon component={ArrowLeft} color="inherit" size={'lg'} />
-        </IconButton>
-      )}
       <div className={styles.navRingsContainer}>
         {paths.map((el, index) => {
           if (!el.real) return null;
           return (
             <Link
-              style={{ width: index * 40 + 360, height: index * 40 + 360, zIndex: 111 - (index + 1) }}
+              style={{ width: index * 40 + 80, height: index * 40 + 80, zIndex: 111 - (index + 1) }}
               key={index}
               to={el.value}
+              onMouseEnter={() => setHoveredRoute(el.name)}
+              onMouseLeave={() => setHoveredRoute(null)}
             />
           );
         })}
       </div>
+      {hoveredRoute && (
+        <span
+          className={styles.hoveredRoute}
+          style={{
+            left: `${realPaths * 40}px`,
+          }}
+        >
+          <Typography variant={'caption'} color={'primary'} weight={'regular'}>
+            {hoveredRoute}
+          </Typography>
+        </span>
+      )}
     </div>
   );
 };
