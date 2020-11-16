@@ -2,8 +2,8 @@ import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-u
 import React, { FC, useRef } from 'react';
 import { ErrorHandler } from '../containers/ErrorHandler';
 import { UserMetadata } from '../context/UserProvider';
+import { useAccessContext } from '../hooks/useAccessContext';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
@@ -41,15 +41,13 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 
 const App = ({ children }): React.ReactElement => {
   const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
-  const {
-    context: { loading: authenticationLoading },
-  } = useAuthenticationContext();
+  const { loading: accessContextLoading } = useAccessContext();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
 
-  if (authenticationLoading || loading) return <Loading />;
+  if (accessContextLoading || loading) return <Loading />;
 
   return (
     <div id="app">

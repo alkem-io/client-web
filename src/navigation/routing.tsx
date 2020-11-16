@@ -1,25 +1,19 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
 import { Admin } from './admin';
 import { Community } from './community';
-import { Messages } from './messages';
 import { Ecoverses } from './ecoverse';
+import { Messages } from './messages';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
-import { useAuthenticate } from '../hooks/useAuthenticate';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
 
 export const Routing: FC = () => {
-  const { safeRefresh } = useAuthenticate();
-  useEffect(() => {
-    safeRefresh();
-  }, [safeRefresh]);
-
   return (
     <Switch>
       <RestrictedRoute path="/admin" allowedGroups={adminGroups} strict={false}>
