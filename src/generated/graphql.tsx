@@ -313,8 +313,12 @@ export type Query = {
   __typename?: 'Query';
   /** The currently logged in user */
   me: User;
+  /** All opportunities within the ecoverse */
+  opportunities: Array<Opportunity>;
   /** A particular opportunitiy, identified by the ID */
   opportunity: Opportunity;
+  /** All projects within this ecoverse */
+  projects: Array<Project>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** The name for this ecoverse */
@@ -434,6 +438,8 @@ export type Mutation = {
   addUserToChallenge: UserGroup;
   /** Adds the specified organisation as a lead for the specified challenge */
   addChallengeLead: Scalars['Boolean'];
+  /** Remove the specified organisation as a lead for the specified challenge */
+  removeChallengeLead: Scalars['Boolean'];
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
   /** Create a new Project on the Opportunity identified by the ID */
@@ -566,6 +572,11 @@ export type MutationAddUserToChallengeArgs = {
 };
 
 export type MutationAddChallengeLeadArgs = {
+  challengeID: Scalars['Float'];
+  organisationID: Scalars['Float'];
+};
+
+export type MutationRemoveChallengeLeadArgs = {
   challengeID: Scalars['Float'];
   organisationID: Scalars['Float'];
 };
@@ -999,6 +1010,18 @@ export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'
         }
     >;
   };
+
+export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
+  host: { __typename?: 'Organisation' } & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      }
+    >;
+  };
+};
 
 export type OpportunityProfileQueryVariables = Exact<{
   id: Scalars['Float'];
@@ -1914,6 +1937,56 @@ export function useEcoverseDetailsLazyQuery(
 export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
 export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
 export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;
+export const EcoverseHostReferencesDocument = gql`
+  query ecoverseHostReferences {
+    host {
+      profile {
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseHostReferencesQuery__
+ *
+ * To run a query within a React component, call `useEcoverseHostReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseHostReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseHostReferencesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseHostReferencesQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>(
+    EcoverseHostReferencesDocument,
+    baseOptions
+  );
+}
+export function useEcoverseHostReferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>(
+    EcoverseHostReferencesDocument,
+    baseOptions
+  );
+}
+export type EcoverseHostReferencesQueryHookResult = ReturnType<typeof useEcoverseHostReferencesQuery>;
+export type EcoverseHostReferencesLazyQueryHookResult = ReturnType<typeof useEcoverseHostReferencesLazyQuery>;
+export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
+  EcoverseHostReferencesQuery,
+  EcoverseHostReferencesQueryVariables
+>;
 export const OpportunityProfileDocument = gql`
   query opportunityProfile($id: Float!) {
     opportunity(ID: $id) {

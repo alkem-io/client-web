@@ -5,7 +5,7 @@ import { createStyles } from '../../hooks/useTheme';
 const useMainStyles = createStyles(() => ({
   main: {
     flexGrow: 1,
-    padding: 0,
+    padding: '40px 0 0 0',
   },
 }));
 
