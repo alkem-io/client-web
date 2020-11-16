@@ -6,10 +6,20 @@ import Toolbar from '../core/Toolbar';
 import Container from '../core/Container';
 import hexToRgba from '../../utils/hexToRGBA';
 import { Col, Row } from 'react-bootstrap';
+import Typography from '../core/Typography';
 
 const appBarZIndex = 100;
 
 const useHeaderStyles = createStyles(theme => ({
+  earlyAccessAlert: {
+    width: 'calc(100% + 30px)',
+    marginLeft: -15,
+    height: 40,
+    background: '#fff4d7',
+  },
+  alertText: {
+    padding: '0 40px',
+  },
   absolute: {
     position: 'absolute',
     top: 0,
@@ -47,6 +57,16 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
       </ReactVisibilitySensor>
 
       <Container className={styles[headerInSight ? 'absolute' : 'fixed']}>
+        {headerInSight && (
+          <Row className={styles.earlyAccessAlert}>
+            <Col xs={false} lg={3} />
+            <Col xs={12} lg={8} className={'d-flex align-items-center'}>
+              <Typography variant={'caption'} weight={'boldLight'} className={styles.alertText}>
+                Early Access Partner Preview (read-only)
+              </Typography>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col xs={false} lg={3}></Col>
           <Col xs>
