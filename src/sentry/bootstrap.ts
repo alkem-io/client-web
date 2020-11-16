@@ -3,7 +3,8 @@ import { Integrations } from '@sentry/tracing';
 import { env } from '../env';
 
 const sentryEndpoint = env && env.REACT_APP_SENTRY_ENDPOINT;
-const sentryEnabled = env && env.REACT_APP_SENTRY_ENABLED;
+const sentryEnabled =
+  env && env.REACT_APP_SENTRY_ENABLED && env.REACT_APP_SENTRY_ENABLED.toLocaleLowerCase() === 'true';
 
 const bootstrap = () => {
   if (sentryEnabled && sentryEndpoint) {

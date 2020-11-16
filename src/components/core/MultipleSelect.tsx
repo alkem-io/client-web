@@ -20,6 +20,11 @@ const useMultipleSelectStyles = createStyles(theme => {
     overflowX: 'auto',
     transition: 'background-color 0.25s',
     textTransform: 'uppercase',
+    '& > span': {
+      fontSize: 14,
+      fontWeight: 700,
+      fontFamily: 'Montserrat, sans-serif',
+    },
   };
 
   return {
@@ -91,9 +96,6 @@ const useMultipleSelectStyles = createStyles(theme => {
       '&:hover': {
         cursor: 'default',
         backgroundColor: `${theme.palette.positive}`,
-      },
-      '& > span': {
-        fontWeight: 600,
       },
     },
     removeIcon: {
