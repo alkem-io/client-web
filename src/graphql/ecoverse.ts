@@ -67,3 +67,16 @@ export const QUERY_ECOVERSE_DETAILS = gql`
     }
   }
 `;
+
+export const QUERY_ECOVERSE_HOST_REFERENCES = gql`
+  query ecoverseHostReferences {
+    host {
+      profile {
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+`;

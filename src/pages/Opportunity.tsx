@@ -3,10 +3,11 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import clsx from 'clsx';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import ActivityCard from '../components/ActivityPanel';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import Container, { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
@@ -18,6 +19,7 @@ import { Theme } from '../context/ThemeProvider';
 import { Opportunity as OpportunityType, Project, User } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
+import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
@@ -26,6 +28,7 @@ const useStyles = createStyles(theme => ({
     left: 0,
   },
   offset: {
+    marginTop: theme.shape.spacing(2),
     marginRight: theme.shape.spacing(4),
   },
 }));
@@ -46,11 +49,18 @@ const Opportunity: FC<OpportunityPageProps> = ({
 }): React.ReactElement => {
   // styles
   const styles = useStyles();
+  const [hideMeme, setHideMeme] = useState(false);
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
 
   // data
-  const { name, aspects, projects = [], relations = [], actorGroups } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups, context } = opportunity;
+  const { references, background, tagline, who, impact, vision } = context || {};
+  const visual = references?.find(x => x.name === 'poster');
+  const meme = references?.find(x => x.name === 'meme');
+
+  const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
+
   const team = relations[0];
   const stakeholders = useMemo(
     () =>
@@ -64,7 +74,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
     [actorGroups]
   );
-  const incomming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
+  const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
 
   const activitySummary = useMemo(() => {
@@ -112,7 +122,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
     <>
       <Section
         classes={{
-          background: theme => theme.palette.primary,
+          background: (theme: Theme) =>
+            visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.primary,
+          coverBackground: (theme: Theme) => theme.palette.primary,
         }}
         gutters={{
           root: true,
@@ -140,22 +152,76 @@ const Opportunity: FC<OpportunityPageProps> = ({
             <Button
               className={styles.offset}
               inset
-              variant="primary"
+              variant="transparent"
               text="projects"
               onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
-            {/* <Button className={styles.offset} inset variant="primary" text="demo" onClick={() => console.log('demo')} />
-            <Button
-              className={styles.offset}
-              inset
-              variant="primary"
-              text="github"
-              onClick={() => console.log('github')}
-            /> */}
+            <>
+              {links?.map((l, i) => (
+                <Button
+                  key={i}
+                  as="a"
+                  className={styles.offset}
+                  inset
+                  variant="transparent"
+                  text={l.name}
+                  href={l.uri}
+                  target="_blank"
+                />
+              ))}
+            </>
           </div>
         </Body>
         {team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
       </Section>
+      <Container>
+        <Row>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Problem'} />
+              <SubHeader text={background} />
+              <Body text={impact}></Body>
+            </Section>
+          </Col>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Solution'} />
+              <SubHeader text={tagline} />
+              <Body text={vision}></Body>
+            </Section>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Who'} />
+              <Body text={who}></Body>
+            </Section>
+          </Col>
+          {!hideMeme && (
+            <Col sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <Body>
+                  {meme && (
+                    <div>
+                      <img
+                        src={meme?.uri}
+                        alt={meme?.description}
+                        onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
+                          ev.currentTarget.style.display = 'none';
+                          setHideMeme(true);
+                        }}
+                        height={240}
+                      />
+                    </div>
+                  )}
+                </Body>
+              </Section>
+            </Col>
+          )}
+        </Row>
+      </Container>
+      <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={'ADOPTION ECOSYSTEM'} />
         <SubHeader text={'Stakeholders & Key users'} />
@@ -179,9 +245,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'Collaborative potential'} />
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
-      {incomming && (
+      {incoming && (
         <CardContainer title={'Incoming relations'} xs={12} md={6} lg={4} xl={3}>
-          {incomming?.map((props, i) => (
+          {incoming?.map((props, i) => (
             <RelationCard key={i} {...props} />
           ))}
         </CardContainer>
@@ -208,7 +274,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <div ref={projectRef}></div>
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
+        <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
       </Section>

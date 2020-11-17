@@ -12,6 +12,7 @@ import {
   useOpportunityUserIdsQuery,
   User,
 } from '../generated/graphql';
+import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
   Challenge as ChallengePage,
@@ -30,6 +31,7 @@ interface EcoverseParameters {
 }
 
 export const Ecoverses: FC = () => {
+  useTransactionScope({ type: 'domain' });
   const { path, url } = useRouteMatch();
 
   return (

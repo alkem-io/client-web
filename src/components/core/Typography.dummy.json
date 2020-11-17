@@ -96,7 +96,7 @@
   "projects": {
     "header": "Projects",
     "headerTag": "$ 1.750.000 allocated IN THIS ECOVERSE",
-    "subheader": "Recently initiated projects from the Odyssey Ecoverse",
+    "subheader": "Recently initiated projects in the ",
     "new_project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!",
     "list": [
       {
@@ -171,37 +171,37 @@
   "tags": {
     "list": [
       {
-        "name": "neil"
+        "name": "innovation"
       },
       {
-        "name": "evgeni"
+        "name": "non-profit"
       },
       {
-        "name": "oleg"
+        "name": "blockchain"
       },
       {
-        "name": "react"
+        "name": "AI"
       },
       {
-        "name": "typescript"
+        "name": "front-end development"
       },
       {
-        "name": "sql"
+        "name": "back-end development"
       },
       {
-        "name": "authentication"
+        "name": "good"
       },
       {
-        "name": "development"
+        "name": "data"
       },
       {
         "name": "api"
       },
       {
-        "name": "backend"
+        "name": "arificial intelligence"
       },
       {
-        "name": "modules"
+        "name": "incubator"
       }
     ]
   }

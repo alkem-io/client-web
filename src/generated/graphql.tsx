@@ -313,8 +313,12 @@ export type Query = {
   __typename?: 'Query';
   /** The currently logged in user */
   me: User;
+  /** All opportunities within the ecoverse */
+  opportunities: Array<Opportunity>;
   /** A particular opportunitiy, identified by the ID */
   opportunity: Opportunity;
+  /** All projects within this ecoverse */
+  projects: Array<Project>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** The name for this ecoverse */
@@ -434,6 +438,8 @@ export type Mutation = {
   addUserToChallenge: UserGroup;
   /** Adds the specified organisation as a lead for the specified challenge */
   addChallengeLead: Scalars['Boolean'];
+  /** Remove the specified organisation as a lead for the specified challenge */
+  removeChallengeLead: Scalars['Boolean'];
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
   /** Create a new Project on the Opportunity identified by the ID */
@@ -566,6 +572,11 @@ export type MutationAddUserToChallengeArgs = {
 };
 
 export type MutationAddChallengeLeadArgs = {
+  challengeID: Scalars['Float'];
+  organisationID: Scalars['Float'];
+};
+
+export type MutationRemoveChallengeLeadArgs = {
   challengeID: Scalars['Float'];
   organisationID: Scalars['Float'];
 };
@@ -808,16 +819,6 @@ export type TemplateInput = {
   description?: Maybe<Scalars['String']>;
 };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
-
-export type UserQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type UserQuery = { __typename?: 'Query' } & { user: { __typename?: 'User' } & UserDetailsFragment };
-
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
 }>;
@@ -900,6 +901,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
       opportunities?: Maybe<
         Array<
           { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              context?: Maybe<
+                { __typename?: 'Context' } & {
+                  references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+                }
+              >;
               projects?: Maybe<
                 Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
               >;
@@ -927,39 +933,6 @@ export type SearchQuery = { __typename?: 'Query' } & {
         >;
       }
   >;
-};
-
-export type CommunityListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type CommunityListQuery = { __typename?: 'Query' } & {
-  users: Array<
-    { __typename: 'User' } & {
-      memberof?: Maybe<
-        { __typename?: 'MemberOf' } & {
-          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
-          organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
-        }
-      >;
-    } & UserDetailsFragment
-  >;
-  groups: Array<
-    { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-        members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
-        profile?: Maybe<
-          { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
-              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-              tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
-            }
-        >;
-      }
-  >;
-};
-
-export type CommunityListUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type CommunityListUsersQuery = { __typename?: 'Query' } & {
-  users: Array<{ __typename: 'User' } & Pick<User, 'name' | 'id'>>;
 };
 
 export type GroupCardQueryVariables = Exact<{
@@ -1038,6 +1011,18 @@ export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'
     >;
   };
 
+export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
+  host: { __typename?: 'Organisation' } & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      }
+    >;
+  };
+};
+
 export type OpportunityProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1107,6 +1092,27 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
     >;
   };
 
+export type UserMembersFragment = { __typename?: 'User' } & {
+  memberof?: Maybe<
+    { __typename?: 'MemberOf' } & {
+      groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+      challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+    }
+  >;
+};
+
+export type UsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
+
+export type UserQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type UserQuery = { __typename?: 'Query' } & {
+  user: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
+};
+
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
@@ -1144,14 +1150,7 @@ export type UserAvatarsQuery = { __typename?: 'Query' } & {
 export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'User' } & {
-    memberof?: Maybe<
-      { __typename?: 'MemberOf' } & {
-        groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-        challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
-      }
-    >;
-  } & UserDetailsFragment;
+  me: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
 };
 
 export type UserCardDataQueryVariables = Exact<{
@@ -1225,73 +1224,21 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
-export const UsersDocument = gql`
-  query users {
-    users {
-      ...UserDetails
+export const UserMembersFragmentDoc = gql`
+  fragment UserMembers on User {
+    memberof {
+      groups {
+        id
+        name
+      }
+      challenges {
+        id
+        name
+        textID
+      }
     }
   }
-  ${UserDetailsFragmentDoc}
 `;
-
-/**
- * __useUsersQuery__
- *
- * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
-  return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
-}
-export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-  return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
-}
-export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
-export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
-export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
-export const UserDocument = gql`
-  query user($id: String!) {
-    user(ID: $id) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-
-/**
- * __useUserQuery__
- *
- * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
-  return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
-}
-export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
-  return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
-}
-export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
-export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
-export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
@@ -1607,6 +1554,12 @@ export const ChallengeProfileDocument = gql`
         id
         name
         textID
+        context {
+          references {
+            name
+            uri
+          }
+        }
         projects {
           id
           textID
@@ -1701,120 +1654,6 @@ export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sea
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
-export const CommunityListDocument = gql`
-  query communityList {
-    users {
-      __typename
-      memberof {
-        groups {
-          name
-        }
-        challenges {
-          name
-        }
-        organisations {
-          name
-        }
-      }
-      ...UserDetails
-    }
-    groups {
-      __typename
-      name
-      members {
-        name
-      }
-      profile {
-        avatar
-        description
-        references {
-          name
-          description
-        }
-        tagsets {
-          name
-        }
-      }
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-
-/**
- * __useCommunityListQuery__
- *
- * To run a query within a React component, call `useCommunityListQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCommunityListQuery(
-  baseOptions?: Apollo.QueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
-) {
-  return Apollo.useQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
-}
-export function useCommunityListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<CommunityListQuery, CommunityListQueryVariables>
-) {
-  return Apollo.useLazyQuery<CommunityListQuery, CommunityListQueryVariables>(CommunityListDocument, baseOptions);
-}
-export type CommunityListQueryHookResult = ReturnType<typeof useCommunityListQuery>;
-export type CommunityListLazyQueryHookResult = ReturnType<typeof useCommunityListLazyQuery>;
-export type CommunityListQueryResult = Apollo.QueryResult<CommunityListQuery, CommunityListQueryVariables>;
-export const CommunityListUsersDocument = gql`
-  query communityListUsers {
-    users {
-      __typename
-      name
-      id
-    }
-  }
-`;
-
-/**
- * __useCommunityListUsersQuery__
- *
- * To run a query within a React component, call `useCommunityListUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityListUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityListUsersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCommunityListUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<CommunityListUsersQuery, CommunityListUsersQueryVariables>
-) {
-  return Apollo.useQuery<CommunityListUsersQuery, CommunityListUsersQueryVariables>(
-    CommunityListUsersDocument,
-    baseOptions
-  );
-}
-export function useCommunityListUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<CommunityListUsersQuery, CommunityListUsersQueryVariables>
-) {
-  return Apollo.useLazyQuery<CommunityListUsersQuery, CommunityListUsersQueryVariables>(
-    CommunityListUsersDocument,
-    baseOptions
-  );
-}
-export type CommunityListUsersQueryHookResult = ReturnType<typeof useCommunityListUsersQuery>;
-export type CommunityListUsersLazyQueryHookResult = ReturnType<typeof useCommunityListUsersLazyQuery>;
-export type CommunityListUsersQueryResult = Apollo.QueryResult<
-  CommunityListUsersQuery,
-  CommunityListUsersQueryVariables
->;
 export const GroupCardDocument = gql`
   query groupCard($id: Float!) {
     group(ID: $id) {
@@ -2098,6 +1937,56 @@ export function useEcoverseDetailsLazyQuery(
 export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
 export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
 export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;
+export const EcoverseHostReferencesDocument = gql`
+  query ecoverseHostReferences {
+    host {
+      profile {
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseHostReferencesQuery__
+ *
+ * To run a query within a React component, call `useEcoverseHostReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseHostReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseHostReferencesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseHostReferencesQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>(
+    EcoverseHostReferencesDocument,
+    baseOptions
+  );
+}
+export function useEcoverseHostReferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseHostReferencesQuery, EcoverseHostReferencesQueryVariables>(
+    EcoverseHostReferencesDocument,
+    baseOptions
+  );
+}
+export type EcoverseHostReferencesQueryHookResult = ReturnType<typeof useEcoverseHostReferencesQuery>;
+export type EcoverseHostReferencesLazyQueryHookResult = ReturnType<typeof useEcoverseHostReferencesLazyQuery>;
+export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
+  EcoverseHostReferencesQuery,
+  EcoverseHostReferencesQueryVariables
+>;
 export const OpportunityProfileDocument = gql`
   query opportunityProfile($id: Float!) {
     opportunity(ID: $id) {
@@ -2265,6 +2154,75 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   CreateProjectMutation,
   CreateProjectMutationVariables
 >;
+export const UsersDocument = gql`
+  query users {
+    users {
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+  return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
+}
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+  return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
+}
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UserDocument = gql`
+  query user($id: String!) {
+    user(ID: $id) {
+      ...UserDetails
+      ...UserMembers
+    }
+  }
+  ${UserDetailsFragmentDoc}
+  ${UserMembersFragmentDoc}
+`;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+  return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+}
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+  return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+}
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const EcoverseUserIdsDocument = gql`
   query ecoverseUserIds {
     users {
@@ -2436,18 +2394,11 @@ export const UserProfileDocument = gql`
   query userProfile {
     me {
       ...UserDetails
-      memberof {
-        groups {
-          name
-        }
-        challenges {
-          id
-          name
-        }
-      }
+      ...UserMembers
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserMembersFragmentDoc}
 `;
 
 /**

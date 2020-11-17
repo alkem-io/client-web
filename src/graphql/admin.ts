@@ -1,24 +1,6 @@
 import { gql } from '@apollo/client';
 import { USER_DETAILS_FRAGMENT } from './user';
 
-export const QUERY_USER_LIST = gql`
-  query users {
-    users {
-      ...UserDetails
-    }
-  }
-  ${USER_DETAILS_FRAGMENT}
-`;
-
-export const QUERY_USER = gql`
-  query user($id: String!) {
-    user(ID: $id) {
-      ...UserDetails
-    }
-  }
-  ${USER_DETAILS_FRAGMENT}
-`;
-
 export const MUTATION_CREATE_USER = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {

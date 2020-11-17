@@ -58,7 +58,18 @@ export const UserForm: FC<UserProps> = ({
     country,
     accountUpn,
     profile: { description: bio, tagsets, references, avatar },
+    memberof: { groups: groupList, challenges: challengeList },
   } = currentUser;
+
+  const groups = groupList.reduce((prev, curr) => {
+    if (prev) return prev.concat(', ', curr.name);
+    return curr.name;
+  }, '');
+
+  const challenges = challengeList.reduce((prev, curr) => {
+    if (prev) return prev.concat(', ', curr.name);
+    return curr.name;
+  }, '');
 
   const initialValues = {
     name: name || '',
@@ -74,6 +85,8 @@ export const UserForm: FC<UserProps> = ({
     references: references || '',
     accountUpn: accountUpn || '',
     bio: bio || '',
+    challenges: challenges || '',
+    groups: groups || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -110,7 +123,7 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = (userData: UserFromGenerated): void => {
-    const { tagsets, avatar, references, bio, ...otherData } = userData;
+    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
     const user: UserModel = {
       ...currentUser,
@@ -253,6 +266,13 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
+
+                {editMode !== EditMode.new && (
+                  <Form.Row>{getInputField('Groups', groups, 'groups', false, true)}</Form.Row>
+                )}
+                {editMode !== EditMode.new && (
+                  <Form.Row>{getInputField('Challenges', userSkills, 'challenges', false, true)}</Form.Row>
+                )}
 
                 <FieldArray name={'references'}>
                   {({ push, remove }) => (

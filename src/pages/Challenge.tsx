@@ -24,46 +24,59 @@ import { PageProps } from './common';
 import { UserProvider } from './Ecoverse';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { createStyles } from '../hooks/useTheme';
+import clsx from 'clsx';
+
+const useOrganizationStyles = createStyles(theme => ({
+  organizationWrapper: {
+    display: 'flex',
+    gap: `${theme.shape.spacing(1)}px`,
+    flexWrap: 'wrap',
+  },
+  column: {
+    flexDirection: 'column',
+  },
+  imgContainer: {
+    display: 'flex',
+    flex: '0 45%',
+    width: '100%',
+    margin: '0 auto',
+  },
+  img: {
+    height: 'initial',
+    maxWidth: '100%',
+    maxHeight: 150,
+    margin: '0 auto',
+    objectFit: 'contain',
+  },
+}));
 
 const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
-  const [first, second, ...rest] = organizations;
+  const styles = useOrganizationStyles();
 
   return (
     <>
-      {first && (
+      <div className={clsx(styles.organizationWrapper, organizations.length === 2 && styles.column)}>
+        {organizations.map((org, index) => {
+          if (index > 4) return null;
+          return (
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.name}</Tooltip>}
+              key={index}
+            >
+              <div className={styles.imgContainer}>
+                <img src={org.profile?.avatar} alt={org.name} className={styles.img} />
+              </div>
+            </OverlayTrigger>
+          );
+        })}
+      </div>
+
+      {organizations.length > 4 && (
         <OverlayTrigger
           placement="bottom"
-          overlay={<Tooltip id={`challenge-${first.id}-tooltip`}>{first.name}</Tooltip>}
-        >
-          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
-            <img
-              src={first.profile?.avatar}
-              alt={first.name}
-              height={150}
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            />
-          </div>
-        </OverlayTrigger>
-      )}
-      {second && (
-        <OverlayTrigger
-          placement="bottom"
-          overlay={<Tooltip id={`challenge-${second.id}-tooltip`}>{second.name}</Tooltip>}
-        >
-          <div className={'d-flex'} style={{ paddingBottom: 20 }}>
-            <img
-              src={second.profile?.avatar}
-              alt={second.name}
-              height={150}
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            />
-          </div>
-        </OverlayTrigger>
-      )}
-      {rest.length > 0 && (
-        <OverlayTrigger
-          placement="bottom"
-          overlay={<Tooltip id="challenge-rest-tooltip">{rest.map(x => x.name).join(', ')}</Tooltip>}
+          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.name).join(', ')}</Tooltip>}
         >
           <div className={'d-flex'}>
             <Typography variant="h3">And more...</Typography>
@@ -228,11 +241,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       )}
       <Divider />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={projectTexts.header} tagText={'Comming soon'} />
+        <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
       </Section>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+      <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
         {challengeProjects.map(({ type, ...rest }, i) => {
           const Component = SwitchCardComponent({ type });
           return <Component {...rest} key={i} />;

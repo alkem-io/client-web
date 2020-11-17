@@ -34,8 +34,8 @@ const useUserStyles = createStyles(theme => ({
     },
     '&.vertical': {
       marginLeft: theme.shape.spacing(2),
-      marginTop: theme.shape.spacing(0.5),
-      marginBottom: theme.shape.spacing(0.5),
+      // marginTop: theme.shape.spacing(0.5),
+      // marginBottom: theme.shape.spacing(0.5),
     },
   },
 }));

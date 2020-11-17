@@ -21,7 +21,7 @@ import {
 } from '../components/core/Typography.dummy.json';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import { EcoverseDetailsQuery, User, useUserAvatarsQuery } from '../generated/graphql';
+import { EcoverseDetailsQuery, useEcoverseHostReferencesQuery, User, useUserAvatarsQuery } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
@@ -59,10 +59,13 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
   const history = useHistory();
   const user = useUserContext();
 
+  const { data } = useEcoverseHostReferencesQuery();
+
   useUpdateNavigation({ currentPaths: paths });
 
   const { name, context = {}, challenges } = ecoverse;
   const { tagline, impact, vision, background, references } = context;
+  const ecoverseLogo = data?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
   const opportunities = useMemo(
     () =>
@@ -120,11 +123,24 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         color: 'neutralMedium',
       },
     ];
-  }, [ecoverse]);
+  }, [ecoverse, users]);
 
   return (
     <>
-      <Section details={<ActivityCard title={'ecoverse activity'} items={activitySummary as any} />}>
+      <Section
+        avatar={
+          ecoverseLogo ? (
+            <img
+              src={ecoverseLogo}
+              alt={`${name} logo`}
+              style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
+            />
+          ) : (
+            <div />
+          )
+        }
+        details={<ActivityCard title={'ecoverse activity'} items={activitySummary as any} />}
+      >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
         <Body text={`${vision}`}>
@@ -184,9 +200,9 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         <>
           <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
             <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
-            <SubHeader text={projectTexts.subheader} />
+            <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
           </Section>
-          <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+          <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
             {ecoverseProjects.map(({ type, ...rest }, i) => {
               const Component = SwitchCardComponent({ type });
               return <Component {...rest} key={i} />;

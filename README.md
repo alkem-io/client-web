@@ -16,7 +16,7 @@ Build Quality:
 
 ### Configure data source endpoint
 
-Data is fed into the client through a graphql endpoint. Endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment variable. Add an .env file in project's root folder and set the variable to point to the graphql server
+Data is fed into the client through a graphql endpoint. Endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment variable. Add an .env.local file in project's root folder and set the variable to point to the graphql server
 
 ### Configure authentication
 

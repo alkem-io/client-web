@@ -2,10 +2,10 @@ import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-u
 import React, { FC, useRef } from 'react';
 import { ErrorHandler } from '../containers/ErrorHandler';
 import { UserMetadata } from '../context/UserProvider';
+import { useAccessContext } from '../hooks/useAccessContext';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useNavigation } from '../hooks/useNavigation';
-import { createStyles } from '../hooks/useTheme';
+import { useUserScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
@@ -19,38 +19,6 @@ import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
-
-const useGlobalStyles = createStyles(theme => ({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '0.4em',
-    },
-    '*::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px grey',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: theme.palette.primary,
-      outline: `1px solid ${theme.palette.neutral}`,
-    },
-    html: {
-      height: '100%',
-    },
-    body: {
-      height: '100%',
-      margin: 0,
-      fontFamily: '"Source Sans Pro", "Montserrat"',
-    },
-    '#root': {
-      height: '100%',
-    },
-    '#app': {
-      height: '100%',
-      minHeight: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  },
-}));
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -72,14 +40,14 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  useGlobalStyles();
   const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
-  const { context } = useAuthenticationContext();
+  const { loading: accessContextLoading } = useAccessContext();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
+  useUserScope(user);
 
-  if (context.loading || loading) return <Loading />;
+  if (accessContextLoading || loading) return <Loading />;
 
   return (
     <div id="app">

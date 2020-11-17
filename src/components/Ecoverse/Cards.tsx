@@ -178,7 +178,9 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </Typography>
           )}
           <div className={clsx('d-flex', 'flex-column', 'flex-grow-1')}>
-            <Typography>{description}</Typography>
+            <Typography as={'p'} clamp={3}>
+              {description}
+            </Typography>
             <div className="flex-grow-1"></div>
             <div>
               <Button text="Project details" onClick={onSelect} />

@@ -1,6 +1,8 @@
+// import { ErrorBoundary } from '@sentry/react';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
+import Button from '../../components/core/Button';
 import { CardContainer } from '../../components/core/Container';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
@@ -54,6 +56,9 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project, loading = false })
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
+        <Body>
+          <Button text="Test Sentry" />
+        </Body>
       </Section>
       {aspects && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>

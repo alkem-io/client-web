@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 
 import { UserCard } from '../components/Community/UserCard';
 import { GroupCard } from '../components/Community/GroupCard';
@@ -12,13 +12,7 @@ import MultipleSelect from '../components/core/MultipleSelect';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { tags as _tags } from '../components/core/Typography.dummy.json';
-import {
-  // QUERY_COMMUNITY_SEARCH,
-  // QUERY_COMMUNITY_LIST,
-  // QUERY_COMMUNITY_LIST_1,
-  QUERY_COMMUNITY_SEARCH_USERS,
-  QUERY_COMMUNITY_LIST_USERS,
-} from '../graphql/community';
+import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
 import { PageProps } from './common';
 import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { User, UserGroup } from '../generated/graphql';
@@ -43,11 +37,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   };
 
-  interface CommunityState {
-    users: Array<User>;
-    groups: Array<UserGroup>;
-  }
-
   const [community, setCommunity] = useState<Array<User | UserGroup>>([]);
   const [defaultCommunity, setDefaultCommunity] = useState<Array<User | UserGroup>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
@@ -59,23 +48,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
-  /*  const [getUserList, { data: userListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_USERS, {
-    onCompleted: data => {
-      setCommunity(x => ({ ...x, users: userListData }));
-      // setCommunity([...data.users, ...data.groups]);
-      // setDefaultCommunity([...data.users, ...data.groups]);
-    },
-  });
-
-  const [getUserList, { data: groupListData, loading, error }] = useLazyQuery(QUERY_COMMUNITY_LIST_GROUP, {
-    onCompleted: data => {
-      setCommunity(x => ({ ...x, groups: groupListData }));
-      // setCommunity([...data.users, ...data.groups]);
-      // setDefaultCommunity([...data.users, ...data.groups]);
-    },
-  });*/
-
-  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH_USERS, {
+  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
     onCompleted: ({ search: searchData }) => {
       const updatedCommunity = searchData
         .reduce((acc, curr) => {
