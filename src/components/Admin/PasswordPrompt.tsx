@@ -24,7 +24,7 @@ export const PasswordPrompt: FC<PasswordPromptProps> = ({ password, show, onClos
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
-            Understood
+            I understand
           </Button>
         </Modal.Footer>
       </Modal>

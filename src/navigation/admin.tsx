@@ -15,6 +15,7 @@ import {
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
 import { challengesMapper, groupsMapper } from '../utils';
+import { UserCreationProvider } from '../context/navigation/UserCreationProvider';
 
 /*local files imports end*/
 
@@ -54,23 +55,25 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
     return <Loading />;
   }
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <UserList users={users} paths={currentPaths} />
-      </Route>
-      <Route exact path={`${path}/new`}>
-        <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
-      </Route>
-      <Route exact path={`${path}/:userId/edit`}>
-        <UserRoute mode={EditMode.edit} paths={currentPaths} />
-      </Route>
-      <Route exact path={`${path}/:userId`}>
-        <UserRoute mode={EditMode.readOnly} paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <FourOuFour />
-      </Route>
-    </Switch>
+    <UserCreationProvider>
+      <Switch>
+        <Route exact path={`${path}`}>
+          <UserList users={users} paths={currentPaths} />
+        </Route>
+        <Route exact path={`${path}/new`}>
+          <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
+        </Route>
+        <Route exact path={`${path}/:userId/edit`}>
+          <UserRoute mode={EditMode.edit} paths={currentPaths} />
+        </Route>
+        <Route exact path={`${path}/:userId`}>
+          <UserRoute mode={EditMode.readOnly} paths={currentPaths} />
+        </Route>
+        <Route path="*">
+          <FourOuFour />
+        </Route>
+      </Switch>
+    </UserCreationProvider>
   );
 };
 
