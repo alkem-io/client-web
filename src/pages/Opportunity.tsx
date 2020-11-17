@@ -67,7 +67,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
 
-  const links = references?.filter(x => ['poster', 'meme', 'slides'].indexOf(x.name) === -1);
+  const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
 
   const team = relations[0];
   const stakeholders = useMemo(
