@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { FC, useRef } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import _clamp from 'clamp-js';
@@ -111,6 +111,15 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
+  const plainText = children as string;
+
+  const text = useMemo(() => {
+    if (typeof children === 'string') {
+      return plainText?.replaceAll('\\n', '')?.replaceAll('\\"', '"');
+    }
+    return children;
+  }, [children]);
+
   if (clamp && ref?.current) {
     _clamp(ref.current, { clamp });
   }
@@ -122,7 +131,7 @@ const Typography: FC<TypographyProps> = ({
       style={{ fontWeight: fontWeight[weight] }}
       ref={ref}
     >
-      {children}
+      {text}
     </Component>
   );
 };
