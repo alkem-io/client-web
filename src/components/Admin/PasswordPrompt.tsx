@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from '../core/Button';
 import InputWithCopy from './InputWithCopy';
@@ -19,12 +19,13 @@ export const PasswordPrompt: FC<PasswordPromptProps> = ({ password, show, onClos
           <Modal.Title>Store password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Please copy the "Generated password". Once form is closed it will be lost forever.
+          Please copy this password. It is used for your first log in. Once this page is closed the password will be
+          lost forever.
           <InputWithCopy label="Generated Password" text={password} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
-            Understood
+            I understand
           </Button>
         </Modal.Footer>
       </Modal>
