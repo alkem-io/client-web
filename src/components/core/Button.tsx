@@ -96,6 +96,29 @@ const useButtonStyles = createStyles(theme => ({
       },
     },
   },
+  semiTransparent: {
+    color: theme.palette.background,
+    borderColor: theme.palette.primary,
+    background: hexToRGBA(theme.palette.background, 0.25),
+
+    '& > div': {
+      filter: `drop-shadow(1px 1px ${theme.palette.neutral})`,
+    },
+
+    '&:hover': {
+      color: theme.palette.neutralLight,
+      background: hexToRGBA(theme.palette.primary, 0.7),
+      filter: 'none',
+    },
+
+    '&:focus': {
+      outline: `1px auto ${theme.palette.primary}`,
+
+      '&.inset': {
+        outline: 'none',
+      },
+    },
+  },
   negative: {
     color: theme.palette.negative,
     borderColor: theme.palette.negative,
@@ -157,7 +180,7 @@ interface ButtonProps extends Record<string, unknown> {
   as?: React.ComponentType<any> | string;
   onClick?: (e: Event) => void;
   text?: string;
-  variant?: 'default' | 'primary' | 'negative' | 'transparent';
+  variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent';
   inset?: boolean;
   small?: boolean;
   disabled?: boolean;

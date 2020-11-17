@@ -70,13 +70,13 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
       }}
       primaryTextProps={{ text: actorName }}
       tagProps={{
-        text: `${type}: ${actorRole}`,
+        text: `${actorRole}`,
         color: type === 'incoming' ? 'positive' : 'neutralMedium',
       }}
     >
       <Spacer />
       <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'REASON FOR COLLABORATIOn'}
+        {'REASON FOR COLLABORATION'}
       </Typography>
       <Typography as="h3" variant="body">
         {description}

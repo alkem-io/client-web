@@ -182,7 +182,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <div>
             <Button
               inset
-              variant="transparent"
+              variant="semiTransparent"
               text="opportunities"
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
