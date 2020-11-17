@@ -2,6 +2,7 @@ import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
+import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -21,6 +22,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
+import Typography from '../components/core/Typography';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -30,6 +32,12 @@ const useStyles = createStyles(theme => ({
   offset: {
     marginTop: theme.shape.spacing(2),
     marginRight: theme.shape.spacing(4),
+  },
+  title: {
+    filter: `drop-shadow(1px 1px ${hexToRGBA(theme.palette.neutral, 0.3)})`,
+  },
+  link: {
+    color: theme.palette.background,
   },
 }));
 
@@ -59,7 +67,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
 
-  const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
+  const links = references?.filter(x => ['poster', 'meme', 'slides'].indexOf(x.name) === -1);
 
   const team = relations[0];
   const stakeholders = useMemo(
@@ -76,6 +84,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   );
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
+  const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
   const activitySummary = useMemo(() => {
     return [
@@ -124,7 +133,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         classes={{
           background: (theme: Theme) =>
             visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.primary,
-          coverBackground: (theme: Theme) => theme.palette.primary,
+          // coverBackground: (theme: Theme) => theme.palette.primary, // in case need to turn back to the monocolored opportunity header
         }}
         gutters={{
           root: true,
@@ -144,15 +153,17 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <div className="d-flex flex-column flex-grow-1">
             <SectionHeader
               text={name}
-              className="flex-grow-1"
-              classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
+              className={clsx('flex-grow-1', styles.title)}
+              classes={{
+                color: (theme: Theme) => theme.palette.neutralLight,
+              }}
             />
           </div>
           <div className="flex-row">
             <Button
               className={styles.offset}
               inset
-              variant="transparent"
+              variant="semiTransparent"
               text="projects"
               onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
@@ -161,9 +172,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 <Button
                   key={i}
                   as="a"
-                  className={styles.offset}
+                  className={clsx(styles.offset, styles.link)}
                   inset
-                  variant="transparent"
+                  variant="semiTransparent"
                   text={l.name}
                   href={l.uri}
                   target="_blank"
@@ -245,20 +256,32 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'Collaborative potential'} />
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
-      {incoming && (
-        <CardContainer title={'Incoming relations'} xs={12} md={6} lg={4} xl={3}>
-          {incoming?.map((props, i) => (
-            <RelationCard key={i} {...props} />
-          ))}
-        </CardContainer>
+      {isNoRelations ? (
+        <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
+          <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
+          <Typography variant={'h3'} color={'neutralMedium'}>
+            Sorry, there are no related people or groups yet
+          </Typography>
+        </div>
+      ) : (
+        <>
+          {incoming && incoming.length > 0 && (
+            <CardContainer title={'Users'} xs={12} md={6} lg={4} xl={3}>
+              {incoming?.map((props, i) => (
+                <RelationCard key={i} {...props} />
+              ))}
+            </CardContainer>
+          )}
+          {outgoing && outgoing.length > 0 && (
+            <CardContainer title={'Groups'} xs={12} md={6} lg={4} xl={3}>
+              {outgoing?.map((props, i) => (
+                <RelationCard key={i} {...props} />
+              ))}
+            </CardContainer>
+          )}
+        </>
       )}
-      {outgoing && (
-        <CardContainer title={'Outgoing relations'} xs={12} md={6} lg={4} xl={3}>
-          {outgoing?.map((props, i) => (
-            <RelationCard key={i} {...props} />
-          ))}
-        </CardContainer>
-      )}
+
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
