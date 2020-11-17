@@ -21,13 +21,23 @@ import {
 } from '../components/core/Typography.dummy.json';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import { EcoverseDetailsQuery, useEcoverseHostReferencesQuery, User, useUserAvatarsQuery } from '../generated/graphql';
+import {
+  ChallengesQuery,
+  EcoverseInfoQuery,
+  useEcoverseHostReferencesQuery,
+  User,
+  useUserAvatarsQuery,
+  useOpportunitiesQuery,
+  useProjectsQuery,
+  useProjectsChainHistoryQuery,
+} from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
 
 interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseDetailsQuery;
+  ecoverse: EcoverseInfoQuery;
+  challenges: ChallengesQuery | undefined;
   users: User[] | undefined;
 }
 
@@ -54,47 +64,69 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
   return <>{children(data?.usersById as User[])}</>;
 };
 
-const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
+const Ecoverse: FC<EcoversePageProps> = ({
+  paths,
+  ecoverse,
+  challenges: challengesQuery,
+  users = [],
+}): React.ReactElement => {
   const { url } = useRouteMatch();
   const history = useHistory();
   const user = useUserContext();
 
-  const { data } = useEcoverseHostReferencesQuery();
+  const { data: _opportunities, loading: opportunitiesLoading } = useOpportunitiesQuery();
+  const { data: _projects, loading: projectsLoading } = useProjectsQuery();
+  const { data: _projectsNestHistory, loading: projectsNestHistoryLoading } = useProjectsChainHistoryQuery();
+  const { data: hostData } = useEcoverseHostReferencesQuery();
+
+  const challenges = challengesQuery?.challenges || [];
+  const projects = _projects?.projects || [];
+  const opportunities = _opportunities?.opportunities || [];
+  const projectsNestHistory = _projectsNestHistory?.challenges || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {}, challenges } = ecoverse;
+  const { name, context = {} } = ecoverse;
   const { tagline, impact, vision, background, references } = context;
-  const ecoverseLogo = data?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
+  const ecoverseLogo = hostData?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
-  const opportunities = useMemo(
+
+  /**
+   * getting out all projects and adding url dependency based on project's parents names
+   */
+  const projectsWithParentData = useMemo(
     () =>
-      challenges.flatMap(c =>
-        c.opportunities?.map(x => ({
-          challenge: c.name,
-          url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
-          ...x,
-        }))
-      ),
-    [challenges]
+      projectsNestHistory
+        ?.flatMap(c =>
+          c?.opportunities?.map(x => ({
+            challenge: c.name,
+            url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
+            ...x,
+          }))
+        )
+        .flatMap(o =>
+          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.textID}`, ...p }))
+        ),
+    [_projectsNestHistory]
   );
-  const projects = useMemo(
-    () =>
-      opportunities.flatMap(o =>
-        o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o.url}/projects/${p.textID}`, ...p }))
-      ),
-    [opportunities]
-  );
+
+  /**
+   * creating suitable for project card data + 1 mock card at the end
+   */
   const ecoverseProjects = useMemo(
     () => [
-      ...projects.map(p => ({
-        title: p?.name || '',
-        description: p?.description,
-        caption: p?.caption,
-        tag: { status: 'positive', text: p?.state || '' },
-        type: 'display',
-        onSelect: () => history.replace(p?.url || ''),
-      })),
+      ...projects.map(p => {
+        const parentsData = projectsWithParentData?.find(ph => ph?.textID === p.textID);
+
+        return {
+          title: p?.name || '',
+          description: p?.description,
+          caption: parentsData?.caption,
+          tag: { status: 'positive', text: p?.state || '' },
+          type: 'display',
+          onSelect: () => history.replace(parentsData?.url || ''),
+        };
+      }),
       {
         title: 'MORE PROJECTS STARTING SOON',
         type: 'more',
@@ -102,6 +134,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
     ],
     [projects]
   );
+
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
@@ -123,7 +156,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         color: 'neutralMedium',
       },
     ];
-  }, [ecoverse, users]);
+  }, [ecoverse, projects]);
 
   return (
     <>
@@ -154,7 +187,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         <Body text={impact}></Body>
       </Section>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-        {ecoverse.challenges.map((challenge, i) => (
+        {challenges.map((challenge, i) => (
           <ChallengeCard
             key={i}
             {...(challenge as any)}

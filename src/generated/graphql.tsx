@@ -154,16 +154,16 @@ export type Opportunity = {
   context?: Maybe<Context>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
-  /** The set of actor groups within the context of this Opportunity */
-  actorGroups?: Maybe<Array<ActorGroup>>;
-  /** The set of solution aspects for this Opportunity */
-  aspects?: Maybe<Array<Aspect>>;
-  /** The set of relations for this Opportunity */
-  relations?: Maybe<Array<Relation>>;
   /** Groups of users related to a Opportunity. */
   groups?: Maybe<Array<UserGroup>>;
   /** All users that are contributing to this Opportunity. */
   contributors?: Maybe<Array<User>>;
+  /** The set of actor groups within the context of this Opportunity. */
+  actorGroups?: Maybe<Array<ActorGroup>>;
+  /** The set of aspects within the context of this Opportunity. */
+  aspects?: Maybe<Array<Aspect>>;
+  /** The set of relations within the context of this Opportunity. */
+  relations?: Maybe<Array<Relation>>;
 };
 
 export type UserGroup = {
@@ -977,39 +977,55 @@ export type EcoverseNameQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseNameQuery = { __typename?: 'Query' } & Pick<Query, 'name'>;
 
-export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChallengesQuery = { __typename?: 'Query' } & {
-  challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
-};
-
-export type EcoverseDetailsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EcoverseDetailsQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
+export type EcoverseInfoQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
     context: { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
         references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
       };
-    challenges: Array<
-      { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
-                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-              }
-          >;
-          opportunities?: Maybe<
-            Array<
-              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID'> & {
-                  projects?: Maybe<
-                    Array<
-                      { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>
-                    >
-                  >;
-                }
-            >
-          >;
-        }
-    >;
   };
+
+export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChallengesQuery = { __typename?: 'Query' } & {
+  challenges: Array<
+    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+            }
+        >;
+      }
+  >;
+};
+
+export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ProjectsQuery = { __typename?: 'Query' } & {
+  projects: Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>;
+};
+
+export type ProjectsChainHistoryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ProjectsChainHistoryQuery = { __typename?: 'Query' } & {
+  challenges: Array<
+    { __typename?: 'Challenge' } & Pick<Challenge, 'name' | 'textID'> & {
+        opportunities?: Maybe<
+          Array<
+            { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID'> & {
+                projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'textID'>>>;
+              }
+          >
+        >;
+      }
+  >;
+};
+
+export type OpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OpportunitiesQuery = { __typename?: 'Query' } & {
+  opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID'>>;
+};
 
 export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1834,12 +1850,63 @@ export function useEcoverseNameLazyQuery(
 export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
 export type EcoverseNameLazyQueryHookResult = ReturnType<typeof useEcoverseNameLazyQuery>;
 export type EcoverseNameQueryResult = Apollo.QueryResult<EcoverseNameQuery, EcoverseNameQueryVariables>;
+export const EcoverseInfoDocument = gql`
+  query ecoverseInfo {
+    name
+    context {
+      tagline
+      vision
+      impact
+      background
+      references {
+        name
+        uri
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseInfoQuery__
+ *
+ * To run a query within a React component, call `useEcoverseInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseInfoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseInfoQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseInfoQuery, EcoverseInfoQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseInfoQuery, EcoverseInfoQueryVariables>(EcoverseInfoDocument, baseOptions);
+}
+export function useEcoverseInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseInfoQuery, EcoverseInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseInfoQuery, EcoverseInfoQueryVariables>(EcoverseInfoDocument, baseOptions);
+}
+export type EcoverseInfoQueryHookResult = ReturnType<typeof useEcoverseInfoQuery>;
+export type EcoverseInfoLazyQueryHookResult = ReturnType<typeof useEcoverseInfoLazyQuery>;
+export type EcoverseInfoQueryResult = Apollo.QueryResult<EcoverseInfoQuery, EcoverseInfoQueryVariables>;
 export const ChallengesDocument = gql`
   query challenges {
     challenges {
       id
       name
       textID
+      context {
+        tagline
+        references {
+          name
+          uri
+        }
+      }
     }
   }
 `;
@@ -1870,39 +1937,51 @@ export function useChallengesLazyQuery(
 export type ChallengesQueryHookResult = ReturnType<typeof useChallengesQuery>;
 export type ChallengesLazyQueryHookResult = ReturnType<typeof useChallengesLazyQuery>;
 export type ChallengesQueryResult = Apollo.QueryResult<ChallengesQuery, ChallengesQueryVariables>;
-export const EcoverseDetailsDocument = gql`
-  query ecoverseDetails {
-    name
-    context {
-      tagline
-      vision
-      impact
-      background
-      references {
-        name
-        uri
-      }
-    }
-    challenges {
+export const ProjectsDocument = gql`
+  query projects {
+    projects {
       id
+      textID
+      name
+      description
+      state
+    }
+  }
+`;
+
+/**
+ * __useProjectsQuery__
+ *
+ * To run a query within a React component, call `useProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProjectsQuery(baseOptions?: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+  return Apollo.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, baseOptions);
+}
+export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+  return Apollo.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, baseOptions);
+}
+export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
+export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
+export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
+export const ProjectsChainHistoryDocument = gql`
+  query projectsChainHistory {
+    challenges {
       name
       textID
-      context {
-        tagline
-        references {
-          name
-          uri
-        }
-      }
       opportunities {
-        id
         textID
         projects {
-          id
           textID
-          name
-          description
-          state
         }
       }
     }
@@ -1910,33 +1989,79 @@ export const EcoverseDetailsDocument = gql`
 `;
 
 /**
- * __useEcoverseDetailsQuery__
+ * __useProjectsChainHistoryQuery__
  *
- * To run a query within a React component, call `useEcoverseDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProjectsChainHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsChainHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseDetailsQuery({
+ * const { data, loading, error } = useProjectsChainHistoryQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEcoverseDetailsQuery(
-  baseOptions?: Apollo.QueryHookOptions<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>
+export function useProjectsChainHistoryQuery(
+  baseOptions?: Apollo.QueryHookOptions<ProjectsChainHistoryQuery, ProjectsChainHistoryQueryVariables>
 ) {
-  return Apollo.useQuery<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>(EcoverseDetailsDocument, baseOptions);
+  return Apollo.useQuery<ProjectsChainHistoryQuery, ProjectsChainHistoryQueryVariables>(
+    ProjectsChainHistoryDocument,
+    baseOptions
+  );
 }
-export function useEcoverseDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>
+export function useProjectsChainHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ProjectsChainHistoryQuery, ProjectsChainHistoryQueryVariables>
 ) {
-  return Apollo.useLazyQuery<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>(EcoverseDetailsDocument, baseOptions);
+  return Apollo.useLazyQuery<ProjectsChainHistoryQuery, ProjectsChainHistoryQueryVariables>(
+    ProjectsChainHistoryDocument,
+    baseOptions
+  );
 }
-export type EcoverseDetailsQueryHookResult = ReturnType<typeof useEcoverseDetailsQuery>;
-export type EcoverseDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseDetailsLazyQuery>;
-export type EcoverseDetailsQueryResult = Apollo.QueryResult<EcoverseDetailsQuery, EcoverseDetailsQueryVariables>;
+export type ProjectsChainHistoryQueryHookResult = ReturnType<typeof useProjectsChainHistoryQuery>;
+export type ProjectsChainHistoryLazyQueryHookResult = ReturnType<typeof useProjectsChainHistoryLazyQuery>;
+export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
+  ProjectsChainHistoryQuery,
+  ProjectsChainHistoryQueryVariables
+>;
+export const OpportunitiesDocument = gql`
+  query opportunities {
+    opportunities {
+      id
+      textID
+    }
+  }
+`;
+
+/**
+ * __useOpportunitiesQuery__
+ *
+ * To run a query within a React component, call `useOpportunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOpportunitiesQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunitiesQuery, OpportunitiesQueryVariables>
+) {
+  return Apollo.useQuery<OpportunitiesQuery, OpportunitiesQueryVariables>(OpportunitiesDocument, baseOptions);
+}
+export function useOpportunitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunitiesQuery, OpportunitiesQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunitiesQuery, OpportunitiesQueryVariables>(OpportunitiesDocument, baseOptions);
+}
+export type OpportunitiesQueryHookResult = ReturnType<typeof useOpportunitiesQuery>;
+export type OpportunitiesLazyQueryHookResult = ReturnType<typeof useOpportunitiesLazyQuery>;
+export type OpportunitiesQueryResult = Apollo.QueryResult<OpportunitiesQuery, OpportunitiesQueryVariables>;
 export const EcoverseHostReferencesDocument = gql`
   query ecoverseHostReferences {
     host {
