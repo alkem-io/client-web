@@ -1,8 +1,8 @@
-import { gql } from '@apollo/client';
+import { ApolloError, gql } from '@apollo/client';
 import generator from 'generate-password';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
-import { Prompt, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { EditMode, UserForm } from '.';
 import {
   useCreateUserMutation,
@@ -26,9 +26,10 @@ interface UserPageProps extends PageProps {
 }
 
 export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, title = 'User', paths }) => {
-  const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [strongPassword, setStrongPassword] = useState<string>('');
+  const [newUserId, setNewUserId] = useState<string | undefined>('1');
+  const [status, setStatus] = useState<'success' | 'error' | undefined>();
+  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [password, setPassword] = useState<string>('');
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
@@ -37,53 +38,41 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   useUpdateNavigation({ currentPaths });
 
+  const handleError = (error: ApolloError) => {
+    setStatus('error');
+    setMessage(error.message);
+
+    console.error(error);
+  };
+
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onError: error => console.log(error),
-    onCompleted: () => setShowSuccess(true),
+    onCompleted: () => {
+      setMessage('User updated sucessfully');
+      setStatus('success');
+    },
   });
 
   const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
     refetchQueries: ['users'],
     awaitRefetchQueries: true,
     onCompleted: () => {
-      setModalOpened(false);
       history.push('/admin/users');
     },
-    onError: e => console.error('User remove error---> ', e),
+    onError: e => {
+      handleError(e);
+    },
   });
-
-  useEffect(() => {
-    const handleUnload = e => {
-      if (isBlocked) {
-        const message =
-          'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!';
-
-        if (e) {
-          e.preventDefault(); // Prevent navigation
-          e.returnValue = message; // Works only for old browsers
-        }
-        return message; // Works only for the oldest browsers
-      }
-    };
-    window.addEventListener('beforeunload', handleUnload);
-    return () => {
-      window.removeEventListener('beforeunload', handleUnload);
-    };
-  }, [isBlocked]);
 
   const isEditMode = mode === EditMode.edit;
 
   const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
-    onError: error => {
-      setShowError(true);
-      setShowSuccess(false);
-      console.log(error);
-    },
+    onError: handleError,
     onCompleted: data => {
-      history.replace(`/admin/users/${data.createUser.id}/edit`);
+      setNewUserId(data.createUser.id);
       setIsBlocked(true);
-      setShowSuccess(true);
-      setShowError(false);
+      setStatus('success');
+      setMessage('User save successfuly!');
     },
     update: (cache, { data }) => {
       if (data) {
@@ -134,7 +123,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
       userInput.aadPassword = aadPassword;
 
-      setStrongPassword(aadPassword);
+      setPassword(aadPassword);
       createUser({
         variables: {
           user: userInput,
@@ -156,34 +145,39 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       variables: {
         userID: Number(user?.id),
       },
-    });
+    }).finally(() => setModalOpened(false));
   };
 
   const closeModal = (): void => {
     setModalOpened(false);
   };
 
+  const dismiss = () => {
+    setStatus(undefined);
+  };
+
+  const closePasswordPrompt = () => {
+    if (newUserId) {
+      history.replace(`/admin/users/${newUserId}/edit`);
+    } else {
+      history.replace('/admin/users');
+    }
+  };
+
   return (
     <div>
-      <Prompt
-        when={isBlocked}
-        message={
-          'Make sure you copied the Generated Password! Once you close this form the password will be lost forever!'
-        }
-      />
-      {isBlocked && <PasswordPrompt password={strongPassword} show={isBlocked} onClose={() => setIsBlocked(false)} />}
-      <Alert show={showError} variant="danger" onClose={() => setShowError(false)} dismissible>
-        Error saving user.
-      </Alert>
-      <Alert show={showSuccess} variant="success" onClose={() => setShowSuccess(false)} dismissible>
-        Saved successfully.
+      <PasswordPrompt password={password} show={isBlocked} onClose={closePasswordPrompt} />
+      <Alert show={status !== undefined} variant={status === 'error' ? 'danger' : status} onClose={dismiss} dismissible>
+        {message}
       </Alert>
       {isSaving && <Loading text={'Saving...'} />}
       <div className={'d-flex'}>
         <div className={'flex-grow-1'} />
-        <Button variant={'negative'} small onClick={() => setModalOpened(true)}>
-          Remove user
-        </Button>
+        {isEditMode && (
+          <Button variant={'negative'} small onClick={() => setModalOpened(true)}>
+            Remove user
+          </Button>
+        )}
       </div>
       <UserForm editMode={mode} onSave={handleSave} title={title} user={user} />
       <UserRemoveModal

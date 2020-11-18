@@ -46,7 +46,7 @@ const useCardStyles = createStyles(theme => ({
 export const Spacer: FC<{ variant?: 'lg' | 'md' }> = ({ variant = 'md' }) => {
   const styles = useCardStyles();
 
-  return <div className={styles[`${variant}Spacer`]}></div>;
+  return <div className={styles[`${variant}Spacer`]} />;
 };
 
 interface RelationCardProps {
@@ -70,17 +70,20 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
       }}
       primaryTextProps={{ text: actorName }}
       tagProps={{
-        text: `${type}: ${actorRole}`,
+        text: `${actorRole}`,
         color: type === 'incoming' ? 'positive' : 'neutralMedium',
       }}
     >
-      <Spacer />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'REASON FOR COLLABORATIOn'}
-      </Typography>
-      <Typography as="h3" variant="body">
-        {description}
-      </Typography>
+      {description !== '""' && ( // remove empty quotes check when it is fixed on server
+        <>
+          <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+            {'REASON FOR COLLABORATION'}
+          </Typography>
+          <Typography as="h3" variant="body">
+            {description}
+          </Typography>
+        </>
+      )}
     </Card>
   );
 };
@@ -105,7 +108,7 @@ export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact
             type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
         },
       }}
-      primaryTextProps={{ text: name }}
+      primaryTextProps={{ text: name, tooltip: true }}
       tagProps={{
         text: type,
         color: type === 'stakeholder' ? 'neutral' : 'positive',

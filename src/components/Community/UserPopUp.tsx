@@ -17,12 +17,14 @@ const UserPopUp: FC<UserCardProps> = ({
   memberof,
   terms = [],
 }) => {
-  const getArrayOfNames = arr => arr.map(el => el?.name);
+  const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
   const groups = getArrayOfNames(memberof?.groups);
   const challenges = getArrayOfNames(memberof?.challenges);
   const organisations = getArrayOfNames(memberof?.organisations);
+
+  const refs = profile?.references?.filter(r => r.uri.trim() !== '');
 
   return (
     <>
@@ -51,7 +53,7 @@ const UserPopUp: FC<UserCardProps> = ({
         <Typography weight={'medium'} as={'p'}>
           {country} {city}
         </Typography>
-        {profile?.references && profile?.references.length > 0 && (
+        {refs && refs.length > 0 && (
           <>
             <Typography>References: </Typography>
             {profile?.references?.map((r, index) => (
