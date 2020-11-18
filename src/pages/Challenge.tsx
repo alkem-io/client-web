@@ -141,13 +141,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         digit: projects?.length || 0,
         color: 'positive',
       },
-      {
-        name: 'Members',
-        digit: users?.length,
-        color: 'neutralMedium',
-      },
+      // {
+      //   name: 'Members',
+      //   digit: users?.length,
+      //   color: 'neutralMedium',
+      // },
     ];
-  }, [opportunities, projects]);
+  }, [opportunities, projects, users]);
 
   return (
     <>
