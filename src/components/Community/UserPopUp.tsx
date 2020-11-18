@@ -17,7 +17,7 @@ const UserPopUp: FC<UserCardProps> = ({
   memberof,
   terms = [],
 }) => {
-  const getArrayOfNames = arr => arr.map(el => el?.name);
+  const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
   const groups = getArrayOfNames(memberof?.groups);
