@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 /*lib imports end*/
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
 import { SearchableListData } from '../components/Admin/SearchableList';
