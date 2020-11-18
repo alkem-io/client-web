@@ -93,13 +93,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
         digit: projects.length,
         color: 'positive',
       },
-      {
-        name: 'Members',
-        digit: users.length,
-        color: 'neutralMedium',
-      },
+      // {
+      //   name: 'Members',
+      //   digit: users.length,
+      //   color: 'neutralMedium',
+      // },
     ];
-  }, [projects]);
+  }, [projects, users]);
 
   const opportunityProjects = useMemo(() => {
     const projectList = [
