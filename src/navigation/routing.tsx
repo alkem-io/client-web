@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
 import { Admin } from './admin';
@@ -16,6 +16,7 @@ const adminGroups = ['admin'];
 export const Routing: FC = () => {
   return (
     <Switch>
+      <Redirect from="/:url*(/+)" to={window.location.href.slice(0, -1)} />
       <RestrictedRoute path="/admin" allowedGroups={adminGroups} strict={false}>
         <Admin />
       </RestrictedRoute>

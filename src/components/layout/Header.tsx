@@ -38,6 +38,10 @@ const useHeaderStyles = createStyles(theme => ({
   centerContent: {
     alignItems: 'center',
   },
+  link: {
+    textDecoration: 'underline',
+    color: theme.palette.background,
+  },
 }));
 
 interface HeaderProps {
@@ -63,6 +67,18 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
             <Col xs={12} lg={8} className={'d-flex align-items-center'}>
               <Typography variant={'caption'} weight={'boldLight'} color={'background'} className={styles.alertText}>
                 Early Access Partner Preview (read-only)
+              </Typography>
+              <div className={'flex-grow-1'} />
+              <Typography variant={'caption'} weight={'boldLight'} color={'background'}>
+                Please feel free to leave a feedback{' '}
+                <a
+                  href={`${process.env.REACT_APP_FEEDBACK_URL}`}
+                  target={'_blank'}
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  Here
+                </a>
               </Typography>
             </Col>
           </Row>
