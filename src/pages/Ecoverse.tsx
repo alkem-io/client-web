@@ -2,6 +2,7 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-octagon.svg';
 import React, { FC, useMemo } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
@@ -34,10 +35,15 @@ import {
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
+import { Col } from 'react-bootstrap';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
-  challenges: ChallengesQuery | undefined;
+  challenges: {
+    data: ChallengesQuery | undefined;
+    error: any;
+  };
+
   users: User[] | undefined;
 }
 
@@ -64,6 +70,15 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
   return <>{children(data?.usersById as User[])}</>;
 };
 
+const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
+  <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
+    <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
+    <Typography variant={'h5'} color={'neutral'} className={'ml-3'}>
+      Sorry, an error occurred while loading {blockName}
+    </Typography>
+  </div>
+);
+
 const Ecoverse: FC<EcoversePageProps> = ({
   paths,
   ecoverse,
@@ -74,12 +89,13 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const history = useHistory();
   const user = useUserContext();
 
-  const { data: _opportunities, loading: opportunitiesLoading } = useOpportunitiesQuery();
-  const { data: _projects, loading: projectsLoading } = useProjectsQuery();
-  const { data: _projectsNestHistory, loading: projectsNestHistoryLoading } = useProjectsChainHistoryQuery();
+  const { data: _opportunities } = useOpportunitiesQuery();
+  const { data: _projects, error: projectsError } = useProjectsQuery();
+  const { data: _projectsNestHistory, error: projectsHistoryError } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();
 
-  const challenges = challengesQuery?.challenges || [];
+  const challenges = challengesQuery?.data?.challenges || [];
+  const challengesError = challengesQuery?.error;
   const projects = _projects?.projects || [];
   const opportunities = _opportunities?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.challenges || [];
@@ -184,23 +200,30 @@ const Ecoverse: FC<EcoversePageProps> = ({
       <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
         <SectionHeader text={challengeLabels.header} />
         <SubHeader text={background} />
-        <Body text={impact}></Body>
+        <Body text={impact} />
       </Section>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-        {challenges.map((challenge, i) => (
-          <ChallengeCard
-            key={i}
-            {...(challenge as any)}
-            context={{
-              ...challenge.context,
-              tag: user.user?.ofChallenge(challenge.id)
-                ? 'You are in'
-                : (challenge.context as Record<string, any>)['tag'],
-            }}
-            url={`${url}/challenges/${challenge.textID}`}
-          />
-        ))}
-      </CardContainer>
+      {challengesError ? (
+        <Col xs={12}>
+          <ErrorBlock blockName={'challenges'} />
+        </Col>
+      ) : (
+        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+          {challenges.map((challenge, i) => (
+            <ChallengeCard
+              key={i}
+              {...(challenge as any)}
+              context={{
+                ...challenge.context,
+                tag: user.user?.ofChallenge(challenge.id)
+                  ? 'You are in'
+                  : (challenge.context as Record<string, any>)['tag'],
+              }}
+              url={`${url}/challenges/${challenge.textID}`}
+            />
+          ))}
+        </CardContainer>
+      )}
+
       <Divider />
       <AuthenticationBackdrop>
         <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
@@ -215,7 +238,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
                       <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
                     ))}
                   </AvatarContainer>
-                  <div style={{ flexBasis: '100%' }}></div>
+                  <div style={{ flexBasis: '100%' }} />
                   {users.length - populated.length > 0 && (
                     <Typography variant="h3" as="h3" color="positive">
                       {`... + ${users.length - populated.length} other members`}
@@ -235,12 +258,19 @@ const Ecoverse: FC<EcoversePageProps> = ({
             <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
             <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
           </Section>
-          <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-            {ecoverseProjects.map(({ type, ...rest }, i) => {
-              const Component = SwitchCardComponent({ type });
-              return <Component {...rest} key={i} />;
-            })}
-          </CardContainer>
+          {projectsError || projectsHistoryError ? (
+            <Col xs={12}>
+              <ErrorBlock blockName={'projects'} />
+            </Col>
+          ) : (
+            <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+              {ecoverseProjects.map(({ type, ...rest }, i) => {
+                const Component = SwitchCardComponent({ type });
+                return <Component {...rest} key={i} />;
+              })}
+            </CardContainer>
+          )}
+
           <Divider />
         </>
       )}

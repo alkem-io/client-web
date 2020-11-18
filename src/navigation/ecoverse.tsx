@@ -10,11 +10,8 @@ import {
   useChallengeUserIdsQuery,
   useEcoverseInfoQuery,
   useEcoverseUserIdsQuery,
-  useOpportunitiesQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
-  useProjectsChainHistoryQuery,
-  useProjectsQuery,
   User,
 } from '../generated/graphql';
 import { useTransactionScope } from '../hooks/useSentry';
@@ -60,7 +57,9 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   // at some point the ecoverse needs to be queried
 
   const { data: ecoverse, loading: ecoverseLoading } = useEcoverseInfoQuery({ errorPolicy: 'all' });
-  const { data: challenges, loading: challengesLoading } = useChallengesQuery({ errorPolicy: 'all' });
+  const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+    errorPolicy: 'all',
+  });
 
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
   const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
@@ -68,7 +67,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
     ecoverse,
   ]);
 
-  const loading = ecoverseLoading || usersLoading;
+  const loading = ecoverseLoading || usersLoading || challengesLoading;
 
   if (loading) {
     return <Loading text={'Loading ecoverse'} />;
@@ -84,7 +83,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
         {!loading && (
           <EcoversePage
             ecoverse={ecoverse}
-            challenges={challenges}
+            challenges={{ data: challenges, error: challengesError }}
             users={(usersQuery?.users || undefined) as User[] | undefined}
             paths={currentPaths}
           />
