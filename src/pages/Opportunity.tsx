@@ -133,7 +133,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         classes={{
           background: (theme: Theme) =>
             visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.primary,
-          // coverBackground: (theme: Theme) => theme.palette.primary, // in case need to turn back to the monocolored opportunity header
+          coverBackground: (theme: Theme) => theme.palette.primary, // in case need to turn back to the monocolored opportunity header
         }}
         gutters={{
           root: true,
@@ -163,7 +163,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
             <Button
               className={styles.offset}
               inset
-              variant="semiTransparent"
+              variant="primary"
               text="projects"
               onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
@@ -174,7 +174,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                   as="a"
                   className={clsx(styles.offset, styles.link)}
                   inset
-                  variant="semiTransparent"
+                  variant="primary"
                   text={l.name}
                   href={l.uri}
                   target="_blank"
@@ -185,20 +185,20 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </Body>
         {team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
       </Section>
-      <Container>
+      <Container className={'p-4'}>
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Problem'} />
               <SubHeader text={background} />
-              <Body text={impact}></Body>
+              <Body text={impact} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Solution'} />
               <SubHeader text={tagline} />
-              <Body text={vision}></Body>
+              <Body text={vision} />
             </Section>
           </Col>
         </Row>
@@ -206,7 +206,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Who'} />
-              <Body text={who}></Body>
+              <Body text={who} />
             </Section>
           </Col>
           {!hideMeme && (
