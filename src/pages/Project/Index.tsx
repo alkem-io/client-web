@@ -56,9 +56,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project, loading = false })
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
-        <Body>
-          <Button text="Test Sentry" />
-        </Body>
+        <Body></Body>
       </Section>
       {aspects && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>
