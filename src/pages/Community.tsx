@@ -126,7 +126,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Row>
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
-        {community.slice(0, 10).map(el => {
+        {community.slice(0, 30).map(el => {
           // It is 100% right, there are differences of __typenames, for that case we split them
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore

@@ -3,10 +3,12 @@ import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'r
 import Loading from '../components/core/Loading';
 import {
   Challenge as ChallengeType,
+  ChallengesQuery,
   Opportunity as OpportunityType,
   useChallengeProfileQuery,
+  useChallengesQuery,
   useChallengeUserIdsQuery,
-  useEcoverseDetailsQuery,
+  useEcoverseInfoQuery,
   useEcoverseUserIdsQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
@@ -53,14 +55,19 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   // const { id } = useParams<{ id: string }>();
   // at some point the ecoverse needs to be queried
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseDetailsQuery({ variables: {}, errorPolicy: 'all' });
-  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ variables: {}, errorPolicy: 'all' });
+
+  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseInfoQuery({ errorPolicy: 'all' });
+  const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+    errorPolicy: 'all',
+  });
+
+  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
   const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
     paths,
     ecoverse,
   ]);
 
-  const loading = ecoverseLoading || usersLoading;
+  const loading = ecoverseLoading || usersLoading || challengesLoading;
 
   if (loading) {
     return <Loading text={'Loading ecoverse'} />;
@@ -76,13 +83,14 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
         {!loading && (
           <EcoversePage
             ecoverse={ecoverse}
+            challenges={{ data: challenges, error: challengesError }}
             users={(usersQuery?.users || undefined) as User[] | undefined}
             paths={currentPaths}
           />
         )}
       </Route>
       <Route path={`${path}/challenges/:id`}>
-        <Challenge paths={currentPaths} challenges={ecoverse.challenges} />
+        <Challenge paths={currentPaths} challenges={challenges} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -92,13 +100,13 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
 };
 
 interface ChallengeRootProps extends PageProps {
-  challenges: Pick<ChallengeType, 'id' | 'textID'>[];
+  challenges: ChallengesQuery | undefined;
 }
 
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = challenges.find(x => x.textID === id);
+  const target = challenges?.challenges?.find(x => x.textID === id);
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: { id: Number(target?.id) },
