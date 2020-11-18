@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { Modal } from 'react-bootstrap';
+import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
@@ -14,6 +14,7 @@ interface HeaderProps {
   children?: React.ReactNode;
   classes?: unknown;
   color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative';
+  tooltip?: boolean;
 }
 
 const useHeaderStyles = createStyles(theme => ({
@@ -59,8 +60,27 @@ const usePrimaryTextStyles = createStyles(theme => ({
   },
 }));
 
-export const PrimaryText: FC<HeaderProps> = ({ text, className, classes }) => {
+export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes }) => {
   const styles = usePrimaryTextStyles(classes || {});
+
+  if (tooltip) {
+    return (
+      <OverlayTrigger placement="right" overlay={<Tooltip id={`challenge-${text}-tooltip`}>{text}</Tooltip>}>
+        <div className={styles.wrapper}>
+          <Typography
+            as="h4"
+            variant="h4"
+            weight="bold"
+            color="inherit"
+            className={clsx(styles.text, className)}
+            clamp={2}
+          >
+            {text}
+          </Typography>
+        </div>
+      </OverlayTrigger>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>

@@ -41,7 +41,7 @@ const Tag: React.FC<TagProps> = ({ text, className, color = 'positive' }): JSX.E
 
   return (
     <span className={clsx(styles.tag, styles[color], className)}>
-      <Typography variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" clamp={1}>
         {text}
       </Typography>
     </span>
