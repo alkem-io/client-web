@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 /*lib imports end*/
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
 import { SearchableListData } from '../components/Admin/SearchableList';
@@ -26,6 +26,9 @@ export const Admin: FC = () => {
   return (
     <Container>
       <Switch>
+        <Route exact strict path={`${path}/`}>
+          <Redirect to={`${path}`} />
+        </Route>
         <Route exact path={`${path}`}>
           <AdminPage paths={currentPaths} />
         </Route>
@@ -55,6 +58,9 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
   }
   return (
     <Switch>
+      <Route exact strict path={`${path}/`}>
+        <Redirect to={`${path}`} />
+      </Route>
       <Route exact path={`${path}`}>
         <UserList users={users} paths={currentPaths} />
       </Route>
@@ -85,7 +91,10 @@ const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
 
   if (loading) return <Loading />;
   const user = data?.user as UserModel;
-  return <UserPage user={user} paths={paths} mode={mode} title={title} />;
+  if (user) {
+    return <UserPage user={user} paths={paths} mode={mode} title={title} />;
+  }
+  return <FourOuFour />;
 };
 
 const GroupsRoute: FC<PageProps> = ({ paths }) => {
@@ -108,12 +117,15 @@ const GroupsRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Switch>
-      <Route path={`${path}/:challengeId`}>
-        <ChallengesRoute data={data} paths={currentPaths} />
+      <Route exact strict path={`${path}/`}>
+        <Redirect to={`${path}`} />
       </Route>
       <Route exact path={`${path}`}>
         <h3>Ecoverse/Challenges</h3>
         <ListPage data={challenges} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/:challengeId`}>
+        <ChallengesRoute data={data} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -159,11 +171,14 @@ const ChallengesRoute: FC<ChallengesRouteProps> = ({ data, paths }) => {
 
   return (
     <Switch>
-      <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} />
+      <Route exact strict path={`${path}/`}>
+        <Redirect to={`${path}`} />
       </Route>
       <Route exact path={`${path}`}>
         <ListPage paths={currentPaths} data={groupsData.groups} />
+      </Route>
+      <Route exact path={`${path}/:groupId`}>
+        <GroupPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
