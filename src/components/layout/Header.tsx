@@ -15,7 +15,7 @@ const useHeaderStyles = createStyles(theme => ({
     width: 'calc(100% + 30px)',
     marginLeft: -15,
     height: 40,
-    background: '#fff4d7',
+    background: theme.palette.primary,
   },
   alertText: {
     padding: '0 40px',
@@ -61,7 +61,7 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
           <Row className={styles.earlyAccessAlert}>
             <Col xs={false} lg={3} />
             <Col xs={12} lg={8} className={'d-flex align-items-center'}>
-              <Typography variant={'caption'} weight={'boldLight'} className={styles.alertText}>
+              <Typography variant={'caption'} weight={'boldLight'} color={'background'} className={styles.alertText}>
                 Early Access Partner Preview (read-only)
               </Typography>
             </Col>

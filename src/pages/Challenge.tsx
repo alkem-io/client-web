@@ -49,6 +49,10 @@ const useOrganizationStyles = createStyles(theme => ({
     margin: '0 auto',
     objectFit: 'contain',
   },
+  link: {
+    marginTop: `${theme.shape.spacing(2)}px`,
+    marginRight: `${theme.shape.spacing(4)}px`,
+  },
 }));
 
 const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
@@ -92,9 +96,17 @@ interface ChallengePageProps extends PageProps {
   users?: User[];
 }
 
+const useChallengeStyles = createStyles(theme => ({
+  link: {
+    marginTop: `${theme.shape.spacing(2)}px`,
+    marginRight: `${theme.shape.spacing(4)}px`,
+  },
+}));
+
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { url } = useRouteMatch();
   const history = useHistory();
+  const styles = useChallengeStyles();
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
@@ -149,6 +161,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
     ];
   }, [opportunities, projects]);
 
+  const challengeRefs = challenge?.context?.references
+    ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')
+    ?.slice(0, 3);
+
   return (
     <>
       <Section
@@ -182,10 +198,23 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <div>
             <Button
               inset
-              variant="semiTransparent"
+              variant="primary"
               text="opportunities"
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              className={styles.link}
             />
+            {challengeRefs?.map((l, i) => (
+              <Button
+                key={i}
+                as="a"
+                inset
+                variant="primary"
+                text={l.name}
+                href={l.uri}
+                target="_blank"
+                className={styles.link}
+              />
+            ))}
           </div>
         </Body>
       </Section>
