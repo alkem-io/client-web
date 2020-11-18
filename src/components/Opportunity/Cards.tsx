@@ -108,7 +108,7 @@ export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact
             type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
         },
       }}
-      primaryTextProps={{ text: name }}
+      primaryTextProps={{ text: name, tooltip: true }}
       tagProps={{
         text: type,
         color: type === 'stakeholder' ? 'neutral' : 'positive',
