@@ -19,18 +19,8 @@ export const QUERY_ECOVERSE_NAME = gql`
   }
 `;
 
-export const QUERY_CHALLENGES = gql`
-  query challenges {
-    challenges {
-      id
-      name
-      textID
-    }
-  }
-`;
-
 export const QUERY_ECOVERSE_DETAILS = gql`
-  query ecoverseDetails {
+  query ecoverseInfo {
     name
     context {
       tagline
@@ -42,6 +32,11 @@ export const QUERY_ECOVERSE_DETAILS = gql`
         uri
       }
     }
+  }
+`;
+
+export const QUERY_CHALLENGES = gql`
+  query challenges {
     challenges {
       id
       name
@@ -53,17 +48,42 @@ export const QUERY_ECOVERSE_DETAILS = gql`
           uri
         }
       }
+    }
+  }
+`;
+
+export const QUERY_PROJECTS = gql`
+  query projects {
+    projects {
+      id
+      textID
+      name
+      description
+      state
+    }
+  }
+`;
+
+export const QUERY_PROJECTS_CHAIN_HISTORY = gql`
+  query projectsChainHistory {
+    challenges {
+      name
+      textID
       opportunities {
-        id
         textID
         projects {
-          id
           textID
-          name
-          description
-          state
         }
       }
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITIES = gql`
+  query opportunities {
+    opportunities {
+      id
+      textID
     }
   }
 `;

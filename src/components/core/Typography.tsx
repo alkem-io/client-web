@@ -111,11 +111,19 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
+  const removeSlashes = (string: string) => string?.replaceAll('\\n', '')?.replaceAll('\\"', '"');
+
   const plainText = children as string;
 
   const text = useMemo(() => {
+    if (children instanceof Array) {
+      return children.map(c => {
+        if (typeof c === 'string') return removeSlashes(c);
+        return c;
+      });
+    }
     if (typeof children === 'string') {
-      return plainText?.replaceAll('\\n', '')?.replaceAll('\\"', '"');
+      return removeSlashes(plainText);
     }
     return children;
   }, [children]);

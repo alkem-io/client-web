@@ -2,6 +2,7 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-octagon.svg';
 import React, { FC, useMemo } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
@@ -21,13 +22,28 @@ import {
 } from '../components/core/Typography.dummy.json';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import { EcoverseDetailsQuery, useEcoverseHostReferencesQuery, User, useUserAvatarsQuery } from '../generated/graphql';
+import {
+  ChallengesQuery,
+  EcoverseInfoQuery,
+  useEcoverseHostReferencesQuery,
+  User,
+  useUserAvatarsQuery,
+  useOpportunitiesQuery,
+  useProjectsQuery,
+  useProjectsChainHistoryQuery,
+} from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
+import { Col } from 'react-bootstrap';
 
 interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseDetailsQuery;
+  ecoverse: EcoverseInfoQuery;
+  challenges: {
+    data: ChallengesQuery | undefined;
+    error: any;
+  };
+
   users: User[] | undefined;
 }
 
@@ -54,47 +70,79 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
   return <>{children(data?.usersById as User[])}</>;
 };
 
-const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
+const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
+  <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
+    <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
+    <Typography variant={'h5'} color={'neutral'} className={'ml-3'}>
+      Sorry, an error occurred while loading {blockName}
+    </Typography>
+  </div>
+);
+
+const Ecoverse: FC<EcoversePageProps> = ({
+  paths,
+  ecoverse,
+  challenges: challengesQuery,
+  users = [],
+}): React.ReactElement => {
   const { url } = useRouteMatch();
   const history = useHistory();
   const user = useUserContext();
 
-  const { data } = useEcoverseHostReferencesQuery();
+  const { data: _opportunities } = useOpportunitiesQuery();
+  const { data: _projects, error: projectsError } = useProjectsQuery();
+  const { data: _projectsNestHistory, error: projectsHistoryError } = useProjectsChainHistoryQuery();
+  const { data: hostData } = useEcoverseHostReferencesQuery();
+
+  const challenges = challengesQuery?.data?.challenges || [];
+  const challengesError = challengesQuery?.error;
+  const projects = _projects?.projects || [];
+  const opportunities = _opportunities?.opportunities || [];
+  const projectsNestHistory = _projectsNestHistory?.challenges || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {}, challenges } = ecoverse;
+  const { name, context = {} } = ecoverse;
   const { tagline, impact, vision, background, references } = context;
-  const ecoverseLogo = data?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
+  const ecoverseLogo = hostData?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
-  const opportunities = useMemo(
+
+  /**
+   * getting out all projects and adding url dependency based on project's parents names
+   */
+  const projectsWithParentData = useMemo(
     () =>
-      challenges.flatMap(c =>
-        c.opportunities?.map(x => ({
-          challenge: c.name,
-          url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
-          ...x,
-        }))
-      ),
-    [challenges]
+      projectsNestHistory
+        ?.flatMap(c =>
+          c?.opportunities?.map(x => ({
+            challenge: c.name,
+            url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
+            ...x,
+          }))
+        )
+        .flatMap(o =>
+          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.textID}`, ...p }))
+        ),
+    [_projectsNestHistory]
   );
-  const projects = useMemo(
-    () =>
-      opportunities.flatMap(o =>
-        o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o.url}/projects/${p.textID}`, ...p }))
-      ),
-    [opportunities]
-  );
+
+  /**
+   * creating suitable for project card data + 1 mock card at the end
+   */
   const ecoverseProjects = useMemo(
     () => [
-      ...projects.map(p => ({
-        title: p?.name || '',
-        description: p?.description,
-        caption: p?.caption,
-        tag: { status: 'positive', text: p?.state || '' },
-        type: 'display',
-        onSelect: () => history.replace(p?.url || ''),
-      })),
+      ...projects.map(p => {
+        const parentsData = projectsWithParentData?.find(ph => ph?.textID === p.textID);
+
+        return {
+          title: p?.name || '',
+          description: p?.description,
+          caption: parentsData?.caption,
+          tag: { status: 'positive', text: p?.state || '' },
+          type: 'display',
+          onSelect: () => history.replace(parentsData?.url || ''),
+        };
+      }),
       {
         title: 'MORE PROJECTS STARTING SOON',
         type: 'more',
@@ -102,6 +150,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
     ],
     [projects]
   );
+
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
@@ -123,7 +172,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
         color: 'neutralMedium',
       },
     ];
-  }, [ecoverse, users]);
+  }, [ecoverse, projects]);
 
   return (
     <>
@@ -151,23 +200,30 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
       <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
         <SectionHeader text={challengeLabels.header} />
         <SubHeader text={background} />
-        <Body text={impact}></Body>
+        <Body text={impact} />
       </Section>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-        {ecoverse.challenges.map((challenge, i) => (
-          <ChallengeCard
-            key={i}
-            {...(challenge as any)}
-            context={{
-              ...challenge.context,
-              tag: user.user?.ofChallenge(challenge.id)
-                ? 'You are in'
-                : (challenge.context as Record<string, any>)['tag'],
-            }}
-            url={`${url}/challenges/${challenge.textID}`}
-          />
-        ))}
-      </CardContainer>
+      {challengesError ? (
+        <Col xs={12}>
+          <ErrorBlock blockName={'challenges'} />
+        </Col>
+      ) : (
+        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+          {challenges.map((challenge, i) => (
+            <ChallengeCard
+              key={i}
+              {...(challenge as any)}
+              context={{
+                ...challenge.context,
+                tag: user.user?.ofChallenge(challenge.id)
+                  ? 'You are in'
+                  : (challenge.context as Record<string, any>)['tag'],
+              }}
+              url={`${url}/challenges/${challenge.textID}`}
+            />
+          ))}
+        </CardContainer>
+      )}
+
       <Divider />
       <AuthenticationBackdrop>
         <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
@@ -182,7 +238,7 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
                       <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
                     ))}
                   </AvatarContainer>
-                  <div style={{ flexBasis: '100%' }}></div>
+                  <div style={{ flexBasis: '100%' }} />
                   {users.length - populated.length > 0 && (
                     <Typography variant="h3" as="h3" color="positive">
                       {`... + ${users.length - populated.length} other members`}
@@ -202,12 +258,19 @@ const Ecoverse: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React
             <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
             <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
           </Section>
-          <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-            {ecoverseProjects.map(({ type, ...rest }, i) => {
-              const Component = SwitchCardComponent({ type });
-              return <Component {...rest} key={i} />;
-            })}
-          </CardContainer>
+          {projectsError || projectsHistoryError ? (
+            <Col xs={12}>
+              <ErrorBlock blockName={'projects'} />
+            </Col>
+          ) : (
+            <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+              {ecoverseProjects.map(({ type, ...rest }, i) => {
+                const Component = SwitchCardComponent({ type });
+                return <Component {...rest} key={i} />;
+              })}
+            </CardContainer>
+          )}
+
           <Divider />
         </>
       )}
