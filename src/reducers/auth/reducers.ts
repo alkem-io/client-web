@@ -1,5 +1,5 @@
 import { TOKEN_STORAGE_KEY } from '../../hooks';
-import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_TOKEN } from './types';
+import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {
   account: null,
@@ -7,6 +7,7 @@ const initialState: AuthState = {
   idToken: null,
   accessToken: null,
   isAuthenticated: false,
+  status: 'notauthenticated',
 };
 
 export default function authReducer(state = initialState, action: AuthActionTypes): AuthState {
@@ -43,6 +44,12 @@ export default function authReducer(state = initialState, action: AuthActionType
         error: action.payload,
         isAuthenticated: false,
       };
+    case UPDATE_STATUS:
+      return {
+        ...state,
+        status: action.payload,
+      };
+
     default:
       return state;
   }
