@@ -7,6 +7,7 @@ declare global {
       REACT_APP_SENTRY_PII_ENABLED: string | undefined;
       REACT_APP_NAME: string | undefined;
       REACT_APP_VERSION: string | undefined;
+      REACT_APP_FEEDBACK_URL: string | undefined;
     };
   }
 }
