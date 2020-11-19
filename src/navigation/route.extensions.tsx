@@ -12,15 +12,15 @@ interface RestrictedRoutePros extends Record<string, unknown> {
 const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = [], strict = false, ...rest }) => {
   const { pathname } = useLocation();
   const { user, loading: userLoading } = useUserContext();
-  const { status } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticate();
 
-  const loading = userLoading || status === 'authenticating' || status === 'refreshing';
+  const loading = userLoading;
 
   if (loading) {
     return <Loading text="Loading user configuration" />;
   }
 
-  if (status === 'notauthenticated') {
+  if (!isAuthenticated) {
     return <Redirect to={`/signin?redirect=${encodeURI(pathname)}`} />;
   }
 

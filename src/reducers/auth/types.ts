@@ -6,7 +6,7 @@ export const UPDATE_TOKEN = 'UPDATE_TOKEN';
 export const UPDATE_STATUS = 'UPDATE_STATUS';
 
 export type ErrorPayload = AuthError | Error | null;
-export type AuthStatus = 'notauthenticated' | 'authenticating' | 'refreshing' | 'authenticated';
+export type AuthStatus = 'authenticating' | 'refreshing' | 'done' | 'signingout' | 'refreshRequested' | undefined;
 export interface UpdateAccountAction {
   type: typeof UPDATE_ACCOUNT;
   payload: AccountInfo | null;

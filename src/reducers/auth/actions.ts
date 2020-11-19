@@ -30,7 +30,7 @@ export function updateToken(authenticationResult: AuthenticationResult | undefin
   };
 }
 
-export function updateStatus(status: AuthStatus): AuthActionTypes {
+export function updateStatus(status?: AuthStatus): AuthActionTypes {
   return {
     type: UPDATE_STATUS,
     payload: status,

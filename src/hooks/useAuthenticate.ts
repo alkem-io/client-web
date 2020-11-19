@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
@@ -12,6 +12,7 @@ export const TOKEN_STORAGE_KEY = 'accessToken';
 
 const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
   dispatch(updateStatus('authenticating'));
+
   const result = await context.signIn();
 
   if (result) {
@@ -19,12 +20,13 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      dispatch(updateStatus('authenticated'));
+      await context.resetStore();
+      dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
     await context.resetStore();
-    dispatch(updateStatus('notauthenticated'));
+    dispatch(updateStatus('done'));
   }
 
   return result;
@@ -36,17 +38,18 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
   const targetAccount = accounts[0];
 
   if (!userName && !targetAccount) {
-    dispatch(updateStatus('notauthenticated'));
+    dispatch(updateStatus());
     await context.resetStore();
     dispatch(updateToken(null));
     return;
   }
 
   const result = await context.acquireToken(userName || targetAccount.username);
+
   if (result) {
     dispatch(updateToken(result));
     await context.resetStore();
-    dispatch(updateStatus('authenticated'));
+    dispatch(updateStatus('done'));
   }
 
   return result;
@@ -60,6 +63,7 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
     return;
   }
 
+  dispatch(updateStatus('signingout'));
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 

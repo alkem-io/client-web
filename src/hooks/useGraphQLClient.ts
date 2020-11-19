@@ -3,28 +3,18 @@ import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
+import { updateStatus } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
 import { TOKEN_STORAGE_KEY } from './useAuthentication';
+
+const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const dispatch = useDispatch();
   let token: string | null;
-
-  const handleStorageChange = useCallback((e: StorageEvent) => {
-    if (e.key === TOKEN_STORAGE_KEY) {
-      token = e.newValue;
-    }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [handleStorageChange]);
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     let errors: Error[] = [];
@@ -35,6 +25,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
         const code = extensions && extensions['code'];
         if (code === 'UNAUTHENTICATED') {
+          // TODO [ATS]: Capter correct error and request refresh when token has expired. dispatch(updateStatus('refreshRequested'));
           return acc;
         }
 
@@ -60,9 +51,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (!token) {
       token = localStorage.getItem(TOKEN_STORAGE_KEY);
     }
-    if (_.operationName === 'userProfile') {
-      console.log(token);
-    }
+
     if (!token) return headers;
     return {
       headers: {
@@ -73,11 +62,15 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   const consoleLink = new ApolloLink((operation, forward) => {
-    console.log(`starting request for ${operation.operationName}`);
+    if (enableQueryDebug) {
+      console.log(`starting request for ${operation.operationName}`);
+    }
     return forward(operation).map(data => {
-      console.log(`ending request for ${operation.operationName}`);
-      if (operation.operationName === 'userProfile') {
-        console.log(data);
+      if (enableQueryDebug) {
+        console.log(`ending request for ${operation.operationName}`);
+        if (enableQueryDebug && operation.operationName === 'userProfile') {
+          console.log(data);
+        }
       }
       return data;
     });

@@ -15,7 +15,7 @@ export const SignIn: FC = () => {
   useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();
   const redirect = params.get('redirect');
-  const { authenticate, status } = useAuthenticate();
+  const { authenticate, status, isAuthenticated } = useAuthenticate();
 
   const tryAuthenticate = useCallback(() => {
     async function runProcess() {
@@ -33,7 +33,7 @@ export const SignIn: FC = () => {
     return <Loading text="Signing in..." />;
   }
 
-  if (status === 'authenticated') {
+  if (isAuthenticated) {
     return <Redirect to={`${decodeURI(redirect || '/')}`} />;
   }
 

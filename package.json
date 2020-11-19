@@ -25,6 +25,7 @@
     "@types/yup": "^0.29.9",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
+    "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.0.0",
     "clamp-js": "^0.7.0",

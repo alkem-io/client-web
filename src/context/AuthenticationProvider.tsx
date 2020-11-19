@@ -29,7 +29,7 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
 
   const loading = authenticationLoading;
 
-  if (loading) return <Loading text={'Initializaing authentication ...'} />;
+  // if (loading) return <Loading text={'Initializaing authentication ...'} />;
 
   return (
     <AuthenticationContext.Provider

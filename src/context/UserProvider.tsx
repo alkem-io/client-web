@@ -42,7 +42,6 @@ const UserContext = React.createContext<UserContextContract>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useUserProfileQuery({ errorPolicy: 'all' });
-  // const { status } = useAuthenticate();
   const { me } = data || {};
   const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
 
