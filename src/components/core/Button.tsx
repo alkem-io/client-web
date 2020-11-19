@@ -28,6 +28,9 @@ const useButtonStyles = createStyles(theme => ({
     '&:hover': {
       textDecoration: 'none',
     },
+    '&:focus': {
+      outline: 'none',
+    },
   },
   default: {
     color: theme.palette.primary,
@@ -73,9 +76,16 @@ const useButtonStyles = createStyles(theme => ({
         outline: 'none',
       },
     },
+  },
+  whiteStatic: {
+    color: theme.palette.background,
+    borderColor: theme.palette.background,
+    background: 'transparent',
 
-    '&:focus': {
-      outline: `1px auto ${theme.palette.primary}`,
+    '&.inset': {
+      '&:focus': {
+        outline: 'none',
+      },
     },
   },
   transparent: {
@@ -89,8 +99,6 @@ const useButtonStyles = createStyles(theme => ({
     },
 
     '&:focus': {
-      outline: `1px auto ${theme.palette.primary}`,
-
       '&.inset': {
         outline: 'none',
       },
@@ -112,8 +120,6 @@ const useButtonStyles = createStyles(theme => ({
     },
 
     '&:focus': {
-      outline: `1px auto ${theme.palette.primary}`,
-
       '&.inset': {
         outline: 'none',
       },
@@ -145,10 +151,6 @@ const useButtonStyles = createStyles(theme => ({
         outline: 'none',
       },
     },
-
-    '&:focus': {
-      outline: `1px auto ${theme.palette.negative}`,
-    },
   },
   disabled: {
     color: theme.palette.background,
@@ -163,8 +165,6 @@ const useButtonStyles = createStyles(theme => ({
     },
 
     '&:focus': {
-      outline: `1px auto ${theme.palette.neutralLight}`,
-
       '&.inset': {
         outline: 'none',
       },
@@ -180,7 +180,7 @@ interface ButtonProps extends Record<string, unknown> {
   as?: React.ComponentType<any> | string;
   onClick?: (e: Event) => void;
   text?: string;
-  variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent';
+  variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent' | 'whiteStatic';
   inset?: boolean;
   small?: boolean;
   disabled?: boolean;

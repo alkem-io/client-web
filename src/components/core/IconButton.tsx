@@ -14,6 +14,9 @@ const useIconButtonStyles = createStyles(theme => ({
     '&:hover': {
       textDecoration: 'none',
     },
+    '&:focus': {
+      outline: 'none',
+    },
   },
   primary: {
     color: theme.palette.primary,
