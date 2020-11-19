@@ -47,7 +47,9 @@ const App = ({ children }): React.ReactElement => {
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
 
-  if (accessContextLoading || loading) return <Loading />;
+  if (loading) {
+    return <Loading text={'Loading Application ...'} />;
+  }
 
   return (
     <div id="app">

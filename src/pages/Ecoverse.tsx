@@ -63,7 +63,7 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
   const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds } });
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading avatars ...'} />;
   }
 
   if (!data) {

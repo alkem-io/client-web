@@ -96,7 +96,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading Groups ...'} />;
 
   return (
     <>
