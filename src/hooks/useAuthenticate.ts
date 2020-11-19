@@ -11,11 +11,15 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
 const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
-  let result = await context.signIn();
+  const result = await context.signIn();
 
   if (result) {
-    result = await refresh(context, dispatch);
+    dispatch(updateToken(result));
+  } else {
+    dispatch(updateToken(null));
   }
+
+  await context.resetStore();
 
   return result;
 };
@@ -24,19 +28,19 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
-  if (!targetAccount && !userName) {
+  if (!userName && !targetAccount) {
     dispatch(updateToken(null));
     return;
   }
 
-  const token = await context.acquireToken(userName || targetAccount.username);
-  if (token) {
-    dispatch(updateToken(token));
+  const result = await context.acquireToken(userName || targetAccount.username);
+  if (result) {
+    dispatch(updateToken(result));
   }
 
   await context.resetStore();
 
-  return token;
+  return result;
 };
 
 const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
