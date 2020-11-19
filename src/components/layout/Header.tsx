@@ -1,11 +1,12 @@
 import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
-import ReactVisibilitySensor from 'react-visibility-sensor';
-import { createStyles } from '../../hooks/useTheme';
-import Toolbar from '../core/Toolbar';
-import Container from '../core/Container';
-import hexToRgba from '../../utils/hexToRGBA';
 import { Col, Row } from 'react-bootstrap';
+import ReactVisibilitySensor from 'react-visibility-sensor';
+import { env } from '../../env';
+import { createStyles } from '../../hooks/useTheme';
+import hexToRgba from '../../utils/hexToRGBA';
+import Container from '../core/Container';
+import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
 
 const appBarZIndex = 100;
@@ -72,7 +73,7 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
               <Typography variant={'caption'} weight={'boldLight'} color={'background'}>
                 Please feel free to leave a feedback{' '}
                 <a
-                  href={`${process.env.REACT_APP_FEEDBACK_URL}`}
+                  href={`${env?.REACT_APP_FEEDBACK_URL}`}
                   target={'_blank'}
                   rel="noopener noreferrer"
                   className={styles.link}
