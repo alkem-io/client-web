@@ -73,7 +73,7 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
 const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
   <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
     <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
-    <Typography variant={'h5'} color={'neutral'} className={'ml-3'}>
+    <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
       Sorry, an error occurred while loading {blockName}
     </Typography>
   </div>
