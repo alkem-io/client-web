@@ -19,6 +19,7 @@ type GroupPageProps = PageProps;
 
 export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   const { groupId } = useParams<Parameters>();
+
   const { data, loading } = useGroupMembersQuery({ variables: { id: Number(groupId) } });
   const [isAddPanelOpen, setAddPanelState] = useState(true);
   const [filterBy, setFilterBy] = useState('');

@@ -5,9 +5,8 @@ import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '../../pages';
 import Button from '../core/Button';
 import Card from '../core/Card';
-import { CardContainer } from '../core/Container';
 
-type AdminPageProps = PageProps;
+import { Row } from 'react-bootstrap';
 
 const adminPageData = [
   {
@@ -21,16 +20,20 @@ const adminPageData = [
     name: 'Groups',
     buttons: [{ description: 'Edit groups', url: '/groups' }],
   },
+  {
+    name: 'Challenges',
+    buttons: [{ description: 'Edit challenges', url: '/challenges' }],
+  },
 ];
 
-export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
+export const AdminPage: FC<PageProps> = ({ paths }) => {
+  const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
-  const { url } = useRouteMatch();
   return (
     <>
-      <CardContainer>
-        {adminPageData.map((x, i) => (
+      {adminPageData.map((x, i) => (
+        <Row key={i} className={'mb-4'}>
           <Card
             key={i}
             classes={{
@@ -49,16 +52,14 @@ export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
               },
             }}
           >
-            <div>
+            <div className={'d-flex wrap'}>
               {x.buttons.map((b, j) => (
-                <>
-                  <Button key={j} text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
-                </>
+                <Button key={j} text={b.description} as={Link} to={`${url}${b.url}`} className={'mr-2'} />
               ))}
             </div>
           </Card>
-        ))}
-      </CardContainer>
+        </Row>
+      ))}
     </>
   );
 };

@@ -8,13 +8,18 @@ import Loading from '../components/core/Loading';
 import { useTransactionScope } from '../hooks/useSentry';
 import {
   EcoverseChallengeGroupsQuery,
+  useChallengeGroupsQuery,
   useEcoverseChallengeGroupsQuery,
+  useEcoverseChallengesListQuery,
+  useEcoverseGroupsListQuery,
   useUserQuery,
   useUsersQuery,
 } from '../generated/graphql';
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
 import { challengesMapper, groupsMapper } from '../utils';
+import Typography from '../components/core/Typography';
+import ChallengePage from '../components/Admin/ChallengePage';
 
 /*local files imports end*/
 
@@ -34,6 +39,9 @@ export const Admin: FC = () => {
         </Route>
         <Route path={`${path}/groups`}>
           <GroupsRoute paths={currentPaths} />
+        </Route>
+        <Route path={`${path}/challenges`}>
+          <ChallengesRoute paths={currentPaths} />
         </Route>
         <Route path="*">
           <FourOuFour />
@@ -93,79 +101,22 @@ const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
 
 const GroupsRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { data, loading } = useEcoverseChallengeGroupsQuery();
+  const { data, loading } = useEcoverseGroupsListQuery();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths]);
-
-  const ecoverseName = data?.name || 'Ecoverse';
-
-  const ecoverse = {
-    id: '1',
-    value: `${ecoverseName} (ecoverse)`,
-    url: `${path}/ecoverse`,
-  };
-  const mapper = challengesMapper(`${path}`);
-  const challenges = useMemo(() => [ecoverse, ...((data && data.challenges) || []).map(mapper)], [data]);
+  const groupsList = data?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` }));
 
   if (loading) return <Loading />;
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <h3>Ecoverse/Challenges</h3>
-        <ListPage data={challenges} paths={currentPaths} />
+        <Typography variant={'h3'} className={'mb-4'}>
+          Ecoverse groups
+        </Typography>
+        <ListPage data={groupsList || []} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:challengeId`}>
-        <ChallengesRoute data={data} paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <FourOuFour />
-      </Route>
-    </Switch>
-  );
-};
-
-interface ChallengesRouteProps extends PageProps {
-  data: EcoverseChallengeGroupsQuery | undefined;
-}
-
-const ChallengesRoute: FC<ChallengesRouteProps> = ({ data, paths }) => {
-  const { path, url } = useRouteMatch();
-  const { challengeId } = useParams<{ challengeId: string }>();
-
-  const groupsData = useMemo(() => {
-    let groups: SearchableListData[] = [];
-    let name = '';
-    const mapper = groupsMapper(`${url}`);
-
-    if (data) {
-      if (challengeId !== 'ecoverse') {
-        const challenge = data?.challenges.find(c => c.textID === challengeId);
-        if (challenge) {
-          name = challenge.name;
-          if (challenge.groups) {
-            groups = challenge.groups?.map(mapper);
-          }
-        }
-      } else {
-        name = `${data?.name} (ecoverse)`;
-        groups = data?.groups.filter(g => g.name !== 'members').map(mapper);
-      }
-    }
-    return {
-      name,
-      groups,
-    };
-  }, [challengeId, data]);
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: groupsData.name, real: true }], [paths]);
-
-  return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <ListPage paths={currentPaths} data={groupsData.groups} />
-      </Route>
-      <Route exact path={`${path}/:groupId`}>
+      <Route path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -174,3 +125,49 @@ const ChallengesRoute: FC<ChallengesRouteProps> = ({ data, paths }) => {
     </Switch>
   );
 };
+
+const ChallengesRoute: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const { data } = useEcoverseChallengesListQuery();
+
+  const challengesList = data?.challenges?.map(c => ({ id: c.id, value: c.name, url: `${url}/${c.id}` }));
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`}>
+        <ListPage paths={currentPaths} data={challengesList || []} />
+      </Route>
+      <Route exact path={`${path}/:challengeId`}>
+        <ChallengePage paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/:challengeId/groups`}>
+        <ChallengeGroups paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/:challengeId/groups/:groupId`}>
+        <GroupPage paths={currentPaths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
+  );
+};
+
+interface Parameters {
+  challengeId: string;
+}
+
+const ChallengeGroups: FC<PageProps> = ({ paths }) => {
+  const { url } = useRouteMatch();
+  const { challengeId } = useParams<Parameters>();
+
+  const { data } = useChallengeGroupsQuery({ variables: { id: Number(challengeId) } });
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths]);
+  const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+
+  return <ListPage paths={currentPaths} data={groups || []} />;
+};
+
+export default ChallengeGroups;

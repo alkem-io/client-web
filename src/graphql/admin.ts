@@ -86,3 +86,33 @@ export const MUTATION_ADD_USER_TO_GROUP = gql`
   }
   ${GROUP_MEMBERS_FRAGMENT}
 `;
+
+export const QUERY_ECOVERSE_CHALLENGES_LIST = gql`
+  query ecoverseChallengesList {
+    challenges {
+      id
+      name
+    }
+  }
+`;
+
+export const QUERY_ECOVERSE_GROUPS_LIST = gql`
+  query ecoverseGroupsList {
+    groups {
+      id
+      name
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_GROUPS = gql`
+  query challengeGroups($id: Float!) {
+    challenge(ID: $id) {
+      name
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
