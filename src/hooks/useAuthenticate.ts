@@ -21,17 +21,16 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
 };
 
 const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>, userName?: string) => {
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
   if (!targetAccount && !userName) {
+    dispatch(updateToken(null));
     return;
   }
 
   const token = await context.acquireToken(userName || targetAccount.username);
   if (token) {
-    localStorage.setItem(TOKEN_STORAGE_KEY, token.accessToken);
     dispatch(updateToken(token));
   }
 
@@ -48,7 +47,6 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
     return;
   }
 
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
