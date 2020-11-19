@@ -12,6 +12,7 @@ const AuthenticationContext = React.createContext<AuthContext>({
   acquireToken: () => Promise.resolve(undefined),
   getAccounts: () => [],
   resetCache: () => Promise.resolve(null),
+  resetStore: () => Promise.resolve(null),
 });
 
 const AuthenticationProvider: FC<{}> = ({ children }) => {
@@ -21,6 +22,7 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
     acquireToken,
     getAccounts,
     resetCache,
+    resetStore,
     loading: authenticationLoading,
   } = useAuthentication();
 
@@ -34,6 +36,7 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
         acquireToken,
         getAccounts,
         resetCache,
+        resetStore,
         loading,
       }}
     >

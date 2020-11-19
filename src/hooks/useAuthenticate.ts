@@ -34,7 +34,7 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
     dispatch(updateToken(token));
   }
 
-  await context.resetCache();
+  await context.resetStore();
 
   return token;
 };
@@ -50,7 +50,7 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.resetCache();
+  await context.resetStore();
 };
 
 export const useAuthenticate = () => {
