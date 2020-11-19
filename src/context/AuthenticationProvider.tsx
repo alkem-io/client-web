@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import Loading from '../components/core/Loading';
 import { useAuthentication, UseAuthenticationResult } from '../hooks';
 
 export interface AuthContext extends UseAuthenticationResult {
@@ -27,6 +28,8 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
   } = useAuthentication();
 
   const loading = authenticationLoading;
+
+  if (loading) return <Loading text={'Initializaing authentication ...'} />;
 
   return (
     <AuthenticationContext.Provider

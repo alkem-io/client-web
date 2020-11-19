@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useUserProfileQuery, User } from '../generated/graphql';
 import { useAccessContext } from '../hooks/useAccessContext';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -41,9 +42,9 @@ const UserContext = React.createContext<UserContextContract>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useUserProfileQuery({ errorPolicy: 'all' });
-  const { loading: accessContexLoading } = useAccessContext();
+  // const { status } = useAuthenticate();
   const { me } = data || {};
-  const loading = profileLoading || accessContexLoading;
+  const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
 
   return (
     <UserContext.Provider

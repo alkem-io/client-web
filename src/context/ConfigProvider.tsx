@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Loading } from '../components/core/Loading';
 import { AadClientConfig, useConfigQuery } from '../generated/graphql';
 import { getConfig } from '../utils/authConfig';
 
@@ -15,7 +16,7 @@ const configContext = React.createContext<ConfigContext>({
 const ConfigProvider: FC = ({ children }) => {
   const { data, loading } = useConfigQuery();
   const aadConfig = data ? getConfig(data.clientConfig as AadClientConfig) : getConfig();
-  // loading ? console.log('Configuration is loading..') : console.log('...done');
+
   return (
     <configContext.Provider
       value={{
@@ -23,7 +24,8 @@ const ConfigProvider: FC = ({ children }) => {
         loading,
       }}
     >
-      {children}
+      {loading && <Loading text={'Loading configuration ...'} />}
+      {!loading && children}
     </configContext.Provider>
   );
 };

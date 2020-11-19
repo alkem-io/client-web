@@ -60,6 +60,9 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (!token) {
       token = localStorage.getItem(TOKEN_STORAGE_KEY);
     }
+    if (_.operationName === 'userProfile') {
+      console.log(token);
+    }
     if (!token) return headers;
     return {
       headers: {
@@ -67,6 +70,17 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         authorization: token ? `Bearer ${token}` : '',
       },
     };
+  });
+
+  const consoleLink = new ApolloLink((operation, forward) => {
+    console.log(`starting request for ${operation.operationName}`);
+    return forward(operation).map(data => {
+      console.log(`ending request for ${operation.operationName}`);
+      if (operation.operationName === 'userProfile') {
+        console.log(data);
+      }
+      return data;
+    });
   });
 
   const httpLink = createHttpLink({
@@ -108,7 +122,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   return new ApolloClient({
-    link: from([authLink, errorLink, retryLink, omitTypenameLink, httpLink]),
+    link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
     cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
   });
 };

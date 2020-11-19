@@ -40,14 +40,14 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
+  const { safeAuthenticate, safeUnauthenticate, isAuthenticated } = useAuthenticate();
   const { loading: accessContextLoading } = useAccessContext();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
 
-  if (loading) {
+  if (loading || accessContextLoading) {
     return <Loading text={'Loading Application ...'} />;
   }
 
@@ -57,7 +57,9 @@ const App = ({ children }): React.ReactElement => {
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-            {user && <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />}
+            {isAuthenticated && user && (
+              <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />
+            )}
             <div style={{ display: 'flex', flexGrow: 1 }} />
             <Navigation
               maximize={isVisible}
@@ -65,7 +67,7 @@ const App = ({ children }): React.ReactElement => {
               onSignIn={safeAuthenticate}
               onSignOut={safeUnauthenticate}
             />
-            {!user && (
+            {!isAuthenticated && (
               <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small></Button>
             )}
           </div>
