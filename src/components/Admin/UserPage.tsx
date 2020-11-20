@@ -99,7 +99,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const handleSave = (user: UserModel) => {
     // Convert UserModel to UserInput
-    const { id: userID, profile, ...rest } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: userID, memberof, profile, ...rest } = user;
     const userInput: UserInput = {
       ...rest,
       profileData: {
@@ -130,12 +131,10 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         },
       });
     } else if (isEditMode && user.id) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { email, ...userToUpdate } = userInput;
       updateUser({
         variables: {
           userId: Number(userID),
-          user: userToUpdate,
+          user: userInput,
         },
       });
     }
