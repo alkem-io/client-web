@@ -30,7 +30,7 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading members ...'} />;
 
   return (
     <>

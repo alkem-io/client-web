@@ -105,7 +105,7 @@ export const UserProfile: FC = () => {
 
   const tags = user?.profile?.tagsets?.flatMap(x => x.tags);
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading User Profile ...'} />;
 
   return (
     <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />} details={<ContactDetails {...user} />}>

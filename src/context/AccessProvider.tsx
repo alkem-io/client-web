@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useAuthentication } from '../hooks';
+import React, { FC, useCallback, useEffect } from 'react';
+import { TOKEN_STORAGE_KEY, useAuthentication } from '../hooks';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 
 export interface AccessContextResult {
   loading: boolean;
@@ -12,30 +11,42 @@ const AccessContext = React.createContext<AccessContextResult>({
 });
 
 const AccessProvider: FC = ({ children }) => {
-  const { safeRefresh } = useAuthenticate();
-  const { isAuthenticated } = useAuthenticationContext();
+  const { safeRefresh, status, isAuthenticated } = useAuthenticate();
   const { loading: authenticationLoading } = useAuthentication();
 
-  const [isRefreshing, setIsRefreshing] = useState(true);
-
   useEffect(() => {
-    setIsRefreshing(true);
-    safeRefresh().then(() => {
-      console.log('Refreshing finished!');
-      setIsRefreshing(false);
-    });
-  }, [safeRefresh]);
+    safeRefresh();
+  }, []);
 
   useEffect(() => {
     let timerId = -1;
     if (isAuthenticated) timerId = window.setInterval(safeRefresh, 30 * 60 * 1000);
     return () => {
-      console.log('Clearing interval');
       window.clearInterval(timerId);
     };
   }, [safeRefresh, isAuthenticated]);
 
-  const loading = useMemo(() => authenticationLoading || isRefreshing, [authenticationLoading, isRefreshing]);
+  const handleStorageChange = useCallback(
+    (e: StorageEvent) => {
+      if (e.key === TOKEN_STORAGE_KEY) {
+        if (e.newValue === null && e.newValue !== e.oldValue) {
+          if (status === 'done') safeRefresh();
+        }
+      }
+    },
+    [safeRefresh, status]
+  );
+
+  useEffect(() => {
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [handleStorageChange]);
+
+  const loading = authenticationLoading || status === 'authenticating' || status === 'refreshing';
+
+  // if (loading) return <Loading text={'Checking access ...'} />;
 
   return (
     <AccessContext.Provider

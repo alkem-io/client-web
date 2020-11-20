@@ -57,13 +57,11 @@ interface UserProviderProps {
 // will move it to a separate component later
 export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, children }) => {
   const targetCount = Math.min(users.length, count);
-  const targetIds = shuffleCollection(users)
-    .slice(0, targetCount)
-    .map(x => x.id);
+  const targetIds = users.slice(0, targetCount).map(x => x.id);
   const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds } });
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading avatars ...'} />;
   }
 
   if (!data) {

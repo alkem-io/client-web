@@ -81,7 +81,7 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   ]);
 
   if (projectLoading) {
-    return <Loading />;
+    return <Loading text={'Loading project ...'} />;
   }
 
   if (!project) {

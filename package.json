@@ -10,7 +10,7 @@
   "private": false,
   "license": "EUPL-1.2",
   "dependencies": {
-    "@apollo/client": "^3.2.4",
+    "@apollo/client": "^3.2.7",
     "@azure/msal-browser": "^2.7.0",
     "@sentry/react": "^5.27.3",
     "@sentry/tracing": "^5.27.3",
@@ -25,6 +25,7 @@
     "@types/yup": "^0.29.9",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
+    "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.0.0",
     "clamp-js": "^0.7.0",
