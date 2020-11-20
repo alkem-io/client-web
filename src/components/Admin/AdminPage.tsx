@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { Theme } from '../../context/ThemeProvider';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { PageProps } from '../../pages';
+
 import Button from '../core/Button';
 import Card from '../core/Card';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { Theme } from '../../context/ThemeProvider';
+import { PageProps } from '../../pages';
 
 import { Row } from 'react-bootstrap';
 
@@ -17,12 +18,12 @@ const adminPageData = [
     ],
   },
   {
-    name: 'Groups',
+    name: 'Ecoverse groups',
     buttons: [{ description: 'Edit groups', url: '/groups' }],
   },
   {
     name: 'Challenges',
-    buttons: [{ description: 'Edit challenges', url: '/challenges' }],
+    buttons: [{ description: 'Open list', url: '/challenges' }],
   },
 ];
 

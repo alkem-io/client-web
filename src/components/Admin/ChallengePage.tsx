@@ -1,18 +1,14 @@
-import React, { FC, useMemo, useState } from 'react';
-import { Col, FormControl, InputGroup, Nav, Navbar, Row, Table } from 'react-bootstrap';
+import React, { FC, useMemo } from 'react';
+import { Row } from 'react-bootstrap';
 import { Link, useParams, useRouteMatch } from 'react-router-dom';
-import {
-  useAddUserToGroupMutation,
-  useGroupMembersQuery,
-  useRemoveUserFromGroupMutation,
-} from '../../generated/graphql';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { PageProps } from '../../pages';
-import Loading from '../core/Loading';
-import MemberSelector from './MemberSelector';
-import Card from '../core/Card';
-import { Theme } from '../../context/ThemeProvider';
+
 import Button from '../core/Button';
+import Card from '../core/Card';
+import Loading from '../core/Loading';
+import { useChallengeNameQuery } from '../../generated/graphql';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { Theme } from '../../context/ThemeProvider';
+import { PageProps } from '../../pages';
 
 interface Parameters {
   challengeId: string;
@@ -20,26 +16,29 @@ interface Parameters {
 
 const challengePageData = [
   {
+    name: 'Challenge groups',
+    buttons: [{ description: 'Edit groups', url: '/groups' }],
+  },
+  {
     name: 'Opportunities',
     buttons: [{ description: 'Edit opportunities', url: '/opportunities' }],
   },
-  {
-    name: 'Groups',
-    buttons: [{ description: 'Edit groups', url: '/groups' }],
-  },
 ];
+
 export const ChallengePage: FC<PageProps> = ({ paths }) => {
-  const { challengeId } = useParams<Parameters>();
   const { url } = useRouteMatch();
+  const { challengeId } = useParams<Parameters>();
+  const { data, loading } = useChallengeNameQuery({ variables: { id: Number(challengeId) } });
 
-  // const { data, loading } = useGroupMembersQuery({ variables: { id: Number(challengeId) } });
+  const challengeName = (data && data.challenge?.name) || '';
+  const currentPaths = useMemo(() => [...paths, { value: url, name: challengeName, real: true }], [
+    paths,
+    challengeName,
+  ]);
 
-  // const groupName = (data && data.group.name) || '';
+  useUpdateNavigation({ currentPaths });
 
-  // const currentPaths = useMemo(() => [...paths, { name: groupName, real: false }], [paths, groupName]);
-  // useUpdateNavigation({ currentPaths });
-
-  // if (loading) return <Loading />;
+  if (loading) return <Loading text={'Challenge loading...'} />;
 
   return (
     <>

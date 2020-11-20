@@ -905,14 +905,32 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
 };
 
+export type ChallengeNameQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type ChallengeNameQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+};
+
 export type ChallengeGroupsQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'> & {
-      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-    };
+  challenge: { __typename?: 'Challenge' } & {
+    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+  };
+};
+
+export type ChallengeOpportunitiesQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type ChallengeOpportunitiesQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & {
+    opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>>>;
+  };
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
@@ -1663,10 +1681,46 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQuery,
   EcoverseGroupsListQueryVariables
 >;
+export const ChallengeNameDocument = gql`
+  query challengeName($id: Float!) {
+    challenge(ID: $id) {
+      name
+    }
+  }
+`;
+
+/**
+ * __useChallengeNameQuery__
+ *
+ * To run a query within a React component, call `useChallengeNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeNameQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeNameQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeNameQuery, ChallengeNameQueryVariables>(ChallengeNameDocument, baseOptions);
+}
+export function useChallengeNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeNameQuery, ChallengeNameQueryVariables>(ChallengeNameDocument, baseOptions);
+}
+export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQuery>;
+export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNameLazyQuery>;
+export type ChallengeNameQueryResult = Apollo.QueryResult<ChallengeNameQuery, ChallengeNameQueryVariables>;
 export const ChallengeGroupsDocument = gql`
   query challengeGroups($id: Float!) {
     challenge(ID: $id) {
-      name
       groups {
         id
         name
@@ -1704,6 +1758,55 @@ export function useChallengeGroupsLazyQuery(
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>;
+export const ChallengeOpportunitiesDocument = gql`
+  query challengeOpportunities($id: Float!) {
+    challenge(ID: $id) {
+      opportunities {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeOpportunitiesQuery__
+ *
+ * To run a query within a React component, call `useChallengeOpportunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeOpportunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeOpportunitiesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeOpportunitiesQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>(
+    ChallengeOpportunitiesDocument,
+    baseOptions
+  );
+}
+export function useChallengeOpportunitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>(
+    ChallengeOpportunitiesDocument,
+    baseOptions
+  );
+}
+export type ChallengeOpportunitiesQueryHookResult = ReturnType<typeof useChallengeOpportunitiesQuery>;
+export type ChallengeOpportunitiesLazyQueryHookResult = ReturnType<typeof useChallengeOpportunitiesLazyQuery>;
+export type ChallengeOpportunitiesQueryResult = Apollo.QueryResult<
+  ChallengeOpportunitiesQuery,
+  ChallengeOpportunitiesQueryVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
