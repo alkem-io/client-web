@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
@@ -36,11 +36,6 @@ export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
             classes={{
               background: (theme: Theme) => theme.palette.neutral,
             }}
-            bodyProps={{
-              classes: {
-                // background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.5),
-              },
-            }}
             primaryTextProps={{
               text: x.name || '',
               classes: {
@@ -51,9 +46,9 @@ export const AdminPage: FC<AdminPageProps> = ({ paths }) => {
           >
             <div>
               {x.buttons.map((b, j) => (
-                <>
-                  <Button key={j} text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
-                </>
+                <Fragment key={j}>
+                  <Button text={b.description} as={Link} to={`${url}${b.url}`} />{' '}
+                </Fragment>
               ))}
             </div>
           </Card>

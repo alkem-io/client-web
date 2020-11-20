@@ -10,7 +10,7 @@ const AccessContext = React.createContext<AccessContextResult>({
   loading: true,
 });
 
-const AccessProvider: FC<{}> = ({ children }) => {
+const AccessProvider: FC = ({ children }) => {
   const { safeRefresh, status, isAuthenticated } = useAuthenticate();
   const { loading: authenticationLoading } = useAuthentication();
 

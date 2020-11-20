@@ -1,8 +1,6 @@
-// import { ErrorBoundary } from '@sentry/react';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Button from '../../components/core/Button';
 import { CardContainer } from '../../components/core/Container';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
@@ -30,7 +28,7 @@ interface ProjectPageProps extends PageProps {
   loading?: boolean;
 }
 
-const ProjectIndex: FC<ProjectPageProps> = ({ paths, project, loading = false }): React.ReactElement => {
+const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElement => {
   const styles = useStyles();
 
   useUpdateNavigation({ currentPaths: paths });
@@ -50,13 +48,13 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project, loading = false })
         }}
       >
         <SectionHeader text={name} />
-        <Body text={description}></Body>
+        <Body text={description} />
         {state && <Tag text={state} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
       </Section>
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
-        <Body></Body>
+        <Body />
       </Section>
       {aspects && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>
