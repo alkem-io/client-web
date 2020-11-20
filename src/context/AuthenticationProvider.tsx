@@ -1,5 +1,6 @@
-import React, { FC, useEffect } from 'react';
-import { TOKEN_STORAGE_KEY, useAuthentication, UseAuthenticationResult } from '../hooks';
+import React, { FC } from 'react';
+import Loading from '../components/core/Loading';
+import { useAuthentication, UseAuthenticationResult } from '../hooks';
 
 export interface AuthContext extends UseAuthenticationResult {
   loading: boolean;
@@ -12,23 +13,23 @@ const AuthenticationContext = React.createContext<AuthContext>({
   acquireToken: () => Promise.resolve(undefined),
   getAccounts: () => [],
   resetCache: () => Promise.resolve(null),
+  resetStore: () => Promise.resolve(null),
 });
 
 const AuthenticationProvider: FC<{}> = ({ children }) => {
-  useEffect(() => {
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-  }, []);
-
   const {
     signIn,
     signOut,
     acquireToken,
     getAccounts,
     resetCache,
+    resetStore,
     loading: authenticationLoading,
   } = useAuthentication();
 
   const loading = authenticationLoading;
+
+  // if (loading) return <Loading text={'Initializaing authentication ...'} />;
 
   return (
     <AuthenticationContext.Provider
@@ -38,6 +39,7 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
         acquireToken,
         getAccounts,
         resetCache,
+        resetStore,
         loading,
       }}
     >

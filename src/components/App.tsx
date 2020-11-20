@@ -40,14 +40,15 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
-  const { loading: accessContextLoading } = useAccessContext();
+  const { safeAuthenticate, safeUnauthenticate, isAuthenticated } = useAuthenticate();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
 
-  if (accessContextLoading || loading) return <Loading />;
+  if (loading) {
+    return <Loading text={'Loading Application ...'} />;
+  }
 
   return (
     <div id="app">

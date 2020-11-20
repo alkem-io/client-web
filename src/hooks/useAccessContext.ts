@@ -4,5 +4,5 @@ import { AccessContext } from '../context/AccessProvider';
 export const useAccessContext = () => {
   const context = useContext(AccessContext);
 
-  return { loading: context.loading };
+  return context;
 };

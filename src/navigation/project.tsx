@@ -29,7 +29,7 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
   );
 };
 
-const ProjectNew: FC<ProjectRootProps> = ({ paths, projects, opportunityId }) => {
+const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const { url } = useRouteMatch();
   const history = useHistory();
 
@@ -80,10 +80,8 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
     project,
   ]);
 
-  const loading = projectLoading;
-
-  if (loading) {
-    return <Loading />;
+  if (projectLoading) {
+    return <Loading text={'Loading project ...'} />;
   }
 
   if (!project) {

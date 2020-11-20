@@ -18,6 +18,7 @@ export interface UseAuthenticationResult {
   acquireToken: (username: string) => Promise<AuthenticationResult | undefined>;
   getAccounts: () => AccountInfo[];
   resetCache: () => Promise<ApolloQueryResult<unknown>[] | null>;
+  resetStore: () => Promise<ApolloQueryResult<unknown>[] | null>;
   loading: boolean;
 }
 
@@ -83,7 +84,8 @@ export const useAuthentication = (): UseAuthenticationResult => {
   const getAccounts = useCallback(() => msalApp?.getAllAccounts() || [], [msalApp]);
   const signInWired = useCallback(() => signIn(msalApp, aadConfig), [msalApp, aadConfig]);
   const signOutWired = useCallback((username: string) => signOut(msalApp, username), [msalApp]);
-  const resetCache = useCallback(() => client.resetStore(), [client]);
+  const resetCache = useCallback(() => client.clearStore(), [client]);
+  const resetStore = useCallback(() => client.resetStore(), [client]);
 
   return {
     acquireToken: acquireTokenWired,
@@ -91,6 +93,7 @@ export const useAuthentication = (): UseAuthenticationResult => {
     signIn: signInWired,
     signOut: signOutWired,
     resetCache,
+    resetStore,
     loading: configLoading,
   };
 };

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
-import { updateToken } from '../reducers/auth/actions';
+import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
 import { error as logError } from '../sentry/log';
@@ -11,33 +11,48 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
 const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
-  let result = await context.signIn();
+  dispatch(updateStatus('authenticating'));
+
+  const result = await context.signIn();
 
   if (result) {
-    result = await refresh(context, dispatch);
+    const username = result?.account.username;
+    const tokenResult = await context.acquireToken(username);
+    if (tokenResult) {
+      dispatch(updateToken(tokenResult));
+      await context.resetStore();
+      dispatch(updateStatus('done'));
+    }
+  } else {
+    dispatch(updateToken(null));
+    await context.resetStore();
+    dispatch(updateStatus('done'));
   }
 
   return result;
 };
 
 const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>, userName?: string) => {
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
+  dispatch(updateStatus('refreshing'));
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
-  if (!targetAccount && !userName) {
+  if (!userName && !targetAccount) {
+    dispatch(updateStatus());
+    await context.resetStore();
+    dispatch(updateToken(null));
     return;
   }
 
-  const token = await context.acquireToken(userName || targetAccount.username);
-  if (token) {
-    localStorage.setItem(TOKEN_STORAGE_KEY, token.accessToken);
-    dispatch(updateToken(token));
+  const result = await context.acquireToken(userName || targetAccount.username);
+
+  if (result) {
+    dispatch(updateToken(result));
+    await context.resetStore();
+    dispatch(updateStatus('done'));
   }
 
-  await context.resetCache();
-
-  return token;
+  return result;
 };
 
 const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
@@ -48,16 +63,16 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
     return;
   }
 
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
+  dispatch(updateStatus('signingout'));
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.resetCache();
+  await context.resetStore();
 };
 
 export const useAuthenticate = () => {
   const dispatch = useDispatch();
-  const { context } = useAuthenticationContext();
+  const { context, status, isAuthenticated } = useAuthenticationContext();
 
   const authenticateWired = useCallback(() => {
     return authenticate(context, dispatch);
@@ -106,5 +121,7 @@ export const useAuthenticate = () => {
     safeRefresh,
     unauthenticateWired,
     safeUnauthenticate,
+    status,
+    isAuthenticated,
   };
 };

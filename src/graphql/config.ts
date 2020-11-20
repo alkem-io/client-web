@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_CONFIG = gql`
+export const QUERY_CONFIG_STRING = `
   query config {
     clientConfig {
       msalConfig {
@@ -29,4 +29,8 @@ export const QUERY_CONFIG = gql`
       authEnabled
     }
   }
+`;
+
+export const QUERY_CONFIG = gql`
+  ${QUERY_CONFIG_STRING}
 `;

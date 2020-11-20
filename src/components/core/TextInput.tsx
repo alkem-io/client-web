@@ -107,7 +107,6 @@ const TextInput: FC<TextInputProps> = ({
   small = false,
   error = false,
   disabled = false,
-  children,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   ...rest
 }) => {
@@ -128,7 +127,7 @@ const TextInput: FC<TextInputProps> = ({
         onChange={onChange}
         value={value}
         {...rest}
-      ></input>
+      />
     </div>
   );
 };
@@ -148,7 +147,6 @@ const TextArea: FC<TextAreaProps> = ({
   small = false,
   error = false,
   disabled = false,
-  children,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   ...rest
 }) => {

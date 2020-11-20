@@ -85,6 +85,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
+  const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
 
   const activitySummary = useMemo(() => {
     return [
@@ -93,11 +94,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
         digit: projects.length,
         color: 'positive',
       },
-      // {
-      //   name: 'Members',
-      //   digit: users.length,
-      //   color: 'neutralMedium',
-      // },
+      {
+        name: 'Interests',
+        digit: interestsCount,
+        color: 'primary',
+      },
     ];
   }, [projects, users]);
 

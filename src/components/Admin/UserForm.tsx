@@ -99,7 +99,7 @@ export const UserForm: FC<UserProps> = ({
     country: yup.string(),
     phone: yup
       .string()
-      .matches(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
+      .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
     tagsets: yup.array().of(
       yup.object().shape({
@@ -123,6 +123,7 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = (userData: UserFromGenerated): void => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
     const user: UserModel = {
@@ -199,7 +200,7 @@ export const UserForm: FC<UserProps> = ({
               readOnly = false,
               type?: string,
               placeholder?: string,
-              as?: React.ElementType<any>
+              as?: React.ElementType
             ) => (
               <Form.Group as={Col}>
                 <Form.Label>
@@ -237,7 +238,7 @@ export const UserForm: FC<UserProps> = ({
                 </Form.Row>
                 <Form.Row>
                   {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  {getInputField('Username', accountUpn, 'upn', false, true, 'text', ' ')}
+                  {getInputField('Azure user name', accountUpn, 'upn', false, true, 'text', ' ')}
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} sm={6}>
