@@ -23,6 +23,7 @@ import { createStyles } from '../hooks/useTheme';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import Typography from '../components/core/Typography';
+import InterestModal from '../components/Ecoverse/InterestModal';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -57,7 +58,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
 }): React.ReactElement => {
   // styles
   const styles = useStyles();
-  const [hideMeme, setHideMeme] = useState(false);
+  const [hideMeme, setHideMeme] = useState<boolean>(false);
+  const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
 
@@ -256,6 +258,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'} />
         <SubHeader text={'Teams & People that showed interest'} />
+        <Button text={'become a member'} onClick={() => setShowInterestModal(true)} />
       </Section>
       {isNoRelations ? (
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
@@ -282,6 +285,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
           )}
         </>
       )}
+
+      <InterestModal
+        onHide={() => setShowInterestModal(false)}
+        onSubmit={() => console.log('submit')}
+        show={showInterestModal}
+      />
 
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
