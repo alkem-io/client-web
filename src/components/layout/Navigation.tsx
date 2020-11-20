@@ -42,7 +42,7 @@ const useNavigationStyles = createStyles(theme => ({
   },
 }));
 
-const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onSignOut }) => {
+const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignOut }) => {
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);

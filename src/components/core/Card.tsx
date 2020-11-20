@@ -191,7 +191,7 @@ interface BodyProps {
   classes?: ClassProps;
 }
 
-export const Body: FC<BodyProps> = ({ children, className, classes }) => {
+export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   const styles = useBodyStyles(classes);
 
   return <div className={clsx(styles.content, 'ct-card-body', className)}>{children}</div>;

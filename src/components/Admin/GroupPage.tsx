@@ -20,7 +20,6 @@ type GroupPageProps = PageProps;
 export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   const { groupId } = useParams<Parameters>();
   const { data, loading } = useGroupMembersQuery({ variables: { id: Number(groupId) } });
-  const [isAddPanelOpen, setAddPanelState] = useState(true);
   const [filterBy, setFilterBy] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,21 +32,21 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   const members = (data && data.group && data.group.members) || [];
-  const filterdMembers = members.filter(item =>
+  const filteredMembers = members.filter(item =>
     filterBy ? item.name.toLowerCase().includes(filterBy.toLowerCase()) : true
   );
-  const mutationHanlder = {
+  const mutationHandler = {
     onError: error => {
       // setShowError(true);
       console.log(error);
     },
-    onCompleted: data => {
+    onCompleted: () => {
       // setShowSuccess(true);
     },
   };
 
-  const [addUserToGroup, { loading: adding }] = useAddUserToGroupMutation(mutationHanlder);
-  const [removeUserFromGroup, { loading: removing }] = useRemoveUserFromGroupMutation(mutationHanlder);
+  const [addUserToGroup, { loading: adding }] = useAddUserToGroupMutation(mutationHandler);
+  const [removeUserFromGroup, { loading: removing }] = useRemoveUserFromGroupMutation(mutationHandler);
   // TODO [ATS] Find a way to update the cache instead of doing second query
   // update: (cache, { data }) => {
   //   const fragment = GROUP_MEMBERS_FRAGMENT;
@@ -74,8 +73,8 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   // },
   // });
   const existingMembersIds = useMemo(() => members.map(x => x.id), [members]);
-  const removeMember = (userID: string) => {
-    removeUserFromGroup({
+  const removeMember = async (userID: string) => {
+    await removeUserFromGroup({
       refetchQueries: ['groupMembers'],
       awaitRefetchQueries: true,
       variables: {
@@ -85,8 +84,8 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     });
   };
 
-  const handleUserAdding = (userID: string) => {
-    addUserToGroup({
+  const handleUserAdding = async (userID: string) => {
+    await addUserToGroup({
       refetchQueries: ['groupMembers'],
       awaitRefetchQueries: true,
       variables: {
@@ -102,9 +101,6 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     <>
       <Navbar variant="dark" className="navbar">
         <Nav className="mr-auto">
-          {/* <Button variant="outline-primary" className="mr-2" onClick={() => setAddPanelState(prev => !prev)}>
-            Add members
-          </Button> */}
           {removing && <div>Removing...</div>}
           {adding && <div>Adding...</div>}
           {/* <Button variant="outline-primary" className="mr-2">
@@ -134,7 +130,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
                 </tr>
               </thead>
               <tbody>
-                {filterdMembers.map(m => (
+                {filteredMembers.map(m => (
                   <tr key={m.email}>
                     {/* <td>
                     <FormCheck id={m.email} />
@@ -154,11 +150,9 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
             </Table>
           </div>
         </Col>
-        {isAddPanelOpen && (
-          <Col sm={4}>
-            <MemberSelector existingMembersIds={existingMembersIds} onUserAdd={handleUserAdding} />{' '}
-          </Col>
-        )}
+        <Col sm={4}>
+          <MemberSelector existingMembersIds={existingMembersIds} onUserAdd={handleUserAdding} />{' '}
+        </Col>
       </Row>
     </>
   );

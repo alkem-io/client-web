@@ -9,6 +9,7 @@ import Icon from '../components/core/Icon';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import MultipleSelect from '../components/core/MultipleSelect';
+import Typography from '../components/core/Typography';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { tags as _tags } from '../components/core/Typography.dummy.json';
@@ -16,7 +17,6 @@ import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
 import { PageProps } from './common';
 import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { User, UserGroup } from '../generated/graphql';
-import Typography from '../components/core/Typography';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const filtersConfig = {
@@ -38,7 +38,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   };
 
   const [community, setCommunity] = useState<Array<User | UserGroup>>([]);
-  const [defaultCommunity, setDefaultCommunity] = useState<Array<User | UserGroup>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
 
@@ -61,21 +60,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   });
 
   const handleSearch = () => {
-    // no requests, just front filtering
-    if (searchTerm === '' && tags.length === 0 && typesFilter.value) {
-      setCommunity(defaultCommunity.filter(el => el.__typename === typesFilter.typename));
-
-      return;
-    }
-
-    // soft reset to default list without request
-    if (searchTerm === '' && tags.length === 0) {
-      setCommunity(defaultCommunity);
-
-      return;
-    }
-
-    // actual search
     const tagNames = tags.map(t => t.name);
     search({
       variables: {

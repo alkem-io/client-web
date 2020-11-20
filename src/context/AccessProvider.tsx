@@ -11,7 +11,7 @@ const AccessContext = React.createContext<AccessContextResult>({
   loading: true,
 });
 
-const AccessProvider: FC<{}> = ({ children }) => {
+const AccessProvider: FC = ({ children }) => {
   const { safeRefresh } = useAuthenticate();
   const { isAuthenticated } = useAuthenticationContext();
   const { loading: authenticationLoading } = useAuthentication();
@@ -30,7 +30,7 @@ const AccessProvider: FC<{}> = ({ children }) => {
     let timerId = -1;
     if (isAuthenticated) timerId = window.setInterval(safeRefresh, 30 * 60 * 1000);
     return () => {
-      console.log('Clearing itnerval');
+      console.log('Clearing interval');
       window.clearInterval(timerId);
     };
   }, [safeRefresh, isAuthenticated]);
