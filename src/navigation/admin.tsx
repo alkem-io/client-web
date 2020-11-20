@@ -55,7 +55,7 @@ const UsersRoute: FC<PageProps> = ({ paths }) => {
 
   const users = (data?.users || []) as UserModel[];
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading Users ...'} />;
   }
   return (
     <Switch>
@@ -87,7 +87,7 @@ const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
   const { userId } = useParams<{ userId: string }>();
   const { data, loading } = useUserQuery({ variables: { id: userId } });
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading user ...'} />;
   const user = data?.user as UserModel;
   if (user) {
     return <UserPage user={user} paths={paths} mode={mode} title={title} />;
@@ -102,7 +102,7 @@ const GroupsRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths]);
   const groupsList = data?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` }));
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading Groups ...'} />;
 
   return (
     <Switch>

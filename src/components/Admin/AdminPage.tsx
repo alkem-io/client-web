@@ -40,11 +40,6 @@ export const AdminPage: FC<PageProps> = ({ paths }) => {
             classes={{
               background: (theme: Theme) => theme.palette.neutral,
             }}
-            bodyProps={{
-              classes: {
-                // background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.5),
-              },
-            }}
             primaryTextProps={{
               text: x.name || '',
               classes: {

@@ -42,7 +42,7 @@ const useNavigationStyles = createStyles(theme => ({
   },
 }));
 
-const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onSignOut }) => {
+const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignOut }) => {
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);
@@ -111,12 +111,27 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignIn, onS
               <Popover.Content>
                 <div className="d-flex flex-grow-1 flex-column">
                   {userMetadata && userMetadata.isAdmin && (
-                    <Button text="Admin" as={Link} to="/admin" inset className={styles.menuItem}>
+                    <Button
+                      text="Admin"
+                      as={Link}
+                      to="/admin"
+                      inset
+                      className={styles.menuItem}
+                      onClick={() => setDropdownOpen(false)}
+                    >
                       <Icon component={SlidersIcon} color="inherit" size="sm" />
                     </Button>
                   )}
                   {userMetadata && (
-                    <Button text="Sign out" onClick={onSignOut} inset className={styles.menuItem}>
+                    <Button
+                      text="Sign out"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        onSignOut();
+                      }}
+                      inset
+                      className={styles.menuItem}
+                    >
                       <Icon component={DoorOpenIcon} color="inherit" size="sm" />
                     </Button>
                   )}

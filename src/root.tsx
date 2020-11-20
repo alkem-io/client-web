@@ -76,8 +76,8 @@ const ReduxRoot: FC = () => {
   const client = useGraphQLClient(graphQLEndpoint);
 
   return (
-    <ApolloProvider client={client}>
-      <ConfigProvider>
+    <ConfigProvider apiUrl={graphQLEndpoint}>
+      <ApolloProvider client={client}>
         <AuthenticationProvider>
           <AccessProvider>
             <ThemeProvider>
@@ -93,8 +93,8 @@ const ReduxRoot: FC = () => {
             </ThemeProvider>
           </AccessProvider>
         </AuthenticationProvider>
-      </ConfigProvider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </ConfigProvider>
   );
 };
 

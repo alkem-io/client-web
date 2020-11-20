@@ -100,6 +100,9 @@ const useChallengeStyles = createStyles(theme => ({
   link: {
     marginTop: `${theme.shape.spacing(2)}px`,
     marginRight: `${theme.shape.spacing(4)}px`,
+    '&:hover': {
+      color: theme.palette.background,
+    },
   },
 }));
 
@@ -198,7 +201,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <div>
             <Button
               inset
-              variant="primary"
+              variant="whiteStatic"
               text="opportunities"
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
               className={styles.link}
@@ -208,7 +211,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                 key={i}
                 as="a"
                 inset
-                variant="primary"
+                variant="whiteStatic"
                 text={l.name}
                 href={l.uri}
                 target="_blank"

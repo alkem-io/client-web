@@ -1,5 +1,13 @@
 import { AccountInfo, AuthenticationResult } from '@azure/msal-browser';
-import { AuthActionTypes, ErrorPayload, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_TOKEN } from './types';
+import {
+  AuthActionTypes,
+  ErrorPayload,
+  AuthStatus,
+  UPDATE_ACCOUNT,
+  UPDATE_ERROR,
+  UPDATE_TOKEN,
+  UPDATE_STATUS,
+} from './types';
 
 export function updateAccount(account: AccountInfo | null): AuthActionTypes {
   return {
@@ -19,5 +27,12 @@ export function updateToken(authenticationResult: AuthenticationResult | undefin
   return {
     type: UPDATE_TOKEN,
     payload: authenticationResult,
+  };
+}
+
+export function updateStatus(status?: AuthStatus): AuthActionTypes {
+  return {
+    type: UPDATE_STATUS,
+    payload: status,
   };
 }

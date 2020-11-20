@@ -1,6 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
 import { Button, FormControl, InputGroup, Table } from 'react-bootstrap';
-import { useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../generated/graphql';
 import Loading from '../core/Loading';
 
@@ -11,7 +10,6 @@ interface UserListProps {
 
 export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onUserAdd }) => {
   const { data, loading } = useUsersQuery();
-  const { url } = useRouteMatch();
 
   const unusedMembers = data?.users.filter(u => !existingMembersIds.includes(u.id)) || [];
   const [filterBy, setFilterBy] = useState('');
@@ -32,7 +30,7 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading text={'Loading members ...'} />;
 
   return (
     <>
@@ -45,7 +43,7 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
         <Table hover size="sm" responsive="sm" style={{ position: 'relative' }}>
           <thead className="thead-dark">
             <tr>
-              <th></th>
+              <th />
               <th>Full Name</th>
             </tr>
           </thead>

@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState, Fragment } from 'react';
-import { Form, FormControl, FormGroup, FormLabel, InputGroup } from 'react-bootstrap';
+import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link } from 'react-router-dom';
@@ -21,7 +21,7 @@ export interface SearchableListData {
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, children, active }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active }) => {
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [userToRemove, setUserToRemove] = useState<SearchableListData | null>(null);
@@ -50,8 +50,8 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   const slicedData = useMemo(() => filteredData.slice(0, limit), [filteredData, limit]);
   const editSuffix = edit ? '/edit' : '';
 
-  const handleRemoveUser = () => {
-    remove({
+  const handleRemoveUser = async () => {
+    await remove({
       variables: {
         userID: Number(userToRemove?.id),
       },

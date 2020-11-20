@@ -36,6 +36,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
 import { Col } from 'react-bootstrap';
+import shuffleCollection from '../utils/shuffleCollection';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -53,14 +54,14 @@ interface UserProviderProps {
   children: (users: User[]) => React.ReactNode;
 }
 
-// will move it to a seperate component later
+// will move it to a separate component later
 export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, children }) => {
   const targetCount = Math.min(users.length, count);
   const targetIds = users.slice(0, targetCount).map(x => x.id);
   const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds } });
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading avatars ...'} />;
   }
 
   if (!data) {
@@ -73,7 +74,7 @@ export const UserProvider: FC<UserProviderProps> = ({ users = [], count = 20, ch
 const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
   <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
     <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
-    <Typography variant={'h5'} color={'neutral'} className={'ml-3'}>
+    <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
       Sorry, an error occurred while loading {blockName}
     </Typography>
   </div>
@@ -234,7 +235,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
               {populated => (
                 <>
                   <AvatarContainer className="d-flex" title={'Active community members'}>
-                    {populated.map((u, i) => (
+                    {shuffleCollection(populated).map((u, i) => (
                       <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
                     ))}
                   </AvatarContainer>

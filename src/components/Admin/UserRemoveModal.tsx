@@ -19,7 +19,7 @@ const UserRemoveModal: FC<UserRemoveModalProps> = ({ show, onCancel, onConfirm, 
     <Modal.Body>Are you sure you want to remove {name || 'user'}?</Modal.Body>
     <Modal.Footer>
       {loading ? (
-        <Loading />
+        <Loading text={'Loading ...'} />
       ) : (
         <>
           <Button small onClick={onCancel} disabled={loading}>
