@@ -64,7 +64,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const projectRef = useRef<HTMLDivElement>(null);
 
   // data
-  const { name, aspects, projects = [], relations = [], actorGroups, context } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
@@ -286,11 +286,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </>
       )}
 
-      <InterestModal
-        onHide={() => setShowInterestModal(false)}
-        onSubmit={() => console.log('submit')}
-        show={showInterestModal}
-      />
+      <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
 
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>

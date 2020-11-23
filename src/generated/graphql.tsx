@@ -182,12 +182,12 @@ export type Organisation = {
   __typename?: 'Organisation';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The profile for this organisation */
-  profile?: Maybe<Profile>;
   /** Groups defined on this organisation. */
   groups?: Maybe<Array<UserGroup>>;
   /** Users that are contributing to this organisation. */
   members?: Maybe<Array<User>>;
+  /** The profile for this organisation. */
+  profile: Profile;
 };
 
 export type Ecoverse = {
@@ -440,8 +440,12 @@ export type Mutation = {
   addChallengeLead: Scalars['Boolean'];
   /** Remove the specified organisation as a lead for the specified challenge */
   removeChallengeLead: Scalars['Boolean'];
+  /** Creates a new reference with the specified name for the context with given id */
+  createReferenceOnContext: Reference;
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
+  /** Removes the Opportunity with the specified ID */
+  removeOpportunity: Scalars['Boolean'];
   /** Create a new Project on the Opportunity identified by the ID */
   createProject: Project;
   /** Create a new aspect on the Opportunity identified by the ID */
@@ -581,8 +585,17 @@ export type MutationRemoveChallengeLeadArgs = {
   organisationID: Scalars['Float'];
 };
 
+export type MutationCreateReferenceOnContextArgs = {
+  referenceInput: ReferenceInput;
+  contextID: Scalars['Float'];
+};
+
 export type MutationUpdateOpportunityArgs = {
   opportunityData: OpportunityInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveOpportunityArgs = {
   ID: Scalars['Float'];
 };
 
@@ -914,7 +927,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
       >;
       leadOrganisations: Array<
         { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
-            profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+            profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar'>;
           }
       >;
     };
@@ -948,21 +961,6 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
             tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
           }
       >;
-    };
-};
-
-export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ConfigQuery = { __typename?: 'Query' } & {
-  clientConfig: { __typename?: 'AadClientConfig' } & Pick<AadClientConfig, 'authEnabled'> & {
-      msalConfig: { __typename?: 'MsalConfig' } & {
-        auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
-        cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
-      };
-      apiConfig: { __typename?: 'AadApiConfig' } & Pick<AadApiConfig, 'resourceScope'>;
-      loginRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
-      tokenRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
-      silentRequest: { __typename?: 'AadScope' } & Pick<AadScope, 'scopes'>;
     };
 };
 
@@ -1031,11 +1029,9 @@ export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never 
 
 export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
   host: { __typename?: 'Organisation' } & {
-    profile?: Maybe<
-      { __typename?: 'Profile' } & {
-        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-      }
-    >;
+    profile: { __typename?: 'Profile' } & {
+      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+    };
   };
 };
 
@@ -1069,6 +1065,15 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
         Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
       >;
     };
+};
+
+export type CreateRelationMutationVariables = Exact<{
+  opportunityId: Scalars['Float'];
+  relationData: RelationInput;
+}>;
+
+export type CreateRelationMutation = { __typename?: 'Mutation' } & {
+  createRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
 };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
@@ -1720,61 +1725,6 @@ export function useGroupCardLazyQuery(
 export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<GroupCardQuery, GroupCardQueryVariables>;
-export const ConfigDocument = gql`
-  query config {
-    clientConfig {
-      msalConfig {
-        auth {
-          authority
-          clientId
-          redirectUri
-        }
-        cache {
-          cacheLocation
-          storeAuthStateInCookie
-        }
-      }
-      apiConfig {
-        resourceScope
-      }
-      loginRequest {
-        scopes
-      }
-      tokenRequest {
-        scopes
-      }
-      silentRequest {
-        scopes
-      }
-      authEnabled
-    }
-  }
-`;
-
-/**
- * __useConfigQuery__
- *
- * To run a query within a React component, call `useConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useConfigQuery({
- *   variables: {
- *   },
- * });
- */
-export function useConfigQuery(baseOptions?: Apollo.QueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
-  return Apollo.useQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
-}
-export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
-  return Apollo.useLazyQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
-}
-export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
-export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
-export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
@@ -2201,6 +2151,47 @@ export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportu
 export type OpportunityProfileQueryResult = Apollo.QueryResult<
   OpportunityProfileQuery,
   OpportunityProfileQueryVariables
+>;
+export const CreateRelationDocument = gql`
+  mutation createRelation($opportunityId: Float!, $relationData: RelationInput!) {
+    createRelation(opportunityID: $opportunityId, relationData: $relationData) {
+      id
+    }
+  }
+`;
+export type CreateRelationMutationFn = Apollo.MutationFunction<CreateRelationMutation, CreateRelationMutationVariables>;
+
+/**
+ * __useCreateRelationMutation__
+ *
+ * To run a mutation, you first call `useCreateRelationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRelationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRelationMutation, { data, loading, error }] = useCreateRelationMutation({
+ *   variables: {
+ *      opportunityId: // value for 'opportunityId'
+ *      relationData: // value for 'relationData'
+ *   },
+ * });
+ */
+export function useCreateRelationMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateRelationMutation, CreateRelationMutationVariables>
+) {
+  return Apollo.useMutation<CreateRelationMutation, CreateRelationMutationVariables>(
+    CreateRelationDocument,
+    baseOptions
+  );
+}
+export type CreateRelationMutationHookResult = ReturnType<typeof useCreateRelationMutation>;
+export type CreateRelationMutationResult = Apollo.MutationResult<CreateRelationMutation>;
+export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
+  CreateRelationMutation,
+  CreateRelationMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
