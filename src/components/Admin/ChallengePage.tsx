@@ -1,18 +1,13 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { Row } from 'react-bootstrap';
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 
 import Button from '../core/Button';
 import Card from '../core/Card';
-import Loading from '../core/Loading';
-import { useChallengeNameQuery } from '../../generated/graphql';
+
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { Theme } from '../../context/ThemeProvider';
 import { PageProps } from '../../pages';
-
-interface Parameters {
-  challengeId: string;
-}
 
 const challengePageData = [
   {
@@ -27,18 +22,8 @@ const challengePageData = [
 
 export const ChallengePage: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { challengeId } = useParams<Parameters>();
-  const { data, loading } = useChallengeNameQuery({ variables: { id: Number(challengeId) } });
 
-  const challengeName = (data && data.challenge?.name) || '';
-  const currentPaths = useMemo(() => [...paths, { value: url, name: challengeName, real: true }], [
-    paths,
-    challengeName,
-  ]);
-
-  useUpdateNavigation({ currentPaths });
-
-  if (loading) return <Loading text={'Challenge loading...'} />;
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>

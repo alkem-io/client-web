@@ -13,6 +13,8 @@ import MemberSelector from './MemberSelector';
 
 interface Parameters {
   groupId: string;
+  challengeId: string;
+  opportunityId: string;
 }
 
 type GroupPageProps = PageProps;
@@ -28,8 +30,8 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     setFilterBy(value);
   };
   const groupName = (data && data.group.name) || '';
-
   const currentPaths = useMemo(() => [...paths, { name: groupName, real: false }], [paths, groupName]);
+
   useUpdateNavigation({ currentPaths });
 
   const members = (data && data.group && data.group.members) || [];
