@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { Route, Switch, useParams, useRouteMatch, useLocation } from 'react-router-dom';
 
@@ -11,6 +11,8 @@ import {
   useChallengeOpportunitiesQuery,
   useEcoverseChallengesListQuery,
   useEcoverseGroupsListQuery,
+  useOpportunityGroupsQuery,
+  useOpportunityNameLazyQuery,
   useUserQuery,
   useUsersQuery,
 } from '../generated/graphql';
@@ -24,6 +26,7 @@ export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
+  // cosnt []
   return (
     <Container>
       <Switch>
@@ -125,15 +128,36 @@ const GroupsRoute: FC<PageProps> = ({ paths }) => {
 const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { pathname } = useLocation();
-  const { data } = useEcoverseChallengesListQuery();
+  const { data: challengesListQuery } = useEcoverseChallengesListQuery();
+
   const routes = pathname.split('/').splice(2);
 
-  const challengesList = data?.challenges?.map(c => ({ id: c.id, value: c.name, url: `${url}/${c.id}` }));
+  const challengesList = challengesListQuery?.challenges?.map(c => ({
+    id: c.id,
+    value: c.name,
+    url: `${url}/${c.id}`,
+  }));
 
   const challengeId = routes[1];
   const subRoute = routes[2];
+  const opportunityId = routes[3];
+
+  const [getOpportunityName, { data: opportunityNameQuery }] = useOpportunityNameLazyQuery();
+
   const challengeName =
-    useMemo(() => data?.challenges?.find(c => c.id === challengeId), [pathname, data?.challenges])?.name || '';
+    useMemo(() => challengesListQuery?.challenges?.find(c => c.id === challengeId), [
+      pathname,
+      challengesListQuery?.challenges,
+    ])?.name || '';
+  const opportunityName = useMemo(() => opportunityNameQuery?.opportunity?.name || 'Opportunity', [
+    opportunityNameQuery,
+  ]);
+
+  useEffect(() => {
+    if (opportunityId === undefined) return;
+
+    getOpportunityName({ variables: { id: Number(opportunityId) } });
+  }, [opportunityId]);
 
   const currentPaths = useMemo(() => {
     const initial = [...paths, { value: url, name: 'challenges', real: true }];
@@ -147,8 +171,25 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         { value: `${url}/${challengeId}/${subRoute}`, name: subRoute, real: true },
       ];
     }
+    if (routes.length === 5) {
+      return [
+        ...initial,
+        { value: `${url}/${challengeId}`, name: challengeName, real: true },
+        { value: `${url}/${challengeId}/${subRoute}`, name: subRoute, real: true },
+        { value: `${url}/${challengeId}/${subRoute}/${opportunityId}/groups`, name: opportunityName, real: true },
+      ];
+    }
+    if (routes.length === 6) {
+      return [
+        ...initial,
+        { value: `${url}/${challengeId}`, name: challengeName, real: true },
+        { value: `${url}/${challengeId}/${subRoute}`, name: subRoute, real: true },
+        { value: `${url}/${challengeId}/${subRoute}/${opportunityId}/groups`, name: opportunityName, real: true },
+        { value: `${url}/${challengeId}/${subRoute}/${opportunityId}/groups`, name: 'groups', real: true },
+      ];
+    }
     return initial;
-  }, [paths, pathname, data?.challenges]);
+  }, [paths, pathname, challengesListQuery?.challenges, opportunityName]);
 
   return (
     <Switch>
@@ -167,7 +208,10 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}/:challengeId/groups/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/:challengeId/opportunities/:groupId`}>
+      <Route exact path={`${path}/:challengeId/opportunities/:opportunityId/groups`}>
+        <OpportunityGroups paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/:challengeId/opportunities/:opportunityId/groups/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -177,13 +221,13 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   );
 };
 
-interface Parameters {
+interface ChallengeParameters {
   challengeId: string;
 }
 
 const ChallengeGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { challengeId } = useParams<Parameters>();
+  const { challengeId } = useParams<ChallengeParameters>();
 
   const { data } = useChallengeGroupsQuery({ variables: { id: Number(challengeId) } });
 
@@ -195,12 +239,32 @@ const ChallengeGroups: FC<PageProps> = ({ paths }) => {
 
 const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { challengeId } = useParams<Parameters>();
+  const { challengeId } = useParams<ChallengeParameters>();
 
   const { data } = useChallengeOpportunitiesQuery({ variables: { id: Number(challengeId) } });
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths, data]);
-  const opportunities = data?.challenge?.opportunities?.map(o => ({ id: o.id, value: o.name, url: `${url}/${o.id}` }));
+  const opportunities = data?.challenge?.opportunities?.map(o => ({
+    id: o.id,
+    value: o.name,
+    url: `${url}/${o.id}/groups`,
+  }));
 
   return <ListPage paths={currentPaths} data={opportunities || []} />;
+};
+
+interface OpportunityParameters {
+  opportunityId: string;
+}
+
+const OpportunityGroups: FC<PageProps> = ({ paths }) => {
+  const { url } = useRouteMatch();
+  const { opportunityId } = useParams<OpportunityParameters>();
+
+  const { data } = useOpportunityGroupsQuery({ variables: { id: Number(opportunityId) } });
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, data]);
+  const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+
+  return <ListPage paths={currentPaths} data={groups || []} />;
 };

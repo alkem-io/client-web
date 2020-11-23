@@ -134,3 +134,22 @@ export const QUERY_CHALLENGE_OPPORTUNITIES = gql`
     }
   }
 `;
+
+export const QUERY_OPPORTUNITY_GROUPS = gql`
+  query opportunityGroups($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_NAME = gql`
+  query opportunityName($id: Float!) {
+    opportunity(ID: $id) {
+      name
+    }
+  }
+`;
