@@ -44,8 +44,12 @@ const useButtonStyles = createStyles(theme => ({
   },
   label: {
     position: 'absolute',
-    top: theme.shape.spacing(1.5),
+    top: 2,
     left: theme.shape.spacing(2),
+    width: 'calc(100% - 34px)',
+    margin: '0 auto',
+    backgroundColor: theme.palette.background,
+    paddingTop: theme.shape.spacing(1.3),
   },
   primary: {
     color: theme.palette.primary,

@@ -13,15 +13,26 @@ interface P {
 }
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
-  const roles = ['contributor', 'collaborator', 'potential customer', 'other'];
+  const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useUserProfileQuery();
 
-  const [createRelation, { data, loading }] = useCreateRelationMutation();
-
+  const [createRelation, { data, loading }] = useCreateRelationMutation({
+    onError: error => console.log(error),
+  });
   const [description, setDescription] = useState<string>('');
   const [role, setRole] = useState<string>(roles[0]);
   const [customRole, setCustomRole] = useState<string>('');
-  const isFormValid = role === roles[3] ? customRole && customRole.length > 2 : description && description.length > 2;
+  const isFormValid =
+    role === roles[3]
+      ? customRole && customRole.length >= 2
+      : description && description.length >= 2 && description.length <= 380;
+
+  const onDescriptionInput = ({ target: { value } }) => {
+    console.log(value.length);
+    if (value.length > 380) return;
+
+    setDescription(value);
+  };
 
   const onSubmit = () => {
     createRelation({
@@ -54,7 +65,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
           <>
             <Col lg={12}>
               <Typography variant={'h5'} className={'mb-2'}>
-                Choose your role
+                Type of collaboration
               </Typography>
               <DropdownButton title={role} variant={'info'} className={'mb-4'}>
                 {roles.map(r => (
@@ -69,11 +80,12 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
                   value={customRole}
                   label={'Describe your role'}
                   className={'mb-4'}
+                  max={380}
                 />
               )}
             </Col>
             <Col lg={12}>
-              <TextArea onChange={e => setDescription(e.target.value)} value={description} label={'Interest reason'} />
+              <TextArea onChange={onDescriptionInput} value={description} label={'Interest reason'} />
             </Col>
           </>
         )}

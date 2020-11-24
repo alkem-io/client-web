@@ -260,7 +260,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
           {isAuthenticated && (
-            <Button text={'become a member'} onClick={() => setShowInterestModal(true)} className={'ml-4'} />
+            <Button
+              text={'Interested in collaborating?'}
+              onClick={() => setShowInterestModal(true)}
+              className={'ml-4'}
+            />
           )}
         </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
