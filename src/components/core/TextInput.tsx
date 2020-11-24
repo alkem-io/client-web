@@ -14,7 +14,6 @@ const useButtonStyles = createStyles(theme => ({
     padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     paddingTop: theme.shape.spacing(4),
     color: theme.palette.neutral,
-    boxShadow: `inset 0px 1px 3px ${hexToRGBA(theme.palette.neutralMedium, 0.8)}`,
 
     border: `2px solid ${theme.palette.neutralMedium}`,
     borderRadius: theme.shape.borderRadius,
@@ -30,7 +29,6 @@ const useButtonStyles = createStyles(theme => ({
     padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     paddingTop: theme.shape.spacing(4),
     color: theme.palette.neutral,
-    boxShadow: `inset 0px 1px 3px ${hexToRGBA(theme.palette.neutralMedium, 0.8)}`,
 
     border: `2px solid ${theme.palette.neutralMedium}`,
     borderRadius: theme.shape.borderRadius,

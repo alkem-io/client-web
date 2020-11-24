@@ -38,7 +38,7 @@ export const Header: FC<HeaderProps> = ({ text, svg, tagText, className, classes
       {text || svg}
       {tagText && <Tag className={styles.tagOffset} text={tagText} />}
       {children && (
-        <Col lg={3} md={4} xs={12}>
+        <Col lg={4} md={6} xs={12}>
           {children}
         </Col>
       )}
