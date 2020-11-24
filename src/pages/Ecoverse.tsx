@@ -37,6 +37,7 @@ import { PageProps } from './common';
 import { useUserContext } from '../hooks/useUserContext';
 import { Col } from 'react-bootstrap';
 import shuffleCollection from '../utils/shuffleCollection';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -89,6 +90,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const { url } = useRouteMatch();
   const history = useHistory();
   const user = useUserContext();
+  const { isAuthenticated } = useAuthenticate();
 
   const { data: _opportunities } = useOpportunitiesQuery();
   const { data: _projects, error: projectsError } = useProjectsQuery();
@@ -155,7 +157,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
-    return [
+    const initial = [
       { name: 'Challenges', digit: challenges.length, color: 'neutral' },
       {
         name: 'Opportunities',
@@ -167,13 +169,17 @@ const Ecoverse: FC<EcoversePageProps> = ({
         digit: projects.length,
         color: 'positive',
       },
+    ];
+    const withMembers = [
+      ...initial,
       {
         name: 'Members',
         digit: users.length,
         color: 'neutralMedium',
       },
     ];
-  }, [ecoverse, projects]);
+    return isAuthenticated ? withMembers : initial;
+  }, [ecoverse, projects, isAuthenticated]);
 
   return (
     <>
