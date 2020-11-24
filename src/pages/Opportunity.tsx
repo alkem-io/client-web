@@ -24,6 +24,7 @@ import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import InterestModal from '../components/Ecoverse/InterestModal';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -60,6 +61,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
+  const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
 
@@ -256,9 +258,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
       <Divider />
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'Collaborative potential'} />
+        <SectionHeader text={'Collaborative potential'}>
+          {isAuthenticated && (
+            <Button text={'become a member'} onClick={() => setShowInterestModal(true)} className={'ml-4'} />
+          )}
+        </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
-        <Button text={'become a member'} onClick={() => setShowInterestModal(true)} />
       </Section>
       {isNoRelations ? (
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
@@ -301,11 +306,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </CardContainer>
       )}
       <Divider />
-      <div ref={projectRef}></div>
+      <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
         <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
-        <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
+        <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
       </Section>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {opportunityProjects.map(({ type, ...rest }, i) => {

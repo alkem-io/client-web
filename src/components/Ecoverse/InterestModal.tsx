@@ -16,7 +16,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const roles = ['contributor', 'collaborator', 'potential customer', 'other'];
   const { data: userData } = useUserProfileQuery();
 
-  const [createRelation, { data, loading, error }] = useCreateRelationMutation();
+  const [createRelation, { data, loading }] = useCreateRelationMutation();
 
   const [description, setDescription] = useState<string>('');
   const [role, setRole] = useState<string>(roles[0]);
@@ -41,13 +41,13 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   return (
     <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Modal heading</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">Describe your relation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {data?.createRelation.id ? (
           <Col lg={12}>
             <Typography variant={'h3'} color={'positive'}>
-              Successfully created
+              The request successfully sent
             </Typography>
           </Col>
         ) : (
