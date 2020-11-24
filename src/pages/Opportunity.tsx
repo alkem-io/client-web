@@ -184,7 +184,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
             </>
           </div>
         </Body>
-        {team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
+        {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container className={'p-4'}>
         <Row>
