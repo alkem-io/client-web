@@ -59,7 +59,7 @@ const AboutPage = () => {
               Reimagining collaboration
             </Typography>
             <Typography className={'mb-4'}>
-              Leading hte way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for
+              Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for
               multi stakeholder collaboration
             </Typography>
             <a href="https://cherrytwist.org/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
