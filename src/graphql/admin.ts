@@ -86,3 +86,70 @@ export const MUTATION_ADD_USER_TO_GROUP = gql`
   }
   ${GROUP_MEMBERS_FRAGMENT}
 `;
+
+export const QUERY_ECOVERSE_CHALLENGES_LIST = gql`
+  query ecoverseChallengesList {
+    challenges {
+      id
+      name
+    }
+  }
+`;
+
+export const QUERY_ECOVERSE_GROUPS_LIST = gql`
+  query ecoverseGroupsList {
+    groups {
+      id
+      name
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_NAME = gql`
+  query challengeName($id: Float!) {
+    challenge(ID: $id) {
+      name
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_GROUPS = gql`
+  query challengeGroups($id: Float!) {
+    challenge(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_OPPORTUNITIES = gql`
+  query challengeOpportunities($id: Float!) {
+    challenge(ID: $id) {
+      opportunities {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_GROUPS = gql`
+  query opportunityGroups($id: Float!) {
+    opportunity(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_NAME = gql`
+  query opportunityName($id: Float!) {
+    opportunity(ID: $id) {
+      name
+    }
+  }
+`;
