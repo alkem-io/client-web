@@ -9,6 +9,7 @@ import { Messages } from './messages';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
+import AboutPage from '../pages/About';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -38,6 +39,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <Route exact path="/signin">
         <SignIn />
+      </Route>
+      <Route exact path="/about">
+        <AboutPage />
       </Route>
       <Route exact path="/restricted">
         <Restricted />
