@@ -1125,6 +1125,15 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type CreateRelationMutationVariables = Exact<{
+  opportunityId: Scalars['Float'];
+  relationData: RelationInput;
+}>;
+
+export type CreateRelationMutation = { __typename?: 'Mutation' } & {
+  createRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
+};
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description' | 'state'
@@ -2501,6 +2510,47 @@ export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportu
 export type OpportunityProfileQueryResult = Apollo.QueryResult<
   OpportunityProfileQuery,
   OpportunityProfileQueryVariables
+>;
+export const CreateRelationDocument = gql`
+  mutation createRelation($opportunityId: Float!, $relationData: RelationInput!) {
+    createRelation(opportunityID: $opportunityId, relationData: $relationData) {
+      id
+    }
+  }
+`;
+export type CreateRelationMutationFn = Apollo.MutationFunction<CreateRelationMutation, CreateRelationMutationVariables>;
+
+/**
+ * __useCreateRelationMutation__
+ *
+ * To run a mutation, you first call `useCreateRelationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRelationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRelationMutation, { data, loading, error }] = useCreateRelationMutation({
+ *   variables: {
+ *      opportunityId: // value for 'opportunityId'
+ *      relationData: // value for 'relationData'
+ *   },
+ * });
+ */
+export function useCreateRelationMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateRelationMutation, CreateRelationMutationVariables>
+) {
+  return Apollo.useMutation<CreateRelationMutation, CreateRelationMutationVariables>(
+    CreateRelationDocument,
+    baseOptions
+  );
+}
+export type CreateRelationMutationHookResult = ReturnType<typeof useCreateRelationMutation>;
+export type CreateRelationMutationResult = Apollo.MutationResult<CreateRelationMutation>;
+export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
+  CreateRelationMutation,
+  CreateRelationMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
