@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
@@ -6,10 +7,10 @@ import Typography from '../core/Typography';
 const useFooterStyles = createStyles(theme => ({
   footerSpacing: {
     display: 'flex',
-    position: 'relative',
     padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
   },
   footer: {
+    position: 'relative',
     alignItems: 'center',
     flexGrow: 1,
     padding: theme.shape.spacing(4),
@@ -20,6 +21,9 @@ const useFooterStyles = createStyles(theme => ({
     position: 'absolute',
     left: '50%',
     transform: 'translate3d(-50%, 0, 0)',
+    '&:hover': {
+      textDecoration: 'none',
+    },
   },
   logo: {
     height: theme.shape.spacing(8),
@@ -36,13 +40,12 @@ const Footer: FC = ({ children }) => {
   return (
     <div className={styles.footerSpacing}>
       <Toolbar paddingClass={styles.footer}>
-        <div className={styles.poweredBy}>
+        <Link to={'/about'} href="https://cherrytwist.org/about/" className={styles.poweredBy}>
           <Typography variant="caption" color="neutralMedium" weight="boldLight">
             Powered by
           </Typography>
           <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
-        </div>
-
+        </Link>
         <div className={styles.spacer} />
         {children}
       </Toolbar>
