@@ -20,6 +20,8 @@ interface HeaderProps {
 const useHeaderStyles = createStyles(theme => ({
   header: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: `${theme.shape.spacing(2)}px`,
     alignItems: 'center',
     color: (props: ClassProps) => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral} !important`,
   },
@@ -35,7 +37,11 @@ export const Header: FC<HeaderProps> = ({ text, svg, tagText, className, classes
     <Typography as="h2" variant="h2" color="inherit" weight="bold" className={clsx(styles.header, className)}>
       {text || svg}
       {tagText && <Tag className={styles.tagOffset} text={tagText} />}
-      {children}
+      {children && (
+        <Col lg={3} md={4} xs={12}>
+          {children}
+        </Col>
+      )}
     </Typography>
   );
 };
