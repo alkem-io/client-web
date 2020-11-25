@@ -12,7 +12,7 @@ import Container, { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Tag from '../components/core/Tag';
+// import Tag from '../components/core/Tag';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
@@ -57,7 +57,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
   users = [],
   permissions,
   onProjectTransition,
-  ...props
 }): React.ReactElement => {
   // styles
   const styles = useStyles();
@@ -78,7 +77,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
-  const team = relations[0];
+  // const team = relations[0];
   const stakeholders = useMemo(
     () =>
       actorGroups

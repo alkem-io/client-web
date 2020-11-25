@@ -6,7 +6,6 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
-import { updateStatus } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
 import { TOKEN_STORAGE_KEY } from './useAuthentication';
 
