@@ -59,3 +59,18 @@ export const MUTATION_CREATE_RELATION = gql`
     }
   }
 `;
+
+export const QUERY_RELATIONS_LIST = gql`
+  query relationsList($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        id
+        type
+        actorName
+        actorType
+        actorRole
+        description
+      }
+    }
+  }
+`;

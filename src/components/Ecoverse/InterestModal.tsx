@@ -4,6 +4,7 @@ import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 import { useCreateRelationMutation, useUserProfileQuery } from '../../generated/graphql';
+import { QUERY_RELATIONS_LIST } from '../../graphql/opportunity';
 import Loading from '../core/Loading';
 
 interface P {
@@ -18,6 +19,8 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: error => console.log(error),
+    refetchQueries: [{ query: QUERY_RELATIONS_LIST, variables: { id: Number(opportunityId) } }],
+    awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');
   const [role, setRole] = useState<string>(roles[0]);
@@ -28,7 +31,6 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
       : description && description.length >= 2 && description.length <= 380;
 
   const onDescriptionInput = ({ target: { value } }) => {
-    console.log(value.length);
     if (value.length > 380) return;
 
     setDescription(value);
