@@ -189,6 +189,17 @@ const Opportunity: FC<OpportunityPageProps> = ({
       </Section>
       <Container className={'p-4'}>
         <Row>
+          <Col md={12}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              {/*<SectionHeader text={'Tagline'} />*/}
+              {/*<SubHeader text={tagline} />*/}
+              {/*<SectionHeader text={`Tagline - ${tagline}`} />*/}
+              {/*<SubHeader text={`Tagline - ${tagline}`} />*/}
+              {tagline && <Tag text={`Tagline - ${tagline}`} color={'primary'} />}
+            </Section>
+          </Col>
+        </Row>
+        <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Problem'} />
@@ -206,7 +217,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Long term vision'} icon={<StopWatch />} />
-              <SubHeader text={tagline} />
               <Body text={vision} />
             </Section>
           </Col>
