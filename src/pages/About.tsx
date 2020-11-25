@@ -1,8 +1,8 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { createStyles } from '../hooks/useTheme';
-import Typography from '../components/core/Typography';
+import { Col } from 'react-bootstrap';
 import Button from '../components/core/Button';
+import Typography from '../components/core/Typography';
+import { createStyles } from '../hooks/useTheme';
 
 const useAboutStyles = createStyles(theme => ({
   row: {

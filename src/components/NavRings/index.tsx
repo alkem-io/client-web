@@ -48,11 +48,11 @@ const useNavRingsStyles = createStyles(theme => ({
   },
 }));
 
-interface NavRings {
+interface NavRingsProps {
   paths: Path[];
 }
 
-const NavRings: FC<NavRings> = ({ paths }) => {
+const NavRings: FC<NavRingsProps> = ({ paths }) => {
   const [hoveredRoute, setHoveredRoute] = useState<string | null>(null);
   const styles = useNavRingsStyles();
   const realPaths = paths.filter(p => p.real)?.length;

@@ -1,8 +1,8 @@
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
-import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -12,19 +12,18 @@ import Container, { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Tag from '../components/core/Tag';
+import Typography from '../components/core/Typography';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
+import InterestModal from '../components/Ecoverse/InterestModal';
 import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import { Opportunity as OpportunityType, Project, User } from '../generated/graphql';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import Typography from '../components/core/Typography';
-import InterestModal from '../components/Ecoverse/InterestModal';
-import { useAuthenticate } from '../hooks/useAuthenticate';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -73,7 +72,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
 
-  const team = relations[0];
+  // const team = relations[0];
   const stakeholders = useMemo(
     () =>
       actorGroups
