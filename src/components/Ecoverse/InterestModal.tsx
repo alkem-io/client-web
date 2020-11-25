@@ -31,7 +31,6 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
       : description && description.length >= 2 && description.length <= 380;
 
   const onDescriptionInput = ({ target: { value } }) => {
-    console.log(value.length);
     if (value.length > 380) return;
 
     setDescription(value);
