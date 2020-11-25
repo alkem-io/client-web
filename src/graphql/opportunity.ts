@@ -51,3 +51,11 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_RELATION = gql`
+  mutation createRelation($opportunityId: Float!, $relationData: RelationInput!) {
+    createRelation(opportunityID: $opportunityId, relationData: $relationData) {
+      id
+    }
+  }
+`;

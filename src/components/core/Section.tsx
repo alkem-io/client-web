@@ -21,6 +21,8 @@ interface HeaderProps {
 const useHeaderStyles = createStyles(theme => ({
   header: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: `${theme.shape.spacing(2)}px`,
     alignItems: 'center',
     color: (props: ClassProps) => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral} !important`,
   },
@@ -29,7 +31,7 @@ const useHeaderStyles = createStyles(theme => ({
   },
 }));
 
-export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, classes = {} }) => {
+export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, classes = {}, children }) => {
   const styles = useHeaderStyles(classes);
 
   return (
@@ -41,6 +43,11 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
           <div className={'flex-grow-1'} />
           {icon}
         </>
+      )}
+      {children && (
+        <Col lg={4} md={6} xs={12}>
+          {children}
+        </Col>
       )}
     </Typography>
   );

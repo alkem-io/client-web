@@ -24,6 +24,8 @@ import { createStyles } from '../hooks/useTheme';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import Typography from '../components/core/Typography';
+import InterestModal from '../components/Ecoverse/InterestModal';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -62,12 +64,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
 }): React.ReactElement => {
   // styles
   const styles = useStyles();
-  const [hideMeme, setHideMeme] = useState(false);
+  const [hideMeme, setHideMeme] = useState<boolean>(false);
+  const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
+  const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
 
   // data
-  const { name, aspects, projects = [], relations = [], actorGroups, context } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
@@ -189,7 +193,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
             </>
           </div>
         </Body>
-        {team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
+        {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container className={'p-4'}>
         <Row>
@@ -273,7 +277,15 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
       <Divider />
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'Collaborative potential'} />
+        <SectionHeader text={'Collaborative potential'}>
+          {isAuthenticated && (
+            <Button
+              text={'Interested in collaborating?'}
+              onClick={() => setShowInterestModal(true)}
+              className={'ml-4'}
+            />
+          )}
+        </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
       {isNoRelations ? (
@@ -302,6 +314,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </>
       )}
 
+      <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
+
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
@@ -315,11 +329,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </CardContainer>
       )}
       <Divider />
-      <div ref={projectRef}></div>
+      <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
         <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
-        <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
+        <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
       </Section>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {opportunityProjects.map(({ type, ...rest }, i) => {

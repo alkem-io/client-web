@@ -162,6 +162,7 @@ const useButtonStyles = createStyles(theme => ({
     '&:hover': {
       color: theme.palette.background,
       background: hexToRGBA(theme.palette.neutralMedium, 0.7),
+      cursor: 'not-allowed',
     },
 
     '&:focus': {
