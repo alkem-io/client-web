@@ -25,6 +25,7 @@ import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useUserContext } from '../hooks/useUserContext';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -56,6 +57,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   users = [],
   permissions,
   onProjectTransition,
+  ...props
 }): React.ReactElement => {
   // styles
   const styles = useStyles();
@@ -64,6 +66,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
+  const { user } = useUserContext();
+  const userName = user?.user.name;
 
   // data
   const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
@@ -72,6 +76,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const meme = references?.find(x => x.name === 'meme');
 
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
+  const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
   const team = relations[0];
   const stakeholders = useMemo(
@@ -259,7 +264,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
-          {isAuthenticated && (
+          {isAuthenticated && !isMemberOfOpportunity && (
             <Button
               text={'Interested in collaborating?'}
               onClick={() => setShowInterestModal(true)}
