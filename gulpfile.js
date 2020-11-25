@@ -6,8 +6,7 @@ path = require('path');
 const CONFIG_TEXT = `window._env_ = `;
 const CONFIG_FILE_NAME = 'env-config.js';
 
-function buildConfiguration (cb) {
-
+function buildConfiguration(cb) {
   const initialConfig = dotenvFlow.config();
   dotenvExpand(initialConfig);
 
@@ -29,15 +28,21 @@ function buildConfiguration (cb) {
     configuration['REACT_APP_GRAPHQL_ENDPOINT'] ||
     (nodeEnv === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
 
-  let envBase = fs.createWriteStream(path.join(__dirname, '.env.deployment', '.env.base'), { flags: 'w' });
+  const envBasePath = path.join(__dirname, '.env.deployment', '.env.base');
+  let envBase = fs.createWriteStream(envBasePath, { flags: 'w' });
 
   Object.keys(configuration).forEach(k => {
     envBase.write(`${k}=${configuration[k]}\n`);
   });
   envBase.end();
+  console.info(`Write in: ${envBasePath}`);
 
-  fs.writeFile(`./public/${CONFIG_FILE_NAME}`, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, cb);
-};
+  const envConfigPath = path.join(__dirname, '/public', CONFIG_FILE_NAME);
+  fs.writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, () => {
+    console.info(`Write in: ${envConfigPath}`);
+    cb();
+  });
+}
 
 exports.buildConfiguration = buildConfiguration;
 exports.default = buildConfiguration;
