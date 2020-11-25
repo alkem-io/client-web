@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { createStyles } from '../hooks/useTheme';
 import Typography from '../components/core/Typography';
 import Button from '../components/core/Button';

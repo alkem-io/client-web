@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import Loading from '../components/core/Loading';
 import { useAuthentication, UseAuthenticationResult } from '../hooks';
 
 export interface AuthContext extends UseAuthenticationResult {
