@@ -1,4 +1,3 @@
-const { series, parallel } = require('gulp');
 const dotenvFlow = require('dotenv-flow');
 const dotenvExpand = require('dotenv-expand');
 fs = require('fs');
