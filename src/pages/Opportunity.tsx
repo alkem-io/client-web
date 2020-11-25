@@ -40,6 +40,10 @@ const useStyles = createStyles(theme => ({
   link: {
     color: theme.palette.background,
   },
+  tagline: {
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
 }));
 
 interface OpportunityPageProps extends PageProps {
@@ -191,11 +195,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <Row>
           <Col md={12}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              {/*<SectionHeader text={'Tagline'} />*/}
-              {/*<SubHeader text={tagline} />*/}
-              {/*<SectionHeader text={`Tagline - ${tagline}`} />*/}
-              {/*<SubHeader text={`Tagline - ${tagline}`} />*/}
-              {tagline && <Tag text={`Tagline - ${tagline}`} color={'primary'} />}
+              <SubHeader text={tagline} className={styles.tagline} />
             </Section>
           </Col>
         </Row>
@@ -204,20 +204,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Problem'} />
               <SubHeader text={background} />
-              <Body text={impact} />
-            </Section>
-          </Col>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Solution'} />
-              <SubHeader text={tagline} />
-              <Body text={vision} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Long term vision'} icon={<StopWatch />} />
-              <Body text={vision} />
+              <SubHeader text={vision} />
             </Section>
           </Col>
         </Row>
@@ -225,9 +217,18 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Who'} />
-              <Body text={who} />
+              <SubHeader text={who} />
             </Section>
           </Col>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Impact'} />
+              <SubHeader text={impact} />
+            </Section>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={6} />
           {!hideMeme && (
             <Col sm={12} md={6}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
