@@ -111,19 +111,19 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
-  const removeSlashes = (string: string) => string?.replaceAll('\\n', '')?.replaceAll('\\"', '"');
+  const removeSlashes = (string: string) => string?.replaceAll('\\n', '<br/>')?.replaceAll('\\"', '"');
 
   const plainText = children as string;
 
   const text = useMemo(() => {
     if (children instanceof Array) {
       return children.map(c => {
-        if (typeof c === 'string') return removeSlashes(c);
+        if (typeof c === 'string') return <span key={c} dangerouslySetInnerHTML={{ __html: removeSlashes(c) }} />;
         return c;
       });
     }
     if (typeof children === 'string') {
-      return removeSlashes(plainText);
+      return <span dangerouslySetInnerHTML={{ __html: removeSlashes(plainText) }} />;
     }
     return children;
   }, [children]);
