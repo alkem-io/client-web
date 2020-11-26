@@ -13,7 +13,7 @@ import Container, { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Tag from '../components/core/Tag';
+// import Tag from '../components/core/Tag';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
@@ -26,6 +26,7 @@ import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useUserContext } from '../hooks/useUserContext';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -69,6 +70,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
+  const { user } = useUserContext();
+  const userName = user?.user.name;
 
   // data
   const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
@@ -77,8 +80,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const meme = references?.find(x => x.name === 'meme');
 
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
+  const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
-  const team = relations[0];
+  // const team = relations[0];
   const stakeholders = useMemo(
     () =>
       actorGroups
@@ -280,7 +284,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
-          {isAuthenticated && (
+          {isAuthenticated && !isMemberOfOpportunity && (
             <Button
               text={'Interested in collaborating?'}
               onClick={() => setShowInterestModal(true)}

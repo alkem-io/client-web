@@ -434,6 +434,8 @@ export type Mutation = {
   createOpportunityOnChallenge: Opportunity;
   /** Updates the specified Challenge with the provided data (merge) */
   updateChallenge: Challenge;
+  /** Removes the Challenge with the specified ID */
+  removeChallenge: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified challenge */
   addUserToChallenge: UserGroup;
   /** Adds the specified organisation as a lead for the specified challenge */
@@ -568,6 +570,10 @@ export type MutationCreateOpportunityOnChallengeArgs = {
 export type MutationUpdateChallengeArgs = {
   challengeData: ChallengeInput;
   challengeID: Scalars['Float'];
+};
+
+export type MutationRemoveChallengeArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationAddUserToChallengeArgs = {
@@ -1132,6 +1138,23 @@ export type CreateRelationMutationVariables = Exact<{
 
 export type CreateRelationMutation = { __typename?: 'Mutation' } & {
   createRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
+};
+
+export type RelationsListQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type RelationsListQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    relations?: Maybe<
+      Array<
+        { __typename?: 'Relation' } & Pick<
+          Relation,
+          'id' | 'type' | 'actorName' | 'actorType' | 'actorRole' | 'description'
+        >
+      >
+    >;
+  };
 };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
@@ -2552,6 +2575,50 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   CreateRelationMutation,
   CreateRelationMutationVariables
 >;
+export const RelationsListDocument = gql`
+  query relationsList($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        id
+        type
+        actorName
+        actorType
+        actorRole
+        description
+      }
+    }
+  }
+`;
+
+/**
+ * __useRelationsListQuery__
+ *
+ * To run a query within a React component, call `useRelationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRelationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRelationsListQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRelationsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
+) {
+  return Apollo.useQuery<RelationsListQuery, RelationsListQueryVariables>(RelationsListDocument, baseOptions);
+}
+export function useRelationsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
+) {
+  return Apollo.useLazyQuery<RelationsListQuery, RelationsListQueryVariables>(RelationsListDocument, baseOptions);
+}
+export type RelationsListQueryHookResult = ReturnType<typeof useRelationsListQuery>;
+export type RelationsListLazyQueryHookResult = ReturnType<typeof useRelationsListLazyQuery>;
+export type RelationsListQueryResult = Apollo.QueryResult<RelationsListQuery, RelationsListQueryVariables>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {

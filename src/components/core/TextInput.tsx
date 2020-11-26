@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import hexToRGBA from '../../utils/hexToRGBA';
 import Typography from './Typography';
 
 const useButtonStyles = createStyles(theme => ({
