@@ -12,6 +12,7 @@ import Typography from './Typography';
 interface HeaderProps {
   text?: string;
   svg?: React.ReactNode;
+  icon?: React.ReactNode;
   tagText?: string;
   className?: string;
   classes?: ClassProps;
@@ -30,13 +31,19 @@ const useHeaderStyles = createStyles(theme => ({
   },
 }));
 
-export const Header: FC<HeaderProps> = ({ text, svg, tagText, className, classes = {}, children }) => {
+export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, classes = {}, children }) => {
   const styles = useHeaderStyles(classes);
 
   return (
     <Typography as="h2" variant="h2" color="inherit" weight="bold" className={clsx(styles.header, className)}>
       {text || svg}
       {tagText && <Tag className={styles.tagOffset} text={tagText} />}
+      {icon && (
+        <>
+          <div className={'flex-grow-1'} />
+          {icon}
+        </>
+      )}
       {children && (
         <Col lg={4} md={6} xs={12}>
           {children}

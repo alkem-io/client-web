@@ -60,11 +60,6 @@ export const ActivityCard: FC = () => {
   );
 };
 
-interface Tag {
-  status: string;
-  text: string;
-}
-
 interface OpportunityCardProps extends Opportunity {
   url: string;
 }
