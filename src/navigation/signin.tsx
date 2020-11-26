@@ -7,10 +7,6 @@ import { useTransactionScope } from '../hooks/useSentry';
 import { SignIn as SignInPage } from '../pages/SignIn';
 import { error as logError } from '../sentry/log';
 
-interface SignInParams {
-  redirect?: string;
-}
-
 export const SignIn: FC = () => {
   useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();

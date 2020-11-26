@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUserProfileQuery, User } from '../generated/graphql';
+import { User, useUserProfileQuery } from '../generated/graphql';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;

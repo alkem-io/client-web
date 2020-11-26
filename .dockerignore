@@ -1,8 +1,9 @@
 **/.classpath
 **/.dockerignore
-**/.env
+**/.env*.local
 **/.git
 **/.gitignore
+**/.eslintcache
 **/.project
 **/.settings
 **/.toolstarget

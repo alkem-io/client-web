@@ -4,10 +4,6 @@ import { useTransactionScope } from '../hooks/useSentry';
 import { Restricted as RestrictedPage } from '../pages';
 import { info as logInfo } from '../sentry/log';
 
-interface RestrictedParams {
-  origin?: string;
-}
-
 export const Restricted: FC = () => {
   useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();
