@@ -196,13 +196,15 @@ const Opportunity: FC<OpportunityPageProps> = ({
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container className={'p-4'}>
-        <Row>
-          <Col md={12}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SubHeader text={tagline} className={styles.tagline} />
-            </Section>
-          </Col>
-        </Row>
+        {tagline && (
+          <Row>
+            <Col md={12}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SubHeader text={tagline} className={styles.tagline} />
+              </Section>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
