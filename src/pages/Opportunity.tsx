@@ -3,6 +3,7 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -41,6 +42,10 @@ const useStyles = createStyles(theme => ({
   },
   link: {
     color: theme.palette.background,
+  },
+  tagline: {
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
 }));
 
@@ -195,19 +200,26 @@ const Opportunity: FC<OpportunityPageProps> = ({
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container className={'p-4'}>
+        {tagline && (
+          <Row>
+            <Col md={12}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SubHeader text={tagline} className={styles.tagline} />
+              </Section>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Problem'} />
               <SubHeader text={background} />
-              <Body text={impact} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Solution'} />
-              <SubHeader text={tagline} />
-              <Body text={vision} />
+              <SectionHeader text={'Long term vision'} icon={<StopWatch />} />
+              <SubHeader text={vision} />
             </Section>
           </Col>
         </Row>
@@ -215,9 +227,18 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Who'} />
-              <Body text={who} />
+              <SubHeader text={who} />
             </Section>
           </Col>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Impact'} />
+              <SubHeader text={impact} />
+            </Section>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={6} />
           {!hideMeme && (
             <Col sm={12} md={6}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
