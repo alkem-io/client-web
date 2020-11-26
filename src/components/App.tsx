@@ -63,9 +63,7 @@ const App = ({ children }): React.ReactElement => {
               onSignIn={safeAuthenticate}
               onSignOut={safeUnauthenticate}
             />
-            {!user && (
-              <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small></Button>
-            )}
+            {!user && <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small />}
           </div>
         )}
       </Header>

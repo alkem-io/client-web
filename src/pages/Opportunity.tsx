@@ -3,6 +3,7 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
+import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -13,6 +14,7 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
+// import Tag from '../components/core/Tag';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
@@ -22,6 +24,7 @@ import { Opportunity as OpportunityType, Project, User } from '../generated/grap
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
+import { useUserContext } from '../hooks/useUserContext';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 
@@ -39,6 +42,10 @@ const useStyles = createStyles(theme => ({
   },
   link: {
     color: theme.palette.background,
+  },
+  tagline: {
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
 }));
 
@@ -63,6 +70,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
+  const { user } = useUserContext();
+  const userName = user?.user.name;
 
   // data
   const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
@@ -71,6 +80,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const meme = references?.find(x => x.name === 'meme');
 
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
+  const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
   // const team = relations[0];
   const stakeholders = useMemo(
@@ -190,19 +200,26 @@ const Opportunity: FC<OpportunityPageProps> = ({
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container className={'p-4'}>
+        {tagline && (
+          <Row>
+            <Col md={12}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SubHeader text={tagline} className={styles.tagline} />
+              </Section>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Problem'} />
               <SubHeader text={background} />
-              <Body text={impact} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Solution'} />
-              <SubHeader text={tagline} />
-              <Body text={vision} />
+              <SectionHeader text={'Long term vision'} icon={<StopWatch />} />
+              <SubHeader text={vision} />
             </Section>
           </Col>
         </Row>
@@ -210,9 +227,18 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={'Who'} />
-              <Body text={who} />
+              <SubHeader text={who} />
             </Section>
           </Col>
+          <Col sm={12} md={6}>
+            <Section hideAvatar hideDetails gutters={{ content: true }}>
+              <SectionHeader text={'Impact'} />
+              <SubHeader text={impact} />
+            </Section>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={6} />
           {!hideMeme && (
             <Col sm={12} md={6}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
@@ -258,7 +284,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
-          {isAuthenticated && (
+          {isAuthenticated && !isMemberOfOpportunity && (
             <Button
               text={'Interested in collaborating?'}
               onClick={() => setShowInterestModal(true)}
