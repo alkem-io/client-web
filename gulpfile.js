@@ -7,7 +7,9 @@ const CONFIG_TEXT = `window._env_ = `;
 const CONFIG_FILE_NAME = 'env-config.js';
 
 function buildConfiguration(cb) {
-  const initialConfig = dotenvFlow.config();
+  const initialConfig = dotenvFlow.config({
+    silent: true
+  });
   dotenvExpand(initialConfig);
 
   const env = process.env;
