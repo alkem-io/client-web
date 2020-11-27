@@ -6,12 +6,12 @@ export interface Path {
   real: boolean;
 }
 
-interface NavigationContext {
+interface NavigationContextProps {
   paths: Path[];
   set: (paths: Path[]) => void;
 }
 
-const NavigationContext = React.createContext<NavigationContext>({
+const NavigationContext = React.createContext<NavigationContextProps>({
   paths: [],
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   set: () => {},

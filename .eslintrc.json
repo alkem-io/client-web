@@ -10,15 +10,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["@typescript-eslint", "prettier", "react", "jest"],
-  "extends": [
-    "react-app",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:jest/recommended",
-    "prettier",
-    "prettier/react",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["react-app", "prettier", "prettier/react", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
   "env": {
     "browser": true,
     "es6": true,

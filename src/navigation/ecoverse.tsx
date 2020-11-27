@@ -26,12 +26,6 @@ import {
 import { Project } from './project';
 /*local files imports end*/
 
-interface EcoverseParameters {
-  ecoverseId: string;
-  challengeId: string;
-  opportunityId: string;
-}
-
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
   const { path, url } = useRouteMatch();

@@ -3,6 +3,7 @@
 **/.env*.local
 **/.git
 **/.gitignore
+**/.eslintcache
 **/.project
 **/.settings
 **/.toolstarget
