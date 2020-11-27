@@ -118,33 +118,48 @@ const useMatchedTermsStyles = createStyles(theme => ({
     maxHeight: `${theme.shape.spacing(9)}px`,
     overflow: 'hidden',
   },
+  title: {
+    marginTop: 5,
+    marginRight: 20,
+  },
   tag: {
     padding: '5px 10px',
     width: 'fit-content',
     borderRadius: 15,
     textTransform: 'uppercase',
-    backgroundColor: theme.palette.primary,
     marginRight: `${theme.shape.spacing(1)}px`,
     marginBottom: `${theme.shape.spacing(1)}px`,
+  },
+  primary: {
+    backgroundColor: theme.palette.primary,
+  },
+  light: {
+    backgroundColor: theme.palette.background,
+    border: `1px solid ${theme.palette.primary}`,
   },
 }));
 
 interface MatchedTermsProps {
   terms?: Array<string>;
+  variant?: 'primary' | 'light';
 }
 
-export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
+export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary' }) => {
   const styles = useMatchedTermsStyles();
 
   return (
     <div className={styles.tagsContainer}>
       {terms && terms.length > 0 && (
         <>
-          <Typography as={'span'} className={'mr-2'}>
+          <Typography as={'span'} color={variant === 'light' ? 'background' : 'primary'} className={styles.title}>
             Matched terms:{' '}
           </Typography>
           {terms?.map((t, index) => (
-            <Typography key={index} className={styles.tag} color={'background'}>
+            <Typography
+              key={index}
+              className={clsx(styles.tag, styles[variant])}
+              color={variant === 'light' ? 'primary' : 'background'}
+            >
               {t}
             </Typography>
           ))}
@@ -209,7 +224,6 @@ export interface CardProps extends Record<string, unknown> {
   popUp?: JSX.Element;
   bgText?: {
     text: string;
-    color: keyof Palette | 'inherit';
   };
 }
 
@@ -226,13 +240,15 @@ const useCardStyles = createStyles(theme => ({
     cursor: 'pointer',
   },
   cardBgText: {
-    fontSize: 42,
+    fontSize: 56,
     position: 'absolute',
-    bottom: -5,
-    right: -17,
+    bottom: 0,
+    right: -4,
     color: hexToRGBA(theme.palette.background, 0.3),
     textTransform: 'uppercase',
     letterSpacing: theme.shape.spacing(0.3),
+    fontWeight: 800,
+    lineHeight: `${theme.shape.spacing(4)}px`,
   },
 }));
 
@@ -269,11 +285,7 @@ const Card: FC<CardProps> = ({
             <div className="flex-grow-1" />
           </>
         )}
-        {bgText && (
-          <Typography weight={'bold'} className={styles.cardBgText} color={bgText.color}>
-            {bgText.text}
-          </Typography>
-        )}
+        {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}
         {children}
       </Body>
       {popUp && (

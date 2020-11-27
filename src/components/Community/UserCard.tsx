@@ -24,6 +24,9 @@ const userCardStyles = createStyles(theme => ({
     borderTopRightRadius: 15,
     overflow: 'hidden',
   },
+  bgText: {
+    color: hexToRGBA(theme.palette.neutral, 0.5),
+  },
 }));
 
 const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
@@ -38,6 +41,7 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   const groups = data?.memberof?.groups.map(g => g.name.toLowerCase());
   const role =
     (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
+  const avatar = data?.profile?.avatar;
 
   return (
     <Card
@@ -52,12 +56,13 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
           lineHeight: '36px',
         },
       }}
-      className={styles.card}
       tagProps={{ text: role }}
       matchedTerms={{ terms }}
       popUp={<UserPopUp terms={[...(terms || [])]} {...data} />}
+      bgText={{ text: 'user' }}
+      className={styles.card}
     >
-      <Avatar size="lg" src={data?.profile?.avatar} />
+      {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );
 };

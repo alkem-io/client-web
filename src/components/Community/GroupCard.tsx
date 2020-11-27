@@ -9,6 +9,10 @@ import { useGroupCardQuery, UserGroup } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 
+interface GroupCardProps extends UserGroup {
+  terms?: Array<string>;
+}
+
 const groupCardStyles = createStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
@@ -23,7 +27,7 @@ const groupCardStyles = createStyles(theme => ({
   },
 }));
 
-const GroupCardInner: FC<UserGroup> = ({ id }) => {
+const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
   const styles = groupCardStyles();
   const { data } = useGroupCardQuery({
     variables: {
@@ -32,6 +36,8 @@ const GroupCardInner: FC<UserGroup> = ({ id }) => {
   });
 
   const group = data?.group as UserGroup;
+  const avatar = group?.profile?.avatar;
+  console.log('group ---> ', group);
 
   const tag = (): string => {
     if (!group?.members || group?.members.length === 0) return 'no members';
@@ -58,9 +64,12 @@ const GroupCardInner: FC<UserGroup> = ({ id }) => {
       }}
       className={styles.card}
       tagProps={{ text: tag(), color: 'background', className: styles.tag }}
-      popUp={<GroupPopUp {...group} />}
-      bgText={{ text: 'group', color: 'background' }}
-    />
+      matchedTerms={{ terms, variant: 'light' }}
+      popUp={<GroupPopUp {...group} terms={[...(terms || [])]} />}
+      bgText={{ text: 'group' }}
+    >
+      {avatar && <Avatar size="lg" src={avatar} />}
+    </Card>
   );
 };
 
