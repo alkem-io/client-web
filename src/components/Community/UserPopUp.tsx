@@ -1,9 +1,7 @@
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
 import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { ReactComponent as CardText } from 'bootstrap-icons/icons/card-text.svg';
 import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
-import { ReactComponent as Bullseye } from 'bootstrap-icons/icons/bullseye.svg';
 import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
@@ -15,6 +13,22 @@ import { createStyles } from '../../hooks/useTheme';
 const useUserPopUpStyles = createStyles(theme => ({
   centeredText: {
     textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    marginRight: theme.shape.spacing(1),
+  },
+  table: {
+    '& > thead > tr > th': {
+      background: theme.palette.primary,
+      color: theme.palette.background,
+      textAlign: 'center',
+    },
+    '& td': {
+      padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
+    },
   },
 }));
 
@@ -55,26 +69,32 @@ const UserPopUp: FC<UserCardProps> = ({
           </div>
         </div>
 
-        <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'} className={styles.centeredText}>
-          General information
+        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+          <InfoCircle width={25} height={25} className={styles.icon} /> General
         </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'p'}>
-          Full name - {firstName} {lastName} {gender && `(${gender})`}
+        <Typography weight={'medium'} color={'neutral'} as={'span'}>
+          {firstName}{' '}
+        </Typography>
+        <Typography weight={'medium'} color={'neutral'} as={'span'}>
+          {lastName}{' '}
+        </Typography>
+        <Typography weight={'medium'} color={'neutral'} as={'span'}>
+          {gender && `(${gender})`}
         </Typography>
         {profile?.description && (
           <Typography weight={'medium'} color={'neutral'} as={'p'}>
-            Description - {profile.description}
+            {profile.description}
           </Typography>
         )}
 
         <Divider noPadding />
-        <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'} className={styles.centeredText}>
-          Member of
+        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+          <People width={30} height={30} className={styles.icon} /> Member of
         </Typography>
-        <Table striped bordered hover size="sm">
+        <Table striped bordered hover size="sm" className={styles.table}>
           <thead>
             <tr>
-              <th>Member of</th>
+              <th>Community</th>
               <th>List</th>
             </tr>
           </thead>
@@ -82,21 +102,19 @@ const UserPopUp: FC<UserCardProps> = ({
             {groups && groups.length > 0 && (
               <tr>
                 <td>
-                  <Typography weight={'medium'} as={'p'}>
+                  <Typography weight={'medium'} className={styles.centeredText}>
                     Groups
                   </Typography>
                 </td>
                 <td>
-                  <Typography weight={'medium'} as={'p'}>
-                    {getStringOfNames(groups)}
-                  </Typography>
+                  <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
                 </td>
               </tr>
             )}
             {challenges && challenges.length > 0 && (
               <tr>
                 <td>
-                  <Typography weight={'medium'} as={'p'}>
+                  <Typography weight={'medium'} className={styles.centeredText}>
                     Challenges
                   </Typography>
                 </td>
@@ -106,7 +124,7 @@ const UserPopUp: FC<UserCardProps> = ({
             {organisations && organisations.length > 0 && (
               <tr>
                 <td>
-                  <Typography weight={'medium'} as={'p'}>
+                  <Typography weight={'medium'} className={styles.centeredText}>
                     Organisations
                   </Typography>
                 </td>
@@ -117,6 +135,11 @@ const UserPopUp: FC<UserCardProps> = ({
         </Table>
 
         <Divider noPadding />
+
+        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+          <At width={30} height={30} className={styles.icon} />
+          Contact information
+        </Typography>
 
         <Typography weight={'medium'} as={'p'}>
           {email}
