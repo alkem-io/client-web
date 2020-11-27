@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
-import { Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
 import { User } from '../../generated/graphql';
 import { Tagset } from '../../models/User';
 import Tags from './Tags';
 import { createStyles } from '../../hooks/useTheme';
-import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import Divider from '../core/Divider';
 import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';

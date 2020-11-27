@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Breakpoints, Palette, Theme } from '../../context/ThemeProvider';
+import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Button from './Button';
