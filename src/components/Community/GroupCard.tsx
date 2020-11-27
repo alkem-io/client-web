@@ -29,16 +29,17 @@ const GroupCardInner: FC<UserGroup> = ({ id }) => {
     <Card
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.neutralMedium,
+          background: (theme: Theme) => theme.palette.primary,
         },
       }}
       primaryTextProps={{
         text: group?.name || '',
         classes: {
           lineHeight: '36px',
+          color: theme => theme.palette.background,
         },
       }}
-      tagProps={{ text: tag(), color: 'primary' }}
+      tagProps={{ text: tag(), color: 'background' }}
       popUp={<GroupPopUp {...group} />}
     >
       <Avatar size="lg" src={group?.profile?.avatar} theme={'light'} />

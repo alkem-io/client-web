@@ -7,13 +7,14 @@ import { agnosticFunctor } from '../../utils/functor';
 import Button from './Button';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 interface HeaderProps {
   text: string;
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
-  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative';
+  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative' | 'background';
   tooltip?: boolean;
 }
 
