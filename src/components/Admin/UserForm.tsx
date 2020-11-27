@@ -135,7 +135,7 @@ export const UserForm: FC<UserProps> = ({
         references: [...references],
         tagsets: [
           {
-            name: 'Science',
+            name: 'Skills',
             tags,
           },
         ],
