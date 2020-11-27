@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Breakpoints, Theme } from '../../context/ThemeProvider';
+import { Breakpoints, Palette, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Button from './Button';
@@ -207,6 +207,10 @@ export interface CardProps extends Record<string, unknown> {
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
   popUp?: JSX.Element;
+  bgText?: {
+    text: string;
+    color: keyof Palette | 'inherit';
+  };
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -216,9 +220,19 @@ const useCardStyles = createStyles(theme => ({
     width: '100%',
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
+    position: 'relative',
   },
   clickable: {
     cursor: 'pointer',
+  },
+  cardBgText: {
+    fontSize: 42,
+    position: 'absolute',
+    bottom: -5,
+    right: -17,
+    color: hexToRGBA(theme.palette.background, 0.3),
+    textTransform: 'uppercase',
+    letterSpacing: theme.shape.spacing(0.3),
   },
 }));
 
@@ -232,6 +246,7 @@ const Card: FC<CardProps> = ({
   classes = {},
   children,
   popUp,
+  bgText,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
@@ -253,6 +268,11 @@ const Card: FC<CardProps> = ({
             <MatchedTerms {...matchedTerms} />
             <div className="flex-grow-1" />
           </>
+        )}
+        {bgText && (
+          <Typography weight={'bold'} className={styles.cardBgText} color={bgText.color}>
+            {bgText.text}
+          </Typography>
         )}
         {children}
       </Body>

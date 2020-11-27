@@ -6,8 +6,25 @@ import GroupPopUp from './GroupPopUp';
 
 import { Theme } from '../../context/ThemeProvider';
 import { useGroupCardQuery, UserGroup } from '../../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
+
+const groupCardStyles = createStyles(theme => ({
+  card: {
+    transition: 'box-shadow 0.15s ease-in-out',
+    '&:hover': {
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+    },
+    borderTopRightRadius: 15,
+    overflow: 'hidden',
+  },
+  tag: {
+    borderTopRightRadius: 15,
+  },
+}));
 
 const GroupCardInner: FC<UserGroup> = ({ id }) => {
+  const styles = groupCardStyles();
   const { data } = useGroupCardQuery({
     variables: {
       id: Number(id),
@@ -39,11 +56,11 @@ const GroupCardInner: FC<UserGroup> = ({ id }) => {
           color: theme => theme.palette.background,
         },
       }}
-      tagProps={{ text: tag(), color: 'background' }}
+      className={styles.card}
+      tagProps={{ text: tag(), color: 'background', className: styles.tag }}
       popUp={<GroupPopUp {...group} />}
-    >
-      <Avatar size="lg" src={group?.profile?.avatar} theme={'light'} />
-    </Card>
+      bgText={{ text: 'group', color: 'background' }}
+    />
   );
 };
 
