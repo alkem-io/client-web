@@ -225,6 +225,10 @@ export interface CardProps extends Record<string, unknown> {
   bgText?: {
     text: string;
   };
+  level?: {
+    level: string;
+    name: string;
+  };
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -263,6 +267,7 @@ const Card: FC<CardProps> = ({
   children,
   popUp,
   bgText,
+  level,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
@@ -275,9 +280,13 @@ const Card: FC<CardProps> = ({
   return (
     <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
+
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
+
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
+        {level && <Typography color={'background'}>{`At ${level.name} ${level.level}`}</Typography>}
+
         <div className="flex-grow-1" />
         {matchedTerms && (
           <>

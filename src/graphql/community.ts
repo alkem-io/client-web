@@ -24,7 +24,23 @@ export const QUERY_GROUP_CARD = gql`
     group(ID: $id) {
       __typename
       name
+      parent {
+        __typename
+        ... on Challenge {
+          name
+        }
+        ... on Ecoverse {
+          name
+        }
+        ... on Opportunity {
+          name
+        }
+        ... on Organisation {
+          name
+        }
+      }
       members {
+        id
         name
       }
       profile {
@@ -36,6 +52,7 @@ export const QUERY_GROUP_CARD = gql`
         }
         tagsets {
           name
+          tags
         }
       }
     }

@@ -8,6 +8,7 @@ import { Theme } from '../../context/ThemeProvider';
 import { useGroupCardQuery, UserGroup } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
+import Typography from '../core/Typography';
 
 interface GroupCardProps extends UserGroup {
   terms?: Array<string>;
@@ -37,7 +38,10 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
 
   const group = data?.group as UserGroup;
   const avatar = group?.profile?.avatar;
-  console.log('group ---> ', group);
+  const level = group?.parent?.__typename || '';
+  const parentName = group?.parent?.name || '';
+
+  const defaultTags = group?.profile?.tagsets?.find(ts => ts.name === 'default')?.tags;
 
   const tag = (): string => {
     if (!group?.members || group?.members.length === 0) return 'no members';
@@ -62,12 +66,21 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
           color: theme => theme.palette.background,
         },
       }}
+      level={{ level, name: parentName }}
       className={styles.card}
       tagProps={{ text: tag(), color: 'background', className: styles.tag }}
       matchedTerms={{ terms, variant: 'light' }}
       popUp={<GroupPopUp {...group} terms={[...(terms || [])]} />}
       bgText={{ text: 'group' }}
     >
+      <Typography color={'background'}>
+        Default tags:{' '}
+        {defaultTags?.map(dt => (
+          <Typography color={'background'} as={'span'}>
+            {dt}
+          </Typography>
+        ))}
+      </Typography>
       {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );

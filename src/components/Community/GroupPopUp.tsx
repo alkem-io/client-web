@@ -8,6 +8,9 @@ import Tags from './Tags';
 import { createStyles } from '../../hooks/useTheme';
 import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import Divider from '../core/Divider';
+import shuffleCollection from '../../utils/shuffleCollection';
+import AvatarContainer from '../core/AvatarContainer';
+import { UserProvider } from '../../pages';
 
 const groupPopUpStyles = createStyles(theme => ({
   title: {
@@ -47,11 +50,6 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ name, members, profile, terms }) => {
             <Tags tags={tagList} />
           </div>
           <div className={'flex-grow-1'} />
-          <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>Members</Tooltip>}>
-            <Typography weight={'medium'} color={'neutral'} variant={'h5'}>
-              <People width={30} height={30} /> {members?.length}
-            </Typography>
-          </OverlayTrigger>
         </div>
 
         <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
@@ -59,6 +57,21 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ name, members, profile, terms }) => {
         </Typography>
 
         <Divider noPadding />
+
+        <UserProvider users={members} count={10}>
+          {populated => (
+            <AvatarContainer className="d-flex" title={'Active community members'}>
+              {shuffleCollection(populated).map((u, i) => (
+                <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.name} />
+              ))}
+              {members && members?.length - populated.length > 0 && (
+                <Typography variant="h3" as="h3" color="positive">
+                  {`... + ${members.length - populated.length} other members`}
+                </Typography>
+              )}
+            </AvatarContainer>
+          )}
+        </UserProvider>
 
         {profile?.references && profile?.references.length > 0 && (
           <>
