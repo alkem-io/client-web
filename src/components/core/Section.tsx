@@ -19,6 +19,9 @@ interface HeaderProps {
 }
 
 const useHeaderStyles = createStyles(theme => ({
+  container: {
+    display: 'flex',
+  },
   header: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -189,7 +192,7 @@ const Section: FC<SectionProps> = ({
 
   return (
     <Container disableGutters={!gutters.root} className={clsx(styles.root, className)}>
-      <div className={styles.cover}></div>
+      <div className={styles.cover} />
       <Row className={styles.row}>
         {!hideAvatar && (
           <Col xs={false} lg={3}>

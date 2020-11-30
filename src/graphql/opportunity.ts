@@ -74,3 +74,11 @@ export const QUERY_RELATIONS_LIST = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_OPPORTUNITY_CONTEXT = gql`
+  mutation updateOpportunityContext($opportunityID: Float!, $opportunityData: OpportunityInput!) {
+    updateOpportunity(ID: $opportunityID, opportunityData: $opportunityData) {
+      name
+    }
+  }
+`;

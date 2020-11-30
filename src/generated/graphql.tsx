@@ -176,7 +176,11 @@ export type UserGroup = {
   focalPoint?: Maybe<User>;
   /** The profile for the user group */
   profile?: Maybe<Profile>;
+  /** Containing entity for this UserGroup. */
+  parent?: Maybe<UserGroupParent>;
 };
+
+export type UserGroupParent = Ecoverse | Challenge | Opportunity | Organisation;
 
 export type Organisation = {
   __typename?: 'Organisation';
@@ -438,6 +442,8 @@ export type Mutation = {
   removeChallenge: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified challenge */
   addUserToChallenge: UserGroup;
+  /** Adds the user with the given identifier as a member of the specified opportunity */
+  addUserToOpportunity: UserGroup;
   /** Adds the specified organisation as a lead for the specified challenge */
   addChallengeLead: Scalars['Boolean'];
   /** Remove the specified organisation as a lead for the specified challenge */
@@ -458,8 +464,6 @@ export type Mutation = {
   createRelation: Relation;
   /** Creates a new user group for the opportunity with the given id */
   createGroupOnOpportunity: UserGroup;
-  /** Adds the user with the given identifier as a member of the specified opportunity */
-  addUserToOpportunity: UserGroup;
   /** Removes the aspect with the specified ID */
   removeAspect: Scalars['Boolean'];
   /** Updates the aspect with the specified ID */
@@ -496,6 +500,8 @@ export type Mutation = {
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
   removeUser: Scalars['Boolean'];
+  /** Updates the user account password */
+  updateUserAccountPassword: Scalars['Boolean'];
   /** Creates a new challenge and registers it with the ecoverse */
   createChallenge: Challenge;
   /** Creates a new organisation and registers it with the ecoverse */
@@ -581,6 +587,11 @@ export type MutationAddUserToChallengeArgs = {
   userID: Scalars['Float'];
 };
 
+export type MutationAddUserToOpportunityArgs = {
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
 export type MutationAddChallengeLeadArgs = {
   challengeID: Scalars['Float'];
   organisationID: Scalars['Float'];
@@ -628,11 +639,6 @@ export type MutationCreateRelationArgs = {
 export type MutationCreateGroupOnOpportunityArgs = {
   groupName: Scalars['String'];
   opportunityID: Scalars['Float'];
-};
-
-export type MutationAddUserToOpportunityArgs = {
-  opportunityID: Scalars['Float'];
-  userID: Scalars['Float'];
 };
 
 export type MutationRemoveAspectArgs = {
@@ -711,6 +717,11 @@ export type MutationCreateUserProfileArgs = {
 };
 
 export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
+export type MutationUpdateUserAccountPasswordArgs = {
+  newPassword: Scalars['String'];
   userID: Scalars['Float'];
 };
 
@@ -997,6 +1008,15 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type UpdateChallengeContextMutationVariables = Exact<{
+  challengeID: Scalars['Float'];
+  challengeData: ChallengeInput;
+}>;
+
+export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+};
+
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -1155,6 +1175,15 @@ export type RelationsListQuery = { __typename?: 'Query' } & {
       >
     >;
   };
+};
+
+export type UpdateOpportunityContextMutationVariables = Exact<{
+  opportunityID: Scalars['Float'];
+  opportunityData: OpportunityInput;
+}>;
+
+export type UpdateOpportunityContextMutation = { __typename?: 'Mutation' } & {
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
 };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
@@ -1498,7 +1527,7 @@ export const GroupMembersDocument = gql`
  * });
  */
 export function useGroupMembersQuery(
-  baseOptions?: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
 ) {
   return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
 }
@@ -1747,7 +1776,7 @@ export const ChallengeNameDocument = gql`
  * });
  */
 export function useChallengeNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeNameQuery, ChallengeNameQueryVariables>(ChallengeNameDocument, baseOptions);
 }
@@ -1787,7 +1816,7 @@ export const ChallengeGroupsDocument = gql`
  * });
  */
 export function useChallengeGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>(ChallengeGroupsDocument, baseOptions);
 }
@@ -1827,7 +1856,7 @@ export const ChallengeOpportunitiesDocument = gql`
  * });
  */
 export function useChallengeOpportunitiesQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>(
     ChallengeOpportunitiesDocument,
@@ -1876,7 +1905,7 @@ export const OpportunityGroupsDocument = gql`
  * });
  */
 export function useOpportunityGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>(
     OpportunityGroupsDocument,
@@ -1919,7 +1948,7 @@ export const OpportunityNameDocument = gql`
  * });
  */
 export function useOpportunityNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityNameQuery, OpportunityNameQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityNameQuery, OpportunityNameQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityNameQuery, OpportunityNameQueryVariables>(OpportunityNameDocument, baseOptions);
 }
@@ -1998,7 +2027,7 @@ export const ChallengeProfileDocument = gql`
  * });
  */
 export function useChallengeProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
 }
@@ -2013,6 +2042,50 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const UpdateChallengeContextDocument = gql`
+  mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
+    updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      name
+    }
+  }
+`;
+export type UpdateChallengeContextMutationFn = Apollo.MutationFunction<
+  UpdateChallengeContextMutation,
+  UpdateChallengeContextMutationVariables
+>;
+
+/**
+ * __useUpdateChallengeContextMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeContextMutation, { data, loading, error }] = useUpdateChallengeContextMutation({
+ *   variables: {
+ *      challengeID: // value for 'challengeID'
+ *      challengeData: // value for 'challengeData'
+ *   },
+ * });
+ */
+export function useUpdateChallengeContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>
+) {
+  return Apollo.useMutation<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>(
+    UpdateChallengeContextDocument,
+    baseOptions
+  );
+}
+export type UpdateChallengeContextMutationHookResult = ReturnType<typeof useUpdateChallengeContextMutation>;
+export type UpdateChallengeContextMutationResult = Apollo.MutationResult<UpdateChallengeContextMutation>;
+export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChallengeContextMutation,
+  UpdateChallengeContextMutationVariables
+>;
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -2048,7 +2121,7 @@ export const SearchDocument = gql`
  *   },
  * });
  */
-export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
   return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
 }
 export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
@@ -2096,7 +2169,7 @@ export const GroupCardDocument = gql`
  *   },
  * });
  */
-export function useGroupCardQuery(baseOptions?: Apollo.QueryHookOptions<GroupCardQuery, GroupCardQueryVariables>) {
+export function useGroupCardQuery(baseOptions: Apollo.QueryHookOptions<GroupCardQuery, GroupCardQueryVariables>) {
   return Apollo.useQuery<GroupCardQuery, GroupCardQueryVariables>(GroupCardDocument, baseOptions);
 }
 export function useGroupCardLazyQuery(
@@ -2513,7 +2586,7 @@ export const OpportunityProfileDocument = gql`
  * });
  */
 export function useOpportunityProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
     OpportunityProfileDocument,
@@ -2607,7 +2680,7 @@ export const RelationsListDocument = gql`
  * });
  */
 export function useRelationsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
 ) {
   return Apollo.useQuery<RelationsListQuery, RelationsListQueryVariables>(RelationsListDocument, baseOptions);
 }
@@ -2619,6 +2692,50 @@ export function useRelationsListLazyQuery(
 export type RelationsListQueryHookResult = ReturnType<typeof useRelationsListQuery>;
 export type RelationsListLazyQueryHookResult = ReturnType<typeof useRelationsListLazyQuery>;
 export type RelationsListQueryResult = Apollo.QueryResult<RelationsListQuery, RelationsListQueryVariables>;
+export const UpdateOpportunityContextDocument = gql`
+  mutation updateOpportunityContext($opportunityID: Float!, $opportunityData: OpportunityInput!) {
+    updateOpportunity(ID: $opportunityID, opportunityData: $opportunityData) {
+      name
+    }
+  }
+`;
+export type UpdateOpportunityContextMutationFn = Apollo.MutationFunction<
+  UpdateOpportunityContextMutation,
+  UpdateOpportunityContextMutationVariables
+>;
+
+/**
+ * __useUpdateOpportunityContextMutation__
+ *
+ * To run a mutation, you first call `useUpdateOpportunityContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOpportunityContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOpportunityContextMutation, { data, loading, error }] = useUpdateOpportunityContextMutation({
+ *   variables: {
+ *      opportunityID: // value for 'opportunityID'
+ *      opportunityData: // value for 'opportunityData'
+ *   },
+ * });
+ */
+export function useUpdateOpportunityContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>(
+    UpdateOpportunityContextDocument,
+    baseOptions
+  );
+}
+export type UpdateOpportunityContextMutationHookResult = ReturnType<typeof useUpdateOpportunityContextMutation>;
+export type UpdateOpportunityContextMutationResult = Apollo.MutationResult<UpdateOpportunityContextMutation>;
+export type UpdateOpportunityContextMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOpportunityContextMutation,
+  UpdateOpportunityContextMutationVariables
+>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {
@@ -2645,7 +2762,7 @@ export const ProjectProfileDocument = gql`
  * });
  */
 export function useProjectProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<ProjectProfileQuery, ProjectProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ProjectProfileQuery, ProjectProfileQueryVariables>
 ) {
   return Apollo.useQuery<ProjectProfileQuery, ProjectProfileQueryVariables>(ProjectProfileDocument, baseOptions);
 }
@@ -2756,7 +2873,7 @@ export const UserDocument = gql`
  *   },
  * });
  */
-export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
   return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
 }
 export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
@@ -2828,7 +2945,7 @@ export const ChallengeUserIdsDocument = gql`
  * });
  */
 export function useChallengeUserIdsQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>(ChallengeUserIdsDocument, baseOptions);
 }
@@ -2872,7 +2989,7 @@ export const OpportunityUserIdsDocument = gql`
  * });
  */
 export function useOpportunityUserIdsQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
     OpportunityUserIdsDocument,
@@ -2919,9 +3036,7 @@ export const UserAvatarsDocument = gql`
  *   },
  * });
  */
-export function useUserAvatarsQuery(
-  baseOptions?: Apollo.QueryHookOptions<UserAvatarsQuery, UserAvatarsQueryVariables>
-) {
+export function useUserAvatarsQuery(baseOptions: Apollo.QueryHookOptions<UserAvatarsQuery, UserAvatarsQueryVariables>) {
   return Apollo.useQuery<UserAvatarsQuery, UserAvatarsQueryVariables>(UserAvatarsDocument, baseOptions);
 }
 export function useUserAvatarsLazyQuery(
@@ -3009,7 +3124,7 @@ export const UserCardDataDocument = gql`
  * });
  */
 export function useUserCardDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<UserCardDataQuery, UserCardDataQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<UserCardDataQuery, UserCardDataQueryVariables>
 ) {
   return Apollo.useQuery<UserCardDataQuery, UserCardDataQueryVariables>(UserCardDataDocument, baseOptions);
 }

@@ -49,3 +49,11 @@ export const QUERY_CHALLENGE_PROFILE = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_CHALLENGE_CONTEXT = gql`
+  mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
+    updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      name
+    }
+  }
+`;
