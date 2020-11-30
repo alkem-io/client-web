@@ -176,7 +176,11 @@ export type UserGroup = {
   focalPoint?: Maybe<User>;
   /** The profile for the user group */
   profile?: Maybe<Profile>;
+  /** Containing entity for this UserGroup. */
+  parent?: Maybe<UserGroupParent>;
 };
+
+export type UserGroupParent = Ecoverse | Challenge | Opportunity | Organisation;
 
 export type Organisation = {
   __typename?: 'Organisation';
@@ -438,6 +442,8 @@ export type Mutation = {
   removeChallenge: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified challenge */
   addUserToChallenge: UserGroup;
+  /** Adds the user with the given identifier as a member of the specified opportunity */
+  addUserToOpportunity: UserGroup;
   /** Adds the specified organisation as a lead for the specified challenge */
   addChallengeLead: Scalars['Boolean'];
   /** Remove the specified organisation as a lead for the specified challenge */
@@ -458,8 +464,6 @@ export type Mutation = {
   createRelation: Relation;
   /** Creates a new user group for the opportunity with the given id */
   createGroupOnOpportunity: UserGroup;
-  /** Adds the user with the given identifier as a member of the specified opportunity */
-  addUserToOpportunity: UserGroup;
   /** Removes the aspect with the specified ID */
   removeAspect: Scalars['Boolean'];
   /** Updates the aspect with the specified ID */
@@ -496,6 +500,8 @@ export type Mutation = {
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
   removeUser: Scalars['Boolean'];
+  /** Updates the user account password */
+  updateUserAccountPassword: Scalars['Boolean'];
   /** Creates a new challenge and registers it with the ecoverse */
   createChallenge: Challenge;
   /** Creates a new organisation and registers it with the ecoverse */
@@ -581,6 +587,11 @@ export type MutationAddUserToChallengeArgs = {
   userID: Scalars['Float'];
 };
 
+export type MutationAddUserToOpportunityArgs = {
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
 export type MutationAddChallengeLeadArgs = {
   challengeID: Scalars['Float'];
   organisationID: Scalars['Float'];
@@ -628,11 +639,6 @@ export type MutationCreateRelationArgs = {
 export type MutationCreateGroupOnOpportunityArgs = {
   groupName: Scalars['String'];
   opportunityID: Scalars['Float'];
-};
-
-export type MutationAddUserToOpportunityArgs = {
-  opportunityID: Scalars['Float'];
-  userID: Scalars['Float'];
 };
 
 export type MutationRemoveAspectArgs = {
@@ -711,6 +717,11 @@ export type MutationCreateUserProfileArgs = {
 };
 
 export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
+export type MutationUpdateUserAccountPasswordArgs = {
+  newPassword: Scalars['String'];
   userID: Scalars['Float'];
 };
 
@@ -1018,11 +1029,17 @@ export type GroupCardQueryVariables = Exact<{
 
 export type GroupCardQuery = { __typename?: 'Query' } & {
   group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+      parent?: Maybe<
+        | ({ __typename: 'Ecoverse' } & Pick<Ecoverse, 'name'>)
+        | ({ __typename: 'Challenge' } & Pick<Challenge, 'name'>)
+        | ({ __typename: 'Opportunity' } & Pick<Opportunity, 'name'>)
+        | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
+      >;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
       profile?: Maybe<
         { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
           }
       >;
     };
@@ -1246,7 +1263,11 @@ export type UserAvatarsQueryVariables = Exact<{
 }>;
 
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
-  usersById: Array<{ __typename?: 'User' } & { profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>> }>;
+  usersById: Array<
+    { __typename?: 'User' } & Pick<User, 'name'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+      }
+  >;
 };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
@@ -1498,7 +1519,7 @@ export const GroupMembersDocument = gql`
  * });
  */
 export function useGroupMembersQuery(
-  baseOptions?: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>
 ) {
   return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, baseOptions);
 }
@@ -1747,7 +1768,7 @@ export const ChallengeNameDocument = gql`
  * });
  */
 export function useChallengeNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeNameQuery, ChallengeNameQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeNameQuery, ChallengeNameQueryVariables>(ChallengeNameDocument, baseOptions);
 }
@@ -1787,7 +1808,7 @@ export const ChallengeGroupsDocument = gql`
  * });
  */
 export function useChallengeGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>(ChallengeGroupsDocument, baseOptions);
 }
@@ -1827,7 +1848,7 @@ export const ChallengeOpportunitiesDocument = gql`
  * });
  */
 export function useChallengeOpportunitiesQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeOpportunitiesQuery, ChallengeOpportunitiesQueryVariables>(
     ChallengeOpportunitiesDocument,
@@ -1876,7 +1897,7 @@ export const OpportunityGroupsDocument = gql`
  * });
  */
 export function useOpportunityGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>(
     OpportunityGroupsDocument,
@@ -1919,7 +1940,7 @@ export const OpportunityNameDocument = gql`
  * });
  */
 export function useOpportunityNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityNameQuery, OpportunityNameQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityNameQuery, OpportunityNameQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityNameQuery, OpportunityNameQueryVariables>(OpportunityNameDocument, baseOptions);
 }
@@ -1998,7 +2019,7 @@ export const ChallengeProfileDocument = gql`
  * });
  */
 export function useChallengeProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeProfileQuery, ChallengeProfileQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeProfileQuery, ChallengeProfileQueryVariables>(ChallengeProfileDocument, baseOptions);
 }
@@ -2048,7 +2069,7 @@ export const SearchDocument = gql`
  *   },
  * });
  */
-export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
   return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, baseOptions);
 }
 export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
@@ -2062,7 +2083,23 @@ export const GroupCardDocument = gql`
     group(ID: $id) {
       __typename
       name
+      parent {
+        __typename
+        ... on Challenge {
+          name
+        }
+        ... on Ecoverse {
+          name
+        }
+        ... on Opportunity {
+          name
+        }
+        ... on Organisation {
+          name
+        }
+      }
       members {
+        id
         name
       }
       profile {
@@ -2074,6 +2111,7 @@ export const GroupCardDocument = gql`
         }
         tagsets {
           name
+          tags
         }
       }
     }
@@ -2096,7 +2134,7 @@ export const GroupCardDocument = gql`
  *   },
  * });
  */
-export function useGroupCardQuery(baseOptions?: Apollo.QueryHookOptions<GroupCardQuery, GroupCardQueryVariables>) {
+export function useGroupCardQuery(baseOptions: Apollo.QueryHookOptions<GroupCardQuery, GroupCardQueryVariables>) {
   return Apollo.useQuery<GroupCardQuery, GroupCardQueryVariables>(GroupCardDocument, baseOptions);
 }
 export function useGroupCardLazyQuery(
@@ -2513,7 +2551,7 @@ export const OpportunityProfileDocument = gql`
  * });
  */
 export function useOpportunityProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityProfileQuery, OpportunityProfileQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityProfileQuery, OpportunityProfileQueryVariables>(
     OpportunityProfileDocument,
@@ -2607,7 +2645,7 @@ export const RelationsListDocument = gql`
  * });
  */
 export function useRelationsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<RelationsListQuery, RelationsListQueryVariables>
 ) {
   return Apollo.useQuery<RelationsListQuery, RelationsListQueryVariables>(RelationsListDocument, baseOptions);
 }
@@ -2645,7 +2683,7 @@ export const ProjectProfileDocument = gql`
  * });
  */
 export function useProjectProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<ProjectProfileQuery, ProjectProfileQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ProjectProfileQuery, ProjectProfileQueryVariables>
 ) {
   return Apollo.useQuery<ProjectProfileQuery, ProjectProfileQueryVariables>(ProjectProfileDocument, baseOptions);
 }
@@ -2756,7 +2794,7 @@ export const UserDocument = gql`
  *   },
  * });
  */
-export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
   return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
 }
 export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
@@ -2828,7 +2866,7 @@ export const ChallengeUserIdsDocument = gql`
  * });
  */
 export function useChallengeUserIdsQuery(
-  baseOptions?: Apollo.QueryHookOptions<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>
 ) {
   return Apollo.useQuery<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>(ChallengeUserIdsDocument, baseOptions);
 }
@@ -2872,7 +2910,7 @@ export const OpportunityUserIdsDocument = gql`
  * });
  */
 export function useOpportunityUserIdsQuery(
-  baseOptions?: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>
 ) {
   return Apollo.useQuery<OpportunityUserIdsQuery, OpportunityUserIdsQueryVariables>(
     OpportunityUserIdsDocument,
@@ -2896,6 +2934,7 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      name
       profile {
         avatar
       }
@@ -2919,9 +2958,7 @@ export const UserAvatarsDocument = gql`
  *   },
  * });
  */
-export function useUserAvatarsQuery(
-  baseOptions?: Apollo.QueryHookOptions<UserAvatarsQuery, UserAvatarsQueryVariables>
-) {
+export function useUserAvatarsQuery(baseOptions: Apollo.QueryHookOptions<UserAvatarsQuery, UserAvatarsQueryVariables>) {
   return Apollo.useQuery<UserAvatarsQuery, UserAvatarsQueryVariables>(UserAvatarsDocument, baseOptions);
 }
 export function useUserAvatarsLazyQuery(
@@ -3009,7 +3046,7 @@ export const UserCardDataDocument = gql`
  * });
  */
 export function useUserCardDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<UserCardDataQuery, UserCardDataQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<UserCardDataQuery, UserCardDataQueryVariables>
 ) {
   return Apollo.useQuery<UserCardDataQuery, UserCardDataQueryVariables>(UserCardDataDocument, baseOptions);
 }

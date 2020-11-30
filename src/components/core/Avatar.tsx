@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Typography from './Typography';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
@@ -62,9 +63,10 @@ interface AvatarProps {
   classes?: unknown;
   size?: 'md' | 'sm' | 'lg';
   theme?: 'light' | 'dark';
+  name?: string;
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark' }) => {
+const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark', name }) => {
   const styles = useAvatarStyles(classes);
   const [fallback, setFallback] = useState(false);
 
@@ -77,7 +79,17 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
           </Typography>
         </div>
       )}
-      {src && !fallback && (
+      {src && !fallback && name && (
+        <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
+          <img
+            className={clsx(styles.avatar, size, className)}
+            src={src}
+            alt="user"
+            onError={() => setFallback(true)}
+          />
+        </OverlayTrigger>
+      )}
+      {src && !fallback && !name && (
         <img className={clsx(styles.avatar, size, className)} src={src} alt="user" onError={() => setFallback(true)} />
       )}
     </div>
