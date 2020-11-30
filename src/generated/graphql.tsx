@@ -1128,6 +1128,13 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           }
       >;
+      groups?: Maybe<
+        Array<
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+            }
+        >
+      >;
       relations?: Maybe<
         Array<
           { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
@@ -2503,6 +2510,12 @@ export const OpportunityProfileDocument = gql`
         references {
           name
           uri
+        }
+      }
+      groups {
+        name
+        members {
+          name
         }
       }
       relations {

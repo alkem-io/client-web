@@ -23,6 +23,12 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
           uri
         }
       }
+      groups {
+        name
+        members {
+          name
+        }
+      }
       relations {
         actorRole
         actorName
