@@ -273,6 +273,7 @@ const Card: FC<CardProps> = ({
   const styles = useCardStyles(classes);
 
   const [isModalShown, setIsModalShown] = useState<boolean>(false);
+  const isEcoverseLevel = level?.level === 'Ecoverse';
 
   const handleShow = () => popUp && !isModalShown && setIsModalShown(true);
   const handleClose = () => popUp && setIsModalShown(false);
@@ -285,7 +286,12 @@ const Card: FC<CardProps> = ({
         {tagProps && <CardTag {...tagProps} />}
 
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
-        {level && <Typography color={'background'}>{`At ${level.name} ${level.level}`}</Typography>}
+        {level && (
+          <Typography color={'background'}>
+            {!isEcoverseLevel && `${level.level}: `}
+            {`${level.name} `}
+          </Typography>
+        )}
 
         <div className="flex-grow-1" />
         {matchedTerms && (

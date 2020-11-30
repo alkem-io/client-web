@@ -73,14 +73,16 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
       popUp={<GroupPopUp {...group} terms={[...(terms || [])]} />}
       bgText={{ text: 'group' }}
     >
-      <Typography color={'background'}>
-        Default tags:{' '}
-        {defaultTags?.map(dt => (
-          <Typography color={'background'} as={'span'}>
-            {dt}
-          </Typography>
-        ))}
-      </Typography>
+      {defaultTags && defaultTags.length > 0 && (
+        <Typography color={'background'}>
+          Tags:{' '}
+          {defaultTags?.map(dt => (
+            <Typography color={'background'} as={'span'}>
+              {dt}
+            </Typography>
+          ))}
+        </Typography>
+      )}
       {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );
