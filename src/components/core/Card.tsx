@@ -7,13 +7,14 @@ import { agnosticFunctor } from '../../utils/functor';
 import Button from './Button';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 interface HeaderProps {
   text: string;
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
-  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative';
+  color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative' | 'background';
   tooltip?: boolean;
 }
 
@@ -117,33 +118,48 @@ const useMatchedTermsStyles = createStyles(theme => ({
     maxHeight: `${theme.shape.spacing(9)}px`,
     overflow: 'hidden',
   },
+  title: {
+    marginTop: 5,
+    marginRight: 20,
+  },
   tag: {
     padding: '5px 10px',
     width: 'fit-content',
     borderRadius: 15,
     textTransform: 'uppercase',
-    backgroundColor: theme.palette.primary,
     marginRight: `${theme.shape.spacing(1)}px`,
     marginBottom: `${theme.shape.spacing(1)}px`,
+  },
+  primary: {
+    backgroundColor: theme.palette.primary,
+  },
+  light: {
+    backgroundColor: theme.palette.background,
+    border: `1px solid ${theme.palette.primary}`,
   },
 }));
 
 interface MatchedTermsProps {
   terms?: Array<string>;
+  variant?: 'primary' | 'light';
 }
 
-export const MatchedTerms: FC<MatchedTermsProps> = ({ terms }) => {
+export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary' }) => {
   const styles = useMatchedTermsStyles();
 
   return (
     <div className={styles.tagsContainer}>
       {terms && terms.length > 0 && (
         <>
-          <Typography as={'span'} className={'mr-2'}>
+          <Typography as={'span'} color={variant === 'light' ? 'background' : 'primary'} className={styles.title}>
             Matched terms:{' '}
           </Typography>
           {terms?.map((t, index) => (
-            <Typography key={index} className={styles.tag} color={'background'}>
+            <Typography
+              key={index}
+              className={clsx(styles.tag, styles[variant])}
+              color={variant === 'light' ? 'primary' : 'background'}
+            >
               {t}
             </Typography>
           ))}
@@ -206,6 +222,13 @@ export interface CardProps extends Record<string, unknown> {
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
   popUp?: JSX.Element;
+  bgText?: {
+    text: string;
+  };
+  level?: {
+    level: string;
+    name: string;
+  };
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -215,9 +238,21 @@ const useCardStyles = createStyles(theme => ({
     width: '100%',
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
+    position: 'relative',
   },
   clickable: {
     cursor: 'pointer',
+  },
+  cardBgText: {
+    fontSize: 56,
+    position: 'absolute',
+    bottom: 0,
+    right: -4,
+    color: hexToRGBA(theme.palette.background, 0.3),
+    textTransform: 'uppercase',
+    letterSpacing: theme.shape.spacing(0.3),
+    fontWeight: 800,
+    lineHeight: `${theme.shape.spacing(4)}px`,
   },
 }));
 
@@ -231,11 +266,14 @@ const Card: FC<CardProps> = ({
   classes = {},
   children,
   popUp,
+  bgText,
+  level,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
 
   const [isModalShown, setIsModalShown] = useState<boolean>(false);
+  const isEcoverseLevel = level?.level === 'Ecoverse';
 
   const handleShow = () => popUp && !isModalShown && setIsModalShown(true);
   const handleClose = () => popUp && setIsModalShown(false);
@@ -243,9 +281,18 @@ const Card: FC<CardProps> = ({
   return (
     <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
+
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
+
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
+        {level && (
+          <Typography color={'background'}>
+            {!isEcoverseLevel && `${level.level}: `}
+            {`${level.name} `}
+          </Typography>
+        )}
+
         <div className="flex-grow-1" />
         {matchedTerms && (
           <>
@@ -253,6 +300,7 @@ const Card: FC<CardProps> = ({
             <div className="flex-grow-1" />
           </>
         )}
+        {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}
         {children}
       </Body>
       {popUp && (

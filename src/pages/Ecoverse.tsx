@@ -242,7 +242,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
                 <>
                   <AvatarContainer className="d-flex" title={'Active community members'}>
                     {shuffleCollection(populated).map((u, i) => (
-                      <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
+                      <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.name} />
                     ))}
                   </AvatarContainer>
                   <div style={{ flexBasis: '100%' }} />

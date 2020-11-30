@@ -53,7 +53,15 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         .reduce((acc, curr) => {
           return [...acc, { score: curr.score, ...curr.result, terms: curr.terms }];
         }, [])
-        .sort((a, b) => a.scrore > b.score);
+        .sort((a, b) => {
+          if (a.score > b.score) {
+            return -1;
+          }
+          if (a.score < b.score) {
+            return 1;
+          }
+          return 0;
+        });
       setCommunity(updatedCommunity);
     },
     onError: error => console.log('searched error ---> ', error),
