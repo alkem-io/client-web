@@ -107,7 +107,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>
       <Modal.Header closeButton>
-        <Modal.Title>Store password</Modal.Title>
+        <Modal.Title>Edit context</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Formik
