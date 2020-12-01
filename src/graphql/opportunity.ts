@@ -80,3 +80,11 @@ export const QUERY_RELATIONS_LIST = gql`
     }
   }
 `;
+
+export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
+  mutation addUserToOpportunity($opportunityID: Float!, $userID: Float!) {
+    addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
+      name
+    }
+  }
+`;
