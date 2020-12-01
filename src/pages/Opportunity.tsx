@@ -83,7 +83,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const userName = user?.user.name;
 
   // data
-  const { name, aspects, projects = [], relations = [], actorGroups, context, id } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups, context, groups, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
@@ -108,6 +108,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
+  const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
 
   const activitySummary = useMemo(() => {
     return [
@@ -120,6 +121,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
         name: 'Interests',
         digit: interestsCount,
         color: 'primary',
+      },
+      {
+        name: 'Members',
+        digit: membersCount,
+        color: 'neutralMedium',
       },
     ];
   }, [projects, users]);

@@ -7,12 +7,30 @@ import UserPopUp from './UserPopUp';
 
 import roles from '../../configs/roles.json';
 import { User, useUserCardDataQuery } from '../../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;
 }
 
+const userCardStyles = createStyles(theme => ({
+  card: {
+    transition: 'box-shadow 0.15s ease-in-out',
+    '&:hover': {
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+    },
+    border: `1px solid ${hexToRGBA(theme.palette.primary, 0.3)}`,
+    borderTopRightRadius: 15,
+    overflow: 'hidden',
+  },
+  bgText: {
+    color: hexToRGBA(theme.palette.neutral, 0.5),
+  },
+}));
+
 const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
+  const styles = userCardStyles();
   const { data: userData } = useUserCardDataQuery({
     variables: {
       ids: [id],
@@ -20,11 +38,10 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   });
 
   const data = userData?.usersById[0] as User;
-
   const groups = data?.memberof?.groups.map(g => g.name.toLowerCase());
-
   const role =
     (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
+  const avatar = data?.profile?.avatar;
 
   return (
     <Card
@@ -41,9 +58,11 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
       }}
       tagProps={{ text: role }}
       matchedTerms={{ terms }}
-      popUp={<UserPopUp terms={[...(terms || []), 'skills', 'keywords']} {...data} />}
+      popUp={<UserPopUp terms={[...(terms || [])]} {...data} />}
+      bgText={{ text: 'user' }}
+      className={styles.card}
     >
-      <Avatar size="lg" src={data?.profile?.avatar} />
+      {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );
 };

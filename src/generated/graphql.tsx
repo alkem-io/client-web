@@ -1038,11 +1038,17 @@ export type GroupCardQueryVariables = Exact<{
 
 export type GroupCardQuery = { __typename?: 'Query' } & {
   group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+      parent?: Maybe<
+        | ({ __typename: 'Ecoverse' } & Pick<Ecoverse, 'name'>)
+        | ({ __typename: 'Challenge' } & Pick<Challenge, 'name'>)
+        | ({ __typename: 'Opportunity' } & Pick<Opportunity, 'name'>)
+        | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
+      >;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
       profile?: Maybe<
         { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name'>>>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
           }
       >;
     };
@@ -1130,6 +1136,13 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           }
+      >;
+      groups?: Maybe<
+        Array<
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+            }
+        >
       >;
       relations?: Maybe<
         Array<
@@ -1275,7 +1288,11 @@ export type UserAvatarsQueryVariables = Exact<{
 }>;
 
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
-  usersById: Array<{ __typename?: 'User' } & { profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>> }>;
+  usersById: Array<
+    { __typename?: 'User' } & Pick<User, 'name'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+      }
+  >;
 };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
@@ -2135,7 +2152,23 @@ export const GroupCardDocument = gql`
     group(ID: $id) {
       __typename
       name
+      parent {
+        __typename
+        ... on Challenge {
+          name
+        }
+        ... on Ecoverse {
+          name
+        }
+        ... on Opportunity {
+          name
+        }
+        ... on Organisation {
+          name
+        }
+      }
       members {
+        id
         name
       }
       profile {
@@ -2147,6 +2180,7 @@ export const GroupCardDocument = gql`
         }
         tagsets {
           name
+          tags
         }
       }
     }
@@ -2538,6 +2572,12 @@ export const OpportunityProfileDocument = gql`
         references {
           name
           uri
+        }
+      }
+      groups {
+        name
+        members {
+          name
         }
       }
       relations {
@@ -3013,6 +3053,7 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      name
       profile {
         avatar
       }
