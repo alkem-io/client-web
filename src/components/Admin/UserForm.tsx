@@ -135,7 +135,7 @@ export const UserForm: FC<UserProps> = ({
         references: [...references],
         tagsets: [
           {
-            name: 'Science',
+            name: 'Skills',
             tags,
           },
         ],
@@ -272,7 +272,7 @@ export const UserForm: FC<UserProps> = ({
                   <Form.Row>{getInputField('Groups', groups, 'groups', false, true)}</Form.Row>
                 )}
                 {editMode !== EditMode.new && (
-                  <Form.Row>{getInputField('Challenges', userSkills, 'challenges', false, true)}</Form.Row>
+                  <Form.Row>{getInputField('Challenges', challenges, 'challenges', false, true)}</Form.Row>
                 )}
 
                 <FieldArray name={'references'}>

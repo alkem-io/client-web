@@ -96,6 +96,7 @@ export const QUERY_OPPORTUNITY_USER_IDS = gql`
 export const QUERY_USER_AVATARS = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      name
       profile {
         avatar
       }

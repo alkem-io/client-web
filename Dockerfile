@@ -32,8 +32,8 @@ COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 COPY ./.env.deployment/env.sh .
+COPY --from=builder /app/.env.deployment/.env.base .
 RUN chmod +x env.sh
-COPY ./.env.deployment/.env.base .
 
 EXPOSE 80
 CMD ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]

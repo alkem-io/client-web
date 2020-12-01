@@ -27,5 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 public/*config.js
 
+.env.deployment/.env.base
 # eslint
 .eslintcache
