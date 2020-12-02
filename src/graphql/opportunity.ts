@@ -88,3 +88,10 @@ export const MUTATION_UPDATE_OPPORTUNITY_CONTEXT = gql`
     }
   }
 `;
+export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
+  mutation addUserToOpportunity($opportunityID: Float!, $userID: Float!) {
+    addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
+      name
+    }
+  }
+`;
