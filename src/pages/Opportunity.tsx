@@ -4,9 +4,10 @@ import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import ActivityCard from '../components/ActivityPanel';
 import Button from '../components/core/Button';
 import Container, { CardContainer } from '../components/core/Container';
@@ -20,13 +21,14 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import { Opportunity as OpportunityType, Project, User } from '../generated/graphql';
+import { ContextInput, Opportunity as OpportunityType, Project, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
+import ContextEdit from '../components/ContextEdit';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -46,6 +48,11 @@ const useStyles = createStyles(theme => ({
   tagline: {
     fontStyle: 'italic',
     textAlign: 'center',
+  },
+  edit: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -67,6 +74,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
+  const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
+
   const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
   const projectRef = useRef<HTMLDivElement>(null);
@@ -170,13 +179,32 @@ const Opportunity: FC<OpportunityPageProps> = ({
         }
       >
         <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex flex-column flex-grow-1">
+          <div className="d-flex align-items-center flex-grow-1">
             <SectionHeader
               text={name}
               className={clsx('flex-grow-1', styles.title)}
               classes={{
                 color: (theme: Theme) => theme.palette.neutralLight,
               }}
+            />
+            <OverlayTrigger
+              placement={'bottom'}
+              overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
+            >
+              <Edit
+                color={'white'}
+                width={20}
+                height={20}
+                className={styles.edit}
+                onClick={() => setIsEditOpened(true)}
+              />
+            </OverlayTrigger>
+            <ContextEdit
+              variant={'opportunity'}
+              show={isEditOpened}
+              onHide={() => setIsEditOpened(false)}
+              data={opportunity.context as ContextInput}
+              id={id}
             />
           </div>
           <div className="flex-row">
