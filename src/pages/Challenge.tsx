@@ -2,7 +2,7 @@ import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
@@ -17,7 +17,7 @@ import Typography from '../components/core/Typography';
 import { community, projects as projectTexts } from '../components/core/Typography.dummy.json';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import { Theme } from '../context/ThemeProvider';
-import { Challenge as ChallengeType, Organisation, User } from '../generated/graphql';
+import { Challenge as ChallengeType, ContextInput, Organisation, User } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
@@ -26,6 +26,8 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../hooks/useTheme';
 import clsx from 'clsx';
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+import ContextEdit from '../components/ContextEdit';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -104,6 +106,11 @@ const useChallengeStyles = createStyles(theme => ({
       color: theme.palette.background,
     },
   },
+  edit: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 }));
 
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
@@ -111,9 +118,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const history = useHistory();
   const styles = useChallengeStyles();
 
+  const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
+
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations } = challenge;
+  const { name, context, opportunities, leadOrganisations, id } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
@@ -191,13 +200,33 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         }}
       >
         <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex flex-column flex-grow-1">
+          <div className="d-flex align-items-center flex-grow-1">
             <SectionHeader
               text={name}
               className="flex-grow-1"
               classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
             />
+            <OverlayTrigger
+              placement={'bottom'}
+              overlay={<Tooltip id={'Edit challenge context'}>Edit challenge context</Tooltip>}
+            >
+              <Edit
+                color={'white'}
+                width={20}
+                height={20}
+                className={styles.edit}
+                onClick={() => setIsEditOpened(true)}
+              />
+            </OverlayTrigger>
+            <ContextEdit
+              variant={'challenge'}
+              show={isEditOpened}
+              onHide={() => setIsEditOpened(false)}
+              data={challenge.context as ContextInput}
+              id={id}
+            />
           </div>
+
           <div>
             <Button
               inset
@@ -275,7 +304,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
         <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
-        <Body text={'Manage your projects and suggest new ones to your stakeholders.'}></Body>
+        <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
       </Section>
       <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
         {challengeProjects.map(({ type, ...rest }, i) => {

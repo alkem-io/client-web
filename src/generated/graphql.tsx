@@ -720,11 +720,6 @@ export type MutationRemoveUserArgs = {
   userID: Scalars['Float'];
 };
 
-export type MutationUpdateUserAccountPasswordArgs = {
-  newPassword: Scalars['String'];
-  userID: Scalars['Float'];
-};
-
 export type MutationCreateChallengeArgs = {
   challengeData: ChallengeInput;
 };
@@ -1008,6 +1003,36 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type UpdateChallengeContextMutationVariables = Exact<{
+  challengeID: Scalars['Float'];
+  challengeData: ChallengeInput;
+}>;
+
+export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+};
+
+export type AddUserToChallengeMutationVariables = Exact<{
+  challengeID: Scalars['Float'];
+  userID: Scalars['Float'];
+}>;
+
+export type AddUserToChallengeMutation = { __typename?: 'Mutation' } & {
+  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+};
+
+export type ChallengeMembersQueryVariables = Exact<{
+  challengeID: Scalars['Float'];
+}>;
+
+export type ChallengeMembersQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & {
+    contributors?: Maybe<
+      Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
+    >;
+  };
+};
+
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -1179,6 +1204,24 @@ export type RelationsListQuery = { __typename?: 'Query' } & {
       >
     >;
   };
+};
+
+export type UpdateOpportunityContextMutationVariables = Exact<{
+  opportunityID: Scalars['Float'];
+  opportunityData: OpportunityInput;
+}>;
+
+export type UpdateOpportunityContextMutation = { __typename?: 'Mutation' } & {
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+};
+
+export type AddUserToOpportunityMutationVariables = Exact<{
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+}>;
+
+export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
+  addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
 };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
@@ -2041,6 +2084,140 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const UpdateChallengeContextDocument = gql`
+  mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
+    updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      name
+    }
+  }
+`;
+export type UpdateChallengeContextMutationFn = Apollo.MutationFunction<
+  UpdateChallengeContextMutation,
+  UpdateChallengeContextMutationVariables
+>;
+
+/**
+ * __useUpdateChallengeContextMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeContextMutation, { data, loading, error }] = useUpdateChallengeContextMutation({
+ *   variables: {
+ *      challengeID: // value for 'challengeID'
+ *      challengeData: // value for 'challengeData'
+ *   },
+ * });
+ */
+export function useUpdateChallengeContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>
+) {
+  return Apollo.useMutation<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>(
+    UpdateChallengeContextDocument,
+    baseOptions
+  );
+}
+export type UpdateChallengeContextMutationHookResult = ReturnType<typeof useUpdateChallengeContextMutation>;
+export type UpdateChallengeContextMutationResult = Apollo.MutationResult<UpdateChallengeContextMutation>;
+export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChallengeContextMutation,
+  UpdateChallengeContextMutationVariables
+>;
+export const AddUserToChallengeDocument = gql`
+  mutation addUserToChallenge($challengeID: Float!, $userID: Float!) {
+    addUserToChallenge(challengeID: $challengeID, userID: $userID) {
+      name
+    }
+  }
+`;
+export type AddUserToChallengeMutationFn = Apollo.MutationFunction<
+  AddUserToChallengeMutation,
+  AddUserToChallengeMutationVariables
+>;
+
+/**
+ * __useAddUserToChallengeMutation__
+ *
+ * To run a mutation, you first call `useAddUserToChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToChallengeMutation, { data, loading, error }] = useAddUserToChallengeMutation({
+ *   variables: {
+ *      challengeID: // value for 'challengeID'
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useAddUserToChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddUserToChallengeMutation, AddUserToChallengeMutationVariables>
+) {
+  return Apollo.useMutation<AddUserToChallengeMutation, AddUserToChallengeMutationVariables>(
+    AddUserToChallengeDocument,
+    baseOptions
+  );
+}
+export type AddUserToChallengeMutationHookResult = ReturnType<typeof useAddUserToChallengeMutation>;
+export type AddUserToChallengeMutationResult = Apollo.MutationResult<AddUserToChallengeMutation>;
+export type AddUserToChallengeMutationOptions = Apollo.BaseMutationOptions<
+  AddUserToChallengeMutation,
+  AddUserToChallengeMutationVariables
+>;
+export const ChallengeMembersDocument = gql`
+  query challengeMembers($challengeID: Float!) {
+    challenge(ID: $challengeID) {
+      contributors {
+        id
+        name
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeMembersQuery__
+ *
+ * To run a query within a React component, call `useChallengeMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeMembersQuery({
+ *   variables: {
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useChallengeMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<ChallengeMembersQuery, ChallengeMembersQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeMembersQuery, ChallengeMembersQueryVariables>(ChallengeMembersDocument, baseOptions);
+}
+export function useChallengeMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeMembersQuery, ChallengeMembersQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeMembersQuery, ChallengeMembersQueryVariables>(
+    ChallengeMembersDocument,
+    baseOptions
+  );
+}
+export type ChallengeMembersQueryHookResult = ReturnType<typeof useChallengeMembersQuery>;
+export type ChallengeMembersLazyQueryHookResult = ReturnType<typeof useChallengeMembersLazyQuery>;
+export type ChallengeMembersQueryResult = Apollo.QueryResult<ChallengeMembersQuery, ChallengeMembersQueryVariables>;
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -2670,6 +2847,94 @@ export function useRelationsListLazyQuery(
 export type RelationsListQueryHookResult = ReturnType<typeof useRelationsListQuery>;
 export type RelationsListLazyQueryHookResult = ReturnType<typeof useRelationsListLazyQuery>;
 export type RelationsListQueryResult = Apollo.QueryResult<RelationsListQuery, RelationsListQueryVariables>;
+export const UpdateOpportunityContextDocument = gql`
+  mutation updateOpportunityContext($opportunityID: Float!, $opportunityData: OpportunityInput!) {
+    updateOpportunity(ID: $opportunityID, opportunityData: $opportunityData) {
+      name
+    }
+  }
+`;
+export type UpdateOpportunityContextMutationFn = Apollo.MutationFunction<
+  UpdateOpportunityContextMutation,
+  UpdateOpportunityContextMutationVariables
+>;
+
+/**
+ * __useUpdateOpportunityContextMutation__
+ *
+ * To run a mutation, you first call `useUpdateOpportunityContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOpportunityContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOpportunityContextMutation, { data, loading, error }] = useUpdateOpportunityContextMutation({
+ *   variables: {
+ *      opportunityID: // value for 'opportunityID'
+ *      opportunityData: // value for 'opportunityData'
+ *   },
+ * });
+ */
+export function useUpdateOpportunityContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>(
+    UpdateOpportunityContextDocument,
+    baseOptions
+  );
+}
+export type UpdateOpportunityContextMutationHookResult = ReturnType<typeof useUpdateOpportunityContextMutation>;
+export type UpdateOpportunityContextMutationResult = Apollo.MutationResult<UpdateOpportunityContextMutation>;
+export type UpdateOpportunityContextMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOpportunityContextMutation,
+  UpdateOpportunityContextMutationVariables
+>;
+export const AddUserToOpportunityDocument = gql`
+  mutation addUserToOpportunity($opportunityID: Float!, $userID: Float!) {
+    addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
+      name
+    }
+  }
+`;
+export type AddUserToOpportunityMutationFn = Apollo.MutationFunction<
+  AddUserToOpportunityMutation,
+  AddUserToOpportunityMutationVariables
+>;
+
+/**
+ * __useAddUserToOpportunityMutation__
+ *
+ * To run a mutation, you first call `useAddUserToOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToOpportunityMutation, { data, loading, error }] = useAddUserToOpportunityMutation({
+ *   variables: {
+ *      opportunityID: // value for 'opportunityID'
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useAddUserToOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddUserToOpportunityMutation, AddUserToOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<AddUserToOpportunityMutation, AddUserToOpportunityMutationVariables>(
+    AddUserToOpportunityDocument,
+    baseOptions
+  );
+}
+export type AddUserToOpportunityMutationHookResult = ReturnType<typeof useAddUserToOpportunityMutation>;
+export type AddUserToOpportunityMutationResult = Apollo.MutationResult<AddUserToOpportunityMutation>;
+export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  AddUserToOpportunityMutation,
+  AddUserToOpportunityMutationVariables
+>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {

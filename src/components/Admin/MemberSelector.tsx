@@ -1,17 +1,41 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Button, FormControl, InputGroup, Table } from 'react-bootstrap';
-import { useUsersQuery } from '../../generated/graphql';
+import { useChallengeMembersLazyQuery, useUsersLazyQuery } from '../../generated/graphql';
 import Loading from '../core/Loading';
+import { useParams } from 'react-router-dom';
 
 interface UserListProps {
   existingMembersIds: string[];
   onUserAdd?: (id: string) => void;
 }
 
-export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onUserAdd }) => {
-  const { data, loading } = useUsersQuery();
+interface Parameters {
+  groupId: string;
+  challengeId: string;
+  opportunityId: string;
+}
 
-  const unusedMembers = data?.users.filter(u => !existingMembersIds.includes(u.id)) || [];
+export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onUserAdd }) => {
+  const { challengeId, opportunityId } = useParams<Parameters>();
+
+  const [getAllUsers, { data: users, loading }] = useUsersLazyQuery();
+  const [getChallengeMembers, { data: opportunityMembers }] = useChallengeMembersLazyQuery({
+    variables: { challengeID: Number(challengeId) },
+  });
+
+  const members = users?.users || opportunityMembers?.challenge.contributors;
+
+  const getMembers = () => {
+    if (opportunityId) {
+      getChallengeMembers();
+    } else getAllUsers();
+  };
+
+  useEffect(() => {
+    getMembers();
+  }, [existingMembersIds]);
+
+  const unusedMembers = members?.filter(u => !existingMembersIds.includes(u.id)) || [];
   const [filterBy, setFilterBy] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
