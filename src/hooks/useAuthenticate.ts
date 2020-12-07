@@ -67,7 +67,7 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  // await context.graphqlClient?.resetStore();
+  await context.graphqlClient?.resetStore();
 };
 
 export const useAuthenticate = () => {
