@@ -20,12 +20,12 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      await context.resetStore();
+      // await context.graphqlClient?.resetStore();
       dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
-    await context.resetStore();
+    // await context.graphqlClient?.resetStore();
     dispatch(updateStatus('done'));
   }
 
@@ -39,7 +39,7 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
 
   if (!userName && !targetAccount) {
     dispatch(updateStatus());
-    await context.resetStore();
+    // await context.graphqlClient?.resetStore();
     dispatch(updateToken(null));
     return;
   }
@@ -48,7 +48,7 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
 
   if (result) {
     dispatch(updateToken(result));
-    await context.resetStore();
+    // await context.graphqlClient?.resetStore();
     dispatch(updateStatus('done'));
   }
 
@@ -67,7 +67,7 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.resetStore();
+  // await context.graphqlClient?.resetStore();
 };
 
 export const useAuthenticate = () => {

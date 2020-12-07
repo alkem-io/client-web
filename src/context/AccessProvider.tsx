@@ -15,7 +15,7 @@ const AccessProvider: FC = ({ children }) => {
   const { loading: authenticationLoading } = useAuthentication();
 
   useEffect(() => {
-    safeRefresh();
+    // safeRefresh();
   }, []);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const AccessProvider: FC = ({ children }) => {
     (e: StorageEvent) => {
       if (e.key === TOKEN_STORAGE_KEY) {
         if (e.newValue === null && e.newValue !== e.oldValue) {
-          if (status === 'done') safeRefresh();
+          // if (status === 'done') safeRefresh();
         }
       }
     },

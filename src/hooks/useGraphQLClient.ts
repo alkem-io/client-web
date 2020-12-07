@@ -1,30 +1,72 @@
-import { ApolloLink, createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
+import {
+  ApolloLink,
+  createHttpLink,
+  from,
+  fromPromise,
+  InMemoryCache,
+  NormalizedCacheObject,
+  Operation,
+} from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { stat } from 'fs';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
 import { pushError } from '../reducers/error/actions';
+import { useAuthenticate } from './useAuthenticate';
 import { TOKEN_STORAGE_KEY } from './useAuthentication';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const dispatch = useDispatch();
+  const { safeRefresh, status } = useAuthenticate();
   let token: string | null;
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
     let errors: Error[] = [];
 
     if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        switch (err?.extensions?.code) {
+          case 'UNAUTHENTICATED':
+            // Token Expired
+            // Not Authorized ... do not refresh
+            // error code is set to UNAUTHENTICATED
+            // when AuthenticationError thrown in resolver
+            if (status === 'done') {
+              return fromPromise(
+                safeRefresh()
+                  .then(result => {
+                    // Store the new tokens for your auth link
+                    if (result) {
+                      return result.accessToken;
+                    }
+                  })
+                  .catch(error => {
+                    // Handle token refresh errors e.g clear stored tokens, redirect to login, ...
+                    return;
+                  })
+              )
+                .filter(value => Boolean(value))
+                .flatMap(() => {
+                  // retry the request, returning the new observable
+                  return forward(operation);
+                });
+            }
+        }
+      }
+
       errors = graphQLErrors.reduce<Error[]>((acc, { message, extensions }) => {
         const newMessage = `${message}`;
 
         const code = extensions && extensions['code'];
         if (code === 'UNAUTHENTICATED') {
           // TODO [ATS]: Capter correct error and request refresh when token has expired. dispatch(updateStatus('refreshRequested'));
+
           return acc;
         }
 
@@ -43,12 +85,21 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       console.error(newMessage);
       // errors.push(new Error(newMessage));
     }
+
     errors.forEach(e => dispatch(pushError(e)));
   });
 
-  const authLink = setContext((_, { headers }) => {
+  const authLink = setContext(async (_, { headers }) => {
     if (!token) {
       token = localStorage.getItem(TOKEN_STORAGE_KEY);
+    }
+    if (!token) {
+      if (!status) {
+        const result = await safeRefresh();
+        if (result) {
+          token = result.accessToken;
+        }
+      }
     }
 
     if (!token) return headers;

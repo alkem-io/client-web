@@ -1,5 +1,5 @@
 import { ApolloProvider } from '@apollo/client';
-import React, { FC } from 'react';
+import React, { Children, FC } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
@@ -73,12 +73,10 @@ const Root: FC = () => {
 };
 
 const ReduxRoot: FC = () => {
-  const client = useGraphQLClient(graphQLEndpoint);
-
   return (
     <ConfigProvider apiUrl={graphQLEndpoint}>
-      <ApolloProvider client={client}>
-        <AuthenticationProvider>
+      <AuthenticationProvider>
+        <CTApolloProvidere>
           <AccessProvider>
             <ThemeProvider>
               <NavigationProvider>
@@ -92,10 +90,16 @@ const ReduxRoot: FC = () => {
               </NavigationProvider>
             </ThemeProvider>
           </AccessProvider>
-        </AuthenticationProvider>
-      </ApolloProvider>
+        </CTApolloProvidere>
+      </AuthenticationProvider>
     </ConfigProvider>
   );
+};
+
+const CTApolloProvidere: FC = ({ children }) => {
+  const client = useGraphQLClient(graphQLEndpoint);
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
 export default Root;
