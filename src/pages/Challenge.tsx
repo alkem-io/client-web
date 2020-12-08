@@ -28,6 +28,7 @@ import { createStyles } from '../hooks/useTheme';
 import clsx from 'clsx';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import ContextEdit from '../components/ContextEdit';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -115,6 +116,7 @@ const useChallengeStyles = createStyles(theme => ({
 
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { url } = useRouteMatch();
+  const { isAuthenticated } = useAuthenticate();
   const history = useHistory();
   const styles = useChallengeStyles();
 
@@ -307,12 +309,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <SubHeader text={'Changing the world one project at a time'} />
           <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
         </Section>
-        <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-          {challengeProjects.map(({ type, ...rest }, i) => {
-            const Component = SwitchCardComponent({ type });
-            return <Component {...rest} key={i} />;
-          })}
-        </CardContainer>
+        {isAuthenticated && (
+          <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+            {challengeProjects.map(({ type, ...rest }, i) => {
+              const Component = SwitchCardComponent({ type });
+              return <Component {...rest} key={i} />;
+            })}
+          </CardContainer>
+        )}
       </AuthenticationBackdrop>
       <Divider />
     </>
