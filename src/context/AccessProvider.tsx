@@ -11,26 +11,18 @@ const AccessContext = React.createContext<AccessContextResult>({
 });
 
 const AccessProvider: FC = ({ children }) => {
-  const { safeRefresh, status, isAuthenticated } = useAuthenticate();
+  const { safeRefresh, status } = useAuthenticate();
   const { loading: authenticationLoading } = useAuthentication();
 
   useEffect(() => {
-    // safeRefresh();
+    safeRefresh();
   }, []);
-
-  useEffect(() => {
-    let timerId = -1;
-    if (isAuthenticated) timerId = window.setInterval(safeRefresh, 30 * 60 * 1000);
-    return () => {
-      window.clearInterval(timerId);
-    };
-  }, [safeRefresh, isAuthenticated]);
 
   const handleStorageChange = useCallback(
     (e: StorageEvent) => {
       if (e.key === TOKEN_STORAGE_KEY) {
         if (e.newValue === null && e.newValue !== e.oldValue) {
-          // if (status === 'done') safeRefresh();
+          if (status === 'done') safeRefresh();
         }
       }
     },

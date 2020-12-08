@@ -32,14 +32,19 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
   return result;
 };
 
-const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>, userName?: string) => {
+const refresh = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  userName?: string,
+  keepStorage?: boolean
+) => {
   dispatch(updateStatus('refreshing'));
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
   if (!userName && !targetAccount) {
     dispatch(updateStatus());
-    // await context.graphqlClient?.resetStore();
+    !keepStorage && (await context.graphqlClient?.resetStore());
     dispatch(updateToken(null));
     return;
   }
@@ -48,7 +53,7 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
 
   if (result) {
     dispatch(updateToken(result));
-    // await context.graphqlClient?.resetStore();
+    !keepStorage && (await context.graphqlClient?.resetStore());
     dispatch(updateStatus('done'));
   }
 
@@ -78,9 +83,12 @@ export const useAuthenticate = () => {
     return authenticate(context, dispatch);
   }, [context]);
 
-  const refreshWired = useCallback(() => {
-    return refresh(context, dispatch);
-  }, [context]);
+  const refreshWired = useCallback(
+    (keepStorage: boolean = false) => {
+      return refresh(context, dispatch, undefined, keepStorage);
+    },
+    [context]
+  );
 
   const unauthenticateWired = useCallback(() => {
     return unauthenticate(context, dispatch);
@@ -96,13 +104,25 @@ export const useAuthenticate = () => {
     }
   }, [authenticateWired, dispatch]);
 
-  const safeRefresh = useCallback(() => {
-    return refreshWired().catch(err => {
-      const error = new Error(err);
-      logError(error, scope => scope.setTag('authentication', 'refresh-token'));
-      dispatch(pushError(error));
-    });
-  }, [refreshWired, dispatch]);
+  const safeRefresh = useCallback(
+    (keepStorage: boolean = false) => {
+      return refreshWired(keepStorage)
+        .then(data => {
+          if (!data) {
+            dispatch(updateStatus('unauthenticated'));
+            return;
+          }
+          dispatch(updateToken(data));
+          return data;
+        })
+        .catch(err => {
+          const error = new Error(err);
+          logError(error, scope => scope.setTag('authentication', 'refresh-token'));
+          dispatch(pushError(error));
+        });
+    },
+    [refreshWired, dispatch]
+  );
 
   const safeUnauthenticate = useCallback(() => {
     try {

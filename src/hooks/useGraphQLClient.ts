@@ -18,13 +18,33 @@ import { typePolicies } from '../graphql/cache/typePolicies';
 import { pushError } from '../reducers/error/actions';
 import { useAuthenticate } from './useAuthenticate';
 import { TOKEN_STORAGE_KEY } from './useAuthentication';
+import { updateStatus } from '../reducers/auth/actions';
+import { useCallback, useEffect } from 'react';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const dispatch = useDispatch();
-  const { safeRefresh, status } = useAuthenticate();
+  const { safeRefresh, status, isAuthenticated } = useAuthenticate();
   let token: string | null;
+
+  const handleStorageChange = useCallback(
+    (e: StorageEvent) => {
+      if (e.key === TOKEN_STORAGE_KEY) {
+        if (e.newValue === null && e.newValue !== e.oldValue) {
+          // if (status === 'done') safeRefresh();
+        }
+      }
+    },
+    [safeRefresh, status]
+  );
+
+  useEffect(() => {
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [handleStorageChange]);
 
   const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
     let errors: Error[] = [];
@@ -33,27 +53,22 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case 'UNAUTHENTICATED':
-            // Token Expired
-            // Not Authorized ... do not refresh
-            // error code is set to UNAUTHENTICATED
-            // when AuthenticationError thrown in resolver
             if (status === 'done') {
               return fromPromise(
                 safeRefresh()
                   .then(result => {
-                    // Store the new tokens for your auth link
+                    dispatch(updateStatus('done'));
                     if (result) {
                       return result.accessToken;
                     }
                   })
-                  .catch(error => {
-                    // Handle token refresh errors e.g clear stored tokens, redirect to login, ...
+                  .catch(e => {
+                    console.error(e);
                     return;
                   })
               )
                 .filter(value => Boolean(value))
                 .flatMap(() => {
-                  // retry the request, returning the new observable
                   return forward(operation);
                 });
             }
@@ -64,11 +79,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         const newMessage = `${message}`;
 
         const code = extensions && extensions['code'];
-        if (code === 'UNAUTHENTICATED') {
-          // TODO [ATS]: Capter correct error and request refresh when token has expired. dispatch(updateStatus('refreshRequested'));
-
-          return acc;
-        }
+        if (code === 'UNAUTHENTICATED') return acc;
 
         acc.push(new Error(newMessage));
         return acc;
@@ -83,7 +94,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
       console.error(newMessage);
-      // errors.push(new Error(newMessage));
+      errors.push(new Error(newMessage));
     }
 
     errors.forEach(e => dispatch(pushError(e)));
@@ -93,16 +104,19 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (!token) {
       token = localStorage.getItem(TOKEN_STORAGE_KEY);
     }
+
     if (!token) {
-      if (!status) {
-        const result = await safeRefresh();
-        if (result) {
-          token = result.accessToken;
-        }
+      if (!status && localStorage.length !== 0) {
+        console.log('localStorage.length ---> ', localStorage.length);
+        // const result = await safeRefresh();
+        // if (result) {
+        //   token = result.accessToken;
+        // } else dispatch(updateStatus('unauthenticated'));
       }
     }
 
     if (!token) return headers;
+
     return {
       headers: {
         ...headers,
