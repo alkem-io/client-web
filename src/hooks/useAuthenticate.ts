@@ -43,7 +43,7 @@ const refresh = async (
   const targetAccount = accounts[0];
 
   if (!userName && !targetAccount) {
-    dispatch(updateStatus());
+    dispatch(updateStatus('unauthenticated'));
     !keepStorage && (await context.graphqlClient?.resetStore());
     dispatch(updateToken(null));
     return;

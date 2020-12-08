@@ -76,7 +76,7 @@ const ReduxRoot: FC = () => {
   return (
     <ConfigProvider apiUrl={graphQLEndpoint}>
       <AuthenticationProvider>
-        <CTApolloProvidere>
+        <CTApolloProvider>
           <AccessProvider>
             <ThemeProvider>
               <NavigationProvider>
@@ -90,13 +90,13 @@ const ReduxRoot: FC = () => {
               </NavigationProvider>
             </ThemeProvider>
           </AccessProvider>
-        </CTApolloProvidere>
+        </CTApolloProvider>
       </AuthenticationProvider>
     </ConfigProvider>
   );
 };
 
-const CTApolloProvidere: FC = ({ children }) => {
+const CTApolloProvider: FC = ({ children }) => {
   const client = useGraphQLClient(graphQLEndpoint);
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
