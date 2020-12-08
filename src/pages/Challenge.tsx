@@ -259,7 +259,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         <Body text={background}>{video && <Button text="See more" as={'a'} href={video.uri} target="_blank" />}</Body>
       </Section>
       <Divider />
-      <AuthenticationBackdrop>
+      <AuthenticationBackdrop blockName={'community'}>
         <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
           <SectionHeader text={community.header} />
           <SubHeader text={community.subheader} />
@@ -286,7 +286,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         </Section>
       </AuthenticationBackdrop>
       <Divider />
-      <div ref={opportunityRef}></div>
+      <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
         <SectionHeader text="OPPORTUNITIES" />
         <SubHeader text="Potential solutions for this challenge" />
@@ -301,17 +301,19 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         </CardContainer>
       )}
       <Divider />
-      <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
-        <SubHeader text={'Changing the world one project at a time'} />
-        <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
-      </Section>
-      <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-        {challengeProjects.map(({ type, ...rest }, i) => {
-          const Component = SwitchCardComponent({ type });
-          return <Component {...rest} key={i} />;
-        })}
-      </CardContainer>
+      <AuthenticationBackdrop blockName={'projects'}>
+        <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+          <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
+          <SubHeader text={'Changing the world one project at a time'} />
+          <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
+        </Section>
+        <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+          {challengeProjects.map(({ type, ...rest }, i) => {
+            const Component = SwitchCardComponent({ type });
+            return <Component {...rest} key={i} />;
+          })}
+        </CardContainer>
+      </AuthenticationBackdrop>
       <Divider />
     </>
   );

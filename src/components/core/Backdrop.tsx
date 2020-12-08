@@ -5,7 +5,6 @@ const useMainStyles = createStyles(theme => ({
   backdrop: {
     backgroundColor: theme.palette.background,
     opacity: 0.5,
-    display: 'flex',
     filter: `blur(${theme.shape.spacing(0.5)}px)`,
     '-webkit-filter': `blur(${theme.shape.spacing(0.5)}px)`,
     '-moz-filter': `blur(${theme.shape.spacing(0.5)}px)`,
