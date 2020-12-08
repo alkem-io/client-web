@@ -36,6 +36,10 @@ const useContextEditStyles = createStyles(theme => ({
       flexGrow: 1,
     },
   },
+  body: {
+    maxHeight: 600,
+    overflow: 'auto',
+  },
 }));
 
 const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
@@ -104,12 +108,14 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
     }
   };
 
+  let submitWired;
+
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>
       <Modal.Header closeButton>
         <Modal.Title>Edit context</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className={styles.body}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -127,6 +133,10 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
                 className={styles.field}
               />
             );
+
+            if (!submitWired) {
+              submitWired = handleSubmit;
+            }
 
             return (
               <>
@@ -190,20 +200,21 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
                   )}
                 </FieldArray>
                 <Divider />
-                <div className={styles.row}>
-                  <Button variant="negative" onClick={onHide}>
-                    CANCEL
-                  </Button>
-                  <div className={'flex-grow-1'} />
-                  <Button type={'submit'} variant="primary" onClick={() => handleSubmit()}>
-                    EDIT
-                  </Button>
-                </div>
+                <div className={styles.row}></div>
               </>
             );
           }}
         </Formik>
       </Modal.Body>
+      <Modal.Footer>
+        <Button variant="negative" onClick={onHide}>
+          CANCEL
+        </Button>
+        <div className={'flex-grow-1'} />
+        <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
+          SAVE
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };
