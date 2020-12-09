@@ -14,9 +14,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = []
   const { user, loading: userLoading } = useUserContext();
   const { isAuthenticated } = useAuthenticate();
 
-  const loading = userLoading;
-
-  if (loading) {
+  if (userLoading) {
     return <Loading text="Loading user configuration" />;
   }
 
