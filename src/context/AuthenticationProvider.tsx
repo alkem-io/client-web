@@ -1,8 +1,10 @@
+import { ApolloClient } from '@apollo/client';
 import React, { FC } from 'react';
 import { useAuthentication, UseAuthenticationResult } from '../hooks';
 
 export interface AuthContext extends UseAuthenticationResult {
   loading: boolean;
+  graphqlClient?: ApolloClient<any>;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
@@ -10,19 +12,23 @@ const AuthenticationContext = React.createContext<AuthContext>({
   signIn: () => Promise.resolve(undefined),
   signOut: () => Promise.resolve(undefined),
   acquireToken: () => Promise.resolve(undefined),
-  getAccounts: () => [],
-  resetCache: () => Promise.resolve(null),
-  resetStore: () => Promise.resolve(null),
+  getAccounts: () => {
+    console.error('Context not initialized');
+    return [];
+  },
+  // resetCache: () => Promise.resolve(null),
+  // resetStore: () => Promise.resolve(null),
+  graphqlClient: undefined,
 });
 
-const AuthenticationProvider: FC<{}> = ({ children }) => {
+const AuthenticationProvider: FC<{ client?: ApolloClient<any> }> = ({ children, client }) => {
   const {
     signIn,
     signOut,
     acquireToken,
     getAccounts,
-    resetCache,
-    resetStore,
+    // resetCache,
+    // resetStore,
     loading: authenticationLoading,
   } = useAuthentication();
 
@@ -37,9 +43,10 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
         signOut,
         acquireToken,
         getAccounts,
-        resetCache,
-        resetStore,
+        // resetCache,
+        // resetStore,
         loading,
+        graphqlClient: client,
       }}
     >
       {children}
