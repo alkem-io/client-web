@@ -26,9 +26,10 @@ const useBackdropStyles = createStyles(theme => ({
 
 interface Props {
   open?: boolean;
+  blockName: string;
 }
 
-const AuthenticationBackdrop: FC<Props> = ({ children, open = false }) => {
+const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }) => {
   const { safeAuthenticate } = useAuthenticate();
   const { user } = useUserContext();
   const styles = useBackdropStyles();
@@ -40,7 +41,7 @@ const AuthenticationBackdrop: FC<Props> = ({ children, open = false }) => {
       <Backdrop>{children}</Backdrop>
       <div className={styles.backdropContainer}>
         <Typography variant="h3" className={styles.message}>
-          Please sign in to check out the community.
+          Please sign in to check out the {blockName}.
         </Typography>
         <div>
           <Button onClick={() => safeAuthenticate()} text={'Sign in'} />
