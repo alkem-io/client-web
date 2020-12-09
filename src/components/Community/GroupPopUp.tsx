@@ -29,6 +29,8 @@ interface GroupPopUpProps {
   terms: Array<string>;
 }
 
+const q = 1;
+
 const GroupPopUp: FC<GroupPopUpProps> = ({ name, members, profile, terms }) => {
   const styles = groupPopUpStyles();
   const tags = profile?.tagsets?.find(ts => ts.name === 'default')?.tags?.map(t => t) || [];
