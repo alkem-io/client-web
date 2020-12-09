@@ -11,6 +11,7 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
 const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
+  localStorage.clear(); // remove info of prev user (users) in order to prevent confusion of MS service of which user to log in
   dispatch(updateStatus('authenticating'));
 
   const result = await context.signIn();
