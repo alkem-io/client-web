@@ -7,7 +7,7 @@ const initialState: AuthState = {
   idToken: null,
   accessToken: null,
   isAuthenticated: false,
-  status: undefined,
+  status: 'unauthenticated',
 };
 
 export default function authReducer(state = initialState, action: AuthActionTypes): AuthState {
