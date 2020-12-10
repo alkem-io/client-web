@@ -200,17 +200,15 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
                   )}
                 </FieldArray>
                 <Divider />
-                <div className={styles.row}></div>
               </>
             );
           }}
         </Formik>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="negative" onClick={onHide}>
+        <Button variant="negative" onClick={onHide} className={'mr-2'}>
           CANCEL
         </Button>
-        <div className={'flex-grow-1'} />
         <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
           SAVE
         </Button>
