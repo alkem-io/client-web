@@ -11,7 +11,7 @@ import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
@@ -23,18 +23,23 @@ import { useTypedSelector } from './useTypedSelector';
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
-  const [pendingRequests, setPendingReques] = useState<(() => void)[]>([]);
-
   const dispatch = useDispatch();
-  const reduxToken = useTypedSelector(x => x.auth.accessToken);
   const { context, status } = useAuthenticationContext();
+  const reduxToken = useTypedSelector(x => x.auth.accessToken);
+  const accessToken = useRef<string>();
 
-  const resolvePendingRequests = () => {
-    pendingRequests.map(callback => callback());
-    setPendingReques([]);
+  const pendingRequests = useRef<((token?: string) => void)[]>([]);
+  const isRefreshing = useRef(false);
+  const counter = useRef(0);
+  const refreshCounter = useRef(0);
+
+  const resolvePendingRequests = (token?: string) => {
+    pendingRequests.current.map(resolve => resolve(token));
+    pendingRequests.current = [];
   };
 
-  const refreshToken = async () => {
+  const refresh = async () => {
+    refreshCounter.current++;
     console.log('Refreshing');
     dispatch(updateStatus('refreshing'));
     return context
@@ -42,14 +47,41 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       .then(result => {
         dispatch(updateToken(result));
         dispatch(updateStatus('done'));
-        return result;
+        return result?.accessToken;
       })
       .catch(e => {
         console.error(e);
         dispatch(updateToken(null));
         dispatch(updateStatus('unauthenticated'));
-        return;
+        return undefined;
       });
+  };
+
+  const refreshToken = async () => {
+    let forwardPromise: Promise<string | undefined>;
+    if (isRefreshing.current) {
+      console.log('Scheduling requests!');
+      forwardPromise = new Promise(resolve => {
+        pendingRequests.current.push(token => resolve(token));
+      });
+    } else {
+      isRefreshing.current = true;
+      forwardPromise = refresh()
+        .then(result => {
+          resolvePendingRequests(result);
+          return result;
+        })
+        .catch(() => {
+          debugger;
+          pendingRequests.current = [];
+          return undefined;
+        })
+        .finally(() => {
+          isRefreshing.current = false;
+        });
+    }
+
+    return forwardPromise;
   };
 
   const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
@@ -59,30 +91,10 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case 'UNAUTHENTICATED':
-            let forward$: any;
             if (status === 'done') {
-              forward$ = fromPromise(
-                refreshToken()
-                  .then(() => {
-                    resolvePendingRequests();
-                  })
-                  .catch(() => {
-                    setPendingReques([]);
-                  })
-              ).filter(value => Boolean(value));
-            } else if (status === 'refreshing' || status === 'authenticating') {
-              forward$ = fromPromise(
-                new Promise(resolve => {
-                  setPendingReques(prev => {
-                    prev.push(() => resolve(undefined));
-                    return prev;
-                  });
-                })
-              );
-
-              return forward$.flatMap(result => {
-                if (result) {
-                  const accessToken = result.accessToken;
+              return fromPromise(refreshToken())
+                .filter(value => Boolean(value))
+                .flatMap(accessToken => {
                   if (accessToken)
                     operation.setContext((_, { headers }) => {
                       return {
@@ -92,9 +104,8 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
                         },
                       };
                     });
-                }
-                return forward(operation);
-              });
+                  return forward(operation);
+                });
             }
             break;
           default:
@@ -119,23 +130,27 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   const authLink = setContext(async (_, { headers }) => {
+    counter.current = counter.current + 1;
     let token = reduxToken;
+    console.log(token);
 
-    if (!reduxToken) {
+    if (!accessToken.current) {
       if (status === 'unauthenticated') {
         const result = await refreshToken();
         if (result) {
-          token = result.accessToken;
+          accessToken.current = result;
         }
       }
     }
 
-    if (!token) return headers;
+    console.log('Request count:', counter.current);
+    console.log('Refresh count:', refreshCounter.current);
+    if (!accessToken.current) return headers;
 
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : '',
+        authorization: accessToken.current ? `Bearer ${accessToken.current}` : '',
       },
     };
   });
