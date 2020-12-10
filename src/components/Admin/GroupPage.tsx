@@ -10,7 +10,6 @@ import {
 } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '../../pages';
-import Loading from '../core/Loading';
 import MemberSelector from './MemberSelector';
 
 interface Parameters {

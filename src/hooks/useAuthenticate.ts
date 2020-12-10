@@ -11,6 +11,7 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
 const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
+  localStorage.clear(); // remove info of prev user (users) in order to prevent confusion of MS service of which user to log in
   dispatch(updateStatus('authenticating'));
 
   const result = await context.signIn();
@@ -20,26 +21,31 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      await context.resetStore();
+      // await context.graphqlClient?.resetStore();
       dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
-    await context.resetStore();
+    // await context.graphqlClient?.resetStore();
     dispatch(updateStatus('done'));
   }
 
   return result;
 };
 
-const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>, userName?: string) => {
+const refresh = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  userName?: string,
+  keepStorage?: boolean
+) => {
   dispatch(updateStatus('refreshing'));
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
   if (!userName && !targetAccount) {
-    dispatch(updateStatus());
-    await context.resetStore();
+    dispatch(updateStatus('unauthenticated'));
+    !keepStorage && (await context.graphqlClient?.resetStore());
     dispatch(updateToken(null));
     return;
   }
@@ -48,7 +54,7 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
 
   if (result) {
     dispatch(updateToken(result));
-    await context.resetStore();
+    !keepStorage && (await context.graphqlClient?.resetStore());
     dispatch(updateStatus('done'));
   }
 
@@ -67,7 +73,7 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.resetStore();
+  await context.graphqlClient?.resetStore();
 };
 
 export const useAuthenticate = () => {
@@ -78,9 +84,12 @@ export const useAuthenticate = () => {
     return authenticate(context, dispatch);
   }, [context]);
 
-  const refreshWired = useCallback(() => {
-    return refresh(context, dispatch);
-  }, [context]);
+  const refreshWired = useCallback(
+    (keepStorage: boolean = false) => {
+      return refresh(context, dispatch, undefined, keepStorage);
+    },
+    [context]
+  );
 
   const unauthenticateWired = useCallback(() => {
     return unauthenticate(context, dispatch);
@@ -96,13 +105,25 @@ export const useAuthenticate = () => {
     }
   }, [authenticateWired, dispatch]);
 
-  const safeRefresh = useCallback(() => {
-    return refreshWired().catch(err => {
-      const error = new Error(err);
-      logError(error, scope => scope.setTag('authentication', 'refresh-token'));
-      dispatch(pushError(error));
-    });
-  }, [refreshWired, dispatch]);
+  const safeRefresh = useCallback(
+    (keepStorage: boolean = false) => {
+      return refreshWired(keepStorage)
+        .then(data => {
+          if (!data) {
+            dispatch(updateStatus('unauthenticated'));
+            return;
+          }
+          dispatch(updateToken(data));
+          return data;
+        })
+        .catch(err => {
+          const error = new Error(err);
+          logError(error, scope => scope.setTag('authentication', 'refresh-token'));
+          dispatch(pushError(error));
+        });
+    },
+    [refreshWired, dispatch]
+  );
 
   const safeUnauthenticate = useCallback(() => {
     try {
