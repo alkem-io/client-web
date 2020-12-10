@@ -1,4 +1,3 @@
-import { ApolloQueryResult, useApolloClient } from '@apollo/client';
 import {
   AccountInfo,
   AuthenticationResult,
@@ -16,9 +15,8 @@ export interface UseAuthenticationResult {
   signIn: () => Promise<AuthenticationResult | undefined>;
   signOut: (username: string) => Promise<void>;
   acquireToken: (username: string) => Promise<AuthenticationResult | undefined>;
+  refreshToken: (username?: string) => Promise<AuthenticationResult | undefined>;
   getAccounts: () => AccountInfo[];
-  // resetCache: () => Promise<ApolloQueryResult<unknown>[] | null>;
-  // resetStore: () => Promise<ApolloQueryResult<unknown>[] | null>;
   loading: boolean;
 }
 
@@ -66,6 +64,16 @@ const acquireToken = async (msalApp?: PublicClientApplication, aadConfig?: AadCl
   });
 };
 
+const refreshToken = async (msalApp?: PublicClientApplication, aadConfig?: AadClientConfig, userName?: string) => {
+  const account = msalApp?.getAllAccounts() || [];
+
+  const _userName = userName || (account && account[0]?.username);
+
+  if (_userName) {
+    return await acquireToken(msalApp, aadConfig, _userName);
+  }
+};
+
 export const useAuthentication = (): UseAuthenticationResult => {
   const { loading: configLoading, aadConfig } = useContext(configContext);
   const msalApp = useMemo(() => {
@@ -80,6 +88,12 @@ export const useAuthentication = (): UseAuthenticationResult => {
     msalApp,
     aadConfig,
   ]);
+
+  const refreshTokenWired = useCallback((username?: string) => refreshToken(msalApp, aadConfig, username), [
+    msalApp,
+    aadConfig,
+  ]);
+
   const getAccounts = useCallback(() => {
     if (!msalApp) console.error('Missing msalApp');
     return msalApp?.getAllAccounts() || [];
@@ -89,6 +103,7 @@ export const useAuthentication = (): UseAuthenticationResult => {
 
   return {
     acquireToken: acquireTokenWired,
+    refreshToken: refreshTokenWired,
     getAccounts,
     signIn: signInWired,
     signOut: signOutWired,

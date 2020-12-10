@@ -1,3 +1,4 @@
+import { ApolloClient, useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -10,8 +11,11 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
-const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
-  localStorage.clear(); // remove info of prev user (users) in order to prevent confusion of MS service of which user to log in
+const authenticate = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>
+) => {
   dispatch(updateStatus('authenticating'));
 
   const result = await context.signIn();
@@ -21,12 +25,13 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      // await context.graphqlClient?.resetStore();
+      await client.resetStore();
       dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
-    // await context.graphqlClient?.resetStore();
+    debugger;
+    await client.resetStore();
     dispatch(updateStatus('done'));
   }
 
@@ -36,6 +41,7 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
 const refresh = async (
   context: AuthContext,
   dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>,
   userName?: string,
   keepStorage?: boolean
 ) => {
@@ -45,7 +51,7 @@ const refresh = async (
 
   if (!userName && !targetAccount) {
     dispatch(updateStatus('unauthenticated'));
-    !keepStorage && (await context.graphqlClient?.resetStore());
+    !keepStorage && (await client.resetStore());
     dispatch(updateToken(null));
     return;
   }
@@ -54,14 +60,18 @@ const refresh = async (
 
   if (result) {
     dispatch(updateToken(result));
-    !keepStorage && (await context.graphqlClient?.resetStore());
+    !keepStorage && (await client.resetStore());
     dispatch(updateStatus('done'));
   }
 
   return result;
 };
 
-const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
+const unauthenticate = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>
+) => {
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
@@ -73,27 +83,28 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.graphqlClient?.resetStore();
+  await client.resetStore();
 };
 
 export const useAuthenticate = () => {
+  const client = useApolloClient();
   const dispatch = useDispatch();
   const { context, status, isAuthenticated } = useAuthenticationContext();
 
   const authenticateWired = useCallback(() => {
-    return authenticate(context, dispatch);
-  }, [context]);
+    return authenticate(context, dispatch, client);
+  }, [context, client]);
 
   const refreshWired = useCallback(
     (keepStorage: boolean = false) => {
-      return refresh(context, dispatch, undefined, keepStorage);
+      return refresh(context, dispatch, client, undefined, keepStorage);
     },
-    [context]
+    [context, client]
   );
 
   const unauthenticateWired = useCallback(() => {
-    return unauthenticate(context, dispatch);
-  }, [context]);
+    return unauthenticate(context, dispatch, client);
+  }, [context, client]);
 
   const safeAuthenticate = useCallback(() => {
     try {

@@ -14,27 +14,27 @@ const AccessProvider: FC = ({ children }) => {
   const { safeRefresh, status } = useAuthenticate();
   const { loading: authenticationLoading } = useAuthentication();
 
-  useEffect(() => {
-    safeRefresh();
-  }, []);
+  // useEffect(() => {
+  //   safeRefresh();
+  // }, []);
 
-  const handleStorageChange = useCallback(
-    (e: StorageEvent) => {
-      if (e.key === TOKEN_STORAGE_KEY) {
-        if (e.newValue === null && e.newValue !== e.oldValue) {
-          if (status === 'done') safeRefresh();
-        }
-      }
-    },
-    [safeRefresh, status]
-  );
+  // const handleStorageChange = useCallback(
+  //   (e: StorageEvent) => {
+  //     if (e.key === TOKEN_STORAGE_KEY) {
+  //       if (e.newValue === null && e.newValue !== e.oldValue) {
+  //         if (status === 'done') safeRefresh();
+  //       }
+  //     }
+  //   },
+  //   [safeRefresh, status]
+  // );
 
-  useEffect(() => {
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [handleStorageChange]);
+  // useEffect(() => {
+  //   window.addEventListener('storage', handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, [handleStorageChange]);
 
   const loading = authenticationLoading || status === 'authenticating' || status === 'refreshing';
 
