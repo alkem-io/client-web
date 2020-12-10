@@ -29,6 +29,7 @@ import clsx from 'clsx';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import ContextEdit from '../components/ContextEdit';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useUserContext } from '../hooks/useUserContext';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -119,6 +120,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const { isAuthenticated } = useAuthenticate();
   const history = useHistory();
   const styles = useChallengeStyles();
+  const user = useUserContext();
 
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
@@ -208,25 +210,29 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
               className="flex-grow-1"
               classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
             />
-            <OverlayTrigger
-              placement={'bottom'}
-              overlay={<Tooltip id={'Edit challenge context'}>Edit challenge context</Tooltip>}
-            >
-              <Edit
-                color={'white'}
-                width={20}
-                height={20}
-                className={styles.edit}
-                onClick={() => setIsEditOpened(true)}
-              />
-            </OverlayTrigger>
-            <ContextEdit
-              variant={'challenge'}
-              show={isEditOpened}
-              onHide={() => setIsEditOpened(false)}
-              data={challenge.context as ContextInput}
-              id={id}
-            />
+            {user.user?.isAdmin && (
+              <>
+                <OverlayTrigger
+                  placement={'bottom'}
+                  overlay={<Tooltip id={'Edit challenge context'}>Edit challenge context</Tooltip>}
+                >
+                  <Edit
+                    color={'white'}
+                    width={20}
+                    height={20}
+                    className={styles.edit}
+                    onClick={() => setIsEditOpened(true)}
+                  />
+                </OverlayTrigger>
+                <ContextEdit
+                  variant={'challenge'}
+                  show={isEditOpened}
+                  onHide={() => setIsEditOpened(false)}
+                  data={challenge.context as ContextInput}
+                  id={id}
+                />
+              </>
+            )}
           </div>
 
           <div>
