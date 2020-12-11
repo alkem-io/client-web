@@ -1,4 +1,3 @@
-import { ApolloQueryResult, useApolloClient } from '@apollo/client';
 import {
   AccountInfo,
   AuthenticationResult,

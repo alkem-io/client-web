@@ -93,8 +93,8 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const { isAuthenticated } = useAuthenticate();
 
   const { data: _opportunities } = useOpportunitiesQuery();
-  const { data: _projects, error: projectsError } = useProjectsQuery();
-  const { data: _projectsNestHistory, error: projectsHistoryError } = useProjectsChainHistoryQuery();
+  const { data: _projects } = useProjectsQuery();
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();
 
   const challenges = challengesQuery?.data?.challenges || [];
