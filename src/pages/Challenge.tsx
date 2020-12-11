@@ -124,10 +124,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations, id } = challenge;
+  const { name, context, opportunities, leadOrganisations, id, contributors } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
+  const membersCount = contributors?.length || 0;
 
   const projects = useMemo(
     () =>
@@ -167,11 +168,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         digit: projects?.length || 0,
         color: 'positive',
       },
-      // {
-      //   name: 'Members',
-      //   digit: users?.length,
-      //   color: 'neutralMedium',
-      // },
+      {
+        name: 'Members',
+        digit: membersCount,
+        color: 'neutralMedium',
+      },
     ];
   }, [opportunities, projects, users]);
 
