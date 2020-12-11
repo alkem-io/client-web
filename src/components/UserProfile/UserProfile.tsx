@@ -1,10 +1,8 @@
-import { useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import roles from '../../configs/roles.json';
 import { User, useUserProfileQuery } from '../../generated/graphql';
 /*components imports end*/
-import { QUERY_USER_PROFILE } from '../../graphql/user';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { defaultUser } from '../../models/User';
@@ -95,7 +93,7 @@ const useProfileStyles = createStyles(theme => ({
 export const UserProfile: FC = () => {
   const styles = useProfileStyles();
   useTransactionScope({ type: 'authentication' });
-  const { data, loading } = useQuery(QUERY_USER_PROFILE);
+  const { data, loading } = useUserProfileQuery();
 
   const user = (data?.me as User) || defaultUser || {};
 
