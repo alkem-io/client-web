@@ -32,6 +32,9 @@ const useFooterStyles = createStyles(theme => ({
   spacer: {
     flexGrow: 1,
   },
+  versions: {
+    marginTop: 'auto',
+  },
 }));
 
 const Footer: FC = ({ children }) => {
