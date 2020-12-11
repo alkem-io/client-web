@@ -42,10 +42,6 @@ const Footer: FC = ({ children }) => {
 
   return (
     <div className={styles.footerSpacing}>
-      <div className={styles.versions}>
-        <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
-        {/*<Typography>server v{???SERVER_VERSION???}</Typography>*/}
-      </div>
       <Toolbar paddingClass={styles.footer}>
         <Link to={'/about'} href="https://cherrytwist.org/about/" className={styles.poweredBy}>
           <Typography variant="caption" color="neutralMedium" weight="boldLight">
