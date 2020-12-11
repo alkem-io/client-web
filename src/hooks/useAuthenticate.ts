@@ -11,6 +11,10 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 
 export const TOKEN_STORAGE_KEY = 'accessToken';
 
+const resetStore = (client: ApolloClient<object>) => {
+  return client.resetStore(); //;.catch(ex => {    throw ex;  });
+};
+
 const authenticate = async (
   context: AuthContext,
   dispatch: Dispatch<AuthActionTypes>,
@@ -25,13 +29,13 @@ const authenticate = async (
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      await client.resetStore();
+      await resetStore(client);
       dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
     debugger;
-    await client.resetStore();
+    await resetStore(client);
     dispatch(updateStatus('done'));
   }
 
@@ -51,7 +55,7 @@ const refresh = async (
 
   if (!userName && !targetAccount) {
     dispatch(updateStatus('unauthenticated'));
-    !keepStorage && (await client.resetStore());
+    !keepStorage && (await resetStore(client));
     dispatch(updateToken(null));
     return;
   }
@@ -60,7 +64,7 @@ const refresh = async (
 
   if (result) {
     dispatch(updateToken(result));
-    !keepStorage && (await client.resetStore());
+    !keepStorage && (await resetStore(client));
     dispatch(updateStatus('done'));
   }
 
@@ -83,7 +87,7 @@ const unauthenticate = async (
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await client.resetStore();
+  await resetStore(client);
 };
 
 export const useAuthenticate = () => {
@@ -107,13 +111,11 @@ export const useAuthenticate = () => {
   }, [context, client]);
 
   const safeAuthenticate = useCallback(() => {
-    try {
-      return authenticateWired();
-    } catch (ex) {
+    return authenticateWired().catch(ex => {
       const error = new Error(ex);
       logError(error, scope => scope.setTag('authentication', 'signin'));
       dispatch(pushError(new Error(ex)));
-    }
+    });
   }, [authenticateWired, dispatch]);
 
   const safeRefresh = useCallback(

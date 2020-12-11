@@ -11,19 +11,19 @@ export const SignIn: FC = () => {
   useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();
   const redirect = params.get('redirect');
-  const { authenticate, status, isAuthenticated } = useAuthenticate();
+  const { safeAuthenticate, status, isAuthenticated } = useAuthenticate();
 
   const tryAuthenticate = useCallback(() => {
     async function runProcess() {
       try {
-        await authenticate();
+        await safeAuthenticate();
       } catch (ex) {
         logError(new Error(ex), scope => scope.setTag('authentication', 'signin'));
       }
     }
 
     runProcess();
-  }, [authenticate]);
+  }, [safeAuthenticate]);
 
   if (status === 'refreshing' || status === 'authenticating') {
     return <Loading text="Signing in..." />;

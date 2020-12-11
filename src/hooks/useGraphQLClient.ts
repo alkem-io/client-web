@@ -15,6 +15,7 @@ import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
+import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthStatus } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
@@ -38,14 +39,12 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const refreshCounter = useRef(0);
 
   const resolvePendingRequests = (token?: string) => {
-    console.log('resolving');
     pendingRequests.current.map(resolve => resolve(token));
     pendingRequests.current = [];
   };
 
   const refresh = async () => {
     refreshCounter.current++;
-    console.log('Refreshing');
     dispatch(updateStatus('refreshing'));
     return context
       .refreshToken()
@@ -69,7 +68,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const refreshToken = async () => {
     let forwardPromise: Promise<string | undefined>;
     if (isRefreshing.current) {
-      console.log('Scheduling requests!');
       forwardPromise = new Promise(resolve => {
         pendingRequests.current.push(token => resolve(token));
       });
@@ -94,11 +92,11 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
     let errors: Error[] = [];
-
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
-          case 'UNAUTHENTICATED':
+          case ErrorStatus.TOKEN_EXPIRED:
+          case ErrorStatus.UNAUTHENTICATED:
             if (status.current === 'done')
               return fromPromise(refreshToken())
                 .filter(value => Boolean(value))
@@ -138,10 +136,8 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   const authLink = setContext(async (_, { headers }) => {
     let internalToken = token.current;
-    // const status = localStorage.getItem(AUTHENTICATION_STATUS_KEY) as AuthStatus;
 
     counter.current = counter.current + 1;
-    console.log(status.current);
     if (status.current === 'unauthenticated') {
       const result = await refreshToken();
       if (result) {
@@ -213,7 +209,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   return useMemo(() => {
-    console.log('Create apolloClient');
     return new ApolloClient({
       link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
