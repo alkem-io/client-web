@@ -7,6 +7,7 @@ export const useAuthenticationContext = () => {
   const context = useContext(AuthenticationContext);
   const isAuthenticated = useTypedSelector<boolean>(state => state.auth.isAuthenticated);
   const status = useTypedSelector<AuthStatus>(state => state.auth.status);
+  const token = useTypedSelector<string | null>(state => state.auth.accessToken);
 
-  return { context, isAuthenticated, status };
+  return { context, isAuthenticated, status, token: token ?? undefined };
 };
