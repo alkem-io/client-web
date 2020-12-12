@@ -34,7 +34,6 @@ const authenticate = async (
     }
   } else {
     dispatch(updateToken(null));
-    debugger;
     await resetStore(client);
     dispatch(updateStatus('done'));
   }

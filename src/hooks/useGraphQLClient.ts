@@ -35,8 +35,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
-  const counter = useRef(0);
-  const refreshCounter = useRef(0);
 
   const resolvePendingRequests = (token?: string) => {
     pendingRequests.current.map(resolve => resolve(token));
@@ -44,7 +42,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   };
 
   const refresh = async () => {
-    refreshCounter.current++;
     dispatch(updateStatus('refreshing'));
     return context
       .refreshToken()
@@ -137,7 +134,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const authLink = setContext(async (_, { headers }) => {
     let internalToken = token.current;
 
-    counter.current = counter.current + 1;
     if (status.current === 'unauthenticated') {
       const result = await refreshToken();
       if (result) {

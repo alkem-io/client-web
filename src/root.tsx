@@ -95,7 +95,6 @@ const ReduxRoot: FC = () => {
 
 const CTApolloProvider: FC = ({ children }) => {
   const client = useGraphQLClient(graphQLEndpoint);
-  // console.log('Rerender CTApolloProvider');
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
