@@ -43,6 +43,9 @@ const useAboutStyles = createStyles(theme => ({
       transform: 'translate3d(-50%, 10%, 0)',
     },
   },
+  version: {
+    display: 'flex',
+  },
 }));
 
 const AboutPage = () => {
@@ -54,7 +57,10 @@ const AboutPage = () => {
         <Col lg={3} className={styles.mdHidden} />
         <Col xs={12} lg={6}>
           <div className={styles.content}>
-            <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
+            <div className={styles.version}>
+              <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
+              <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
+            </div>
             <Typography variant={'h3'} color={'neutralMedium'} className={'mb-4'}>
               Reimagining collaboration
             </Typography>

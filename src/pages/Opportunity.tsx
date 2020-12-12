@@ -187,25 +187,29 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 color: (theme: Theme) => theme.palette.neutralLight,
               }}
             />
-            <OverlayTrigger
-              placement={'bottom'}
-              overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
-            >
-              <Edit
-                color={'white'}
-                width={20}
-                height={20}
-                className={styles.edit}
-                onClick={() => setIsEditOpened(true)}
-              />
-            </OverlayTrigger>
-            <ContextEdit
-              variant={'opportunity'}
-              show={isEditOpened}
-              onHide={() => setIsEditOpened(false)}
-              data={opportunity.context as ContextInput}
-              id={id}
-            />
+            {user?.isAdmin && (
+              <>
+                <OverlayTrigger
+                  placement={'bottom'}
+                  overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
+                >
+                  <Edit
+                    color={'white'}
+                    width={20}
+                    height={20}
+                    className={styles.edit}
+                    onClick={() => setIsEditOpened(true)}
+                  />
+                </OverlayTrigger>
+                <ContextEdit
+                  variant={'opportunity'}
+                  show={isEditOpened}
+                  onHide={() => setIsEditOpened(false)}
+                  data={opportunity.context as ContextInput}
+                  id={id}
+                />
+              </>
+            )}
           </div>
           <div className="flex-row">
             <Button

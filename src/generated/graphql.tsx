@@ -771,7 +771,6 @@ export type OpportunityInput = {
   textID?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
-  tagset?: Maybe<Array<Scalars['String']>>;
 };
 
 export type ContextInput = {
@@ -980,6 +979,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
           }
       >;
+      contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
       tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
       opportunities?: Maybe<
         Array<
@@ -2019,6 +2019,9 @@ export const ChallengeProfileDocument = gql`
           uri
           description
         }
+      }
+      contributors {
+        name
       }
       tagset {
         name
