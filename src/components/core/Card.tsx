@@ -98,7 +98,7 @@ const useTagStyles = createStyles(theme => ({
     alignItems: 'center',
     position: 'absolute',
     top: 0,
-    right: 0,
+    right: props => props.actions * 20 || 0,
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
   },
 }));
@@ -106,7 +106,7 @@ const useTagStyles = createStyles(theme => ({
 interface CardTagProps extends HeaderProps, TagProps {}
 
 export const CardTag: FC<CardTagProps> = ({ text, className, color, ...rest }) => {
-  const styles = useTagStyles({ background: color });
+  const styles = useTagStyles({ background: color, actions: 2 });
 
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
@@ -229,6 +229,10 @@ export interface CardProps extends Record<string, unknown> {
     level: string;
     name: string;
   };
+  actions?: {
+    onClick: () => void;
+    // icon: React.Eleme;
+  };
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -268,6 +272,7 @@ const Card: FC<CardProps> = ({
   popUp,
   bgText,
   level,
+  actions,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
@@ -281,6 +286,7 @@ const Card: FC<CardProps> = ({
   return (
     <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
+      {console.log('actions ---> ', actions)}
 
       <Body {...bodyProps}>
         {tagProps && <CardTag {...tagProps} />}
