@@ -93,8 +93,8 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const { isAuthenticated } = useAuthenticate();
 
   const { data: _opportunities } = useOpportunitiesQuery();
-  const { data: _projects, error: projectsError } = useProjectsQuery();
-  const { data: _projectsNestHistory, error: projectsHistoryError } = useProjectsChainHistoryQuery();
+  const { data: _projects } = useProjectsQuery();
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();
 
   const challenges = challengesQuery?.data?.challenges || [];
@@ -232,7 +232,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
       )}
 
       <Divider />
-      <AuthenticationBackdrop>
+      <AuthenticationBackdrop blockName={'community'}>
         <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
           <SectionHeader text={community.header} />
           <SubHeader text={'The heroes working on this challenge'} />
@@ -259,28 +259,25 @@ const Ecoverse: FC<EcoversePageProps> = ({
         </Section>
       </AuthenticationBackdrop>
       <Divider />
-      {ecoverseProjects.length > 0 && (
-        <>
-          <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-            <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
-            <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
-          </Section>
-          {projectsError || projectsHistoryError ? (
-            <Col xs={12}>
-              <ErrorBlock blockName={'projects'} />
-            </Col>
-          ) : (
-            <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-              {ecoverseProjects.map(({ type, ...rest }, i) => {
-                const Component = SwitchCardComponent({ type });
-                return <Component {...rest} key={i} />;
-              })}
-            </CardContainer>
-          )}
-
-          <Divider />
-        </>
-      )}
+      <AuthenticationBackdrop blockName={'projects'}>
+        {ecoverseProjects.length > 0 && (
+          <>
+            <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+              <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
+              <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
+            </Section>
+            {isAuthenticated && (
+              <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
+                {ecoverseProjects.map(({ type, ...rest }, i) => {
+                  const Component = SwitchCardComponent({ type });
+                  return <Component {...rest} key={i} />;
+                })}
+              </CardContainer>
+            )}
+            <Divider />
+          </>
+        )}
+      </AuthenticationBackdrop>
     </>
   );
 };

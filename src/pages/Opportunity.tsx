@@ -93,10 +93,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   // const team = relations[0];
   const stakeholders = useMemo(
-    () =>
-      actorGroups
-        ?.find(x => x.name === 'stakeholders')
-        ?.actors?.map(x => ({ ...x, name: `\n${x.name}`, type: 'stakeholder' })),
+    () => actorGroups?.find(x => x.name === 'stakeholders')?.actors?.map(x => ({ ...x, type: 'stakeholder' })),
     [actorGroups]
   );
   const keyUsers = useMemo(
@@ -187,25 +184,29 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 color: (theme: Theme) => theme.palette.neutralLight,
               }}
             />
-            <OverlayTrigger
-              placement={'bottom'}
-              overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
-            >
-              <Edit
-                color={'white'}
-                width={20}
-                height={20}
-                className={styles.edit}
-                onClick={() => setIsEditOpened(true)}
-              />
-            </OverlayTrigger>
-            <ContextEdit
-              variant={'opportunity'}
-              show={isEditOpened}
-              onHide={() => setIsEditOpened(false)}
-              data={opportunity.context as ContextInput}
-              id={id}
-            />
+            {user?.isAdmin && (
+              <>
+                <OverlayTrigger
+                  placement={'bottom'}
+                  overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
+                >
+                  <Edit
+                    color={'white'}
+                    width={20}
+                    height={20}
+                    className={styles.edit}
+                    onClick={() => setIsEditOpened(true)}
+                  />
+                </OverlayTrigger>
+                <ContextEdit
+                  variant={'opportunity'}
+                  show={isEditOpened}
+                  onHide={() => setIsEditOpened(false)}
+                  data={opportunity.context as ContextInput}
+                  id={id}
+                />
+              </>
+            )}
           </div>
           <div className="flex-row">
             <Button
@@ -304,14 +305,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
       {stakeholders && stakeholders.length > 0 && (
         <CardContainer xs={12} md={6} lg={4} xl={3} title="stakeholders">
           {stakeholders?.map((props, i) => (
-            <ActorCard key={i} {...props} />
+            <ActorCard key={i} opportunityId={id} {...props} />
           ))}
         </CardContainer>
       )}
       {keyUsers && keyUsers.length > 0 && (
         <CardContainer xs={12} md={6} lg={4} xl={3} title="key users">
           {keyUsers?.map((props, i) => (
-            <ActorCard key={i} {...props} />
+            <ActorCard key={i} opportunityId={id} {...props} />
           ))}
         </CardContainer>
       )}

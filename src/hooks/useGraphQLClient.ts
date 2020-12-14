@@ -1,36 +1,120 @@
-import { ApolloLink, createHttpLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
+import {
+  ApolloLink,
+  createHttpLink,
+  from,
+  fromPromise,
+  InMemoryCache,
+  NormalizedCacheObject,
+  Operation,
+} from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
+import { ErrorStatus } from '../models/Errors';
+import { updateStatus, updateToken } from '../reducers/auth/actions';
+import { AuthStatus } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
-import { TOKEN_STORAGE_KEY } from './useAuthentication';
+import { useAuthenticationContext } from './useAuthenticationContext';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const dispatch = useDispatch();
-  let token: string | null;
+  const { context, status: _status, token: _token } = useAuthenticationContext();
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
-    let errors: Error[] = [];
+  // Preserve the token and status from the reduxStore to be used inside the memoized apollo client
+  const status = useRef<AuthStatus>('unauthenticated');
+  const token = useRef<string | undefined>();
+  token.current = _token;
+  status.current = _status;
 
-    if (graphQLErrors) {
-      errors = graphQLErrors.reduce<Error[]>((acc, { message, extensions }) => {
-        const newMessage = `${message}`;
+  const pendingRequests = useRef<((token?: string) => void)[]>([]);
+  const isRefreshing = useRef(false);
 
-        const code = extensions && extensions['code'];
-        if (code === 'UNAUTHENTICATED') {
-          // TODO [ATS]: Capter correct error and request refresh when token has expired. dispatch(updateStatus('refreshRequested'));
-          return acc;
+  const resolvePendingRequests = (token?: string) => {
+    pendingRequests.current.map(resolve => resolve(token));
+    pendingRequests.current = [];
+  };
+
+  const refresh = async () => {
+    dispatch(updateStatus('refreshing'));
+    return context
+      .refreshToken()
+      .then(result => {
+        if (result) {
+          dispatch(updateStatus('done'));
+        } else {
+          dispatch(updateStatus('unauthenticated'));
         }
+        dispatch(updateToken(result));
+        return result?.accessToken;
+      })
+      .catch(e => {
+        console.error(e);
+        dispatch(updateToken(null));
+        dispatch(updateStatus('unauthenticated'));
+        return undefined;
+      });
+  };
 
-        acc.push(new Error(newMessage));
-        return acc;
-      }, []);
+  const refreshToken = async () => {
+    let forwardPromise: Promise<string | undefined>;
+    if (isRefreshing.current) {
+      forwardPromise = new Promise(resolve => {
+        pendingRequests.current.push(token => resolve(token));
+      });
+    } else {
+      isRefreshing.current = true;
+      forwardPromise = refresh()
+        .then(result => {
+          resolvePendingRequests(result);
+          return result;
+        })
+        .catch(() => {
+          pendingRequests.current = [];
+          return undefined;
+        })
+        .finally(() => {
+          isRefreshing.current = false;
+        });
+    }
+
+    return forwardPromise;
+  };
+
+  const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
+    let errors: Error[] = [];
+    if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        switch (err?.extensions?.code) {
+          case ErrorStatus.TOKEN_EXPIRED:
+          case ErrorStatus.UNAUTHENTICATED:
+            if (status.current === 'done')
+              return fromPromise(refreshToken())
+                .filter(value => Boolean(value))
+                .flatMap(accessToken => {
+                  if (accessToken)
+                    operation.setContext((_, { headers }) => {
+                      return {
+                        headers: {
+                          ...headers,
+                          authorization: `Bearer ${accessToken}`,
+                        },
+                      };
+                    });
+                  return forward(operation);
+                });
+            break;
+          default:
+            const newMessage = `${err.message}`;
+            errors.push(new Error(newMessage));
+        }
+      }
     }
 
     if (errors.length > 0) {
@@ -41,21 +125,28 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
       console.error(newMessage);
-      // errors.push(new Error(newMessage));
+      errors.push(new Error(newMessage));
     }
+
     errors.forEach(e => dispatch(pushError(e)));
   });
 
-  const authLink = setContext((_, { headers }) => {
-    if (!token) {
-      token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  const authLink = setContext(async (_, { headers }) => {
+    let internalToken = token.current;
+
+    if (status.current === 'unauthenticated') {
+      const result = await refreshToken();
+      if (result) {
+        internalToken = result;
+      }
     }
 
-    if (!token) return headers;
+    if (!internalToken) return headers;
+
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : '',
+        authorization: internalToken ? `Bearer ${internalToken}` : '',
       },
     };
   });
@@ -113,10 +204,12 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     return forward ? forward(operation) : null;
   });
 
-  return new ApolloClient({
-    link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-    cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
-  });
+  return useMemo(() => {
+    return new ApolloClient({
+      link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
+      cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
+    });
+  }, [dispatch]);
 };
 
 export default useGraphQLClient;

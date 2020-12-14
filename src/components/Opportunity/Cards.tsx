@@ -2,12 +2,14 @@ import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.
 import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
+import ActorEdit from './ActorEdit';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -89,48 +91,71 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
 };
 
 interface ActorCardProps {
+  id: string;
   name: string;
   description?: string;
   value?: string;
   impact?: string;
   type?: 'stakeholder' | 'key user' | string;
+  opportunityId: string;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact, type = 'stakeholder' }) => {
+export const ActorCard: FC<ActorCardProps> = ({
+  id,
+  name,
+  description,
+  value,
+  impact,
+  type = 'stakeholder',
+  opportunityId,
+}) => {
   const styles = useCardStyles();
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+  const { user } = useUserContext();
 
   return (
-    <Card
-      className={styles.border}
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) =>
-            type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
-        },
-      }}
-      primaryTextProps={{ text: name, tooltip: true }}
-      tagProps={{
-        text: type,
-        color: type === 'stakeholder' ? 'neutral' : 'positive',
-      }}
-    >
-      <Spacer />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'wins how? (juice)'}
-        <Icon component={CupStrawIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {value}
-      </Typography>
-      <Spacer variant="lg" />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'required effort for pilot'}
-        <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {`${description} ${impact}`}
-      </Typography>
-    </Card>
+    <>
+      <Card
+        className={styles.border}
+        bodyProps={{
+          classes: {
+            background: (theme: Theme) =>
+              type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
+          },
+        }}
+        primaryTextProps={{ text: name, tooltip: true }}
+        tagProps={{
+          text: type,
+          color: type === 'stakeholder' ? 'neutral' : 'positive',
+        }}
+        onClick={user?.roles.includes('ecoverse-admins') ? () => setEditOpened(true) : undefined}
+      >
+        <Spacer />
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'wins how? (juice)'}
+          <Icon component={CupStrawIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {value}
+        </Typography>
+        <Spacer variant="lg" />
+
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'required effort for pilot'}
+          <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {`${description} ${impact}`}
+        </Typography>
+      </Card>
+      <ActorEdit
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        data={{ name, description, value, impact }}
+        opportunityId={opportunityId}
+        id={id}
+      />
+    </>
   );
 };
 

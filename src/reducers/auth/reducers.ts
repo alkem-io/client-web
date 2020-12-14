@@ -1,4 +1,3 @@
-import { TOKEN_STORAGE_KEY } from '../../hooks';
 import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {
@@ -7,7 +6,7 @@ const initialState: AuthState = {
   idToken: null,
   accessToken: null,
   isAuthenticated: false,
-  status: undefined,
+  status: 'unauthenticated',
 };
 
 export default function authReducer(state = initialState, action: AuthActionTypes): AuthState {
@@ -22,7 +21,6 @@ export default function authReducer(state = initialState, action: AuthActionType
       if (action.payload) {
         console.debug('Token: ', action.payload.accessToken);
         console.debug('Token ExpirationTime: ', new Date(action.payload.idTokenClaims['exp'] * 1000).toString());
-        localStorage.setItem(TOKEN_STORAGE_KEY, action.payload.accessToken);
         return {
           ...state,
           idToken: action.payload.idTokenClaims as Record<string, never>,
@@ -30,7 +28,6 @@ export default function authReducer(state = initialState, action: AuthActionType
           isAuthenticated: true,
         };
       } else {
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
         return {
           ...state,
           idToken: null,

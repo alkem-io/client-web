@@ -11,7 +11,7 @@ import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';
 import { UserProvider } from '../../pages';
 
-const groupPopUpStyles = createStyles(theme => ({
+const groupPopUpStyles = createStyles(() => ({
   title: {
     textTransform: 'capitalize',
   },

@@ -771,7 +771,6 @@ export type OpportunityInput = {
   textID?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
-  tagset?: Maybe<Array<Scalars['String']>>;
 };
 
 export type ContextInput = {
@@ -980,6 +979,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
           }
       >;
+      contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
       tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
       opportunities?: Maybe<
         Array<
@@ -1169,7 +1169,7 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
         Array<
           { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
               actors?: Maybe<
-                Array<{ __typename?: 'Actor' } & Pick<Actor, 'name' | 'description' | 'value' | 'impact'>>
+                Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
               >;
             }
         >
@@ -1223,6 +1223,39 @@ export type AddUserToOpportunityMutationVariables = Exact<{
 export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
   addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
 };
+
+export type OpportunityActorGroupsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    actorGroups?: Maybe<
+      Array<
+        { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+            actors?: Maybe<
+              Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
+            >;
+          }
+      >
+    >;
+  };
+};
+
+export type UpdateActorMutationVariables = Exact<{
+  actorData: ActorInput;
+  ID: Scalars['Float'];
+}>;
+
+export type UpdateActorMutation = { __typename?: 'Mutation' } & {
+  updateActor: { __typename?: 'Actor' } & Pick<Actor, 'name'>;
+};
+
+export type RemoveActorMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveActorMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeActor'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -2020,6 +2053,9 @@ export const ChallengeProfileDocument = gql`
           description
         }
       }
+      contributors {
+        name
+      }
       tagset {
         name
         tags
@@ -2707,6 +2743,7 @@ export const OpportunityProfileDocument = gql`
         name
         description
         actors {
+          id
           name
           description
           value
@@ -2935,6 +2972,130 @@ export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
   AddUserToOpportunityMutation,
   AddUserToOpportunityMutationVariables
 >;
+export const OpportunityActorGroupsDocument = gql`
+  query opportunityActorGroups($id: Float!) {
+    opportunity(ID: $id) {
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          id
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityActorGroupsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityActorGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityActorGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityActorGroupsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityActorGroupsQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityActorGroupsQuery, OpportunityActorGroupsQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityActorGroupsQuery, OpportunityActorGroupsQueryVariables>(
+    OpportunityActorGroupsDocument,
+    baseOptions
+  );
+}
+export function useOpportunityActorGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityActorGroupsQuery, OpportunityActorGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityActorGroupsQuery, OpportunityActorGroupsQueryVariables>(
+    OpportunityActorGroupsDocument,
+    baseOptions
+  );
+}
+export type OpportunityActorGroupsQueryHookResult = ReturnType<typeof useOpportunityActorGroupsQuery>;
+export type OpportunityActorGroupsLazyQueryHookResult = ReturnType<typeof useOpportunityActorGroupsLazyQuery>;
+export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
+  OpportunityActorGroupsQuery,
+  OpportunityActorGroupsQueryVariables
+>;
+export const UpdateActorDocument = gql`
+  mutation updateActor($actorData: ActorInput!, $ID: Float!) {
+    updateActor(actorData: $actorData, ID: $ID) {
+      name
+    }
+  }
+`;
+export type UpdateActorMutationFn = Apollo.MutationFunction<UpdateActorMutation, UpdateActorMutationVariables>;
+
+/**
+ * __useUpdateActorMutation__
+ *
+ * To run a mutation, you first call `useUpdateActorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateActorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateActorMutation, { data, loading, error }] = useUpdateActorMutation({
+ *   variables: {
+ *      actorData: // value for 'actorData'
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useUpdateActorMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateActorMutation, UpdateActorMutationVariables>
+) {
+  return Apollo.useMutation<UpdateActorMutation, UpdateActorMutationVariables>(UpdateActorDocument, baseOptions);
+}
+export type UpdateActorMutationHookResult = ReturnType<typeof useUpdateActorMutation>;
+export type UpdateActorMutationResult = Apollo.MutationResult<UpdateActorMutation>;
+export type UpdateActorMutationOptions = Apollo.BaseMutationOptions<UpdateActorMutation, UpdateActorMutationVariables>;
+export const RemoveActorDocument = gql`
+  mutation removeActor($ID: Float!) {
+    removeActor(ID: $ID)
+  }
+`;
+export type RemoveActorMutationFn = Apollo.MutationFunction<RemoveActorMutation, RemoveActorMutationVariables>;
+
+/**
+ * __useRemoveActorMutation__
+ *
+ * To run a mutation, you first call `useRemoveActorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveActorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeActorMutation, { data, loading, error }] = useRemoveActorMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveActorMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveActorMutation, RemoveActorMutationVariables>
+) {
+  return Apollo.useMutation<RemoveActorMutation, RemoveActorMutationVariables>(RemoveActorDocument, baseOptions);
+}
+export type RemoveActorMutationHookResult = ReturnType<typeof useRemoveActorMutation>;
+export type RemoveActorMutationResult = Apollo.MutationResult<RemoveActorMutation>;
+export type RemoveActorMutationOptions = Apollo.BaseMutationOptions<RemoveActorMutation, RemoveActorMutationVariables>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {

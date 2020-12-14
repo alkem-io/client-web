@@ -41,6 +41,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         name
         description
         actors {
+          id
           name
           description
           value
@@ -93,5 +94,38 @@ export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
     addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
       name
     }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
+  query opportunityActorGroups($id: Float!) {
+    opportunity(ID: $id) {
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          id
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_ACTOR = gql`
+  mutation updateActor($actorData: ActorInput!, $ID: Float!) {
+    updateActor(actorData: $actorData, ID: $ID) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_REMOVE_ACTOR = gql`
+  mutation removeActor($ID: Float!) {
+    removeActor(ID: $ID)
   }
 `;

@@ -1,5 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
-import React, { FC } from 'react';
+import * as Sentry from '@sentry/react';
+import React, { FC, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
@@ -10,13 +11,11 @@ import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import { env } from './env';
 import { useGraphQLClient } from './hooks/useGraphQLClient';
-import { Routing } from './navigation';
-import configureStore from './store';
-import * as Sentry from '@sentry/react';
-import sentryBootstrap from './sentry/bootstrap';
-import { Error as ErrorPage } from './pages/Error';
 import { createStyles } from './hooks/useTheme';
-import { AccessProvider } from './context/AccessProvider';
+import { Routing } from './navigation';
+import { Error as ErrorPage } from './pages/Error';
+import sentryBootstrap from './sentry/bootstrap';
+import configureStore from './store';
 
 const graphQLEndpoint =
   (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
@@ -58,7 +57,13 @@ const useGlobalStyles = createStyles(theme => ({
 
 const Root: FC = () => {
   useGlobalStyles();
-
+  useEffect(() => {
+    console.table({
+      appName: process.env.REACT_APP_NAME,
+      clientVersion: process.env.REACT_APP_VERSION,
+      cherrytwistDomain: process.env.REACT_APP_FEEDBACK_URL,
+    });
+  });
   return (
     <Sentry.ErrorBoundary
       fallback={({ error }) => {
@@ -73,29 +78,30 @@ const Root: FC = () => {
 };
 
 const ReduxRoot: FC = () => {
-  const client = useGraphQLClient(graphQLEndpoint);
-
   return (
     <ConfigProvider apiUrl={graphQLEndpoint}>
-      <ApolloProvider client={client}>
-        <AuthenticationProvider>
-          <AccessProvider>
-            <ThemeProvider>
-              <NavigationProvider>
-                <UserProvider>
-                  <BrowserRouter>
-                    <App>
-                      <Routing />
-                    </App>
-                  </BrowserRouter>
-                </UserProvider>
-              </NavigationProvider>
-            </ThemeProvider>
-          </AccessProvider>
-        </AuthenticationProvider>
-      </ApolloProvider>
+      <AuthenticationProvider>
+        <CTApolloProvider>
+          <ThemeProvider>
+            <NavigationProvider>
+              <UserProvider>
+                <BrowserRouter>
+                  <App>
+                    <Routing />
+                  </App>
+                </BrowserRouter>
+              </UserProvider>
+            </NavigationProvider>
+          </ThemeProvider>
+        </CTApolloProvider>
+      </AuthenticationProvider>
     </ConfigProvider>
   );
+};
+
+const CTApolloProvider: FC = ({ children }) => {
+  const client = useGraphQLClient(graphQLEndpoint);
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
 export default Root;

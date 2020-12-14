@@ -10,25 +10,24 @@ const AuthenticationContext = React.createContext<AuthContext>({
   signIn: () => Promise.resolve(undefined),
   signOut: () => Promise.resolve(undefined),
   acquireToken: () => Promise.resolve(undefined),
-  getAccounts: () => [],
-  resetCache: () => Promise.resolve(null),
-  resetStore: () => Promise.resolve(null),
+  refreshToken: () => Promise.resolve(undefined),
+  getAccounts: () => {
+    console.error('Context not initialized');
+    return [];
+  },
 });
 
-const AuthenticationProvider: FC<{}> = ({ children }) => {
+const AuthenticationProvider: FC = ({ children }) => {
   const {
     signIn,
     signOut,
     acquireToken,
+    refreshToken,
     getAccounts,
-    resetCache,
-    resetStore,
     loading: authenticationLoading,
   } = useAuthentication();
 
   const loading = authenticationLoading;
-
-  // if (loading) return <Loading text={'Initializaing authentication ...'} />;
 
   return (
     <AuthenticationContext.Provider
@@ -36,9 +35,8 @@ const AuthenticationProvider: FC<{}> = ({ children }) => {
         signIn,
         signOut,
         acquireToken,
+        refreshToken,
         getAccounts,
-        resetCache,
-        resetStore,
         loading,
       }}
     >

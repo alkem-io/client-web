@@ -1,3 +1,4 @@
+import { ApolloClient, useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -8,9 +9,15 @@ import { pushError } from '../reducers/error/actions';
 import { error as logError } from '../sentry/log';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
-export const TOKEN_STORAGE_KEY = 'accessToken';
+const resetStore = (client: ApolloClient<object>) => {
+  return client.resetStore(); //;.catch(ex => {    throw ex;  });
+};
 
-const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
+const authenticate = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>
+) => {
   dispatch(updateStatus('authenticating'));
 
   const result = await context.signIn();
@@ -20,26 +27,32 @@ const authenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionT
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
-      await context.resetStore();
+      await resetStore(client);
       dispatch(updateStatus('done'));
     }
   } else {
     dispatch(updateToken(null));
-    await context.resetStore();
+    await resetStore(client);
     dispatch(updateStatus('done'));
   }
 
   return result;
 };
 
-const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>, userName?: string) => {
+const refresh = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>,
+  userName?: string,
+  keepStorage?: boolean
+) => {
   dispatch(updateStatus('refreshing'));
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
   if (!userName && !targetAccount) {
-    dispatch(updateStatus());
-    await context.resetStore();
+    dispatch(updateStatus('unauthenticated'));
+    !keepStorage && (await resetStore(client));
     dispatch(updateToken(null));
     return;
   }
@@ -48,14 +61,18 @@ const refresh = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>
 
   if (result) {
     dispatch(updateToken(result));
-    await context.resetStore();
+    !keepStorage && (await resetStore(client));
     dispatch(updateStatus('done'));
   }
 
   return result;
 };
 
-const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActionTypes>) => {
+const unauthenticate = async (
+  context: AuthContext,
+  dispatch: Dispatch<AuthActionTypes>,
+  client: ApolloClient<object>
+) => {
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
 
@@ -67,42 +84,56 @@ const unauthenticate = async (context: AuthContext, dispatch: Dispatch<AuthActio
   dispatch(updateToken(null));
   await context.signOut(targetAccount.username);
 
-  await context.resetStore();
+  await resetStore(client);
 };
 
 export const useAuthenticate = () => {
+  const client = useApolloClient();
   const dispatch = useDispatch();
   const { context, status, isAuthenticated } = useAuthenticationContext();
 
   const authenticateWired = useCallback(() => {
-    return authenticate(context, dispatch);
-  }, [context]);
+    return authenticate(context, dispatch, client);
+  }, [context, client]);
 
-  const refreshWired = useCallback(() => {
-    return refresh(context, dispatch);
-  }, [context]);
+  const refreshWired = useCallback(
+    (keepStorage: boolean = false) => {
+      return refresh(context, dispatch, client, undefined, keepStorage);
+    },
+    [context, client]
+  );
 
   const unauthenticateWired = useCallback(() => {
-    return unauthenticate(context, dispatch);
-  }, [context]);
+    return unauthenticate(context, dispatch, client);
+  }, [context, client]);
 
   const safeAuthenticate = useCallback(() => {
-    try {
-      return authenticateWired();
-    } catch (ex) {
+    return authenticateWired().catch(ex => {
       const error = new Error(ex);
       logError(error, scope => scope.setTag('authentication', 'signin'));
       dispatch(pushError(new Error(ex)));
-    }
+    });
   }, [authenticateWired, dispatch]);
 
-  const safeRefresh = useCallback(() => {
-    return refreshWired().catch(err => {
-      const error = new Error(err);
-      logError(error, scope => scope.setTag('authentication', 'refresh-token'));
-      dispatch(pushError(error));
-    });
-  }, [refreshWired, dispatch]);
+  const safeRefresh = useCallback(
+    (keepStorage: boolean = false) => {
+      return refreshWired(keepStorage)
+        .then(data => {
+          if (!data) {
+            dispatch(updateStatus('unauthenticated'));
+            return;
+          }
+          dispatch(updateToken(data));
+          return data;
+        })
+        .catch(err => {
+          const error = new Error(err);
+          logError(error, scope => scope.setTag('authentication', 'refresh-token'));
+          dispatch(pushError(error));
+        });
+    },
+    [refreshWired, dispatch]
+  );
 
   const safeUnauthenticate = useCallback(() => {
     try {
