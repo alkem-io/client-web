@@ -312,7 +312,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       {keyUsers && keyUsers.length > 0 && (
         <CardContainer xs={12} md={6} lg={4} xl={3} title="key users">
           {keyUsers?.map((props, i) => (
-            <ActorCard key={i} {...props} />
+            <ActorCard key={i} opportunityId={id} {...props} />
           ))}
         </CardContainer>
       )}

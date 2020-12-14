@@ -97,7 +97,7 @@ interface ActorCardProps {
   value?: string;
   impact?: string;
   type?: 'stakeholder' | 'key user' | string;
-  opportunityId?: string;
+  opportunityId: string;
 }
 
 export const ActorCard: FC<ActorCardProps> = ({
