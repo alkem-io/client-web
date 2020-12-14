@@ -92,21 +92,55 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   );
 };
 
+const useActionsStyle = createStyles(() => ({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    gap: 10,
+    top: 0,
+    right: 5,
+  },
+  action: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+}));
+
+interface CardActionsProps {
+  actions: JSX.Element[];
+}
+
+export const CardActions: FC<CardActionsProps> = ({ actions }) => {
+  const styles = useActionsStyle();
+
+  return (
+    <div className={styles.container}>
+      {actions.map((a, index) => (
+        <span key={index} className={styles.action}>
+          {a}
+        </span>
+      ))}
+    </div>
+  );
+};
+
 const useTagStyles = createStyles(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
-    right: props => props.actions * 20 || 0,
+    right: props => (props.actions ? props.actions * 25 + 15 : 0),
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
   },
 }));
 
 interface CardTagProps extends HeaderProps, TagProps {}
 
-export const CardTag: FC<CardTagProps> = ({ text, className, color, ...rest }) => {
-  const styles = useTagStyles({ background: color, actions: 2 });
+export const CardTag: FC<CardTagProps> = ({ text, className, color, actions = 0, ...rest }) => {
+  const styles = useTagStyles({ background: color, actions });
 
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
@@ -229,10 +263,7 @@ export interface CardProps extends Record<string, unknown> {
     level: string;
     name: string;
   };
-  actions?: {
-    onClick: () => void;
-    // icon: React.Eleme;
-  };
+  actions?: JSX.Element[];
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -286,10 +317,10 @@ const Card: FC<CardProps> = ({
   return (
     <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
-      {console.log('actions ---> ', actions)}
 
       <Body {...bodyProps}>
-        {tagProps && <CardTag {...tagProps} />}
+        {actions && actions?.length > 0 && <CardActions actions={actions} />}
+        {tagProps && <CardTag actions={actions?.length} {...tagProps} />}
 
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         {level && (

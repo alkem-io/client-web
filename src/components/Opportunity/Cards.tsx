@@ -2,12 +2,16 @@ import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.
 import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import React, { FC } from 'react';
+import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
+import React, { FC, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
+import RelationRemoveModal from './RemoveRelationModal';
+import { useRemoveRelationMutation } from '../../generated/graphql';
+import { QUERY_OPPORTUNITY_RELATIONS } from '../../graphql/opportunity';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -55,36 +59,55 @@ interface RelationCardProps {
   actorType?: string;
   description?: string;
   type: string;
+  id: string;
+  opportunityID: string;
 }
 
-export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type }) => {
+export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityID }) => {
   const styles = useCardStyles();
+  const [showRemove, setShowRemove] = useState<boolean>(false);
+  const [removeRelation] = useRemoveRelationMutation({
+    variables: { ID: Number(id) },
+    onCompleted: () => setShowRemove(false),
+    onError: e => console.error(e),
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_RELATIONS, variables: { id: Number(opportunityID) } }],
+    awaitRefetchQueries: true,
+  });
 
   return (
-    <Card
-      className={styles.border}
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) => theme.palette.neutralLight,
-        },
-      }}
-      primaryTextProps={{ text: actorName }}
-      tagProps={{
-        text: `${actorRole}`,
-        color: type === 'incoming' ? 'positive' : 'neutralMedium',
-      }}
-    >
-      {description !== '""' && ( // remove empty quotes check when it is fixed on server
-        <>
-          <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-            {'REASON FOR COLLABORATION'}
-          </Typography>
-          <Typography as="h3" variant="body">
-            {description}
-          </Typography>
-        </>
-      )}
-    </Card>
+    <>
+      <Card
+        className={styles.border}
+        bodyProps={{
+          classes: {
+            background: (theme: Theme) => theme.palette.neutralLight,
+          },
+        }}
+        primaryTextProps={{ text: actorName }}
+        tagProps={{
+          text: `${actorRole}`,
+          color: type === 'incoming' ? 'positive' : 'neutralMedium',
+        }}
+        actions={[<Delete width={20} height={20} onClick={() => setShowRemove(true)} />]}
+      >
+        {description !== '""' && ( // remove empty quotes check when it is fixed on server
+          <>
+            <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+              {'REASON FOR COLLABORATION'}
+            </Typography>
+            <Typography as="h3" variant="body">
+              {description}
+            </Typography>
+          </>
+        )}
+      </Card>
+      <RelationRemoveModal
+        show={showRemove}
+        name={actorName}
+        onConfirm={() => removeRelation()}
+        onCancel={() => setShowRemove(false)}
+      />
+    </>
   );
 };
 
