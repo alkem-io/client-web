@@ -1,4 +1,3 @@
-import { TOKEN_STORAGE_KEY } from '../../hooks';
 import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {
