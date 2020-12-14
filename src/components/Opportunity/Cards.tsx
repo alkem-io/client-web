@@ -9,6 +9,8 @@ import { createStyles } from '../../hooks/useTheme';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
+import ActorEdit from './ActorEdit';
+import { useUserContext } from '../../hooks/useUserContext';
 import RelationRemoveModal from './RemoveRelationModal';
 import { useRemoveRelationMutation } from '../../generated/graphql';
 import { QUERY_OPPORTUNITY_RELATIONS } from '../../graphql/opportunity';
@@ -112,48 +114,71 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
 };
 
 interface ActorCardProps {
+  id: string;
   name: string;
   description?: string;
   value?: string;
   impact?: string;
   type?: 'stakeholder' | 'key user' | string;
+  opportunityId: string;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({ name, description, value, impact, type = 'stakeholder' }) => {
+export const ActorCard: FC<ActorCardProps> = ({
+  id,
+  name,
+  description,
+  value,
+  impact,
+  type = 'stakeholder',
+  opportunityId,
+}) => {
   const styles = useCardStyles();
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+  const { user } = useUserContext();
 
   return (
-    <Card
-      className={styles.border}
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) =>
-            type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
-        },
-      }}
-      primaryTextProps={{ text: name, tooltip: true }}
-      tagProps={{
-        text: type,
-        color: type === 'stakeholder' ? 'neutral' : 'positive',
-      }}
-    >
-      <Spacer />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'wins how? (juice)'}
-        <Icon component={CupStrawIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {value}
-      </Typography>
-      <Spacer variant="lg" />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'required effort for pilot'}
-        <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {`${description} ${impact}`}
-      </Typography>
-    </Card>
+    <>
+      <Card
+        className={styles.border}
+        bodyProps={{
+          classes: {
+            background: (theme: Theme) =>
+              type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
+          },
+        }}
+        primaryTextProps={{ text: name, tooltip: true }}
+        tagProps={{
+          text: type,
+          color: type === 'stakeholder' ? 'neutral' : 'positive',
+        }}
+        onClick={user?.roles.includes('ecoverse-admins') ? () => setEditOpened(true) : undefined}
+      >
+        <Spacer />
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'wins how? (juice)'}
+          <Icon component={CupStrawIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {value}
+        </Typography>
+        <Spacer variant="lg" />
+
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'required effort for pilot'}
+          <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {`${description} ${impact}`}
+        </Typography>
+      </Card>
+      <ActorEdit
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        data={{ name, description, value, impact }}
+        opportunityId={opportunityId}
+        id={id}
+      />
+    </>
   );
 };
 

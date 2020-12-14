@@ -264,6 +264,7 @@ export interface CardProps extends Record<string, unknown> {
     name: string;
   };
   actions?: JSX.Element[];
+  onClick?: () => any;
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -304,6 +305,7 @@ const Card: FC<CardProps> = ({
   bgText,
   level,
   actions,
+  onClick,
   ...rest
 }) => {
   const styles = useCardStyles(classes);
@@ -315,7 +317,11 @@ const Card: FC<CardProps> = ({
   const handleClose = () => popUp && setIsModalShown(false);
 
   return (
-    <div className={clsx(styles.root, popUp && styles.clickable, className, 'ct-card')} onClick={handleShow} {...rest}>
+    <div
+      className={clsx(styles.root, (popUp || onClick) && styles.clickable, className, 'ct-card')}
+      onClick={onClick || handleShow}
+      {...rest}
+    >
       {headerProps && <HeaderCaption {...headerProps} />}
 
       <Body {...bodyProps}>
