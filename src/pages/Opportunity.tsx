@@ -341,14 +341,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
           {incoming && incoming.length > 0 && (
             <CardContainer title={'Users'} xs={12} md={6} lg={4} xl={3}>
               {incoming?.map((props, i) => (
-                <RelationCard key={i} {...props} />
+                <RelationCard key={i} opportunityID={id} {...props} />
               ))}
             </CardContainer>
           )}
           {outgoing && outgoing.length > 0 && (
             <CardContainer title={'Groups'} xs={12} md={6} lg={4} xl={3}>
               {outgoing?.map((props, i) => (
-                <RelationCard key={i} {...props} />
+                <RelationCard key={i} opportunityID={id} {...props} />
               ))}
             </CardContainer>
           )}

@@ -30,6 +30,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         }
       }
       relations {
+        id
         actorRole
         actorName
         actorType
@@ -127,5 +128,25 @@ export const MUTATION_UPDATE_ACTOR = gql`
 export const MUTATION_REMOVE_ACTOR = gql`
   mutation removeActor($ID: Float!) {
     removeActor(ID: $ID)
+  }
+`;
+
+export const MUTATION_RELATION_REMOVE = gql`
+  mutation removeRelation($ID: Float!) {
+    removeRelation(ID: $ID)
+  }
+`;
+
+export const QUERY_OPPORTUNITY_RELATIONS = gql`
+  query queryOpportunityRelations($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
+    }
   }
 `;
