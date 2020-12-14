@@ -128,7 +128,7 @@ export const ActorCard: FC<ActorCardProps> = ({
           text: type,
           color: type === 'stakeholder' ? 'neutral' : 'positive',
         }}
-        onClick={user?.roles.includes('global-admins') ? () => setEditOpened(true) : undefined}
+        onClick={user?.roles.includes('ecoverse-admins') ? () => setEditOpened(true) : undefined}
       >
         <Spacer />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
