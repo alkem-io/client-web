@@ -3,6 +3,8 @@ import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-squ
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+
 import React, { FC, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
@@ -11,9 +13,9 @@ import Icon from '../core/Icon';
 import Typography from '../core/Typography';
 import ActorEdit from './ActorEdit';
 import { useUserContext } from '../../hooks/useUserContext';
-import RelationRemoveModal from './RemoveRelationModal';
-import { useRemoveRelationMutation } from '../../generated/graphql';
-import { QUERY_OPPORTUNITY_RELATIONS } from '../../graphql/opportunity';
+import RemoveModal from './RelationModal';
+import { useRemoveActorMutation, useRemoveRelationMutation } from '../../generated/graphql';
+import { QUERY_OPPORTUNITY_ACTOR_GROUPS, QUERY_OPPORTUNITY_RELATIONS } from '../../graphql/opportunity';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -103,9 +105,9 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
           </>
         )}
       </Card>
-      <RelationRemoveModal
+      <RemoveModal
         show={showRemove}
-        name={actorName}
+        text={`Are you sure you want to remove ${actorName} from relations?`}
         onConfirm={() => removeRelation()}
         onCancel={() => setShowRemove(false)}
       />
@@ -134,7 +136,18 @@ export const ActorCard: FC<ActorCardProps> = ({
 }) => {
   const styles = useCardStyles();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
+  const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const { user } = useUserContext();
+  const isEcoverseAdmin = user?.roles.includes('ecoverse-admins');
+
+  const [removeActor] = useRemoveActorMutation({
+    onCompleted: () => setEditOpened(false),
+    onError: e => console.error(e),
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    awaitRefetchQueries: true,
+  });
+
+  const onRemove = () => removeActor({ variables: { ID: Number(id) } });
 
   return (
     <>
@@ -151,8 +164,16 @@ export const ActorCard: FC<ActorCardProps> = ({
           text: type,
           color: type === 'stakeholder' ? 'neutral' : 'positive',
         }}
-        onClick={user?.roles.includes('ecoverse-admins') ? () => setEditOpened(true) : undefined}
+        actions={
+          isEcoverseAdmin
+            ? [
+                <Edit width={20} height={20} onClick={() => setEditOpened(true)} />,
+                <Delete width={20} height={20} onClick={() => setIsRemoveConfirmOpened(true)} />,
+              ]
+            : []
+        }
       >
+        {description}
         <Spacer />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'wins how? (juice)'}
@@ -162,13 +183,12 @@ export const ActorCard: FC<ActorCardProps> = ({
           {value}
         </Typography>
         <Spacer variant="lg" />
-
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'required effort for pilot'}
           <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
         </Typography>
         <Typography as="h3" variant="body">
-          {`${description} ${impact}`}
+          {impact}
         </Typography>
       </Card>
       <ActorEdit
@@ -177,6 +197,12 @@ export const ActorCard: FC<ActorCardProps> = ({
         data={{ name, description, value, impact }}
         opportunityId={opportunityId}
         id={id}
+      />
+      <RemoveModal
+        show={isRemoveConfirmOpened}
+        text={`Are you sure you want to remove actor ${name}`}
+        onConfirm={() => onRemove()}
+        onCancel={() => setIsRemoveConfirmOpened(false)}
       />
     </>
   );

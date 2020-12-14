@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from '../core/Button';
-import { ActorInput, useRemoveActorMutation, useUpdateActorMutation } from '../../generated/graphql';
+import { ActorInput, useUpdateActorMutation } from '../../generated/graphql';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import TextInput, { TextArea } from '../core/TextInput';
@@ -57,13 +57,6 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
     awaitRefetchQueries: true,
   });
 
-  const [removeActor] = useRemoveActorMutation({
-    onCompleted: () => onHide(),
-    onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
-    awaitRefetchQueries: true,
-  });
-
   const onSubmit = values => {
     updateActor({
       variables: {
@@ -72,8 +65,6 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
       },
     });
   };
-
-  const onRemove = () => removeActor({ variables: { ID: Number(id) } });
 
   let submitWired;
 
@@ -109,6 +100,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
                     label={label}
                     error={!!errors[name]}
                     className={styles.field}
+                    rows={2}
                   />
                 )}
               </>
@@ -130,10 +122,6 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
         </Formik>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="negative" onClick={onRemove} className={'mr-2'}>
-          REMOVE ACTOR
-        </Button>
-        <div className="flex-grow-1" />
         <Button variant="negative" onClick={onHide} className={'mr-2'}>
           CANCEL
         </Button>

@@ -135,6 +135,7 @@ const TextInput: FC<TextInputProps> = ({
 
 interface TextAreaProps extends TextProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
 }
 
 const TextArea: FC<TextAreaProps> = ({
@@ -148,6 +149,7 @@ const TextArea: FC<TextAreaProps> = ({
   small = false,
   error = false,
   disabled = false,
+  rows = 4,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   ...rest
 }) => {
@@ -162,7 +164,7 @@ const TextArea: FC<TextAreaProps> = ({
         </Typography>
       )}
       <textarea
-        rows={4}
+        rows={rows}
         disabled={disabled}
         className={clsx(styles.textArea, inset && 'inset', small && 'small', 'ct-textarea', className)}
         onChange={onChange}

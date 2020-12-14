@@ -5,17 +5,17 @@ import Button from '../core/Button';
 interface RelationRemoveModalProps {
   show: boolean;
   onCancel: () => void;
-  name: string | undefined;
+  text: string;
   onConfirm: () => void;
 }
 
-const RelationRemoveModal: FC<RelationRemoveModalProps> = ({ show, name, onCancel, onConfirm }) => {
+const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, onConfirm }) => {
   return (
     <Modal show={show} onHide={onCancel} centered>
       <Modal.Header closeButton>
         <Modal.Title>Confirm remove</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Are you sure you want to remove {name} from relations?</Modal.Body>
+      <Modal.Body>{text}</Modal.Body>
       <Modal.Footer>
         <Button small onClick={onCancel}>
           Cancel
@@ -28,4 +28,4 @@ const RelationRemoveModal: FC<RelationRemoveModalProps> = ({ show, name, onCance
   );
 };
 
-export default RelationRemoveModal;
+export default RemoveModal;
