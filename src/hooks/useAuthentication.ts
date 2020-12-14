@@ -9,8 +9,6 @@ import { useCallback, useContext, useMemo } from 'react';
 import { configContext } from '../context/ConfigProvider';
 import { AadClientConfig } from '../generated/graphql';
 
-export const TOKEN_STORAGE_KEY = 'accessToken';
-
 export interface UseAuthenticationResult {
   signIn: () => Promise<AuthenticationResult | undefined>;
   signOut: (username: string) => Promise<void>;
