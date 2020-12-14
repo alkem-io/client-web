@@ -9,8 +9,6 @@ import { pushError } from '../reducers/error/actions';
 import { error as logError } from '../sentry/log';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
-export const TOKEN_STORAGE_KEY = 'accessToken';
-
 const resetStore = (client: ApolloClient<object>) => {
   return client.resetStore(); //;.catch(ex => {    throw ex;  });
 };
