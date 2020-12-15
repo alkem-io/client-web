@@ -149,7 +149,7 @@ export const ActorCard: FC<ActorCardProps> = ({
   const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   const [removeActor] = useRemoveActorMutation({
-    onCompleted: () => setEditOpened(false),
+    onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e),
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
