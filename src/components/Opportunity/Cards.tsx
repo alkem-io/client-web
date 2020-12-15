@@ -13,9 +13,14 @@ import Icon from '../core/Icon';
 import Typography from '../core/Typography';
 import ActorEdit from './ActorEdit';
 import { useUserContext } from '../../hooks/useUserContext';
-import RemoveModal from './RelationModal';
-import { useRemoveActorMutation, useRemoveRelationMutation } from '../../generated/graphql';
-import { QUERY_OPPORTUNITY_ACTOR_GROUPS, QUERY_OPPORTUNITY_RELATIONS } from '../../graphql/opportunity';
+import RemoveModal from '../core/RemoveModal';
+import { useRemoveActorMutation, useRemoveAspectMutation, useRemoveRelationMutation } from '../../generated/graphql';
+import {
+  QUERY_OPPORTUNITY_ACTOR_GROUPS,
+  QUERY_OPPORTUNITY_ASPECTS,
+  QUERY_OPPORTUNITY_RELATIONS,
+} from '../../graphql/opportunity';
+import AspectEdit from './AspectEdit';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -70,6 +75,9 @@ interface RelationCardProps {
 export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityID }) => {
   const styles = useCardStyles();
   const [showRemove, setShowRemove] = useState<boolean>(false);
+  const { user } = useUserContext();
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+
   const [removeRelation] = useRemoveRelationMutation({
     variables: { ID: Number(id) },
     onCompleted: () => setShowRemove(false),
@@ -92,7 +100,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
           text: `${actorRole}`,
           color: type === 'incoming' ? 'positive' : 'neutralMedium',
         }}
-        actions={[<Delete width={20} height={20} onClick={() => setShowRemove(true)} />]}
+        actions={isAdmin ? [<Delete width={20} height={20} onClick={() => setShowRemove(true)} />] : []}
       >
         {description !== '""' && ( // remove empty quotes check when it is fixed on server
           <>
@@ -138,7 +146,7 @@ export const ActorCard: FC<ActorCardProps> = ({
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const { user } = useUserContext();
-  const isEcoverseAdmin = user?.roles.includes('ecoverse-admins');
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   const [removeActor] = useRemoveActorMutation({
     onCompleted: () => setEditOpened(false),
@@ -165,7 +173,7 @@ export const ActorCard: FC<ActorCardProps> = ({
           color: type === 'stakeholder' ? 'neutral' : 'positive',
         }}
         actions={
-          isEcoverseAdmin
+          isAdmin
             ? [
                 <Edit width={20} height={20} onClick={() => setEditOpened(true)} />,
                 <Delete width={20} height={20} onClick={() => setIsRemoveConfirmOpened(true)} />,
@@ -209,40 +217,78 @@ export const ActorCard: FC<ActorCardProps> = ({
 };
 
 interface AspectCardProps {
+  id: string;
   title: string;
   framing?: string;
   explanation?: string;
+  opportunityId: string;
 }
 
-export const AspectCard: FC<AspectCardProps> = ({ title, framing, explanation }) => {
+export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId }) => {
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+  const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
+
+  const [removeAspect] = useRemoveAspectMutation({
+    onCompleted: () => setEditOpened(false),
+    onError: e => console.error(e),
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
+    awaitRefetchQueries: true,
+  });
+  const onRemove = () => removeAspect({ variables: { ID: Number(id) } });
+
   const styles = useCardStyles();
+  const { user } = useUserContext();
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   return (
-    <Card
-      className={styles.border}
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) => theme.palette.background,
-        },
-      }}
-      primaryTextProps={{ text: title }}
-    >
-      <Spacer />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'explanation'}
-        <Icon component={InfoSquareIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {explanation}
-      </Typography>
-      <Spacer variant="lg" />
-      <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
-        {'where we need help'}
-        <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
-      </Typography>
-      <Typography as="h3" variant="body">
-        {framing}
-      </Typography>
-    </Card>
+    <>
+      <Card
+        className={styles.border}
+        bodyProps={{
+          classes: {
+            background: (theme: Theme) => theme.palette.background,
+          },
+        }}
+        primaryTextProps={{ text: title }}
+        actions={
+          isAdmin
+            ? [
+                <Edit width={20} height={20} onClick={() => setEditOpened(true)} />,
+                <Delete width={20} height={20} onClick={() => setIsRemoveConfirmOpened(true)} />,
+              ]
+            : []
+        }
+      >
+        <Spacer />
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'explanation'}
+          <Icon component={InfoSquareIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {explanation}
+        </Typography>
+        <Spacer variant="lg" />
+        <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
+          {'where we need help'}
+          <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
+        </Typography>
+        <Typography as="h3" variant="body">
+          {framing}
+        </Typography>
+      </Card>
+      <AspectEdit
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        data={{ title, framing, explanation }}
+        opportunityId={opportunityId}
+        id={id}
+      />
+      <RemoveModal
+        show={isRemoveConfirmOpened}
+        text={`Are you sure you want to remove "${title}" aspect`}
+        onConfirm={() => onRemove()}
+        onCancel={() => setIsRemoveConfirmOpened(false)}
+      />
+    </>
   );
 };

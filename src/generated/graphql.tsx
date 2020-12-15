@@ -1147,7 +1147,7 @@ export type OpportunityProfileQueryVariables = Exact<{
 
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
-      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -1227,26 +1227,6 @@ export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
   addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
 };
 
-export type RemoveRelationMutationVariables = Exact<{
-  ID: Scalars['Float'];
-}>;
-
-export type RemoveRelationMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeRelation'>;
-
-export type QueryOpportunityRelationsQueryVariables = Exact<{
-  id: Scalars['Float'];
-}>;
-
-export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    relations?: Maybe<
-      Array<
-        { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
-      >
-    >;
-  };
-};
-
 export type OpportunityActorGroupsQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1279,6 +1259,51 @@ export type RemoveActorMutationVariables = Exact<{
 }>;
 
 export type RemoveActorMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeActor'>;
+
+export type RemoveRelationMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveRelationMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeRelation'>;
+
+export type QueryOpportunityRelationsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    relations?: Maybe<
+      Array<
+        { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+      >
+    >;
+  };
+};
+
+export type UpdateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  ID: Scalars['Float'];
+}>;
+
+export type UpdateAspectMutation = { __typename?: 'Mutation' } & {
+  updateAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
+
+export type OpportunityAspectsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+  };
+};
+
+export type RemoveAspectMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -2733,6 +2758,7 @@ export const OpportunityProfileDocument = gql`
       name
       state
       aspects {
+        id
         title
         framing
         explanation
@@ -2996,96 +3022,6 @@ export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
   AddUserToOpportunityMutation,
   AddUserToOpportunityMutationVariables
 >;
-export const RemoveRelationDocument = gql`
-  mutation removeRelation($ID: Float!) {
-    removeRelation(ID: $ID)
-  }
-`;
-export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMutation, RemoveRelationMutationVariables>;
-
-/**
- * __useRemoveRelationMutation__
- *
- * To run a mutation, you first call `useRemoveRelationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveRelationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeRelationMutation, { data, loading, error }] = useRemoveRelationMutation({
- *   variables: {
- *      ID: // value for 'ID'
- *   },
- * });
- */
-export function useRemoveRelationMutation(
-  baseOptions?: Apollo.MutationHookOptions<RemoveRelationMutation, RemoveRelationMutationVariables>
-) {
-  return Apollo.useMutation<RemoveRelationMutation, RemoveRelationMutationVariables>(
-    RemoveRelationDocument,
-    baseOptions
-  );
-}
-export type RemoveRelationMutationHookResult = ReturnType<typeof useRemoveRelationMutation>;
-export type RemoveRelationMutationResult = Apollo.MutationResult<RemoveRelationMutation>;
-export type RemoveRelationMutationOptions = Apollo.BaseMutationOptions<
-  RemoveRelationMutation,
-  RemoveRelationMutationVariables
->;
-export const QueryOpportunityRelationsDocument = gql`
-  query queryOpportunityRelations($id: Float!) {
-    opportunity(ID: $id) {
-      relations {
-        actorRole
-        actorName
-        actorType
-        description
-        type
-      }
-    }
-  }
-`;
-
-/**
- * __useQueryOpportunityRelationsQuery__
- *
- * To run a query within a React component, call `useQueryOpportunityRelationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useQueryOpportunityRelationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useQueryOpportunityRelationsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useQueryOpportunityRelationsQuery(
-  baseOptions: Apollo.QueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
-) {
-  return Apollo.useQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
-    QueryOpportunityRelationsDocument,
-    baseOptions
-  );
-}
-export function useQueryOpportunityRelationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
-) {
-  return Apollo.useLazyQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
-    QueryOpportunityRelationsDocument,
-    baseOptions
-  );
-}
-export type QueryOpportunityRelationsQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsQuery>;
-export type QueryOpportunityRelationsLazyQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsLazyQuery>;
-export type QueryOpportunityRelationsQueryResult = Apollo.QueryResult<
-  QueryOpportunityRelationsQuery,
-  QueryOpportunityRelationsQueryVariables
->;
 export const OpportunityActorGroupsDocument = gql`
   query opportunityActorGroups($id: Float!) {
     opportunity(ID: $id) {
@@ -3210,6 +3146,219 @@ export function useRemoveActorMutation(
 export type RemoveActorMutationHookResult = ReturnType<typeof useRemoveActorMutation>;
 export type RemoveActorMutationResult = Apollo.MutationResult<RemoveActorMutation>;
 export type RemoveActorMutationOptions = Apollo.BaseMutationOptions<RemoveActorMutation, RemoveActorMutationVariables>;
+export const RemoveRelationDocument = gql`
+  mutation removeRelation($ID: Float!) {
+    removeRelation(ID: $ID)
+  }
+`;
+export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMutation, RemoveRelationMutationVariables>;
+
+/**
+ * __useRemoveRelationMutation__
+ *
+ * To run a mutation, you first call `useRemoveRelationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRelationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRelationMutation, { data, loading, error }] = useRemoveRelationMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveRelationMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveRelationMutation, RemoveRelationMutationVariables>
+) {
+  return Apollo.useMutation<RemoveRelationMutation, RemoveRelationMutationVariables>(
+    RemoveRelationDocument,
+    baseOptions
+  );
+}
+export type RemoveRelationMutationHookResult = ReturnType<typeof useRemoveRelationMutation>;
+export type RemoveRelationMutationResult = Apollo.MutationResult<RemoveRelationMutation>;
+export type RemoveRelationMutationOptions = Apollo.BaseMutationOptions<
+  RemoveRelationMutation,
+  RemoveRelationMutationVariables
+>;
+export const QueryOpportunityRelationsDocument = gql`
+  query queryOpportunityRelations($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
+    }
+  }
+`;
+
+/**
+ * __useQueryOpportunityRelationsQuery__
+ *
+ * To run a query within a React component, call `useQueryOpportunityRelationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQueryOpportunityRelationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQueryOpportunityRelationsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useQueryOpportunityRelationsQuery(
+  baseOptions: Apollo.QueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
+) {
+  return Apollo.useQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
+    QueryOpportunityRelationsDocument,
+    baseOptions
+  );
+}
+export function useQueryOpportunityRelationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
+) {
+  return Apollo.useLazyQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
+    QueryOpportunityRelationsDocument,
+    baseOptions
+  );
+}
+export type QueryOpportunityRelationsQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsQuery>;
+export type QueryOpportunityRelationsLazyQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsLazyQuery>;
+export type QueryOpportunityRelationsQueryResult = Apollo.QueryResult<
+  QueryOpportunityRelationsQuery,
+  QueryOpportunityRelationsQueryVariables
+>;
+export const UpdateAspectDocument = gql`
+  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $ID) {
+      title
+    }
+  }
+`;
+export type UpdateAspectMutationFn = Apollo.MutationFunction<UpdateAspectMutation, UpdateAspectMutationVariables>;
+
+/**
+ * __useUpdateAspectMutation__
+ *
+ * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useUpdateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateAspectMutation, UpdateAspectMutationVariables>
+) {
+  return Apollo.useMutation<UpdateAspectMutation, UpdateAspectMutationVariables>(UpdateAspectDocument, baseOptions);
+}
+export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
+export type UpdateAspectMutationResult = Apollo.MutationResult<UpdateAspectMutation>;
+export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
+  UpdateAspectMutation,
+  UpdateAspectMutationVariables
+>;
+export const OpportunityAspectsDocument = gql`
+  query opportunityAspects($id: Float!) {
+    opportunity(ID: $id) {
+      aspects {
+        title
+        framing
+        explanation
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityAspectsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAspectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAspectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAspectsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityAspectsQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>(
+    OpportunityAspectsDocument,
+    baseOptions
+  );
+}
+export function useOpportunityAspectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>(
+    OpportunityAspectsDocument,
+    baseOptions
+  );
+}
+export type OpportunityAspectsQueryHookResult = ReturnType<typeof useOpportunityAspectsQuery>;
+export type OpportunityAspectsLazyQueryHookResult = ReturnType<typeof useOpportunityAspectsLazyQuery>;
+export type OpportunityAspectsQueryResult = Apollo.QueryResult<
+  OpportunityAspectsQuery,
+  OpportunityAspectsQueryVariables
+>;
+export const RemoveAspectDocument = gql`
+  mutation removeAspect($ID: Float!) {
+    removeAspect(ID: $ID)
+  }
+`;
+export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutation, RemoveAspectMutationVariables>;
+
+/**
+ * __useRemoveAspectMutation__
+ *
+ * To run a mutation, you first call `useRemoveAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAspectMutation, { data, loading, error }] = useRemoveAspectMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveAspectMutation, RemoveAspectMutationVariables>
+) {
+  return Apollo.useMutation<RemoveAspectMutation, RemoveAspectMutationVariables>(RemoveAspectDocument, baseOptions);
+}
+export type RemoveAspectMutationHookResult = ReturnType<typeof useRemoveAspectMutation>;
+export type RemoveAspectMutationResult = Apollo.MutationResult<RemoveAspectMutation>;
+export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
+  RemoveAspectMutation,
+  RemoveAspectMutationVariables
+>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {
