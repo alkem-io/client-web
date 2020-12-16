@@ -336,7 +336,7 @@ const Card: FC<CardProps> = ({
           </Typography>
         )}
 
-        <div className="flex-grow-1" />
+        {/*<div className="flex-grow-1" />*/}
         {matchedTerms && (
           <>
             <MatchedTerms {...matchedTerms} />

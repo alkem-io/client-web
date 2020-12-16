@@ -4,6 +4,7 @@ import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/mine
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 
 import React, { FC, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
@@ -73,7 +74,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   const [removeRelation] = useRemoveRelationMutation({
     variables: { ID: Number(id) },
     onCompleted: () => setShowRemove(false),
-    onError: e => console.error(e),
+    onError: e => console.error(e), // eslint-disable-line no-console
     refetchQueries: [{ query: QUERY_OPPORTUNITY_RELATIONS, variables: { id: Number(opportunityID) } }],
     awaitRefetchQueries: true,
   });
@@ -141,8 +142,8 @@ export const ActorCard: FC<ActorCardProps> = ({
   const isEcoverseAdmin = user?.roles.includes('ecoverse-admins');
 
   const [removeActor] = useRemoveActorMutation({
-    onCompleted: () => setEditOpened(false),
-    onError: e => console.error(e),
+    onCompleted: () => setIsRemoveConfirmOpened(false),
+    onError: e => console.error(e), // eslint-disable-line no-console
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
@@ -203,6 +204,59 @@ export const ActorCard: FC<ActorCardProps> = ({
         text={`Are you sure you want to remove actor ${name}`}
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
+      />
+    </>
+  );
+};
+
+interface NewActorProps {
+  text: string;
+  actorGroupId;
+  opportunityId: string;
+}
+
+const useNewActorCardStyles = createStyles(theme => ({
+  activeCard: {
+    color: theme.palette.primary,
+    height: '100%',
+    '&:hover': {
+      opacity: 0.7,
+      cursor: 'pointer',
+      background: theme.palette.primary,
+      color: theme.palette.background,
+
+      '& > .ct-card-body': {
+        background: 'transparent',
+        color: theme.palette.background,
+      },
+    },
+  },
+  inner: {
+    display: 'flex',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}));
+
+export const NewActorCard: FC<NewActorProps> = ({ text, actorGroupId, opportunityId }) => {
+  const styles = useNewActorCardStyles();
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+
+  return (
+    <>
+      <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
+        <div className={styles.inner}>
+          <Icon component={PlusIcon} color="inherit" size="xxl" />
+        </div>
+      </Card>
+
+      <ActorEdit
+        isCreate={true}
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        opportunityId={opportunityId}
+        actorGroupId={actorGroupId}
       />
     </>
   );

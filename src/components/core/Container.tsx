@@ -30,8 +30,10 @@ export default Container;
 
 interface CardContainerProps extends ContainerProps {
   cardHeight?: unknown;
+  fullHeight?: boolean;
   children: React.ReactNode[];
   title?: string;
+  withCreate?: React.ReactNode;
   xs?: number;
   sm?: number;
   md?: number;
@@ -42,7 +44,10 @@ interface CardContainerProps extends ContainerProps {
 const useCardContainerStyles = createStyles(theme => ({
   root: {
     '& .ct-card': {
-      height: props => (props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.shape.spacing(1.5)}px)`),
+      height: props => {
+        if (props.fullHeight) return '100%';
+        return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.shape.spacing(1.5)}px)`;
+      },
     },
   },
   spacer: {
@@ -54,13 +59,13 @@ const useCardContainerStyles = createStyles(theme => ({
   },
 }));
 
-const CardContainer: FC<CardContainerProps> = ({ children, cardHeight, title, ...rest }) => {
-  const styles = useCardContainerStyles({ cardHeight });
+const CardContainer: FC<CardContainerProps> = ({ children, fullHeight, cardHeight, title, withCreate, ...rest }) => {
+  const styles = useCardContainerStyles({ cardHeight, fullHeight });
 
   return (
     <Container className={styles.root}>
       {title && (
-        <Row>
+        <Row className={'mb-4'}>
           <Col xs={12}>
             <Typography variant="h4" color="neutral" weight="bold" className={styles.title}>
               {title}
@@ -68,22 +73,21 @@ const CardContainer: FC<CardContainerProps> = ({ children, cardHeight, title, ..
           </Col>
         </Row>
       )}
-      <Row>
+      <Row className={'mb-4'}>
         {children.map((c, i) => (
           <Fragment key={i}>
             <Col {...rest}>
               {c}
-              <div className={styles.spacer}></div>
+              <div className={styles.spacer} />
             </Col>
           </Fragment>
-          // <Fragment key={i}>
-          //   {/* <Hidden xsUp>
-          //     <Col xs={12} sm={false}>
-          //       <div className={styles.spacer}></div>
-          //     </Col>
-          //   </Hidden> */}
-          // <Fragment/>
         ))}
+        {withCreate && (
+          <Col {...rest}>
+            {withCreate}
+            <div className={styles.spacer} />
+          </Col>
+        )}
       </Row>
     </Container>
   );
