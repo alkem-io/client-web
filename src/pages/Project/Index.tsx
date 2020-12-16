@@ -59,7 +59,8 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
       {aspects && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>
           {aspects?.map((props, i) => (
-            <AspectCard key={i} {...props} />
+            // Opportunity ID is mocked for projects atm.
+            <AspectCard key={i} opportunityId={'1'} {...props} />
           ))}
         </CardContainer>
       )}
