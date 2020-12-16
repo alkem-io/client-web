@@ -8,6 +8,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
       name
       state
       aspects {
+        id
         title
         framing
         explanation
@@ -156,5 +157,30 @@ export const QUERY_OPPORTUNITY_RELATIONS = gql`
         type
       }
     }
+  }
+`;
+
+export const MUTATION_UPDATE_ASPECT = gql`
+  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $ID) {
+      title
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_ASPECTS = gql`
+  query opportunityAspects($id: Float!) {
+    opportunity(ID: $id) {
+      aspects {
+        title
+        framing
+        explanation
+      }
+    }
+  }
+`;
+export const MUTATION_REMOVE_ASPECT = gql`
+  mutation removeAspect($ID: Float!) {
+    removeAspect(ID: $ID)
   }
 `;

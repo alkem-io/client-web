@@ -365,7 +365,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       {aspects && (
         <CardContainer xs={12} md={6} lg={4} xl={3}>
           {aspects?.map((props, i) => (
-            <AspectCard key={i} {...props} />
+            <AspectCard key={i} opportunityId={id} {...props} />
           ))}
         </CardContainer>
       )}

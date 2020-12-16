@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import Button from '../core/Button';
+import Button from './Button';
 
 interface RelationRemoveModalProps {
   show: boolean;
