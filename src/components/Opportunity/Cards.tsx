@@ -134,15 +134,7 @@ interface ActorCardProps {
   opportunityId: string;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({
-  id,
-  name,
-  description,
-  value,
-  impact,
-  type = 'stakeholder',
-  opportunityId,
-}) => {
+export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
   const styles = useCardStyles();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
@@ -164,15 +156,10 @@ export const ActorCard: FC<ActorCardProps> = ({
         className={styles.border}
         bodyProps={{
           classes: {
-            background: (theme: Theme) =>
-              type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
+            background: (theme: Theme) => theme.palette.background,
           },
         }}
         primaryTextProps={{ text: name, tooltip: true }}
-        tagProps={{
-          text: type,
-          color: type === 'stakeholder' ? 'neutral' : 'positive',
-        }}
         actions={
           isAdmin
             ? [
@@ -343,6 +330,30 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
       />
+    </>
+  );
+};
+
+interface NewActorProps {
+  text: string;
+  actorGroupId;
+  opportunityId: string;
+}
+
+export const NewAspectCard: FC<NewActorProps> = ({ text, actorGroupId, opportunityId }) => {
+  const styles = useNewActorCardStyles();
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+
+  return (
+    <>
+      <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
+        <div className={styles.inner}>
+          <Icon component={PlusIcon} color="inherit" size="xxl" />
+          {opportunityId}
+        </div>
+      </Card>
+
+      <AspectEdit isCreate={true} show={isEditOpened} onHide={() => setEditOpened(false)} actorGroupId={actorGroupId} />
     </>
   );
 };

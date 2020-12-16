@@ -11,9 +11,11 @@ import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
 interface Props {
   show: boolean;
   onHide: () => void;
-  data: AspectInput;
-  id: string;
-  opportunityId: string | undefined;
+  data?: AspectInput;
+  id?: string;
+  opportunityId?: string | undefined;
+  actorGroupId?: string;
+  isCreate?: boolean;
 }
 
 const useContextEditStyles = createStyles(theme => ({
@@ -36,6 +38,9 @@ const useContextEditStyles = createStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
   const styles = useContextEditStyles();
+  // const { data: aspectsTypes } = useAspectsTemplateListQuery();
+
+  // console.log('aspectsTypes --> ', aspectsTypes);
 
   const initialValues: AspectInput = {
     title: data?.title || '',

@@ -184,3 +184,17 @@ export const MUTATION_REMOVE_ASPECT = gql`
     removeAspect(ID: $ID)
   }
 `;
+
+export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
+  query aspectsTemplateList {
+    metadata {
+      clientMetadata {
+        template {
+          opportunities {
+            aspects
+          }
+        }
+      }
+    }
+  }
+`;

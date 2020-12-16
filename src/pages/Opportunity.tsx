@@ -20,7 +20,7 @@ import Typography from '../components/core/Typography';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
-import { ActorCard, AspectCard, NewActorCard, RelationCard } from '../components/Opportunity/Cards';
+import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import { ContextInput, Opportunity as OpportunityType, Project, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
@@ -363,7 +363,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SubHeader text={'How we envision the first steps'} />
       </Section>
       {aspects && (
-        <CardContainer xs={12} md={6} lg={4} xl={3}>
+        <CardContainer
+          xs={12}
+          md={6}
+          lg={4}
+          xl={3}
+          withCreate={<NewAspectCard opportunityId={id} text={'Add'} actorGroupId={'12'} />}
+        >
           {aspects?.map((props, i) => (
             <AspectCard key={i} opportunityId={id} {...props} />
           ))}
