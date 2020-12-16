@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from '../core/Button';
-import { ActorInput, useUpdateActorMutation } from '../../generated/graphql';
+import { ActorInput, useCreateActorMutation, useUpdateActorMutation } from '../../generated/graphql';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import TextInput, { TextArea } from '../core/TextInput';
@@ -11,9 +11,11 @@ import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
 interface Props {
   show: boolean;
   onHide: () => void;
-  data: ActorInput;
-  id: string;
-  opportunityId: string | undefined;
+  data?: ActorInput;
+  id?: string;
+  opportunityId?: string | undefined;
+  actorGroupId?: string | undefined;
+  isCreate?: boolean;
 }
 
 const useContextEditStyles = createStyles(theme => ({
@@ -34,7 +36,7 @@ const useContextEditStyles = createStyles(theme => ({
   },
 }));
 
-const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
+const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId, isCreate = false }) => {
   const styles = useContextEditStyles();
 
   const initialValues: ActorInput = {
@@ -50,14 +52,31 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
     impact: yup.string().required(),
   });
 
+  const [createActor] = useCreateActorMutation({
+    onCompleted: () => onHide(),
+    onError: e => console.error(e), // eslint-disable-line no-console
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    awaitRefetchQueries: true,
+  });
+
   const [updateActor] = useUpdateActorMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: e => console.error(e), // eslint-disable-line no-console
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = values => {
+    if (isCreate) {
+      createActor({
+        variables: {
+          actorData: values,
+          actorGroupID: Number(actorGroupId),
+        },
+      });
+
+      return;
+    }
     updateActor({
       variables: {
         ID: Number(id),
@@ -71,7 +90,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>
       <Modal.Header closeButton>
-        <Modal.Title>Edit Actor</Modal.Title>
+        <Modal.Title>{isCreate ? 'Create' : 'Edit'} Actor</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.body}>
         <Formik
@@ -80,7 +99,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
           enableReinitialize
           onSubmit={values => onSubmit(values)}
         >
-          {({ values, handleChange, errors, handleSubmit }) => {
+          {({ values, handleChange, errors, handleSubmit, touched }) => {
             const getField = (name: string, label: string, type?: 'input' | 'textArea') => (
               <>
                 {type === 'input' ? (
@@ -89,7 +108,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
                     name={name}
                     value={values[name] as string}
                     label={label}
-                    error={!!errors[name]}
+                    error={touched[name] && !!errors[name]}
                     className={styles.field}
                   />
                 ) : (
@@ -98,7 +117,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
                     name={name}
                     value={values[name] as string}
                     label={label}
-                    error={!!errors[name]}
+                    error={touched[name] && !!errors[name]}
                     className={styles.field}
                     rows={2}
                   />
@@ -126,7 +145,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId }) => {
           CANCEL
         </Button>
         <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          SAVE
+          {isCreate ? 'Create' : 'SAVE'}
         </Button>
       </Modal.Footer>
     </Modal>

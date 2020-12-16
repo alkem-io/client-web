@@ -5,6 +5,7 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
@@ -19,7 +20,7 @@ import Typography from '../components/core/Typography';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
-import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
+import { ActorCard, AspectCard, NewActorCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import { ContextInput, Opportunity as OpportunityType, Project, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
@@ -91,16 +92,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
-  // const team = relations[0];
-  const stakeholders = useMemo(
-    () => actorGroups?.find(x => x.name === 'stakeholders')?.actors?.map(x => ({ ...x, type: 'stakeholder' })),
-    [actorGroups]
-  );
-  const keyUsers = useMemo(
-    () =>
-      actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
-    [actorGroups]
-  );
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
@@ -302,21 +293,30 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'ADOPTION ECOSYSTEM'} />
         <SubHeader text={'Stakeholders & Key users'} />
       </Section>
-      {stakeholders && stakeholders.length > 0 && (
-        <CardContainer xs={12} md={6} lg={4} xl={3} title="stakeholders">
-          {stakeholders?.map((props, i) => (
-            <ActorCard key={i} opportunityId={id} {...props} />
-          ))}
-        </CardContainer>
-      )}
-      {keyUsers && keyUsers.length > 0 && (
-        <CardContainer xs={12} md={6} lg={4} xl={3} title="key users">
-          {keyUsers?.map((props, i) => (
-            <ActorCard key={i} opportunityId={id} {...props} />
-          ))}
-        </CardContainer>
-      )}
+      {actorGroups
+        ?.filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
+        ?.map(({ id: actorGroupId, actors = [], name }, index) => {
+          const _name = name.replaceAll('_', ' ');
+          return (
+            <CardContainer
+              key={index}
+              xs={12}
+              md={6}
+              lg={4}
+              xl={3}
+              title={_name}
+              fullHeight
+              withCreate={<NewActorCard opportunityId={id} text={`Add ${_name}`} actorGroupId={actorGroupId} />}
+            >
+              {actors?.map((props, i) => (
+                <ActorCard key={i} opportunityId={id} {...props} />
+              ))}
+            </CardContainer>
+          );
+        })}
+
       <Divider />
+
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
           {isAuthenticated && !isMemberOfOpportunity && (

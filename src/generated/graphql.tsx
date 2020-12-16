@@ -1227,6 +1227,15 @@ export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
   addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
 };
 
+export type CreateActorMutationVariables = Exact<{
+  actorData: ActorInput;
+  actorGroupID: Scalars['Float'];
+}>;
+
+export type CreateActorMutation = { __typename?: 'Mutation' } & {
+  createActor: { __typename?: 'Actor' } & Pick<Actor, 'name'>;
+};
+
 export type OpportunityActorGroupsQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -3022,6 +3031,41 @@ export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
   AddUserToOpportunityMutation,
   AddUserToOpportunityMutationVariables
 >;
+export const CreateActorDocument = gql`
+  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
+    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+      name
+    }
+  }
+`;
+export type CreateActorMutationFn = Apollo.MutationFunction<CreateActorMutation, CreateActorMutationVariables>;
+
+/**
+ * __useCreateActorMutation__
+ *
+ * To run a mutation, you first call `useCreateActorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateActorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createActorMutation, { data, loading, error }] = useCreateActorMutation({
+ *   variables: {
+ *      actorData: // value for 'actorData'
+ *      actorGroupID: // value for 'actorGroupID'
+ *   },
+ * });
+ */
+export function useCreateActorMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateActorMutation, CreateActorMutationVariables>
+) {
+  return Apollo.useMutation<CreateActorMutation, CreateActorMutationVariables>(CreateActorDocument, baseOptions);
+}
+export type CreateActorMutationHookResult = ReturnType<typeof useCreateActorMutation>;
+export type CreateActorMutationResult = Apollo.MutationResult<CreateActorMutation>;
+export type CreateActorMutationOptions = Apollo.BaseMutationOptions<CreateActorMutation, CreateActorMutationVariables>;
 export const OpportunityActorGroupsDocument = gql`
   query opportunityActorGroups($id: Float!) {
     opportunity(ID: $id) {

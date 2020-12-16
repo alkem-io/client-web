@@ -99,6 +99,14 @@ export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
   }
 `;
 
+export const MUTATION_CREATE_ACTOR = gql`
+  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
+    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+      name
+    }
+  }
+`;
+
 export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
   query opportunityActorGroups($id: Float!) {
     opportunity(ID: $id) {
