@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
-import { AadClientConfig } from '../generated/graphql';
+import { AadConfig } from '../generated/graphql';
 import { QUERY_CONFIG_STRING } from '../graphql/config';
 import { getConfig } from '../utils/authConfig';
 import { Error } from '../pages/Error';
 export interface ConfigContext {
-  aadConfig: AadClientConfig;
+  aadConfig: AadConfig;
   loading: boolean;
 }
 
