@@ -104,7 +104,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
   const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
-  const isAspectAddAllowed = aspectsTypes && aspectsTypes.length > existingAspectNames.length;
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
 
   const activitySummary = useMemo(() => {
     return [
