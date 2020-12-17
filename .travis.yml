@@ -8,4 +8,4 @@ install:
 - npm install
 script:
 - npm run-script lint:prod
-- npm run-script build
+- CI=false npm run-script build
