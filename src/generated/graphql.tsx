@@ -56,15 +56,6 @@ export type Reference = {
   description: Scalars['String'];
 };
 
-export type Template = {
-  __typename?: 'Template';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
-  /** The set of user types that are available within this template */
-  users?: Maybe<Array<User>>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -208,8 +199,6 @@ export type Ecoverse = {
   organisations?: Maybe<Array<Organisation>>;
   /** The Challenges hosted by the Ecoverse */
   challenges?: Maybe<Array<Challenge>>;
-  /** The set of templates registered with this Ecoverse */
-  templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
 };
@@ -258,6 +247,20 @@ export type SearchResultEntry = {
 };
 
 export type SearchResult = User | UserGroup;
+
+export type ServiceMetadata = {
+  __typename?: 'ServiceMetadata';
+  /** Service name e.g. CT Server */
+  name?: Maybe<Scalars['String']>;
+  /** Version in the format {major.minor.patch} - using SemVer. */
+  version?: Maybe<Scalars['String']>;
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** Collection of metadata about Cherrytwist services. */
+  services: Array<ServiceMetadata>;
+};
 
 export type ApiConfig = {
   __typename?: 'ApiConfig';
@@ -313,6 +316,12 @@ export type AadConfig = {
   authEnabled: Scalars['Boolean'];
 };
 
+export type WebClientConfig = {
+  __typename?: 'WebClientConfig';
+  /** Cherrytwist Client AAD config. */
+  aadConfig: AadConfig;
+};
+
 export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
   /** Template opportunity name. */
@@ -333,8 +342,8 @@ export type UserTemplate = {
   tagsets?: Maybe<Array<Scalars['String']>>;
 };
 
-export type UxTemplate = {
-  __typename?: 'UxTemplate';
+export type Template = {
+  __typename?: 'Template';
   /** Template name. */
   name: Scalars['String'];
   /** Template description. */
@@ -345,26 +354,12 @@ export type UxTemplate = {
   opportunities: Array<OpportunityTemplate>;
 };
 
-export type ClientMetadata = {
-  __typename?: 'ClientMetadata';
-  /** Cherrytwist Client UX template. */
-  template: UxTemplate;
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
-};
-
-export type ServerMetadata = {
-  __typename?: 'ServerMetadata';
-  /** Cherrytwist Server version in the format {major.minor.patch} - using SemVer. */
-  version: Scalars['String'];
-};
-
-export type Metadata = {
-  __typename?: 'Metadata';
-  /** Cherrytwist API Server Metadata. */
-  serverMetadata: ServerMetadata;
-  /** Cherrytwist Web Client Metadata. */
-  clientMetadata: ClientMetadata;
+export type Config = {
+  __typename?: 'Config';
+  /** Cherrytwist Web Client Config. */
+  webClient: WebClientConfig;
+  /** Cherrytwist Template. */
+  template: Template;
 };
 
 export type Query = {
@@ -399,8 +394,6 @@ export type Query = {
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** All templates */
-  templates: Array<Template>;
   /** A particular challenge */
   challenge: Challenge;
   /** All organisations */
@@ -411,10 +404,12 @@ export type Query = {
   tagset: Tagset;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
-  /** CT Web Client Configuration */
-  clientConfig: AadConfig;
-  /** CT Web Client Configuration */
+  /** Cherrytwist Services Metadata */
   metadata: Metadata;
+  /** Cherrytwist Web Client AAD Configuration */
+  clientConfig: AadConfig;
+  /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
+  configuration: Config;
 };
 
 export type QueryOpportunityArgs = {
@@ -550,8 +545,6 @@ export type Mutation = {
   updateEcoverse: Ecoverse;
   /** Creates a new user as a member of the ecoverse, including an account if enabled */
   createUser: User;
-  /** Creates a new template for the population of entities within tis ecoverse */
-  createTemplate: Template;
   /** Creates a new user as a member of the ecoverse, without an account */
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
@@ -764,10 +757,6 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateTemplateArgs = {
-  templateData: TemplateInput;
-};
-
 export type MutationCreateUserProfileArgs = {
   userData: UserInput;
 };
@@ -892,11 +881,6 @@ export type EcoverseInput = {
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type TemplateInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -1373,11 +1357,9 @@ export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 
 export type AspectsTemplateListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AspectsTemplateListQuery = { __typename?: 'Query' } & {
-  metadata: { __typename?: 'Metadata' } & {
-    clientMetadata: { __typename?: 'ClientMetadata' } & {
-      template: { __typename?: 'UxTemplate' } & {
-        opportunities: Array<{ __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects'>>;
-      };
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      opportunities: Array<{ __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects'>>;
     };
   };
 };
@@ -3482,12 +3464,10 @@ export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AspectsTemplateListDocument = gql`
   query aspectsTemplateList {
-    metadata {
-      clientMetadata {
-        template {
-          opportunities {
-            aspects
-          }
+    configuration {
+      template {
+        opportunities {
+          aspects
         }
       }
     }

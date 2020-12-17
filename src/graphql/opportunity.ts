@@ -187,12 +187,10 @@ export const MUTATION_REMOVE_ASPECT = gql`
 
 export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
   query aspectsTemplateList {
-    metadata {
-      clientMetadata {
-        template {
-          opportunities {
-            aspects
-          }
+    configuration {
+      template {
+        opportunities {
+          aspects
         }
       }
     }

@@ -44,8 +44,8 @@ const useContextEditStyles = createStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate, existingAspectNames }) => {
   const styles = useContextEditStyles();
-  const { data: metadata } = useAspectsTemplateListQuery();
-  const aspectsTypes = metadata?.metadata.clientMetadata.template.opportunities[0].aspects?.map(a => a);
+  const { data: config } = useAspectsTemplateListQuery();
+  const aspectsTypes = config?.configuration.template.opportunities[0].aspects?.map(a => a);
   const availableTypes =
     isCreate && existingAspectNames
       ? aspectsTypes?.filter(at => !existingAspectNames.includes(at.replaceAll('_', ' ')))

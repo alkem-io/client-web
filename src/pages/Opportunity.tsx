@@ -88,8 +88,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const projectRef = useRef<HTMLDivElement>(null);
   const { user } = useUserContext();
   const userName = user?.user.name;
-  const { data: metadata } = useAspectsTemplateListQuery();
-  const aspectsTypes = metadata?.metadata.clientMetadata.template.opportunities[0].aspects?.map(a => a);
+  const { data: config } = useAspectsTemplateListQuery();
+  const aspectsTypes = config?.configuration.template.opportunities[0].aspects?.map(a => a);
 
   const { name, aspects, projects = [], relations = [], actorGroups, context, groups, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
