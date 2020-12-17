@@ -148,7 +148,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
                     ))}
                   </Form.Control>
                 </Form.Group>
-                {getField('framing', 'Farming')}
+                {getField('framing', 'Framing')}
                 {getField('explanation', 'Explanation')}
               </>
             );
