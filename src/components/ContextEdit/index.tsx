@@ -3,6 +3,7 @@ import { Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
 import {
   ContextInput,
+  useRemoveReferenceMutation,
   useUpdateChallengeContextMutation,
   useUpdateOpportunityContextMutation,
 } from '../../generated/graphql';
@@ -79,27 +80,37 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
     refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
   });
+  const [removeRef] = useRemoveReferenceMutation();
 
-  const onSubmit = values => {
+  let submitWired;
+  let referencesToRemove: string[] = [];
+
+  const onSubmit = async values => {
+    const updatedRefs = values.references.map(ref => ({ uri: ref.uri, name: ref.name }));
+    const withUpdatedRefs = { ...values };
+    withUpdatedRefs.references = updatedRefs;
+
+    if (referencesToRemove.length > 0) {
+      for (const ref of referencesToRemove) {
+        await removeRef({ variables: { ID: Number(ref) } });
+      }
+    }
+
     if (variant === 'challenge') {
-      updateChallenge({
+      await updateChallenge({
         variables: {
           challengeID: Number(id),
           challengeData: {
-            context: {
-              ...values,
-            },
+            context: withUpdatedRefs,
           },
         },
       });
     } else if (variant === 'opportunity') {
-      updateOpportunity({
+      await updateOpportunity({
         variables: {
           opportunityID: Number(id),
           opportunityData: {
-            context: {
-              ...values,
-            },
+            context: withUpdatedRefs,
           },
         },
       });
@@ -107,8 +118,6 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
       console.log('no handler found');
     }
   };
-
-  let submitWired;
 
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>
@@ -185,11 +194,18 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
                             <OverlayTrigger
                               overlay={
                                 <Tooltip id={'remove a reference'} placement={'bottom'}>
-                                  Remove a reference
+                                  Remove the reference
                                 </Tooltip>
                               }
                             >
-                              <Button onClick={() => remove(index)} variant={'negative'}>
+                              <Button
+                                onClick={() => {
+                                  remove(index);
+                                  // @ts-ignore
+                                  referencesToRemove.push(ref.id);
+                                }}
+                                variant={'negative'}
+                              >
                                 -
                               </Button>
                             </OverlayTrigger>

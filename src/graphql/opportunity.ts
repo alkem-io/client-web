@@ -20,6 +20,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         impact
         who
         references {
+          id
           name
           uri
         }
@@ -182,5 +183,11 @@ export const QUERY_OPPORTUNITY_ASPECTS = gql`
 export const MUTATION_REMOVE_ASPECT = gql`
   mutation removeAspect($ID: Float!) {
     removeAspect(ID: $ID)
+  }
+`;
+
+export const MUTATION_REMOVE_REFERENCE = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
   }
 `;
