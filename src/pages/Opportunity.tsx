@@ -22,7 +22,13 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import { ContextInput, Opportunity as OpportunityType, Project, User } from '../generated/graphql';
+import {
+  ContextInput,
+  Opportunity as OpportunityType,
+  Project,
+  useAspectsTemplateListQuery,
+  User,
+} from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -82,13 +88,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const projectRef = useRef<HTMLDivElement>(null);
   const { user } = useUserContext();
   const userName = user?.user.name;
+  const { data: metadata } = useAspectsTemplateListQuery();
+  const aspectsTypes = metadata?.metadata.clientMetadata.template.opportunities[0].aspects?.map(a => a);
 
-  // data
   const { name, aspects, projects = [], relations = [], actorGroups, context, groups, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
-
+  const existingAspectNames = aspects?.map(a => a.title.replaceAll('_', ' ')) || [];
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
 
@@ -97,6 +104,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
   const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
+  const isAspectAddAllowed = aspectsTypes && aspectsTypes.length > existingAspectNames.length;
 
   const activitySummary = useMemo(() => {
     return [
@@ -362,13 +370,23 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
       </Section>
+
       {aspects && (
         <CardContainer
           xs={12}
           md={6}
           lg={4}
           xl={3}
-          withCreate={<NewAspectCard opportunityId={id} text={'Add'} actorGroupId={'12'} />}
+          withCreate={
+            isAspectAddAllowed && (
+              <NewAspectCard
+                opportunityId={id}
+                text={'Add'}
+                actorGroupId={'12'}
+                existingAspectNames={existingAspectNames}
+              />
+            )
+          }
         >
           {aspects?.map((props, i) => (
             <AspectCard key={i} opportunityId={id} {...props} />

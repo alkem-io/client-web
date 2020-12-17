@@ -198,3 +198,11 @@ export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_ASPECT = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;

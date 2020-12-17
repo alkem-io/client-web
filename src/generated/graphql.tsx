@@ -1382,6 +1382,15 @@ export type AspectsTemplateListQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateAspectMutation = { __typename?: 'Mutation' } & {
+  createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description' | 'state'
@@ -3521,6 +3530,44 @@ export type AspectsTemplateListLazyQueryHookResult = ReturnType<typeof useAspect
 export type AspectsTemplateListQueryResult = Apollo.QueryResult<
   AspectsTemplateListQuery,
   AspectsTemplateListQueryVariables
+>;
+export const CreateAspectDocument = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
+export type CreateAspectMutationFn = Apollo.MutationFunction<CreateAspectMutation, CreateAspectMutationVariables>;
+
+/**
+ * __useCreateAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateAspectMutation, CreateAspectMutationVariables>
+) {
+  return Apollo.useMutation<CreateAspectMutation, CreateAspectMutationVariables>(CreateAspectDocument, baseOptions);
+}
+export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
+export type CreateAspectMutationResult = Apollo.MutationResult<CreateAspectMutation>;
+export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
+  CreateAspectMutation,
+  CreateAspectMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {

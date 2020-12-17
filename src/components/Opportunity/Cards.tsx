@@ -270,7 +270,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
 
   const [removeAspect] = useRemoveAspectMutation({
-    onCompleted: () => setEditOpened(false),
+    onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e),
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
@@ -290,7 +290,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
             background: (theme: Theme) => theme.palette.background,
           },
         }}
-        primaryTextProps={{ text: title }}
+        primaryTextProps={{ text: title.replaceAll('_', ' ') }}
         actions={
           isAdmin
             ? [
@@ -334,13 +334,14 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   );
 };
 
-interface NewActorProps {
+interface NewAspectProps {
   text: string;
   actorGroupId;
   opportunityId: string;
+  existingAspectNames: string[];
 }
 
-export const NewAspectCard: FC<NewActorProps> = ({ text, actorGroupId, opportunityId }) => {
+export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportunityId, existingAspectNames }) => {
   const styles = useNewActorCardStyles();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
 
@@ -349,11 +350,17 @@ export const NewAspectCard: FC<NewActorProps> = ({ text, actorGroupId, opportuni
       <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
         <div className={styles.inner}>
           <Icon component={PlusIcon} color="inherit" size="xxl" />
-          {opportunityId}
         </div>
       </Card>
 
-      <AspectEdit isCreate={true} show={isEditOpened} onHide={() => setEditOpened(false)} actorGroupId={actorGroupId} />
+      <AspectEdit
+        isCreate={true}
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        actorGroupId={actorGroupId}
+        opportunityId={opportunityId}
+        existingAspectNames={existingAspectNames}
+      />
     </>
   );
 };
