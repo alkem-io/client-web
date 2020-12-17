@@ -134,15 +134,7 @@ interface ActorCardProps {
   opportunityId: string;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({
-  id,
-  name,
-  description,
-  value,
-  impact,
-  type = 'stakeholder',
-  opportunityId,
-}) => {
+export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
   const styles = useCardStyles();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
@@ -164,15 +156,10 @@ export const ActorCard: FC<ActorCardProps> = ({
         className={styles.border}
         bodyProps={{
           classes: {
-            background: (theme: Theme) =>
-              type === 'stakeholder' ? theme.palette.background : theme.palette.neutralLight,
+            background: (theme: Theme) => theme.palette.background,
           },
         }}
         primaryTextProps={{ text: name, tooltip: true }}
-        tagProps={{
-          text: type,
-          color: type === 'stakeholder' ? 'neutral' : 'positive',
-        }}
         actions={
           isAdmin
             ? [
@@ -283,7 +270,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
 
   const [removeAspect] = useRemoveAspectMutation({
-    onCompleted: () => setEditOpened(false),
+    onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e),
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
@@ -303,7 +290,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
             background: (theme: Theme) => theme.palette.background,
           },
         }}
-        primaryTextProps={{ text: title }}
+        primaryTextProps={{ text: title.replaceAll('_', ' ') }}
         actions={
           isAdmin
             ? [
@@ -342,6 +329,37 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
         text={`Are you sure you want to remove "${title}" aspect`}
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
+      />
+    </>
+  );
+};
+
+interface NewAspectProps {
+  text: string;
+  actorGroupId;
+  opportunityId: string;
+  existingAspectNames: string[];
+}
+
+export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportunityId, existingAspectNames }) => {
+  const styles = useNewActorCardStyles();
+  const [isEditOpened, setEditOpened] = useState<boolean>(false);
+
+  return (
+    <>
+      <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
+        <div className={styles.inner}>
+          <Icon component={PlusIcon} color="inherit" size="xxl" />
+        </div>
+      </Card>
+
+      <AspectEdit
+        isCreate={true}
+        show={isEditOpened}
+        onHide={() => setEditOpened(false)}
+        actorGroupId={actorGroupId}
+        opportunityId={opportunityId}
+        existingAspectNames={existingAspectNames}
       />
     </>
   );

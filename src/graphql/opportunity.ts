@@ -184,3 +184,23 @@ export const MUTATION_REMOVE_ASPECT = gql`
     removeAspect(ID: $ID)
   }
 `;
+
+export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
+  query aspectsTemplateList {
+    configuration {
+      template {
+        opportunities {
+          aspects
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_CREATE_ASPECT = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
