@@ -1354,12 +1354,14 @@ export type RemoveAspectMutationVariables = Exact<{
 
 export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
 
-export type AspectsTemplateListQueryVariables = Exact<{ [key: string]: never }>;
+export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AspectsTemplateListQuery = { __typename?: 'Query' } & {
+export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
   configuration: { __typename?: 'Config' } & {
     template: { __typename?: 'Template' } & {
-      opportunities: Array<{ __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects'>>;
+      opportunities: Array<
+        { __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects' | 'actorGroups'>
+      >;
     };
   };
 };
@@ -3471,12 +3473,13 @@ export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveAspectMutation,
   RemoveAspectMutationVariables
 >;
-export const AspectsTemplateListDocument = gql`
-  query aspectsTemplateList {
+export const OpportunityTemplateDocument = gql`
+  query opportunityTemplate {
     configuration {
       template {
         opportunities {
           aspects
+          actorGroups
         }
       }
     }
@@ -3484,41 +3487,41 @@ export const AspectsTemplateListDocument = gql`
 `;
 
 /**
- * __useAspectsTemplateListQuery__
+ * __useOpportunityTemplateQuery__
  *
- * To run a query within a React component, call `useAspectsTemplateListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAspectsTemplateListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useOpportunityTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAspectsTemplateListQuery({
+ * const { data, loading, error } = useOpportunityTemplateQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAspectsTemplateListQuery(
-  baseOptions?: Apollo.QueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+export function useOpportunityTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>
 ) {
-  return Apollo.useQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
-    AspectsTemplateListDocument,
+  return Apollo.useQuery<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
     baseOptions
   );
 }
-export function useAspectsTemplateListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+export function useOpportunityTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>
 ) {
-  return Apollo.useLazyQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
-    AspectsTemplateListDocument,
+  return Apollo.useLazyQuery<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
     baseOptions
   );
 }
-export type AspectsTemplateListQueryHookResult = ReturnType<typeof useAspectsTemplateListQuery>;
-export type AspectsTemplateListLazyQueryHookResult = ReturnType<typeof useAspectsTemplateListLazyQuery>;
-export type AspectsTemplateListQueryResult = Apollo.QueryResult<
-  AspectsTemplateListQuery,
-  AspectsTemplateListQueryVariables
+export type OpportunityTemplateQueryHookResult = ReturnType<typeof useOpportunityTemplateQuery>;
+export type OpportunityTemplateLazyQueryHookResult = ReturnType<typeof useOpportunityTemplateLazyQuery>;
+export type OpportunityTemplateQueryResult = Apollo.QueryResult<
+  OpportunityTemplateQuery,
+  OpportunityTemplateQueryVariables
 >;
 export const CreateAspectDocument = gql`
   mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {

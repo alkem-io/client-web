@@ -185,12 +185,13 @@ export const MUTATION_REMOVE_ASPECT = gql`
   }
 `;
 
-export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
-  query aspectsTemplateList {
+export const QUERY_OPPORTUNITY_TEMPLATE = gql`
+  query opportunityTemplate {
     configuration {
       template {
         opportunities {
           aspects
+          actorGroups
         }
       }
     }
