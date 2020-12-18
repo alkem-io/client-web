@@ -13,6 +13,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
         impact
         who
         references {
+          id
           name
           uri
           description

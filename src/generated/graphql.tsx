@@ -1016,7 +1016,9 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
           }
       >;
       contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
@@ -1190,7 +1192,7 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
       aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           }
       >;
       groups?: Maybe<
@@ -1372,6 +1374,12 @@ export type CreateAspectMutationVariables = Exact<{
 export type CreateAspectMutation = { __typename?: 'Mutation' } & {
   createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
 };
+
+export type RemoveReferenceMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -2164,6 +2172,7 @@ export const ChallengeProfileDocument = gql`
         impact
         who
         references {
+          id
           name
           uri
           description
@@ -2838,6 +2847,7 @@ export const OpportunityProfileDocument = gql`
         impact
         who
         references {
+          id
           name
           uri
         }
@@ -3548,6 +3558,47 @@ export type CreateAspectMutationResult = Apollo.MutationResult<CreateAspectMutat
 export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   CreateAspectMutation,
   CreateAspectMutationVariables
+>;
+export const RemoveReferenceDocument = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
+  }
+`;
+export type RemoveReferenceMutationFn = Apollo.MutationFunction<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+
+/**
+ * __useRemoveReferenceMutation__
+ *
+ * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
+) {
+  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
+    RemoveReferenceDocument,
+    baseOptions
+  );
+}
+export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
+export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
+export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
