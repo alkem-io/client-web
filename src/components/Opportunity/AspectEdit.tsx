@@ -3,7 +3,7 @@ import { Form, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import {
   AspectInput,
-  useAspectsTemplateListQuery,
+  useOpportunityTemplateQuery,
   useCreateAspectMutation,
   useUpdateAspectMutation,
 } from '../../generated/graphql';
@@ -44,8 +44,8 @@ const useContextEditStyles = createStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate, existingAspectNames }) => {
   const styles = useContextEditStyles();
-  const { data: config } = useAspectsTemplateListQuery();
-  const aspectsTypes = config?.configuration.template.opportunities[0].aspects?.map(a => a);
+  const { data: config } = useOpportunityTemplateQuery();
+  const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const availableTypes =
     isCreate && existingAspectNames
       ? aspectsTypes?.filter(at => !existingAspectNames.includes(at.replaceAll('_', ' ')))
@@ -76,9 +76,9 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
     awaitRefetchQueries: true,
   });
 
-  const onSubmit = values => {
+  const onSubmit = async values => {
     if (isCreate) {
-      createAspect({
+      await createAspect({
         variables: {
           opportunityID: Number(opportunityId),
           aspectData: values,
@@ -87,7 +87,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
 
       return;
     }
-    updateAspect({
+    await updateAspect({
       variables: {
         ID: Number(id),
         aspectData: values,

@@ -186,12 +186,13 @@ export const MUTATION_REMOVE_ASPECT = gql`
   }
 `;
 
-export const QUERY_ASPECTS_TEMPLATE_LIST = gql`
-  query aspectsTemplateList {
+export const QUERY_OPPORTUNITY_TEMPLATE = gql`
+  query opportunityTemplate {
     configuration {
       template {
         opportunities {
           aspects
+          actorGroups
         }
       }
     }
@@ -202,6 +203,14 @@ export const MUTATION_CREATE_ASPECT = gql`
   mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
     createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
       title
+    }
+  }
+`;
+
+export const MUTATION_CREATE_ACTOR_GROUP = gql`
+  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
+    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+      name
     }
   }
 `;
