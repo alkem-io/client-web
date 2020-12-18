@@ -56,15 +56,6 @@ export type Reference = {
   description: Scalars['String'];
 };
 
-export type Template = {
-  __typename?: 'Template';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
-  /** The set of user types that are available within this template */
-  users?: Maybe<Array<User>>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -208,8 +199,6 @@ export type Ecoverse = {
   organisations?: Maybe<Array<Organisation>>;
   /** The Challenges hosted by the Ecoverse */
   challenges?: Maybe<Array<Challenge>>;
-  /** The set of templates registered with this Ecoverse */
-  templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
 };
@@ -247,28 +236,36 @@ export type MemberOf = {
   organisations: Array<Organisation>;
 };
 
-export type AadClientConfig = {
-  __typename?: 'AadClientConfig';
-  /** Config for MSAL authentication library on Cherrytwist Web Client. */
-  msalConfig: MsalConfig;
-  /** Config for accessing the Cherrytwist API. */
-  apiConfig: AadApiConfig;
-  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
-  loginRequest: AadScope;
-  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
-  tokenRequest: AadScope;
-  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
-  silentRequest: AadScope;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  /** The score for this search result; more matches means a higher score. */
+  score?: Maybe<Scalars['Float']>;
+  /** The terms that were matched for this result */
+  terms?: Maybe<Array<Scalars['String']>>;
+  /** Each search result contains either a User or UserGroup */
+  result?: Maybe<SearchResult>;
 };
 
-export type MsalConfig = {
-  __typename?: 'MsalConfig';
-  /** Azure Active Directory OpenID Connect endpoint configuration. */
-  auth: MsalAuth;
-  /** Token cache configuration.  */
-  cache: MsalCache;
+export type SearchResult = User | UserGroup;
+
+export type ServiceMetadata = {
+  __typename?: 'ServiceMetadata';
+  /** Service name e.g. CT Server */
+  name?: Maybe<Scalars['String']>;
+  /** Version in the format {major.minor.patch} - using SemVer. */
+  version?: Maybe<Scalars['String']>;
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** Collection of metadata about Cherrytwist services. */
+  services: Array<ServiceMetadata>;
+};
+
+export type ApiConfig = {
+  __typename?: 'ApiConfig';
+  /** Configuration payload for the Cherrytwist API. */
+  resourceScope: Scalars['String'];
 };
 
 export type MsalAuth = {
@@ -289,29 +286,81 @@ export type MsalCache = {
   storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
 };
 
-export type AadApiConfig = {
-  __typename?: 'AadApiConfig';
-  /** Configuration payload for the Cherrytwist API. */
-  resourceScope: Scalars['String'];
+export type MsalConfig = {
+  __typename?: 'MsalConfig';
+  /** Azure Active Directory OpenID Connect endpoint configuration. */
+  auth: MsalAuth;
+  /** Token cache configuration.  */
+  cache: MsalCache;
 };
 
-export type AadScope = {
-  __typename?: 'AadScope';
+export type Scope = {
+  __typename?: 'Scope';
   /** OpenID Scopes. */
   scopes: Array<Scalars['String']>;
 };
 
-export type SearchResultEntry = {
-  __typename?: 'SearchResultEntry';
-  /** The score for this search result; more matches means a higher score. */
-  score?: Maybe<Scalars['Float']>;
-  /** The terms that were matched for this result */
-  terms?: Maybe<Array<Scalars['String']>>;
-  /** Each search result contains either a User or UserGroup */
-  result?: Maybe<SearchResult>;
+export type AadConfig = {
+  __typename?: 'AadConfig';
+  /** Config for MSAL authentication library on Cherrytwist Web Client. */
+  msalConfig: MsalConfig;
+  /** Config for accessing the Cherrytwist API. */
+  apiConfig: ApiConfig;
+  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
+  loginRequest: Scope;
+  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
+  tokenRequest: Scope;
+  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
+  silentRequest: Scope;
+  /** Is the client and server authentication enabled? */
+  authEnabled: Scalars['Boolean'];
 };
 
-export type SearchResult = User | UserGroup;
+export type WebClientConfig = {
+  __typename?: 'WebClientConfig';
+  /** Cherrytwist Client AAD config. */
+  aadConfig: AadConfig;
+};
+
+export type OpportunityTemplate = {
+  __typename?: 'OpportunityTemplate';
+  /** Template opportunity name. */
+  name: Scalars['String'];
+  /** Template actor groups. */
+  actorGroups?: Maybe<Array<Scalars['String']>>;
+  /** Template aspects. */
+  aspects?: Maybe<Array<Scalars['String']>>;
+  /** Template relations. */
+  relations?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UserTemplate = {
+  __typename?: 'UserTemplate';
+  /** Template user name. */
+  name: Scalars['String'];
+  /** Template tagsets. */
+  tagsets?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Template = {
+  __typename?: 'Template';
+  /** Template name. */
+  name: Scalars['String'];
+  /** Template description. */
+  description: Scalars['String'];
+  /** Users template. */
+  users: Array<UserTemplate>;
+  /** Opportunities template. */
+  opportunities: Array<OpportunityTemplate>;
+};
+
+export type Config = {
+  __typename?: 'Config';
+  /** Cherrytwist Web Client Config. */
+  webClient: WebClientConfig;
+  /** Cherrytwist Template. */
+  template: Template;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -345,8 +394,6 @@ export type Query = {
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** All templates */
-  templates: Array<Template>;
   /** A particular challenge */
   challenge: Challenge;
   /** All organisations */
@@ -355,10 +402,14 @@ export type Query = {
   organisation: Organisation;
   /** The tagset associated with this Ecoverse */
   tagset: Tagset;
-  /** CT Web Client Configuration */
-  clientConfig: AadClientConfig;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
+  /** Cherrytwist Services Metadata */
+  metadata: Metadata;
+  /** Cherrytwist Web Client AAD Configuration */
+  clientConfig: AadConfig;
+  /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
+  configuration: Config;
 };
 
 export type QueryOpportunityArgs = {
@@ -494,8 +545,6 @@ export type Mutation = {
   updateEcoverse: Ecoverse;
   /** Creates a new user as a member of the ecoverse, including an account if enabled */
   createUser: User;
-  /** Creates a new template for the population of entities within tis ecoverse */
-  createTemplate: Template;
   /** Creates a new user as a member of the ecoverse, without an account */
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
@@ -708,10 +757,6 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateTemplateArgs = {
-  templateData: TemplateInput;
-};
-
 export type MutationCreateUserProfileArgs = {
   userData: UserInput;
 };
@@ -836,11 +881,6 @@ export type EcoverseInput = {
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type TemplateInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -1313,6 +1353,15 @@ export type RemoveAspectMutationVariables = Exact<{
 }>;
 
 export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
+
+export type CreateActorGroupMutationVariables = Exact<{
+  actorGroupData: ActorGroupInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
+  createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'name'>;
+};
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -3402,6 +3451,50 @@ export type RemoveAspectMutationResult = Apollo.MutationResult<RemoveAspectMutat
 export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveAspectMutation,
   RemoveAspectMutationVariables
+>;
+export const CreateActorGroupDocument = gql`
+  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
+    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+      name
+    }
+  }
+`;
+export type CreateActorGroupMutationFn = Apollo.MutationFunction<
+  CreateActorGroupMutation,
+  CreateActorGroupMutationVariables
+>;
+
+/**
+ * __useCreateActorGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateActorGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateActorGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createActorGroupMutation, { data, loading, error }] = useCreateActorGroupMutation({
+ *   variables: {
+ *      actorGroupData: // value for 'actorGroupData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateActorGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateActorGroupMutation, CreateActorGroupMutationVariables>
+) {
+  return Apollo.useMutation<CreateActorGroupMutation, CreateActorGroupMutationVariables>(
+    CreateActorGroupDocument,
+    baseOptions
+  );
+}
+export type CreateActorGroupMutationHookResult = ReturnType<typeof useCreateActorGroupMutation>;
+export type CreateActorGroupMutationResult = Apollo.MutationResult<CreateActorGroupMutation>;
+export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
+  CreateActorGroupMutation,
+  CreateActorGroupMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {

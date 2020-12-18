@@ -184,3 +184,11 @@ export const MUTATION_REMOVE_ASPECT = gql`
     removeAspect(ID: $ID)
   }
 `;
+
+export const MUTATION_CREATE_ACTOR_GROUP = gql`
+  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
+    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+      name
+    }
+  }
+`;

@@ -30,6 +30,7 @@ import { useUserContext } from '../hooks/useUserContext';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
+import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -75,6 +76,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
+  const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
   const { isAuthenticated } = useAuthenticate();
@@ -97,6 +99,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
   const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   const activitySummary = useMemo(() => {
     return [
@@ -290,7 +293,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
       </Container>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'ADOPTION ECOSYSTEM'} />
+        <SectionHeader text={'ADOPTION ECOSYSTEM'}>
+          {isAdmin && (
+            <Button text={'Add actor group'} onClick={() => setShowActorGroupModal(true)} className={'ml-4'} />
+          )}
+        </SectionHeader>
         <SubHeader text={'Stakeholders & Key users'} />
       </Section>
       {actorGroups
@@ -356,6 +363,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
 
       <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
+      <ActorGroupCreateModal
+        onHide={() => setShowActorGroupModal(false)}
+        show={showActorGroupModal}
+        opportunityId={id}
+      />
 
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
