@@ -56,15 +56,6 @@ export type Reference = {
   description: Scalars['String'];
 };
 
-export type Template = {
-  __typename?: 'Template';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
-  /** The set of user types that are available within this template */
-  users?: Maybe<Array<User>>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -208,8 +199,6 @@ export type Ecoverse = {
   organisations?: Maybe<Array<Organisation>>;
   /** The Challenges hosted by the Ecoverse */
   challenges?: Maybe<Array<Challenge>>;
-  /** The set of templates registered with this Ecoverse */
-  templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
 };
@@ -258,6 +247,20 @@ export type SearchResultEntry = {
 };
 
 export type SearchResult = User | UserGroup;
+
+export type ServiceMetadata = {
+  __typename?: 'ServiceMetadata';
+  /** Service name e.g. CT Server */
+  name?: Maybe<Scalars['String']>;
+  /** Version in the format {major.minor.patch} - using SemVer. */
+  version?: Maybe<Scalars['String']>;
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** Collection of metadata about Cherrytwist services. */
+  services: Array<ServiceMetadata>;
+};
 
 export type ApiConfig = {
   __typename?: 'ApiConfig';
@@ -313,6 +316,12 @@ export type AadConfig = {
   authEnabled: Scalars['Boolean'];
 };
 
+export type WebClientConfig = {
+  __typename?: 'WebClientConfig';
+  /** Cherrytwist Client AAD config. */
+  aadConfig: AadConfig;
+};
+
 export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
   /** Template opportunity name. */
@@ -333,8 +342,8 @@ export type UserTemplate = {
   tagsets?: Maybe<Array<Scalars['String']>>;
 };
 
-export type UxTemplate = {
-  __typename?: 'UxTemplate';
+export type Template = {
+  __typename?: 'Template';
   /** Template name. */
   name: Scalars['String'];
   /** Template description. */
@@ -345,26 +354,12 @@ export type UxTemplate = {
   opportunities: Array<OpportunityTemplate>;
 };
 
-export type ClientMetadata = {
-  __typename?: 'ClientMetadata';
-  /** Cherrytwist Client UX template. */
-  template: UxTemplate;
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
-};
-
-export type ServerMetadata = {
-  __typename?: 'ServerMetadata';
-  /** Cherrytwist Server version in the format {major.minor.patch} - using SemVer. */
-  version: Scalars['String'];
-};
-
-export type Metadata = {
-  __typename?: 'Metadata';
-  /** Cherrytwist API Server Metadata. */
-  serverMetadata: ServerMetadata;
-  /** Cherrytwist Web Client Metadata. */
-  clientMetadata: ClientMetadata;
+export type Config = {
+  __typename?: 'Config';
+  /** Cherrytwist Web Client Config. */
+  webClient: WebClientConfig;
+  /** Cherrytwist Template. */
+  template: Template;
 };
 
 export type Query = {
@@ -399,8 +394,6 @@ export type Query = {
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** All templates */
-  templates: Array<Template>;
   /** A particular challenge */
   challenge: Challenge;
   /** All organisations */
@@ -411,10 +404,12 @@ export type Query = {
   tagset: Tagset;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
-  /** CT Web Client Configuration */
-  clientConfig: AadConfig;
-  /** CT Web Client Configuration */
+  /** Cherrytwist Services Metadata */
   metadata: Metadata;
+  /** Cherrytwist Web Client AAD Configuration */
+  clientConfig: AadConfig;
+  /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
+  configuration: Config;
 };
 
 export type QueryOpportunityArgs = {
@@ -550,8 +545,6 @@ export type Mutation = {
   updateEcoverse: Ecoverse;
   /** Creates a new user as a member of the ecoverse, including an account if enabled */
   createUser: User;
-  /** Creates a new template for the population of entities within tis ecoverse */
-  createTemplate: Template;
   /** Creates a new user as a member of the ecoverse, without an account */
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
@@ -764,10 +757,6 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateTemplateArgs = {
-  templateData: TemplateInput;
-};
-
 export type MutationCreateUserProfileArgs = {
   userData: UserInput;
 };
@@ -892,11 +881,6 @@ export type EcoverseInput = {
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type TemplateInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -1369,6 +1353,25 @@ export type RemoveAspectMutationVariables = Exact<{
 }>;
 
 export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
+
+export type AspectsTemplateListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AspectsTemplateListQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      opportunities: Array<{ __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects'>>;
+    };
+  };
+};
+
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateAspectMutation = { __typename?: 'Mutation' } & {
+  createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
 
 export type RemoveReferenceMutationVariables = Exact<{
   ID: Scalars['Float'];
@@ -3465,6 +3468,93 @@ export type RemoveAspectMutationResult = Apollo.MutationResult<RemoveAspectMutat
 export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveAspectMutation,
   RemoveAspectMutationVariables
+>;
+export const AspectsTemplateListDocument = gql`
+  query aspectsTemplateList {
+    configuration {
+      template {
+        opportunities {
+          aspects
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAspectsTemplateListQuery__
+ *
+ * To run a query within a React component, call `useAspectsTemplateListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAspectsTemplateListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAspectsTemplateListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAspectsTemplateListQuery(
+  baseOptions?: Apollo.QueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+) {
+  return Apollo.useQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
+    AspectsTemplateListDocument,
+    baseOptions
+  );
+}
+export function useAspectsTemplateListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+) {
+  return Apollo.useLazyQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
+    AspectsTemplateListDocument,
+    baseOptions
+  );
+}
+export type AspectsTemplateListQueryHookResult = ReturnType<typeof useAspectsTemplateListQuery>;
+export type AspectsTemplateListLazyQueryHookResult = ReturnType<typeof useAspectsTemplateListLazyQuery>;
+export type AspectsTemplateListQueryResult = Apollo.QueryResult<
+  AspectsTemplateListQuery,
+  AspectsTemplateListQueryVariables
+>;
+export const CreateAspectDocument = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
+export type CreateAspectMutationFn = Apollo.MutationFunction<CreateAspectMutation, CreateAspectMutationVariables>;
+
+/**
+ * __useCreateAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateAspectMutation, CreateAspectMutationVariables>
+) {
+  return Apollo.useMutation<CreateAspectMutation, CreateAspectMutationVariables>(CreateAspectDocument, baseOptions);
+}
+export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
+export type CreateAspectMutationResult = Apollo.MutationResult<CreateAspectMutation>;
+export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
+  CreateAspectMutation,
+  CreateAspectMutationVariables
 >;
 export const RemoveReferenceDocument = gql`
   mutation removeReference($ID: Float!) {
