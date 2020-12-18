@@ -13,7 +13,7 @@ interface P {
 }
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId }) => {
-  const [createActorGroup, { data, loading }] = useCreateActorGroupMutation({
+  const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
@@ -38,6 +38,9 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId }) => {
           description: description,
         },
       },
+    }).then(() => {
+      setName('');
+      setDescription('');
     });
   };
 
@@ -48,8 +51,8 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId }) => {
       </Modal.Header>
       <Modal.Body>
         <>
-          <Col lg={12}>
-            <TextArea onChange={e => setName(e.target.value)} value={description} rows={2} label={'Name'} />
+          <Col lg={12} className={'mb-4'}>
+            <TextArea onChange={e => setName(e.target.value)} value={name} rows={2} label={'Name'} />
           </Col>
           <Col lg={12}>
             <TextArea onChange={onDescriptionInput} value={description} rows={2} label={'Description'} />
@@ -60,11 +63,9 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId }) => {
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
-          !data?.createActorGroup.name && (
-            <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
-              Submit
-            </Button>
-          )
+          <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
+            Submit
+          </Button>
         )}
       </Modal.Footer>
     </Modal>
