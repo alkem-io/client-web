@@ -5,6 +5,7 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
@@ -19,9 +20,15 @@ import Typography from '../components/core/Typography';
 import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
-import { ActorCard, AspectCard, RelationCard } from '../components/Opportunity/Cards';
+import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import { ContextInput, Opportunity as OpportunityType, Project, User } from '../generated/graphql';
+import {
+  ContextInput,
+  Opportunity as OpportunityType,
+  Project,
+  useOpportunityTemplateQuery,
+  User,
+} from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -29,6 +36,7 @@ import { useUserContext } from '../hooks/useUserContext';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
+import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -70,42 +78,42 @@ const Opportunity: FC<OpportunityPageProps> = ({
   permissions,
   onProjectTransition,
 }): React.ReactElement => {
-  // styles
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
+  const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
-  const { isAuthenticated } = useAuthenticate();
   useUpdateNavigation({ currentPaths: paths });
-  const projectRef = useRef<HTMLDivElement>(null);
+
   const { user } = useUserContext();
   const userName = user?.user.name;
+  const { isAuthenticated } = useAuthenticate();
+  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
-  // data
+  const { data: config } = useOpportunityTemplateQuery();
+  const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
+  const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
+
   const { name, aspects, projects = [], relations = [], actorGroups, context, groups, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
-
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
+  const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
 
-  // const team = relations[0];
-  const stakeholders = useMemo(
-    () => actorGroups?.find(x => x.name === 'stakeholders')?.actors?.map(x => ({ ...x, type: 'stakeholder' })),
-    [actorGroups]
-  );
-  const keyUsers = useMemo(
-    () =>
-      actorGroups?.find(x => x.name === 'key_users')?.actors?.map(x => ({ ...x, name: `${x.name}`, type: 'key user' })),
-    [actorGroups]
-  );
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
-  const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
+
+  const existingAspectNames = aspects?.map(a => a.title.replaceAll('_', ' ')) || [];
+  const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
+  const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
+  const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
+
+  const projectRef = useRef<HTMLDivElement>(null);
 
   const activitySummary = useMemo(() => {
     return [
@@ -299,24 +307,37 @@ const Opportunity: FC<OpportunityPageProps> = ({
       </Container>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'ADOPTION ECOSYSTEM'} />
+        <SectionHeader text={'ADOPTION ECOSYSTEM'}>
+          {isAdmin && availableActorGroupNames.length > 0 && (
+            <Button text={'Add actor group'} onClick={() => setShowActorGroupModal(true)} className={'ml-4'} />
+          )}
+        </SectionHeader>
         <SubHeader text={'Stakeholders & Key users'} />
       </Section>
-      {stakeholders && stakeholders.length > 0 && (
-        <CardContainer xs={12} md={6} lg={4} xl={3} title="stakeholders">
-          {stakeholders?.map((props, i) => (
-            <ActorCard key={i} opportunityId={id} {...props} />
-          ))}
-        </CardContainer>
-      )}
-      {keyUsers && keyUsers.length > 0 && (
-        <CardContainer xs={12} md={6} lg={4} xl={3} title="key users">
-          {keyUsers?.map((props, i) => (
-            <ActorCard key={i} opportunityId={id} {...props} />
-          ))}
-        </CardContainer>
-      )}
+      {actorGroups
+        ?.filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
+        ?.map(({ id: actorGroupId, actors = [], name }, index) => {
+          const _name = name.replaceAll('_', ' ');
+          return (
+            <CardContainer
+              key={index}
+              xs={12}
+              md={6}
+              lg={4}
+              xl={3}
+              title={_name}
+              fullHeight
+              withCreate={<NewActorCard opportunityId={id} text={`Add ${_name}`} actorGroupId={actorGroupId} />}
+            >
+              {actors?.map((props, i) => (
+                <ActorCard key={i} opportunityId={id} {...props} />
+              ))}
+            </CardContainer>
+          );
+        })}
+
       <Divider />
+
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Collaborative potential'}>
           {isAuthenticated && !isMemberOfOpportunity && (
@@ -341,31 +362,57 @@ const Opportunity: FC<OpportunityPageProps> = ({
           {incoming && incoming.length > 0 && (
             <CardContainer title={'Users'} xs={12} md={6} lg={4} xl={3}>
               {incoming?.map((props, i) => (
-                <RelationCard key={i} {...props} />
+                <RelationCard key={i} opportunityID={id} {...props} />
               ))}
             </CardContainer>
           )}
           {outgoing && outgoing.length > 0 && (
             <CardContainer title={'Groups'} xs={12} md={6} lg={4} xl={3}>
               {outgoing?.map((props, i) => (
-                <RelationCard key={i} {...props} />
+                <RelationCard key={i} opportunityID={id} {...props} />
               ))}
             </CardContainer>
           )}
         </>
       )}
 
-      <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
+      {showInterestModal && (
+        <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
+      )}
+      {showActorGroupModal && (
+        <ActorGroupCreateModal
+          onHide={() => setShowActorGroupModal(false)}
+          show={showActorGroupModal}
+          opportunityId={id}
+          availableActorGroupNames={availableActorGroupNames}
+        />
+      )}
 
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
       </Section>
+
       {aspects && (
-        <CardContainer xs={12} md={6} lg={4} xl={3}>
+        <CardContainer
+          xs={12}
+          md={6}
+          lg={4}
+          xl={3}
+          withCreate={
+            isAspectAddAllowed && (
+              <NewAspectCard
+                opportunityId={id}
+                text={'Add'}
+                actorGroupId={'12'}
+                existingAspectNames={existingAspectNames}
+              />
+            )
+          }
+        >
           {aspects?.map((props, i) => (
-            <AspectCard key={i} {...props} />
+            <AspectCard key={i} opportunityId={id} {...props} />
           ))}
         </CardContainer>
       )}

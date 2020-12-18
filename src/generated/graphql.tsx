@@ -56,15 +56,6 @@ export type Reference = {
   description: Scalars['String'];
 };
 
-export type Template = {
-  __typename?: 'Template';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
-  /** The set of user types that are available within this template */
-  users?: Maybe<Array<User>>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -208,8 +199,6 @@ export type Ecoverse = {
   organisations?: Maybe<Array<Organisation>>;
   /** The Challenges hosted by the Ecoverse */
   challenges?: Maybe<Array<Challenge>>;
-  /** The set of templates registered with this Ecoverse */
-  templates?: Maybe<Array<Template>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
 };
@@ -247,28 +236,36 @@ export type MemberOf = {
   organisations: Array<Organisation>;
 };
 
-export type AadClientConfig = {
-  __typename?: 'AadClientConfig';
-  /** Config for MSAL authentication library on Cherrytwist Web Client. */
-  msalConfig: MsalConfig;
-  /** Config for accessing the Cherrytwist API. */
-  apiConfig: AadApiConfig;
-  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
-  loginRequest: AadScope;
-  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
-  tokenRequest: AadScope;
-  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
-  silentRequest: AadScope;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  /** The score for this search result; more matches means a higher score. */
+  score?: Maybe<Scalars['Float']>;
+  /** The terms that were matched for this result */
+  terms?: Maybe<Array<Scalars['String']>>;
+  /** Each search result contains either a User or UserGroup */
+  result?: Maybe<SearchResult>;
 };
 
-export type MsalConfig = {
-  __typename?: 'MsalConfig';
-  /** Azure Active Directory OpenID Connect endpoint configuration. */
-  auth: MsalAuth;
-  /** Token cache configuration.  */
-  cache: MsalCache;
+export type SearchResult = User | UserGroup;
+
+export type ServiceMetadata = {
+  __typename?: 'ServiceMetadata';
+  /** Service name e.g. CT Server */
+  name?: Maybe<Scalars['String']>;
+  /** Version in the format {major.minor.patch} - using SemVer. */
+  version?: Maybe<Scalars['String']>;
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** Collection of metadata about Cherrytwist services. */
+  services: Array<ServiceMetadata>;
+};
+
+export type ApiConfig = {
+  __typename?: 'ApiConfig';
+  /** Configuration payload for the Cherrytwist API. */
+  resourceScope: Scalars['String'];
 };
 
 export type MsalAuth = {
@@ -289,29 +286,81 @@ export type MsalCache = {
   storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
 };
 
-export type AadApiConfig = {
-  __typename?: 'AadApiConfig';
-  /** Configuration payload for the Cherrytwist API. */
-  resourceScope: Scalars['String'];
+export type MsalConfig = {
+  __typename?: 'MsalConfig';
+  /** Azure Active Directory OpenID Connect endpoint configuration. */
+  auth: MsalAuth;
+  /** Token cache configuration.  */
+  cache: MsalCache;
 };
 
-export type AadScope = {
-  __typename?: 'AadScope';
+export type Scope = {
+  __typename?: 'Scope';
   /** OpenID Scopes. */
   scopes: Array<Scalars['String']>;
 };
 
-export type SearchResultEntry = {
-  __typename?: 'SearchResultEntry';
-  /** The score for this search result; more matches means a higher score. */
-  score?: Maybe<Scalars['Float']>;
-  /** The terms that were matched for this result */
-  terms?: Maybe<Array<Scalars['String']>>;
-  /** Each search result contains either a User or UserGroup */
-  result?: Maybe<SearchResult>;
+export type AadConfig = {
+  __typename?: 'AadConfig';
+  /** Config for MSAL authentication library on Cherrytwist Web Client. */
+  msalConfig: MsalConfig;
+  /** Config for accessing the Cherrytwist API. */
+  apiConfig: ApiConfig;
+  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
+  loginRequest: Scope;
+  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
+  tokenRequest: Scope;
+  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
+  silentRequest: Scope;
+  /** Is the client and server authentication enabled? */
+  authEnabled: Scalars['Boolean'];
 };
 
-export type SearchResult = User | UserGroup;
+export type WebClientConfig = {
+  __typename?: 'WebClientConfig';
+  /** Cherrytwist Client AAD config. */
+  aadConfig: AadConfig;
+};
+
+export type OpportunityTemplate = {
+  __typename?: 'OpportunityTemplate';
+  /** Template opportunity name. */
+  name: Scalars['String'];
+  /** Template actor groups. */
+  actorGroups?: Maybe<Array<Scalars['String']>>;
+  /** Template aspects. */
+  aspects?: Maybe<Array<Scalars['String']>>;
+  /** Template relations. */
+  relations?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UserTemplate = {
+  __typename?: 'UserTemplate';
+  /** Template user name. */
+  name: Scalars['String'];
+  /** Template tagsets. */
+  tagsets?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Template = {
+  __typename?: 'Template';
+  /** Template name. */
+  name: Scalars['String'];
+  /** Template description. */
+  description: Scalars['String'];
+  /** Users template. */
+  users: Array<UserTemplate>;
+  /** Opportunities template. */
+  opportunities: Array<OpportunityTemplate>;
+};
+
+export type Config = {
+  __typename?: 'Config';
+  /** Cherrytwist Web Client Config. */
+  webClient: WebClientConfig;
+  /** Cherrytwist Template. */
+  template: Template;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -345,8 +394,6 @@ export type Query = {
   group: UserGroup;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** All templates */
-  templates: Array<Template>;
   /** A particular challenge */
   challenge: Challenge;
   /** All organisations */
@@ -355,10 +402,14 @@ export type Query = {
   organisation: Organisation;
   /** The tagset associated with this Ecoverse */
   tagset: Tagset;
-  /** CT Web Client Configuration */
-  clientConfig: AadClientConfig;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
+  /** Cherrytwist Services Metadata */
+  metadata: Metadata;
+  /** Cherrytwist Web Client AAD Configuration */
+  clientConfig: AadConfig;
+  /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
+  configuration: Config;
 };
 
 export type QueryOpportunityArgs = {
@@ -494,8 +545,6 @@ export type Mutation = {
   updateEcoverse: Ecoverse;
   /** Creates a new user as a member of the ecoverse, including an account if enabled */
   createUser: User;
-  /** Creates a new template for the population of entities within tis ecoverse */
-  createTemplate: Template;
   /** Creates a new user as a member of the ecoverse, without an account */
   createUserProfile: User;
   /** Removes the specified user from the ecoverse */
@@ -708,10 +757,6 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateTemplateArgs = {
-  templateData: TemplateInput;
-};
-
 export type MutationCreateUserProfileArgs = {
   userData: UserInput;
 };
@@ -836,11 +881,6 @@ export type EcoverseInput = {
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type TemplateInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -976,7 +1016,9 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
           }
       >;
       contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
@@ -1147,10 +1189,10 @@ export type OpportunityProfileQueryVariables = Exact<{
 
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
-      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           }
       >;
       groups?: Maybe<
@@ -1162,7 +1204,10 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
       >;
       relations?: Maybe<
         Array<
-          { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+          { __typename?: 'Relation' } & Pick<
+            Relation,
+            'id' | 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'
+          >
         >
       >;
       actorGroups?: Maybe<
@@ -1224,6 +1269,15 @@ export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
   addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
 };
 
+export type CreateActorMutationVariables = Exact<{
+  actorData: ActorInput;
+  actorGroupID: Scalars['Float'];
+}>;
+
+export type CreateActorMutation = { __typename?: 'Mutation' } & {
+  createActor: { __typename?: 'Actor' } & Pick<Actor, 'name'>;
+};
+
 export type OpportunityActorGroupsQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1256,6 +1310,87 @@ export type RemoveActorMutationVariables = Exact<{
 }>;
 
 export type RemoveActorMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeActor'>;
+
+export type RemoveRelationMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveRelationMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeRelation'>;
+
+export type QueryOpportunityRelationsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    relations?: Maybe<
+      Array<
+        { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+      >
+    >;
+  };
+};
+
+export type UpdateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  ID: Scalars['Float'];
+}>;
+
+export type UpdateAspectMutation = { __typename?: 'Mutation' } & {
+  updateAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
+
+export type OpportunityAspectsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & {
+    aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+  };
+};
+
+export type RemoveAspectMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
+
+export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      opportunities: Array<
+        { __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects' | 'actorGroups'>
+      >;
+    };
+  };
+};
+
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateAspectMutation = { __typename?: 'Mutation' } & {
+  createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
+
+export type RemoveReferenceMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
+
+export type CreateActorGroupMutationVariables = Exact<{
+  actorGroupData: ActorGroupInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
+  createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'name'>;
+};
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -2048,6 +2183,7 @@ export const ChallengeProfileDocument = gql`
         impact
         who
         references {
+          id
           name
           uri
           description
@@ -2710,6 +2846,7 @@ export const OpportunityProfileDocument = gql`
       name
       state
       aspects {
+        id
         title
         framing
         explanation
@@ -2721,6 +2858,7 @@ export const OpportunityProfileDocument = gql`
         impact
         who
         references {
+          id
           name
           uri
         }
@@ -2732,6 +2870,7 @@ export const OpportunityProfileDocument = gql`
         }
       }
       relations {
+        id
         actorRole
         actorName
         actorType
@@ -2972,6 +3111,41 @@ export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
   AddUserToOpportunityMutation,
   AddUserToOpportunityMutationVariables
 >;
+export const CreateActorDocument = gql`
+  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
+    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+      name
+    }
+  }
+`;
+export type CreateActorMutationFn = Apollo.MutationFunction<CreateActorMutation, CreateActorMutationVariables>;
+
+/**
+ * __useCreateActorMutation__
+ *
+ * To run a mutation, you first call `useCreateActorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateActorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createActorMutation, { data, loading, error }] = useCreateActorMutation({
+ *   variables: {
+ *      actorData: // value for 'actorData'
+ *      actorGroupID: // value for 'actorGroupID'
+ *   },
+ * });
+ */
+export function useCreateActorMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateActorMutation, CreateActorMutationVariables>
+) {
+  return Apollo.useMutation<CreateActorMutation, CreateActorMutationVariables>(CreateActorDocument, baseOptions);
+}
+export type CreateActorMutationHookResult = ReturnType<typeof useCreateActorMutation>;
+export type CreateActorMutationResult = Apollo.MutationResult<CreateActorMutation>;
+export type CreateActorMutationOptions = Apollo.BaseMutationOptions<CreateActorMutation, CreateActorMutationVariables>;
 export const OpportunityActorGroupsDocument = gql`
   query opportunityActorGroups($id: Float!) {
     opportunity(ID: $id) {
@@ -3096,6 +3270,392 @@ export function useRemoveActorMutation(
 export type RemoveActorMutationHookResult = ReturnType<typeof useRemoveActorMutation>;
 export type RemoveActorMutationResult = Apollo.MutationResult<RemoveActorMutation>;
 export type RemoveActorMutationOptions = Apollo.BaseMutationOptions<RemoveActorMutation, RemoveActorMutationVariables>;
+export const RemoveRelationDocument = gql`
+  mutation removeRelation($ID: Float!) {
+    removeRelation(ID: $ID)
+  }
+`;
+export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMutation, RemoveRelationMutationVariables>;
+
+/**
+ * __useRemoveRelationMutation__
+ *
+ * To run a mutation, you first call `useRemoveRelationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRelationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRelationMutation, { data, loading, error }] = useRemoveRelationMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveRelationMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveRelationMutation, RemoveRelationMutationVariables>
+) {
+  return Apollo.useMutation<RemoveRelationMutation, RemoveRelationMutationVariables>(
+    RemoveRelationDocument,
+    baseOptions
+  );
+}
+export type RemoveRelationMutationHookResult = ReturnType<typeof useRemoveRelationMutation>;
+export type RemoveRelationMutationResult = Apollo.MutationResult<RemoveRelationMutation>;
+export type RemoveRelationMutationOptions = Apollo.BaseMutationOptions<
+  RemoveRelationMutation,
+  RemoveRelationMutationVariables
+>;
+export const QueryOpportunityRelationsDocument = gql`
+  query queryOpportunityRelations($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
+    }
+  }
+`;
+
+/**
+ * __useQueryOpportunityRelationsQuery__
+ *
+ * To run a query within a React component, call `useQueryOpportunityRelationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQueryOpportunityRelationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQueryOpportunityRelationsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useQueryOpportunityRelationsQuery(
+  baseOptions: Apollo.QueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
+) {
+  return Apollo.useQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
+    QueryOpportunityRelationsDocument,
+    baseOptions
+  );
+}
+export function useQueryOpportunityRelationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>
+) {
+  return Apollo.useLazyQuery<QueryOpportunityRelationsQuery, QueryOpportunityRelationsQueryVariables>(
+    QueryOpportunityRelationsDocument,
+    baseOptions
+  );
+}
+export type QueryOpportunityRelationsQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsQuery>;
+export type QueryOpportunityRelationsLazyQueryHookResult = ReturnType<typeof useQueryOpportunityRelationsLazyQuery>;
+export type QueryOpportunityRelationsQueryResult = Apollo.QueryResult<
+  QueryOpportunityRelationsQuery,
+  QueryOpportunityRelationsQueryVariables
+>;
+export const UpdateAspectDocument = gql`
+  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $ID) {
+      title
+    }
+  }
+`;
+export type UpdateAspectMutationFn = Apollo.MutationFunction<UpdateAspectMutation, UpdateAspectMutationVariables>;
+
+/**
+ * __useUpdateAspectMutation__
+ *
+ * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useUpdateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateAspectMutation, UpdateAspectMutationVariables>
+) {
+  return Apollo.useMutation<UpdateAspectMutation, UpdateAspectMutationVariables>(UpdateAspectDocument, baseOptions);
+}
+export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
+export type UpdateAspectMutationResult = Apollo.MutationResult<UpdateAspectMutation>;
+export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
+  UpdateAspectMutation,
+  UpdateAspectMutationVariables
+>;
+export const OpportunityAspectsDocument = gql`
+  query opportunityAspects($id: Float!) {
+    opportunity(ID: $id) {
+      aspects {
+        title
+        framing
+        explanation
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityAspectsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAspectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAspectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAspectsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityAspectsQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>(
+    OpportunityAspectsDocument,
+    baseOptions
+  );
+}
+export function useOpportunityAspectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityAspectsQuery, OpportunityAspectsQueryVariables>(
+    OpportunityAspectsDocument,
+    baseOptions
+  );
+}
+export type OpportunityAspectsQueryHookResult = ReturnType<typeof useOpportunityAspectsQuery>;
+export type OpportunityAspectsLazyQueryHookResult = ReturnType<typeof useOpportunityAspectsLazyQuery>;
+export type OpportunityAspectsQueryResult = Apollo.QueryResult<
+  OpportunityAspectsQuery,
+  OpportunityAspectsQueryVariables
+>;
+export const RemoveAspectDocument = gql`
+  mutation removeAspect($ID: Float!) {
+    removeAspect(ID: $ID)
+  }
+`;
+export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutation, RemoveAspectMutationVariables>;
+
+/**
+ * __useRemoveAspectMutation__
+ *
+ * To run a mutation, you first call `useRemoveAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAspectMutation, { data, loading, error }] = useRemoveAspectMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveAspectMutation, RemoveAspectMutationVariables>
+) {
+  return Apollo.useMutation<RemoveAspectMutation, RemoveAspectMutationVariables>(RemoveAspectDocument, baseOptions);
+}
+export type RemoveAspectMutationHookResult = ReturnType<typeof useRemoveAspectMutation>;
+export type RemoveAspectMutationResult = Apollo.MutationResult<RemoveAspectMutation>;
+export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
+  RemoveAspectMutation,
+  RemoveAspectMutationVariables
+>;
+export const OpportunityTemplateDocument = gql`
+  query opportunityTemplate {
+    configuration {
+      template {
+        opportunities {
+          aspects
+          actorGroups
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityTemplateQuery__
+ *
+ * To run a query within a React component, call `useOpportunityTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityTemplateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOpportunityTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
+    baseOptions
+  );
+}
+export function useOpportunityTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityTemplateQuery, OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
+    baseOptions
+  );
+}
+export type OpportunityTemplateQueryHookResult = ReturnType<typeof useOpportunityTemplateQuery>;
+export type OpportunityTemplateLazyQueryHookResult = ReturnType<typeof useOpportunityTemplateLazyQuery>;
+export type OpportunityTemplateQueryResult = Apollo.QueryResult<
+  OpportunityTemplateQuery,
+  OpportunityTemplateQueryVariables
+>;
+export const CreateAspectDocument = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
+export type CreateAspectMutationFn = Apollo.MutationFunction<CreateAspectMutation, CreateAspectMutationVariables>;
+
+/**
+ * __useCreateAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateAspectMutation, CreateAspectMutationVariables>
+) {
+  return Apollo.useMutation<CreateAspectMutation, CreateAspectMutationVariables>(CreateAspectDocument, baseOptions);
+}
+export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
+export type CreateAspectMutationResult = Apollo.MutationResult<CreateAspectMutation>;
+export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
+  CreateAspectMutation,
+  CreateAspectMutationVariables
+>;
+export const RemoveReferenceDocument = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
+  }
+`;
+export type RemoveReferenceMutationFn = Apollo.MutationFunction<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+
+/**
+ * __useRemoveReferenceMutation__
+ *
+ * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
+) {
+  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
+    RemoveReferenceDocument,
+    baseOptions
+  );
+}
+export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
+export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
+export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+export const CreateActorGroupDocument = gql`
+  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
+    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+      name
+    }
+  }
+`;
+export type CreateActorGroupMutationFn = Apollo.MutationFunction<
+  CreateActorGroupMutation,
+  CreateActorGroupMutationVariables
+>;
+
+/**
+ * __useCreateActorGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateActorGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateActorGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createActorGroupMutation, { data, loading, error }] = useCreateActorGroupMutation({
+ *   variables: {
+ *      actorGroupData: // value for 'actorGroupData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateActorGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateActorGroupMutation, CreateActorGroupMutationVariables>
+) {
+  return Apollo.useMutation<CreateActorGroupMutation, CreateActorGroupMutationVariables>(
+    CreateActorGroupDocument,
+    baseOptions
+  );
+}
+export type CreateActorGroupMutationHookResult = ReturnType<typeof useCreateActorGroupMutation>;
+export type CreateActorGroupMutationResult = Apollo.MutationResult<CreateActorGroupMutation>;
+export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
+  CreateActorGroupMutation,
+  CreateActorGroupMutationVariables
+>;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
     project(ID: $id) {

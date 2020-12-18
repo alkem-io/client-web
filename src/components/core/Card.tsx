@@ -92,21 +92,55 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   );
 };
 
+const useActionsStyle = createStyles(() => ({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    gap: 10,
+    top: 0,
+    right: 5,
+  },
+  action: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+}));
+
+interface CardActionsProps {
+  actions: JSX.Element[];
+}
+
+export const CardActions: FC<CardActionsProps> = ({ actions }) => {
+  const styles = useActionsStyle();
+
+  return (
+    <div className={styles.container}>
+      {actions.map((a, index) => (
+        <span key={index} className={styles.action}>
+          {a}
+        </span>
+      ))}
+    </div>
+  );
+};
+
 const useTagStyles = createStyles(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
-    right: 0,
+    right: props => (props.actions ? props.actions * 25 + 15 : 0),
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
   },
 }));
 
 interface CardTagProps extends HeaderProps, TagProps {}
 
-export const CardTag: FC<CardTagProps> = ({ text, className, color, ...rest }) => {
-  const styles = useTagStyles({ background: color });
+export const CardTag: FC<CardTagProps> = ({ text, className, color, actions = 0, ...rest }) => {
+  const styles = useTagStyles({ background: color, actions });
 
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
@@ -229,6 +263,7 @@ export interface CardProps extends Record<string, unknown> {
     level: string;
     name: string;
   };
+  actions?: JSX.Element[];
   onClick?: () => any;
 }
 
@@ -269,6 +304,7 @@ const Card: FC<CardProps> = ({
   popUp,
   bgText,
   level,
+  actions,
   onClick,
   ...rest
 }) => {
@@ -287,8 +323,10 @@ const Card: FC<CardProps> = ({
       {...rest}
     >
       {headerProps && <HeaderCaption {...headerProps} />}
+
       <Body {...bodyProps}>
-        {tagProps && <CardTag {...tagProps} />}
+        {actions && actions?.length > 0 && <CardActions actions={actions} />}
+        {tagProps && <CardTag actions={actions?.length} {...tagProps} />}
 
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         {level && (
@@ -298,7 +336,7 @@ const Card: FC<CardProps> = ({
           </Typography>
         )}
 
-        <div className="flex-grow-1" />
+        {/*<div className="flex-grow-1" />*/}
         {matchedTerms && (
           <>
             <MatchedTerms {...matchedTerms} />

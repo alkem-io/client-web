@@ -39,6 +39,7 @@ export interface TagProps extends React.SVGProps<SVGSVGElement> {
   color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative' | 'background'; //keyof Palette
   text: string;
   className?: string;
+  actions?: number | undefined;
 }
 
 const Tag: React.FC<TagProps> = ({ text, className, color = 'positive' }): JSX.Element | null => {

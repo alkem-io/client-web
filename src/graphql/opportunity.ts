@@ -8,6 +8,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
       name
       state
       aspects {
+        id
         title
         framing
         explanation
@@ -19,6 +20,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         impact
         who
         references {
+          id
           name
           uri
         }
@@ -30,6 +32,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         }
       }
       relations {
+        id
         actorRole
         actorName
         actorType
@@ -97,6 +100,14 @@ export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
   }
 `;
 
+export const MUTATION_CREATE_ACTOR = gql`
+  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
+    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+      name
+    }
+  }
+`;
+
 export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
   query opportunityActorGroups($id: Float!) {
     opportunity(ID: $id) {
@@ -127,5 +138,85 @@ export const MUTATION_UPDATE_ACTOR = gql`
 export const MUTATION_REMOVE_ACTOR = gql`
   mutation removeActor($ID: Float!) {
     removeActor(ID: $ID)
+  }
+`;
+
+export const MUTATION_RELATION_REMOVE = gql`
+  mutation removeRelation($ID: Float!) {
+    removeRelation(ID: $ID)
+  }
+`;
+
+export const QUERY_OPPORTUNITY_RELATIONS = gql`
+  query queryOpportunityRelations($id: Float!) {
+    opportunity(ID: $id) {
+      relations {
+        actorRole
+        actorName
+        actorType
+        description
+        type
+      }
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_ASPECT = gql`
+  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $ID) {
+      title
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_ASPECTS = gql`
+  query opportunityAspects($id: Float!) {
+    opportunity(ID: $id) {
+      aspects {
+        title
+        framing
+        explanation
+      }
+    }
+  }
+`;
+export const MUTATION_REMOVE_ASPECT = gql`
+  mutation removeAspect($ID: Float!) {
+    removeAspect(ID: $ID)
+  }
+`;
+
+export const QUERY_OPPORTUNITY_TEMPLATE = gql`
+  query opportunityTemplate {
+    configuration {
+      template {
+        opportunities {
+          aspects
+          actorGroups
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_CREATE_ASPECT = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
+
+export const MUTATION_CREATE_ACTOR_GROUP = gql`
+  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
+    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_REMOVE_REFERENCE = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
   }
 `;
