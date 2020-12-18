@@ -20,6 +20,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
         impact
         who
         references {
+          id
           name
           uri
         }
@@ -211,5 +212,11 @@ export const MUTATION_CREATE_ACTOR_GROUP = gql`
     createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
       name
     }
+  }
+`;
+
+export const MUTATION_REMOVE_REFERENCE = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
   }
 `;
