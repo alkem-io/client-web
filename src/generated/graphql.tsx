@@ -1016,7 +1016,9 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri' | 'description'>>>;
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
           }
       >;
       contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
@@ -2170,6 +2172,7 @@ export const ChallengeProfileDocument = gql`
         impact
         who
         references {
+          id
           name
           uri
           description
