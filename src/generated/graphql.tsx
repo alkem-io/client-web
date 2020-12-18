@@ -1354,6 +1354,25 @@ export type RemoveAspectMutationVariables = Exact<{
 
 export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
 
+export type AspectsTemplateListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AspectsTemplateListQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      opportunities: Array<{ __typename?: 'OpportunityTemplate' } & Pick<OpportunityTemplate, 'aspects'>>;
+    };
+  };
+};
+
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateAspectMutation = { __typename?: 'Mutation' } & {
+  createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+};
+
 export type CreateActorGroupMutationVariables = Exact<{
   actorGroupData: ActorGroupInput;
   opportunityID: Scalars['Float'];
@@ -3451,6 +3470,93 @@ export type RemoveAspectMutationResult = Apollo.MutationResult<RemoveAspectMutat
 export type RemoveAspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveAspectMutation,
   RemoveAspectMutationVariables
+>;
+export const AspectsTemplateListDocument = gql`
+  query aspectsTemplateList {
+    configuration {
+      template {
+        opportunities {
+          aspects
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAspectsTemplateListQuery__
+ *
+ * To run a query within a React component, call `useAspectsTemplateListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAspectsTemplateListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAspectsTemplateListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAspectsTemplateListQuery(
+  baseOptions?: Apollo.QueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+) {
+  return Apollo.useQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
+    AspectsTemplateListDocument,
+    baseOptions
+  );
+}
+export function useAspectsTemplateListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>
+) {
+  return Apollo.useLazyQuery<AspectsTemplateListQuery, AspectsTemplateListQueryVariables>(
+    AspectsTemplateListDocument,
+    baseOptions
+  );
+}
+export type AspectsTemplateListQueryHookResult = ReturnType<typeof useAspectsTemplateListQuery>;
+export type AspectsTemplateListLazyQueryHookResult = ReturnType<typeof useAspectsTemplateListLazyQuery>;
+export type AspectsTemplateListQueryResult = Apollo.QueryResult<
+  AspectsTemplateListQuery,
+  AspectsTemplateListQueryVariables
+>;
+export const CreateAspectDocument = gql`
+  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
+    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+      title
+    }
+  }
+`;
+export type CreateAspectMutationFn = Apollo.MutationFunction<CreateAspectMutation, CreateAspectMutationVariables>;
+
+/**
+ * __useCreateAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateAspectMutation, CreateAspectMutationVariables>
+) {
+  return Apollo.useMutation<CreateAspectMutation, CreateAspectMutationVariables>(CreateAspectDocument, baseOptions);
+}
+export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
+export type CreateAspectMutationResult = Apollo.MutationResult<CreateAspectMutation>;
+export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
+  CreateAspectMutation,
+  CreateAspectMutationVariables
 >;
 export const CreateActorGroupDocument = gql`
   mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
