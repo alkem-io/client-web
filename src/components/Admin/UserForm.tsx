@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import './styles.scss';
 import Typography from '../core/Typography';
+import { useRemoveReferenceMutation } from '../../generated/graphql';
 /*local files imports end*/
 
 export enum EditMode {
@@ -27,7 +28,11 @@ export const UserForm: FC<UserProps> = ({
   title = 'User',
 }) => {
   const history = useHistory();
+  const [removeRef] = useRemoveReferenceMutation();
+
   const genders = ['not specified', 'male', 'female'];
+
+  let refsToRemove: string[] = [];
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
@@ -122,7 +127,12 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = (userData: UserFromGenerated): void => {
+  const handleSubmit = async (userData: UserFromGenerated) => {
+    if (refsToRemove.length !== 0) {
+      for (const ref of refsToRemove) {
+        await removeRef({ variables: { ID: Number(ref) } });
+      }
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
     const tags = userSkills.split(',').map(t => t && t.trim());
@@ -304,8 +314,13 @@ export const UserForm: FC<UserProps> = ({
                               isReadOnlyMode
                             )}
                             <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Form.Label>{'123'}</Form.Label>
-                              <Button onClick={() => remove(index)} variant={'danger'}>
+                              <Button
+                                onClick={() => {
+                                  remove(index);
+                                  refsToRemove.push(ref.id);
+                                }}
+                                variant={'danger'}
+                              >
                                 Remove
                               </Button>
                             </Form.Group>

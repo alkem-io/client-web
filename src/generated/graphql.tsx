@@ -1377,12 +1377,6 @@ export type CreateAspectMutation = { __typename?: 'Mutation' } & {
   createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
 };
 
-export type RemoveReferenceMutationVariables = Exact<{
-  ID: Scalars['Float'];
-}>;
-
-export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
-
 export type CreateActorGroupMutationVariables = Exact<{
   actorGroupData: ActorGroupInput;
   opportunityID: Scalars['Float'];
@@ -1391,6 +1385,12 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
   createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'name'>;
 };
+
+export type RemoveReferenceMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -1423,7 +1423,7 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
 > & {
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
         }
     >;
@@ -1555,6 +1555,7 @@ export const UserDetailsFragmentDoc = gql`
       description
       avatar
       references {
+        id
         name
         uri
       }
@@ -3571,47 +3572,6 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   CreateAspectMutation,
   CreateAspectMutationVariables
 >;
-export const RemoveReferenceDocument = gql`
-  mutation removeReference($ID: Float!) {
-    removeReference(ID: $ID)
-  }
-`;
-export type RemoveReferenceMutationFn = Apollo.MutationFunction<
-  RemoveReferenceMutation,
-  RemoveReferenceMutationVariables
->;
-
-/**
- * __useRemoveReferenceMutation__
- *
- * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
- *   variables: {
- *      ID: // value for 'ID'
- *   },
- * });
- */
-export function useRemoveReferenceMutation(
-  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
-) {
-  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
-    RemoveReferenceDocument,
-    baseOptions
-  );
-}
-export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
-export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
-export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
-  RemoveReferenceMutation,
-  RemoveReferenceMutationVariables
->;
 export const CreateActorGroupDocument = gql`
   mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
     createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
@@ -3655,6 +3615,47 @@ export type CreateActorGroupMutationResult = Apollo.MutationResult<CreateActorGr
 export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   CreateActorGroupMutation,
   CreateActorGroupMutationVariables
+>;
+export const RemoveReferenceDocument = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
+  }
+`;
+export type RemoveReferenceMutationFn = Apollo.MutationFunction<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+
+/**
+ * __useRemoveReferenceMutation__
+ *
+ * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
+) {
+  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
+    RemoveReferenceDocument,
+    baseOptions
+  );
+}
+export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
+export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
+export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
