@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG }} ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} ARG_BUILD_REVISION=${{ github.sha }} ARG_BUILD_DATE=${{ steps.prep.outputs.created }} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
+          docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG }} --build-arg ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} --build-arg ARG_BUILD_REVISION=${{ github.sha }} --build-arg ARG_BUILD_DATE=${{ steps.prep.outputs.created }} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
 
       - uses: Azure/aks-set-context@v1
