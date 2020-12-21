@@ -317,7 +317,7 @@ export const UserForm: FC<UserProps> = ({
                               <Button
                                 onClick={() => {
                                   remove(index);
-                                  isEditMode && refsToRemove.push(ref.id);
+                                  isEditMode && ref.id && refsToRemove.push(ref.id);
                                 }}
                                 variant={'danger'}
                               >
