@@ -1008,6 +1008,16 @@ export type OpportunityNameQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
 };
 
+export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type TagsetsTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      users: Array<{ __typename?: 'UserTemplate' } & Pick<UserTemplate, 'tagsets'>>;
+    };
+  };
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2151,6 +2161,46 @@ export function useOpportunityNameLazyQuery(
 export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
 export type OpportunityNameLazyQueryHookResult = ReturnType<typeof useOpportunityNameLazyQuery>;
 export type OpportunityNameQueryResult = Apollo.QueryResult<OpportunityNameQuery, OpportunityNameQueryVariables>;
+export const TagsetsTemplateDocument = gql`
+  query tagsetsTemplate {
+    configuration {
+      template {
+        users {
+          tagsets
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useTagsetsTemplateQuery__
+ *
+ * To run a query within a React component, call `useTagsetsTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsetsTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsetsTemplateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTagsetsTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>
+) {
+  return Apollo.useQuery<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>(TagsetsTemplateDocument, baseOptions);
+}
+export function useTagsetsTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>
+) {
+  return Apollo.useLazyQuery<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>(TagsetsTemplateDocument, baseOptions);
+}
+export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
+export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
+export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {

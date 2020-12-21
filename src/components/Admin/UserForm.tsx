@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import './styles.scss';
 import Typography from '../core/Typography';
+import { useTagsetsTemplateQuery } from '../../generated/graphql';
 /*local files imports end*/
 
 export enum EditMode {
@@ -26,26 +27,24 @@ export const UserForm: FC<UserProps> = ({
   onSave,
   title = 'User',
 }) => {
+  const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
+  const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
+  const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
   const history = useHistory();
   const genders = ['not specified', 'male', 'female'];
+  const { data: config } = useTagsetsTemplateQuery({
+    onCompleted: data => {
+      const { tagsets: templateTagsets } = data.configuration.template.users[0];
+      const userTagsets = currentUser?.profile.tagsets.map(t => t.name.toLowerCase());
+      const availableTagsetNames = templateTagsets?.filter(tt => !userTagsets.includes(tt.toLowerCase())) || [];
+      setAvailableTagsets(availableTagsetNames);
+    },
+  });
+
+  useEffect(() => {}, [config]);
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
-
-  /**
-   * @name skills AkA tags
-   * @return string
-   * @summary goes through the tagsets and if they exist returns a joined string of tags from tagsets;
-   */
-  const skills = // AKA tags
-    currentUser.profile.tagsets.length > 0
-      ? currentUser.profile.tagsets
-          .reduce((acc, curr) => [...acc, ...curr.tags], [''])
-          .filter(t => t)
-          .join(', ')
-      : '';
-  const [userSkills, setUserSkills] = useState<string>(skills);
-  useEffect(() => setUserSkills(skills), [skills]);
 
   const {
     name,
@@ -125,20 +124,14 @@ export const UserForm: FC<UserProps> = ({
   const handleSubmit = (userData: UserFromGenerated): void => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
-    const tags = userSkills.split(',').map(t => t && t.trim());
     const user: UserModel = {
       ...currentUser,
       ...otherData,
       profile: {
         description: bio,
         avatar,
-        references: [...references],
-        tagsets: [
-          {
-            name: 'Skills',
-            tags,
-          },
-        ],
+        references,
+        tagsets,
       },
     };
     onSave && onSave(user);
@@ -181,11 +174,13 @@ export const UserForm: FC<UserProps> = ({
               phone,
               country,
               references,
+              tagsets,
               avatar,
               gender,
               accountUpn,
               bio,
             },
+            setFieldValue,
             handleChange,
             handleSubmit,
             handleBlur,
@@ -213,7 +208,7 @@ export const UserForm: FC<UserProps> = ({
                   type={type || 'text'}
                   placeholder={placeholder || title}
                   value={value}
-                  onChange={fieldName === 'tagsets' ? handleTagSet : handleChange}
+                  onChange={handleChange}
                   required={required}
                   readOnly={readOnly}
                   disabled={readOnly}
@@ -224,10 +219,6 @@ export const UserForm: FC<UserProps> = ({
                 <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
               </Form.Group>
             );
-
-            const handleTagSet = ({ target: { value } }) => {
-              setUserSkills(value);
-            };
 
             return (
               <Form noValidate>
@@ -266,7 +257,6 @@ export const UserForm: FC<UserProps> = ({
                   {getInputField('Bio', bio, 'bio', false, isReadOnlyMode, undefined, 'Bio', 'textarea')}
                 </Form.Row>
                 <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
-                <Form.Row>{getInputField('Skills', userSkills, 'tagsets', false, isReadOnlyMode)}</Form.Row>
 
                 {editMode !== EditMode.new && (
                   <Form.Row>{getInputField('Groups', groups, 'groups', false, true)}</Form.Row>
@@ -275,13 +265,127 @@ export const UserForm: FC<UserProps> = ({
                   <Form.Row>{getInputField('Challenges', challenges, 'challenges', false, true)}</Form.Row>
                 )}
 
+                <FieldArray name={'tagsets'}>
+                  {({ push, remove }) => (
+                    <>
+                      <Form.Row>
+                        <Form.Group as={Col} xs={2}>
+                          <Form.Label>Tagsets</Form.Label>
+                          {!isReadOnlyMode && availableTagsets.length > 0 && (
+                            <Button
+                              className={'ml-3'}
+                              onClick={() => {
+                                setIsAddingTagset(true);
+                                setSelectedTagset(availableTagsets[0]);
+                              }}
+                              disabled={isAddingTagset}
+                            >
+                              Add
+                            </Button>
+                          )}
+                        </Form.Group>
+                        {isAddingTagset && (
+                          <>
+                            <Form.Group controlId="tagsetName" as={Col} xs={2}>
+                              <Form.Control
+                                as="select"
+                                custom
+                                onChange={e => setSelectedTagset(e.target.value)}
+                                defaultValue={selectedTagset}
+                              >
+                                {availableTagsets?.map((at, index) => (
+                                  <option value={at} key={index}>
+                                    {at}
+                                  </option>
+                                ))}
+                              </Form.Control>
+                            </Form.Group>
+                            <Form.Group as={Col} xs={1}>
+                              <Button
+                                className={'ml-3'}
+                                variant={'secondary'}
+                                onClick={() => {
+                                  setSelectedTagset('');
+                                  setIsAddingTagset(false);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </Form.Group>
+                            <Form.Group as={Col} xs={1}>
+                              {!isReadOnlyMode && (
+                                <Button
+                                  className={'ml-3'}
+                                  onClick={() => {
+                                    push({ name: availableTagsets[0], tags: [] });
+                                    setSelectedTagset('');
+                                    setIsAddingTagset(false);
+                                    setAvailableTagsets(availableTagsets.filter(t => t !== selectedTagset));
+                                  }}
+                                >
+                                  Confirm
+                                </Button>
+                              )}
+                            </Form.Group>
+                          </>
+                        )}
+                      </Form.Row>
+                      {isReadOnlyMode && tagsets.length === 0 ? (
+                        <Form.Control type={'text'} placeholder={'No tagsets yet'} readOnly={true} disabled={true} />
+                      ) : (
+                        tagsets.map((ts, index) => (
+                          <Form.Row key={index} className={'mb-4'}>
+                            <Form.Group as={Col}>
+                              <Form.Label>Tagset</Form.Label>
+                              <Form.Control name={'Tagset'} type={'text'} value={tagsets[index].name} disabled={true} />
+                            </Form.Group>
+                            <Form.Group as={Col}>
+                              <Form.Label>Tags</Form.Label>
+                              <Form.Control
+                                name={`tagsets.${index}.tags`}
+                                type={'text'}
+                                placeholder={'innovation, AI, technology, blockchain'}
+                                value={tagsets[index].tags?.join(',')}
+                                onChange={e => {
+                                  const stringValue = e.target.value;
+                                  const tagsetArray = stringValue.split(',');
+                                  setFieldValue(`tagsets.${index}.tags`, tagsetArray);
+                                }}
+                                onBlur={() => {
+                                  const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
+                                  setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
+                                }}
+                              />
+                            </Form.Group>
+                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                              <Button
+                                onClick={() => {
+                                  remove(index);
+                                  setAvailableTagsets([...availableTagsets, tagsets[index].name]);
+                                }}
+                                variant={'danger'}
+                              >
+                                Remove
+                              </Button>
+                            </Form.Group>
+                          </Form.Row>
+                        ))
+                      )}
+                    </>
+                  )}
+                </FieldArray>
+
                 <FieldArray name={'references'}>
                   {({ push, remove }) => (
                     <>
                       <Form.Row>
                         <Form.Group as={Col}>
-                          <Form.Label>References</Form.Label>{' '}
-                          {!isReadOnlyMode && <Button onClick={() => push({ name: '', uri: '' })}>Add</Button>}
+                          <Form.Label>References</Form.Label>
+                          {!isReadOnlyMode && (
+                            <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
+                              Add
+                            </Button>
+                          )}
                         </Form.Group>
                       </Form.Row>
                       {isReadOnlyMode && references.length === 0 ? (
@@ -317,12 +421,13 @@ export const UserForm: FC<UserProps> = ({
                 </FieldArray>
                 {!isReadOnlyMode && (
                   <>
-                    <Form.Group>
-                      <Button variant="primary" onClick={() => handleSubmit()}>
-                        Save
-                      </Button>{' '}
+                    <div className={'d-flex mt-4'}>
+                      <div className={'flex-grow-1'} />
                       {backButton}
-                    </Form.Group>
+                      <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                        Save
+                      </Button>
+                    </div>
                   </>
                 )}
               </Form>
