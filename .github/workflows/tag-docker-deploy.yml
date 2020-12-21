@@ -3,7 +3,7 @@ name: push to docker
 on:
   release:
     types: [published]
-    
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1 
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -63,6 +63,10 @@ jobs:
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
+          build-args: |
+            ARG_BUILD_VERSION=${{ steps.prep.outputs.version }}
+            ARG_BUILD_DATE=${{ steps.prep.outputs.created }}
+            ARG_BUILD_REVISION=${{ github.sha }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}

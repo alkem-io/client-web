@@ -61,7 +61,10 @@ const Root: FC = () => {
     console.table({
       appName: process.env.REACT_APP_NAME,
       clientVersion: process.env.REACT_APP_VERSION,
-      cherrytwistDomain: process.env.REACT_APP_FEEDBACK_URL,
+      feedback: process.env.REACT_APP_FEEDBACK_URL,
+      buildVersion: process.env.REACT_APP_BUILD_VERSION,
+      buildDate: process.env.REACT_APP_BUILD_DATE,
+      buildRevision: process.env.REACT_APP_BUILD_REVISION,
     });
   });
   return (
