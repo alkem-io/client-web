@@ -883,6 +883,14 @@ export type EcoverseInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ServerMetadataQuery = { __typename?: 'Query' } & {
+  metadata: { __typename?: 'Metadata' } & {
+    services: Array<{ __typename?: 'ServiceMetadata' } & Pick<ServiceMetadata, 'name' | 'version'>>;
+  };
+};
+
 export type CreateUserMutationVariables = Exact<{
   user: UserInput;
 }>;
@@ -1581,6 +1589,45 @@ export const UserMembersFragmentDoc = gql`
     }
   }
 `;
+export const ServerMetadataDocument = gql`
+  query serverMetadata {
+    metadata {
+      services {
+        name
+        version
+      }
+    }
+  }
+`;
+
+/**
+ * __useServerMetadataQuery__
+ *
+ * To run a query within a React component, call `useServerMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServerMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServerMetadataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useServerMetadataQuery(
+  baseOptions?: Apollo.QueryHookOptions<ServerMetadataQuery, ServerMetadataQueryVariables>
+) {
+  return Apollo.useQuery<ServerMetadataQuery, ServerMetadataQueryVariables>(ServerMetadataDocument, baseOptions);
+}
+export function useServerMetadataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ServerMetadataQuery, ServerMetadataQueryVariables>
+) {
+  return Apollo.useLazyQuery<ServerMetadataQuery, ServerMetadataQueryVariables>(ServerMetadataDocument, baseOptions);
+}
+export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
+export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
+export type ServerMetadataQueryResult = Apollo.QueryResult<ServerMetadataQuery, ServerMetadataQueryVariables>;
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
