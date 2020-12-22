@@ -57,7 +57,6 @@ const useGlobalStyles = createStyles(theme => ({
 
 const Root: FC = () => {
   useGlobalStyles();
-
   return (
     <Sentry.ErrorBoundary
       fallback={({ error }) => {

@@ -7,7 +7,15 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 ARG ARG_GRAPHQL_ENDPOINT=http://localhost:4000/graphql
-ENV REACT_APP_GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_ARG}
+ENV REACT_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
+
+# set build version, date and revision
+ARG ARG_BUILD_VERSION=dev
+ARG ARG_BUILD_DATE
+ARG ARG_BUILD_REVISION
+ENV REACT_APP_BUILD_VERSION=${ARG_BUILD_VERSION}
+ENV REACT_APP_BUILD_DATE=${ARG_BUILD_DATE}
+ENV REACT_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
