@@ -18,6 +18,7 @@ import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
+import { useServerMetadataQuery } from '../generated/graphql';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -44,6 +45,21 @@ const App = ({ children }): React.ReactElement => {
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
+
+  const { data } = useServerMetadataQuery({
+    onCompleted: () => {
+      console.table({
+        clientName: process.env.REACT_APP_NAME,
+        clientVersion: process.env.REACT_APP_VERSION,
+        serverName: data?.metadata.services[0].name,
+        serverVersion: data?.metadata.services[0].version,
+        feedback: process.env.REACT_APP_FEEDBACK_URL,
+        buildVersion: process.env.REACT_APP_BUILD_VERSION,
+        buildDate: process.env.REACT_APP_BUILD_DATE,
+        buildRevision: process.env.REACT_APP_BUILD_REVISION,
+      });
+    },
+  });
 
   if (loading) {
     return <Loading text={'Loading Application ...'} />;

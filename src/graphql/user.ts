@@ -16,6 +16,7 @@ export const USER_DETAILS_FRAGMENT = gql`
       description
       avatar
       references {
+        id
         name
         uri
       }
