@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
@@ -57,13 +57,7 @@ const useGlobalStyles = createStyles(theme => ({
 
 const Root: FC = () => {
   useGlobalStyles();
-  useEffect(() => {
-    console.table({
-      appName: process.env.REACT_APP_NAME,
-      clientVersion: process.env.REACT_APP_VERSION,
-      cherrytwistDomain: process.env.REACT_APP_FEEDBACK_URL,
-    });
-  });
+
   return (
     <Sentry.ErrorBoundary
       fallback={({ error }) => {

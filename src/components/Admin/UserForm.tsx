@@ -7,6 +7,7 @@ import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import './styles.scss';
 import Typography from '../core/Typography';
 import { useTagsetsTemplateQuery } from '../../generated/graphql';
+import { useRemoveReferenceMutation } from '../../generated/graphql';
 /*local files imports end*/
 
 export enum EditMode {
@@ -31,6 +32,8 @@ export const UserForm: FC<UserProps> = ({
   const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
   const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
   const history = useHistory();
+  const [removeRef] = useRemoveReferenceMutation();
+
   const genders = ['not specified', 'male', 'female'];
   const { data: config } = useTagsetsTemplateQuery({
     onCompleted: data => {
@@ -42,6 +45,8 @@ export const UserForm: FC<UserProps> = ({
   });
 
   useEffect(() => {}, [config]);
+
+  let refsToRemove: string[] = [];
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
@@ -121,7 +126,12 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = (userData: UserFromGenerated): void => {
+  const handleSubmit = async (userData: UserFromGenerated) => {
+    if (refsToRemove.length !== 0) {
+      for (const ref of refsToRemove) {
+        await removeRef({ variables: { ID: Number(ref) } });
+      }
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
     const user: UserModel = {
@@ -408,8 +418,13 @@ export const UserForm: FC<UserProps> = ({
                               isReadOnlyMode
                             )}
                             <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Form.Label>{'123'}</Form.Label>
-                              <Button onClick={() => remove(index)} variant={'danger'}>
+                              <Button
+                                onClick={() => {
+                                  remove(index);
+                                  isEditMode && ref.id && refsToRemove.push(ref.id);
+                                }}
+                                variant={'danger'}
+                              >
                                 Remove
                               </Button>
                             </Form.Group>
