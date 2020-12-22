@@ -153,3 +153,15 @@ export const QUERY_OPPORTUNITY_NAME = gql`
     }
   }
 `;
+
+export const QUERY_TAGSETS_TEMPLATE = gql`
+  query tagsetsTemplate {
+    configuration {
+      template {
+        users {
+          tagsets
+        }
+      }
+    }
+  }
+`;
