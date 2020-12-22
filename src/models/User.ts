@@ -37,6 +37,7 @@ export interface Tagset {
 }
 
 export interface UserReference {
+  id: string;
   name: string;
   uri: string;
 }
