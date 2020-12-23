@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 
 /*lib imports end*/
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
@@ -22,6 +22,8 @@ import { FourOuFour, PageProps } from '../pages';
 import Typography from '../components/core/Typography';
 import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import Button from '../components/core/Button';
+import ProfilePage from '../components/Admin/ProfilePage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -92,7 +94,7 @@ const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
   const { userId } = useParams<{ userId: string }>();
   const { data, loading } = useUserQuery({ variables: { id: userId } });
 
-  if (loading) return <Loading text={'Loading user ...'} />;
+  if (loading) return <Loading text={'Loading user...'} />;
   const user = data?.user as UserModel;
   if (user) {
     return <UserPage user={user} paths={paths} mode={mode} title={title} />;
@@ -145,7 +147,15 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
+        <div className={'d-flex'}>
+          <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
+            New
+          </Button>
+        </div>
         <ListPage paths={currentPaths} data={challengesList || []} />
+      </Route>
+      <Route path={`${path}/new`}>
+        <ProfilePage mode={EditMode.new} paths={currentPaths} title="New challenge" />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />

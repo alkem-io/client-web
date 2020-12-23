@@ -20,7 +20,7 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
   return (
     <>
       <ButtonGroup className={'d-flex justify-content-end'}>
-        <Button className={'mb-2'} as={Link} to={`${url}/new`} small>
+        <Button className={'mb-2'} as={Link} to={`${url}/new`}>
           New
         </Button>
       </ButtonGroup>
