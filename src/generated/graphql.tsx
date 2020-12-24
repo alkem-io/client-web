@@ -1034,6 +1034,31 @@ export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
 };
 
+export type UpdateChallengeMutationVariables = Exact<{
+  challengeData: ChallengeInput;
+  challengeID: Scalars['Float'];
+}>;
+
+export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+};
+
+export type ChallengeProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'textID' | 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
+          }
+      >;
+    };
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2318,6 +2343,110 @@ export type CreateChallengeMutationResult = Apollo.MutationResult<CreateChalleng
 export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   CreateChallengeMutation,
   CreateChallengeMutationVariables
+>;
+export const UpdateChallengeDocument = gql`
+  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
+    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+export type UpdateChallengeMutationFn = Apollo.MutationFunction<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
+
+/**
+ * __useUpdateChallengeMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
+ *   variables: {
+ *      challengeData: // value for 'challengeData'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useUpdateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeMutation, UpdateChallengeMutationVariables>
+) {
+  return Apollo.useMutation<UpdateChallengeMutation, UpdateChallengeMutationVariables>(
+    UpdateChallengeDocument,
+    baseOptions
+  );
+}
+export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
+export type UpdateChallengeMutationResult = Apollo.MutationResult<UpdateChallengeMutation>;
+export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
+export const ChallengeProfileInfoDocument = gql`
+  query challengeProfileInfo($id: Float!) {
+    challenge(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useChallengeProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>(
+    ChallengeProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useChallengeProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>(
+    ChallengeProfileInfoDocument,
+    baseOptions
+  );
+}
+export type ChallengeProfileInfoQueryHookResult = ReturnType<typeof useChallengeProfileInfoQuery>;
+export type ChallengeProfileInfoLazyQueryHookResult = ReturnType<typeof useChallengeProfileInfoLazyQuery>;
+export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
+  ChallengeProfileInfoQuery,
+  ChallengeProfileInfoQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {

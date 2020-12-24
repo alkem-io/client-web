@@ -23,7 +23,7 @@ import Typography from '../components/core/Typography';
 import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import Button from '../components/core/Button';
-import ProfilePage from '../components/Admin/ProfilePage';
+import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -155,7 +155,10 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ListPage paths={currentPaths} data={challengesList || []} />
       </Route>
       <Route path={`${path}/new`}>
-        <ProfilePage mode={EditMode.new} paths={currentPaths} title="New challenge" />
+        <ProfilePage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
+      </Route>
+      <Route exact path={`${path}/:challengeId/edit`}>
+        <ProfilePage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />

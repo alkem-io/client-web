@@ -23,7 +23,10 @@ const adminPageData = [
   },
   {
     name: 'Challenges',
-    buttons: [{ description: 'Open list', url: '/challenges' }],
+    buttons: [
+      { description: 'Manage', url: '/challenges' },
+      { description: 'Create New', url: '/challenges/new' },
+    ],
   },
 ];
 

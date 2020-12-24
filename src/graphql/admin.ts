@@ -173,3 +173,33 @@ export const MUTATION_CREATE_CHALLENGE = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_CHALLENGE = gql`
+  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
+    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_PROFILE_INFO = gql`
+  query challengeProfileInfo($id: Float!) {
+    challenge(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;

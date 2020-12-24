@@ -189,7 +189,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
                             onClick={() => {
                               remove(index);
                               // @ts-ignore
-                              referencesToRemove.push(ref.id);
+                              ref.id && referencesToRemove.push(ref.id);
                             }}
                             variant={'negative'}
                           >
