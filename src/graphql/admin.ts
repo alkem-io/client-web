@@ -165,3 +165,11 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_CHALLENGE = gql`
+  mutation createChallenge($challengeData: ChallengeInput!) {
+    createChallenge(challengeData: $challengeData) {
+      name
+    }
+  }
+`;

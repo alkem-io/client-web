@@ -4,6 +4,7 @@ import Button from '../core/Button';
 import { EditMode } from './UserForm';
 import { Path } from '../../context/NavigationProvider';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useCreateChallengeMutation } from '../../generated/graphql';
 
 interface Props {
   mode: EditMode;
@@ -20,16 +21,30 @@ const MyComponent: FC<Props> = ({ paths, profile }) => {
 
   useUpdateNavigation({ currentPaths });
 
-  const onSubmit = values => console.log(values);
+  const [createChallenge] = useCreateChallengeMutation({ onCompleted: () => console.log('done') });
+
+  const onSubmit = values => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { name, textID, state, ...context } = values;
+    createChallenge({
+      variables: {
+        challengeData: {
+          name,
+          textID,
+          state: '',
+          context,
+        },
+      },
+    });
+  };
   let submitWired;
   return (
-    <div>
-      Profile
+    <>
       <ProfileForm context={{}} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
       <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
         SAVE
       </Button>
-    </div>
+    </>
   );
 };
 

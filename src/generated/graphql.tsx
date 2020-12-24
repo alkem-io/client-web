@@ -1026,6 +1026,14 @@ export type TagsetsTemplateQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type CreateChallengeMutationVariables = Exact<{
+  challengeData: ChallengeInput;
+}>;
+
+export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
+  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2268,6 +2276,49 @@ export function useTagsetsTemplateLazyQuery(
 export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
 export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
 export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>;
+export const CreateChallengeDocument = gql`
+  mutation createChallenge($challengeData: ChallengeInput!) {
+    createChallenge(challengeData: $challengeData) {
+      name
+    }
+  }
+`;
+export type CreateChallengeMutationFn = Apollo.MutationFunction<
+  CreateChallengeMutation,
+  CreateChallengeMutationVariables
+>;
+
+/**
+ * __useCreateChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
+ *   variables: {
+ *      challengeData: // value for 'challengeData'
+ *   },
+ * });
+ */
+export function useCreateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateChallengeMutation, CreateChallengeMutationVariables>
+) {
+  return Apollo.useMutation<CreateChallengeMutation, CreateChallengeMutationVariables>(
+    CreateChallengeDocument,
+    baseOptions
+  );
+}
+export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
+export type CreateChallengeMutationResult = Apollo.MutationResult<CreateChallengeMutation>;
+export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  CreateChallengeMutation,
+  CreateChallengeMutationVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
