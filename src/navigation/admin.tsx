@@ -24,6 +24,7 @@ import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import Button from '../components/core/Button';
 import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
+import OpportunityPage from '../components/Admin/OpportunityPage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -245,7 +246,7 @@ const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <ChallengeOpportunities paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:opportunityId/groups`}>
+      <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -265,7 +266,7 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
     () => [
       ...paths,
       { value: url, name: data?.opportunity?.name || '', real: true },
-      { value: url, name: 'groups', real: true },
+      // { value: url, name: 'groups', real: true },
     ],
     [paths, data?.opportunity?.name, url]
   );
@@ -273,9 +274,13 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
+        {/*<OpportunityGroups paths={currentPaths} />*/}
+        <OpportunityPage paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/groups`}>
         <OpportunityGroups paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route exact path={`${path}/groups/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
     </Switch>
@@ -291,7 +296,7 @@ const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const opportunities = data?.challenge?.opportunities?.map(o => ({
     id: o.id,
     value: o.name,
-    url: `${url}/${o.id}/groups`,
+    url: `${url}/${o.id}`,
   }));
 
   return <ListPage paths={paths} data={opportunities || []} />;
