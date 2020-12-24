@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Col, Form, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
 import { ContextInput, useRemoveReferenceMutation } from '../../generated/graphql';
 import * as yup from 'yup';
@@ -58,7 +58,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : yup.string().required(),
-    textID: contextOnly ? yup.string() : yup.string().required(),
+    textID: contextOnly ? yup.string() : yup.string().required().min(3, 'TextID should be at least 3 symbols long'),
     // state: contextOnly ? yup.string() : yup.string().required(),
     background: yup.string().required(),
     impact: yup.string().required(),
@@ -77,6 +77,8 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
 
   let isSubmitWired = false;
   let referencesToRemove: string[] = [];
+  const ConditionalTextArea = contextOnly ? TextArea : Form.Control;
+  const ConditionalTextInput = contextOnly ? TextInput : Form.Control;
 
   return (
     <Formik
@@ -88,18 +90,31 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
         onSubmit(values);
       }}
     >
-      {({ values: { references }, values, handleChange, errors, handleSubmit }) => {
-        const getTextArea = (name: string, label: string) => (
-          // <Form.Control
-          <TextArea
-            onChange={handleChange}
-            name={name}
-            value={values[name] as string}
-            label={label}
-            error={!!errors[name]}
-            className={styles.field}
-          />
-        );
+      {({ values: { references }, values, handleChange, handleBlur, errors, touched, handleSubmit }) => {
+        const getTextArea = (name: string, label: string) => {
+          const fieldProps = {
+            ...(contextOnly
+              ? { error: !!errors[name] && touched[name] }
+              : { isInvalid: !!errors[name] && touched[name] }),
+          };
+          return (
+            <Form.Group controlId={name}>
+              {!contextOnly && <Form.Label>{label}</Form.Label>}
+              <ConditionalTextArea
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name={name}
+                value={values[name] as string}
+                label={label}
+                className={styles.field}
+                rows={contextOnly ? 2 : 3}
+                as={'textarea'}
+                {...fieldProps}
+              />
+              {errors[name] && <Form.Control.Feedback type="invalid">{errors[name]}</Form.Control.Feedback>}
+            </Form.Group>
+          );
+        };
 
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
@@ -145,18 +160,24 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
                   ) : (
                     references?.map((ref, index) => (
                       <div className={clsx(styles.row, styles.field)} key={index}>
-                        <TextInput
-                          label={'Name'}
-                          name={`references.${index}.name`}
-                          value={references[index].name as string}
-                          onChange={handleChange}
-                        />
-                        <TextInput
-                          label={'Url'}
-                          name={`references.${index}.uri`}
-                          value={references[index].uri as string}
-                          onChange={handleChange}
-                        />
+                        <FormGroup as={Col}>
+                          {!contextOnly && <Form.Label>Name</Form.Label>}
+                          <ConditionalTextInput
+                            label={'Name'}
+                            name={`references.${index}.name`}
+                            value={references[index].name as string}
+                            onChange={handleChange}
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          {!contextOnly && <Form.Label>Url</Form.Label>}
+                          <ConditionalTextInput
+                            label={'Url'}
+                            name={`references.${index}.uri`}
+                            value={references[index].uri as string}
+                            onChange={handleChange}
+                          />
+                        </FormGroup>
                         <OverlayTrigger
                           overlay={
                             <Tooltip id={'remove a reference'} placement={'bottom'}>
