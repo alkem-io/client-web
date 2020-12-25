@@ -203,3 +203,41 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_OPPORTUNITY = gql`
+  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
+    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_OPPORTUNITY = gql`
+  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
+    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      name
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
+  query opportunityProfileInfo($id: Float!) {
+    opportunity(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import ProfileForm from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
 import { Path } from '../../context/NavigationProvider';
@@ -6,11 +6,16 @@ import { useUpdateNavigation } from '../../hooks/useNavigation';
 import {
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
+  useCreateOpportunityMutation,
+  useOpportunityProfileInfoLazyQuery,
   useUpdateChallengeMutation,
+  useUpdateOpportunityMutation,
 } from '../../generated/graphql';
 import { useParams } from 'react-router-dom';
-import { QUERY_CHALLENGE_PROFILE_INFO } from '../../graphql/admin';
+import { QUERY_CHALLENGE_PROFILE_INFO, QUERY_OPPORTUNITY_PROFILE_INFO } from '../../graphql/admin';
 import Typography from '../core/Typography';
+import { Alert } from 'react-bootstrap';
+import Loading from '../core/Loading';
 
 export enum ProfileSubmitMode {
   createChallenge,
@@ -31,21 +36,52 @@ interface Params {
 
 const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
   const { challengeId, opportunityId } = useParams<Params>();
+  const [message, setMessage] = useState<string | null>(null);
+  const [variant, setVariant] = useState<'success' | 'error'>('success');
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
-  const [createChallenge] = useCreateChallengeMutation();
-  const [updateChallenge] = useUpdateChallengeMutation({
+  const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
+  const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
+    onCompleted: () => onSuccess('Successfully created'),
+    onError: e => onError(e.message),
+  });
+  const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
+    onCompleted: () => onSuccess('Successfully created'),
+    onError: e => onError(e.message),
+  });
+  const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
+    onCompleted: () => onSuccess('Successfully updated'),
+    onError: e => onError(e.message),
     refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE_INFO, variables: { id: Number(challengeId) } }],
+    awaitRefetchQueries: true,
+  });
+  const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
+    onCompleted: () => onSuccess('Successfully updated'),
+    onError: e => onError(e.message),
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE_INFO, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
 
   useEffect(() => {
-    if (challengeId && !opportunityId) getChallengeProfileInfo({ variables: { id: Number(challengeId) } });
+    if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: Number(challengeId) } });
+    if (mode === ProfileSubmitMode.updateOpportunity)
+      getOpportunityProfileInfo({ variables: { id: Number(opportunityId) } });
   }, []);
 
-  const profile = challengeProfile?.challenge;
+  const isLoading = loading1 || loading2 || loading3 || loading4;
+  const profile = challengeProfile?.challenge || opportunityProfile?.opportunity;
   const profileTopLvlInfo = {
     name: profile?.name,
     textID: profile?.textID,
+  };
+
+  const onSuccess = (message: string) => {
+    setVariant('success');
+    setMessage(message);
+  };
+
+  const onError = (message: string) => {
+    setVariant('error');
+    setMessage(message);
   };
 
   const currentPaths = useMemo(() => [...paths, { name: profile?.name || 'new', real: false }], [paths, profile]);
@@ -78,10 +114,20 @@ const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
         });
         break;
       case ProfileSubmitMode.createOpportunity:
-        // createOpportunity
+        createOpportunity({
+          variables: {
+            opportunityData: data,
+            challengeID: Number(challengeId),
+          },
+        });
         break;
       case ProfileSubmitMode.updateOpportunity:
-        // updateOpportunity
+        updateOpportunity({
+          variables: {
+            opportunityData: data,
+            ID: Number(opportunityId),
+          },
+        });
         break;
       default:
         throw new Error('Submit handler not found');
@@ -100,11 +146,14 @@ const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
-      <div className={'d-flex mt-4'}>
-        <Button className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          SAVE
+      <div className={'d-flex mt-4 mb-4'}>
+        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
+          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
         </Button>
       </div>
+      <Alert show={!!message} variant={variant} onClose={() => setMessage(null)} dismissible>
+        {message}
+      </Alert>
     </>
   );
 };

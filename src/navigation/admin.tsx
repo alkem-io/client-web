@@ -246,6 +246,9 @@ const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <ChallengeOpportunities paths={currentPaths} />
       </Route>
+      <Route exact path={`${path}/new`}>
+        <ProfilePage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />
+      </Route>
       <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
       </Route>
@@ -262,23 +265,22 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
 
   const { data } = useOpportunityNameQuery({ variables: { id: Number(opportunityId) } });
 
-  const currentPaths = useMemo(
-    () => [
-      ...paths,
-      { value: url, name: data?.opportunity?.name || '', real: true },
-      // { value: url, name: 'groups', real: true },
-    ],
-    [paths, data?.opportunity?.name, url]
-  );
+  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.opportunity?.name || '', real: true }], [
+    paths,
+    data?.opportunity?.name,
+    url,
+  ]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        {/*<OpportunityGroups paths={currentPaths} />*/}
         <OpportunityPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups`}>
         <OpportunityGroups paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/edit`}>
+        <ProfilePage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups/:groupId`}>
         <GroupPage paths={currentPaths} />

@@ -1059,6 +1059,40 @@ export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type CreateOpportunityMutationVariables = Exact<{
+  opportunityData: OpportunityInput;
+  challengeID: Scalars['Float'];
+}>;
+
+export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
+  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+};
+
+export type UpdateOpportunityMutationVariables = Exact<{
+  opportunityData: OpportunityInput;
+  ID: Scalars['Float'];
+}>;
+
+export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+};
+
+export type OpportunityProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID' | 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
+          }
+      >;
+    };
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2447,6 +2481,154 @@ export type ChallengeProfileInfoLazyQueryHookResult = ReturnType<typeof useChall
 export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   ChallengeProfileInfoQuery,
   ChallengeProfileInfoQueryVariables
+>;
+export const CreateOpportunityDocument = gql`
+  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
+    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+export type CreateOpportunityMutationFn = Apollo.MutationFunction<
+  CreateOpportunityMutation,
+  CreateOpportunityMutationVariables
+>;
+
+/**
+ * __useCreateOpportunityMutation__
+ *
+ * To run a mutation, you first call `useCreateOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
+ *   variables: {
+ *      opportunityData: // value for 'opportunityData'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useCreateOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateOpportunityMutation, CreateOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<CreateOpportunityMutation, CreateOpportunityMutationVariables>(
+    CreateOpportunityDocument,
+    baseOptions
+  );
+}
+export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
+export type CreateOpportunityMutationResult = Apollo.MutationResult<CreateOpportunityMutation>;
+export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  CreateOpportunityMutation,
+  CreateOpportunityMutationVariables
+>;
+export const UpdateOpportunityDocument = gql`
+  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
+    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      name
+    }
+  }
+`;
+export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
+  UpdateOpportunityMutation,
+  UpdateOpportunityMutationVariables
+>;
+
+/**
+ * __useUpdateOpportunityMutation__
+ *
+ * To run a mutation, you first call `useUpdateOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOpportunityMutation, { data, loading, error }] = useUpdateOpportunityMutation({
+ *   variables: {
+ *      opportunityData: // value for 'opportunityData'
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useUpdateOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOpportunityMutation, UpdateOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOpportunityMutation, UpdateOpportunityMutationVariables>(
+    UpdateOpportunityDocument,
+    baseOptions
+  );
+}
+export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
+export type UpdateOpportunityMutationResult = Apollo.MutationResult<UpdateOpportunityMutation>;
+export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOpportunityMutation,
+  UpdateOpportunityMutationVariables
+>;
+export const OpportunityProfileInfoDocument = gql`
+  query opportunityProfileInfo($id: Float!) {
+    opportunity(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>(
+    OpportunityProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useOpportunityProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>(
+    OpportunityProfileInfoDocument,
+    baseOptions
+  );
+}
+export type OpportunityProfileInfoQueryHookResult = ReturnType<typeof useOpportunityProfileInfoQuery>;
+export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpportunityProfileInfoLazyQuery>;
+export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
+  OpportunityProfileInfoQuery,
+  OpportunityProfileInfoQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {

@@ -58,7 +58,13 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : yup.string().required(),
-    textID: contextOnly ? yup.string() : yup.string().required().min(3, 'TextID should be at least 3 symbols long'),
+    textID: contextOnly
+      ? yup.string()
+      : yup
+          .string()
+          .required()
+          .min(3, 'TextID should be at least 3 symbols long')
+          .matches(/^\S*$/, 'TextID cannot contain spaces'),
     // state: contextOnly ? yup.string() : yup.string().required(),
     background: yup.string().required(),
     impact: yup.string().required(),

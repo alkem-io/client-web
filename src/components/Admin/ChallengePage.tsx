@@ -20,7 +20,10 @@ const challengePageData = [
   },
   {
     name: 'Opportunities',
-    buttons: [{ description: 'Manage opportunities', url: '/opportunities' }],
+    buttons: [
+      { description: 'Manage', url: '/opportunities' },
+      { description: 'Create new', url: '/opportunities/new' },
+    ],
   },
 ];
 
