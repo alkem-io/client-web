@@ -241,3 +241,27 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_GROUP_ON_ECOVERSE = gql`
+  mutation createGroupOnEcoverse($groupName: String!) {
+    createGroupOnEcoverse(groupName: $groupName) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_CREATE_GROUP_ON_CHALLENGE = gql`
+  mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
+    createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_CREATE_GROUP_ON_OPPORTUNITY = gql`
+  mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
+    createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      name
+    }
+  }
+`;
