@@ -25,6 +25,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import Button from '../components/core/Button';
 import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
 import OpportunityPage from '../components/Admin/OpportunityPage';
+import CreateGroupPage from '../components/Admin/CreateGroupPage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -119,6 +120,9 @@ const GroupsRoute: FC<PageProps> = ({ paths }) => {
           Ecoverse groups
         </Typography>
         <ListPage data={groupsList || []} paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/new`}>
+        <CreateGroupPage action={'createEcoverseGroup'} />
       </Route>
       <Route path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} />
