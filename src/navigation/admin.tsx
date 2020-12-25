@@ -301,7 +301,16 @@ const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     url: `${url}/${o.id}`,
   }));
 
-  return <ListPage paths={paths} data={opportunities || []} />;
+  return (
+    <>
+      <div className={'d-flex'}>
+        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
+          New
+        </Button>
+      </div>
+      <ListPage paths={paths} data={opportunities || []} />
+    </>
+  );
 };
 
 const OpportunityGroups: FC<PageProps> = ({ paths }) => {

@@ -13,13 +13,13 @@ const adminPageData = [
   {
     name: 'Users',
     buttons: [
-      { description: 'New user', url: '/users/new' },
-      { description: 'Edit users', url: '/users' },
+      { description: 'Create new', url: '/users/new' },
+      { description: 'Edit', url: '/users' },
     ],
   },
   {
     name: 'Ecoverse groups',
-    buttons: [{ description: 'Edit groups', url: '/groups' }],
+    buttons: [{ description: 'Manage', url: '/groups' }],
   },
   {
     name: 'Challenges',
