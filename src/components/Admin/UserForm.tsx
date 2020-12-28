@@ -8,6 +8,8 @@ import './styles.scss';
 import Typography from '../core/Typography';
 import { useTagsetsTemplateQuery } from '../../generated/graphql';
 import { useRemoveReferenceMutation } from '../../generated/graphql';
+import countriesList from '../../utils/countriesList.json';
+import SearchDropdown from '../core/SearchDropdown';
 /*local files imports end*/
 
 export enum EditMode {
@@ -259,8 +261,15 @@ export const UserForm: FC<UserProps> = ({
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
+                  <Form.Group as={Col} xs={6}>
+                    <Form.Label>Country</Form.Label>
+                    <SearchDropdown
+                      value={country}
+                      data={countriesList.map(el => el.name)}
+                      onSelect={value => setFieldValue('country', value)}
+                    />
+                  </Form.Group>
                   {getInputField('City', city, 'city', false, isReadOnlyMode)}
-                  {getInputField('Country', country, 'country', false, isReadOnlyMode)}
                 </Form.Row>
                 <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>
