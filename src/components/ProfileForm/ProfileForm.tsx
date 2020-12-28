@@ -23,6 +23,7 @@ interface Props {
   onSubmit: (formData: any) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
+  isEdit: boolean;
 }
 
 interface InitialValues extends ContextInput, Profile {}
@@ -41,7 +42,7 @@ const useProfileStyles = createStyles(theme => ({
   },
 }));
 
-const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contextOnly = false }) => {
+const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit, contextOnly = false }) => {
   const styles = useProfileStyles();
 
   const initialValues: InitialValues = {
@@ -64,6 +65,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
           .string()
           .required()
           .min(3, 'TextID should be at least 3 symbols long')
+          .max(20, 'Exceeded the limit of 20 characters')
           .matches(/^\S*$/, 'TextID cannot contain spaces'),
     // state: contextOnly ? yup.string() : yup.string().required(),
     background: yup.string().required(),
@@ -97,7 +99,19 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
       }}
     >
       {({ values: { references }, values, handleChange, handleBlur, errors, touched, handleSubmit }) => {
-        const getTextArea = (name: string, label: string) => {
+        const getTextArea = ({
+          name,
+          label,
+          placeholder,
+          rows,
+          disabled = false,
+        }: {
+          name: string;
+          label: string;
+          placeholder?: string;
+          rows?: number;
+          disabled?: boolean;
+        }) => {
           const fieldProps = {
             ...(contextOnly
               ? { error: !!errors[name] && touched[name] }
@@ -113,8 +127,10 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
                 value={values[name] as string}
                 label={label}
                 className={styles.field}
-                rows={contextOnly ? 2 : 3}
+                placeholder={placeholder || label}
+                rows={rows || contextOnly ? 2 : 3}
                 as={'textarea'}
+                disabled={disabled}
                 {...fieldProps}
               />
               {errors[name] && <Form.Control.Feedback type="invalid">{errors[name]}</Form.Control.Feedback>}
@@ -131,16 +147,23 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, contex
           <>
             {!contextOnly && (
               <>
-                {getTextArea('name', 'Name')}
-                {getTextArea('textID', 'Text ID')}
+                {getTextArea({ name: 'name', label: 'Name' })}
+                {getTextArea({
+                  name: 'textID',
+                  label: 'Text ID',
+                  rows: 1,
+                  placeholder:
+                    'Unique textual identifier, used for URL paths. Note: cannot be modified after creation.',
+                  disabled: isEdit,
+                })}
                 {/*{getTextArea('state', 'State')}*/}
               </>
             )}
-            {getTextArea('background', 'Background')}
-            {getTextArea('impact', 'Impact')}
-            {getTextArea('tagline', 'Tagline')}
-            {getTextArea('vision', 'Vision')}
-            {getTextArea('who', 'Who')}
+            {getTextArea({ name: 'background', label: 'Background' })}
+            {getTextArea({ name: 'impact', label: 'Impact' })}
+            {getTextArea({ name: 'tagline', label: 'Tagline' })}
+            {getTextArea({ name: 'vision', label: 'Vision' })}
+            {getTextArea({ name: 'who', label: 'Who' })}
 
             <FieldArray name={'references'}>
               {({ push, remove }) => (

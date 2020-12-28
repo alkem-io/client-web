@@ -67,6 +67,8 @@ const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
       getOpportunityProfileInfo({ variables: { id: Number(opportunityId) } });
   }, []);
 
+  const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
+
   const isLoading = loading1 || loading2 || loading3 || loading4;
   const profile = challengeProfile?.challenge || opportunityProfile?.opportunity;
   const profileTopLvlInfo = {
@@ -141,6 +143,7 @@ const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
         {title}
       </Typography>
       <ProfileForm
+        isEdit={isEdit}
         profile={profileTopLvlInfo || {}}
         context={profile?.context || {}}
         onSubmit={onSubmit}

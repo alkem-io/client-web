@@ -83,6 +83,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
       </Modal.Header>
       <Modal.Body className={styles.body}>
         <ProfileForm
+          isEdit={true}
           contextOnly={true}
           context={data}
           onSubmit={onSubmit}
