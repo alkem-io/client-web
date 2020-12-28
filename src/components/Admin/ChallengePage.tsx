@@ -11,12 +11,19 @@ import { PageProps } from '../../pages';
 
 const challengePageData = [
   {
+    name: 'Challenge info',
+    buttons: [{ description: 'Edit', url: '/edit' }],
+  },
+  {
     name: 'Challenge groups',
-    buttons: [{ description: 'Edit groups', url: '/groups' }],
+    buttons: [{ description: 'Manage groups', url: '/groups' }],
   },
   {
     name: 'Opportunities',
-    buttons: [{ description: 'Edit opportunities', url: '/opportunities' }],
+    buttons: [
+      { description: 'Manage', url: '/opportunities' },
+      { description: 'Create new', url: '/opportunities/new' },
+    ],
   },
 ];
 

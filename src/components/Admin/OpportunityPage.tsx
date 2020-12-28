@@ -1,47 +1,43 @@
 import React, { FC } from 'react';
+import { Row } from 'react-bootstrap';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 import Button from '../core/Button';
 import Card from '../core/Card';
+
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { Theme } from '../../context/ThemeProvider';
 import { PageProps } from '../../pages';
 
-import { Row } from 'react-bootstrap';
-
-const adminPageData = [
+const opportunityPageData = [
   {
-    name: 'Users',
-    buttons: [
-      { description: 'Create new', url: '/users/new' },
-      { description: 'Edit', url: '/users' },
-    ],
+    name: 'Opportunity info',
+    buttons: [{ description: 'Edit', url: '/edit' }],
   },
   {
-    name: 'Ecoverse groups',
-    buttons: [{ description: 'Manage', url: '/groups' }],
-  },
-  {
-    name: 'Challenges',
-    buttons: [
-      { description: 'Manage', url: '/challenges' },
-      { description: 'Create New', url: '/challenges/new' },
-    ],
+    name: 'Opportunity groups',
+    buttons: [{ description: 'Manage groups', url: '/groups' }],
   },
 ];
 
-export const AdminPage: FC<PageProps> = ({ paths }) => {
+export const OpportunityPage: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
+
   useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>
-      {adminPageData.map((x, i) => (
+      {opportunityPageData.map((x, i) => (
         <Row key={i} className={'mb-4'}>
           <Card
             key={i}
             classes={{
               background: (theme: Theme) => theme.palette.neutral,
+            }}
+            bodyProps={{
+              classes: {
+                // background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.5),
+              },
             }}
             primaryTextProps={{
               text: x.name || '',
@@ -53,7 +49,7 @@ export const AdminPage: FC<PageProps> = ({ paths }) => {
           >
             <div className={'d-flex wrap'}>
               {x.buttons.map((b, j) => (
-                <Button key={j} text={b.description} as={Link} to={`${url}${b.url}`} className={'mr-2'} />
+                <Button key={j} as={Link} to={`${url}${b.url}`} text={b.description} className={'mr-2'} />
               ))}
             </div>
           </Card>
@@ -62,4 +58,5 @@ export const AdminPage: FC<PageProps> = ({ paths }) => {
     </>
   );
 };
-export default AdminPage;
+
+export default OpportunityPage;

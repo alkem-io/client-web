@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 
 /*lib imports end*/
 import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
@@ -22,6 +22,9 @@ import { FourOuFour, PageProps } from '../pages';
 import Typography from '../components/core/Typography';
 import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import Button from '../components/core/Button';
+import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
+import OpportunityPage from '../components/Admin/OpportunityPage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -92,7 +95,7 @@ const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
   const { userId } = useParams<{ userId: string }>();
   const { data, loading } = useUserQuery({ variables: { id: userId } });
 
-  if (loading) return <Loading text={'Loading user ...'} />;
+  if (loading) return <Loading text={'Loading user...'} />;
   const user = data?.user as UserModel;
   if (user) {
     return <UserPage user={user} paths={paths} mode={mode} title={title} />;
@@ -145,7 +148,18 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
+        <div className={'d-flex'}>
+          <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
+            New
+          </Button>
+        </div>
         <ListPage paths={currentPaths} data={challengesList || []} />
+      </Route>
+      <Route path={`${path}/new`}>
+        <ProfilePage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
+      </Route>
+      <Route exact path={`${path}/:challengeId/edit`}>
+        <ProfilePage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
@@ -232,7 +246,10 @@ const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <ChallengeOpportunities paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:opportunityId/groups`}>
+      <Route exact path={`${path}/new`}>
+        <ProfilePage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -248,21 +265,24 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
 
   const { data } = useOpportunityNameQuery({ variables: { id: Number(opportunityId) } });
 
-  const currentPaths = useMemo(
-    () => [
-      ...paths,
-      { value: url, name: data?.opportunity?.name || '', real: true },
-      { value: url, name: 'groups', real: true },
-    ],
-    [paths, data?.opportunity?.name, url]
-  );
+  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.opportunity?.name || '', real: true }], [
+    paths,
+    data?.opportunity?.name,
+    url,
+  ]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
+        <OpportunityPage paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/groups`}>
         <OpportunityGroups paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route exact path={`${path}/edit`}>
+        <ProfilePage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/groups/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
     </Switch>
@@ -278,10 +298,19 @@ const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const opportunities = data?.challenge?.opportunities?.map(o => ({
     id: o.id,
     value: o.name,
-    url: `${url}/${o.id}/groups`,
+    url: `${url}/${o.id}`,
   }));
 
-  return <ListPage paths={paths} data={opportunities || []} />;
+  return (
+    <>
+      <div className={'d-flex'}>
+        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
+          New
+        </Button>
+      </div>
+      <ListPage paths={paths} data={opportunities || []} />
+    </>
+  );
 };
 
 const OpportunityGroups: FC<PageProps> = ({ paths }) => {

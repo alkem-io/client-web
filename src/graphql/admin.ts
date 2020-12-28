@@ -165,3 +165,79 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_CHALLENGE = gql`
+  mutation createChallenge($challengeData: ChallengeInput!) {
+    createChallenge(challengeData: $challengeData) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_CHALLENGE = gql`
+  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
+    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+
+export const QUERY_CHALLENGE_PROFILE_INFO = gql`
+  query challengeProfileInfo($id: Float!) {
+    challenge(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_CREATE_OPPORTUNITY = gql`
+  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
+    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_OPPORTUNITY = gql`
+  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
+    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      name
+    }
+  }
+`;
+
+export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
+  query opportunityProfileInfo($id: Float!) {
+    opportunity(ID: $id) {
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
