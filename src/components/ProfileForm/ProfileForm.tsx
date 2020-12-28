@@ -159,9 +159,9 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
                 {/*{getTextArea('state', 'State')}*/}
               </>
             )}
+            {getTextArea({ name: 'tagline', label: 'Tagline' })}
             {getTextArea({ name: 'background', label: 'Background' })}
             {getTextArea({ name: 'impact', label: 'Impact' })}
-            {getTextArea({ name: 'tagline', label: 'Tagline' })}
             {getTextArea({ name: 'vision', label: 'Vision' })}
             {getTextArea({ name: 'who', label: 'Who' })}
 
