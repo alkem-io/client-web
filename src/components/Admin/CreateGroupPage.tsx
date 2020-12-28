@@ -1,21 +1,36 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import Typography from '../core/Typography';
 import { Form, FormGroup } from 'react-bootstrap';
 import Button from '../core/Button';
 import { useCreateGroup } from '../../hooks/useCreateGroup';
+import { useParams } from 'react-router-dom';
+import { PageProps } from '../../pages';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
 
-interface Props {
-  action: 'createEcoverseGroup' | 'createChallengeGroup' | 'createOpportunityGroup';
+interface Props extends PageProps {
+  action: 'updateGroup' | 'createEcoverseGroup' | 'createChallengeGroup' | 'createOpportunityGroup';
 }
 
-const CreateGroupPage: FC<Props> = ({ action }) => {
+interface Params {
+  challengeId: string;
+  opportunityId: string;
+}
+
+const CreateGroupPage: FC<Props> = ({ action, paths }) => {
   const [name, setName] = useState<string>('');
-  const handler = useCreateGroup();
+  const { challengeId, opportunityId } = useParams<Params>();
+
+  const handler = useCreateGroup(name, opportunityId || challengeId);
+
+  const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
+  useUpdateNavigation({ currentPaths });
+
+  const pageVariant = action === 'updateGroup' ? 'Edit' : 'Create';
 
   return (
     <div>
-      <Typography as={'h3'} className={'mb-4'}>
-        Create group
+      <Typography variant={'h3'} className={'mb-4'}>
+        {pageVariant} group
       </Typography>
       <FormGroup>
         <Form.Label>Name</Form.Label>
@@ -28,7 +43,9 @@ const CreateGroupPage: FC<Props> = ({ action }) => {
         />
       </FormGroup>
       <div className={'d-flex'}>
-        <Button onClick={() => handler[action]()}>Create</Button>
+        <Button className={'ml-auto'} onClick={() => handler[action]()}>
+          {pageVariant}
+        </Button>
       </div>
     </div>
   );

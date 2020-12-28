@@ -1098,7 +1098,7 @@ export type CreateGroupOnEcoverseMutationVariables = Exact<{
 }>;
 
 export type CreateGroupOnEcoverseMutation = { __typename?: 'Mutation' } & {
-  createGroupOnEcoverse: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+  createGroupOnEcoverse: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type CreateGroupOnChallengeMutationVariables = Exact<{
@@ -1107,7 +1107,7 @@ export type CreateGroupOnChallengeMutationVariables = Exact<{
 }>;
 
 export type CreateGroupOnChallengeMutation = { __typename?: 'Mutation' } & {
-  createGroupOnChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+  createGroupOnChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type CreateGroupOnOpportunityMutationVariables = Exact<{
@@ -1116,7 +1116,7 @@ export type CreateGroupOnOpportunityMutationVariables = Exact<{
 }>;
 
 export type CreateGroupOnOpportunityMutation = { __typename?: 'Mutation' } & {
-  createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+  createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
@@ -2659,6 +2659,7 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateGroupOnEcoverseDocument = gql`
   mutation createGroupOnEcoverse($groupName: String!) {
     createGroupOnEcoverse(groupName: $groupName) {
+      id
       name
     }
   }
@@ -2702,6 +2703,7 @@ export type CreateGroupOnEcoverseMutationOptions = Apollo.BaseMutationOptions<
 export const CreateGroupOnChallengeDocument = gql`
   mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
     createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -2746,6 +2748,7 @@ export type CreateGroupOnChallengeMutationOptions = Apollo.BaseMutationOptions<
 export const CreateGroupOnOpportunityDocument = gql`
   mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
     createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      id
       name
     }
   }

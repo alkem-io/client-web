@@ -19,7 +19,6 @@ import {
 } from '../generated/graphql';
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
-import Typography from '../components/core/Typography';
 import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import Button from '../components/core/Button';
@@ -116,15 +115,12 @@ const GroupsRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <Typography variant={'h3'} className={'mb-4'}>
-          Ecoverse groups
-        </Typography>
-        <ListPage data={groupsList || []} paths={currentPaths} />
+        <ListPage data={groupsList || []} paths={currentPaths} title={'Ecoverse groups'} newLink={`${url}/new`} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateGroupPage action={'createEcoverseGroup'} />
+        <CreateGroupPage action={'createEcoverseGroup'} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route exact path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -152,12 +148,7 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <div className={'d-flex'}>
-          <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
-            New
-          </Button>
-        </div>
-        <ListPage paths={currentPaths} data={challengesList || []} />
+        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} />
       </Route>
       <Route path={`${path}/new`}>
         <ProfilePage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
@@ -223,6 +214,9 @@ const ChallengeGroupRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <ChallengeGroups paths={currentPaths} />
       </Route>
+      <Route exact path={`${path}/new`}>
+        <CreateGroupPage action={'createChallengeGroup'} paths={currentPaths} />
+      </Route>
       <Route exact path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} />
       </Route>
@@ -237,7 +231,7 @@ const ChallengeGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} />;
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
 };
 
 const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
@@ -283,6 +277,9 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}/groups`}>
         <OpportunityGroups paths={currentPaths} />
       </Route>
+      <Route exact path={`${path}/groups/new`}>
+        <CreateGroupPage action={'createOpportunityGroup'} paths={currentPaths} />
+      </Route>
       <Route exact path={`${path}/edit`}>
         <ProfilePage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
@@ -325,5 +322,14 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} />;
+  return (
+    <>
+      <div className={'d-flex'}>
+        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
+          New
+        </Button>
+      </div>
+      <ListPage paths={paths} data={groups || []} />
+    </>
+  );
 };
