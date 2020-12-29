@@ -270,6 +270,27 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
   }
 `;
 
+export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
+  query organisationProfileInfo($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
 export const MUTATION_CREATE_GROUP_ON_ECOVERSE = gql`
   mutation createGroupOnEcoverse($groupName: String!) {
     createGroupOnEcoverse(groupName: $groupName) {

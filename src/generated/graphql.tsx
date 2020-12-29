@@ -1117,6 +1117,19 @@ export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type OrganisationProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        };
+    };
+};
+
 export type CreateGroupOnEcoverseMutationVariables = Exact<{
   groupName: Scalars['String'];
 }>;
@@ -2811,6 +2824,65 @@ export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpp
 export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   OpportunityProfileInfoQuery,
   OpportunityProfileInfoQueryVariables
+>;
+export const OrganisationProfileInfoDocument = gql`
+  query organisationProfileInfo($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganisationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganisationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganisationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganisationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganisationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useOrganisationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export type OrganisationProfileInfoQueryHookResult = ReturnType<typeof useOrganisationProfileInfoQuery>;
+export type OrganisationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganisationProfileInfoLazyQuery>;
+export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
+  OrganisationProfileInfoQuery,
+  OrganisationProfileInfoQueryVariables
 >;
 export const CreateGroupOnEcoverseDocument = gql`
   mutation createGroupOnEcoverse($groupName: String!) {

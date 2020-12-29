@@ -14,7 +14,7 @@ import {
   useEcoverseGroupsListQuery,
   useOpportunityGroupsQuery,
   useOpportunityNameQuery,
-  useOrganizationNameQuery,
+  useOrganisationProfileInfoQuery,
   useOrganizationsListQuery,
   useUserQuery,
   useUsersQuery,
@@ -28,6 +28,7 @@ import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage'
 import OpportunityPage from '../components/Admin/OpportunityPage';
 import CreateGroupPage from '../components/Admin/CreateGroupPage';
 import { OrganizationPage } from '../components/Admin/OrganizationPage';
+import OrganizationForm from '../components/Admin/OrganizationForm';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -372,7 +373,7 @@ const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<Parameters>();
 
-  const { data } = useOrganizationNameQuery({ variables: { id: Number(organizationId) } });
+  const { data } = useOrganisationProfileInfoQuery({ variables: { id: Number(organizationId) } });
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
     paths,
@@ -387,7 +388,10 @@ const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
         <OrganizationPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        edit org
+        <OrganizationForm
+          organization={data?.organisation}
+          onSave={values => console.log('org values ---> ', values)}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />
