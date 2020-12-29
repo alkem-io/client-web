@@ -27,6 +27,7 @@ import Button from '../components/core/Button';
 import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
 import OpportunityPage from '../components/Admin/OpportunityPage';
 import CreateGroupPage from '../components/Admin/CreateGroupPage';
+import { OrganizationPage } from '../components/Admin/OrganizationPage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -383,8 +384,10 @@ const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        {/*<ChallengePage paths={currentPaths} />*/}
-        signle
+        <OrganizationPage paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/edit`}>
+        edit org
       </Route>
       <Route path="*">
         <FourOuFour />
