@@ -14,6 +14,7 @@ import {
   useEcoverseGroupsListQuery,
   useOpportunityGroupsQuery,
   useOpportunityNameQuery,
+  useOrganizationNameQuery,
   useOrganizationsListQuery,
   useUserQuery,
   useUsersQuery,
@@ -204,6 +205,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 interface Parameters {
   challengeId: string;
   opportunityId: string;
+  organizationId: string;
   groupId: string;
 }
 
@@ -326,16 +328,7 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return (
-    <>
-      <div className={'d-flex'}>
-        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
-          New
-        </Button>
-      </div>
-      <ListPage paths={paths} data={groups || []} />
-    </>
-  );
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
 };
 
 const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
@@ -365,7 +358,33 @@ const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/new`}>new org</Route>
       <Route path={`${path}/:organizationId`}>
-        <ChallengeRoutes paths={currentPaths} />
+        <OrganizationRoutes paths={currentPaths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
+  );
+};
+
+const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const { organizationId } = useParams<Parameters>();
+
+  const { data } = useOrganizationNameQuery({ variables: { id: Number(organizationId) } });
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
+    paths,
+    data?.organisation?.name,
+  ]);
+
+  useUpdateNavigation({ currentPaths });
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`}>
+        {/*<ChallengePage paths={currentPaths} />*/}
+        signle
       </Route>
       <Route path="*">
         <FourOuFour />

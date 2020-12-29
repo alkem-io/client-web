@@ -105,6 +105,14 @@ export const QUERY_ECOVERSE_GROUPS_LIST = gql`
   }
 `;
 
+export const QUERY_ORGANIZATION_NAME = gql`
+  query organizationName($id: Float!) {
+    organisation(ID: $id) {
+      name
+    }
+  }
+`;
+
 export const QUERY_ORGANIZATIONS_LIST = gql`
   query organizationsList {
     organisations {
@@ -125,6 +133,17 @@ export const QUERY_CHALLENGE_NAME = gql`
 export const QUERY_CHALLENGE_GROUPS = gql`
   query challengeGroups($id: Float!) {
     challenge(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATION_GROUPS = gql`
+  query organizationGroups($id: Float!) {
+    organisation(ID: $id) {
       groups {
         id
         name

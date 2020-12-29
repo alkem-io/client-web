@@ -970,6 +970,14 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
 };
 
+export type OrganizationNameQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationNameQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+};
+
 export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = { __typename?: 'Query' } & {
@@ -990,6 +998,16 @@ export type ChallengeGroupsQueryVariables = Exact<{
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & {
+    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+  };
+};
+
+export type OrganizationGroupsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & {
     groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
   };
 };
@@ -2118,6 +2136,46 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQuery,
   EcoverseGroupsListQueryVariables
 >;
+export const OrganizationNameDocument = gql`
+  query organizationName($id: Float!) {
+    organisation(ID: $id) {
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationNameQuery__
+ *
+ * To run a query within a React component, call `useOrganizationNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationNameQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationNameQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(OrganizationNameDocument, baseOptions);
+}
+export function useOrganizationNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(
+    OrganizationNameDocument,
+    baseOptions
+  );
+}
+export type OrganizationNameQueryHookResult = ReturnType<typeof useOrganizationNameQuery>;
+export type OrganizationNameLazyQueryHookResult = ReturnType<typeof useOrganizationNameLazyQuery>;
+export type OrganizationNameQueryResult = Apollo.QueryResult<OrganizationNameQuery, OrganizationNameQueryVariables>;
 export const OrganizationsListDocument = gql`
   query organizationsList {
     organisations {
@@ -2238,6 +2296,55 @@ export function useChallengeGroupsLazyQuery(
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>;
+export const OrganizationGroupsDocument = gql`
+  query organizationGroups($id: Float!) {
+    organisation(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationGroupsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationGroupsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationGroupsQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export function useOrganizationGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
+export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
+export type OrganizationGroupsQueryResult = Apollo.QueryResult<
+  OrganizationGroupsQuery,
+  OrganizationGroupsQueryVariables
+>;
 export const ChallengeOpportunitiesDocument = gql`
   query challengeOpportunities($id: Float!) {
     challenge(ID: $id) {
