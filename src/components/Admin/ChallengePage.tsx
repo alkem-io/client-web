@@ -16,7 +16,10 @@ const challengePageData = [
   },
   {
     name: 'Challenge groups',
-    buttons: [{ description: 'Manage groups', url: '/groups' }],
+    buttons: [
+      { description: 'Manage groups', url: '/groups' },
+      { description: 'Create new', url: '/groups/new' },
+    ],
   },
   {
     name: 'Opportunities',

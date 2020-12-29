@@ -1093,6 +1093,32 @@ export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type CreateGroupOnEcoverseMutationVariables = Exact<{
+  groupName: Scalars['String'];
+}>;
+
+export type CreateGroupOnEcoverseMutation = { __typename?: 'Mutation' } & {
+  createGroupOnEcoverse: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type CreateGroupOnChallengeMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  challengeID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnChallengeMutation = { __typename?: 'Mutation' } & {
+  createGroupOnChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type CreateGroupOnOpportunityMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnOpportunityMutation = { __typename?: 'Mutation' } & {
+  createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2629,6 +2655,140 @@ export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpp
 export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   OpportunityProfileInfoQuery,
   OpportunityProfileInfoQueryVariables
+>;
+export const CreateGroupOnEcoverseDocument = gql`
+  mutation createGroupOnEcoverse($groupName: String!) {
+    createGroupOnEcoverse(groupName: $groupName) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnEcoverseMutationFn = Apollo.MutationFunction<
+  CreateGroupOnEcoverseMutation,
+  CreateGroupOnEcoverseMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnEcoverseMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnEcoverseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnEcoverseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnEcoverseMutation, { data, loading, error }] = useCreateGroupOnEcoverseMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *   },
+ * });
+ */
+export function useCreateGroupOnEcoverseMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>(
+    CreateGroupOnEcoverseDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnEcoverseMutationHookResult = ReturnType<typeof useCreateGroupOnEcoverseMutation>;
+export type CreateGroupOnEcoverseMutationResult = Apollo.MutationResult<CreateGroupOnEcoverseMutation>;
+export type CreateGroupOnEcoverseMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnEcoverseMutation,
+  CreateGroupOnEcoverseMutationVariables
+>;
+export const CreateGroupOnChallengeDocument = gql`
+  mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
+    createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnChallengeMutationFn = Apollo.MutationFunction<
+  CreateGroupOnChallengeMutation,
+  CreateGroupOnChallengeMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnChallengeMutation, { data, loading, error }] = useCreateGroupOnChallengeMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>(
+    CreateGroupOnChallengeDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnChallengeMutationHookResult = ReturnType<typeof useCreateGroupOnChallengeMutation>;
+export type CreateGroupOnChallengeMutationResult = Apollo.MutationResult<CreateGroupOnChallengeMutation>;
+export type CreateGroupOnChallengeMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnChallengeMutation,
+  CreateGroupOnChallengeMutationVariables
+>;
+export const CreateGroupOnOpportunityDocument = gql`
+  mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
+    createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnOpportunityMutationFn = Apollo.MutationFunction<
+  CreateGroupOnOpportunityMutation,
+  CreateGroupOnOpportunityMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnOpportunityMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnOpportunityMutation, { data, loading, error }] = useCreateGroupOnOpportunityMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>(
+    CreateGroupOnOpportunityDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnOpportunityMutationHookResult = ReturnType<typeof useCreateGroupOnOpportunityMutation>;
+export type CreateGroupOnOpportunityMutationResult = Apollo.MutationResult<CreateGroupOnOpportunityMutation>;
+export type CreateGroupOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnOpportunityMutation,
+  CreateGroupOnOpportunityMutationVariables
 >;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
