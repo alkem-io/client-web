@@ -31,6 +31,13 @@ const adminPageData = [
       { description: 'Create New', url: '/challenges/new' },
     ],
   },
+  {
+    name: 'Organizations',
+    buttons: [
+      { description: 'Manage', url: '/organizations' },
+      { description: 'Create New', url: '/organizations/new' },
+    ],
+  },
 ];
 
 export const AdminPage: FC<PageProps> = ({ paths }) => {

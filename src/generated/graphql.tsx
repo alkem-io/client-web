@@ -970,6 +970,12 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
 };
 
+export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OrganizationsListQuery = { __typename?: 'Query' } & {
+  organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
+};
+
 export type ChallengeNameQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -2112,6 +2118,49 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQuery,
   EcoverseGroupsListQueryVariables
 >;
+export const OrganizationsListDocument = gql`
+  query organizationsList {
+    organisations {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationsListQuery__
+ *
+ * To run a query within a React component, call `useOrganizationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOrganizationsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export function useOrganizationsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
+export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
+export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQuery, OrganizationsListQueryVariables>;
 export const ChallengeNameDocument = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {

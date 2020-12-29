@@ -14,6 +14,7 @@ import {
   useEcoverseGroupsListQuery,
   useOpportunityGroupsQuery,
   useOpportunityNameQuery,
+  useOrganizationsListQuery,
   useUserQuery,
   useUsersQuery,
 } from '../generated/graphql';
@@ -46,6 +47,9 @@ export const Admin: FC = () => {
         </Route>
         <Route path={`${path}/challenges`}>
           <ChallengesRoute paths={currentPaths} />
+        </Route>
+        <Route path={`${path}/organizations`}>
+          <OrganizationsRoute paths={currentPaths} />
         </Route>
         <Route path="*">
           <FourOuFour />
@@ -331,5 +335,41 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
       </div>
       <ListPage paths={paths} data={groups || []} />
     </>
+  );
+};
+
+const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const { data: organizationsListQuery } = useOrganizationsListQuery();
+
+  const organizationsList = organizationsListQuery?.organisations?.map(c => ({
+    id: c.id,
+    value: c.name,
+    url: `${url}/${c.id}`,
+  }));
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [
+    paths,
+    organizationsListQuery?.organisations,
+  ]);
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`}>
+        <ListPage
+          paths={currentPaths}
+          data={organizationsList || []}
+          newLink={`${url}/new`}
+          title={'Organizations list'}
+        />
+      </Route>
+      <Route path={`${path}/new`}>new org</Route>
+      <Route path={`${path}/:organizationId`}>
+        <ChallengeRoutes paths={currentPaths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
   );
 };
