@@ -8,23 +8,29 @@ import './styles.scss';
 import Typography from '../core/Typography';
 import { useTagsetsTemplateQuery } from '../../generated/graphql';
 import { useRemoveReferenceMutation } from '../../generated/graphql';
+import { EditMode } from './UserForm';
 
 /*local files imports end*/
 
-export enum EditMode {
-  readOnly,
-  edit,
-  new,
-}
-interface UserProps {
+const emptyOrganization = {
+  name: '',
+  profile: {
+    description: '',
+    avatar: '',
+    tagsets: [],
+    references: [],
+  },
+};
+
+interface Props {
   organization?: any;
   editMode?: EditMode;
-  onSave?: (user: UserModel) => void;
+  onSave?: (organization) => void;
   title?: string;
 }
 
-export const UserForm: FC<UserProps> = ({
-  organization: currentOrganization = {},
+export const OrganizationForm: FC<Props> = ({
+  organization: currentOrganization = emptyOrganization,
   editMode = EditMode.readOnly,
   onSave,
   title = 'Organization',
@@ -48,20 +54,18 @@ export const UserForm: FC<UserProps> = ({
 
   let refsToRemove: string[] = [];
 
+  const isCreateMode = editMode === EditMode.new;
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
-  const {
-    name,
-    profile: { description, tagsets, references, avatar },
-  } = currentOrganization;
+  const { name, profile } = currentOrganization;
 
   const initialValues = {
     name: name || '',
-    description: description || '',
-    avatar: avatar || '',
-    tagsets: tagsets,
-    references: references || '',
+    description: profile?.description || '',
+    avatar: profile?.avatar || '',
+    tagsets: profile?.tagsets || [],
+    references: profile?.references || [],
   };
 
   const validationSchema = yup.object().shape({
@@ -84,19 +88,19 @@ export const UserForm: FC<UserProps> = ({
 
   /**
    * @handleSubmit
-   * @param userData instance of UserModel
+   * @param orgData instance of OrganizationModel (same as UserModel)
    * @return void
-   * @summary if edits current user data or creates a new one depending on the edit mode
+   * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (userData: UserFromGenerated) => {
+  const handleSubmit = async (orgData: UserFromGenerated) => {
     if (refsToRemove.length !== 0) {
       for (const ref of refsToRemove) {
         await removeRef({ variables: { ID: Number(ref) } });
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
-    const user: UserModel = {
+    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = orgData;
+    const organization: UserModel = {
       ...currentOrganization,
       ...otherData,
       profile: {
@@ -106,7 +110,7 @@ export const UserForm: FC<UserProps> = ({
         tagsets,
       },
     };
-    onSave && onSave(user);
+    onSave && onSave(organization);
   };
 
   const handleBack = () => history.goBack();
@@ -120,7 +124,7 @@ export const UserForm: FC<UserProps> = ({
   if (!currentOrganization && editMode !== EditMode.new) {
     return (
       <>
-        <div>User not found!</div>
+        <div>Organization not found!</div>
         {backButton}
       </>
     );
@@ -183,179 +187,201 @@ export const UserForm: FC<UserProps> = ({
               <Form noValidate>
                 <Form.Row>{getInputField('Full Name', name, 'name', true, isReadOnlyMode)}</Form.Row>
 
-                <Form.Row>
-                  {getInputField(
-                    'Description',
-                    description,
-                    'description',
-                    false,
-                    isReadOnlyMode,
-                    undefined,
-                    'Description',
-                    'textarea'
-                  )}
-                </Form.Row>
-                <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
+                {!isCreateMode && (
+                  <>
+                    <Form.Row>
+                      {getInputField(
+                        'Description',
+                        description,
+                        'description',
+                        false,
+                        isReadOnlyMode,
+                        undefined,
+                        'Description',
+                        'textarea'
+                      )}
+                    </Form.Row>
+                    <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
 
-                <FieldArray name={'tagsets'}>
-                  {({ push, remove }) => (
-                    <>
-                      <Form.Row>
-                        <Form.Group as={Col} xs={2}>
-                          <Form.Label>Tagsets</Form.Label>
-                          {!isReadOnlyMode && availableTagsets.length > 0 && (
-                            <Button
-                              className={'ml-3'}
-                              onClick={() => {
-                                setIsAddingTagset(true);
-                                setSelectedTagset(availableTagsets[0]);
-                              }}
-                              disabled={isAddingTagset}
-                            >
-                              Add
-                            </Button>
-                          )}
-                        </Form.Group>
-                        {isAddingTagset && (
-                          <>
-                            <Form.Group controlId="tagsetName" as={Col} xs={2}>
-                              <Form.Control
-                                as="select"
-                                custom
-                                onChange={e => setSelectedTagset(e.target.value)}
-                                defaultValue={selectedTagset}
-                              >
-                                {availableTagsets?.map((at, index) => (
-                                  <option value={at} key={index}>
-                                    {at}
-                                  </option>
-                                ))}
-                              </Form.Control>
-                            </Form.Group>
-                            <Form.Group as={Col} xs={1}>
-                              <Button
-                                className={'ml-3'}
-                                variant={'secondary'}
-                                onClick={() => {
-                                  setSelectedTagset('');
-                                  setIsAddingTagset(false);
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                            </Form.Group>
-                            <Form.Group as={Col} xs={1}>
-                              {!isReadOnlyMode && (
+                    <FieldArray name={'tagsets'}>
+                      {({ push, remove }) => (
+                        <>
+                          <Form.Row>
+                            <Form.Group as={Col} xs={2}>
+                              <Form.Label>Tagsets</Form.Label>
+                              {!isReadOnlyMode && availableTagsets?.length > 0 && (
                                 <Button
                                   className={'ml-3'}
                                   onClick={() => {
-                                    push({ name: availableTagsets[0], tags: [] });
-                                    setSelectedTagset('');
-                                    setIsAddingTagset(false);
-                                    setAvailableTagsets(availableTagsets.filter(t => t !== selectedTagset));
+                                    setIsAddingTagset(true);
+                                    setSelectedTagset(availableTagsets[0]);
                                   }}
+                                  disabled={isAddingTagset}
                                 >
-                                  Confirm
+                                  Add
                                 </Button>
                               )}
                             </Form.Group>
-                          </>
-                        )}
-                      </Form.Row>
-                      {isReadOnlyMode && tagsets.length === 0 ? (
-                        <Form.Control type={'text'} placeholder={'No tagsets yet'} readOnly={true} disabled={true} />
-                      ) : (
-                        tagsets.map((ts, index) => (
-                          <Form.Row key={index} className={'mb-4'}>
-                            <Form.Group as={Col}>
-                              <Form.Label>Tagset</Form.Label>
-                              <Form.Control name={'Tagset'} type={'text'} value={tagsets[index].name} disabled={true} />
-                            </Form.Group>
-                            <Form.Group as={Col}>
-                              <Form.Label>Tags</Form.Label>
-                              <Form.Control
-                                name={`tagsets.${index}.tags`}
-                                type={'text'}
-                                placeholder={'innovation, AI, technology, blockchain'}
-                                value={tagsets[index].tags?.join(',')}
-                                onChange={e => {
-                                  const stringValue = e.target.value;
-                                  const tagsetArray = stringValue.split(',');
-                                  setFieldValue(`tagsets.${index}.tags`, tagsetArray);
-                                }}
-                                onBlur={() => {
-                                  const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
-                                  setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
-                                }}
-                              />
-                            </Form.Group>
-                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  setAvailableTagsets([...availableTagsets, tagsets[index].name]);
-                                }}
-                                variant={'danger'}
-                              >
-                                Remove
-                              </Button>
-                            </Form.Group>
+                            {isAddingTagset && (
+                              <>
+                                <Form.Group controlId="tagsetName" as={Col} xs={2}>
+                                  <Form.Control
+                                    as="select"
+                                    custom
+                                    onChange={e => setSelectedTagset(e.target.value)}
+                                    defaultValue={selectedTagset}
+                                  >
+                                    {availableTagsets?.map((at, index) => (
+                                      <option value={at} key={index}>
+                                        {at}
+                                      </option>
+                                    ))}
+                                  </Form.Control>
+                                </Form.Group>
+                                <Form.Group as={Col} xs={1}>
+                                  <Button
+                                    className={'ml-3'}
+                                    variant={'secondary'}
+                                    onClick={() => {
+                                      setSelectedTagset('');
+                                      setIsAddingTagset(false);
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </Form.Group>
+                                <Form.Group as={Col} xs={1}>
+                                  {!isReadOnlyMode && (
+                                    <Button
+                                      className={'ml-3'}
+                                      onClick={() => {
+                                        push({ name: availableTagsets[0], tags: [] });
+                                        setSelectedTagset('');
+                                        setIsAddingTagset(false);
+                                        setAvailableTagsets(availableTagsets.filter(t => t !== selectedTagset));
+                                      }}
+                                    >
+                                      Confirm
+                                    </Button>
+                                  )}
+                                </Form.Group>
+                              </>
+                            )}
                           </Form.Row>
-                        ))
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-
-                <FieldArray name={'references'}>
-                  {({ push, remove }) => (
-                    <>
-                      <Form.Row>
-                        <Form.Group as={Col}>
-                          <Form.Label>References</Form.Label>
-                          {!isReadOnlyMode && (
-                            <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
-                              Add
-                            </Button>
+                          {isReadOnlyMode && tagsets?.length === 0 ? (
+                            <Form.Control
+                              type={'text'}
+                              placeholder={'No tagsets yet'}
+                              readOnly={true}
+                              disabled={true}
+                            />
+                          ) : (
+                            tagsets.map((ts, index) => (
+                              <Form.Row key={index} className={'mb-4'}>
+                                <Form.Group as={Col}>
+                                  <Form.Label>Tagset</Form.Label>
+                                  <Form.Control
+                                    name={'Tagset'}
+                                    type={'text'}
+                                    value={tagsets[index].name}
+                                    disabled={true}
+                                  />
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                  <Form.Label>Tags</Form.Label>
+                                  <Form.Control
+                                    name={`tagsets.${index}.tags`}
+                                    type={'text'}
+                                    placeholder={'innovation, AI, technology, blockchain'}
+                                    value={tagsets[index].tags?.join(',')}
+                                    disabled={isReadOnlyMode}
+                                    onChange={e => {
+                                      const stringValue = e.target.value;
+                                      const tagsetArray = stringValue.split(',');
+                                      setFieldValue(`tagsets.${index}.tags`, tagsetArray);
+                                    }}
+                                    onBlur={() => {
+                                      const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
+                                      setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
+                                    }}
+                                  />
+                                </Form.Group>
+                                {!isReadOnlyMode && (
+                                  <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                                    <Button
+                                      onClick={() => {
+                                        remove(index);
+                                        setAvailableTagsets([...availableTagsets, tagsets[index].name]);
+                                      }}
+                                      variant={'danger'}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </Form.Group>
+                                )}
+                              </Form.Row>
+                            ))
                           )}
-                        </Form.Group>
-                      </Form.Row>
-                      {isReadOnlyMode && references.length === 0 ? (
-                        <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
-                      ) : (
-                        references.map((ref, index) => (
-                          <Form.Row key={index}>
-                            {getInputField(
-                              'Name',
-                              references[index].name,
-                              `references.${index}.name`,
-                              false,
-                              isReadOnlyMode
-                            )}
-                            {getInputField(
-                              'URI',
-                              references[index].uri,
-                              `references.${index}.uri`,
-                              false,
-                              isReadOnlyMode
-                            )}
-                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  isEditMode && ref.id && refsToRemove.push(ref.id);
-                                }}
-                                variant={'danger'}
-                              >
-                                Remove
-                              </Button>
+                        </>
+                      )}
+                    </FieldArray>
+
+                    <FieldArray name={'references'}>
+                      {({ push, remove }) => (
+                        <>
+                          <Form.Row>
+                            <Form.Group as={Col}>
+                              <Form.Label>References</Form.Label>
+                              {!isReadOnlyMode && (
+                                <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
+                                  Add
+                                </Button>
+                              )}
                             </Form.Group>
                           </Form.Row>
-                        ))
+                          {isReadOnlyMode && references?.length === 0 ? (
+                            <Form.Control
+                              type={'text'}
+                              placeholder={'No references yet'}
+                              readOnly={true}
+                              disabled={true}
+                            />
+                          ) : (
+                            references?.map((ref, index) => (
+                              <Form.Row key={index}>
+                                {getInputField(
+                                  'Name',
+                                  references[index].name,
+                                  `references.${index}.name`,
+                                  false,
+                                  isReadOnlyMode
+                                )}
+                                {getInputField(
+                                  'URI',
+                                  references[index].uri,
+                                  `references.${index}.uri`,
+                                  false,
+                                  isReadOnlyMode
+                                )}
+                                <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                                  <Button
+                                    onClick={() => {
+                                      remove(index);
+                                      isEditMode && ref.id && refsToRemove.push(ref.id);
+                                    }}
+                                    variant={'danger'}
+                                  >
+                                    Remove
+                                  </Button>
+                                </Form.Group>
+                              </Form.Row>
+                            ))
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
-                </FieldArray>
+                    </FieldArray>
+                  </>
+                )}
                 {!isReadOnlyMode && (
                   <>
                     <div className={'d-flex mt-4'}>
@@ -375,4 +401,4 @@ export const UserForm: FC<UserProps> = ({
     );
   }
 };
-export default UserForm;
+export default OrganizationForm;

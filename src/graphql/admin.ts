@@ -270,6 +270,22 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
   }
 `;
 
+export const MUTATION_CREATE_ORGANIZATION = gql`
+  mutation createOrganization($organisationData: OrganisationInput!) {
+    createOrganisation(organisationData: $organisationData) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_ORGANIZATION = gql`
+  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
+    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      name
+    }
+  }
+`;
+
 export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
   query organisationProfileInfo($id: Float!) {
     organisation(ID: $id) {
@@ -312,6 +328,15 @@ export const MUTATION_CREATE_GROUP_ON_CHALLENGE = gql`
 export const MUTATION_CREATE_GROUP_ON_OPPORTUNITY = gql`
   mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
     createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      id
+      name
+    }
+  }
+`;
+
+export const MUTATION_CREATE_GROUP_ON_ORGANIZATION = gql`
+  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
+    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
       id
       name
     }

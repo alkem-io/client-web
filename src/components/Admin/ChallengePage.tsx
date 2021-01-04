@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { PageProps } from '../../pages';
-import ManagementPageTemplate from './OrganizationPage';
+import ManagementPageTemplate from './ManagementPageTemplate';
 
 const challengePageData = [
   {
