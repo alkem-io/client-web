@@ -268,3 +268,31 @@ export const MUTATION_CREATE_GROUP_ON_OPPORTUNITY = gql`
     }
   }
 `;
+
+export const QUERY_ORGANIZATION_DETAILS = gql`
+  query organizationDetails($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      groups {
+        name
+        members {
+          name
+        }
+      }
+    }
+  }
+`;
