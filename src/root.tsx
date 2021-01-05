@@ -29,11 +29,10 @@ const useGlobalStyles = createStyles(theme => ({
       width: '0.4em',
     },
     '*::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px grey',
+      '-webkit-box-shadow': 'inset 0 0 6px #c3c3c3',
     },
     '*::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.primary,
-      outline: `1px solid ${theme.palette.neutral}`,
     },
     html: {
       height: '100%',

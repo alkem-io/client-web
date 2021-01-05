@@ -103,7 +103,9 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
         loading={loading}
       />
       {filteredData.length > limit && limit < 50 && (
-        <Button onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}>Load more</Button>
+        <Button className={'mt-4'} onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}>
+          Load more
+        </Button>
       )}
     </>
   );

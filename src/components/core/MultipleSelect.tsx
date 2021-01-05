@@ -68,7 +68,7 @@ const useMultipleSelectStyles = createStyles(theme => {
       },
       /* Track */
       '&::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 5px grey',
+        boxShadow: 'inset 0 0 5px #c3c3c3',
         backgroundColor: theme.palette.background,
       },
 

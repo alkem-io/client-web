@@ -2,13 +2,13 @@ import React, { FC } from 'react';
 import { PageProps } from '../../pages';
 import ManagementPageTemplate from './ManagementPageTemplate';
 
-const opportunityPageData = [
+const organizationPageData = [
   {
-    name: 'Opportunity info',
+    name: 'Organization info',
     buttons: [{ description: 'Edit', url: '/edit' }],
   },
   {
-    name: 'Opportunity groups',
+    name: 'Organization groups',
     buttons: [
       { description: 'Manage groups', url: '/groups' },
       { description: 'Create new', url: '/groups/new' },
@@ -16,8 +16,8 @@ const opportunityPageData = [
   },
 ];
 
-export const OpportunityPage: FC<PageProps> = ({ paths }) => (
-  <ManagementPageTemplate data={opportunityPageData} paths={paths} />
+export const OrganizationOptions: FC<PageProps> = ({ paths }) => (
+  <ManagementPageTemplate data={organizationPageData} paths={paths} />
 );
 
-export default OpportunityPage;
+export default OrganizationOptions;
