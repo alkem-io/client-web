@@ -74,7 +74,12 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
               key={index}
             >
               <div className={styles.imgContainer}>
-                <img src={org.profile?.avatar} alt={org.name} className={styles.img} />
+                <img
+                  src={org.profile?.avatar}
+                  alt={org.name}
+                  className={styles.img}
+                  onClick={() => console.log('org ---> ', org)}
+                />
               </div>
             </OverlayTrigger>
           );

@@ -1149,7 +1149,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
         >
       >;
       leadOrganisations: Array<
-        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
+        { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
             profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar'>;
           }
       >;
@@ -2835,6 +2835,7 @@ export const ChallengeProfileDocument = gql`
         }
       }
       leadOrganisations {
+        id
         name
         profile {
           avatar
