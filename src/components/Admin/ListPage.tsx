@@ -19,7 +19,7 @@ export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink }) =>
     <>
       {(title || newLink) && (
         <div className={'d-flex mb-4'}>
-          {title && <Typography variant={'h3'}>Ecoverse groups</Typography>}
+          {title && <Typography variant={'h3'}>{title}</Typography>}
           {newLink && (
             <Button className={'ml-auto'} as={Link} to={newLink}>
               New

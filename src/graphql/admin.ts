@@ -105,6 +105,23 @@ export const QUERY_ECOVERSE_GROUPS_LIST = gql`
   }
 `;
 
+export const QUERY_ORGANIZATION_NAME = gql`
+  query organizationName($id: Float!) {
+    organisation(ID: $id) {
+      name
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATIONS_LIST = gql`
+  query organizationsList {
+    organisations {
+      id
+      name
+    }
+  }
+`;
+
 export const QUERY_CHALLENGE_NAME = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
@@ -116,6 +133,17 @@ export const QUERY_CHALLENGE_NAME = gql`
 export const QUERY_CHALLENGE_GROUPS = gql`
   query challengeGroups($id: Float!) {
     challenge(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATION_GROUPS = gql`
+  query organizationGroups($id: Float!) {
+    organisation(ID: $id) {
       groups {
         id
         name
@@ -242,6 +270,43 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
   }
 `;
 
+export const MUTATION_CREATE_ORGANIZATION = gql`
+  mutation createOrganization($organisationData: OrganisationInput!) {
+    createOrganisation(organisationData: $organisationData) {
+      name
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_ORGANIZATION = gql`
+  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
+    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      name
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
+  query organisationProfileInfo($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
 export const MUTATION_CREATE_GROUP_ON_ECOVERSE = gql`
   mutation createGroupOnEcoverse($groupName: String!) {
     createGroupOnEcoverse(groupName: $groupName) {
@@ -263,6 +328,15 @@ export const MUTATION_CREATE_GROUP_ON_CHALLENGE = gql`
 export const MUTATION_CREATE_GROUP_ON_OPPORTUNITY = gql`
   mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
     createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      id
+      name
+    }
+  }
+`;
+
+export const MUTATION_CREATE_GROUP_ON_ORGANIZATION = gql`
+  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
+    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
       id
       name
     }
