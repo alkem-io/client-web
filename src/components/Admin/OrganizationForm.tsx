@@ -4,11 +4,10 @@ import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { UserFromGenerated, UserModel } from '../../models/User';
-import './styles.scss';
 import Typography from '../core/Typography';
 import { useTagsetsTemplateQuery } from '../../generated/graphql';
 import { useRemoveReferenceMutation } from '../../generated/graphql';
-import { EditMode } from './UserForm';
+import { EditMode } from '../../utils/editMode';
 
 /*local files imports end*/
 
@@ -277,7 +276,7 @@ export const OrganizationForm: FC<Props> = ({
                             />
                           ) : (
                             tagsets.map((ts, index) => (
-                              <Form.Row key={index} className={'mb-4'}>
+                              <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
                                 <Form.Group as={Col}>
                                   <Form.Label>Tagset</Form.Label>
                                   <Form.Control
@@ -307,7 +306,7 @@ export const OrganizationForm: FC<Props> = ({
                                   />
                                 </Form.Group>
                                 {!isReadOnlyMode && (
-                                  <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                                  <Form.Group as={Col} xs={2}>
                                     <Button
                                       onClick={() => {
                                         remove(index);

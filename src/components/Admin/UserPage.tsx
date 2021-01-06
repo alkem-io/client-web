@@ -3,7 +3,7 @@ import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { EditMode, UserForm } from '.';
+import { UserForm } from '.';
 import {
   useCreateUserMutation,
   useRemoveUserMutation,
@@ -18,6 +18,7 @@ import Button from '../core/Button';
 import { Loading } from '../core/Loading';
 import PasswordPrompt from './PasswordPrompt';
 import UserRemoveModal from './UserRemoveModal';
+import { EditMode } from '../../utils/editMode';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;

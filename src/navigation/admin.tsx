@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 
 /*lib imports end*/
-import { AdminPage, EditMode, GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
+import { GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
 import Loading from '../components/core/Loading';
 import { useTransactionScope } from '../hooks/useSentry';
 import {
@@ -22,14 +22,14 @@ import {
 } from '../generated/graphql';
 import { UserModel } from '../models/User';
 import { FourOuFour, PageProps } from '../pages';
-import ChallengePage from '../components/Admin/ChallengePage';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import Button from '../components/core/Button';
 import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
-import OpportunityPage from '../components/Admin/OpportunityPage';
 import CreateGroupPage from '../components/Admin/CreateGroupPage';
-import OrganizationOptions from '../components/Admin/OrganizationOptions';
 import OrganizationPage from '../components/Admin/OrganizationPage';
+import ManagementPageTemplate from '../components/Admin/ManagementPageTemplate';
+import managementData from '../components/Admin/managementData';
+import { EditMode } from '../utils/editMode';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -41,7 +41,7 @@ export const Admin: FC = () => {
     <Container>
       <Switch>
         <Route exact path={`${path}`}>
-          <AdminPage paths={currentPaths} />
+          <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
         </Route>
         <Route path={`${path}/users`}>
           <UsersRoute paths={currentPaths} />
@@ -190,7 +190,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ChallengePage paths={currentPaths} />
+        <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
       </Route>
       <Route path={`${path}/groups`}>
         <ChallengeGroupRoutes paths={currentPaths} />
@@ -281,7 +281,7 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <OpportunityPage paths={currentPaths} />
+        <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups`}>
         <OpportunityGroups paths={currentPaths} />
@@ -388,7 +388,7 @@ const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <OrganizationOptions paths={currentPaths} />
+        <ManagementPageTemplate data={managementData.organizationLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
         <OrganizationPage organization={data?.organisation} mode={EditMode.edit} paths={currentPaths} />

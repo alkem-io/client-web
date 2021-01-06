@@ -1,4 +1,3 @@
-export * from './AdminPage';
 export * from './GroupPage';
 export * from './ListPage';
 export * from './UserForm';

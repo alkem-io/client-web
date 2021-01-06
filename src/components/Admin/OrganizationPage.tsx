@@ -1,11 +1,11 @@
 import React, { FC, useMemo, useState } from 'react';
 import { PageProps } from '../../pages';
-import { EditMode } from './UserForm';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { Alert } from 'react-bootstrap';
 import OrganizationForm from './OrganizationForm';
 import { Organisation, useCreateOrganizationMutation, useUpdateOrganizationMutation } from '../../generated/graphql';
 import { ApolloError } from '@apollo/client';
+import { EditMode } from '../../utils/editMode';
 
 interface Props extends PageProps {
   organization?: any;

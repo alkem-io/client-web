@@ -4,19 +4,14 @@ import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
-import './styles.scss';
 import Typography from '../core/Typography';
 import { useTagsetsTemplateQuery } from '../../generated/graphql';
 import { useRemoveReferenceMutation } from '../../generated/graphql';
 import countriesList from '../../utils/countriesList.json';
 import SearchDropdown from '../core/SearchDropdown';
+import { EditMode } from '../../utils/editMode';
 /*local files imports end*/
 
-export enum EditMode {
-  readOnly,
-  edit,
-  new,
-}
 interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
@@ -353,7 +348,7 @@ export const UserForm: FC<UserProps> = ({
                         <Form.Control type={'text'} placeholder={'No tagsets yet'} readOnly={true} disabled={true} />
                       ) : (
                         tagsets.map((ts, index) => (
-                          <Form.Row key={index} className={'mb-4'}>
+                          <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
                             <Form.Group as={Col}>
                               <Form.Label>Tagset</Form.Label>
                               <Form.Control name={'Tagset'} type={'text'} value={tagsets[index].name} disabled={true} />
@@ -376,13 +371,14 @@ export const UserForm: FC<UserProps> = ({
                                 }}
                               />
                             </Form.Group>
-                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
+                            <Form.Group as={Col} xs={2}>
                               <Button
                                 onClick={() => {
                                   remove(index);
                                   setAvailableTagsets([...availableTagsets, tagsets[index].name]);
                                 }}
                                 variant={'danger'}
+                                // style={{ marginTop: 32 }}
                               >
                                 Remove
                               </Button>
