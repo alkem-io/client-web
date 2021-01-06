@@ -30,12 +30,16 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import ContextEdit from '../components/ContextEdit';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUserContext } from '../hooks/useUserContext';
+import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
     display: 'flex',
     gap: `${theme.shape.spacing(1)}px`,
     flexWrap: 'wrap',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   column: {
     flexDirection: 'column',
@@ -61,6 +65,7 @@ const useOrganizationStyles = createStyles(theme => ({
 
 const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
   const styles = useOrganizationStyles();
+  const [modalId, setModalId] = useState<string | null>(null);
 
   return (
     <>
@@ -73,13 +78,15 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
               overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.name}</Tooltip>}
               key={index}
             >
-              <div className={styles.imgContainer}>
+              <div className={styles.imgContainer} onClick={() => setModalId(org.id)}>
                 <img src={org.profile?.avatar} alt={org.name} className={styles.img} />
               </div>
             </OverlayTrigger>
           );
         })}
       </div>
+
+      {!!modalId && <OrganizationPopUp id={modalId} onHide={() => setModalId(null)} />}
 
       {organizations.length > 4 && (
         <OverlayTrigger
