@@ -14,6 +14,9 @@ import {
   useEcoverseGroupsListQuery,
   useOpportunityGroupsQuery,
   useOpportunityNameQuery,
+  useOrganisationProfileInfoQuery,
+  useOrganizationGroupsQuery,
+  useOrganizationsListQuery,
   useUserQuery,
   useUsersQuery,
 } from '../generated/graphql';
@@ -25,6 +28,8 @@ import Button from '../components/core/Button';
 import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
 import OpportunityPage from '../components/Admin/OpportunityPage';
 import CreateGroupPage from '../components/Admin/CreateGroupPage';
+import OrganizationOptions from '../components/Admin/OrganizationOptions';
+import OrganizationPage from '../components/Admin/OrganizationPage';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -46,6 +51,9 @@ export const Admin: FC = () => {
         </Route>
         <Route path={`${path}/challenges`}>
           <ChallengesRoute paths={currentPaths} />
+        </Route>
+        <Route path={`${path}/organizations`}>
+          <OrganizationsRoute paths={currentPaths} />
         </Route>
         <Route path="*">
           <FourOuFour />
@@ -200,6 +208,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 interface Parameters {
   challengeId: string;
   opportunityId: string;
+  organizationId: string;
   groupId: string;
 }
 
@@ -322,14 +331,105 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
+};
+
+const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const { data: organizationsListQuery } = useOrganizationsListQuery();
+
+  const organizationsList = organizationsListQuery?.organisations?.map(c => ({
+    id: c.id,
+    value: c.name,
+    url: `${url}/${c.id}`,
+  }));
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [
+    paths,
+    organizationsListQuery?.organisations,
+  ]);
+
   return (
-    <>
-      <div className={'d-flex'}>
-        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
-          New
-        </Button>
-      </div>
-      <ListPage paths={paths} data={groups || []} />
-    </>
+    <Switch>
+      <Route exact path={`${path}`}>
+        <ListPage
+          paths={currentPaths}
+          data={organizationsList || []}
+          newLink={`${url}/new`}
+          title={'Organizations list'}
+        />
+      </Route>
+      <Route path={`${path}/new`}>
+        <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/:organizationId`}>
+        <OrganizationRoutes paths={currentPaths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
   );
+};
+
+const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const { organizationId } = useParams<Parameters>();
+
+  const { data } = useOrganisationProfileInfoQuery({ variables: { id: Number(organizationId) } });
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
+    paths,
+    data?.organisation?.name,
+  ]);
+
+  useUpdateNavigation({ currentPaths });
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`}>
+        <OrganizationOptions paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/edit`}>
+        <OrganizationPage organization={data?.organisation} mode={EditMode.edit} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/groups`}>
+        <OrganizationGroupRoutes paths={currentPaths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
+  );
+};
+
+const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
+  const { path, url } = useRouteMatch();
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
+
+  useUpdateNavigation({ currentPaths });
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`}>
+        <OrganizationGroups paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/new`}>
+        <CreateGroupPage action={'createOrganizationGroup'} paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/:groupId`}>
+        <GroupPage paths={currentPaths} />
+      </Route>
+    </Switch>
+  );
+};
+
+const OrganizationGroups: FC<PageProps> = ({ paths }) => {
+  const { url } = useRouteMatch();
+  const { organizationId } = useParams<Parameters>();
+  const { data } = useOrganizationGroupsQuery({ variables: { id: Number(organizationId) } });
+
+  const groups = data?.organisation?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
 };

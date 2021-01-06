@@ -41,14 +41,12 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const handleError = (error: ApolloError) => {
     setStatus('error');
     setMessage(error.message);
-
-    console.error(error);
   };
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => {
-      setMessage('User updated sucessfully');
+      setMessage('User updated successfully');
       setStatus('success');
     },
   });
@@ -72,7 +70,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       setNewUserId(data.createUser.id);
       setIsBlocked(true);
       setStatus('success');
-      setMessage('User save successfuly!');
+      setMessage('User saved successfully!');
     },
     update: (cache, { data }) => {
       if (data) {

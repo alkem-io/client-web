@@ -8,19 +8,25 @@ import { PageProps } from '../../pages';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 
 interface Props extends PageProps {
-  action: 'updateGroup' | 'createEcoverseGroup' | 'createChallengeGroup' | 'createOpportunityGroup';
+  action:
+    | 'updateGroup'
+    | 'createEcoverseGroup'
+    | 'createChallengeGroup'
+    | 'createOpportunityGroup'
+    | 'createOrganizationGroup';
 }
 
 interface Params {
   challengeId: string;
   opportunityId: string;
+  organizationId: string;
 }
 
 const CreateGroupPage: FC<Props> = ({ action, paths }) => {
   const [name, setName] = useState<string>('');
-  const { challengeId, opportunityId } = useParams<Params>();
+  const { challengeId, opportunityId, organizationId } = useParams<Params>();
 
-  const handler = useCreateGroup(name, opportunityId || challengeId);
+  const handler = useCreateGroup(name, organizationId || opportunityId || challengeId);
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
@@ -28,7 +34,7 @@ const CreateGroupPage: FC<Props> = ({ action, paths }) => {
   const pageVariant = action === 'updateGroup' ? 'Edit' : 'Create';
 
   return (
-    <div>
+    <>
       <Typography variant={'h3'} className={'mb-4'}>
         {pageVariant} group
       </Typography>
@@ -37,7 +43,7 @@ const CreateGroupPage: FC<Props> = ({ action, paths }) => {
         <Form.Control
           as={'input'}
           type={'text'}
-          placeholder={'Enter a group name'}
+          placeholder={'Enter a name'}
           value={name}
           onChange={e => setName(e.target.value)}
         />
@@ -47,7 +53,7 @@ const CreateGroupPage: FC<Props> = ({ action, paths }) => {
           {pageVariant}
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

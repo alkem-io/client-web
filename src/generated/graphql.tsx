@@ -970,6 +970,20 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
 };
 
+export type OrganizationNameQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationNameQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+};
+
+export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OrganizationsListQuery = { __typename?: 'Query' } & {
+  organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
+};
+
 export type ChallengeNameQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -984,6 +998,16 @@ export type ChallengeGroupsQueryVariables = Exact<{
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & {
+    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+  };
+};
+
+export type OrganizationGroupsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & {
     groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
   };
 };
@@ -1093,6 +1117,36 @@ export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type CreateOrganizationMutationVariables = Exact<{
+  organisationData: OrganisationInput;
+}>;
+
+export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
+  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+};
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  organisationData: OrganisationInput;
+  orgID: Scalars['Float'];
+}>;
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
+  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+};
+
+export type OrganisationProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        };
+    };
+};
+
 export type CreateGroupOnEcoverseMutationVariables = Exact<{
   groupName: Scalars['String'];
 }>;
@@ -1119,6 +1173,15 @@ export type CreateGroupOnOpportunityMutation = { __typename?: 'Mutation' } & {
   createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
+export type CreateGroupOnOrganizationMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  orgID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
+  createGroupOnOrganisation: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
 export type OrganizationDetailsQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1132,7 +1195,7 @@ export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
       groups?: Maybe<
         Array<
           { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
             }
         >
       >;
@@ -2132,6 +2195,89 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQuery,
   EcoverseGroupsListQueryVariables
 >;
+export const OrganizationNameDocument = gql`
+  query organizationName($id: Float!) {
+    organisation(ID: $id) {
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationNameQuery__
+ *
+ * To run a query within a React component, call `useOrganizationNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationNameQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationNameQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(OrganizationNameDocument, baseOptions);
+}
+export function useOrganizationNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(
+    OrganizationNameDocument,
+    baseOptions
+  );
+}
+export type OrganizationNameQueryHookResult = ReturnType<typeof useOrganizationNameQuery>;
+export type OrganizationNameLazyQueryHookResult = ReturnType<typeof useOrganizationNameLazyQuery>;
+export type OrganizationNameQueryResult = Apollo.QueryResult<OrganizationNameQuery, OrganizationNameQueryVariables>;
+export const OrganizationsListDocument = gql`
+  query organizationsList {
+    organisations {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationsListQuery__
+ *
+ * To run a query within a React component, call `useOrganizationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOrganizationsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export function useOrganizationsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
+export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
+export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQuery, OrganizationsListQueryVariables>;
 export const ChallengeNameDocument = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
@@ -2209,6 +2355,55 @@ export function useChallengeGroupsLazyQuery(
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>;
+export const OrganizationGroupsDocument = gql`
+  query organizationGroups($id: Float!) {
+    organisation(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationGroupsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationGroupsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationGroupsQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export function useOrganizationGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
+export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
+export type OrganizationGroupsQueryResult = Apollo.QueryResult<
+  OrganizationGroupsQuery,
+  OrganizationGroupsQueryVariables
+>;
 export const ChallengeOpportunitiesDocument = gql`
   query challengeOpportunities($id: Float!) {
     challenge(ID: $id) {
@@ -2676,6 +2871,152 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   OpportunityProfileInfoQuery,
   OpportunityProfileInfoQueryVariables
 >;
+export const CreateOrganizationDocument = gql`
+  mutation createOrganization($organisationData: OrganisationInput!) {
+    createOrganisation(organisationData: $organisationData) {
+      name
+    }
+  }
+`;
+export type CreateOrganizationMutationFn = Apollo.MutationFunction<
+  CreateOrganizationMutation,
+  CreateOrganizationMutationVariables
+>;
+
+/**
+ * __useCreateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useCreateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrganizationMutation, { data, loading, error }] = useCreateOrganizationMutation({
+ *   variables: {
+ *      organisationData: // value for 'organisationData'
+ *   },
+ * });
+ */
+export function useCreateOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateOrganizationMutation, CreateOrganizationMutationVariables>
+) {
+  return Apollo.useMutation<CreateOrganizationMutation, CreateOrganizationMutationVariables>(
+    CreateOrganizationDocument,
+    baseOptions
+  );
+}
+export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
+export type CreateOrganizationMutationResult = Apollo.MutationResult<CreateOrganizationMutation>;
+export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  CreateOrganizationMutation,
+  CreateOrganizationMutationVariables
+>;
+export const UpdateOrganizationDocument = gql`
+  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
+    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      name
+    }
+  }
+`;
+export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
+  UpdateOrganizationMutation,
+  UpdateOrganizationMutationVariables
+>;
+
+/**
+ * __useUpdateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
+ *   variables: {
+ *      organisationData: // value for 'organisationData'
+ *      orgID: // value for 'orgID'
+ *   },
+ * });
+ */
+export function useUpdateOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(
+    UpdateOrganizationDocument,
+    baseOptions
+  );
+}
+export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
+export type UpdateOrganizationMutationResult = Apollo.MutationResult<UpdateOrganizationMutation>;
+export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOrganizationMutation,
+  UpdateOrganizationMutationVariables
+>;
+export const OrganisationProfileInfoDocument = gql`
+  query organisationProfileInfo($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganisationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganisationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganisationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganisationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganisationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useOrganisationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export type OrganisationProfileInfoQueryHookResult = ReturnType<typeof useOrganisationProfileInfoQuery>;
+export type OrganisationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganisationProfileInfoLazyQuery>;
+export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
+  OrganisationProfileInfoQuery,
+  OrganisationProfileInfoQueryVariables
+>;
 export const CreateGroupOnEcoverseDocument = gql`
   mutation createGroupOnEcoverse($groupName: String!) {
     createGroupOnEcoverse(groupName: $groupName) {
@@ -2810,6 +3151,54 @@ export type CreateGroupOnOpportunityMutationOptions = Apollo.BaseMutationOptions
   CreateGroupOnOpportunityMutation,
   CreateGroupOnOpportunityMutationVariables
 >;
+export const CreateGroupOnOrganizationDocument = gql`
+  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
+    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnOrganizationMutationFn = Apollo.MutationFunction<
+  CreateGroupOnOrganizationMutation,
+  CreateGroupOnOrganizationMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnOrganizationMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnOrganizationMutation, { data, loading, error }] = useCreateGroupOnOrganizationMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      orgID: // value for 'orgID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGroupOnOrganizationMutation,
+    CreateGroupOnOrganizationMutationVariables
+  >
+) {
+  return Apollo.useMutation<CreateGroupOnOrganizationMutation, CreateGroupOnOrganizationMutationVariables>(
+    CreateGroupOnOrganizationDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
+export type CreateGroupOnOrganizationMutationResult = Apollo.MutationResult<CreateGroupOnOrganizationMutation>;
+export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnOrganizationMutation,
+  CreateGroupOnOrganizationMutationVariables
+>;
 export const OrganizationDetailsDocument = gql`
   query organizationDetails($id: Float!) {
     organisation(ID: $id) {
@@ -2831,6 +3220,7 @@ export const OrganizationDetailsDocument = gql`
       groups {
         name
         members {
+          id
           name
         }
       }
