@@ -1286,6 +1286,17 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type OrganizationCardQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationCardQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'>;
+    };
+};
+
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
@@ -3510,6 +3521,54 @@ export function useGroupCardLazyQuery(
 export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<GroupCardQuery, GroupCardQueryVariables>;
+export const OrganizationCardDocument = gql`
+  query organizationCard($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      groups {
+        name
+      }
+      profile {
+        description
+        avatar
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationCardQuery__
+ *
+ * To run a query within a React component, call `useOrganizationCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationCardQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(OrganizationCardDocument, baseOptions);
+}
+export function useOrganizationCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(
+    OrganizationCardDocument,
+    baseOptions
+  );
+}
+export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
+export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
+export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
