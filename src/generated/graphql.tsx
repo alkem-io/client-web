@@ -1182,6 +1182,26 @@ export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
   createGroupOnOrganisation: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
+export type OrganizationDetailsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        };
+      groups?: Maybe<
+        Array<
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
+            }
+        >
+      >;
+    };
+};
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1212,7 +1232,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
         >
       >;
       leadOrganisations: Array<
-        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
+        { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
             profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar'>;
           }
       >;
@@ -3190,6 +3210,73 @@ export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOption
   CreateGroupOnOrganizationMutation,
   CreateGroupOnOrganizationMutationVariables
 >;
+export const OrganizationDetailsDocument = gql`
+  query organizationDetails($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      groups {
+        name
+        members {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationDetailsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>(
+    OrganizationDetailsDocument,
+    baseOptions
+  );
+}
+export function useOrganizationDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>(
+    OrganizationDetailsDocument,
+    baseOptions
+  );
+}
+export type OrganizationDetailsQueryHookResult = ReturnType<typeof useOrganizationDetailsQuery>;
+export type OrganizationDetailsLazyQueryHookResult = ReturnType<typeof useOrganizationDetailsLazyQuery>;
+export type OrganizationDetailsQueryResult = Apollo.QueryResult<
+  OrganizationDetailsQuery,
+  OrganizationDetailsQueryVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
@@ -3235,6 +3322,7 @@ export const ChallengeProfileDocument = gql`
         }
       }
       leadOrganisations {
+        id
         name
         profile {
           avatar

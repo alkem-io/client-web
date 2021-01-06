@@ -197,6 +197,7 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
 export const MUTATION_CREATE_CHALLENGE = gql`
   mutation createChallenge($challengeData: ChallengeInput!) {
     createChallenge(challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -205,6 +206,7 @@ export const MUTATION_CREATE_CHALLENGE = gql`
 export const MUTATION_UPDATE_CHALLENGE = gql`
   mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
     updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -235,6 +237,7 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
 export const MUTATION_CREATE_OPPORTUNITY = gql`
   mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
     createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -243,6 +246,7 @@ export const MUTATION_CREATE_OPPORTUNITY = gql`
 export const MUTATION_UPDATE_OPPORTUNITY = gql`
   mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
     updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      id
       name
     }
   }
@@ -273,6 +277,7 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
 export const MUTATION_CREATE_ORGANIZATION = gql`
   mutation createOrganization($organisationData: OrganisationInput!) {
     createOrganisation(organisationData: $organisationData) {
+      id
       name
     }
   }
@@ -281,6 +286,7 @@ export const MUTATION_CREATE_ORGANIZATION = gql`
 export const MUTATION_UPDATE_ORGANIZATION = gql`
   mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
     updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      id
       name
     }
   }
@@ -339,6 +345,35 @@ export const MUTATION_CREATE_GROUP_ON_ORGANIZATION = gql`
     createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
       id
       name
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATION_DETAILS = gql`
+  query organizationDetails($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        avatar
+        description
+        references {
+          name
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      groups {
+        name
+        members {
+          id
+          name
+        }
+      }
     }
   }
 `;
