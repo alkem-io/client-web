@@ -91,7 +91,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
     <>
       <Modal show={true} onHide={onHide} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Group Details</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">Organization Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {loading ? (
