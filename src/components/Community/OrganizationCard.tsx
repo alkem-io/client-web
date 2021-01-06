@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useState } from 'react';
 
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
@@ -6,6 +6,7 @@ import { Theme } from '../../context/ThemeProvider';
 import { Organisation, useOrganizationCardQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
+import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 
 interface OrganizationCardStylesProps extends Organisation {
   terms?: Array<string>;
@@ -26,6 +27,7 @@ const OrganizationCardStyles = createStyles(theme => ({
 }));
 
 const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) => {
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
   const { data } = useOrganizationCardQuery({
     variables: {
@@ -59,8 +61,11 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
         color: 'background',
         className: styles.tag,
       }}
-      // popUp={<GroupPopUp {...group} terms={[...(terms || [])]} />}
+      onClick={() => {
+        !isModalOpened && setIsModalOpened(true);
+      }}
     >
+      {isModalOpened && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
       {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );
