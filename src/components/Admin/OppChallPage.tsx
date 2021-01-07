@@ -34,7 +34,7 @@ interface Params {
   opportunityId?: string;
 }
 
-const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
+const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const { challengeId, opportunityId } = useParams<Params>();
   const [message, setMessage] = useState<string | null>(null);
   const [variant, setVariant] = useState<'success' | 'error'>('success');
@@ -161,4 +161,4 @@ const ProfilePage: FC<Props> = ({ paths, mode, title }) => {
   );
 };
 
-export default ProfilePage;
+export default OppChallPage;

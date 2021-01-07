@@ -3,9 +3,9 @@ import { Container } from 'react-bootstrap';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 
 /*lib imports end*/
-import { GroupPage, ListPage, UserList, UserPage } from '../components/Admin';
-import Loading from '../components/core/Loading';
-import { useTransactionScope } from '../hooks/useSentry';
+import { GroupPage, ListPage, UserList, UserPage } from '../../components/Admin';
+import Loading from '../../components/core/Loading';
+import { useTransactionScope } from '../../hooks/useSentry';
 import {
   useChallengeGroupsQuery,
   useChallengeNameQuery,
@@ -19,17 +19,17 @@ import {
   useOrganizationsListQuery,
   useUserQuery,
   useUsersQuery,
-} from '../generated/graphql';
-import { UserModel } from '../models/User';
-import { FourOuFour, PageProps } from '../pages';
-import { useUpdateNavigation } from '../hooks/useNavigation';
-import Button from '../components/core/Button';
-import ProfilePage, { ProfileSubmitMode } from '../components/Admin/ProfilePage';
-import CreateGroupPage from '../components/Admin/CreateGroupPage';
-import OrganizationPage from '../components/Admin/OrganizationPage';
-import ManagementPageTemplate from '../components/Admin/ManagementPageTemplate';
-import managementData from '../components/Admin/managementData';
-import { EditMode } from '../utils/editMode';
+} from '../../generated/graphql';
+import { UserModel } from '../../models/User';
+import { FourOuFour, PageProps } from '../../pages';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import Button from '../../components/core/Button';
+import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
+import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
+import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
+import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import managementData from '../../components/Admin/managementData';
+import { EditMode } from '../../utils/editMode';
 /*local files imports end*/
 
 export const Admin: FC = () => {
@@ -159,10 +159,10 @@ const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} />
       </Route>
       <Route path={`${path}/new`}>
-        <ProfilePage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
+        <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
       </Route>
       <Route exact path={`${path}/:challengeId/edit`}>
-        <ProfilePage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
+        <OppChallPage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
@@ -254,7 +254,7 @@ const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
         <ChallengeOpportunities paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <ProfilePage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />
+        <OppChallPage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
@@ -290,7 +290,7 @@ const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <CreateGroupPage action={'createOpportunityGroup'} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <ProfilePage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
+        <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups/:groupId`}>
         <GroupPage paths={currentPaths} />

@@ -5,7 +5,7 @@ import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link } from 'react-router-dom';
 import IconButton from '../core/IconButton';
 import Icon from '../core/Icon';
-import UserRemoveModal from './UserRemoveModal';
+import UserRemoveModal from './User/UserRemoveModal';
 import { useRemoveUserMutation } from '../../generated/graphql';
 import Button from '../core/Button';
 

@@ -3,22 +3,22 @@ import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { UserForm } from '.';
+import { UserForm } from '../index';
 import {
   useCreateUserMutation,
   useRemoveUserMutation,
   UserInput,
   useUpdateUserMutation,
-} from '../../generated/graphql';
-import { USER_DETAILS_FRAGMENT } from '../../graphql/user';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { UserModel } from '../../models/User';
-import { PageProps } from '../../pages';
-import Button from '../core/Button';
-import { Loading } from '../core/Loading';
-import PasswordPrompt from './PasswordPrompt';
+} from '../../../generated/graphql';
+import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { UserModel } from '../../../models/User';
+import { PageProps } from '../../../pages';
+import Button from '../../core/Button';
+import { Loading } from '../../core/Loading';
+import PasswordPrompt from '../PasswordPrompt';
 import UserRemoveModal from './UserRemoveModal';
-import { EditMode } from '../../utils/editMode';
+import { EditMode } from '../../../utils/editMode';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;

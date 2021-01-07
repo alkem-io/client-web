@@ -3,11 +3,11 @@ import React, { FC, useEffect, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { UserFromGenerated, UserModel } from '../../models/User';
-import Typography from '../core/Typography';
-import { useTagsetsTemplateQuery } from '../../generated/graphql';
-import { useRemoveReferenceMutation } from '../../generated/graphql';
-import { EditMode } from '../../utils/editMode';
+import { UserFromGenerated, UserModel } from '../../../models/User';
+import Typography from '../../core/Typography';
+import { useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { useRemoveReferenceMutation } from '../../../generated/graphql';
+import { EditMode } from '../../../utils/editMode';
 
 /*local files imports end*/
 
