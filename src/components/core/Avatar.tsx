@@ -9,20 +9,41 @@ const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
     display: 'flex',
 
-    '&.default': {
-      width: 40,
-      height: 40,
+    '&.md': {
+      maxWidth: 40,
+      maxHeight: 40,
     },
-    '&.small': {
-      width: 15,
-      height: 15,
+    '&.sm': {
+      maxWidth: 15,
+      maxHeight: 15,
     },
-    '&.big': {
-      width: 80,
-      height: 80,
+    '&.lg': {
+      maxWidth: 80,
+      maxHeight: 80,
     },
   },
   avatar: {
+    display: 'flex',
+    borderRadius: theme.shape.borderRadius,
+
+    '&.md': {
+      maxWidth: 40,
+      maxHeight: 40,
+    },
+    '&.sm': {
+      maxWidth: 15,
+      maxHeight: 15,
+    },
+    '&.lg': {
+      maxWidth: 80,
+      maxHeight: 80,
+    },
+    '&.xl': {
+      maxWidth: 160,
+      maxHeight: 160,
+    },
+  },
+  noAvatar: {
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
 
@@ -73,7 +94,7 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
   return (
     <div className={clsx(styles.avatarWrapper, size, className)}>
       {(!src || fallback) && (
-        <div className={clsx(styles.avatar, styles[theme], size, className)}>
+        <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
           <Typography variant="button" color="inherit">
             ?
           </Typography>

@@ -58,3 +58,22 @@ export const QUERY_GROUP_CARD = gql`
     }
   }
 `;
+
+export const QUERY_ORGANIZATION_CARD = gql`
+  query organizationCard($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      groups {
+        name
+      }
+      members {
+        id
+      }
+      profile {
+        description
+        avatar
+      }
+    }
+  }
+`;

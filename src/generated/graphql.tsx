@@ -1055,7 +1055,7 @@ export type CreateChallengeMutationVariables = Exact<{
 }>;
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
-  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
@@ -1064,7 +1064,7 @@ export type UpdateChallengeMutationVariables = Exact<{
 }>;
 
 export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
@@ -1089,7 +1089,7 @@ export type CreateOpportunityMutationVariables = Exact<{
 }>;
 
 export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
@@ -1098,7 +1098,7 @@ export type UpdateOpportunityMutationVariables = Exact<{
 }>;
 
 export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
-  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type OpportunityProfileInfoQueryVariables = Exact<{
@@ -1122,7 +1122,7 @@ export type CreateOrganizationMutationVariables = Exact<{
 }>;
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
-  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
 };
 
 export type UpdateOrganizationMutationVariables = Exact<{
@@ -1131,7 +1131,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
-  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
 };
 
 export type OrganisationProfileInfoQueryVariables = Exact<{
@@ -1303,6 +1303,18 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
             tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
           }
       >;
+    };
+};
+
+export type OrganizationCardQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationCardQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'>;
     };
 };
 
@@ -2579,6 +2591,7 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery
 export const CreateChallengeDocument = gql`
   mutation createChallenge($challengeData: ChallengeInput!) {
     createChallenge(challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -2622,6 +2635,7 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateChallengeDocument = gql`
   mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
     updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -2726,6 +2740,7 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateOpportunityDocument = gql`
   mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
     createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -2770,6 +2785,7 @@ export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
     updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      id
       name
     }
   }
@@ -2874,6 +2890,7 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($organisationData: OrganisationInput!) {
     createOrganisation(organisationData: $organisationData) {
+      id
       name
     }
   }
@@ -2917,6 +2934,7 @@ export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
     updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      id
       name
     }
   }
@@ -3598,6 +3616,57 @@ export function useGroupCardLazyQuery(
 export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<GroupCardQuery, GroupCardQueryVariables>;
+export const OrganizationCardDocument = gql`
+  query organizationCard($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      groups {
+        name
+      }
+      members {
+        id
+      }
+      profile {
+        description
+        avatar
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationCardQuery__
+ *
+ * To run a query within a React component, call `useOrganizationCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationCardQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(OrganizationCardDocument, baseOptions);
+}
+export function useOrganizationCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(
+    OrganizationCardDocument,
+    baseOptions
+  );
+}
+export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
+export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
+export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
