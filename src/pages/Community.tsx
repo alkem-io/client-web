@@ -36,6 +36,11 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       value: 'group',
       typename: 'UserGroup',
     },
+    organization: {
+      title: 'Organizations only',
+      value: 'organisation',
+      typename: 'Organisation',
+    },
   };
 
   const [community, setCommunity] = useState<Array<User | UserGroup | Organisation>>([]);
@@ -106,6 +111,9 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
               </Dropdown.Item>
               <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
                 {filtersConfig.group.title}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.organization)}>
+                {filtersConfig.organization.title}
               </Dropdown.Item>
             </DropdownButton>
           </Col>

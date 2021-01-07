@@ -36,8 +36,16 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
   });
 
   const org = data?.organisation;
-  const groupsCount = data?.organisation?.groups?.length;
   const avatar = org?.profile?.avatar;
+  const members = org?.members;
+
+  const tag = (): string => {
+    if (!members || members.length === 0) return 'no members';
+
+    if (members.length > 0) return `$members?.length} Member${members && members.length === 1 ? '' : 's'}`;
+
+    return '';
+  };
 
   return (
     <Card
@@ -57,7 +65,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
       matchedTerms={{ terms, variant: 'light' }}
       bgText={{ text: 'Org' }}
       tagProps={{
-        text: `Leads ${groupsCount} group${groupsCount !== 1 ? 's' : ''}`,
+        text: tag(),
         color: 'background',
         className: styles.tag,
       }}

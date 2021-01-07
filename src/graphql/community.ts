@@ -67,6 +67,9 @@ export const QUERY_ORGANIZATION_CARD = gql`
       groups {
         name
       }
+      members {
+        id
+      }
       profile {
         description
         avatar

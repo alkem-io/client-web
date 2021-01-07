@@ -1055,7 +1055,7 @@ export type CreateChallengeMutationVariables = Exact<{
 }>;
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
-  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
@@ -1064,7 +1064,7 @@ export type UpdateChallengeMutationVariables = Exact<{
 }>;
 
 export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
@@ -1089,7 +1089,7 @@ export type CreateOpportunityMutationVariables = Exact<{
 }>;
 
 export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
@@ -1098,7 +1098,7 @@ export type UpdateOpportunityMutationVariables = Exact<{
 }>;
 
 export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
-  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type OpportunityProfileInfoQueryVariables = Exact<{
@@ -1122,7 +1122,7 @@ export type CreateOrganizationMutationVariables = Exact<{
 }>;
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
-  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
 };
 
 export type UpdateOrganizationMutationVariables = Exact<{
@@ -1131,7 +1131,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
-  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
 };
 
 export type OrganisationProfileInfoQueryVariables = Exact<{
@@ -1313,6 +1313,7 @@ export type OrganizationCardQueryVariables = Exact<{
 export type OrganizationCardQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
       groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
       profile: { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'>;
     };
 };
@@ -2590,6 +2591,7 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery
 export const CreateChallengeDocument = gql`
   mutation createChallenge($challengeData: ChallengeInput!) {
     createChallenge(challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -2633,6 +2635,7 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateChallengeDocument = gql`
   mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
     updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -2737,6 +2740,7 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateOpportunityDocument = gql`
   mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
     createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      id
       name
     }
   }
@@ -2781,6 +2785,7 @@ export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
     updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      id
       name
     }
   }
@@ -2885,6 +2890,7 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($organisationData: OrganisationInput!) {
     createOrganisation(organisationData: $organisationData) {
+      id
       name
     }
   }
@@ -2928,6 +2934,7 @@ export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
     updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      id
       name
     }
   }
@@ -3616,6 +3623,9 @@ export const OrganizationCardDocument = gql`
       name
       groups {
         name
+      }
+      members {
+        id
       }
       profile {
         description
