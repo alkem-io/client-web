@@ -1,3 +1,5 @@
+import { Organisation } from '../generated/graphql';
+
 export interface UserModel {
   id: string;
   name: string;
@@ -19,6 +21,7 @@ export interface UserModel {
   memberof: {
     groups: Group[];
     challenges: Challenge[];
+    organisations: Organisation[];
   };
 }
 
@@ -63,6 +66,7 @@ export const defaultUser: UserModel = {
   memberof: {
     challenges: [],
     groups: [],
+    organisations: [],
   },
 };
 

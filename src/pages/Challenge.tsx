@@ -285,7 +285,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                 <>
                   <AvatarContainer className="d-flex" title={'Active community members'}>
                     {populated.map((u, i) => (
-                      <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} />
+                      <Avatar className={'d-inline-flex'} key={i} userId={u.id} src={u.profile?.avatar} />
                     ))}
                   </AvatarContainer>
                   <div style={{ flexBasis: '100%' }}></div>

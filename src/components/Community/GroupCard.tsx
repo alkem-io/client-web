@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useState } from 'react';
 
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
@@ -29,6 +29,8 @@ const groupCardStyles = createStyles(theme => ({
 }));
 
 const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
+  const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
+
   const styles = groupCardStyles();
   const { data } = useGroupCardQuery({
     variables: {
@@ -70,8 +72,8 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
       className={styles.card}
       tagProps={{ text: tag(), color: 'background', className: styles.tag }}
       matchedTerms={{ terms, variant: 'light' }}
-      popUp={<GroupPopUp {...group} terms={[...(terms || [])]} />}
       bgText={{ text: 'group' }}
+      onClick={() => !isPopUpShown && setIsModalShown(true)}
     >
       {defaultTags && defaultTags.length > 0 && (
         <Typography color={'background'}>
@@ -84,6 +86,7 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
         </Typography>
       )}
       {avatar && <Avatar size="lg" src={avatar} />}
+      {isPopUpShown && <GroupPopUp {...group} onHide={() => setIsModalShown(false)} terms={terms || []} />}
     </Card>
   );
 };
