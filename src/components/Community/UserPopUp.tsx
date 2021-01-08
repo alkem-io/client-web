@@ -51,7 +51,6 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
 
   const groups = getArrayOfNames(user?.memberof?.groups);
   const challenges = getArrayOfNames(user?.memberof?.challenges);
-  // @ts-ignore  orgs are there
   const organisations = getArrayOfNames(user?.memberof?.organisations);
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');

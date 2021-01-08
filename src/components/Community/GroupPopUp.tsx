@@ -27,15 +27,16 @@ interface GroupPopUpProps {
     references?: Array<{ name: string; uri: string }>;
   };
   terms: Array<string>;
+  onHide: () => void;
 }
 
-const GroupPopUp: FC<GroupPopUpProps> = ({ name, members, profile, terms }) => {
+const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms }) => {
   const styles = groupPopUpStyles();
   const tags = profile?.tagsets?.find(ts => ts.name === 'default')?.tags?.map(t => t) || [];
   const tagList = [...terms, ...tags];
 
   return (
-    <>
+    <Modal show={true} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">Group Details</Modal.Title>
       </Modal.Header>
@@ -85,7 +86,7 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ name, members, profile, terms }) => {
           </>
         )}
       </Modal.Body>
-    </>
+    </Modal>
   );
 };
 
