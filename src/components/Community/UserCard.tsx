@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useState } from 'react';
 
 import { Theme } from '../../context/ThemeProvider';
 import Avatar from '../core/Avatar';
@@ -30,6 +30,7 @@ const userCardStyles = createStyles(theme => ({
 }));
 
 const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
+  const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
   const { data: userData } = useUserCardDataQuery({
     variables: {
@@ -58,11 +59,12 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
       }}
       tagProps={{ text: role }}
       matchedTerms={{ terms }}
-      popUp={<UserPopUp terms={[...(terms || [])]} {...data} />}
       bgText={{ text: 'user' }}
       className={styles.card}
+      onClick={() => !isPopUpShown && setIsModalShown(true)}
     >
       {avatar && <Avatar size="lg" src={avatar} />}
+      {isPopUpShown && <UserPopUp id={data.id} onHide={() => setIsModalShown(false)} terms={terms || []} />}
     </Card>
   );
 };
