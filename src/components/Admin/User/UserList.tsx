@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { ButtonGroup } from 'react-bootstrap';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { UserModel } from '../../models/User';
-import { PageProps } from '../../pages';
-import Button from '../core/Button';
-import SearchableList from './SearchableList';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { UserModel } from '../../../models/User';
+import { PageProps } from '../../../pages';
+import Button from '../../core/Button';
+import SearchableList from '../SearchableList';
 
 interface UserListProps extends PageProps {
   users: UserModel[];

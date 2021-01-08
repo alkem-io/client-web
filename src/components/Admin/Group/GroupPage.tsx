@@ -7,10 +7,10 @@ import {
   useAddUserToOpportunityMutation,
   useGroupMembersQuery,
   useRemoveUserFromGroupMutation,
-} from '../../generated/graphql';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { PageProps } from '../../pages';
-import MemberSelector from './MemberSelector';
+} from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { PageProps } from '../../../pages';
+import MemberSelector from '../MemberSelector';
 
 interface Parameters {
   groupId: string;

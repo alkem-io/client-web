@@ -1,11 +1,11 @@
 import React, { FC, useMemo, useState } from 'react';
-import Typography from '../core/Typography';
+import Typography from '../../core/Typography';
 import { Form, FormGroup } from 'react-bootstrap';
-import Button from '../core/Button';
-import { useCreateGroup } from '../../hooks/useCreateGroup';
+import Button from '../../core/Button';
+import { useCreateGroup } from '../../../hooks/useCreateGroup';
 import { useParams } from 'react-router-dom';
-import { PageProps } from '../../pages';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { PageProps } from '../../../pages';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
 
 interface Props extends PageProps {
   action:
