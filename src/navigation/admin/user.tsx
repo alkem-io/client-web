@@ -12,6 +12,8 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { data, loading } = useUsersQuery();
 
+  // const { d };
+
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
   const users = (data?.users || []) as UserModel[];
@@ -25,6 +27,12 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route exact path={`${path}/new`}>
         <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
+      </Route>
+      {/*<Route exact path={`${path}/applicants`}>*/}
+      {/*  <ListPage data={users} paths={currentPaths} title={'Applicants list'} />*/}
+      {/*</Route>*/}
+      <Route exact path={`${path}/applicants/:applicantId`}>
+        <UserPage mode={EditMode.readOnly} paths={currentPaths} title="Review applicant" />
       </Route>
       <Route exact path={`${path}/:userId/edit`}>
         <UserRoute mode={EditMode.edit} paths={currentPaths} />

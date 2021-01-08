@@ -5,6 +5,7 @@ export const managementData = {
       buttons: [
         { description: 'Edit', url: '/users' },
         { description: 'Create new', url: '/users/new' },
+        { description: 'Applicants', url: '/users/applicants' },
       ],
     },
     {

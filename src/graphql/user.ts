@@ -57,6 +57,16 @@ export const QUERY_USER_LIST = gql`
   ${USER_DETAILS_FRAGMENT}
 `;
 
+export const QUERY_APPLICANTS_LIST = gql`
+  query users {
+    users {
+      id
+      name
+      email
+    }
+  }
+`;
+
 export const QUERY_USER = gql`
   query user($id: String!) {
     user(ID: $id) {
