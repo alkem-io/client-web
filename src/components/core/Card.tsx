@@ -1,10 +1,9 @@
 import clsx from 'clsx';
-import React, { FC, useState } from 'react';
-import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { FC } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Button from './Button';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -255,7 +254,6 @@ export interface CardProps extends Record<string, unknown> {
   bodyProps?: BodyProps;
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
-  popUp?: JSX.Element;
   bgText?: {
     text: string;
   };
@@ -301,7 +299,6 @@ const Card: FC<CardProps> = ({
   primaryTextProps,
   classes = {},
   children,
-  popUp,
   bgText,
   level,
   actions,
@@ -310,18 +307,10 @@ const Card: FC<CardProps> = ({
 }) => {
   const styles = useCardStyles(classes);
 
-  const [isModalShown, setIsModalShown] = useState<boolean>(false);
   const isEcoverseLevel = level?.level === 'Ecoverse';
 
-  const handleShow = () => popUp && !isModalShown && setIsModalShown(true);
-  const handleClose = () => popUp && setIsModalShown(false);
-
   return (
-    <div
-      className={clsx(styles.root, (popUp || onClick) && styles.clickable, className, 'ct-card')}
-      onClick={onClick || handleShow}
-      {...rest}
-    >
+    <div className={clsx(styles.root, onClick && styles.clickable, className, 'ct-card')} onClick={onClick} {...rest}>
       {headerProps && <HeaderCaption {...headerProps} />}
 
       <Body {...bodyProps}>
@@ -336,7 +325,6 @@ const Card: FC<CardProps> = ({
           </Typography>
         )}
 
-        {/*<div className="flex-grow-1" />*/}
         {matchedTerms && (
           <>
             <MatchedTerms {...matchedTerms} />
@@ -346,14 +334,6 @@ const Card: FC<CardProps> = ({
         {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}
         {children}
       </Body>
-      {popUp && (
-        <Modal show={isModalShown} onHide={handleClose} size="lg" centered>
-          {popUp}
-          <Modal.Footer>
-            <Button onClick={handleClose}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </div>
   );
 };

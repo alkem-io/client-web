@@ -1640,6 +1640,7 @@ export type UserMembersFragment = { __typename?: 'User' } & {
     { __typename?: 'MemberOf' } & {
       groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
       challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+      organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
     }
   >;
 };
@@ -1688,7 +1689,7 @@ export type UserAvatarsQueryVariables = Exact<{
 
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<
-    { __typename?: 'User' } & Pick<User, 'name'> & {
+    { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
         profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
       }
   >;
@@ -1783,6 +1784,10 @@ export const UserMembersFragmentDoc = gql`
         id
         name
         textID
+      }
+      organisations {
+        id
+        name
       }
     }
   }
@@ -5099,6 +5104,7 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      id
       name
       profile {
         avatar
