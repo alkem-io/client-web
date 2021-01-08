@@ -3,7 +3,7 @@ import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { UserForm } from '../index';
+import UserForm from './UserForm';
 import {
   useCreateUserMutation,
   useRemoveUserMutation,
