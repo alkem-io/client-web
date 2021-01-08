@@ -262,6 +262,7 @@ export const UserForm: FC<UserProps> = ({
                       value={country}
                       data={countriesList.map(el => el.name)}
                       onSelect={value => setFieldValue('country', value)}
+                      disabled={isReadOnlyMode}
                     />
                   </Form.Group>
                   {getInputField('City', city, 'city', false, isReadOnlyMode)}
@@ -369,20 +370,23 @@ export const UserForm: FC<UserProps> = ({
                                   const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
                                   setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
                                 }}
+                                disabled={isReadOnlyMode}
                               />
                             </Form.Group>
-                            <Form.Group as={Col} xs={2}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  setAvailableTagsets([...availableTagsets, tagsets[index].name]);
-                                }}
-                                variant={'danger'}
-                                // style={{ marginTop: 32 }}
-                              >
-                                Remove
-                              </Button>
-                            </Form.Group>
+                            {!isReadOnlyMode && (
+                              <Form.Group as={Col} xs={2}>
+                                <Button
+                                  onClick={() => {
+                                    remove(index);
+                                    setAvailableTagsets([...availableTagsets, tagsets[index].name]);
+                                  }}
+                                  variant={'danger'}
+                                  // style={{ marginTop: 32 }}
+                                >
+                                  Remove
+                                </Button>
+                              </Form.Group>
+                            )}
                           </Form.Row>
                         ))
                       )}

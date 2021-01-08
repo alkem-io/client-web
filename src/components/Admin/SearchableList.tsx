@@ -13,6 +13,7 @@ interface SearchableListProps {
   data: SearchableListData[];
   edit?: boolean;
   active?: number | string;
+  noRemove?: boolean;
 }
 
 export interface SearchableListData {
@@ -21,7 +22,7 @@ export interface SearchableListData {
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active, noRemove }) => {
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [userToRemove, setUserToRemove] = useState<SearchableListData | null>(null);
@@ -88,9 +89,11 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
             >
               {item.value}
               <div className={'flex-grow-1'} />
-              <IconButton onClick={e => openModal(e, item)}>
-                <Icon component={Trash} color="negative" size={'sm'} />
-              </IconButton>
+              {!noRemove && (
+                <IconButton onClick={e => openModal(e, item)}>
+                  <Icon component={Trash} color="negative" size={'sm'} />
+                </IconButton>
+              )}
             </ListGroup.Item>
           </Fragment>
         ))}

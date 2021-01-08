@@ -8,6 +8,7 @@ interface Props {
   data: string[];
   onSelect: (value: string | null) => void;
   value: string;
+  disabled?: boolean;
 }
 
 const useSearchDropdownStyles = createStyles(() => ({
@@ -39,10 +40,15 @@ const useSearchDropdownStyles = createStyles(() => ({
       backgroundColor: '#fff',
       color: '#495057',
     },
+    '&:disabled': {
+      backgroundColor: '#e9ecef',
+      color: '#495057',
+      border: '1px solid #ced4da',
+    },
   },
 }));
 
-const SearchDropdown: FC<Props> = ({ onSelect, data, value }) => {
+const SearchDropdown: FC<Props> = ({ onSelect, data, value, disabled = false }) => {
   const styles = useSearchDropdownStyles();
   // forwardRef again here!
   // Dropdown needs access to the DOM of the Menu to measure it
@@ -70,7 +76,7 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value }) => {
 
   return (
     <Dropdown onSelect={v => onSelect(v)}>
-      <Dropdown.Toggle className={styles.toggle} id="dropdown-custom-components">
+      <Dropdown.Toggle className={styles.toggle} id="dropdown-custom-components" disabled={disabled}>
         {value || 'Not selected'}
       </Dropdown.Toggle>
 

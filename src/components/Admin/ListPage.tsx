@@ -10,9 +10,10 @@ interface GroupListProps extends PageProps {
   data: SearchableListData[];
   title?: string;
   newLink?: string;
+  noRemove?: boolean;
 }
 
-export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink }) => {
+export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, noRemove = false }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
@@ -27,7 +28,7 @@ export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink }) =>
           )}
         </div>
       )}
-      <SearchableList data={data} />
+      <SearchableList data={data} noRemove={noRemove} />
     </>
   );
 };

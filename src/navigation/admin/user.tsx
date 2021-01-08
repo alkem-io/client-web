@@ -1,22 +1,30 @@
 import React, { FC, useMemo } from 'react';
 import { FourOuFour, PageProps } from '../../pages';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { useUserQuery, useUsersQuery } from '../../generated/graphql';
+import { useApplicantsQuery, useUserQuery, useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import Loading from '../../components/core/Loading';
 import { UserList } from '../../components/Admin/User/UserList';
 import { UserPage } from '../../components/Admin/User/UserPage';
 import { EditMode } from '../../utils/editMode';
+import { ListPage } from '../../components/Admin';
+import ApplicantPage from '../../components/Admin/User/ApplicantPage';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { data, loading } = useUsersQuery();
 
-  // const { d };
+  const { data: applicatnsQuery } = useApplicantsQuery();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
   const users = (data?.users || []) as UserModel[];
+  const applicatnsList = applicatnsQuery?.users?.map(u => ({
+    id: u.id,
+    value: u.name,
+    url: `${url}/applicants/${u.id}`,
+  }));
+
   if (loading) {
     return <Loading text={'Loading Users ...'} />;
   }
@@ -28,11 +36,11 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}/new`}>
         <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
       </Route>
-      {/*<Route exact path={`${path}/applicants`}>*/}
-      {/*  <ListPage data={users} paths={currentPaths} title={'Applicants list'} />*/}
-      {/*</Route>*/}
+      <Route exact path={`${path}/applicants`}>
+        <ListPage data={applicatnsList || []} paths={currentPaths} title={'Applicants list'} noRemove />
+      </Route>
       <Route exact path={`${path}/applicants/:applicantId`}>
-        <UserPage mode={EditMode.readOnly} paths={currentPaths} title="Review applicant" />
+        <ApplicantPage mode={EditMode.readOnly} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:userId/edit`}>
         <UserRoute mode={EditMode.edit} paths={currentPaths} />

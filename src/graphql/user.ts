@@ -58,7 +58,7 @@ export const QUERY_USER_LIST = gql`
 `;
 
 export const QUERY_APPLICANTS_LIST = gql`
-  query users {
+  query applicants {
     users {
       id
       name
