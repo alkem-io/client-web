@@ -1,4 +1,4 @@
-export default {
+export const managementData = {
   adminLvl: [
     {
       name: 'Users',

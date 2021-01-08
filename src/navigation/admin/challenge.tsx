@@ -11,7 +11,7 @@ import { ListPage } from '../../components/Admin/ListPage';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import managementData from '../../components/Admin/managementData';
+import { managementData } from '../../components/Admin/managementData';
 import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import Button from '../../components/core/Button';

@@ -13,7 +13,7 @@ import { ListPage } from '../../components/Admin/ListPage';
 import { AdminParameters } from './admin';
 import { EditMode } from '../../utils/editMode';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import managementData from '../../components/Admin/managementData';
+import { managementData } from '../../components/Admin/managementData';
 import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {

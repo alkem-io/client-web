@@ -3,7 +3,7 @@ import { FourOuFour, PageProps } from '../../pages';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { useOpportunityGroupsQuery, useOpportunityNameQuery } from '../../generated/graphql';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import managementData from '../../components/Admin/managementData';
+import { managementData } from '../../components/Admin/managementData';
 import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';

@@ -3,7 +3,8 @@ import { Container } from 'react-bootstrap';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 /*lib imports end*/
 
-import { GroupPage, ListPage } from '../../components/Admin';
+import { ListPage } from '../../components/Admin';
+import GroupPage from '../../components/Admin/Group/GroupPage';
 import Loading from '../../components/core/Loading';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { useEcoverseGroupsListQuery } from '../../generated/graphql';
@@ -13,7 +14,7 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import { UsersRoute } from './user';
 import { ChallengesRoute } from './challenge';
 import { OrganizationsRoute } from './organization';
-import managementData from '../../components/Admin/managementData';
+import { managementData } from '../../components/Admin/managementData';
 /*local files imports end*/
 
 export interface AdminParameters {
