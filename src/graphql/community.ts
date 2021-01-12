@@ -14,6 +14,10 @@ export const QUERY_COMMUNITY_SEARCH = gql`
           name
           id
         }
+        ... on Organisation {
+          name
+          id
+        }
       }
     }
   }
