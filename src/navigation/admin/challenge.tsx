@@ -36,7 +36,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} />
+        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} onDelete={() => {}} />
       </Route>
       <Route path={`${path}/new`}>
         <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
@@ -113,7 +113,7 @@ const ChallengeGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={() => {}} />;
 };
 
 export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {

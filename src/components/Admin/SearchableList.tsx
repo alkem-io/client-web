@@ -1,41 +1,41 @@
-import React, { FC, useMemo, useState, Fragment } from 'react';
-import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
+import React, { FC, Fragment, useMemo, useState } from 'react';
+import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import { Link } from 'react-router-dom';
-import IconButton from '../core/IconButton';
-import Icon from '../core/Icon';
-import UserRemoveModal from './User/UserRemoveModal';
-import { useRemoveUserMutation } from '../../generated/graphql';
 import Button from '../core/Button';
+import Icon from '../core/Icon';
+import IconButton from '../core/IconButton';
+import UserRemoveModal from './User/UserRemoveModal';
 
 interface SearchableListProps {
-  data: SearchableListData[];
+  data: SearchableListItem[];
   edit?: boolean;
   active?: number | string;
+  onDelete: (item: SearchableListItem) => void;
 }
 
-export interface SearchableListData {
+export interface SearchableListItem {
   id: string;
   value: string;
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active, onDelete }) => {
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
-  const [userToRemove, setUserToRemove] = useState<SearchableListData | null>(null);
+  const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
   const [limit, setLimit] = useState(10);
 
-  const [remove, { loading }] = useRemoveUserMutation({
-    refetchQueries: ['users'],
-    awaitRefetchQueries: true,
-    onCompleted: () => {
-      setModalOpened(false);
-      setUserToRemove(null);
-    },
-    onError: e => console.error('User remove error---> ', e),
-  });
+  // const [remove, { loading }] = useRemoveUserMutation({
+  //   refetchQueries: ['users'],
+  //   awaitRefetchQueries: true,
+  //   onCompleted: () => {
+  //     setModalOpened(false);
+  //     setItemToRemove(null);
+  //   },
+  //   onError: e => console.error('User remove error---> ', e),
+  // });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -50,23 +50,21 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   const slicedData = useMemo(() => filteredData.slice(0, limit), [filteredData, limit]);
   const editSuffix = edit ? '/edit' : '';
 
-  const handleRemoveUser = async () => {
-    await remove({
-      variables: {
-        userID: Number(userToRemove?.id),
-      },
-    });
+  const handleRemoveItem = async () => {
+    if (onDelete && itemToRemove) {
+      onDelete(itemToRemove);
+    }
   };
 
-  const openModal = (e: Event, item: SearchableListData): void => {
+  const openModal = (e: Event, item: SearchableListItem): void => {
     e.preventDefault();
     setModalOpened(true);
-    setUserToRemove(item);
+    setItemToRemove(item);
   };
 
   const closeModal = (): void => {
     setModalOpened(false);
-    setUserToRemove(null);
+    setItemToRemove(null);
   };
 
   return (
@@ -98,9 +96,9 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}
-        onConfirm={handleRemoveUser}
-        name={userToRemove?.value}
-        loading={loading}
+        onConfirm={handleRemoveItem}
+        name={itemToRemove?.value}
+        //loading={loading}
       />
       {filteredData.length > limit && limit < 50 && (
         <Button className={'mt-4'} onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}>
