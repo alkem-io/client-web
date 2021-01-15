@@ -13,9 +13,11 @@ export const USER_DETAILS_FRAGMENT = gql`
     phone
     accountUpn
     profile {
+      id
       description
       avatar
       references {
+        id
         name
         uri
       }
@@ -38,6 +40,10 @@ export const USER_MEMBER_OF_FRAGMENT = gql`
         id
         name
         textID
+      }
+      organisations {
+        id
+        name
       }
     }
   }
@@ -96,8 +102,10 @@ export const QUERY_OPPORTUNITY_USER_IDS = gql`
 export const QUERY_USER_AVATARS = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      id
       name
       profile {
+        id
         avatar
       }
     }

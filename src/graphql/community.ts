@@ -14,6 +14,10 @@ export const QUERY_COMMUNITY_SEARCH = gql`
           name
           id
         }
+        ... on Organisation {
+          name
+          id
+        }
       }
     }
   }
@@ -44,6 +48,7 @@ export const QUERY_GROUP_CARD = gql`
         name
       }
       profile {
+        id
         avatar
         description
         references {
@@ -54,6 +59,26 @@ export const QUERY_GROUP_CARD = gql`
           name
           tags
         }
+      }
+    }
+  }
+`;
+
+export const QUERY_ORGANIZATION_CARD = gql`
+  query organizationCard($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      groups {
+        name
+      }
+      members {
+        id
+      }
+      profile {
+        id
+        description
+        avatar
       }
     }
   }

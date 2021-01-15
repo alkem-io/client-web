@@ -9,35 +9,29 @@ import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { Theme } from '../../context/ThemeProvider';
 import { PageProps } from '../../pages';
 
-const challengePageData = [
-  {
-    name: 'Challenge groups',
-    buttons: [{ description: 'Edit groups', url: '/groups' }],
-  },
-  {
-    name: 'Opportunities',
-    buttons: [{ description: 'Edit opportunities', url: '/opportunities' }],
-  },
-];
+interface Props extends PageProps {
+  data: Array<{
+    name: string;
+    buttons: Array<{
+      description: string;
+      url: string;
+    }>;
+  }>;
+}
 
-export const ChallengePage: FC<PageProps> = ({ paths }) => {
+export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
   const { url } = useRouteMatch();
 
   useUpdateNavigation({ currentPaths: paths });
 
   return (
     <>
-      {challengePageData.map((x, i) => (
+      {data.map((x, i) => (
         <Row key={i} className={'mb-4'}>
           <Card
             key={i}
             classes={{
               background: (theme: Theme) => theme.palette.neutral,
-            }}
-            bodyProps={{
-              classes: {
-                // background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.5),
-              },
             }}
             primaryTextProps={{
               text: x.name || '',
@@ -59,4 +53,4 @@ export const ChallengePage: FC<PageProps> = ({ paths }) => {
   );
 };
 
-export default ChallengePage;
+export default ManagementPageTemplate;

@@ -5,10 +5,11 @@ import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
 import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
-import { UserCardProps } from './UserCard';
 import Tags from './Tags';
 import Divider from '../core/Divider';
 import { createStyles } from '../../hooks/useTheme';
+import Button from '../core/Button';
+import { useUserQuery } from '../../generated/graphql';
 
 const useUserPopUpStyles = createStyles(theme => ({
   centeredText: {
@@ -32,39 +33,38 @@ const useUserPopUpStyles = createStyles(theme => ({
   },
 }));
 
-const UserPopUp: FC<UserCardProps> = ({
-  name,
-  email,
-  gender,
-  country,
-  city,
-  firstName,
-  lastName,
-  profile,
-  memberof,
-  terms = [],
-}) => {
+interface UserPopUpProps {
+  id: string;
+  onHide: () => void;
+  terms?: Array<string>;
+}
+
+const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
   const styles = useUserPopUpStyles();
+
+  const { data } = useUserQuery({ variables: { id } });
 
   const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
-  const groups = getArrayOfNames(memberof?.groups);
-  const challenges = getArrayOfNames(memberof?.challenges);
-  const organisations = getArrayOfNames(memberof?.organisations);
+  const user = data?.user;
 
-  const refs = profile?.references?.filter(r => r.uri.trim() !== '');
+  const groups = getArrayOfNames(user?.memberof?.groups);
+  const challenges = getArrayOfNames(user?.memberof?.challenges);
+  const organisations = getArrayOfNames(user?.memberof?.organisations);
+
+  const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 
   return (
-    <>
+    <Modal show={true} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">User Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className={'d-flex align-items-center mb-3'}>
-          <Avatar src={profile?.avatar} size={'lg'} />
+          <Avatar src={user?.profile?.avatar} size={'lg'} />
           <div className={'ml-3'}>
-            <Typography variant={'h3'}>{name}</Typography>
+            <Typography variant={'h3'}>{user?.name}</Typography>
             <Tags tags={terms} />
           </div>
         </div>
@@ -73,17 +73,17 @@ const UserPopUp: FC<UserCardProps> = ({
           <InfoCircle width={25} height={25} className={styles.icon} /> General
         </Typography>
         <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {firstName}{' '}
+          {user?.firstName}{' '}
         </Typography>
         <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {lastName}{' '}
+          {user?.lastName}{' '}
         </Typography>
         <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {gender && `(${gender})`}
+          {user?.gender && `(${user?.gender})`}
         </Typography>
-        {profile?.description && (
+        {user?.profile?.description && (
           <Typography weight={'medium'} color={'neutral'} as={'p'}>
-            {profile.description}
+            {user?.profile.description}
           </Typography>
         )}
 
@@ -142,15 +142,15 @@ const UserPopUp: FC<UserCardProps> = ({
         </Typography>
 
         <Typography weight={'medium'} as={'p'}>
-          {email}
+          {user?.email}
         </Typography>
         <Typography weight={'medium'} as={'p'}>
-          {country} {city}
+          {user?.country} {user?.city}
         </Typography>
         {refs && refs.length > 0 && (
           <>
             <Typography>References: </Typography>
-            {profile?.references?.map((r, index) => (
+            {user?.profile?.references?.map((r, index) => (
               <Typography key={index}>
                 <a href={r.uri} rel="noopener noreferrer" target="_blank">
                   {r.name}
@@ -160,7 +160,10 @@ const UserPopUp: FC<UserCardProps> = ({
           </>
         )}
       </Modal.Body>
-    </>
+      <Modal.Footer>
+        <Button onClick={onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

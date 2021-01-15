@@ -4,25 +4,52 @@ import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Typography from './Typography';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import UserPopUp from '../Community/UserPopUp';
 
 const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
     display: 'flex',
 
-    '&.default': {
-      width: 40,
-      height: 40,
+    '&.md': {
+      maxWidth: 40,
+      maxHeight: 40,
     },
-    '&.small': {
-      width: 15,
-      height: 15,
+    '&.sm': {
+      maxWidth: 15,
+      maxHeight: 15,
     },
-    '&.big': {
-      width: 80,
-      height: 80,
+    '&.lg': {
+      maxWidth: 80,
+      maxHeight: 80,
+    },
+  },
+  clickable: {
+    '&:hover': {
+      cursor: 'pointer',
     },
   },
   avatar: {
+    display: 'flex',
+    borderRadius: theme.shape.borderRadius,
+
+    '&.md': {
+      maxWidth: 40,
+      maxHeight: 40,
+    },
+    '&.sm': {
+      maxWidth: 15,
+      maxHeight: 15,
+    },
+    '&.lg': {
+      maxWidth: 80,
+      maxHeight: 80,
+    },
+    '&.xl': {
+      maxWidth: 160,
+      maxHeight: 160,
+    },
+  },
+  noAvatar: {
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
 
@@ -64,16 +91,22 @@ interface AvatarProps {
   size?: 'md' | 'sm' | 'lg';
   theme?: 'light' | 'dark';
   name?: string;
+  userId?: string;
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark', name }) => {
+const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark', name, userId }) => {
+  const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
+
   const styles = useAvatarStyles(classes);
   const [fallback, setFallback] = useState(false);
 
   return (
-    <div className={clsx(styles.avatarWrapper, size, className)}>
+    <div
+      className={clsx(styles.avatarWrapper, userId && styles.clickable, size, className)}
+      onClick={() => userId && !isPopUpShown && setIsPopUpShown(true)}
+    >
       {(!src || fallback) && (
-        <div className={clsx(styles.avatar, styles[theme], size, className)}>
+        <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
           <Typography variant="button" color="inherit">
             ?
           </Typography>
@@ -92,6 +125,7 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
       {src && !fallback && !name && (
         <img className={clsx(styles.avatar, size, className)} src={src} alt="user" onError={() => setFallback(true)} />
       )}
+      {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
     </div>
   );
 };

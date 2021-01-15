@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
-import { Admin } from './admin';
+import { Admin } from './admin/admin';
 import { Community } from './community';
 import { Ecoverses } from './ecoverse';
 import { Messages } from './messages';

@@ -3,6 +3,7 @@ import { Col } from 'react-bootstrap';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
+import { useServerMetadataQuery } from '../generated/graphql';
 
 const useAboutStyles = createStyles(theme => ({
   row: {
@@ -50,6 +51,7 @@ const useAboutStyles = createStyles(theme => ({
 
 const AboutPage = () => {
   const styles = useAboutStyles();
+  const { data } = useServerMetadataQuery();
 
   return (
     <>
@@ -61,6 +63,12 @@ const AboutPage = () => {
               <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
+            {data && (
+              <Typography color={'neutralMedium'} className={'mb-4'}>
+                Powered by {data?.metadata.services[0].name} v{data?.metadata.services[0].version}
+              </Typography>
+            )}
+
             <Typography variant={'h3'} color={'neutralMedium'} className={'mb-4'}>
               Reimagining collaboration
             </Typography>

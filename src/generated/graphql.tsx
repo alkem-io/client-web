@@ -2,6 +2,8 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -11,255 +13,54 @@ export type Scalars = {
   Float: number;
 };
 
-export type Context = {
-  __typename?: 'Context';
-  id: Scalars['ID'];
-  /** A one line description */
-  tagline?: Maybe<Scalars['String']>;
-  /** A detailed description of the current situation */
-  background?: Maybe<Scalars['String']>;
-  /** The goal that is being pursued */
-  vision?: Maybe<Scalars['String']>;
-  /** What is the potential impact? */
-  impact?: Maybe<Scalars['String']>;
-  /** Who should get involved in this challenge */
-  who?: Maybe<Scalars['String']>;
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-};
-
-export type Tagset = {
-  __typename?: 'Tagset';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  tags: Array<Scalars['String']>;
-};
-
-export type Profile = {
-  __typename?: 'Profile';
-  id: Scalars['ID'];
-  /** A list of URLs to relevant information. */
-  references?: Maybe<Array<Reference>>;
-  /** A list of named tagsets, each of which has a list of tags. */
-  tagsets?: Maybe<Array<Tagset>>;
-  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
-  avatar?: Maybe<Scalars['String']>;
-  /** A short description of the entity associated with this profile. */
-  description?: Maybe<Scalars['String']>;
-};
-
-export type Reference = {
-  __typename?: 'Reference';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  uri: Scalars['String'];
-  description: Scalars['String'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  city: Scalars['String'];
-  country: Scalars['String'];
-  gender: Scalars['String'];
-  /** The profile for this user */
-  profile?: Maybe<Profile>;
-  /** The last timestamp, in seconds, when this user was modified - either via creation or via update. Note: updating of profile data or group memberships does not update this field. */
-  lastModified?: Maybe<Scalars['Int']>;
-  /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
-  memberof?: Maybe<MemberOf>;
+export type AadConfig = {
+  __typename?: 'AadConfig';
+  /** Config for accessing the Cherrytwist API. */
+  apiConfig: ApiConfig;
+  /** Is the client and server authentication enabled? */
+  authEnabled: Scalars['Boolean'];
+  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
+  loginRequest: Scope;
+  /** Config for MSAL authentication library on Cherrytwist Web Client. */
+  msalConfig: MsalConfig;
+  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
+  silentRequest: Scope;
+  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
+  tokenRequest: Scope;
 };
 
 export type Actor = {
   __typename?: 'Actor';
-  id: Scalars['ID'];
-  name: Scalars['String'];
   /** A description of this actor */
   description?: Maybe<Scalars['String']>;
-  /** A value derived by this actor */
-  value?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
   /** The change / effort required of this actor */
   impact?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  /** A value derived by this actor */
+  value?: Maybe<Scalars['String']>;
 };
 
 export type ActorGroup = {
   __typename?: 'ActorGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** A description of this group of actors */
-  description?: Maybe<Scalars['String']>;
   /** The set of actors in this actor group */
   actors?: Maybe<Array<Actor>>;
-};
-
-export type Project = {
-  __typename?: 'Project';
-  id: Scalars['ID'];
-  /** A short text identifier for this Opportunity */
-  textID: Scalars['String'];
-  name: Scalars['String'];
+  /** A description of this group of actors */
   description?: Maybe<Scalars['String']>;
-  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
-  state?: Maybe<Scalars['String']>;
-  /** The set of tags for the project */
-  tagset?: Maybe<Tagset>;
-  /** The set of aspects for this Project. Note: likley to change. */
-  aspects?: Maybe<Array<Aspect>>;
-};
-
-export type Aspect = {
-  __typename?: 'Aspect';
-  id: Scalars['ID'];
-  title: Scalars['String'];
-  framing: Scalars['String'];
-  explanation: Scalars['String'];
-};
-
-export type Relation = {
-  __typename?: 'Relation';
-  id: Scalars['ID'];
-  type: Scalars['String'];
-  actorName: Scalars['String'];
-  actorType: Scalars['String'];
-  actorRole: Scalars['String'];
-  description: Scalars['String'];
-};
-
-export type Opportunity = {
-  __typename?: 'Opportunity';
-  id: Scalars['ID'];
-  /** The name of the Opportunity */
-  name: Scalars['String'];
-  /** A short text identifier for this Opportunity */
-  textID: Scalars['String'];
-  /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
-  state?: Maybe<Scalars['String']>;
-  /** The shared understanding for the opportunity */
-  context?: Maybe<Context>;
-  /** The set of projects within the context of this Opportunity */
-  projects?: Maybe<Array<Project>>;
-  /** Groups of users related to a Opportunity. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** All users that are contributing to this Opportunity. */
-  contributors?: Maybe<Array<User>>;
-  /** The set of actor groups within the context of this Opportunity. */
-  actorGroups?: Maybe<Array<ActorGroup>>;
-  /** The set of aspects within the context of this Opportunity. */
-  aspects?: Maybe<Array<Aspect>>;
-  /** The set of relations within the context of this Opportunity. */
-  relations?: Maybe<Array<Relation>>;
-};
-
-export type UserGroup = {
-  __typename?: 'UserGroup';
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of users that are members of this group */
-  members?: Maybe<Array<User>>;
-  /** The focal point for this group */
-  focalPoint?: Maybe<User>;
-  /** The profile for the user group */
-  profile?: Maybe<Profile>;
-  /** Containing entity for this UserGroup. */
-  parent?: Maybe<UserGroupParent>;
 };
 
-export type UserGroupParent = Ecoverse | Challenge | Opportunity | Organisation;
-
-export type Organisation = {
-  __typename?: 'Organisation';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** Groups defined on this organisation. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** Users that are contributing to this organisation. */
-  members?: Maybe<Array<User>>;
-  /** The profile for this organisation. */
-  profile: Profile;
-};
-
-export type Ecoverse = {
-  __typename?: 'Ecoverse';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  /** The organisation that hosts this Ecoverse instance */
-  host?: Maybe<Organisation>;
-  /** The shared understanding for the Ecoverse */
-  context?: Maybe<Context>;
-  /** The set of groups at the Ecoverse level */
-  groups?: Maybe<Array<UserGroup>>;
-  /** The set of partner organisations associated with this Ecoverse */
-  organisations?: Maybe<Array<Organisation>>;
-  /** The Challenges hosted by the Ecoverse */
-  challenges?: Maybe<Array<Challenge>>;
-  /** The set of tags for the ecoverse */
-  tagset?: Maybe<Tagset>;
-};
-
-export type Challenge = {
-  __typename?: 'Challenge';
-  id: Scalars['ID'];
-  /** The name of the challenge */
-  name: Scalars['String'];
-  /** A short text identifier for this challenge */
-  textID: Scalars['String'];
-  /** The shared understanding for the challenge */
-  context?: Maybe<Context>;
-  /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
-  leadOrganisations: Array<Organisation>;
-  /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
-  state?: Maybe<Scalars['String']>;
-  /** The set of tags for the challenge */
-  tagset?: Maybe<Tagset>;
-  /** Groups of users related to a challenge. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** The set of opportunities within this challenge. */
-  opportunities?: Maybe<Array<Opportunity>>;
-  /** All users that are contributing to this challenge. */
-  contributors?: Maybe<Array<User>>;
-};
-
-export type MemberOf = {
-  __typename?: 'MemberOf';
-  /** References to the groups the user is in at the ecoverse level */
-  groups: Array<UserGroup>;
-  /** References to the challenges the user is a member of */
-  challenges: Array<Challenge>;
-  /** References to the orgnaisaitons the user is a member of */
-  organisations: Array<Organisation>;
-};
-
-export type SearchResultEntry = {
-  __typename?: 'SearchResultEntry';
-  /** The score for this search result; more matches means a higher score. */
-  score?: Maybe<Scalars['Float']>;
-  /** The terms that were matched for this result */
-  terms?: Maybe<Array<Scalars['String']>>;
-  /** Each search result contains either a User or UserGroup */
-  result?: Maybe<SearchResult>;
-};
-
-export type SearchResult = User | UserGroup;
-
-export type ServiceMetadata = {
-  __typename?: 'ServiceMetadata';
-  /** Service name e.g. CT Server */
+export type ActorGroupInput = {
+  description?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  /** Version in the format {major.minor.patch} - using SemVer. */
-  version?: Maybe<Scalars['String']>;
 };
 
-export type Metadata = {
-  __typename?: 'Metadata';
-  /** Collection of metadata about Cherrytwist services. */
-  services: Array<ServiceMetadata>;
+export type ActorInput = {
+  description?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type ApiConfig = {
@@ -268,12 +69,135 @@ export type ApiConfig = {
   resourceScope: Scalars['String'];
 };
 
+export type Aspect = {
+  __typename?: 'Aspect';
+  explanation: Scalars['String'];
+  framing: Scalars['String'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+};
+
+export type AspectInput = {
+  explanation?: Maybe<Scalars['String']>;
+  framing?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+};
+
+export type Challenge = {
+  __typename?: 'Challenge';
+  /** The shared understanding for the challenge */
+  context?: Maybe<Context>;
+  /** All users that are contributing to this challenge. */
+  contributors?: Maybe<Array<User>>;
+  /** Groups of users related to a challenge. */
+  groups?: Maybe<Array<UserGroup>>;
+  id: Scalars['ID'];
+  /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
+  leadOrganisations: Array<Organisation>;
+  /** The name of the challenge */
+  name: Scalars['String'];
+  /** The set of opportunities within this challenge. */
+  opportunities?: Maybe<Array<Opportunity>>;
+  /** The maturity phase of the challenge i.e. new, being refined, ongoing etc */
+  state?: Maybe<Scalars['String']>;
+  /** The set of tags for the challenge */
+  tagset?: Maybe<Tagset>;
+  /** A short text identifier for this challenge */
+  textID: Scalars['String'];
+};
+
+export type ChallengeInput = {
+  context?: Maybe<ContextInput>;
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  textID?: Maybe<Scalars['String']>;
+};
+
+export type Config = {
+  __typename?: 'Config';
+  /** Cherrytwist Template. */
+  template: Template;
+  /** Cherrytwist Web Client Config. */
+  webClient: WebClientConfig;
+};
+
+export type Context = {
+  __typename?: 'Context';
+  /** A detailed description of the current situation */
+  background?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  /** What is the potential impact? */
+  impact?: Maybe<Scalars['String']>;
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+  /** A one line description */
+  tagline?: Maybe<Scalars['String']>;
+  /** The goal that is being pursued */
+  vision?: Maybe<Scalars['String']>;
+  /** Who should get involved in this challenge */
+  who?: Maybe<Scalars['String']>;
+};
+
+export type ContextInput = {
+  background?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  /** Set of references to _replace_ the existing references */
+  references?: Maybe<Array<ReferenceInput>>;
+  tagline?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['String']>;
+};
+
+export type Ecoverse = {
+  __typename?: 'Ecoverse';
+  /** The Challenges hosted by the Ecoverse */
+  challenges?: Maybe<Array<Challenge>>;
+  /** The shared understanding for the Ecoverse */
+  context?: Maybe<Context>;
+  /** The set of groups at the Ecoverse level */
+  groups?: Maybe<Array<UserGroup>>;
+  /** The organisation that hosts this Ecoverse instance */
+  host?: Maybe<Organisation>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The set of partner organisations associated with this Ecoverse */
+  organisations?: Maybe<Array<Organisation>>;
+  /** The set of tags for the ecoverse */
+  tagset?: Maybe<Tagset>;
+};
+
+export type EcoverseInput = {
+  /** Updated context for the ecoverse; will be merged with existing context */
+  context?: Maybe<ContextInput>;
+  /** The new name for the ecoverse */
+  name?: Maybe<Scalars['String']>;
+  /** The set of tags to apply to this ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type MemberOf = {
+  __typename?: 'MemberOf';
+  /** References to the challenges the user is a member of */
+  challenges: Array<Challenge>;
+  /** References to the groups the user is in at the ecoverse level */
+  groups: Array<UserGroup>;
+  /** References to the orgnaisaitons the user is a member of */
+  organisations: Array<Organisation>;
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** Collection of metadata about Cherrytwist services. */
+  services: Array<ServiceMetadata>;
+};
+
 export type MsalAuth = {
   __typename?: 'MsalAuth';
-  /** Cherrytwist Web Client App Registration Client Id. */
-  clientId: Scalars['String'];
   /** Azure Active Directory OpenID Connect Authority. */
   authority: Scalars['String'];
+  /** Cherrytwist Web Client App Registration Client Id. */
+  clientId: Scalars['String'];
   /** Cherrytwist Web Client Login Redirect Uri. */
   redirectUri: Scalars['String'];
 };
@@ -294,130 +218,517 @@ export type MsalConfig = {
   cache: MsalCache;
 };
 
-export type Scope = {
-  __typename?: 'Scope';
-  /** OpenID Scopes. */
-  scopes: Array<Scalars['String']>;
+export type Mutation = {
+  __typename?: 'Mutation';
+  /** Adds the specified organisation as a lead for the specified challenge */
+  addChallengeLead: Scalars['Boolean'];
+  /** Add the provided tag to the tagset with the given ID */
+  addTagToTagset: Tagset;
+  /** Adds the user with the given identifier as a member of the specified challenge */
+  addUserToChallenge: UserGroup;
+  /** Adds the user with the given identifier to the specified user group */
+  addUserToGroup: Scalars['Boolean'];
+  /** Adds the user with the given identifier as a member of the specified opportunity */
+  addUserToOpportunity: UserGroup;
+  /** Assign the user with the given ID as focal point for the given group */
+  assignGroupFocalPoint?: Maybe<UserGroup>;
+  /** Create a new actor on the ActorGroup with the specified ID */
+  createActor: Actor;
+  /** Create a new actor group on the Opportunity identified by the ID */
+  createActorGroup: ActorGroup;
+  /** Create a new aspect on the Opportunity identified by the ID */
+  createAspect: Aspect;
+  /** Create a new aspect on the Project identified by the ID */
+  createAspectOnProject: Aspect;
+  /** Creates a new challenge and registers it with the ecoverse */
+  createChallenge: Challenge;
+  /** Creates a new user group for the challenge with the given id */
+  createGroupOnChallenge: UserGroup;
+  /** Creates a new user group at the ecoverse level */
+  createGroupOnEcoverse: UserGroup;
+  /** Creates a new user group for the opportunity with the given id */
+  createGroupOnOpportunity: UserGroup;
+  /** Creates a new user group for the organisation with the given id */
+  createGroupOnOrganisation: UserGroup;
+  /** Creates a new Opportunity for the challenge with the given id */
+  createOpportunityOnChallenge: Opportunity;
+  /** Creates a new organisation and registers it with the ecoverse */
+  createOrganisation: Organisation;
+  /** Create a new Project on the Opportunity identified by the ID */
+  createProject: Project;
+  /** Creates a new reference with the specified name for the context with given id */
+  createReferenceOnContext: Reference;
+  /** Creates a new reference with the specified name for the profile with given id */
+  createReferenceOnProfile: Reference;
+  /** Create a new relation on the Opportunity identified by the ID */
+  createRelation: Relation;
+  /** Creates a new tagset with the specified name for the profile with given id */
+  createTagsetOnProfile: Tagset;
+  /** Creates a new user as a member of the ecoverse, including an account if enabled */
+  createUser: User;
+  /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
+  createUserAccount: Scalars['Boolean'];
+  /** Creates a new user as a member of the ecoverse, without an account */
+  createUserProfile: User;
+  /** Removes the actor  with the specified ID */
+  removeActor: Scalars['Boolean'];
+  /** Removes the actor group with the specified ID */
+  removeActorGroup: Scalars['Boolean'];
+  /** Removes the aspect with the specified ID */
+  removeAspect: Scalars['Boolean'];
+  /** Removes the Challenge with the specified ID */
+  removeChallenge: Scalars['Boolean'];
+  /** Remove the specified organisation as a lead for the specified challenge */
+  removeChallengeLead: Scalars['Boolean'];
+  /** Remove the focal point for the given group */
+  removeGroupFocalPoint?: Maybe<UserGroup>;
+  /** Removes the Opportunity with the specified ID */
+  removeOpportunity: Scalars['Boolean'];
+  /** Removes the Project with the specified ID */
+  removeProject: Scalars['Boolean'];
+  /** Removes the reference  with the specified ID */
+  removeReference: Scalars['Boolean'];
+  /** Removes the relation with the specified ID */
+  removeRelation: Scalars['Boolean'];
+  /** Removes the specified user from the ecoverse */
+  removeUser: Scalars['Boolean'];
+  /** Remove the user with the given identifier to the specified user group */
+  removeUserFromGroup: UserGroup;
+  /** Removes the user group with the specified ID */
+  removeUserGroup: Scalars['Boolean'];
+  /** Replace the set of tags in a tagset with the provided tags */
+  replaceTagsOnTagset: Tagset;
+  /** Updates the actor with the specified ID with the supplied data */
+  updateActor: Actor;
+  /** Updates the aspect with the specified ID */
+  updateAspect: Aspect;
+  /** Updates the specified Challenge with the provided data (merge) */
+  updateChallenge: Challenge;
+  /** Updates the Ecoverse with the provided data */
+  updateEcoverse: Ecoverse;
+  /** Updates the specified Opportunity with the provided data (merge) */
+  updateOpportunity: Opportunity;
+  /** Updates the organisation with the given data */
+  updateOrganisation: Organisation;
+  /** Updates the fields on the Profile, such as avatar location or description */
+  updateProfile: Scalars['Boolean'];
+  /** Updates the Project with the specified ID */
+  updateProject: Project;
+  /** Update the base user information. Note: email address cannot be updated. */
+  updateUser: User;
+  /** Updates the user account password */
+  updateUserAccountPassword: Scalars['Boolean'];
+  /** Update the user group information. */
+  updateUserGroup: UserGroup;
 };
 
-export type AadConfig = {
-  __typename?: 'AadConfig';
-  /** Config for MSAL authentication library on Cherrytwist Web Client. */
-  msalConfig: MsalConfig;
-  /** Config for accessing the Cherrytwist API. */
-  apiConfig: ApiConfig;
-  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
-  loginRequest: Scope;
-  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
-  tokenRequest: Scope;
-  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
-  silentRequest: Scope;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
+export type MutationAddChallengeLeadArgs = {
+  challengeID: Scalars['Float'];
+  organisationID: Scalars['Float'];
 };
 
-export type WebClientConfig = {
-  __typename?: 'WebClientConfig';
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
+export type MutationAddTagToTagsetArgs = {
+  tag: Scalars['String'];
+  tagsetID: Scalars['Float'];
+};
+
+export type MutationAddUserToChallengeArgs = {
+  challengeID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationAddUserToGroupArgs = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationAddUserToOpportunityArgs = {
+  opportunityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationAssignGroupFocalPointArgs = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationCreateActorArgs = {
+  actorData: ActorInput;
+  actorGroupID: Scalars['Float'];
+};
+
+export type MutationCreateActorGroupArgs = {
+  actorGroupData: ActorGroupInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateAspectArgs = {
+  aspectData: AspectInput;
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateAspectOnProjectArgs = {
+  aspectData: AspectInput;
+  projectID: Scalars['Float'];
+};
+
+export type MutationCreateChallengeArgs = {
+  challengeData: ChallengeInput;
+};
+
+export type MutationCreateGroupOnChallengeArgs = {
+  challengeID: Scalars['Float'];
+  groupName: Scalars['String'];
+};
+
+export type MutationCreateGroupOnEcoverseArgs = {
+  groupName: Scalars['String'];
+};
+
+export type MutationCreateGroupOnOpportunityArgs = {
+  groupName: Scalars['String'];
+  opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateGroupOnOrganisationArgs = {
+  groupName: Scalars['String'];
+  orgID: Scalars['Float'];
+};
+
+export type MutationCreateOpportunityOnChallengeArgs = {
+  challengeID: Scalars['Float'];
+  opportunityData: OpportunityInput;
+};
+
+export type MutationCreateOrganisationArgs = {
+  organisationData: OrganisationInput;
+};
+
+export type MutationCreateProjectArgs = {
+  opportunityID: Scalars['Float'];
+  projectData: ProjectInput;
+};
+
+export type MutationCreateReferenceOnContextArgs = {
+  contextID: Scalars['Float'];
+  referenceInput: ReferenceInput;
+};
+
+export type MutationCreateReferenceOnProfileArgs = {
+  profileID: Scalars['Float'];
+  referenceInput: ReferenceInput;
+};
+
+export type MutationCreateRelationArgs = {
+  opportunityID: Scalars['Float'];
+  relationData: RelationInput;
+};
+
+export type MutationCreateTagsetOnProfileArgs = {
+  profileID: Scalars['Float'];
+  tagsetName: Scalars['String'];
+};
+
+export type MutationCreateUserArgs = {
+  userData: UserInput;
+};
+
+export type MutationCreateUserAccountArgs = {
+  password: Scalars['String'];
+  userID: Scalars['Float'];
+};
+
+export type MutationCreateUserProfileArgs = {
+  userData: UserInput;
+};
+
+export type MutationRemoveActorArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveActorGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveAspectArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveChallengeArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveChallengeLeadArgs = {
+  challengeID: Scalars['Float'];
+  organisationID: Scalars['Float'];
+};
+
+export type MutationRemoveGroupFocalPointArgs = {
+  groupID: Scalars['Float'];
+};
+
+export type MutationRemoveOpportunityArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveProjectArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveReferenceArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveRelationArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
+export type MutationRemoveUserFromGroupArgs = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type MutationRemoveUserGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type MutationReplaceTagsOnTagsetArgs = {
+  tags: Array<Scalars['String']>;
+  tagsetID: Scalars['Float'];
+};
+
+export type MutationUpdateActorArgs = {
+  actorData: ActorInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationUpdateAspectArgs = {
+  aspectData: AspectInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationUpdateChallengeArgs = {
+  challengeData: ChallengeInput;
+  challengeID: Scalars['Float'];
+};
+
+export type MutationUpdateEcoverseArgs = {
+  ecoverseData: EcoverseInput;
+};
+
+export type MutationUpdateOpportunityArgs = {
+  ID: Scalars['Float'];
+  opportunityData: OpportunityInput;
+};
+
+export type MutationUpdateOrganisationArgs = {
+  organisationData: OrganisationInput;
+  orgID: Scalars['Float'];
+};
+
+export type MutationUpdateProfileArgs = {
+  ID: Scalars['Float'];
+  profileData: ProfileInput;
+};
+
+export type MutationUpdateProjectArgs = {
+  ID: Scalars['Float'];
+  projectData: ProjectInput;
+};
+
+export type MutationUpdateUserArgs = {
+  userData: UserInput;
+  userID: Scalars['Float'];
+};
+
+export type MutationUpdateUserGroupArgs = {
+  ID: Scalars['Float'];
+  userGroupData: UserGroupInput;
+};
+
+export type Opportunity = {
+  __typename?: 'Opportunity';
+  /** The set of actor groups within the context of this Opportunity. */
+  actorGroups?: Maybe<Array<ActorGroup>>;
+  /** The set of aspects within the context of this Opportunity. */
+  aspects?: Maybe<Array<Aspect>>;
+  /** The shared understanding for the opportunity */
+  context?: Maybe<Context>;
+  /** All users that are contributing to this Opportunity. */
+  contributors?: Maybe<Array<User>>;
+  /** Groups of users related to a Opportunity. */
+  groups?: Maybe<Array<UserGroup>>;
+  id: Scalars['ID'];
+  /** The name of the Opportunity */
+  name: Scalars['String'];
+  /** The set of projects within the context of this Opportunity */
+  projects?: Maybe<Array<Project>>;
+  /** The set of relations within the context of this Opportunity. */
+  relations?: Maybe<Array<Relation>>;
+  /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
+  state?: Maybe<Scalars['String']>;
+  /** A short text identifier for this Opportunity */
+  textID: Scalars['String'];
+};
+
+export type OpportunityInput = {
+  context?: Maybe<ContextInput>;
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  textID?: Maybe<Scalars['String']>;
 };
 
 export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
-  /** Template opportunity name. */
-  name: Scalars['String'];
   /** Template actor groups. */
   actorGroups?: Maybe<Array<Scalars['String']>>;
   /** Template aspects. */
   aspects?: Maybe<Array<Scalars['String']>>;
+  /** Template opportunity name. */
+  name: Scalars['String'];
   /** Template relations. */
   relations?: Maybe<Array<Scalars['String']>>;
 };
 
-export type UserTemplate = {
-  __typename?: 'UserTemplate';
-  /** Template user name. */
+export type Organisation = {
+  __typename?: 'Organisation';
+  /** Groups defined on this organisation. */
+  groups?: Maybe<Array<UserGroup>>;
+  id: Scalars['ID'];
+  /** Users that are contributing to this organisation. */
+  members?: Maybe<Array<User>>;
   name: Scalars['String'];
-  /** Template tagsets. */
-  tagsets?: Maybe<Array<Scalars['String']>>;
+  /** The profile for this organisation. */
+  profile: Profile;
 };
 
-export type Template = {
-  __typename?: 'Template';
-  /** Template name. */
-  name: Scalars['String'];
-  /** Template description. */
-  description: Scalars['String'];
-  /** Users template. */
-  users: Array<UserTemplate>;
-  /** Opportunities template. */
-  opportunities: Array<OpportunityTemplate>;
+export type OrganisationInput = {
+  /** The name for this organisation */
+  name?: Maybe<Scalars['String']>;
 };
 
-export type Config = {
-  __typename?: 'Config';
-  /** Cherrytwist Web Client Config. */
-  webClient: WebClientConfig;
-  /** Cherrytwist Template. */
-  template: Template;
+export type Profile = {
+  __typename?: 'Profile';
+  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
+  avatar?: Maybe<Scalars['String']>;
+  /** A short description of the entity associated with this profile. */
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  /** A list of URLs to relevant information. */
+  references?: Maybe<Array<Reference>>;
+  /** A list of named tagsets, each of which has a list of tags. */
+  tagsets?: Maybe<Array<Tagset>>;
+};
+
+export type ProfileInput = {
+  avatar?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  referencesData?: Maybe<Array<ReferenceInput>>;
+  tagsetsData?: Maybe<Array<TagsetInput>>;
+};
+
+export type Project = {
+  __typename?: 'Project';
+  /** The set of aspects for this Project. Note: likley to change. */
+  aspects?: Maybe<Array<Aspect>>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
+  state?: Maybe<Scalars['String']>;
+  /** The set of tags for the project */
+  tagset?: Maybe<Tagset>;
+  /** A short text identifier for this Opportunity */
+  textID: Scalars['String'];
+};
+
+export type ProjectInput = {
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  textID?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  /** The currently logged in user */
-  me: User;
-  /** All opportunities within the ecoverse */
-  opportunities: Array<Opportunity>;
-  /** A particular opportunitiy, identified by the ID */
-  opportunity: Opportunity;
-  /** All projects within this ecoverse */
-  projects: Array<Project>;
-  /** A particular Project, identified by the ID */
-  project: Project;
-  /** The name for this ecoverse */
-  name: Scalars['String'];
-  /** The host organisation for the ecoverse */
-  host: Organisation;
-  /** The shared understanding for this ecoverse */
-  context: Context;
-  /** The members of this this ecoverse */
-  users: Array<User>;
-  /** A particular user, identified by the ID or by email */
-  user: User;
-  /** The members of this this ecoverse filtered by list of IDs. */
-  usersById: Array<User>;
-  /** All groups at the ecoverse level */
-  groups: Array<UserGroup>;
-  /** All groups that have the provided tag */
-  groupsWithTag: Array<UserGroup>;
-  /** The user group with the specified id anywhere in the ecoverse */
-  group: UserGroup;
-  /** All challenges */
-  challenges: Array<Challenge>;
   /** A particular challenge */
   challenge: Challenge;
-  /** All organisations */
-  organisations: Array<Organisation>;
-  /** A particular organisation */
-  organisation: Organisation;
-  /** The tagset associated with this Ecoverse */
-  tagset: Tagset;
-  /** Search the ecoverse for terms supplied */
-  search: Array<SearchResultEntry>;
-  /** Cherrytwist Services Metadata */
-  metadata: Metadata;
+  /** All challenges */
+  challenges: Array<Challenge>;
   /** Cherrytwist Web Client AAD Configuration */
   clientConfig: AadConfig;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
+  /** The shared understanding for this ecoverse */
+  context: Context;
+  /** The user group with the specified id anywhere in the ecoverse */
+  group: UserGroup;
+  /** All groups at the ecoverse level */
+  groups: Array<UserGroup>;
+  /** All groups that have the provided tag */
+  groupsWithTag: Array<UserGroup>;
+  /** The host organisation for the ecoverse */
+  host: Organisation;
+  /** The currently logged in user */
+  me: User;
+  /** Cherrytwist Services Metadata */
+  metadata: Metadata;
+  /** The name for this ecoverse */
+  name: Scalars['String'];
+  /** All opportunities within the ecoverse */
+  opportunities: Array<Opportunity>;
+  /** A particular opportunitiy, identified by the ID */
+  opportunity: Opportunity;
+  /** A particular organisation */
+  organisation: Organisation;
+  /** All organisations */
+  organisations: Array<Organisation>;
+  /** A particular Project, identified by the ID */
+  project: Project;
+  /** All projects within this ecoverse */
+  projects: Array<Project>;
+  /** Search the ecoverse for terms supplied */
+  search: Array<SearchResultEntry>;
+  /** The tagset associated with this Ecoverse */
+  tagset: Tagset;
+  /** A particular user, identified by the ID or by email */
+  user: User;
+  /** The members of this this ecoverse */
+  users: Array<User>;
+  /** The members of this this ecoverse filtered by list of IDs. */
+  usersById: Array<User>;
+};
+
+export type QueryChallengeArgs = {
+  ID: Scalars['Float'];
+};
+
+export type QueryGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type QueryGroupsWithTagArgs = {
+  tag: Scalars['String'];
 };
 
 export type QueryOpportunityArgs = {
   ID: Scalars['Float'];
 };
 
+export type QueryOrganisationArgs = {
+  ID: Scalars['Float'];
+};
+
 export type QueryProjectArgs = {
   ID: Scalars['Float'];
+};
+
+export type QuerySearchArgs = {
+  searchData: SearchInput;
 };
 
 export type QueryUserArgs = {
@@ -428,376 +739,80 @@ export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['String']>;
 };
 
-export type QueryGroupsWithTagArgs = {
-  tag: Scalars['String'];
+export type Reference = {
+  __typename?: 'Reference';
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
 };
 
-export type QueryGroupArgs = {
-  ID: Scalars['Float'];
+export type ReferenceInput = {
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
 };
 
-export type QueryChallengeArgs = {
-  ID: Scalars['Float'];
+export type Relation = {
+  __typename?: 'Relation';
+  actorName: Scalars['String'];
+  actorRole: Scalars['String'];
+  actorType: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  type: Scalars['String'];
 };
 
-export type QueryOrganisationArgs = {
-  ID: Scalars['Float'];
+export type RelationInput = {
+  actorName?: Maybe<Scalars['String']>;
+  actorRole?: Maybe<Scalars['String']>;
+  actorType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
 };
 
-export type QuerySearchArgs = {
-  searchData: SearchInput;
+export type Scope = {
+  __typename?: 'Scope';
+  /** OpenID Scopes. */
+  scopes: Array<Scalars['String']>;
 };
 
 export type SearchInput = {
-  /** The terms to be searched for within this Ecoverse. Max 5. */
-  terms: Array<Scalars['String']>;
-  /** Expand the search to includes Tagsets with the provided names. Max 2. */
-  tagsetNames?: Maybe<Array<Scalars['String']>>;
-  /** Restrict the search to only the specified entity types. Values allowed: user, group. Default is both. */
-  typesFilter?: Maybe<Array<Scalars['String']>>;
   /** Restrict the search to only the specified challenges. Default is all Challenges. */
   challengesFilter?: Maybe<Array<Scalars['Float']>>;
+  /** Expand the search to includes Tagsets with the provided names. Max 2. */
+  tagsetNames?: Maybe<Array<Scalars['String']>>;
+  /** The terms to be searched for within this Ecoverse. Max 5. */
+  terms: Array<Scalars['String']>;
+  /** Restrict the search to only the specified entity types. Values allowed: user, group, organisation, Default is all. */
+  typesFilter?: Maybe<Array<Scalars['String']>>;
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  /** Update the base user information. Note: email address cannot be updated. */
-  updateUser: User;
-  /** Removes the reference  with the specified ID */
-  removeReference: Scalars['Boolean'];
-  /** Replace the set of tags in a tagset with the provided tags */
-  replaceTagsOnTagset: Tagset;
-  /** Add the provided tag to the tagset with the given ID */
-  addTagToTagset: Tagset;
-  /** Creates a new tagset with the specified name for the profile with given id */
-  createTagsetOnProfile: Tagset;
-  /** Creates a new reference with the specified name for the profile with given id */
-  createReferenceOnProfile: Reference;
-  /** Updates the fields on the Profile, such as avatar location or description */
-  updateProfile: Scalars['Boolean'];
-  /** Adds the user with the given identifier to the specified user group */
-  addUserToGroup: Scalars['Boolean'];
-  /** Remove the user with the given identifier to the specified user group */
-  removeUserFromGroup: UserGroup;
-  /** Assign the user with the given ID as focal point for the given group */
-  assignGroupFocalPoint?: Maybe<UserGroup>;
-  /** Remove the focal point for the given group */
-  removeGroupFocalPoint?: Maybe<UserGroup>;
-  /** Creates a new user group for the challenge with the given id */
-  createGroupOnChallenge: UserGroup;
-  /** Creates a new Opportunity for the challenge with the given id */
-  createOpportunityOnChallenge: Opportunity;
-  /** Updates the specified Challenge with the provided data (merge) */
-  updateChallenge: Challenge;
-  /** Removes the Challenge with the specified ID */
-  removeChallenge: Scalars['Boolean'];
-  /** Adds the user with the given identifier as a member of the specified challenge */
-  addUserToChallenge: UserGroup;
-  /** Adds the user with the given identifier as a member of the specified opportunity */
-  addUserToOpportunity: UserGroup;
-  /** Adds the specified organisation as a lead for the specified challenge */
-  addChallengeLead: Scalars['Boolean'];
-  /** Remove the specified organisation as a lead for the specified challenge */
-  removeChallengeLead: Scalars['Boolean'];
-  /** Creates a new reference with the specified name for the context with given id */
-  createReferenceOnContext: Reference;
-  /** Updates the specified Opportunity with the provided data (merge) */
-  updateOpportunity: Opportunity;
-  /** Removes the Opportunity with the specified ID */
-  removeOpportunity: Scalars['Boolean'];
-  /** Create a new Project on the Opportunity identified by the ID */
-  createProject: Project;
-  /** Create a new aspect on the Opportunity identified by the ID */
-  createAspect: Aspect;
-  /** Create a new actor group on the Opportunity identified by the ID */
-  createActorGroup: ActorGroup;
-  /** Create a new relation on the Opportunity identified by the ID */
-  createRelation: Relation;
-  /** Creates a new user group for the opportunity with the given id */
-  createGroupOnOpportunity: UserGroup;
-  /** Removes the aspect with the specified ID */
-  removeAspect: Scalars['Boolean'];
-  /** Updates the aspect with the specified ID */
-  updateAspect: Aspect;
-  /** Removes the actor  with the specified ID */
-  removeActor: Scalars['Boolean'];
-  /** Updates the actor with the specified ID with the supplied data */
-  updateActor: Actor;
-  /** Create a new actor on the ActorGroup with the specified ID */
-  createActor: Actor;
-  /** Removes the actor group with the specified ID */
-  removeActorGroup: Scalars['Boolean'];
-  /** Removes the relation with the specified ID */
-  removeRelation: Scalars['Boolean'];
-  /** Removes the Project with the specified ID */
-  removeProject: Scalars['Boolean'];
-  /** Updates the Project with the specified ID */
-  updateProject: Project;
-  /** Create a new aspect on the Project identified by the ID */
-  createAspectOnProject: Aspect;
-  /** Creates a new user group for the organisation with the given id */
-  createGroupOnOrganisation: UserGroup;
-  /** Updates the organisation with the given data */
-  updateOrganisation: Organisation;
-  /** Creates a new user group at the ecoverse level */
-  createGroupOnEcoverse: UserGroup;
-  /** Updates the Ecoverse with the provided data */
-  updateEcoverse: Ecoverse;
-  /** Creates a new user as a member of the ecoverse, including an account if enabled */
-  createUser: User;
-  /** Creates a new user as a member of the ecoverse, without an account */
-  createUserProfile: User;
-  /** Removes the specified user from the ecoverse */
-  removeUser: Scalars['Boolean'];
-  /** Updates the user account password */
-  updateUserAccountPassword: Scalars['Boolean'];
-  /** Creates a new challenge and registers it with the ecoverse */
-  createChallenge: Challenge;
-  /** Creates a new organisation and registers it with the ecoverse */
-  createOrganisation: Organisation;
-  /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
-  createUserAccount: Scalars['Boolean'];
+export type SearchResult = Organisation | User | UserGroup;
+
+export type SearchResultEntry = {
+  __typename?: 'SearchResultEntry';
+  /** Each search result contains either a User, UserGroup or Organisation */
+  result?: Maybe<SearchResult>;
+  /** The score for this search result; more matches means a higher score. */
+  score?: Maybe<Scalars['Float']>;
+  /** The terms that were matched for this result */
+  terms?: Maybe<Array<Scalars['String']>>;
 };
 
-export type MutationUpdateUserArgs = {
-  userData: UserInput;
-  userID: Scalars['Float'];
-};
-
-export type MutationRemoveReferenceArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationReplaceTagsOnTagsetArgs = {
-  tags: Array<Scalars['String']>;
-  tagsetID: Scalars['Float'];
-};
-
-export type MutationAddTagToTagsetArgs = {
-  tag: Scalars['String'];
-  tagsetID: Scalars['Float'];
-};
-
-export type MutationCreateTagsetOnProfileArgs = {
-  tagsetName: Scalars['String'];
-  profileID: Scalars['Float'];
-};
-
-export type MutationCreateReferenceOnProfileArgs = {
-  referenceInput: ReferenceInput;
-  profileID: Scalars['Float'];
-};
-
-export type MutationUpdateProfileArgs = {
-  profileData: ProfileInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationAddUserToGroupArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationRemoveUserFromGroupArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationAssignGroupFocalPointArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationRemoveGroupFocalPointArgs = {
-  groupID: Scalars['Float'];
-};
-
-export type MutationCreateGroupOnChallengeArgs = {
-  groupName: Scalars['String'];
-  challengeID: Scalars['Float'];
-};
-
-export type MutationCreateOpportunityOnChallengeArgs = {
-  opportunityData: OpportunityInput;
-  challengeID: Scalars['Float'];
-};
-
-export type MutationUpdateChallengeArgs = {
-  challengeData: ChallengeInput;
-  challengeID: Scalars['Float'];
-};
-
-export type MutationRemoveChallengeArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationAddUserToChallengeArgs = {
-  challengeID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationAddUserToOpportunityArgs = {
-  opportunityID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationAddChallengeLeadArgs = {
-  challengeID: Scalars['Float'];
-  organisationID: Scalars['Float'];
-};
-
-export type MutationRemoveChallengeLeadArgs = {
-  challengeID: Scalars['Float'];
-  organisationID: Scalars['Float'];
-};
-
-export type MutationCreateReferenceOnContextArgs = {
-  referenceInput: ReferenceInput;
-  contextID: Scalars['Float'];
-};
-
-export type MutationUpdateOpportunityArgs = {
-  opportunityData: OpportunityInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveOpportunityArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationCreateProjectArgs = {
-  projectData: ProjectInput;
-  opportunityID: Scalars['Float'];
-};
-
-export type MutationCreateAspectArgs = {
-  aspectData: AspectInput;
-  opportunityID: Scalars['Float'];
-};
-
-export type MutationCreateActorGroupArgs = {
-  actorGroupData: ActorGroupInput;
-  opportunityID: Scalars['Float'];
-};
-
-export type MutationCreateRelationArgs = {
-  relationData: RelationInput;
-  opportunityID: Scalars['Float'];
-};
-
-export type MutationCreateGroupOnOpportunityArgs = {
-  groupName: Scalars['String'];
-  opportunityID: Scalars['Float'];
-};
-
-export type MutationRemoveAspectArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationUpdateAspectArgs = {
-  aspectData: AspectInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveActorArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationUpdateActorArgs = {
-  actorData: ActorInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationCreateActorArgs = {
-  actorData: ActorInput;
-  actorGroupID: Scalars['Float'];
-};
-
-export type MutationRemoveActorGroupArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveRelationArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveProjectArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationUpdateProjectArgs = {
-  projectData: ProjectInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationCreateAspectOnProjectArgs = {
-  aspectData: AspectInput;
-  projectID: Scalars['Float'];
-};
-
-export type MutationCreateGroupOnOrganisationArgs = {
-  groupName: Scalars['String'];
-  orgID: Scalars['Float'];
-};
-
-export type MutationUpdateOrganisationArgs = {
-  organisationData: OrganisationInput;
-  orgID: Scalars['Float'];
-};
-
-export type MutationCreateGroupOnEcoverseArgs = {
-  groupName: Scalars['String'];
-};
-
-export type MutationUpdateEcoverseArgs = {
-  ecoverseData: EcoverseInput;
-};
-
-export type MutationCreateUserArgs = {
-  userData: UserInput;
-};
-
-export type MutationCreateUserProfileArgs = {
-  userData: UserInput;
-};
-
-export type MutationRemoveUserArgs = {
-  userID: Scalars['Float'];
-};
-
-export type MutationCreateChallengeArgs = {
-  challengeData: ChallengeInput;
-};
-
-export type MutationCreateOrganisationArgs = {
-  organisationData: OrganisationInput;
-};
-
-export type MutationCreateUserAccountArgs = {
-  password: Scalars['String'];
-  userID: Scalars['Float'];
-};
-
-export type UserInput = {
-  accountUpn?: Maybe<Scalars['String']>;
+export type ServiceMetadata = {
+  __typename?: 'ServiceMetadata';
+  /** Service name e.g. CT Server */
   name?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  /** Email address is required for creating a new user */
-  email?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['String']>;
-  aadPassword?: Maybe<Scalars['String']>;
-  profileData?: Maybe<ProfileInput>;
+  /** Version in the format {major.minor.patch} - using SemVer. */
+  version?: Maybe<Scalars['String']>;
 };
 
-export type ProfileInput = {
-  avatar?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  tagsetsData?: Maybe<Array<TagsetInput>>;
-  referencesData?: Maybe<Array<ReferenceInput>>;
+export type Tagset = {
+  __typename?: 'Tagset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  tags: Array<Scalars['String']>;
 };
 
 export type TagsetInput = {
@@ -805,82 +820,95 @@ export type TagsetInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type ReferenceInput = {
+export type Template = {
+  __typename?: 'Template';
+  /** Template description. */
+  description: Scalars['String'];
+  /** Template name. */
+  name: Scalars['String'];
+  /** Opportunities template. */
+  opportunities: Array<OpportunityTemplate>;
+  /** Users template. */
+  users: Array<UserTemplate>;
+};
+
+export type User = {
+  __typename?: 'User';
+  /** The unique personal identifier (upn) for the account associated with this user profile */
+  accountUpn: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  gender: Scalars['String'];
+  id: Scalars['ID'];
+  /** The last timestamp, in seconds, when this user was modified - either via creation or via update. Note: updating of profile data or group memberships does not update this field. */
+  lastModified?: Maybe<Scalars['Int']>;
+  lastName: Scalars['String'];
+  /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
+  memberof?: Maybe<MemberOf>;
+  name: Scalars['String'];
+  phone: Scalars['String'];
+  /** The profile for this user */
+  profile?: Maybe<Profile>;
+};
+
+export type UserGroup = {
+  __typename?: 'UserGroup';
+  /** The focal point for this group */
+  focalPoint?: Maybe<User>;
+  id: Scalars['ID'];
+  /** The set of users that are members of this group */
+  members?: Maybe<Array<User>>;
+  name: Scalars['String'];
+  /** Containing entity for this UserGroup. */
+  parent?: Maybe<UserGroupParent>;
+  /** The profile for the user group */
+  profile?: Maybe<Profile>;
+};
+
+export type UserGroupInput = {
   name?: Maybe<Scalars['String']>;
-  uri?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
-export type OpportunityInput = {
+export type UserGroupParent = Challenge | Ecoverse | Opportunity | Organisation;
+
+export type UserInput = {
+  aadPassword?: Maybe<Scalars['String']>;
+  accountUpn?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  /** Email address is required for mutations! */
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  textID?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  context?: Maybe<ContextInput>;
+  phone?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
-export type ContextInput = {
-  background?: Maybe<Scalars['String']>;
-  vision?: Maybe<Scalars['String']>;
-  tagline?: Maybe<Scalars['String']>;
-  who?: Maybe<Scalars['String']>;
-  impact?: Maybe<Scalars['String']>;
-  /** Set of references to _replace_ the existing references */
-  references?: Maybe<Array<ReferenceInput>>;
+export type UserTemplate = {
+  __typename?: 'UserTemplate';
+  /** Template user name. */
+  name: Scalars['String'];
+  /** Template tagsets. */
+  tagsets?: Maybe<Array<Scalars['String']>>;
 };
 
-export type ChallengeInput = {
-  name?: Maybe<Scalars['String']>;
-  textID?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  context?: Maybe<ContextInput>;
-  tags?: Maybe<Array<Scalars['String']>>;
+export type WebClientConfig = {
+  __typename?: 'WebClientConfig';
+  /** Cherrytwist Client AAD config. */
+  aadConfig: AadConfig;
 };
 
-export type ProjectInput = {
-  name?: Maybe<Scalars['String']>;
-  textID?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-};
+export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AspectInput = {
-  title?: Maybe<Scalars['String']>;
-  framing?: Maybe<Scalars['String']>;
-  explanation?: Maybe<Scalars['String']>;
-};
-
-export type ActorGroupInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-};
-
-export type RelationInput = {
-  type?: Maybe<Scalars['String']>;
-  actorName?: Maybe<Scalars['String']>;
-  actorType?: Maybe<Scalars['String']>;
-  actorRole?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-};
-
-export type ActorInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
-  impact?: Maybe<Scalars['String']>;
-};
-
-export type OrganisationInput = {
-  /** The name for this organisation */
-  name?: Maybe<Scalars['String']>;
-};
-
-export type EcoverseInput = {
-  /** The new name for the ecoverse */
-  name?: Maybe<Scalars['String']>;
-  /** Updated context for the ecoverse; will be merged with existing context */
-  context?: Maybe<ContextInput>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
+export type ServerMetadataQuery = { __typename?: 'Query' } & {
+  metadata: { __typename?: 'Metadata' } & {
+    services: Array<{ __typename?: 'ServiceMetadata' } & Pick<ServiceMetadata, 'name' | 'version'>>;
+  };
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -962,12 +990,26 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
 };
 
+export type OrganizationNameQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationNameQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'name'>;
+};
+
+export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OrganizationsListQuery = { __typename?: 'Query' } & {
+  organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
+};
+
 export type ChallengeNameQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
@@ -976,6 +1018,16 @@ export type ChallengeGroupsQueryVariables = Exact<{
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & {
+    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+  };
+};
+
+export type OrganizationGroupsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & {
     groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
   };
 };
@@ -1005,7 +1057,169 @@ export type OpportunityNameQueryVariables = Exact<{
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+};
+
+export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type TagsetsTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      users: Array<{ __typename?: 'UserTemplate' } & Pick<UserTemplate, 'tagsets'>>;
+    };
+  };
+};
+
+export type CreateChallengeMutationVariables = Exact<{
+  challengeData: ChallengeInput;
+}>;
+
+export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
+  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+};
+
+export type UpdateChallengeMutationVariables = Exact<{
+  challengeData: ChallengeInput;
+  challengeID: Scalars['Float'];
+}>;
+
+export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+};
+
+export type ChallengeProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
+          }
+      >;
+    };
+};
+
+export type CreateOpportunityMutationVariables = Exact<{
+  opportunityData: OpportunityInput;
+  challengeID: Scalars['Float'];
+}>;
+
+export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
+  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+};
+
+export type UpdateOpportunityMutationVariables = Exact<{
+  opportunityData: OpportunityInput;
+  ID: Scalars['Float'];
+}>;
+
+export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
+  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+};
+
+export type OpportunityProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+            references?: Maybe<
+              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+            >;
+          }
+      >;
+    };
+};
+
+export type CreateOrganizationMutationVariables = Exact<{
+  organisationData: OrganisationInput;
+}>;
+
+export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
+  createOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
+};
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  organisationData: OrganisationInput;
+  orgID: Scalars['Float'];
+}>;
+
+export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
+  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>;
+};
+
+export type OrganisationProfileInfoQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        };
+    };
+};
+
+export type CreateGroupOnEcoverseMutationVariables = Exact<{
+  groupName: Scalars['String'];
+}>;
+
+export type CreateGroupOnEcoverseMutation = { __typename?: 'Mutation' } & {
+  createGroupOnEcoverse: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type CreateGroupOnChallengeMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  challengeID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnChallengeMutation = { __typename?: 'Mutation' } & {
+  createGroupOnChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type CreateGroupOnOpportunityMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  opportunityID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnOpportunityMutation = { __typename?: 'Mutation' } & {
+  createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type CreateGroupOnOrganizationMutationVariables = Exact<{
+  groupName: Scalars['String'];
+  orgID: Scalars['Float'];
+}>;
+
+export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
+  createGroupOnOrganisation: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+};
+
+export type OrganizationDetailsQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        };
+      groups?: Maybe<
+        Array<
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
+            }
+        >
+      >;
+    };
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
@@ -1038,8 +1252,8 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
         >
       >;
       leadOrganisations: Array<
-        { __typename?: 'Organisation' } & Pick<Organisation, 'name'> & {
-            profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar'>;
+        { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+            profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
           }
       >;
     };
@@ -1051,7 +1265,7 @@ export type UpdateChallengeContextMutationVariables = Exact<{
 }>;
 
 export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type AddUserToChallengeMutationVariables = Exact<{
@@ -1060,7 +1274,7 @@ export type AddUserToChallengeMutationVariables = Exact<{
 }>;
 
 export type AddUserToChallengeMutation = { __typename?: 'Mutation' } & {
-  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type ChallengeMembersQueryVariables = Exact<{
@@ -1083,6 +1297,7 @@ export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
     { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score' | 'terms'> & {
         result?: Maybe<
+          | ({ __typename?: 'Organisation' } & Pick<Organisation, 'name' | 'id'>)
           | ({ __typename?: 'User' } & Pick<User, 'name' | 'id'>)
           | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name' | 'id'>)
         >;
@@ -1097,18 +1312,30 @@ export type GroupCardQueryVariables = Exact<{
 export type GroupCardQuery = { __typename?: 'Query' } & {
   group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
       parent?: Maybe<
-        | ({ __typename: 'Ecoverse' } & Pick<Ecoverse, 'name'>)
         | ({ __typename: 'Challenge' } & Pick<Challenge, 'name'>)
+        | ({ __typename: 'Ecoverse' } & Pick<Ecoverse, 'name'>)
         | ({ __typename: 'Opportunity' } & Pick<Opportunity, 'name'>)
         | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
       >;
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
       profile?: Maybe<
-        { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+        { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
             tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
           }
       >;
+    };
+};
+
+export type OrganizationCardQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+export type OrganizationCardQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
+      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'>;
     };
 };
 
@@ -1177,9 +1404,9 @@ export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never 
 
 export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
   host: { __typename?: 'Organisation' } & {
-    profile: { __typename?: 'Profile' } & {
-      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-    };
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      };
   };
 };
 
@@ -1377,12 +1604,6 @@ export type CreateAspectMutation = { __typename?: 'Mutation' } & {
   createAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
 };
 
-export type RemoveReferenceMutationVariables = Exact<{
-  ID: Scalars['Float'];
-}>;
-
-export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
-
 export type CreateActorGroupMutationVariables = Exact<{
   actorGroupData: ActorGroupInput;
   opportunityID: Scalars['Float'];
@@ -1391,6 +1612,18 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
   createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'name'>;
 };
+
+export type RemoveReferenceMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
+
+export type RemoveOpportunityMutationVariables = Exact<{
+  ID: Scalars['Float'];
+}>;
+
+export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeOpportunity'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -1422,8 +1655,8 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
     profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
         }
     >;
@@ -1434,6 +1667,7 @@ export type UserMembersFragment = { __typename?: 'User' } & {
     { __typename?: 'MemberOf' } & {
       groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
       challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+      organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
     }
   >;
 };
@@ -1477,13 +1711,13 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
 };
 
 export type UserAvatarsQueryVariables = Exact<{
-  ids: Array<Scalars['String']>;
+  ids: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<
-    { __typename?: 'User' } & Pick<User, 'name'> & {
-        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+    { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>>;
       }
   >;
 };
@@ -1495,7 +1729,7 @@ export type UserProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type UserCardDataQueryVariables = Exact<{
-  ids: Array<Scalars['String']>;
+  ids: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 export type UserCardDataQuery = { __typename?: 'Query' } & {
@@ -1552,9 +1786,11 @@ export const UserDetailsFragmentDoc = gql`
     phone
     accountUpn
     profile {
+      id
       description
       avatar
       references {
+        id
         name
         uri
       }
@@ -1577,9 +1813,52 @@ export const UserMembersFragmentDoc = gql`
         name
         textID
       }
+      organisations {
+        id
+        name
+      }
     }
   }
 `;
+export const ServerMetadataDocument = gql`
+  query serverMetadata {
+    metadata {
+      services {
+        name
+        version
+      }
+    }
+  }
+`;
+
+/**
+ * __useServerMetadataQuery__
+ *
+ * To run a query within a React component, call `useServerMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServerMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServerMetadataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useServerMetadataQuery(
+  baseOptions?: Apollo.QueryHookOptions<ServerMetadataQuery, ServerMetadataQueryVariables>
+) {
+  return Apollo.useQuery<ServerMetadataQuery, ServerMetadataQueryVariables>(ServerMetadataDocument, baseOptions);
+}
+export function useServerMetadataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ServerMetadataQuery, ServerMetadataQueryVariables>
+) {
+  return Apollo.useLazyQuery<ServerMetadataQuery, ServerMetadataQueryVariables>(ServerMetadataDocument, baseOptions);
+}
+export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
+export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
+export type ServerMetadataQueryResult = Apollo.QueryResult<ServerMetadataQuery, ServerMetadataQueryVariables>;
 export const CreateUserDocument = gql`
   mutation createUser($user: UserInput!) {
     createUser(userData: $user) {
@@ -1961,9 +2240,93 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQuery,
   EcoverseGroupsListQueryVariables
 >;
+export const OrganizationNameDocument = gql`
+  query organizationName($id: Float!) {
+    organisation(ID: $id) {
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationNameQuery__
+ *
+ * To run a query within a React component, call `useOrganizationNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationNameQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationNameQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(OrganizationNameDocument, baseOptions);
+}
+export function useOrganizationNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationNameQuery, OrganizationNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationNameQuery, OrganizationNameQueryVariables>(
+    OrganizationNameDocument,
+    baseOptions
+  );
+}
+export type OrganizationNameQueryHookResult = ReturnType<typeof useOrganizationNameQuery>;
+export type OrganizationNameLazyQueryHookResult = ReturnType<typeof useOrganizationNameLazyQuery>;
+export type OrganizationNameQueryResult = Apollo.QueryResult<OrganizationNameQuery, OrganizationNameQueryVariables>;
+export const OrganizationsListDocument = gql`
+  query organizationsList {
+    organisations {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useOrganizationsListQuery__
+ *
+ * To run a query within a React component, call `useOrganizationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOrganizationsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export function useOrganizationsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationsListQuery, OrganizationsListQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationsListQuery, OrganizationsListQueryVariables>(
+    OrganizationsListDocument,
+    baseOptions
+  );
+}
+export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
+export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
+export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQuery, OrganizationsListQueryVariables>;
 export const ChallengeNameDocument = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
+      id
       name
     }
   }
@@ -2038,6 +2401,55 @@ export function useChallengeGroupsLazyQuery(
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>;
+export const OrganizationGroupsDocument = gql`
+  query organizationGroups($id: Float!) {
+    organisation(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationGroupsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationGroupsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationGroupsQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export function useOrganizationGroupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationGroupsQuery, OrganizationGroupsQueryVariables>(
+    OrganizationGroupsDocument,
+    baseOptions
+  );
+}
+export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
+export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
+export type OrganizationGroupsQueryResult = Apollo.QueryResult<
+  OrganizationGroupsQuery,
+  OrganizationGroupsQueryVariables
+>;
 export const ChallengeOpportunitiesDocument = gql`
   query challengeOpportunities($id: Float!) {
     challenge(ID: $id) {
@@ -2136,6 +2548,7 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<OpportunityGroupsQ
 export const OpportunityNameDocument = gql`
   query opportunityName($id: Float!) {
     opportunity(ID: $id) {
+      id
       name
     }
   }
@@ -2170,6 +2583,747 @@ export function useOpportunityNameLazyQuery(
 export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
 export type OpportunityNameLazyQueryHookResult = ReturnType<typeof useOpportunityNameLazyQuery>;
 export type OpportunityNameQueryResult = Apollo.QueryResult<OpportunityNameQuery, OpportunityNameQueryVariables>;
+export const TagsetsTemplateDocument = gql`
+  query tagsetsTemplate {
+    configuration {
+      template {
+        users {
+          tagsets
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useTagsetsTemplateQuery__
+ *
+ * To run a query within a React component, call `useTagsetsTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsetsTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsetsTemplateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTagsetsTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>
+) {
+  return Apollo.useQuery<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>(TagsetsTemplateDocument, baseOptions);
+}
+export function useTagsetsTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>
+) {
+  return Apollo.useLazyQuery<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>(TagsetsTemplateDocument, baseOptions);
+}
+export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
+export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
+export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>;
+export const CreateChallengeDocument = gql`
+  mutation createChallenge($challengeData: ChallengeInput!) {
+    createChallenge(challengeData: $challengeData) {
+      id
+      name
+    }
+  }
+`;
+export type CreateChallengeMutationFn = Apollo.MutationFunction<
+  CreateChallengeMutation,
+  CreateChallengeMutationVariables
+>;
+
+/**
+ * __useCreateChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
+ *   variables: {
+ *      challengeData: // value for 'challengeData'
+ *   },
+ * });
+ */
+export function useCreateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateChallengeMutation, CreateChallengeMutationVariables>
+) {
+  return Apollo.useMutation<CreateChallengeMutation, CreateChallengeMutationVariables>(
+    CreateChallengeDocument,
+    baseOptions
+  );
+}
+export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
+export type CreateChallengeMutationResult = Apollo.MutationResult<CreateChallengeMutation>;
+export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  CreateChallengeMutation,
+  CreateChallengeMutationVariables
+>;
+export const UpdateChallengeDocument = gql`
+  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
+    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+      id
+      name
+    }
+  }
+`;
+export type UpdateChallengeMutationFn = Apollo.MutationFunction<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
+
+/**
+ * __useUpdateChallengeMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
+ *   variables: {
+ *      challengeData: // value for 'challengeData'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useUpdateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeMutation, UpdateChallengeMutationVariables>
+) {
+  return Apollo.useMutation<UpdateChallengeMutation, UpdateChallengeMutationVariables>(
+    UpdateChallengeDocument,
+    baseOptions
+  );
+}
+export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
+export type UpdateChallengeMutationResult = Apollo.MutationResult<UpdateChallengeMutation>;
+export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
+export const ChallengeProfileInfoDocument = gql`
+  query challengeProfileInfo($id: Float!) {
+    challenge(ID: $id) {
+      id
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useChallengeProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>(
+    ChallengeProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useChallengeProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeProfileInfoQuery, ChallengeProfileInfoQueryVariables>(
+    ChallengeProfileInfoDocument,
+    baseOptions
+  );
+}
+export type ChallengeProfileInfoQueryHookResult = ReturnType<typeof useChallengeProfileInfoQuery>;
+export type ChallengeProfileInfoLazyQueryHookResult = ReturnType<typeof useChallengeProfileInfoLazyQuery>;
+export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
+  ChallengeProfileInfoQuery,
+  ChallengeProfileInfoQueryVariables
+>;
+export const CreateOpportunityDocument = gql`
+  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
+    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateOpportunityMutationFn = Apollo.MutationFunction<
+  CreateOpportunityMutation,
+  CreateOpportunityMutationVariables
+>;
+
+/**
+ * __useCreateOpportunityMutation__
+ *
+ * To run a mutation, you first call `useCreateOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
+ *   variables: {
+ *      opportunityData: // value for 'opportunityData'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useCreateOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateOpportunityMutation, CreateOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<CreateOpportunityMutation, CreateOpportunityMutationVariables>(
+    CreateOpportunityDocument,
+    baseOptions
+  );
+}
+export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
+export type CreateOpportunityMutationResult = Apollo.MutationResult<CreateOpportunityMutation>;
+export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  CreateOpportunityMutation,
+  CreateOpportunityMutationVariables
+>;
+export const UpdateOpportunityDocument = gql`
+  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
+    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+      id
+      name
+    }
+  }
+`;
+export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
+  UpdateOpportunityMutation,
+  UpdateOpportunityMutationVariables
+>;
+
+/**
+ * __useUpdateOpportunityMutation__
+ *
+ * To run a mutation, you first call `useUpdateOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOpportunityMutation, { data, loading, error }] = useUpdateOpportunityMutation({
+ *   variables: {
+ *      opportunityData: // value for 'opportunityData'
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useUpdateOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOpportunityMutation, UpdateOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOpportunityMutation, UpdateOpportunityMutationVariables>(
+    UpdateOpportunityDocument,
+    baseOptions
+  );
+}
+export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
+export type UpdateOpportunityMutationResult = Apollo.MutationResult<UpdateOpportunityMutation>;
+export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOpportunityMutation,
+  UpdateOpportunityMutationVariables
+>;
+export const OpportunityProfileInfoDocument = gql`
+  query opportunityProfileInfo($id: Float!) {
+    opportunity(ID: $id) {
+      id
+      textID
+      name
+      context {
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>(
+    OpportunityProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useOpportunityProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityProfileInfoQuery, OpportunityProfileInfoQueryVariables>(
+    OpportunityProfileInfoDocument,
+    baseOptions
+  );
+}
+export type OpportunityProfileInfoQueryHookResult = ReturnType<typeof useOpportunityProfileInfoQuery>;
+export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpportunityProfileInfoLazyQuery>;
+export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
+  OpportunityProfileInfoQuery,
+  OpportunityProfileInfoQueryVariables
+>;
+export const CreateOrganizationDocument = gql`
+  mutation createOrganization($organisationData: OrganisationInput!) {
+    createOrganisation(organisationData: $organisationData) {
+      id
+      name
+    }
+  }
+`;
+export type CreateOrganizationMutationFn = Apollo.MutationFunction<
+  CreateOrganizationMutation,
+  CreateOrganizationMutationVariables
+>;
+
+/**
+ * __useCreateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useCreateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrganizationMutation, { data, loading, error }] = useCreateOrganizationMutation({
+ *   variables: {
+ *      organisationData: // value for 'organisationData'
+ *   },
+ * });
+ */
+export function useCreateOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateOrganizationMutation, CreateOrganizationMutationVariables>
+) {
+  return Apollo.useMutation<CreateOrganizationMutation, CreateOrganizationMutationVariables>(
+    CreateOrganizationDocument,
+    baseOptions
+  );
+}
+export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
+export type CreateOrganizationMutationResult = Apollo.MutationResult<CreateOrganizationMutation>;
+export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  CreateOrganizationMutation,
+  CreateOrganizationMutationVariables
+>;
+export const UpdateOrganizationDocument = gql`
+  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
+    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+      id
+      name
+    }
+  }
+`;
+export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
+  UpdateOrganizationMutation,
+  UpdateOrganizationMutationVariables
+>;
+
+/**
+ * __useUpdateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
+ *   variables: {
+ *      organisationData: // value for 'organisationData'
+ *      orgID: // value for 'orgID'
+ *   },
+ * });
+ */
+export function useUpdateOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>
+) {
+  return Apollo.useMutation<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>(
+    UpdateOrganizationDocument,
+    baseOptions
+  );
+}
+export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
+export type UpdateOrganizationMutationResult = Apollo.MutationResult<UpdateOrganizationMutation>;
+export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOrganizationMutation,
+  UpdateOrganizationMutationVariables
+>;
+export const OrganisationProfileInfoDocument = gql`
+  query organisationProfileInfo($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          name
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganisationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganisationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganisationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganisationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganisationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export function useOrganisationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganisationProfileInfoQuery, OrganisationProfileInfoQueryVariables>(
+    OrganisationProfileInfoDocument,
+    baseOptions
+  );
+}
+export type OrganisationProfileInfoQueryHookResult = ReturnType<typeof useOrganisationProfileInfoQuery>;
+export type OrganisationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganisationProfileInfoLazyQuery>;
+export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
+  OrganisationProfileInfoQuery,
+  OrganisationProfileInfoQueryVariables
+>;
+export const CreateGroupOnEcoverseDocument = gql`
+  mutation createGroupOnEcoverse($groupName: String!) {
+    createGroupOnEcoverse(groupName: $groupName) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnEcoverseMutationFn = Apollo.MutationFunction<
+  CreateGroupOnEcoverseMutation,
+  CreateGroupOnEcoverseMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnEcoverseMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnEcoverseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnEcoverseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnEcoverseMutation, { data, loading, error }] = useCreateGroupOnEcoverseMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *   },
+ * });
+ */
+export function useCreateGroupOnEcoverseMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>(
+    CreateGroupOnEcoverseDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnEcoverseMutationHookResult = ReturnType<typeof useCreateGroupOnEcoverseMutation>;
+export type CreateGroupOnEcoverseMutationResult = Apollo.MutationResult<CreateGroupOnEcoverseMutation>;
+export type CreateGroupOnEcoverseMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnEcoverseMutation,
+  CreateGroupOnEcoverseMutationVariables
+>;
+export const CreateGroupOnChallengeDocument = gql`
+  mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
+    createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnChallengeMutationFn = Apollo.MutationFunction<
+  CreateGroupOnChallengeMutation,
+  CreateGroupOnChallengeMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnChallengeMutation, { data, loading, error }] = useCreateGroupOnChallengeMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>(
+    CreateGroupOnChallengeDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnChallengeMutationHookResult = ReturnType<typeof useCreateGroupOnChallengeMutation>;
+export type CreateGroupOnChallengeMutationResult = Apollo.MutationResult<CreateGroupOnChallengeMutation>;
+export type CreateGroupOnChallengeMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnChallengeMutation,
+  CreateGroupOnChallengeMutationVariables
+>;
+export const CreateGroupOnOpportunityDocument = gql`
+  mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
+    createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnOpportunityMutationFn = Apollo.MutationFunction<
+  CreateGroupOnOpportunityMutation,
+  CreateGroupOnOpportunityMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnOpportunityMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnOpportunityMutation, { data, loading, error }] = useCreateGroupOnOpportunityMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      opportunityID: // value for 'opportunityID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>(
+    CreateGroupOnOpportunityDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnOpportunityMutationHookResult = ReturnType<typeof useCreateGroupOnOpportunityMutation>;
+export type CreateGroupOnOpportunityMutationResult = Apollo.MutationResult<CreateGroupOnOpportunityMutation>;
+export type CreateGroupOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnOpportunityMutation,
+  CreateGroupOnOpportunityMutationVariables
+>;
+export const CreateGroupOnOrganizationDocument = gql`
+  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
+    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
+      id
+      name
+    }
+  }
+`;
+export type CreateGroupOnOrganizationMutationFn = Apollo.MutationFunction<
+  CreateGroupOnOrganizationMutation,
+  CreateGroupOnOrganizationMutationVariables
+>;
+
+/**
+ * __useCreateGroupOnOrganizationMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupOnOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupOnOrganizationMutation, { data, loading, error }] = useCreateGroupOnOrganizationMutation({
+ *   variables: {
+ *      groupName: // value for 'groupName'
+ *      orgID: // value for 'orgID'
+ *   },
+ * });
+ */
+export function useCreateGroupOnOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGroupOnOrganizationMutation,
+    CreateGroupOnOrganizationMutationVariables
+  >
+) {
+  return Apollo.useMutation<CreateGroupOnOrganizationMutation, CreateGroupOnOrganizationMutationVariables>(
+    CreateGroupOnOrganizationDocument,
+    baseOptions
+  );
+}
+export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
+export type CreateGroupOnOrganizationMutationResult = Apollo.MutationResult<CreateGroupOnOrganizationMutation>;
+export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnOrganizationMutation,
+  CreateGroupOnOrganizationMutationVariables
+>;
+export const OrganizationDetailsDocument = gql`
+  query organizationDetails($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          name
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      groups {
+        id
+        name
+        members {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationDetailsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>(
+    OrganizationDetailsDocument,
+    baseOptions
+  );
+}
+export function useOrganizationDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>(
+    OrganizationDetailsDocument,
+    baseOptions
+  );
+}
+export type OrganizationDetailsQueryHookResult = ReturnType<typeof useOrganizationDetailsQuery>;
+export type OrganizationDetailsLazyQueryHookResult = ReturnType<typeof useOrganizationDetailsLazyQuery>;
+export type OrganizationDetailsQueryResult = Apollo.QueryResult<
+  OrganizationDetailsQuery,
+  OrganizationDetailsQueryVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
@@ -2215,8 +3369,10 @@ export const ChallengeProfileDocument = gql`
         }
       }
       leadOrganisations {
+        id
         name
         profile {
+          id
           avatar
         }
       }
@@ -2259,6 +3415,7 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQue
 export const UpdateChallengeContextDocument = gql`
   mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
     updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -2303,6 +3460,7 @@ export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
 export const AddUserToChallengeDocument = gql`
   mutation addUserToChallenge($challengeID: Float!, $userID: Float!) {
     addUserToChallenge(challengeID: $challengeID, userID: $userID) {
+      id
       name
     }
   }
@@ -2404,6 +3562,10 @@ export const SearchDocument = gql`
           name
           id
         }
+        ... on Organisation {
+          name
+          id
+        }
       }
     }
   }
@@ -2459,6 +3621,7 @@ export const GroupCardDocument = gql`
         name
       }
       profile {
+        id
         avatar
         description
         references {
@@ -2501,6 +3664,58 @@ export function useGroupCardLazyQuery(
 export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<GroupCardQuery, GroupCardQueryVariables>;
+export const OrganizationCardDocument = gql`
+  query organizationCard($id: Float!) {
+    organisation(ID: $id) {
+      id
+      name
+      groups {
+        name
+      }
+      members {
+        id
+      }
+      profile {
+        id
+        description
+        avatar
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationCardQuery__
+ *
+ * To run a query within a React component, call `useOrganizationCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationCardQuery(
+  baseOptions: Apollo.QueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(OrganizationCardDocument, baseOptions);
+}
+export function useOrganizationCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OrganizationCardQuery, OrganizationCardQueryVariables>
+) {
+  return Apollo.useLazyQuery<OrganizationCardQuery, OrganizationCardQueryVariables>(
+    OrganizationCardDocument,
+    baseOptions
+  );
+}
+export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
+export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
+export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
@@ -2792,6 +4007,7 @@ export const EcoverseHostReferencesDocument = gql`
   query ecoverseHostReferences {
     host {
       profile {
+        id
         references {
           name
           uri
@@ -3571,47 +4787,6 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   CreateAspectMutation,
   CreateAspectMutationVariables
 >;
-export const RemoveReferenceDocument = gql`
-  mutation removeReference($ID: Float!) {
-    removeReference(ID: $ID)
-  }
-`;
-export type RemoveReferenceMutationFn = Apollo.MutationFunction<
-  RemoveReferenceMutation,
-  RemoveReferenceMutationVariables
->;
-
-/**
- * __useRemoveReferenceMutation__
- *
- * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
- *   variables: {
- *      ID: // value for 'ID'
- *   },
- * });
- */
-export function useRemoveReferenceMutation(
-  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
-) {
-  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
-    RemoveReferenceDocument,
-    baseOptions
-  );
-}
-export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
-export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
-export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
-  RemoveReferenceMutation,
-  RemoveReferenceMutationVariables
->;
 export const CreateActorGroupDocument = gql`
   mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
     createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
@@ -3655,6 +4830,88 @@ export type CreateActorGroupMutationResult = Apollo.MutationResult<CreateActorGr
 export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   CreateActorGroupMutation,
   CreateActorGroupMutationVariables
+>;
+export const RemoveReferenceDocument = gql`
+  mutation removeReference($ID: Float!) {
+    removeReference(ID: $ID)
+  }
+`;
+export type RemoveReferenceMutationFn = Apollo.MutationFunction<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+
+/**
+ * __useRemoveReferenceMutation__
+ *
+ * To run a mutation, you first call `useRemoveReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveReferenceMutation, RemoveReferenceMutationVariables>
+) {
+  return Apollo.useMutation<RemoveReferenceMutation, RemoveReferenceMutationVariables>(
+    RemoveReferenceDocument,
+    baseOptions
+  );
+}
+export type RemoveReferenceMutationHookResult = ReturnType<typeof useRemoveReferenceMutation>;
+export type RemoveReferenceMutationResult = Apollo.MutationResult<RemoveReferenceMutation>;
+export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
+  RemoveReferenceMutation,
+  RemoveReferenceMutationVariables
+>;
+export const RemoveOpportunityDocument = gql`
+  mutation removeOpportunity($ID: Float!) {
+    removeOpportunity(ID: $ID)
+  }
+`;
+export type RemoveOpportunityMutationFn = Apollo.MutationFunction<
+  RemoveOpportunityMutation,
+  RemoveOpportunityMutationVariables
+>;
+
+/**
+ * __useRemoveOpportunityMutation__
+ *
+ * To run a mutation, you first call `useRemoveOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeOpportunityMutation, { data, loading, error }] = useRemoveOpportunityMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useRemoveOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveOpportunityMutation, RemoveOpportunityMutationVariables>
+) {
+  return Apollo.useMutation<RemoveOpportunityMutation, RemoveOpportunityMutationVariables>(
+    RemoveOpportunityDocument,
+    baseOptions
+  );
+}
+export type RemoveOpportunityMutationHookResult = ReturnType<typeof useRemoveOpportunityMutation>;
+export type RemoveOpportunityMutationResult = Apollo.MutationResult<RemoveOpportunityMutation>;
+export type RemoveOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  RemoveOpportunityMutation,
+  RemoveOpportunityMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
@@ -3933,8 +5190,10 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [String!]!) {
     usersById(IDs: $ids) {
+      id
       name
       profile {
+        id
         avatar
       }
     }

@@ -1,3 +1,5 @@
+import { Organisation } from '../generated/graphql';
+
 export interface UserModel {
   id: string;
   name: string;
@@ -11,6 +13,7 @@ export interface UserModel {
   aadPassword: string;
   accountUpn: string;
   profile: {
+    id?: string;
     description: string;
     avatar: string;
     tagsets: Tagset[];
@@ -19,6 +22,7 @@ export interface UserModel {
   memberof: {
     groups: Group[];
     challenges: Challenge[];
+    organisations: Organisation[];
   };
 }
 
@@ -37,6 +41,7 @@ export interface Tagset {
 }
 
 export interface UserReference {
+  id: string;
   name: string;
   uri: string;
 }
@@ -62,6 +67,7 @@ export const defaultUser: UserModel = {
   memberof: {
     challenges: [],
     groups: [],
+    organisations: [],
   },
 };
 

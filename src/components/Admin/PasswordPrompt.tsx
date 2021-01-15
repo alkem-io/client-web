@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from '../core/Button';
-import InputWithCopy from './InputWithCopy';
+import InputWithCopy from '../core/InputWithCopy';
 
 interface PasswordPromptProps {
   password: string;

@@ -92,6 +92,7 @@ export const QUERY_ECOVERSE_HOST_REFERENCES = gql`
   query ecoverseHostReferences {
     host {
       profile {
+        id
         references {
           name
           uri

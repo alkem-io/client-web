@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
@@ -29,11 +29,10 @@ const useGlobalStyles = createStyles(theme => ({
       width: '0.4em',
     },
     '*::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px grey',
+      '-webkit-box-shadow': 'inset 0 0 6px #c3c3c3',
     },
     '*::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.primary,
-      outline: `1px solid ${theme.palette.neutral}`,
     },
     html: {
       height: '100%',
@@ -57,13 +56,6 @@ const useGlobalStyles = createStyles(theme => ({
 
 const Root: FC = () => {
   useGlobalStyles();
-  useEffect(() => {
-    console.table({
-      appName: process.env.REACT_APP_NAME,
-      clientVersion: process.env.REACT_APP_VERSION,
-      cherrytwistDomain: process.env.REACT_APP_FEEDBACK_URL,
-    });
-  });
   return (
     <Sentry.ErrorBoundary
       fallback={({ error }) => {

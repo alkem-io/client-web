@@ -7,10 +7,10 @@ import {
   useAddUserToOpportunityMutation,
   useGroupMembersQuery,
   useRemoveUserFromGroupMutation,
-} from '../../generated/graphql';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { PageProps } from '../../pages';
-import MemberSelector from './MemberSelector';
+} from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { PageProps } from '../../../pages';
+import MemberSelector from '../MemberSelector';
 
 interface Parameters {
   groupId: string;
@@ -83,8 +83,10 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   // });
 
   const handleUserAdding = async (userID: string) => {
-    if (opportunityId) await addUserToOpportunity(gqlOptions(userID, { opportunityID: Number(opportunityId) }));
-    else if (challengeId) await addUserToChallenge(gqlOptions(userID, { challengeID: Number(challengeId) }));
+    if (groupName === 'members' && opportunityId)
+      await addUserToOpportunity(gqlOptions(userID, { opportunityID: Number(opportunityId) }));
+    else if (groupName === 'members' && challengeId)
+      await addUserToChallenge(gqlOptions(userID, { challengeID: Number(challengeId) }));
     else await addUserToGroup(gqlOptions(userID, { groupID: Number(groupId) }));
   };
 

@@ -3,21 +3,22 @@ import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { EditMode, UserForm } from '.';
+import UserForm from './UserForm';
 import {
   useCreateUserMutation,
   useRemoveUserMutation,
   UserInput,
   useUpdateUserMutation,
-} from '../../generated/graphql';
-import { USER_DETAILS_FRAGMENT } from '../../graphql/user';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { UserModel } from '../../models/User';
-import { PageProps } from '../../pages';
-import Button from '../core/Button';
-import { Loading } from '../core/Loading';
-import PasswordPrompt from './PasswordPrompt';
+} from '../../../generated/graphql';
+import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { UserModel } from '../../../models/User';
+import { PageProps } from '../../../pages';
+import Button from '../../core/Button';
+import { Loading } from '../../core/Loading';
+import PasswordPrompt from '../PasswordPrompt';
 import UserRemoveModal from './UserRemoveModal';
+import { EditMode } from '../../../utils/editMode';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
@@ -41,14 +42,12 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const handleError = (error: ApolloError) => {
     setStatus('error');
     setMessage(error.message);
-
-    console.error(error);
   };
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => {
-      setMessage('User updated sucessfully');
+      setMessage('User updated successfully');
       setStatus('success');
     },
   });
@@ -72,7 +71,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       setNewUserId(data.createUser.id);
       setIsBlocked(true);
       setStatus('success');
-      setMessage('User save successfuly!');
+      setMessage('User saved successfully!');
     },
     update: (cache, { data }) => {
       if (data) {
