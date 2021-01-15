@@ -1009,7 +1009,7 @@ export type ChallengeNameQueryVariables = Exact<{
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
@@ -1057,7 +1057,7 @@ export type OpportunityNameQueryVariables = Exact<{
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
@@ -1092,7 +1092,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 }>;
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'textID' | 'name'> & {
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
             references?: Maybe<
@@ -1126,7 +1126,7 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID' | 'name'> & {
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
             references?: Maybe<
@@ -1160,7 +1160,7 @@ export type OrganisationProfileInfoQueryVariables = Exact<{
 
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
         };
@@ -1208,13 +1208,13 @@ export type OrganizationDetailsQueryVariables = Exact<{
 
 export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
         };
       groups?: Maybe<
         Array<
-          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
               members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
             }
         >
@@ -1253,7 +1253,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
       >;
       leadOrganisations: Array<
         { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
-            profile: { __typename?: 'Profile' } & Pick<Profile, 'avatar'>;
+            profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
           }
       >;
     };
@@ -1265,7 +1265,7 @@ export type UpdateChallengeContextMutationVariables = Exact<{
 }>;
 
 export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type AddUserToChallengeMutationVariables = Exact<{
@@ -1274,7 +1274,7 @@ export type AddUserToChallengeMutationVariables = Exact<{
 }>;
 
 export type AddUserToChallengeMutation = { __typename?: 'Mutation' } & {
-  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
+  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type ChallengeMembersQueryVariables = Exact<{
@@ -1319,7 +1319,7 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
       >;
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
       profile?: Maybe<
-        { __typename?: 'Profile' } & Pick<Profile, 'avatar' | 'description'> & {
+        { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
             tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
           }
@@ -1335,7 +1335,7 @@ export type OrganizationCardQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
       groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'>;
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'>;
     };
 };
 
@@ -1404,9 +1404,9 @@ export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never 
 
 export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
   host: { __typename?: 'Organisation' } & {
-    profile: { __typename?: 'Profile' } & {
-      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-    };
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+      };
   };
 };
 
@@ -1655,7 +1655,7 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
     profile?: Maybe<
-      { __typename?: 'Profile' } & Pick<Profile, 'description' | 'avatar'> & {
+      { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
         }
@@ -1717,7 +1717,7 @@ export type UserAvatarsQueryVariables = Exact<{
 export type UserAvatarsQuery = { __typename?: 'Query' } & {
   usersById: Array<
     { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
-        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'avatar'>>;
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>>;
       }
   >;
 };
@@ -1786,6 +1786,7 @@ export const UserDetailsFragmentDoc = gql`
     phone
     accountUpn
     profile {
+      id
       description
       avatar
       references {
@@ -2325,6 +2326,7 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQ
 export const ChallengeNameDocument = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
+      id
       name
     }
   }
@@ -2546,6 +2548,7 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<OpportunityGroupsQ
 export const OpportunityNameDocument = gql`
   query opportunityName($id: Float!) {
     opportunity(ID: $id) {
+      id
       name
     }
   }
@@ -2712,6 +2715,7 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
 export const ChallengeProfileInfoDocument = gql`
   query challengeProfileInfo($id: Float!) {
     challenge(ID: $id) {
+      id
       textID
       name
       context {
@@ -2862,6 +2866,7 @@ export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
 export const OpportunityProfileInfoDocument = gql`
   query opportunityProfileInfo($id: Float!) {
     opportunity(ID: $id) {
+      id
       textID
       name
       context {
@@ -3014,6 +3019,7 @@ export const OrganisationProfileInfoDocument = gql`
       id
       name
       profile {
+        id
         avatar
         description
         references {
@@ -3255,6 +3261,7 @@ export const OrganizationDetailsDocument = gql`
       id
       name
       profile {
+        id
         avatar
         description
         references {
@@ -3268,6 +3275,7 @@ export const OrganizationDetailsDocument = gql`
         }
       }
       groups {
+        id
         name
         members {
           id
@@ -3364,6 +3372,7 @@ export const ChallengeProfileDocument = gql`
         id
         name
         profile {
+          id
           avatar
         }
       }
@@ -3406,6 +3415,7 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQue
 export const UpdateChallengeContextDocument = gql`
   mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
     updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -3450,6 +3460,7 @@ export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
 export const AddUserToChallengeDocument = gql`
   mutation addUserToChallenge($challengeID: Float!, $userID: Float!) {
     addUserToChallenge(challengeID: $challengeID, userID: $userID) {
+      id
       name
     }
   }
@@ -3610,6 +3621,7 @@ export const GroupCardDocument = gql`
         name
       }
       profile {
+        id
         avatar
         description
         references {
@@ -3664,6 +3676,7 @@ export const OrganizationCardDocument = gql`
         id
       }
       profile {
+        id
         description
         avatar
       }
@@ -3994,6 +4007,7 @@ export const EcoverseHostReferencesDocument = gql`
   query ecoverseHostReferences {
     host {
       profile {
+        id
         references {
           name
           uri
@@ -5179,6 +5193,7 @@ export const UserAvatarsDocument = gql`
       id
       name
       profile {
+        id
         avatar
       }
     }

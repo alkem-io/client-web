@@ -48,6 +48,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
         id
         name
         profile {
+          id
           avatar
         }
       }
@@ -58,6 +59,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
 export const MUTATION_UPDATE_CHALLENGE_CONTEXT = gql`
   mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
     updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+      id
       name
     }
   }
@@ -66,6 +68,7 @@ export const MUTATION_UPDATE_CHALLENGE_CONTEXT = gql`
 export const MUTATION_ADD_USER_TO_CHALLENGE = gql`
   mutation addUserToChallenge($challengeID: Float!, $userID: Float!) {
     addUserToChallenge(challengeID: $challengeID, userID: $userID) {
+      id
       name
     }
   }

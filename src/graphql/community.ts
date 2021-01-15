@@ -48,6 +48,7 @@ export const QUERY_GROUP_CARD = gql`
         name
       }
       profile {
+        id
         avatar
         description
         references {
@@ -75,6 +76,7 @@ export const QUERY_ORGANIZATION_CARD = gql`
         id
       }
       profile {
+        id
         description
         avatar
       }

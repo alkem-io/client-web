@@ -13,6 +13,7 @@ export const USER_DETAILS_FRAGMENT = gql`
     phone
     accountUpn
     profile {
+      id
       description
       avatar
       references {
@@ -104,6 +105,7 @@ export const QUERY_USER_AVATARS = gql`
       id
       name
       profile {
+        id
         avatar
       }
     }
