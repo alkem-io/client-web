@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
-import UserRemoveModal from './User/UserRemoveModal';
+import RemoveModal from '../core/RemoveModal';
 
 interface SearchableListProps {
   data: SearchableListItem[];
   edit?: boolean;
   active?: number | string;
-  onDelete: (item: SearchableListItem) => void;
+  onDelete?: (item: SearchableListItem) => void;
 }
 
 export interface SearchableListItem {
@@ -53,6 +53,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   const handleRemoveItem = async () => {
     if (onDelete && itemToRemove) {
       onDelete(itemToRemove);
+      closeModal();
     }
   };
 
@@ -86,18 +87,20 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
             >
               {item.value}
               <div className={'flex-grow-1'} />
-              <IconButton onClick={e => openModal(e, item)}>
-                <Icon component={Trash} color="negative" size={'sm'} />
-              </IconButton>
+              {onDelete && (
+                <IconButton onClick={e => openModal(e, item)}>
+                  <Icon component={Trash} color="negative" size={'sm'} />
+                </IconButton>
+              )}
             </ListGroup.Item>
           </Fragment>
         ))}
       </ListGroup>
-      <UserRemoveModal
+      <RemoveModal
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveItem}
-        name={itemToRemove?.value}
+        text={`Are you sure you want to remove: ${itemToRemove?.value}`}
         //loading={loading}
       />
       {filteredData.length > limit && limit < 50 && (

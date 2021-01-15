@@ -220,3 +220,9 @@ export const MUTATION_REMOVE_REFERENCE = gql`
     removeReference(ID: $ID)
   }
 `;
+
+export const MUTATION_REMOVE_OPPORTUNITY = gql`
+  mutation removeOpportunity($ID: Float!) {
+    removeOpportunity(ID: $ID)
+  }
+`;

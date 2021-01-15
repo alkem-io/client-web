@@ -10,10 +10,10 @@ interface GroupListProps extends PageProps {
   data: SearchableListItem[];
   title?: string;
   newLink?: string;
-  onDelete?: (id: string) => void;
+  onDelete?: (item: SearchableListItem) => void;
 }
 
-export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, onDelete = () => {} }) => {
+export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, onDelete }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
@@ -28,7 +28,7 @@ export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, onDe
           )}
         </div>
       )}
-      <SearchableList data={data} onDelete={item => onDelete(item.id)} />
+      <SearchableList data={data} onDelete={onDelete} />
     </>
   );
 };

@@ -6,6 +6,7 @@ import {
   useChallengeNameQuery,
   useChallengeOpportunitiesQuery,
   useEcoverseChallengesListQuery,
+  useRemoveOpportunityMutation,
 } from '../../generated/graphql';
 import { ListPage } from '../../components/Admin/ListPage';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
@@ -17,6 +18,7 @@ import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import Button from '../../components/core/Button';
 import { AdminParameters } from './admin';
 import { OpportunitiesRoutes } from './opportunity';
+import { SearchableListItem } from '../../components/Admin/SearchableList';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -36,7 +38,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} onDelete={() => {}} />
+        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} />
       </Route>
       <Route path={`${path}/new`}>
         <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
@@ -113,7 +115,7 @@ const ChallengeGroups: FC<PageProps> = ({ paths }) => {
 
   const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={() => {}} />;
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
 };
 
 export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
@@ -128,6 +130,20 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     url: `${url}/${o.id}`,
   }));
 
+  const [remove] = useRemoveOpportunityMutation({
+    refetchQueries: ['challengeOpportunities'],
+    awaitRefetchQueries: true,
+
+    onError: e => console.error('User remove error---> ', e),
+  });
+  const handleDelete = (item: SearchableListItem) => {
+    remove({
+      variables: {
+        ID: Number(item.id),
+      },
+    });
+  };
+
   return (
     <>
       <div className={'d-flex'}>
@@ -135,7 +151,7 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
           New
         </Button>
       </div>
-      <ListPage paths={paths} data={opportunities || []} />
+      <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} />
     </>
   );
 };

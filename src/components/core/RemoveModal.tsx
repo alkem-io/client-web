@@ -7,13 +7,14 @@ interface RelationRemoveModalProps {
   onCancel: () => void;
   text: string;
   onConfirm: () => void;
+  title?: string;
 }
 
-const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, onConfirm }) => {
+const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title = 'Confirm remove', onConfirm }) => {
   return (
     <Modal show={show} onHide={onCancel} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Confirm remove</Modal.Title>
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>{text}</Modal.Body>
       <Modal.Footer>
