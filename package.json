@@ -1,6 +1,6 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "repository": {
