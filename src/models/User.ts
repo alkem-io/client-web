@@ -13,6 +13,7 @@ export interface UserModel {
   aadPassword: string;
   accountUpn: string;
   profile: {
+    id?: string;
     description: string;
     avatar: string;
     tagsets: Tagset[];

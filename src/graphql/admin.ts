@@ -215,6 +215,7 @@ export const MUTATION_UPDATE_CHALLENGE = gql`
 export const QUERY_CHALLENGE_PROFILE_INFO = gql`
   query challengeProfileInfo($id: Float!) {
     challenge(ID: $id) {
+      id
       textID
       name
       context {
@@ -255,6 +256,7 @@ export const MUTATION_UPDATE_OPPORTUNITY = gql`
 export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
   query opportunityProfileInfo($id: Float!) {
     opportunity(ID: $id) {
+      id
       textID
       name
       context {
@@ -298,6 +300,7 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
       id
       name
       profile {
+        id
         avatar
         description
         references {
@@ -355,6 +358,7 @@ export const QUERY_ORGANIZATION_DETAILS = gql`
       id
       name
       profile {
+        id
         avatar
         description
         references {
