@@ -1009,7 +1009,7 @@ export type ChallengeNameQueryVariables = Exact<{
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'name'>;
+  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
@@ -1057,7 +1057,7 @@ export type OpportunityNameQueryVariables = Exact<{
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
+  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 };
 
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
@@ -1214,7 +1214,7 @@ export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
         };
       groups?: Maybe<
         Array<
-          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+          { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
               members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
             }
         >
@@ -2326,6 +2326,7 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQ
 export const ChallengeNameDocument = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
+      id
       name
     }
   }
@@ -2547,6 +2548,7 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<OpportunityGroupsQ
 export const OpportunityNameDocument = gql`
   query opportunityName($id: Float!) {
     opportunity(ID: $id) {
+      id
       name
     }
   }
@@ -3273,6 +3275,7 @@ export const OrganizationDetailsDocument = gql`
         }
       }
       groups {
+        id
         name
         members {
           id

@@ -125,6 +125,7 @@ export const QUERY_ORGANIZATIONS_LIST = gql`
 export const QUERY_CHALLENGE_NAME = gql`
   query challengeName($id: Float!) {
     challenge(ID: $id) {
+      id
       name
     }
   }
@@ -177,6 +178,7 @@ export const QUERY_OPPORTUNITY_GROUPS = gql`
 export const QUERY_OPPORTUNITY_NAME = gql`
   query opportunityName($id: Float!) {
     opportunity(ID: $id) {
+      id
       name
     }
   }
@@ -372,6 +374,7 @@ export const QUERY_ORGANIZATION_DETAILS = gql`
         }
       }
       groups {
+        id
         name
         members {
           id
