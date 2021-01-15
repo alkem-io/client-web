@@ -11,7 +11,7 @@ interface UserRemoveModalProps {
   loading?: boolean;
 }
 
-const UserRemoveModal: FC<UserRemoveModalProps> = ({ show, onCancel, onConfirm, name, loading }) => (
+const UserRemoveModal: FC<UserRemoveModalProps> = ({ show, onCancel, onConfirm, name, loading = false }) => (
   <Modal show={show} onHide={onCancel} centered>
     <Modal.Header closeButton>
       <Modal.Title>Confirm user remove</Modal.Title>

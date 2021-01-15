@@ -1,18 +1,19 @@
 import React, { FC } from 'react';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '../../pages';
-import SearchableList, { SearchableListData } from './SearchableList';
+import SearchableList, { SearchableListItem } from './SearchableList';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
 
 interface GroupListProps extends PageProps {
-  data: SearchableListData[];
+  data: SearchableListItem[];
   title?: string;
   newLink?: string;
+  onDelete?: (item: SearchableListItem) => void;
 }
 
-export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink }) => {
+export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, onDelete }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
@@ -27,7 +28,7 @@ export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink }) =>
           )}
         </div>
       )}
-      <SearchableList data={data} />
+      <SearchableList data={data} onDelete={onDelete} />
     </>
   );
 };

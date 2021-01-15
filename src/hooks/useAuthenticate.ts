@@ -22,8 +22,8 @@ const authenticate = async (
 
   const result = await context.signIn();
 
-  if (result) {
-    const username = result?.account.username;
+  if (result && result.account) {
+    const username = result.account.username;
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
       dispatch(updateToken(tokenResult));
