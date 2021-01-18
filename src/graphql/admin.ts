@@ -206,8 +206,8 @@ export const MUTATION_CREATE_CHALLENGE = gql`
 `;
 
 export const MUTATION_UPDATE_CHALLENGE = gql`
-  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
-    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $challengeData) {
       id
       name
     }
