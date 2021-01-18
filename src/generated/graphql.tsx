@@ -609,6 +609,7 @@ export type Organisation = {
 export type OrganisationInput = {
   /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
 export type Profile = {
@@ -1221,6 +1222,12 @@ export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
       >;
     };
 };
+
+export type RemoveUserGroupMutationVariables = Exact<{
+  groupId: Scalars['Float'];
+}>;
+
+export type RemoveUserGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUserGroup'>;
 
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
@@ -3323,6 +3330,47 @@ export type OrganizationDetailsLazyQueryHookResult = ReturnType<typeof useOrgani
 export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   OrganizationDetailsQuery,
   OrganizationDetailsQueryVariables
+>;
+export const RemoveUserGroupDocument = gql`
+  mutation removeUserGroup($groupId: Float!) {
+    removeUserGroup(ID: $groupId)
+  }
+`;
+export type RemoveUserGroupMutationFn = Apollo.MutationFunction<
+  RemoveUserGroupMutation,
+  RemoveUserGroupMutationVariables
+>;
+
+/**
+ * __useRemoveUserGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserGroupMutation, { data, loading, error }] = useRemoveUserGroupMutation({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useRemoveUserGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveUserGroupMutation, RemoveUserGroupMutationVariables>
+) {
+  return Apollo.useMutation<RemoveUserGroupMutation, RemoveUserGroupMutationVariables>(
+    RemoveUserGroupDocument,
+    baseOptions
+  );
+}
+export type RemoveUserGroupMutationHookResult = ReturnType<typeof useRemoveUserGroupMutation>;
+export type RemoveUserGroupMutationResult = Apollo.MutationResult<RemoveUserGroupMutation>;
+export type RemoveUserGroupMutationOptions = Apollo.BaseMutationOptions<
+  RemoveUserGroupMutation,
+  RemoveUserGroupMutationVariables
 >;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
