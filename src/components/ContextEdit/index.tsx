@@ -51,15 +51,13 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name }));
     const contextWithUpdatedRefs = { ...context };
+    const challengeUpdateData = { name, state: '', context: contextWithUpdatedRefs };
     contextWithUpdatedRefs.references = updatedRefs;
 
     if (variant === 'challenge') {
       await updateChallenge({
         variables: {
-          challengeID: Number(id),
-          challengeData: {
-            context: contextWithUpdatedRefs,
-          },
+          challengeData: { ID: Number(id), ...challengeUpdateData },
         },
       });
     } else if (variant === 'opportunity') {
