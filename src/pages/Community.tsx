@@ -127,7 +127,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Row>
       </Container>
       <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
-        {community.slice(0, 30).map(el => {
+        {community.slice(0, 12).map(el => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
           if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;
           if (el.__typename === 'Organisation') return <OrganizationCard key={el.id} {...el} />;
