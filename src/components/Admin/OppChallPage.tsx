@@ -98,42 +98,43 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     contextWithUpdatedRefs.references = updatedRefs;
 
     const data = { name, textID, state: '', context: contextWithUpdatedRefs };
+    const updateData = { name, state: '', context: contextWithUpdatedRefs };
 
-    switch (mode) {
-      case ProfileSubmitMode.createChallenge:
-        createChallenge({
-          variables: {
-            challengeData: data,
-          },
-        });
-        break;
-      case ProfileSubmitMode.updateChallenge:
-        updateChallenge({
-          variables: {
-            challengeData: data,
-            challengeID: Number(challengeId),
-          },
-        });
-        break;
-      case ProfileSubmitMode.createOpportunity:
-        createOpportunity({
-          variables: {
-            opportunityData: data,
-            challengeID: Number(challengeId),
-          },
-        });
-        break;
-      case ProfileSubmitMode.updateOpportunity:
-        updateOpportunity({
-          variables: {
-            opportunityData: data,
-            ID: Number(opportunityId),
-          },
-        });
-        break;
-      default:
-        throw new Error('Submit handler not found');
-    }
+    if (ProfileSubmitMode)
+      switch (mode) {
+        case ProfileSubmitMode.createChallenge:
+          createChallenge({
+            variables: {
+              challengeData: data,
+            },
+          });
+          break;
+        case ProfileSubmitMode.updateChallenge:
+          updateChallenge({
+            variables: {
+              challengeData: { ID: Number(challengeId), ...updateData },
+            },
+          });
+          break;
+        case ProfileSubmitMode.createOpportunity:
+          createOpportunity({
+            variables: {
+              opportunityData: data,
+              challengeID: Number(challengeId),
+            },
+          });
+          break;
+        case ProfileSubmitMode.updateOpportunity:
+          updateOpportunity({
+            variables: {
+              opportunityData: data,
+              ID: Number(opportunityId),
+            },
+          });
+          break;
+        default:
+          throw new Error('Submit handler not found');
+      }
   };
 
   let submitWired;
