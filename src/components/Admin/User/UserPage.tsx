@@ -144,7 +144,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       updateUser({
         variables: {
           userId: Number(userID),
-          user: { ...userInput },
+          user: userInput,
         },
       });
     }
