@@ -143,7 +143,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
           caption: parentsData?.caption,
           tag: { status: 'positive', text: p?.state || '' },
           type: 'display',
-          onSelect: () => history.replace(parentsData?.url || ''),
+          onSelect: () => history.push(parentsData?.url || ''),
         };
       }),
       {
@@ -151,7 +151,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
         type: 'more',
       },
     ],
-    [projects]
+    [projects, projectsWithParentData]
   );
 
   const more = references?.find(x => x.name === 'website');
