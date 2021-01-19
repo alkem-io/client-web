@@ -306,7 +306,9 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
         avatar
         description
         references {
+          id
           name
+          uri
         }
         tagsets {
           id
@@ -382,5 +384,11 @@ export const QUERY_ORGANIZATION_DETAILS = gql`
         }
       }
     }
+  }
+`;
+
+export const MUTATION_REMOVE_GROUP = gql`
+  mutation removeUserGroup($groupId: Float!) {
+    removeUserGroup(ID: $groupId)
   }
 `;

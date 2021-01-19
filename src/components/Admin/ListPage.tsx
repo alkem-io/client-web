@@ -6,14 +6,14 @@ import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
 
-interface GroupListProps extends PageProps {
+interface ListPageProps extends PageProps {
   data: SearchableListItem[];
   title?: string;
   newLink?: string;
   onDelete?: (item: SearchableListItem) => void;
 }
 
-export const ListPage: FC<GroupListProps> = ({ data, paths, title, newLink, onDelete }) => {
+export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (

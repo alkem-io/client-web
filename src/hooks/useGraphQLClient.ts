@@ -205,6 +205,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   return useMemo(() => {
+    console.log('Create apollo client!');
     return new ApolloClient({
       link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
