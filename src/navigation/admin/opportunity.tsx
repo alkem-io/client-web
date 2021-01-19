@@ -1,15 +1,16 @@
 import React, { FC, useMemo } from 'react';
-import { FourOuFour, PageProps } from '../../pages';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { useOpportunityGroupsQuery, useOpportunityNameQuery } from '../../generated/graphql';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { managementData } from '../../components/Admin/managementData';
+import { ListPage } from '../../components/Admin';
 import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';
+import { managementData } from '../../components/Admin/managementData';
+import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
+import { useOpportunityGroupsQuery, useOpportunityNameQuery } from '../../generated/graphql';
+import { useRemoveUserGroup } from '../../hooks/useRemoveGroup';
+import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
 import { ChallengeOpportunities } from './challenge';
-import { ListPage } from '../../components/Admin';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -73,7 +74,9 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
 
   const { data } = useOpportunityGroupsQuery({ variables: { id: Number(opportunityId) } });
 
+  const { removeGroup } = useRemoveUserGroup(['opportunityGroups']);
+
   const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={removeGroup} />;
 };

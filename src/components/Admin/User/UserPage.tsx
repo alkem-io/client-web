@@ -100,17 +100,18 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     // Convert UserModel to UserInput
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: userID, memberof, profile, ...rest } = user;
-    const userInput: UserInput = {
-      ...rest,
-      profileData: {
-        avatar: profile.avatar,
-        description: profile.description,
-        referencesData: [...profile.references],
-        tagsetsData: [...profile.tagsets],
-      },
-    };
 
     if (mode === EditMode.new) {
+      const userInput: UserInput = {
+        ...rest,
+        profileData: {
+          avatar: profile.avatar,
+          description: profile.description,
+          referencesData: [...profile.references],
+          tagsetsData: [...profile.tagsets],
+        },
+      };
+
       const passwordBase = generator.generate({
         length: 4,
         numbers: true,
@@ -130,6 +131,16 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         },
       });
     } else if (isEditMode && user.id) {
+      const userInput: UserInput = {
+        ...rest,
+        profileData: {
+          avatar: profile.avatar,
+          description: profile.description,
+          referencesData: [...profile.references].map(t => ({ name: t.name, uri: t.uri })),
+          tagsetsData: [...profile.tagsets],
+        },
+      };
+
       updateUser({
         variables: {
           userId: Number(userID),

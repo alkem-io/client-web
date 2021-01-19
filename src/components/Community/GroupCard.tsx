@@ -1,15 +1,13 @@
 import React, { FC, memo, useState } from 'react';
-
-import Avatar from '../core/Avatar';
-import Card from '../core/Card';
-import GroupPopUp from './GroupPopUp';
-
 import { Theme } from '../../context/ThemeProvider';
 import { useGroupCardQuery, UserGroup } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
+import Avatar from '../core/Avatar';
+import Card from '../core/Card';
+import { Loading } from '../core/Loading';
 import Typography from '../core/Typography';
-
+import GroupPopUp from './GroupPopUp';
 interface GroupCardProps extends UserGroup {
   terms?: Array<string>;
 }
@@ -32,7 +30,7 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
 
   const styles = groupCardStyles();
-  const { data } = useGroupCardQuery({
+  const { data, loading } = useGroupCardQuery({
     variables: {
       id: Number(id),
     },
@@ -53,6 +51,8 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
 
     return '';
   };
+
+  if (loading) return <Loading text={''} />;
 
   return (
     <Card

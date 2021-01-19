@@ -512,8 +512,7 @@ export type MutationUpdateAspectArgs = {
 };
 
 export type MutationUpdateChallengeArgs = {
-  challengeData: ChallengeInput;
-  challengeID: Scalars['Float'];
+  challengeData: UpdateChallengeInput;
 };
 
 export type MutationUpdateEcoverseArgs = {
@@ -609,6 +608,7 @@ export type Organisation = {
 export type OrganisationInput = {
   /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
 export type Profile = {
@@ -830,6 +830,14 @@ export type Template = {
   opportunities: Array<OpportunityTemplate>;
   /** Users template. */
   users: Array<UserTemplate>;
+};
+
+export type UpdateChallengeInput = {
+  context?: Maybe<ContextInput>;
+  ID: Scalars['Float'];
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type User = {
@@ -1079,8 +1087,7 @@ export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
-  challengeData: ChallengeInput;
-  challengeID: Scalars['Float'];
+  challengeData: UpdateChallengeInput;
 }>;
 
 export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
@@ -1161,7 +1168,7 @@ export type OrganisationProfileInfoQueryVariables = Exact<{
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
         };
     };
@@ -1222,6 +1229,12 @@ export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type RemoveUserGroupMutationVariables = Exact<{
+  groupId: Scalars['Float'];
+}>;
+
+export type RemoveUserGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUserGroup'>;
+
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1260,8 +1273,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type UpdateChallengeContextMutationVariables = Exact<{
-  challengeID: Scalars['Float'];
-  challengeData: ChallengeInput;
+  challengeData: UpdateChallengeInput;
 }>;
 
 export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
@@ -2668,8 +2680,8 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   CreateChallengeMutationVariables
 >;
 export const UpdateChallengeDocument = gql`
-  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
-    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $challengeData) {
       id
       name
     }
@@ -2694,7 +2706,6 @@ export type UpdateChallengeMutationFn = Apollo.MutationFunction<
  * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
  *   variables: {
  *      challengeData: // value for 'challengeData'
- *      challengeID: // value for 'challengeID'
  *   },
  * });
  */
@@ -3023,7 +3034,9 @@ export const OrganisationProfileInfoDocument = gql`
         avatar
         description
         references {
+          id
           name
+          uri
         }
         tagsets {
           id
@@ -3324,6 +3337,47 @@ export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   OrganizationDetailsQuery,
   OrganizationDetailsQueryVariables
 >;
+export const RemoveUserGroupDocument = gql`
+  mutation removeUserGroup($groupId: Float!) {
+    removeUserGroup(ID: $groupId)
+  }
+`;
+export type RemoveUserGroupMutationFn = Apollo.MutationFunction<
+  RemoveUserGroupMutation,
+  RemoveUserGroupMutationVariables
+>;
+
+/**
+ * __useRemoveUserGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserGroupMutation, { data, loading, error }] = useRemoveUserGroupMutation({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useRemoveUserGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveUserGroupMutation, RemoveUserGroupMutationVariables>
+) {
+  return Apollo.useMutation<RemoveUserGroupMutation, RemoveUserGroupMutationVariables>(
+    RemoveUserGroupDocument,
+    baseOptions
+  );
+}
+export type RemoveUserGroupMutationHookResult = ReturnType<typeof useRemoveUserGroupMutation>;
+export type RemoveUserGroupMutationResult = Apollo.MutationResult<RemoveUserGroupMutation>;
+export type RemoveUserGroupMutationOptions = Apollo.BaseMutationOptions<
+  RemoveUserGroupMutation,
+  RemoveUserGroupMutationVariables
+>;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: Float!) {
     challenge(ID: $id) {
@@ -3413,8 +3467,8 @@ export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProf
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
 export const UpdateChallengeContextDocument = gql`
-  mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
-    updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+  mutation updateChallengeContext($challengeData: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $challengeData) {
       id
       name
     }
@@ -3438,7 +3492,6 @@ export type UpdateChallengeContextMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateChallengeContextMutation, { data, loading, error }] = useUpdateChallengeContextMutation({
  *   variables: {
- *      challengeID: // value for 'challengeID'
  *      challengeData: // value for 'challengeData'
  *   },
  * });
