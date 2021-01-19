@@ -3,9 +3,9 @@ import React, { FC, useEffect, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { UserFromGenerated, UserModel } from '../../../models/User';
+import { OrganisationModel } from '../../../models/Organisation';
 import Typography from '../../core/Typography';
-import { useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { Organisation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { useRemoveReferenceMutation } from '../../../generated/graphql';
 import { EditMode } from '../../../utils/editMode';
 
@@ -57,14 +57,17 @@ export const OrganizationForm: FC<Props> = ({
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
-  const { name, profile } = currentOrganization;
+  const {
+    name,
+    profile: { description, tagsets, references, avatar },
+  } = currentOrganization;
 
   const initialValues = {
     name: name || '',
-    description: profile?.description || '',
-    avatar: profile?.avatar || '',
-    tagsets: profile?.tagsets || [],
-    references: profile?.references || [],
+    description: description || '',
+    avatar: avatar || '',
+    tagsets: tagsets || [],
+    references: references || [],
   };
 
   const validationSchema = yup.object().shape({
@@ -87,28 +90,30 @@ export const OrganizationForm: FC<Props> = ({
 
   /**
    * @handleSubmit
-   * @param orgData instance of OrganizationModel (same as UserModel)
+   * @param orgData instance of OrganisationModel
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: UserFromGenerated) => {
+  const handleSubmit = async (orgData: OrganisationModel) => {
     if (refsToRemove.length !== 0) {
       for (const ref of refsToRemove) {
         await removeRef({ variables: { ID: Number(ref) } });
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = orgData;
-    const organization: UserModel = {
+
+    const { tagsets, avatar, references, description, ...otherData } = orgData;
+
+    const organization: Organisation = {
       ...currentOrganization,
       ...otherData,
       profile: {
-        description: bio,
+        description,
         avatar,
-        references,
+        references: [...references].map(t => ({ name: t.name, uri: t.uri })),
         tagsets,
       },
     };
+
     onSave && onSave(organization);
   };
 

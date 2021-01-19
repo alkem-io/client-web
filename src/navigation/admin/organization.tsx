@@ -1,20 +1,21 @@
 import React, { FC, useMemo } from 'react';
-import { FourOuFour, PageProps } from '../../pages';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
 import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';
+import { ListPage } from '../../components/Admin/ListPage';
+import { managementData } from '../../components/Admin/managementData';
+import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
 import {
+  Organisation,
   useOrganisationProfileInfoQuery,
   useOrganizationGroupsQuery,
   useOrganizationsListQuery,
 } from '../../generated/graphql';
-import { ListPage } from '../../components/Admin/ListPage';
-import { AdminParameters } from './admin';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { FourOuFour, PageProps } from '../../pages';
 import { EditMode } from '../../utils/editMode';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { managementData } from '../../components/Admin/managementData';
-import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
+import { AdminParameters } from './admin';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -73,7 +74,7 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.organizationLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <OrganizationPage organization={data?.organisation} mode={EditMode.edit} paths={currentPaths} />
+        <OrganizationPage organization={data?.organisation as Organisation} mode={EditMode.edit} paths={currentPaths} />
       </Route>
       <Route path={`${path}/groups`}>
         <OrganizationGroupRoutes paths={currentPaths} />

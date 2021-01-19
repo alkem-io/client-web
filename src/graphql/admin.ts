@@ -306,7 +306,9 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
         avatar
         description
         references {
+          id
           name
+          uri
         }
         tagsets {
           id

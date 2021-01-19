@@ -1,14 +1,20 @@
-import React, { FC, useMemo, useState } from 'react';
-import { PageProps } from '../../../pages';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { Alert } from 'react-bootstrap';
-import OrganizationForm from './OrganizationForm';
-import { Organisation, useCreateOrganizationMutation, useUpdateOrganizationMutation } from '../../../generated/graphql';
 import { ApolloError } from '@apollo/client';
+import React, { FC, useMemo, useState } from 'react';
+import { Alert } from 'react-bootstrap';
+import {
+  Organisation,
+  OrganisationInput,
+  Reference,
+  Tagset,
+  useCreateOrganizationMutation,
+  useUpdateOrganizationMutation,
+} from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
-
+import OrganizationForm from './OrganizationForm';
 interface Props extends PageProps {
-  organization?: any;
+  organization?: Organisation;
   title?: string;
   mode: EditMode;
 }
@@ -45,26 +51,30 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
   // TODO: need remove org method when its ready on backend
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSubmit = ({ name, profile }: Organisation) => {
+  const handleSubmit = (organisation: Organisation) => {
+    const { id: orgID, profile, ...rest } = organisation;
+    const organisationInput: OrganisationInput = {
+      ...rest,
+      profileData: {
+        avatar: profile.avatar,
+        description: profile.description || '',
+        referencesData: [...(profile.references as Reference[])],
+        tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
+      },
+    };
+
     if (mode === EditMode.new) {
       createOrganization({
         variables: {
-          organisationData: {
-            name,
-          },
+          organisationData: organisationInput,
         },
       });
     }
     if (mode === EditMode.edit) {
-      // TODO: Add profile to the update method when backend accepts it
-
       updateOrganization({
         variables: {
-          organisationData: {
-            name,
-          },
-          orgID: Number(organization?.id),
+          organisationData: organisationInput,
+          orgID: Number(orgID),
         },
       });
     }
