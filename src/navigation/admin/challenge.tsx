@@ -1,24 +1,23 @@
 import React, { FC, useMemo } from 'react';
-import { FourOuFour, PageProps } from '../../pages';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
+import { GroupPage } from '../../components/Admin/Group/GroupPage';
+import { ListPage } from '../../components/Admin/ListPage';
+import { managementData } from '../../components/Admin/managementData';
+import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
+import Button from '../../components/core/Button';
 import {
   useChallengeGroupsQuery,
   useChallengeNameQuery,
   useChallengeOpportunitiesQuery,
   useEcoverseChallengesListQuery,
-  useRemoveOpportunityMutation,
 } from '../../generated/graphql';
-import { ListPage } from '../../components/Admin/ListPage';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { managementData } from '../../components/Admin/managementData';
-import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
-import { GroupPage } from '../../components/Admin/Group/GroupPage';
-import Button from '../../components/core/Button';
+import { useRemoveUserGroup } from '../../hooks/useRemoveGroup';
+import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
 import { OpportunitiesRoutes } from './opportunity';
-import { SearchableListItem } from '../../components/Admin/SearchableList';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -113,9 +112,10 @@ const ChallengeGroups: FC<PageProps> = ({ paths }) => {
   const { challengeId } = useParams<AdminParameters>();
   const { data } = useChallengeGroupsQuery({ variables: { id: Number(challengeId) } });
 
+  const { removeGroup } = useRemoveUserGroup(['challengeGroups']);
   const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
-  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
+  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={removeGroup} />;
 };
 
 export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
@@ -129,20 +129,21 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     value: o.name,
     url: `${url}/${o.id}`,
   }));
+  // TODO: [ATS] Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved
+  // const [remove] = useRemoveOpportunityMutation({
+  //   refetchQueries: ['challengeOpportunities'],
+  //   awaitRefetchQueries: true,
 
-  const [remove] = useRemoveOpportunityMutation({
-    refetchQueries: ['challengeOpportunities'],
-    awaitRefetchQueries: true,
+  //   onError: e => console.error('Opportunity remove error---> ', e),
+  // });
 
-    onError: e => console.error('User remove error---> ', e),
-  });
-  const handleDelete = (item: SearchableListItem) => {
-    remove({
-      variables: {
-        ID: Number(item.id),
-      },
-    });
-  };
+  // const handleDelete = (item: SearchableListItem) => {
+  //   remove({
+  //     variables: {
+  //       ID: Number(item.id),
+  //     },
+  //   });
+  // };
 
   return (
     <>
@@ -151,7 +152,9 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
           New
         </Button>
       </div>
-      <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} />
+      {/* Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved */}
+      {/* <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} /> */}
+      <ListPage paths={paths} data={opportunities || []} />
     </>
   );
 };
