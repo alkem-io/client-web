@@ -9,6 +9,7 @@ import roles from '../../configs/roles.json';
 import { User, useUserCardDataQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
+import { Loading } from '../core/Loading';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;
@@ -32,7 +33,7 @@ const userCardStyles = createStyles(theme => ({
 const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
-  const { data: userData } = useUserCardDataQuery({
+  const { data: userData, loading } = useUserCardDataQuery({
     variables: {
       ids: [id],
     },
@@ -44,6 +45,7 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
     (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
   const avatar = data?.profile?.avatar;
 
+  if (loading) return <Loading text={''} />;
   return (
     <Card
       bodyProps={{
