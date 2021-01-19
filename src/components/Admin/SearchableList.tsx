@@ -27,16 +27,6 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
   const [limit, setLimit] = useState(10);
 
-  // const [remove, { loading }] = useRemoveUserMutation({
-  //   refetchQueries: ['users'],
-  //   awaitRefetchQueries: true,
-  //   onCompleted: () => {
-  //     setModalOpened(false);
-  //     setItemToRemove(null);
-  //   },
-  //   onError: e => console.error('User remove error---> ', e),
-  // });
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFilterBy(value);
