@@ -1168,7 +1168,7 @@ export type OrganisationProfileInfoQueryVariables = Exact<{
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name'>>>;
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
         };
     };
@@ -3034,7 +3034,9 @@ export const OrganisationProfileInfoDocument = gql`
         avatar
         description
         references {
+          id
           name
+          uri
         }
         tagsets {
           id

@@ -17,7 +17,7 @@ export interface UserModel {
     description: string;
     avatar: string;
     tagsets: Tagset[];
-    references: Array<UserReference>;
+    references: Reference[];
   };
   memberof: {
     groups: Group[];
@@ -40,7 +40,7 @@ export interface Tagset {
   tags: Array<string>;
 }
 
-export interface UserReference {
+export interface Reference {
   id: string;
   name: string;
   uri: string;
@@ -80,7 +80,7 @@ export interface UserFromGenerated {
   name: string;
   avatar: string;
   tagsets: Tagset[];
-  references: UserReference[];
+  references: Reference[];
   country: string;
   phone: string;
   lastName: string;
