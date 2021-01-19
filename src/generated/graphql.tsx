@@ -638,8 +638,7 @@ export type MutationCreateOpportunityOnChallengeArgs = {
 };
 
 export type MutationUpdateChallengeArgs = {
-  challengeData: ChallengeInput;
-  challengeID: Scalars['Float'];
+  challengeData: UpdateChallengeInput;
 };
 
 export type MutationRemoveChallengeArgs = {
@@ -848,9 +847,9 @@ export type ContextInput = {
   references?: Maybe<Array<ReferenceInput>>;
 };
 
-export type ChallengeInput = {
+export type UpdateChallengeInput = {
+  ID: Scalars['Float'];
   name?: Maybe<Scalars['String']>;
-  textID?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
   tags?: Maybe<Array<Scalars['String']>>;
@@ -901,6 +900,14 @@ export type EcoverseInput = {
   /** Updated context for the ecoverse; will be merged with existing context */
   context?: Maybe<ContextInput>;
   /** The set of tags to apply to this ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type ChallengeInput = {
+  name?: Maybe<Scalars['String']>;
+  textID?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  context?: Maybe<ContextInput>;
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -1080,8 +1087,7 @@ export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
-  challengeData: ChallengeInput;
-  challengeID: Scalars['Float'];
+  challengeData: UpdateChallengeInput;
 }>;
 
 export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
@@ -1261,8 +1267,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type UpdateChallengeContextMutationVariables = Exact<{
-  challengeID: Scalars['Float'];
-  challengeData: ChallengeInput;
+  challengeData: UpdateChallengeInput;
 }>;
 
 export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
@@ -2669,8 +2674,8 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   CreateChallengeMutationVariables
 >;
 export const UpdateChallengeDocument = gql`
-  mutation updateChallenge($challengeData: ChallengeInput!, $challengeID: Float!) {
-    updateChallenge(challengeData: $challengeData, challengeID: $challengeID) {
+  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $challengeData) {
       id
       name
     }
@@ -2695,7 +2700,6 @@ export type UpdateChallengeMutationFn = Apollo.MutationFunction<
  * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
  *   variables: {
  *      challengeData: // value for 'challengeData'
- *      challengeID: // value for 'challengeID'
  *   },
  * });
  */
@@ -3416,8 +3420,8 @@ export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProf
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
 export const UpdateChallengeContextDocument = gql`
-  mutation updateChallengeContext($challengeID: Float!, $challengeData: ChallengeInput!) {
-    updateChallenge(challengeID: $challengeID, challengeData: $challengeData) {
+  mutation updateChallengeContext($challengeData: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $challengeData) {
       id
       name
     }
@@ -3441,7 +3445,6 @@ export type UpdateChallengeContextMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateChallengeContextMutation, { data, loading, error }] = useUpdateChallengeContextMutation({
  *   variables: {
- *      challengeID: // value for 'challengeID'
  *      challengeData: // value for 'challengeData'
  *   },
  * });
