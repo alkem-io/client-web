@@ -7,6 +7,7 @@ import { Organisation, useOrganizationCardQuery } from '../../generated/graphql'
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
+import Loading from '../core/Loading';
 
 interface OrganizationCardStylesProps extends Organisation {
   terms?: Array<string>;
@@ -29,7 +30,7 @@ const OrganizationCardStyles = createStyles(theme => ({
 const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
-  const { data } = useOrganizationCardQuery({
+  const { data, loading } = useOrganizationCardQuery({
     variables: {
       id: Number(id),
     },
@@ -46,6 +47,8 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
 
     return '';
   };
+
+  if (loading) return <Loading text={''} />;
 
   return (
     <Card
