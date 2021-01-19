@@ -1,4 +1,6 @@
 import { gql } from '@apollo/client';
+import { NEW_CHALLENGE_FRAGMENT } from './challenge';
+import { NEW_OPPORTUNITY_FRAGMENT } from './opportunity';
 import { USER_DETAILS_FRAGMENT } from './user';
 
 export const MUTATION_CREATE_USER = gql`
@@ -199,10 +201,10 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
 export const MUTATION_CREATE_CHALLENGE = gql`
   mutation createChallenge($challengeData: ChallengeInput!) {
     createChallenge(challengeData: $challengeData) {
-      id
-      name
+      ...NewChallenge
     }
   }
+  ${NEW_CHALLENGE_FRAGMENT}
 `;
 
 export const MUTATION_UPDATE_CHALLENGE = gql`
@@ -240,10 +242,10 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
 export const MUTATION_CREATE_OPPORTUNITY = gql`
   mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
     createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
-      id
-      name
+      ...NewOpportunites
     }
   }
+  ${NEW_OPPORTUNITY_FRAGMENT}
 `;
 
 export const MUTATION_UPDATE_OPPORTUNITY = gql`

@@ -16,7 +16,8 @@ import { QUERY_CHALLENGE_PROFILE_INFO, QUERY_OPPORTUNITY_PROFILE_INFO } from '..
 import Typography from '../core/Typography';
 import { Alert } from 'react-bootstrap';
 import Loading from '../core/Loading';
-import { gql } from '@apollo/client';
+import { NEW_OPPORTUNITY_FRAGMENT } from '../../graphql/opportunity';
+import { NEW_CHALLENGE_FRAGMENT } from '../../graphql/challenge';
 
 export enum ProfileSubmitMode {
   createChallenge,
@@ -51,12 +52,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             challenges(exitingChallenges = []) {
               const newChallenge = cache.writeFragment({
                 data: createChallenge,
-                fragment: gql`
-                  fragment NewChallenge on Challenge {
-                    id
-                    name
-                  }
-                `,
+                fragment: NEW_CHALLENGE_FRAGMENT,
               });
               return [...exitingChallenges, newChallenge];
             },
@@ -78,12 +74,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
               debugger;
               const newOpportunities = cache.writeFragment({
                 data: createOpportunityOnChallenge,
-                fragment: gql`
-                  fragment NewOpportunites on Opportunity {
-                    id
-                    name
-                  }
-                `,
+                fragment: NEW_OPPORTUNITY_FRAGMENT,
               });
               return [...existingOpportunities, newOpportunities];
             },

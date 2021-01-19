@@ -226,3 +226,10 @@ export const MUTATION_REMOVE_OPPORTUNITY = gql`
     removeOpportunity(ID: $ID)
   }
 `;
+
+export const NEW_OPPORTUNITY_FRAGMENT = gql`
+  fragment NewOpportunites on Opportunity {
+    id
+    name
+  }
+`;
