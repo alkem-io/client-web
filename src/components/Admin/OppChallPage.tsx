@@ -16,6 +16,7 @@ import { QUERY_CHALLENGE_PROFILE_INFO, QUERY_OPPORTUNITY_PROFILE_INFO } from '..
 import Typography from '../core/Typography';
 import { Alert } from 'react-bootstrap';
 import Loading from '../core/Loading';
+import { gql } from '@apollo/client';
 
 export enum ProfileSubmitMode {
   createChallenge,
@@ -41,10 +42,55 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
+    update: (cache, { data }) => {
+      if (data) {
+        const { createChallenge } = data;
+
+        cache.modify({
+          fields: {
+            challenges(exitingChallenges = []) {
+              const newChallenge = cache.writeFragment({
+                data: createChallenge,
+                fragment: gql`
+                  fragment NewChallenge on Challenge {
+                    id
+                    name
+                  }
+                `,
+              });
+              return [...exitingChallenges, newChallenge];
+            },
+          },
+        });
+      }
+    },
     onCompleted: () => onSuccess('Successfully created'),
     onError: e => onError(e.message),
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
+    update: (cache, { data }) => {
+      if (data) {
+        const { createOpportunityOnChallenge } = data;
+
+        cache.modify({
+          fields: {
+            opportunities(existingOpportunities = []) {
+              debugger;
+              const newOpportunities = cache.writeFragment({
+                data: createOpportunityOnChallenge,
+                fragment: gql`
+                  fragment NewOpportunites on Opportunity {
+                    id
+                    name
+                  }
+                `,
+              });
+              return [...existingOpportunities, newOpportunities];
+            },
+          },
+        });
+      }
+    },
     onCompleted: () => onSuccess('Successfully created'),
     onError: e => onError(e.message),
   });
