@@ -88,3 +88,10 @@ export const QUERY_CHALLENGE_MEMBERS = gql`
     }
   }
 `;
+
+export const NEW_CHALLENGE_FRAGMENT = gql`
+  fragment NewChallenge on Challenge {
+    id
+    name
+  }
+`;
