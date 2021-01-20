@@ -54,7 +54,8 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
 
   const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
-    onCompleted: ({ search: searchData }) => {
+    onCompleted: data => {
+      const searchData = data?.search || [];
       const updatedCommunity = searchData
         .reduce((acc, curr) => {
           return [...acc, { score: curr.score, ...curr.result, terms: curr.terms }];

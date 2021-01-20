@@ -71,7 +71,6 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         cache.modify({
           fields: {
             opportunities(existingOpportunities = []) {
-              debugger;
               const newOpportunities = cache.writeFragment({
                 data: createOpportunityOnChallenge,
                 fragment: NEW_OPPORTUNITY_FRAGMENT,

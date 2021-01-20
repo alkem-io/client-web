@@ -1083,7 +1083,7 @@ export type CreateChallengeMutationVariables = Exact<{
 }>;
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
-  createChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+  createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
@@ -1116,7 +1116,7 @@ export type CreateOpportunityMutationVariables = Exact<{
 }>;
 
 export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & NewOpportunitesFragment;
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
@@ -1300,6 +1300,8 @@ export type ChallengeMembersQuery = { __typename?: 'Query' } & {
     >;
   };
 };
+
+export type NewChallengeFragment = { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
@@ -1637,6 +1639,8 @@ export type RemoveOpportunityMutationVariables = Exact<{
 
 export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeOpportunity'>;
 
+export type NewOpportunitesFragment = { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description' | 'state'
@@ -1765,6 +1769,18 @@ export const GroupMembersFragmentDoc = gql`
     firstName
     lastName
     email
+  }
+`;
+export const NewChallengeFragmentDoc = gql`
+  fragment NewChallenge on Challenge {
+    id
+    name
+  }
+`;
+export const NewOpportunitesFragmentDoc = gql`
+  fragment NewOpportunites on Opportunity {
+    id
+    name
   }
 `;
 export const ProjectDetailsFragmentDoc = gql`
@@ -2638,10 +2654,10 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery
 export const CreateChallengeDocument = gql`
   mutation createChallenge($challengeData: ChallengeInput!) {
     createChallenge(challengeData: $challengeData) {
-      id
-      name
+      ...NewChallenge
     }
   }
+  ${NewChallengeFragmentDoc}
 `;
 export type CreateChallengeMutationFn = Apollo.MutationFunction<
   CreateChallengeMutation,
@@ -2787,10 +2803,10 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
 export const CreateOpportunityDocument = gql`
   mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
     createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
-      id
-      name
+      ...NewOpportunites
     }
   }
+  ${NewOpportunitesFragmentDoc}
 `;
 export type CreateOpportunityMutationFn = Apollo.MutationFunction<
   CreateOpportunityMutation,
