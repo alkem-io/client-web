@@ -4,8 +4,14 @@ import {
   useCreateGroupOnOpportunityMutation,
   useCreateGroupOnOrganizationMutation,
 } from '../generated/graphql';
-import { QUERY_ECOVERSE_GROUPS_LIST, QUERY_CHALLENGE_GROUPS, QUERY_OPPORTUNITY_GROUPS } from '../graphql/admin';
+import {
+  QUERY_ECOVERSE_GROUPS_LIST,
+  QUERY_CHALLENGE_GROUPS,
+  QUERY_OPPORTUNITY_GROUPS,
+  QUERY_ORGANIZATION_GROUPS,
+} from '../graphql/admin';
 import { useHistory } from 'react-router-dom';
+import { ApolloError } from '@apollo/client';
 
 export const useCreateGroup = (name: string, id?: string) => {
   const history = useHistory();
@@ -15,6 +21,10 @@ export const useCreateGroup = (name: string, id?: string) => {
     history.replace(`${groupsPath}/${groupId}`);
   };
 
+  const handleError = (e: ApolloError) => {
+    console.error(e.message);
+  };
+
   const [createGroupOnEcoverse] = useCreateGroupOnEcoverseMutation({
     variables: {
       groupName: name,
@@ -22,7 +32,7 @@ export const useCreateGroup = (name: string, id?: string) => {
     refetchQueries: [{ query: QUERY_ECOVERSE_GROUPS_LIST }],
     awaitRefetchQueries: true,
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnEcoverse.id),
-    onError: e => console.error(e.message),
+    onError: handleError,
   });
   const [createGroupOnChallenge] = useCreateGroupOnChallengeMutation({
     variables: {
@@ -32,7 +42,7 @@ export const useCreateGroup = (name: string, id?: string) => {
     refetchQueries: [{ query: QUERY_CHALLENGE_GROUPS, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnChallenge.id),
-    onError: e => console.error(e.message),
+    onError: handleError,
   });
   const [createGroupOnOpportunity] = useCreateGroupOnOpportunityMutation({
     variables: {
@@ -42,17 +52,17 @@ export const useCreateGroup = (name: string, id?: string) => {
     refetchQueries: [{ query: QUERY_OPPORTUNITY_GROUPS, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnOpportunity.id),
-    onError: e => console.error(e.message),
+    onError: handleError,
   });
   const [createGroupOnOrganisation] = useCreateGroupOnOrganizationMutation({
     variables: {
       groupName: name,
       orgID: Number(id),
     },
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_GROUPS, variables: { id: Number(id) } }],
+    refetchQueries: [{ query: QUERY_ORGANIZATION_GROUPS, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganisation.id),
-    onError: e => console.error(e.message),
+    onError: handleError,
   });
 
   return {
