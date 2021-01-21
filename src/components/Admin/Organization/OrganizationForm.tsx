@@ -1,13 +1,15 @@
 import { FieldArray, Formik } from 'formik';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { Organisation, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
-import Typography from '../../core/Typography';
-import { Organisation, useTagsetsTemplateQuery } from '../../../generated/graphql';
-import { useRemoveReferenceMutation } from '../../../generated/graphql';
+import { Tagset } from '../../../models/User';
 import { EditMode } from '../../../utils/editMode';
+import Typography from '../../core/Typography';
+import InputField from '../Common/InputField';
+import TagsSegment from '../Common/TagsSegment';
 
 /*local files imports end*/
 
@@ -35,8 +37,8 @@ export const OrganizationForm: FC<Props> = ({
   title = 'Organization',
 }) => {
   const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
-  const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
-  const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
+  // const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
+  // const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
   const history = useHistory();
   const [removeRef] = useRemoveReferenceMutation();
 
@@ -59,8 +61,23 @@ export const OrganizationForm: FC<Props> = ({
 
   const {
     name,
-    profile: { description, tagsets, references, avatar },
+    profile: { description, references, avatar },
   } = currentOrganization;
+
+  const tagsets = useMemo(() => {
+    let {
+      profile: { tagsets },
+    } = currentOrganization;
+    return availableTagsets.reduce(
+      (acc, cur) => {
+        if (acc.every(x => x.name.toLowerCase() !== cur.toLowerCase())) {
+          acc.push({ name: cur, tags: [] });
+        }
+        return acc;
+      },
+      [...(tagsets as Tagset[])]
+    );
+  }, [currentOrganization, availableTagsets]);
 
   const initialValues = {
     name: name || '',
@@ -142,12 +159,11 @@ export const OrganizationForm: FC<Props> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          //@ts-ignore
           onSubmit={values => handleSubmit(values)}
         >
           {({
             values: { name, references, tagsets, avatar, description },
-            setFieldValue,
+            setFieldValue: _setFieldValue,
             handleChange,
             handleSubmit,
             handleBlur,
@@ -186,150 +202,41 @@ export const OrganizationForm: FC<Props> = ({
                 <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
               </Form.Group>
             );
-
             return (
               <Form noValidate>
-                <Form.Row>{getInputField('Full Name', name, 'name', true, isReadOnlyMode)}</Form.Row>
+                <Form.Row>
+                  <InputField
+                    name={'name'}
+                    title={'Full Name'}
+                    value={name}
+                    required={true}
+                    readOnly={isReadOnlyMode}
+                  />
+                </Form.Row>
 
                 {!isCreateMode && (
                   <>
                     <Form.Row>
-                      {getInputField(
-                        'Description',
-                        description,
-                        'description',
-                        false,
-                        isReadOnlyMode,
-                        undefined,
-                        'Description',
-                        'textarea'
-                      )}
+                      <InputField
+                        name={'description'}
+                        title={'Description'}
+                        value={description}
+                        readOnly={isReadOnlyMode}
+                        placeholder={'Description'}
+                        as={'textarea'}
+                      />
                     </Form.Row>
-                    <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
+                    <Form.Row>
+                      <InputField
+                        name={'avatar'}
+                        title={'Avatar'}
+                        value={avatar}
+                        readOnly={isReadOnlyMode}
+                        placeholder={'Avatar'}
+                      />
+                    </Form.Row>
 
-                    <FieldArray name={'tagsets'}>
-                      {({ push, remove }) => (
-                        <>
-                          <Form.Row>
-                            <Form.Group as={Col} xs={2}>
-                              <Form.Label>Tagsets</Form.Label>
-                              {!isReadOnlyMode && availableTagsets?.length > 0 && (
-                                <Button
-                                  className={'ml-3'}
-                                  onClick={() => {
-                                    setIsAddingTagset(true);
-                                    setSelectedTagset(availableTagsets[0]);
-                                  }}
-                                  disabled={isAddingTagset}
-                                >
-                                  Add
-                                </Button>
-                              )}
-                            </Form.Group>
-                            {isAddingTagset && (
-                              <>
-                                <Form.Group controlId="tagsetName" as={Col} xs={2}>
-                                  <Form.Control
-                                    as="select"
-                                    custom
-                                    onChange={e => setSelectedTagset(e.target.value)}
-                                    defaultValue={selectedTagset}
-                                  >
-                                    {availableTagsets?.map((at, index) => (
-                                      <option value={at} key={index}>
-                                        {at}
-                                      </option>
-                                    ))}
-                                  </Form.Control>
-                                </Form.Group>
-                                <Form.Group as={Col} xs={1}>
-                                  <Button
-                                    className={'ml-3'}
-                                    variant={'secondary'}
-                                    onClick={() => {
-                                      setSelectedTagset('');
-                                      setIsAddingTagset(false);
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                </Form.Group>
-                                <Form.Group as={Col} xs={1}>
-                                  {!isReadOnlyMode && (
-                                    <Button
-                                      className={'ml-3'}
-                                      onClick={() => {
-                                        push({ name: availableTagsets[0], tags: [] });
-                                        setSelectedTagset('');
-                                        setIsAddingTagset(false);
-                                        setAvailableTagsets(availableTagsets.filter(t => t !== selectedTagset));
-                                      }}
-                                    >
-                                      Confirm
-                                    </Button>
-                                  )}
-                                </Form.Group>
-                              </>
-                            )}
-                          </Form.Row>
-                          {isReadOnlyMode && tagsets?.length === 0 ? (
-                            <Form.Control
-                              type={'text'}
-                              placeholder={'No tagsets yet'}
-                              readOnly={true}
-                              disabled={true}
-                            />
-                          ) : (
-                            tagsets.map((ts, index) => (
-                              <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
-                                <Form.Group as={Col}>
-                                  <Form.Label>Tagset</Form.Label>
-                                  <Form.Control
-                                    name={'Tagset'}
-                                    type={'text'}
-                                    value={tagsets[index].name}
-                                    disabled={true}
-                                  />
-                                </Form.Group>
-                                <Form.Group as={Col}>
-                                  <Form.Label>Tags</Form.Label>
-                                  <Form.Control
-                                    name={`tagsets.${index}.tags`}
-                                    type={'text'}
-                                    placeholder={'innovation, AI, technology, blockchain'}
-                                    value={tagsets[index].tags?.join(',')}
-                                    disabled={isReadOnlyMode}
-                                    onChange={e => {
-                                      const stringValue = e.target.value;
-                                      const tagsetArray = stringValue.split(',');
-                                      setFieldValue(`tagsets.${index}.tags`, tagsetArray);
-                                    }}
-                                    onBlur={() => {
-                                      const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
-                                      setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
-                                    }}
-                                  />
-                                </Form.Group>
-                                {!isReadOnlyMode && (
-                                  <Form.Group as={Col} xs={2}>
-                                    <Button
-                                      onClick={() => {
-                                        remove(index);
-                                        setAvailableTagsets([...availableTagsets, tagsets[index].name]);
-                                      }}
-                                      variant={'danger'}
-                                    >
-                                      Remove
-                                    </Button>
-                                  </Form.Group>
-                                )}
-                              </Form.Row>
-                            ))
-                          )}
-                        </>
-                      )}
-                    </FieldArray>
-
+                    <TagsSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
                     <FieldArray name={'references'}>
                       {({ push, remove }) => (
                         <>
