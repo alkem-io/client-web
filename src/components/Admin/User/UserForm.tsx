@@ -1,17 +1,17 @@
-import { FieldArray, Formik } from 'formik';
+import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { defaultUser, Tagset, UserFromGenerated, UserModel } from '../../../models/User';
-import Typography from '../../core/Typography';
-import { useTagsetsTemplateQuery } from '../../../generated/graphql';
-import { useRemoveReferenceMutation } from '../../../generated/graphql';
+import { useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { defaultUser, Reference, Tagset, UserFromGenerated, UserModel } from '../../../models/User';
 import countriesList from '../../../utils/countriesList.json';
-import SearchDropdown from '../../core/SearchDropdown';
 import { EditMode } from '../../../utils/editMode';
-import TagsetSegment from '../Common/TagsetSegment';
+import SearchDropdown from '../../core/SearchDropdown';
+import Typography from '../../core/Typography';
 import { InputField } from '../Common/InputField';
+import { ReferenceSegment } from '../Common/ReferenceSegment';
+import TagsetSegment from '../Common/TagsetSegment';
 /*local files imports end*/
 
 interface UserProps {
@@ -42,8 +42,6 @@ export const UserForm: FC<UserProps> = ({
   });
 
   useEffect(() => {}, [config]);
-
-  let refsToRemove: string[] = [];
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
@@ -138,14 +136,15 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (userData: UserFromGenerated) => {
-    if (refsToRemove.length !== 0) {
-      for (const ref of refsToRemove) {
-        await removeRef({ variables: { ID: Number(ref) } });
-      }
-    }
+  const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
+
+    for (const ref of toRemove) {
+      await removeRef({ variables: { ID: Number(ref.id) } });
+    }
+
     const user: UserModel = {
       ...currentUser,
       ...otherData,
@@ -184,7 +183,7 @@ export const UserForm: FC<UserProps> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={values => handleSubmit(values, references)}
         >
           {({
             values: {
@@ -340,53 +339,8 @@ export const UserForm: FC<UserProps> = ({
                 )}
 
                 <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                <FieldArray name={'references'}>
-                  {({ push, remove }) => (
-                    <>
-                      <Form.Row>
-                        <Form.Group as={Col}>
-                          <Form.Label>References</Form.Label>
-                          {!isReadOnlyMode && (
-                            <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
-                              Add
-                            </Button>
-                          )}
-                        </Form.Group>
-                      </Form.Row>
-                      {isReadOnlyMode && references.length === 0 ? (
-                        <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
-                      ) : (
-                        references.map((ref, index) => (
-                          <Form.Row key={index}>
-                            <InputField
-                              name={`references.${index}.name`}
-                              title={'Name'}
-                              value={references[index].name}
-                              readOnly={isReadOnlyMode}
-                            />
-                            <InputField
-                              name={`references.${index}.uri`}
-                              title={'URI'}
-                              value={references[index].uri}
-                              readOnly={isReadOnlyMode}
-                            />
-                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  isEditMode && ref.id && refsToRemove.push(ref.id);
-                                }}
-                                variant={'danger'}
-                              >
-                                Remove
-                              </Button>
-                            </Form.Group>
-                          </Form.Row>
-                        ))
-                      )}
-                    </>
-                  )}
-                </FieldArray>
+                <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
+
                 {!isReadOnlyMode && (
                   <>
                     <div className={'d-flex mt-4'}>

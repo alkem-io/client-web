@@ -26,7 +26,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
             <Form.Group as={Col}>
               <Form.Label>References</Form.Label>
               {!readOnly && (
-                <Button className={'ml-3'} onClick={() => push({ id: -1, name: '', uri: '' })}>
+                <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
                   Add
                 </Button>
               )}
@@ -36,7 +36,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
             <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
           ) : (
             references?.map((ref, index) => (
-              <Form.Row key={index}>
+              <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
                 <InputField
                   name={`references.${index}.name`}
                   title={'Name'}
@@ -50,7 +50,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   readOnly={readOnly}
                 />
                 {!readOnly && (
-                  <Form.Group as={Col} xs={2}>
+                  <Form.Group as={Col} xs={1}>
                     <Button
                       onClick={() => {
                         remove(index);

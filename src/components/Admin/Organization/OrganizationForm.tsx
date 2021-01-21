@@ -52,8 +52,6 @@ export const OrganizationForm: FC<Props> = ({
 
   useEffect(() => {}, [config]);
 
-  let refsToRemove: string[] = [];
-
   const isCreateMode = editMode === EditMode.new;
   // const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
@@ -105,10 +103,8 @@ export const OrganizationForm: FC<Props> = ({
 
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
-    if (toRemove.length !== 0) {
-      for (const ref of refsToRemove) {
-        await removeRef({ variables: { ID: Number(ref) } });
-      }
+    for (const ref of toRemove) {
+      await removeRef({ variables: { ID: Number(ref) } });
     }
 
     const organization: Organisation = {
