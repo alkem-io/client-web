@@ -67,7 +67,6 @@ export const TagsetField: FC<TagsetFieldProps> = ({
             helper.setValue(tagsetArray);
           }}
           onBlur={e => {
-            debugger;
             const stringValue = e.target.value;
             const tagsetArray = stringValue
               .split(',')

@@ -164,44 +164,9 @@ export const OrganizationForm: FC<Props> = ({
           {({
             values: { name, references, tagsets, avatar, description },
             setFieldValue: _setFieldValue,
-            handleChange,
+            handleChange: _handleChange,
             handleSubmit,
-            handleBlur,
-            errors,
-            touched,
           }) => {
-            const getInputField = (
-              title: string,
-              value: string,
-              fieldName: string,
-              required = false,
-              readOnly = false,
-              type?: string,
-              placeholder?: string,
-              as?: React.ElementType
-            ) => (
-              <Form.Group as={Col}>
-                <Form.Label>
-                  {title}
-                  {required && <span style={{ color: '#d93636' }}>{' *'}</span>}
-                </Form.Label>
-                <Form.Control
-                  name={fieldName}
-                  as={as ? as : 'input'}
-                  type={type || 'text'}
-                  placeholder={placeholder || title}
-                  value={value}
-                  onChange={handleChange}
-                  required={required}
-                  readOnly={readOnly}
-                  disabled={readOnly}
-                  isValid={required ? Boolean(!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
-                  isInvalid={Boolean(!!errors[fieldName]) && Boolean(touched[fieldName])}
-                  onBlur={handleBlur}
-                />
-                <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
-              </Form.Group>
-            );
             return (
               <Form noValidate>
                 <Form.Row>
@@ -260,20 +225,18 @@ export const OrganizationForm: FC<Props> = ({
                           ) : (
                             references?.map((ref, index) => (
                               <Form.Row key={index}>
-                                {getInputField(
-                                  'Name',
-                                  references[index].name,
-                                  `references.${index}.name`,
-                                  false,
-                                  isReadOnlyMode
-                                )}
-                                {getInputField(
-                                  'URI',
-                                  references[index].uri,
-                                  `references.${index}.uri`,
-                                  false,
-                                  isReadOnlyMode
-                                )}
+                                <InputField
+                                  name={`references.${index}.name`}
+                                  title={'Name'}
+                                  value={references[index].name}
+                                  readOnly={isReadOnlyMode}
+                                />
+                                <InputField
+                                  name={`references.${index}.uri`}
+                                  title={'URI'}
+                                  value={references[index].uri}
+                                  readOnly={isReadOnlyMode}
+                                />
                                 <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
                                   <Button
                                     onClick={() => {
