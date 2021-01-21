@@ -10,7 +10,7 @@ import { useRemoveReferenceMutation } from '../../../generated/graphql';
 import countriesList from '../../../utils/countriesList.json';
 import SearchDropdown from '../../core/SearchDropdown';
 import { EditMode } from '../../../utils/editMode';
-import TagsSegment from '../Common/TagsSegment';
+import TagsetSegment from '../Common/TagsetSegment';
 import { InputField } from '../Common/InputField';
 /*local files imports end*/
 
@@ -339,7 +339,7 @@ export const UserForm: FC<UserProps> = ({
                   </Form.Row>
                 )}
 
-                <TagsSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
+                <TagsetSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
                 <FieldArray name={'references'}>
                   {({ push, remove }) => (
                     <>

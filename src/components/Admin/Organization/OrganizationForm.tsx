@@ -9,7 +9,7 @@ import { Tagset } from '../../../models/User';
 import { EditMode } from '../../../utils/editMode';
 import Typography from '../../core/Typography';
 import InputField from '../Common/InputField';
-import TagsSegment from '../Common/TagsSegment';
+import TagsetSegment from '../Common/TagsetSegment';
 
 /*local files imports end*/
 
@@ -201,7 +201,7 @@ export const OrganizationForm: FC<Props> = ({
                       />
                     </Form.Row>
 
-                    <TagsSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
+                    <TagsetSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
                     <FieldArray name={'references'}>
                       {({ push, remove }) => (
                         <>

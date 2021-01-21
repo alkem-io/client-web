@@ -12,7 +12,7 @@ const getTagsetName = (name: string) => {
   return name === 'default' ? 'Tags' : `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`;
 };
 
-export const TagsSegment: FC<TagsSegmentProps> = ({ tagsets, isReadOnlyMode }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, isReadOnlyMode }) => {
   return (
     <FieldArray name={'tagsets'}>
       {() =>
@@ -79,4 +79,4 @@ export const TagsetField: FC<TagsetFieldProps> = ({
     </Form.Row>
   );
 };
-export default TagsSegment;
+export default TagsetSegment;
