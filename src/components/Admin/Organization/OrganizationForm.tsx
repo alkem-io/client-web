@@ -1,15 +1,16 @@
-import { FieldArray, Formik } from 'formik';
+import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Button, Col, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { Organisation, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
-import { Tagset } from '../../../models/User';
+import { Reference, Tagset } from '../../../models/User';
 import { EditMode } from '../../../utils/editMode';
 import Typography from '../../core/Typography';
 import InputField from '../Common/InputField';
-import TagsetSegment from '../Common/TagsetSegment';
+import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSegment';
+import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
 
 /*local files imports end*/
 
@@ -37,8 +38,6 @@ export const OrganizationForm: FC<Props> = ({
   title = 'Organization',
 }) => {
   const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
-  // const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
-  // const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
   const history = useHistory();
   const [removeRef] = useRemoveReferenceMutation();
 
@@ -56,7 +55,7 @@ export const OrganizationForm: FC<Props> = ({
   let refsToRemove: string[] = [];
 
   const isCreateMode = editMode === EditMode.new;
-  const isEditMode = editMode === EditMode.edit;
+  // const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
@@ -90,19 +89,9 @@ export const OrganizationForm: FC<Props> = ({
   const validationSchema = yup.object().shape({
     name: yup.string().required('This is the required field'),
     avatar: yup.string(),
-    tagsets: yup.array().of(
-      yup.object().shape({
-        name: yup.string(),
-        tags: yup.array().of(yup.string()),
-      })
-    ),
-    references: yup.array().of(
-      yup.object().shape({
-        name: yup.string(),
-        uri: yup.string(),
-      })
-    ),
     description: yup.string().max(400),
+    tagsets: tagsetSchemaFragment,
+    references: referenceSchemaFragment,
   });
 
   /**
@@ -111,14 +100,16 @@ export const OrganizationForm: FC<Props> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: OrganisationModel) => {
-    if (refsToRemove.length !== 0) {
+  const handleSubmit = async (orgData: OrganisationModel, initialReferences: Reference[]) => {
+    const { tagsets, avatar, references, description, ...otherData } = orgData;
+
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
+
+    if (toRemove.length !== 0) {
       for (const ref of refsToRemove) {
         await removeRef({ variables: { ID: Number(ref) } });
       }
     }
-
-    const { tagsets, avatar, references, description, ...otherData } = orgData;
 
     const organization: Organisation = {
       ...currentOrganization,
@@ -159,7 +150,7 @@ export const OrganizationForm: FC<Props> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={values => handleSubmit(values, references)}
         >
           {({
             values: { name, references, tagsets, avatar, description },
@@ -201,71 +192,18 @@ export const OrganizationForm: FC<Props> = ({
                       />
                     </Form.Row>
 
-                    <TagsetSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
-                    <FieldArray name={'references'}>
-                      {({ push, remove }) => (
-                        <>
-                          <Form.Row>
-                            <Form.Group as={Col}>
-                              <Form.Label>References</Form.Label>
-                              {!isReadOnlyMode && (
-                                <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
-                                  Add
-                                </Button>
-                              )}
-                            </Form.Group>
-                          </Form.Row>
-                          {isReadOnlyMode && references?.length === 0 ? (
-                            <Form.Control
-                              type={'text'}
-                              placeholder={'No references yet'}
-                              readOnly={true}
-                              disabled={true}
-                            />
-                          ) : (
-                            references?.map((ref, index) => (
-                              <Form.Row key={index}>
-                                <InputField
-                                  name={`references.${index}.name`}
-                                  title={'Name'}
-                                  value={references[index].name}
-                                  readOnly={isReadOnlyMode}
-                                />
-                                <InputField
-                                  name={`references.${index}.uri`}
-                                  title={'URI'}
-                                  value={references[index].uri}
-                                  readOnly={isReadOnlyMode}
-                                />
-                                <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                                  <Button
-                                    onClick={() => {
-                                      remove(index);
-                                      isEditMode && ref.id && refsToRemove.push(ref.id);
-                                    }}
-                                    variant={'danger'}
-                                  >
-                                    Remove
-                                  </Button>
-                                </Form.Group>
-                              </Form.Row>
-                            ))
-                          )}
-                        </>
-                      )}
-                    </FieldArray>
+                    <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                    <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
                   </>
                 )}
                 {!isReadOnlyMode && (
-                  <>
-                    <div className={'d-flex mt-4'}>
-                      <div className={'flex-grow-1'} />
-                      {backButton}
-                      <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
-                        Save
-                      </Button>
-                    </div>
-                  </>
+                  <div className={'d-flex mt-4'}>
+                    <div className={'flex-grow-1'} />
+                    {backButton}
+                    <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                      Save
+                    </Button>
+                  </div>
                 )}
               </Form>
             );

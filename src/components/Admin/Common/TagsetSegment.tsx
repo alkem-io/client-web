@@ -2,17 +2,25 @@ import { FieldArray, useField } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { Tagset } from '../../../models/User';
+import * as yup from 'yup';
 
 interface TagsSegmentProps {
   tagsets: Tagset[];
-  isReadOnlyMode: boolean;
+  readOnly: boolean;
 }
 
 const getTagsetName = (name: string) => {
   return name === 'default' ? 'Tags' : `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`;
 };
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, isReadOnlyMode }) => {
+export const tagsetSchemaFragment = yup.array().of(
+  yup.object().shape({
+    name: yup.string(),
+    tags: yup.array().of(yup.string()),
+  })
+);
+
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly }) => {
   return (
     <FieldArray name={'tagsets'}>
       {() =>
@@ -22,7 +30,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, isReadOnlyMode })
             name={`tagsets[${index}].tags`}
             value={tagSet.tags}
             title={getTagsetName(tagSet.name)}
-            readOnly={isReadOnlyMode}
+            readOnly={readOnly}
           />
         ))
       }

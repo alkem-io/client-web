@@ -339,7 +339,7 @@ export const UserForm: FC<UserProps> = ({
                   </Form.Row>
                 )}
 
-                <TagsetSegment tagsets={tagsets} isReadOnlyMode={isReadOnlyMode} />
+                <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                 <FieldArray name={'references'}>
                   {({ push, remove }) => (
                     <>
