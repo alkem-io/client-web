@@ -4,7 +4,8 @@ import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
-import { defaultUser, Reference, Tagset, UserFromGenerated, UserModel } from '../../../models/User';
+import { Reference, Tagset } from '../../../models/Profile';
+import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
 import countriesList from '../../../utils/countriesList.json';
 import { EditMode } from '../../../utils/editMode';
 import SearchDropdown from '../../core/SearchDropdown';
@@ -144,7 +145,7 @@ export const UserForm: FC<UserProps> = ({
     for (const ref of toRemove) {
       await removeRef({ variables: { ID: Number(ref.id) } });
     }
-
+    debugger;
     const user: UserModel = {
       ...currentUser,
       ...otherData,
@@ -258,7 +259,7 @@ export const UserForm: FC<UserProps> = ({
                     <Form.Control
                       as={'select'}
                       onChange={handleChange}
-                      value={gender}
+                      value={gender.toLowerCase()}
                       name={'gender'}
                       readOnly={isReadOnlyMode}
                       disabled={isReadOnlyMode}

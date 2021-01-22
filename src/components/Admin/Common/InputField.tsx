@@ -8,6 +8,7 @@ interface InputFieldProps {
   name: string;
   required?: boolean;
   readOnly?: boolean;
+  disabled?: boolean;
   type?: string;
   placeholder?: string;
   as?: React.ElementType;
@@ -19,6 +20,7 @@ export const InputField: FC<InputFieldProps> = ({
   name,
   required = false,
   readOnly = false,
+  disabled = false,
   type,
   placeholder,
   as,
@@ -40,7 +42,7 @@ export const InputField: FC<InputFieldProps> = ({
         onChange={field.onChange}
         required={required}
         readOnly={readOnly}
-        disabled={readOnly}
+        disabled={disabled}
         isValid={required ? Boolean(!meta.error) && meta.touched : undefined}
         isInvalid={Boolean(!!meta.error) && meta.touched}
         onBlur={field.onBlur}

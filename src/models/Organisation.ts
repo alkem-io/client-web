@@ -1,4 +1,4 @@
-import { Tagset, Reference } from './User';
+import { Tagset, Reference } from './Profile';
 
 export interface OrganisationModel {
   name: string;

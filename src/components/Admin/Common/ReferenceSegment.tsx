@@ -1,7 +1,7 @@
 import { FieldArray } from 'formik';
 import React, { FC } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
-import { Reference } from '../../../models/User';
+import { Reference } from '../../../models/Profile';
 import InputField from './InputField';
 import * as yup from 'yup';
 

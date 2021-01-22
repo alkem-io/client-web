@@ -1,7 +1,7 @@
 import { FieldArray, useField } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form } from 'react-bootstrap';
-import { Tagset } from '../../../models/User';
+import { Tagset } from '../../../models/Profile';
 import * as yup from 'yup';
 
 interface TagsSegmentProps {
@@ -67,7 +67,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
           type={'text'}
           placeholder={placeholder || 'innovation, AI, technology, blockchain'}
           value={value?.join(',')}
-          disabled={readOnly}
+          readOnly={readOnly}
           required={required}
           onChange={e => {
             const stringValue = e.target.value;

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { Organisation, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
-import { Reference, Tagset } from '../../../models/User';
+import { Reference, Tagset } from '../../../models/Profile';
 import { EditMode } from '../../../utils/editMode';
 import Typography from '../../core/Typography';
 import InputField from '../Common/InputField';

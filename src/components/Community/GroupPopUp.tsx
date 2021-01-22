@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
 import { User } from '../../generated/graphql';
-import { Tagset } from '../../models/User';
+import { Tagset } from '../../models/Profile';
 import Tags from './Tags';
 import { createStyles } from '../../hooks/useTheme';
 import Divider from '../core/Divider';
