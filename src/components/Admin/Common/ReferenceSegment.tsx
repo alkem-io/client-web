@@ -22,21 +22,16 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
     <FieldArray name={'references'}>
       {({ push, remove }) => (
         <>
-          <Form.Row>
+          <Form.Row className={'mt-4'}>
             <Form.Group as={Col}>
               <Form.Label>References</Form.Label>
-              {!readOnly && (
-                <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
-                  Add
-                </Button>
-              )}
             </Form.Group>
           </Form.Row>
           {readOnly && references?.length === 0 ? (
             <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
           ) : (
             references?.map((ref, index) => (
-              <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
+              <Form.Row key={index} className={'align-items-sm-end'}>
                 <InputField
                   name={`references.${index}.name`}
                   title={'Name'}
@@ -63,6 +58,13 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                 )}
               </Form.Row>
             ))
+          )}
+          {!readOnly && (
+            <Form.Row className={'mt-4'}>
+              <Form.Group as={Col}>
+                <Button onClick={() => push({ name: '', uri: '' })}>Add Reference</Button>
+              </Form.Group>
+            </Form.Row>
           )}
         </>
       )}
