@@ -1,15 +1,18 @@
-import { FieldArray, Formik } from 'formik';
-import React, { FC, useEffect, useState } from 'react';
+import { Formik } from 'formik';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
-import Typography from '../../core/Typography';
-import { useTagsetsTemplateQuery } from '../../../generated/graphql';
-import { useRemoveReferenceMutation } from '../../../generated/graphql';
 import countriesList from '../../../utils/countriesList.json';
-import SearchDropdown from '../../core/SearchDropdown';
 import { EditMode } from '../../../utils/editMode';
+import SearchDropdown from '../../core/SearchDropdown';
+import Typography from '../../core/Typography';
+import { InputField } from '../Common/InputField';
+import { ReferenceSegment } from '../Common/ReferenceSegment';
+import TagsetSegment from '../Common/TagsetSegment';
 /*local files imports end*/
 
 interface UserProps {
@@ -26,8 +29,6 @@ export const UserForm: FC<UserProps> = ({
   title = 'User',
 }) => {
   const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
-  const [isAddingTagset, setIsAddingTagset] = useState<boolean>(false);
-  const [selectedTagset, setSelectedTagset] = useState<string>(availableTagsets[0] || '');
   const history = useHistory();
   const [removeRef] = useRemoveReferenceMutation();
 
@@ -43,8 +44,6 @@ export const UserForm: FC<UserProps> = ({
 
   useEffect(() => {}, [config]);
 
-  let refsToRemove: string[] = [];
-
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
@@ -58,9 +57,24 @@ export const UserForm: FC<UserProps> = ({
     phone,
     country,
     accountUpn,
-    profile: { description: bio, tagsets, references, avatar },
+    profile: { description: bio, references, avatar },
     memberof: { groups: groupList, challenges: challengeList },
   } = currentUser;
+
+  const tagsets = useMemo(() => {
+    let {
+      profile: { tagsets },
+    } = currentUser;
+    return availableTagsets.reduce(
+      (acc, cur) => {
+        if (acc.every(x => x.name.toLowerCase() !== cur.toLowerCase())) {
+          acc.push({ name: cur, tags: [] });
+        }
+        return acc;
+      },
+      [...(tagsets as Tagset[])]
+    );
+  }, [currentUser, availableTagsets]);
 
   const groups = groupList.reduce((prev, curr) => {
     if (prev) return prev.concat(', ', curr.name);
@@ -123,14 +137,15 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (userData: UserFromGenerated) => {
-    if (refsToRemove.length !== 0) {
-      for (const ref of refsToRemove) {
-        await removeRef({ variables: { ID: Number(ref) } });
-      }
-    }
+  const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
+
+    for (const ref of toRemove) {
+      await removeRef({ variables: { ID: Number(ref.id) } });
+    }
+    debugger;
     const user: UserModel = {
       ...currentUser,
       ...otherData,
@@ -169,7 +184,7 @@ export const UserForm: FC<UserProps> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={values => handleSubmit(values, references)}
         >
           {({
             values: {
@@ -190,53 +205,53 @@ export const UserForm: FC<UserProps> = ({
             setFieldValue,
             handleChange,
             handleSubmit,
-            handleBlur,
-            errors,
-            touched,
           }) => {
-            const getInputField = (
-              title: string,
-              value: string,
-              fieldName: string,
-              required = false,
-              readOnly = false,
-              type?: string,
-              placeholder?: string,
-              as?: React.ElementType
-            ) => (
-              <Form.Group as={Col}>
-                <Form.Label>
-                  {title}
-                  {required && <span style={{ color: '#d93636' }}>{' *'}</span>}
-                </Form.Label>
-                <Form.Control
-                  name={fieldName}
-                  as={as ? as : 'input'}
-                  type={type || 'text'}
-                  placeholder={placeholder || title}
-                  value={value}
-                  onChange={handleChange}
-                  required={required}
-                  readOnly={readOnly}
-                  disabled={readOnly}
-                  isValid={required ? Boolean(!errors[fieldName]) && Boolean(touched[fieldName]) : undefined}
-                  isInvalid={Boolean(!!errors[fieldName]) && Boolean(touched[fieldName])}
-                  onBlur={handleBlur}
-                />
-                <Form.Control.Feedback type="invalid">{errors[fieldName]}</Form.Control.Feedback>
-              </Form.Group>
-            );
-
             return (
               <Form noValidate>
-                <Form.Row>{getInputField('Full Name', name, 'name', true, isReadOnlyMode)}</Form.Row>
                 <Form.Row>
-                  {getInputField('First Name', firstName, 'firstName', true, isReadOnlyMode)}
-                  {getInputField('Last name', lastName, 'lastName', true, isReadOnlyMode)}
+                  <InputField
+                    name={'name'}
+                    title={'Full Name'}
+                    value={name}
+                    required={true}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Full Name'}
+                  />
                 </Form.Row>
                 <Form.Row>
-                  {getInputField('Email', email, 'email', true, isReadOnlyMode || isEditMode, 'email')}
-                  {getInputField('Azure user name', accountUpn, 'upn', false, true, 'text', ' ')}
+                  <InputField
+                    name={'firstName'}
+                    title={'First Name'}
+                    value={firstName}
+                    required={true}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'First Name'}
+                  />
+                  <InputField
+                    name={'lastName'}
+                    title={'Last name'}
+                    value={lastName}
+                    required={true}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Last name'}
+                  />
+                </Form.Row>
+                <Form.Row>
+                  <InputField
+                    name={'email'}
+                    type={'email'}
+                    title={'Email'}
+                    value={email}
+                    required={true}
+                    readOnly={isReadOnlyMode || isEditMode}
+                  />
+                  <InputField
+                    name={'upn'}
+                    title={'Azure user name'}
+                    value={accountUpn}
+                    readOnly={true}
+                    placeholder={'Azure user name'}
+                  />
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} sm={6}>
@@ -244,7 +259,7 @@ export const UserForm: FC<UserProps> = ({
                     <Form.Control
                       as={'select'}
                       onChange={handleChange}
-                      value={gender}
+                      value={gender.toLowerCase()}
                       name={'gender'}
                       readOnly={isReadOnlyMode}
                       disabled={isReadOnlyMode}
@@ -264,181 +279,69 @@ export const UserForm: FC<UserProps> = ({
                       onSelect={value => setFieldValue('country', value)}
                     />
                   </Form.Group>
-                  {getInputField('City', city, 'city', false, isReadOnlyMode)}
+                  <InputField
+                    name={'city'}
+                    title={'City'}
+                    value={city}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'City'}
+                  />
                 </Form.Row>
-                <Form.Row>{getInputField('Phone', phone, 'phone', false, isReadOnlyMode)}</Form.Row>
                 <Form.Row>
-                  {getInputField('Bio', bio, 'bio', false, isReadOnlyMode, undefined, 'Bio', 'textarea')}
+                  <InputField
+                    name={'phone'}
+                    title={'Phone'}
+                    value={phone}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Phone'}
+                  />
                 </Form.Row>
-                <Form.Row>{getInputField('Avatar', avatar, 'avatar', false, isReadOnlyMode)}</Form.Row>
+                <Form.Row>
+                  <InputField
+                    name={'bio'}
+                    title={'Bio'}
+                    value={bio}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Bio'}
+                    as={'textarea'}
+                  />
+                </Form.Row>
+                <Form.Row>
+                  <InputField
+                    name={'avatar'}
+                    title={'Avatar'}
+                    value={avatar}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Avatar'}
+                  />
+                </Form.Row>
 
                 {editMode !== EditMode.new && (
-                  <Form.Row>{getInputField('Groups', groups, 'groups', false, true)}</Form.Row>
+                  <Form.Row>
+                    <InputField
+                      name={'groups'}
+                      title={'Groups'}
+                      value={groups}
+                      readOnly={true}
+                      placeholder={'Groups'}
+                    />
+                  </Form.Row>
                 )}
                 {editMode !== EditMode.new && (
-                  <Form.Row>{getInputField('Challenges', challenges, 'challenges', false, true)}</Form.Row>
+                  <Form.Row>
+                    <InputField
+                      name={'challenges'}
+                      title={'Challenges'}
+                      value={challenges}
+                      readOnly={true}
+                      placeholder={'Challenges'}
+                    />
+                  </Form.Row>
                 )}
 
-                <FieldArray name={'tagsets'}>
-                  {({ push, remove }) => (
-                    <>
-                      <Form.Row>
-                        <Form.Group as={Col} xs={2}>
-                          <Form.Label>Tagsets</Form.Label>
-                          {!isReadOnlyMode && availableTagsets.length > 0 && (
-                            <Button
-                              className={'ml-3'}
-                              onClick={() => {
-                                setIsAddingTagset(true);
-                                setSelectedTagset(availableTagsets[0]);
-                              }}
-                              disabled={isAddingTagset}
-                            >
-                              Add
-                            </Button>
-                          )}
-                        </Form.Group>
-                        {isAddingTagset && (
-                          <>
-                            <Form.Group controlId="tagsetName" as={Col} xs={2}>
-                              <Form.Control
-                                as="select"
-                                custom
-                                onChange={e => setSelectedTagset(e.target.value)}
-                                defaultValue={selectedTagset}
-                              >
-                                {availableTagsets?.map((at, index) => (
-                                  <option value={at} key={index}>
-                                    {at}
-                                  </option>
-                                ))}
-                              </Form.Control>
-                            </Form.Group>
-                            <Form.Group as={Col} xs={1}>
-                              <Button
-                                className={'ml-3'}
-                                variant={'secondary'}
-                                onClick={() => {
-                                  setSelectedTagset('');
-                                  setIsAddingTagset(false);
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                            </Form.Group>
-                            <Form.Group as={Col} xs={1}>
-                              {!isReadOnlyMode && (
-                                <Button
-                                  className={'ml-3'}
-                                  onClick={() => {
-                                    push({ name: availableTagsets[0], tags: [] });
-                                    setSelectedTagset('');
-                                    setIsAddingTagset(false);
-                                    setAvailableTagsets(availableTagsets.filter(t => t !== selectedTagset));
-                                  }}
-                                >
-                                  Confirm
-                                </Button>
-                              )}
-                            </Form.Group>
-                          </>
-                        )}
-                      </Form.Row>
-                      {isReadOnlyMode && tagsets.length === 0 ? (
-                        <Form.Control type={'text'} placeholder={'No tagsets yet'} readOnly={true} disabled={true} />
-                      ) : (
-                        tagsets.map((ts, index) => (
-                          <Form.Row key={index} className={'mb-4 align-items-sm-end'}>
-                            <Form.Group as={Col}>
-                              <Form.Label>Tagset</Form.Label>
-                              <Form.Control name={'Tagset'} type={'text'} value={tagsets[index].name} disabled={true} />
-                            </Form.Group>
-                            <Form.Group as={Col}>
-                              <Form.Label>Tags</Form.Label>
-                              <Form.Control
-                                name={`tagsets.${index}.tags`}
-                                type={'text'}
-                                placeholder={'innovation, AI, technology, blockchain'}
-                                value={tagsets[index].tags?.join(',')}
-                                onChange={e => {
-                                  const stringValue = e.target.value;
-                                  const tagsetArray = stringValue.split(',');
-                                  setFieldValue(`tagsets.${index}.tags`, tagsetArray);
-                                }}
-                                onBlur={() => {
-                                  const polishedTagsets = tagsets[index].tags.map(el => el.trim()).filter(el => el);
-                                  setFieldValue(`tagsets.${index}.tags`, polishedTagsets);
-                                }}
-                              />
-                            </Form.Group>
-                            <Form.Group as={Col} xs={2}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  setAvailableTagsets([...availableTagsets, tagsets[index].name]);
-                                }}
-                                variant={'danger'}
-                                // style={{ marginTop: 32 }}
-                              >
-                                Remove
-                              </Button>
-                            </Form.Group>
-                          </Form.Row>
-                        ))
-                      )}
-                    </>
-                  )}
-                </FieldArray>
+                <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
 
-                <FieldArray name={'references'}>
-                  {({ push, remove }) => (
-                    <>
-                      <Form.Row>
-                        <Form.Group as={Col}>
-                          <Form.Label>References</Form.Label>
-                          {!isReadOnlyMode && (
-                            <Button className={'ml-3'} onClick={() => push({ name: '', uri: '' })}>
-                              Add
-                            </Button>
-                          )}
-                        </Form.Group>
-                      </Form.Row>
-                      {isReadOnlyMode && references.length === 0 ? (
-                        <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
-                      ) : (
-                        references.map((ref, index) => (
-                          <Form.Row key={index}>
-                            {getInputField(
-                              'Name',
-                              references[index].name,
-                              `references.${index}.name`,
-                              false,
-                              isReadOnlyMode
-                            )}
-                            {getInputField(
-                              'URI',
-                              references[index].uri,
-                              `references.${index}.uri`,
-                              false,
-                              isReadOnlyMode
-                            )}
-                            <Form.Group as={Col} xs={2} className={'form-grp-remove'}>
-                              <Button
-                                onClick={() => {
-                                  remove(index);
-                                  isEditMode && ref.id && refsToRemove.push(ref.id);
-                                }}
-                                variant={'danger'}
-                              >
-                                Remove
-                              </Button>
-                            </Form.Group>
-                          </Form.Row>
-                        ))
-                      )}
-                    </>
-                  )}
-                </FieldArray>
                 {!isReadOnlyMode && (
                   <>
                     <div className={'d-flex mt-4'}>

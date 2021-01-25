@@ -1,4 +1,5 @@
 import { Organisation } from '../generated/graphql';
+import { Reference, Tagset } from './Profile';
 
 export interface UserModel {
   id: string;
@@ -25,7 +26,6 @@ export interface UserModel {
     organisations: Organisation[];
   };
 }
-
 interface Challenge {
   id: string;
   name: string;
@@ -35,17 +35,6 @@ interface Group {
   id: string;
   name: string;
 }
-export interface Tagset {
-  name: string;
-  tags: Array<string>;
-}
-
-export interface Reference {
-  id: string;
-  name: string;
-  uri: string;
-}
-
 export const defaultUser: UserModel = {
   id: '',
   name: '',
