@@ -145,7 +145,7 @@ export const UserForm: FC<UserProps> = ({
     for (const ref of toRemove) {
       await removeRef({ variables: { ID: Number(ref.id) } });
     }
-    debugger;
+
     const user: UserModel = {
       ...currentUser,
       ...otherData,

@@ -19,6 +19,7 @@ import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
 import { useServerMetadataQuery } from '../generated/graphql';
+import { useHistory } from 'react-router-dom';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -45,6 +46,8 @@ const App = ({ children }): React.ReactElement => {
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
+
+  const history = useHistory();
 
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
@@ -80,6 +83,15 @@ const App = ({ children }): React.ReactElement => {
               onSignOut={safeUnauthenticate}
             />
             {!user && <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small />}
+            {!user && (
+              <Button
+                text={'Sign up'}
+                style={{ marginLeft: 20 }}
+                onClick={() => history.push('/register')}
+                small
+                variant={'default'}
+              />
+            )}
           </div>
         )}
       </Header>

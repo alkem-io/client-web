@@ -10,6 +10,7 @@ import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
 import AboutPage from '../pages/About';
+import { RegisterRoute } from './register';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -28,6 +29,9 @@ export const Routing: FC = () => {
       <Route path="/ecoverse">
         <Ecoverses />
       </Route>
+      <Route exact path="/register">
+        <RegisterRoute />
+      </Route>
       <RestrictedRoute exact path="/community">
         <Community />
       </RestrictedRoute>
@@ -37,6 +41,7 @@ export const Routing: FC = () => {
       <RestrictedRoute exact path="/profile">
         <UserProfile />
       </RestrictedRoute>
+
       <Route exact path="/signin">
         <SignIn />
       </Route>
