@@ -1,13 +1,16 @@
+import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { Dropdown, FormControl } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
-import clsx from 'clsx';
 // import Button from './Button';
+
+const NOT_SELECTED = 'Not selected';
 
 interface Props {
   data: string[];
   onSelect: (value: string | null) => void;
   value: string;
+  readOnly?: boolean;
 }
 
 const useSearchDropdownStyles = createStyles(() => ({
@@ -42,7 +45,7 @@ const useSearchDropdownStyles = createStyles(() => ({
   },
 }));
 
-const SearchDropdown: FC<Props> = ({ onSelect, data, value }) => {
+const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false }) => {
   const styles = useSearchDropdownStyles();
   // forwardRef again here!
   // Dropdown needs access to the DOM of the Menu to measure it
@@ -68,10 +71,11 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value }) => {
     );
   });
 
+  if (readOnly) return <FormControl placeholder={NOT_SELECTED} value={value} readOnly={true} />;
   return (
     <Dropdown onSelect={v => onSelect(v)}>
       <Dropdown.Toggle className={styles.toggle} id="dropdown-custom-components">
-        {value || 'Not selected'}
+        {value || NOT_SELECTED}
       </Dropdown.Toggle>
 
       <Dropdown.Menu as={CustomMenu} onSelect={e => console.log(e)}>

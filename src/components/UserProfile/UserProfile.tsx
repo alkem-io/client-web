@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
+import { useHistory } from 'react-router-dom';
 import roles from '../../configs/roles.json';
 import { User, useUserProfileQuery } from '../../generated/graphql';
 /*components imports end*/
@@ -7,6 +8,7 @@ import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { defaultUser } from '../../models/User';
 import Avatar from '../core/Avatar';
+import Button from '../core/Button';
 import Card from '../core/Card';
 import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
@@ -62,14 +64,23 @@ const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   );
 };
 
-export const ContactDetails: FC<User | undefined> = ({ country, city, email, phone }) => {
+export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
+  user: { country, city, email, phone },
+  onEdit,
+}) => {
   return (
-    <Card primaryTextProps={{ text: 'Contact Details' }} bodyProps={{ classes: {} }}>
-      <Detail title="Email" value={email} />
-      <Detail title="Phone" value={phone} />
-      <Detail title="Country" value={country} />
-      <Detail title="City" value={city} />
-    </Card>
+    <>
+      <Card primaryTextProps={{ text: 'Contact Details' }} bodyProps={{ classes: {} }}>
+        <Detail title="Email" value={email} />
+        <Detail title="Phone" value={phone} />
+        <Detail title="Country" value={country} />
+        <Detail title="City" value={city} />
+
+        <Button variant={'primary'} small onClick={() => onEdit && onEdit()}>
+          Edit
+        </Button>
+      </Card>
+    </>
   );
 };
 
@@ -91,6 +102,7 @@ const useProfileStyles = createStyles(theme => ({
 }));
 
 export const UserProfile: FC = () => {
+  const history = useHistory();
   const styles = useProfileStyles();
   useTransactionScope({ type: 'authentication' });
   const { data, loading } = useUserProfileQuery();
@@ -103,10 +115,17 @@ export const UserProfile: FC = () => {
 
   const tags = user?.profile?.tagsets?.flatMap(x => x.tags);
 
+  const handleEditContactDetails = () => {
+    history.push('/profile/edit');
+  };
+
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
   return (
-    <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />} details={<ContactDetails {...user} />}>
+    <Section
+      avatar={<Avatar size="lg" src={user?.profile?.avatar} />}
+      details={<ContactDetails user={user} onEdit={handleEditContactDetails} />}
+    >
       <Header text={user?.name} />
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
@@ -160,23 +179,6 @@ export const UserProfile: FC = () => {
         ))}
       </Body>
     </Section>
-    /* <Container className={'mt-5'}>
-    //   <UserFrom user={data?.me || defaultUser} editMode={EditMode.readOnly} title={'My account info '} />
-    //   <Row>
-    //     <Form.Group as={Col}>
-    //       <Form.Label>Groups</Form.Label>
-    //       <Form.Control type={'text'} value={getListFromArray(groups)} readOnly={true} disabled={true} />
-    //     </Form.Group>
-    //   </Row>
-    //   <Row>
-    //     <Form.Group as={Col}>
-    //       <Form.Label>Challenges</Form.Label>
-    //       <Form.Control type={'text'} value={getListFromArray(challenges)} readOnly={true} disabled={true} />
-    //     </Form.Group>
-    //   </Row>
-    //   <Typography variant={'h3'}>My Roles:</Typography>
-    //   <UserRoles />
-    // </Container> */
   );
 };
 
