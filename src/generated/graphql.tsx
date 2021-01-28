@@ -182,6 +182,8 @@ export type MemberOf = {
   challenges: Array<Challenge>;
   /** References to the groups the user is in at the ecoverse level */
   groups: Array<UserGroup>;
+  /** References to the opportunities the user is a member of */
+  opportunities: Array<Opportunity>;
   /** References to the orgnaisaitons the user is a member of */
   organisations: Array<Organisation>;
 };
@@ -1684,6 +1686,7 @@ export type UserMembersFragment = { __typename?: 'User' } & {
       groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
       challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
       organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
+      opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'>>;
     }
   >;
 };
@@ -1844,6 +1847,11 @@ export const UserMembersFragmentDoc = gql`
       organisations {
         id
         name
+      }
+      opportunities {
+        id
+        name
+        textID
       }
     }
   }
