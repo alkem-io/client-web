@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { User, UserInput, useUpdateUserMutation, useUserProfileQuery } from '../../generated/graphql';
+import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { EditMode } from '../../utils/editMode';
 import { UserForm } from '../Admin/User/UserForm';
@@ -10,11 +11,12 @@ interface EditUserProfileProps {}
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const { data, loading } = useUserProfileQuery();
-
+  const notify = useNotification();
   const [updateUser] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => {
       console.log('User profile updated successfully');
+      notify('User updated successfully', 'success');
       // setMessage('User updated successfully');
       // setStatus('success');
     },
