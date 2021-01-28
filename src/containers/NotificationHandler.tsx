@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { clearError } from '../reducers/error/actions';
 
-export const ErrorHandler: FC = () => {
+export const NotificationHandler: FC = () => {
   const error = useTypedSelector<Error | AuthError | undefined>(state => {
     return state.error.errors[0];
   });
