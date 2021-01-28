@@ -182,6 +182,8 @@ export type MemberOf = {
   challenges: Array<Challenge>;
   /** References to the groups the user is in at the ecoverse level */
   groups: Array<UserGroup>;
+  /** References to the opportunities the user is a member of */
+  opportunities: Array<Opportunity>;
   /** References to the orgnaisaitons the user is a member of */
   organisations: Array<Organisation>;
 };
@@ -306,6 +308,8 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Updates the Ecoverse with the provided data */
   updateEcoverse: Ecoverse;
+  /** Update user profile. */
+  updateMyProfile: User;
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
   /** Updates the organisation with the given data */
@@ -517,6 +521,10 @@ export type MutationUpdateChallengeArgs = {
 
 export type MutationUpdateEcoverseArgs = {
   ecoverseData: EcoverseInput;
+};
+
+export type MutationUpdateMyProfileArgs = {
+  userData: UserInput;
 };
 
 export type MutationUpdateOpportunityArgs = {
@@ -1760,6 +1768,14 @@ export type UserCardDataQuery = { __typename?: 'Query' } & {
       >;
     } & UserDetailsFragment
   >;
+};
+
+export type UpdateMyProfileMutationVariables = Exact<{
+  user: UserInput;
+}>;
+
+export type UpdateMyProfileMutation = { __typename?: 'Mutation' } & {
+  updateMyProfile: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export const GroupMembersFragmentDoc = gql`
@@ -5385,3 +5401,47 @@ export function useUserCardDataLazyQuery(
 export type UserCardDataQueryHookResult = ReturnType<typeof useUserCardDataQuery>;
 export type UserCardDataLazyQueryHookResult = ReturnType<typeof useUserCardDataLazyQuery>;
 export type UserCardDataQueryResult = Apollo.QueryResult<UserCardDataQuery, UserCardDataQueryVariables>;
+export const UpdateMyProfileDocument = gql`
+  mutation updateMyProfile($user: UserInput!) {
+    updateMyProfile(userData: $user) {
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+export type UpdateMyProfileMutationFn = Apollo.MutationFunction<
+  UpdateMyProfileMutation,
+  UpdateMyProfileMutationVariables
+>;
+
+/**
+ * __useUpdateMyProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useUpdateMyProfileMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>
+) {
+  return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(
+    UpdateMyProfileDocument,
+    baseOptions
+  );
+}
+export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
+export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
+export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<
+  UpdateMyProfileMutation,
+  UpdateMyProfileMutationVariables
+>;
