@@ -45,6 +45,11 @@ export const USER_MEMBER_OF_FRAGMENT = gql`
         id
         name
       }
+      opportunities {
+        id
+        name
+        textID
+      }
     }
   }
 `;

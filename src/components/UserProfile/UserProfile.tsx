@@ -100,6 +100,7 @@ export const UserProfile: FC = () => {
   const references = user?.profile?.references || [];
   const groups = user?.memberof?.groups.map(g => g.name) || [];
   const challenges = user?.memberof?.challenges.map(c => c.name) || [];
+  const opportunities = user?.memberof?.opportunities.map(c => c.name) || [];
 
   const tags = user?.profile?.tagsets?.flatMap(x => x.tags);
 
@@ -156,6 +157,15 @@ export const UserProfile: FC = () => {
             </Typography>
             <div style={{ flexGrow: 1 }} />
             <Tag text="challenge" color="neutral" />
+          </div>
+        ))}
+        {opportunities.map((x, i) => (
+          <div key={i} className={styles.listDetail}>
+            <Typography variant="h4" as="span" className={styles.noPadding}>
+              {x}
+            </Typography>
+            <div style={{ flexGrow: 1 }} />
+            <Tag text="opportunity" color="neutral" />
           </div>
         ))}
       </Body>
