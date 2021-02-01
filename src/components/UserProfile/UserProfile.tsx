@@ -94,9 +94,10 @@ export type MemberOfProps = {
   references?: Reference[];
   groups: string[];
   challenges: string[];
+  opportunities: string[];
 };
 
-export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges }) => {
+export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges, opportunities }) => {
   const styles = useMemberOfStyles();
 
   return (
@@ -131,6 +132,15 @@ export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges }) 
           <Tag text="challenge" color="neutral" />
         </div>
       ))}
+      {opportunities.map((x, i) => (
+        <div key={i} className={styles.listDetail}>
+          <Typography as="span" className={styles.noPadding}>
+            {x}
+          </Typography>
+          <div style={{ flexGrow: 1 }} />
+          <Tag text="opportunity" color="primary" />
+        </div>
+      ))}
     </>
   );
 };
@@ -146,6 +156,7 @@ export const UserProfile: FC = () => {
   const references = user?.profile?.references || [];
   const groups = user?.memberof?.groups.map(g => g.name) || [];
   const challenges = user?.memberof?.challenges.map(c => c.name) || [];
+  const opportunities = user?.memberof?.opportunities.map(c => c.name) || [];
 
   const tags = user?.profile?.tagsets?.flatMap(x => x.tags);
 
@@ -158,7 +169,9 @@ export const UserProfile: FC = () => {
   return (
     <Section
       avatar={<Avatar size="lg" src={user?.profile?.avatar} />}
-      details={<MemberOf references={references} groups={groups} challenges={challenges} />}
+      details={
+        <MemberOf references={references} groups={groups} challenges={challenges} opportunities={opportunities} />
+      }
     >
       <Header text={user?.name}></Header>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

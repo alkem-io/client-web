@@ -52,6 +52,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
   const groups = getArrayOfNames(user?.memberof?.groups);
   const challenges = getArrayOfNames(user?.memberof?.challenges);
   const organisations = getArrayOfNames(user?.memberof?.organisations);
+  const opportunities = getArrayOfNames(user?.memberof?.opportunities);
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 
@@ -129,6 +130,16 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
                   </Typography>
                 </td>
                 <td>{getStringOfNames(organisations)}</td>
+              </tr>
+            )}
+            {opportunities && opportunities.length > 0 && (
+              <tr>
+                <td>
+                  <Typography weight={'medium'} className={styles.centeredText}>
+                    Opportunites
+                  </Typography>
+                </td>
+                <td>{getStringOfNames(opportunities)}</td>
               </tr>
             )}
           </tbody>
