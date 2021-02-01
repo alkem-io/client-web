@@ -58,7 +58,6 @@ export const UserForm: FC<UserProps> = ({
     country,
     accountUpn,
     profile: { description: bio, references, avatar },
-    memberof: { groups: groupList, challenges: challengeList },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -76,16 +75,6 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, availableTagsets]);
 
-  const groups = groupList.reduce((prev, curr) => {
-    if (prev) return prev.concat(', ', curr.name);
-    return curr.name;
-  }, '');
-
-  const challenges = challengeList.reduce((prev, curr) => {
-    if (prev) return prev.concat(', ', curr.name);
-    return curr.name;
-  }, '');
-
   const initialValues = {
     name: name || '',
     firstName: firstName || '',
@@ -100,8 +89,6 @@ export const UserForm: FC<UserProps> = ({
     references: references || '',
     accountUpn: accountUpn || '',
     bio: bio || '',
-    challenges: challenges || '',
-    groups: groups || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -139,7 +126,7 @@ export const UserForm: FC<UserProps> = ({
    */
   const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
+    const { tagsets, avatar, references, bio, ...otherData } = userData;
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
@@ -300,23 +287,6 @@ export const UserForm: FC<UserProps> = ({
                   placeholder={'Avatar'}
                 />
               </Form.Row>
-
-              {editMode !== EditMode.new && (
-                <Form.Row>
-                  <InputField name={'groups'} title={'Groups'} value={groups} readOnly={true} placeholder={'Groups'} />
-                </Form.Row>
-              )}
-              {editMode !== EditMode.new && (
-                <Form.Row>
-                  <InputField
-                    name={'challenges'}
-                    title={'Challenges'}
-                    value={challenges}
-                    readOnly={true}
-                    placeholder={'Challenges'}
-                  />
-                </Form.Row>
-              )}
 
               <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
               <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
