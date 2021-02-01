@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import roles from '../../configs/roles.json';
-import { User, useUserProfileQuery } from '../../generated/graphql';
+import { Reference, User, useUserProfileQuery } from '../../generated/graphql';
 /*components imports end*/
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
@@ -64,33 +64,22 @@ const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   );
 };
 
-export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
-  user: { country, city, email, phone },
-  onEdit,
-}) => {
+export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { country, city, email, phone } }) => {
   return (
     <>
-      <Card primaryTextProps={{ text: 'Contact Details' }} bodyProps={{ classes: {} }}>
+      <Card bodyProps={{ classes: {} }}>
         <Detail title="Email" value={email} />
         <Detail title="Phone" value={phone} />
         <Detail title="Country" value={country} />
         <Detail title="City" value={city} />
-
-        <Button variant={'primary'} small onClick={() => onEdit && onEdit()}>
-          Edit
-        </Button>
       </Card>
     </>
   );
 };
 
-const useProfileStyles = createStyles(theme => ({
-  roleContainer: {
-    display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
-  },
+const useMemberOfStyles = createStyles(theme => ({
   listDetail: {
-    padding: theme.shape.spacing(2),
+    padding: theme.shape.spacing(1),
     marginTop: theme.shape.spacing(1),
     backgroundColor: theme.palette.neutralLight,
     display: 'flex',
@@ -101,9 +90,54 @@ const useProfileStyles = createStyles(theme => ({
   },
 }));
 
+export type MemberOfProps = {
+  references?: Reference[];
+  groups: string[];
+  challenges: string[];
+};
+
+export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges }) => {
+  const styles = useMemberOfStyles();
+
+  return (
+    <>
+      {references?.map((x, i) => (
+        <div key={i} className={styles.listDetail}>
+          <div style={{ flexDirection: 'column' }}>
+            <Typography as="span">{x.name}</Typography>
+            <Typography variant="caption" color="neutralMedium">
+              {x.description ? x.description : <i>No description provided</i>}
+            </Typography>
+          </div>
+          <div style={{ flexGrow: 1 }} />
+          <Tag text="references" color="positive" />
+        </div>
+      ))}
+      {groups.map((x, i) => (
+        <div key={i} className={styles.listDetail}>
+          <Typography as="span" className={styles.noPadding}>
+            {x}
+          </Typography>
+          <div style={{ flexGrow: 1 }} />
+          <Tag text="group" color="primary" />
+        </div>
+      ))}
+      {challenges.map((x, i) => (
+        <div key={i} className={styles.listDetail}>
+          <Typography as="span" className={styles.noPadding}>
+            {x}
+          </Typography>
+          <div style={{ flexGrow: 1 }} />
+          <Tag text="challenge" color="neutral" />
+        </div>
+      ))}
+    </>
+  );
+};
+
 export const UserProfile: FC = () => {
   const history = useHistory();
-  const styles = useProfileStyles();
+
   useTransactionScope({ type: 'authentication' });
   const { data, loading } = useUserProfileQuery();
 
@@ -124,9 +158,9 @@ export const UserProfile: FC = () => {
   return (
     <Section
       avatar={<Avatar size="lg" src={user?.profile?.avatar} />}
-      details={<ContactDetails user={user} onEdit={handleEditContactDetails} />}
+      details={<MemberOf references={references} groups={groups} challenges={challenges} />}
     >
-      <Header text={user?.name} />
+      <Header text={user?.name}></Header>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
           Roles
@@ -145,38 +179,10 @@ export const UserProfile: FC = () => {
       )}
       <Body text={user?.profile?.description}>
         <div style={{ marginTop: 20 }} />
-        {references?.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <div style={{ flexDirection: 'column' }}>
-              <Typography variant="h4" as="span">
-                {x.name}
-              </Typography>
-              <Typography variant="caption" color="neutralMedium">
-                {x.description ? x.description : <i>No description provided</i>}
-              </Typography>
-            </div>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="references" color="positive" />
-          </div>
-        ))}
-        {groups.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography variant="h4" as="span" className={styles.noPadding}>
-              {x}
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="group" color="primary" />
-          </div>
-        ))}
-        {challenges.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography variant="h4" as="span" className={styles.noPadding}>
-              {x}
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="challenge" color="neutral" />
-          </div>
-        ))}
+        <Button variant={'primary'} small onClick={handleEditContactDetails}>
+          Edit
+        </Button>
+        <ContactDetails user={user} onEdit={handleEditContactDetails} />
       </Body>
     </Section>
   );
