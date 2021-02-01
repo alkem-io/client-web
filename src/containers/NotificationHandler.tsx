@@ -30,9 +30,9 @@ export const NotificationHandler: FC = () => {
   return (
     <>
       <div style={{ position: 'fixed', bottom: 20, right: 20 }}>
-        {notifications.map(x => {
+        {notifications.map((x, i) => {
           return (
-            <Toast show={true} onClose={() => closeMessage(x.id)}>
+            <Toast key={i} show={true} onClose={() => closeMessage(x.id)}>
               <Toast.Header>
                 {getIcon(x.severity)}
                 <strong className="mr-auto">Notification</strong>
