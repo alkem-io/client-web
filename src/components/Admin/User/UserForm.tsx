@@ -1,7 +1,6 @@
 import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { Reference, Tagset } from '../../../models/Profile';
@@ -19,6 +18,7 @@ interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
   onSave?: (user: UserModel) => void;
+  onCancel?: () => void;
   title?: string;
 }
 
@@ -26,10 +26,10 @@ export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
   editMode = EditMode.readOnly,
   onSave,
+  onCancel,
   title = 'User',
 }) => {
   const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
-  const history = useHistory();
   const [removeRef] = useRemoveReferenceMutation();
 
   const genders = ['not specified', 'male', 'female'];
@@ -58,7 +58,6 @@ export const UserForm: FC<UserProps> = ({
     country,
     accountUpn,
     profile: { description: bio, references, avatar },
-    memberof: { groups: groupList, challenges: challengeList },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -76,16 +75,6 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, availableTagsets]);
 
-  const groups = groupList.reduce((prev, curr) => {
-    if (prev) return prev.concat(', ', curr.name);
-    return curr.name;
-  }, '');
-
-  const challenges = challengeList.reduce((prev, curr) => {
-    if (prev) return prev.concat(', ', curr.name);
-    return curr.name;
-  }, '');
-
   const initialValues = {
     name: name || '',
     firstName: firstName || '',
@@ -100,8 +89,6 @@ export const UserForm: FC<UserProps> = ({
     references: references || '',
     accountUpn: accountUpn || '',
     bio: bio || '',
-    challenges: challenges || '',
-    groups: groups || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -139,13 +126,13 @@ export const UserForm: FC<UserProps> = ({
    */
   const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { challenges, groups, tagsets, avatar, references, bio, ...otherData } = userData;
+    const { tagsets, avatar, references, bio, ...otherData } = userData;
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
       await removeRef({ variables: { ID: Number(ref.id) } });
     }
-    debugger;
+
     const user: UserModel = {
       ...currentUser,
       ...otherData,
@@ -159,206 +146,165 @@ export const UserForm: FC<UserProps> = ({
     onSave && onSave(user);
   };
 
-  const handleBack = () => history.goBack();
-
   const backButton = (
-    <Button variant={editMode ? 'secondary' : 'primary'} onClick={handleBack}>
-      {editMode ? 'Cancel' : 'Back'}
+    <Button variant={isEditMode ? 'secondary' : 'primary'} onClick={() => onCancel && onCancel()}>
+      {isEditMode ? 'Cancel' : 'Back'}
     </Button>
   );
 
-  if (!currentUser && editMode !== EditMode.new) {
-    return (
-      <>
-        <div>User not found!</div>
-        {backButton}
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Typography variant={'h3'} className={'mt-4 mb-4'}>
-          {title}
-        </Typography>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          onSubmit={values => handleSubmit(values, references)}
-        >
-          {({
-            values: {
-              name,
-              firstName,
-              lastName,
-              email,
-              city,
-              phone,
-              country,
-              references,
-              tagsets,
-              avatar,
-              gender,
-              accountUpn,
-              bio,
-            },
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-          }) => {
-            return (
-              <Form noValidate>
-                <Form.Row>
-                  <InputField
-                    name={'name'}
-                    title={'Full Name'}
-                    value={name}
-                    required={true}
+  return (
+    <>
+      <Typography variant={'h3'} className={'mt-4 mb-4'}>
+        {title}
+      </Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={isReadOnlyMode ? undefined : validationSchema}
+        enableReinitialize
+        onSubmit={values => handleSubmit(values, references)}
+      >
+        {({
+          values: {
+            name,
+            firstName,
+            lastName,
+            email,
+            city,
+            phone,
+            country,
+            references,
+            tagsets,
+            avatar,
+            gender,
+            accountUpn,
+            bio,
+          },
+          setFieldValue,
+          handleChange,
+          handleSubmit,
+        }) => {
+          return (
+            <Form noValidate>
+              <Form.Row>
+                <InputField
+                  name={'name'}
+                  title={'Full Name'}
+                  value={name}
+                  required={true && !isReadOnlyMode}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'Full Name'}
+                />
+              </Form.Row>
+              <Form.Row>
+                <InputField
+                  name={'firstName'}
+                  title={'First Name'}
+                  value={firstName}
+                  required={true && !isReadOnlyMode}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'First Name'}
+                />
+                <InputField
+                  name={'lastName'}
+                  title={'Last name'}
+                  value={lastName}
+                  required={true && !isReadOnlyMode}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'Last name'}
+                />
+              </Form.Row>
+              <Form.Row>
+                <InputField
+                  name={'email'}
+                  type={'email'}
+                  title={'Email'}
+                  value={email}
+                  required={true && !isReadOnlyMode}
+                  readOnly={isReadOnlyMode || isEditMode}
+                />
+                <InputField
+                  name={'upn'}
+                  title={'Azure user name'}
+                  value={accountUpn}
+                  readOnly={true}
+                  placeholder={'Azure user name'}
+                />
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} sm={6}>
+                  <Form.Label>Gender</Form.Label>
+                  <Form.Control
+                    as={'select'}
+                    onChange={handleChange}
+                    value={gender.toLowerCase()}
+                    name={'gender'}
                     readOnly={isReadOnlyMode}
-                    placeholder={'Full Name'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <InputField
-                    name={'firstName'}
-                    title={'First Name'}
-                    value={firstName}
-                    required={true}
+                    disabled={isReadOnlyMode}
+                  >
+                    {genders.map(el => (
+                      <option key={el}>{el}</option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} xs={6}>
+                  <Form.Label>Country</Form.Label>
+                  <SearchDropdown
+                    value={country}
+                    data={countriesList.map(el => el.name)}
                     readOnly={isReadOnlyMode}
-                    placeholder={'First Name'}
+                    onSelect={value => setFieldValue('country', value)}
                   />
-                  <InputField
-                    name={'lastName'}
-                    title={'Last name'}
-                    value={lastName}
-                    required={true}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Last name'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <InputField
-                    name={'email'}
-                    type={'email'}
-                    title={'Email'}
-                    value={email}
-                    required={true}
-                    readOnly={isReadOnlyMode || isEditMode}
-                  />
-                  <InputField
-                    name={'upn'}
-                    title={'Azure user name'}
-                    value={accountUpn}
-                    readOnly={true}
-                    placeholder={'Azure user name'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} sm={6}>
-                    <Form.Label>Gender</Form.Label>
-                    <Form.Control
-                      as={'select'}
-                      onChange={handleChange}
-                      value={gender.toLowerCase()}
-                      name={'gender'}
-                      readOnly={isReadOnlyMode}
-                      disabled={isReadOnlyMode}
-                    >
-                      {genders.map(el => (
-                        <option key={el}>{el}</option>
-                      ))}
-                    </Form.Control>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} xs={6}>
-                    <Form.Label>Country</Form.Label>
-                    <SearchDropdown
-                      value={country}
-                      data={countriesList.map(el => el.name)}
-                      onSelect={value => setFieldValue('country', value)}
-                    />
-                  </Form.Group>
-                  <InputField
-                    name={'city'}
-                    title={'City'}
-                    value={city}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'City'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <InputField
-                    name={'phone'}
-                    title={'Phone'}
-                    value={phone}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Phone'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <InputField
-                    name={'bio'}
-                    title={'Bio'}
-                    value={bio}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Bio'}
-                    as={'textarea'}
-                  />
-                </Form.Row>
-                <Form.Row>
-                  <InputField
-                    name={'avatar'}
-                    title={'Avatar'}
-                    value={avatar}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Avatar'}
-                  />
-                </Form.Row>
+                </Form.Group>
+                <InputField name={'city'} title={'City'} value={city} readOnly={isReadOnlyMode} placeholder={'City'} />
+              </Form.Row>
+              <Form.Row>
+                <InputField
+                  name={'phone'}
+                  title={'Phone'}
+                  value={phone}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'Phone'}
+                />
+              </Form.Row>
+              <Form.Row>
+                <InputField
+                  name={'bio'}
+                  title={'Bio'}
+                  value={bio}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'Bio'}
+                  as={'textarea'}
+                />
+              </Form.Row>
+              <Form.Row>
+                <InputField
+                  name={'avatar'}
+                  title={'Avatar'}
+                  value={avatar}
+                  readOnly={isReadOnlyMode}
+                  placeholder={'Avatar'}
+                />
+              </Form.Row>
 
-                {editMode !== EditMode.new && (
-                  <Form.Row>
-                    <InputField
-                      name={'groups'}
-                      title={'Groups'}
-                      value={groups}
-                      readOnly={true}
-                      placeholder={'Groups'}
-                    />
-                  </Form.Row>
-                )}
-                {editMode !== EditMode.new && (
-                  <Form.Row>
-                    <InputField
-                      name={'challenges'}
-                      title={'Challenges'}
-                      value={challenges}
-                      readOnly={true}
-                      placeholder={'Challenges'}
-                    />
-                  </Form.Row>
-                )}
+              <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+              <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
 
-                <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
-
-                {!isReadOnlyMode && (
-                  <>
-                    <div className={'d-flex mt-4'}>
-                      <div className={'flex-grow-1'} />
-                      {backButton}
-                      <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
-                        Save
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </Form>
-            );
-          }}
-        </Formik>
-      </>
-    );
-  }
+              {isEditMode && (
+                <div className={'d-flex mt-4'}>
+                  <div className={'flex-grow-1'} />
+                  {backButton}
+                  <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                    Save
+                  </Button>
+                </div>
+              )}
+            </Form>
+          );
+        }}
+      </Formik>
+    </>
+  );
 };
 export default UserForm;

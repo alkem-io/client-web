@@ -148,3 +148,12 @@ export const QUERY_USER_CARD = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_MY_PROFILE = gql`
+  mutation updateMyProfile($user: UserInput!) {
+    updateMyProfile(userData: $user) {
+      ...UserDetails
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
+`;

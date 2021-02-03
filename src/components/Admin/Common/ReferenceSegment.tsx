@@ -22,7 +22,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
     <FieldArray name={'references'}>
       {({ push, remove }) => (
         <>
-          <Form.Row className={'mt-4'}>
+          <Form.Row>
             <Form.Group as={Col}>
               <Form.Label>References</Form.Label>
             </Form.Group>

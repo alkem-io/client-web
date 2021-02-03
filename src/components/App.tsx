@@ -1,6 +1,6 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useRef } from 'react';
-import { ErrorHandler } from '../containers/ErrorHandler';
+import { NotificationHandler } from '../containers/NotificationHandler';
 import { UserMetadata } from '../context/UserProvider';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useNavigation } from '../hooks/useNavigation';
@@ -100,7 +100,7 @@ const App = ({ children }): React.ReactElement => {
           <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
         </IconButton>
       </Footer>
-      <ErrorHandler />
+      <NotificationHandler />
     </div>
   );
 };
