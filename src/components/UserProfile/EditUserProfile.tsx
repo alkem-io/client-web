@@ -17,10 +17,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const [updateUser] = useUpdateMyProfileMutation({
     onError: error => console.log(error),
     onCompleted: () => {
-      console.log('User profile updated successfully');
       notify('User updated successfully', 'success');
-      // setMessage('User updated successfully');
-      // setStatus('success');
     },
   });
 

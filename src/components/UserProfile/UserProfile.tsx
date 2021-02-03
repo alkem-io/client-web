@@ -189,16 +189,16 @@ export const UserProfile: FC = () => {
         <Card className={'mt-2'}>
           {tagsets &&
             tagsets.map((t, i) => (
-              <>
+              <div key={i}>
                 <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
                   {getTagsetName(t.name)}
                 </Typography>
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
                   {t.tags.map((x, i) => (
                     <Tag key={i} text={x} />
                   ))}
                 </div>
-              </>
+              </div>
             ))}
         </Card>
         <Card primaryTextProps={{ text: 'References' }} className={'mt-2'}>
