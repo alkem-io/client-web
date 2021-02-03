@@ -108,8 +108,6 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignOut }) 
             placement="bottom"
             container={popoverAnchorMdDown.current}
             containerPadding={20}
-            rootClose
-            onHide={() => setDropdownOpen(false)}
           >
             <Popover id="popover-contained">
               <Popover.Content>
