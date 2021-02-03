@@ -9,7 +9,7 @@ interface TagsSegmentProps {
   readOnly: boolean;
 }
 
-const getTagsetName = (name: string) => {
+export const getTagsetName = (name: string) => {
   return name === 'default' ? 'Tags' : `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`;
 };
 

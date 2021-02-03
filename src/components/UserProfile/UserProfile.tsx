@@ -1,14 +1,16 @@
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import roles from '../../configs/roles.json';
-import { Reference, User, useUserProfileQuery } from '../../generated/graphql';
+import { User, useUserProfileQuery } from '../../generated/graphql';
 /*components imports end*/
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { defaultUser } from '../../models/User';
+import { getTagsetName } from '../Admin/Common/TagsetSegment';
 import Avatar from '../core/Avatar';
-import Button from '../core/Button';
 import Card from '../core/Card';
 import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
@@ -54,7 +56,7 @@ export const UserRoles: FC = () => {
 const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   return value ? (
     <>
-      <Typography color="primary" weight="boldLight">
+      <Typography color="primary" weight="boldLight" className={'mt-2'}>
         {title}
       </Typography>
       <Typography>{value}</Typography>{' '}
@@ -64,11 +66,30 @@ const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   );
 };
 
-export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { country, city, email, phone } }) => {
+const useContactDetailsStyles = createStyles(_theme => ({
+  edit: {
+    fill: _theme.palette.neutral,
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+}));
+
+export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
+  user: { country, city, email, phone, profile },
+  onEdit,
+}) => {
+  const styles = useContactDetailsStyles();
   return (
     <>
       <Card bodyProps={{ classes: {} }}>
+        <div className={'d-flex align-items-end flex-column'}>
+          <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'Edit profile'}>Edit profile</Tooltip>}>
+            <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
+          </OverlayTrigger>
+        </div>
         <Detail title="Email" value={email} />
+        <Detail title="Bio" value={profile?.description || ''} />
         <Detail title="Phone" value={phone} />
         <Detail title="Country" value={country} />
         <Detail title="City" value={city} />
@@ -91,29 +112,16 @@ const useMemberOfStyles = createStyles(theme => ({
 }));
 
 export type MemberOfProps = {
-  references?: Reference[];
   groups: string[];
   challenges: string[];
   opportunities: string[];
 };
 
-export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges, opportunities }) => {
+export const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities }) => {
   const styles = useMemberOfStyles();
 
   return (
-    <>
-      {references?.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <div style={{ flexDirection: 'column' }}>
-            <Typography as="span">{x.name}</Typography>
-            <Typography variant="caption" color="neutralMedium">
-              {x.description ? x.description : <i>No description provided</i>}
-            </Typography>
-          </div>
-          <div style={{ flexGrow: 1 }} />
-          <Tag text="references" color="positive" />
-        </div>
-      ))}
+    <Card primaryTextProps={{ text: 'Member of' }} className={'mt-2'}>
       {groups.map((x, i) => (
         <div key={i} className={styles.listDetail}>
           <Typography as="span" className={styles.noPadding}>
@@ -141,12 +149,13 @@ export const MemberOf: FC<MemberOfProps> = ({ references, groups, challenges, op
           <Tag text="opportunity" color="primary" />
         </div>
       ))}
-    </>
+    </Card>
   );
 };
 
 export const UserProfile: FC = () => {
   const history = useHistory();
+  const styles = useMemberOfStyles();
 
   useTransactionScope({ type: 'authentication' });
   const { data, loading } = useUserProfileQuery();
@@ -158,8 +167,7 @@ export const UserProfile: FC = () => {
   const challenges = user?.memberof?.challenges.map(c => c.name) || [];
   const opportunities = user?.memberof?.opportunities.map(c => c.name) || [];
 
-  const tags = user?.profile?.tagsets?.flatMap(x => x.tags);
-
+  const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {
     history.push('/profile/edit');
   };
@@ -167,12 +175,7 @@ export const UserProfile: FC = () => {
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
   return (
-    <Section
-      avatar={<Avatar size="lg" src={user?.profile?.avatar} />}
-      details={
-        <MemberOf references={references} groups={groups} challenges={challenges} opportunities={opportunities} />
-      }
-    >
+    <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />}>
       <Header text={user?.name}></Header>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
@@ -180,22 +183,40 @@ export const UserProfile: FC = () => {
         </Typography>
         <UserRoles />
       </div>
-      {tags && tags.length > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
-          <Typography as="span" variant="caption">
-            Skills
-          </Typography>
-          {tags.map((x, i) => (
-            <Tag key={i} text={x} />
-          ))}
-        </div>
-      )}
-      <Body text={user?.profile?.description}>
+      <Body>
         <div style={{ marginTop: 20 }} />
-        <Button variant={'primary'} small onClick={handleEditContactDetails}>
-          Edit
-        </Button>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
+        <Card className={'mt-2'}>
+          {tagsets &&
+            tagsets.map((t, i) => (
+              <>
+                <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
+                  {getTagsetName(t.name)}
+                </Typography>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
+                  {t.tags.map((x, i) => (
+                    <Tag key={i} text={x} />
+                  ))}
+                </div>
+              </>
+            ))}
+        </Card>
+        <Card primaryTextProps={{ text: 'References' }} className={'mt-2'}>
+          {references?.map((x, i) => (
+            <div key={i} className={styles.listDetail}>
+              <div style={{ flexDirection: 'column' }}>
+                <Typography as="a" href={x.uri} target={'_blank'}>
+                  {x.name}
+                </Typography>
+                <Typography variant="caption" color="neutralMedium">
+                  {x.uri}
+                </Typography>
+              </div>
+              <div style={{ flexGrow: 1 }} />
+            </div>
+          ))}
+        </Card>
+        <MemberOf groups={groups} challenges={challenges} opportunities={opportunities} />
       </Body>
     </Section>
   );

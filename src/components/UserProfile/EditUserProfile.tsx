@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import { User, UserInput, useUpdateMyProfileMutation, useUserProfileQuery } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
@@ -10,6 +11,7 @@ import { Loading } from '../core/Loading';
 interface EditUserProfileProps {}
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
+  const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
   const [updateUser] = useUpdateMyProfileMutation({
@@ -43,7 +45,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     });
   };
 
-  const handleCancel = () => console.log('caceled');
+  const handleCancel = () => history.goBack();
 
   const user = data?.me as User;
   if (loading) return <Loading text={'Loading User Profile ...'} />;
