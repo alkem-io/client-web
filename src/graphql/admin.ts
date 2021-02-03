@@ -191,7 +191,10 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
     configuration {
       template {
         users {
-          tagsets
+          tagsets {
+            name
+            placeholder
+          }
         }
       }
     }

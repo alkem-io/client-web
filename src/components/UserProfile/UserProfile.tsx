@@ -9,7 +9,7 @@ import { User, useUserProfileQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { defaultUser } from '../../models/User';
-import { getTagsetName } from '../Admin/Common/TagsetSegment';
+import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Loading } from '../core/Loading';
@@ -191,7 +191,7 @@ export const UserProfile: FC = () => {
             tagsets.map((t, i) => (
               <div key={i}>
                 <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
-                  {getTagsetName(t.name)}
+                  {toFirstCaptitalLetter(t.name)}
                 </Typography>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
                   {t.tags.map((x, i) => (
