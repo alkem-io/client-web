@@ -21,7 +21,6 @@ import { Challenge as ChallengeType, ContextInput, Organisation, User } from '..
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import { UserProvider } from './Ecoverse';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../hooks/useTheme';
@@ -31,6 +30,7 @@ import ContextEdit from '../components/ContextEdit';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUserContext } from '../hooks/useUserContext';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
+import { AvatarsProvider } from '../context/AvatarsProvider';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -280,7 +280,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <SectionHeader text={community.header} />
           <SubHeader text={community.subheader} />
           <Body text={who}>
-            <UserProvider users={users}>
+            <AvatarsProvider users={users}>
               {populated => (
                 <>
                   <AvatarContainer className="d-flex" title={'Active community members'}>
@@ -296,7 +296,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                   )}
                 </>
               )}
-            </UserProvider>
+            </AvatarsProvider>
             <Button text="Explore and connect" as={Link} to="/community" />
           </Body>
         </Section>

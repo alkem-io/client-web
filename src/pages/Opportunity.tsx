@@ -37,6 +37,9 @@ import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
+import { CommunitySection } from '../components/Community/CommunitySection';
+import { community } from '../components/core/Typography.dummy.json';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -83,6 +86,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
+  const history = useHistory();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -350,6 +354,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
+      <Divider />
+      <CommunitySection
+        title={community.header}
+        subTitle={'The heroes working on this opportunity'}
+        users={users}
+        onExplore={() => history.push('/community')}
+      />
+      <Divider />
       {isNoRelations ? (
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
