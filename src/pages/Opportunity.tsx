@@ -354,13 +354,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
-      <Divider />
-      <CommunitySection
-        title={community.header}
-        subTitle={'The heroes working on this opportunity'}
-        users={users}
-        onExplore={() => history.push('/community')}
-      />
+
       <Divider />
       {isNoRelations ? (
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
@@ -428,6 +422,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
           ))}
         </CardContainer>
       )}
+      <Divider />
+      <CommunitySection
+        title={community.header}
+        subTitle={'The heroes working on this opportunity'}
+        users={users}
+        shuffle={true}
+        onExplore={() => history.push('/community')}
+      />
       <Divider />
       <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>

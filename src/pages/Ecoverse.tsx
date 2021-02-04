@@ -210,6 +210,7 @@ const Ecoverse: FC<EcoversePageProps> = ({
           subTitle={'The heroes working on this challenge'}
           users={users}
           body={community.body}
+          shuffle={true}
           onExplore={() => history.push('/community')}
         />
       </AuthenticationBackdrop>
