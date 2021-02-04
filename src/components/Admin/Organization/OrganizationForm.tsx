@@ -1,9 +1,14 @@
 import { Formik } from 'formik';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { Organisation, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import {
+  Organisation,
+  TagsetTemplate,
+  useRemoveReferenceMutation,
+  useTagsetsTemplateQuery,
+} from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
 import { Reference, Tagset } from '../../../models/Profile';
 import { EditMode } from '../../../utils/editMode';
@@ -37,18 +42,10 @@ export const OrganizationForm: FC<Props> = ({
   onSave,
   title = 'Organization',
 }) => {
-  const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
   const history = useHistory();
   const [removeRef] = useRemoveReferenceMutation();
 
-  const { data: config } = useTagsetsTemplateQuery({
-    onCompleted: data => {
-      const { tagsets: templateTagsets } = data.configuration.template.users[0];
-      const orgTagsets = currentOrganization?.profile.tagsets.map(t => t.name.toLowerCase());
-      const availableTagsetNames = templateTagsets?.filter(tt => !orgTagsets.includes(tt.toLowerCase())) || [];
-      setAvailableTagsets(availableTagsetNames);
-    },
-  });
+  const { data: config } = useTagsetsTemplateQuery({});
 
   useEffect(() => {}, [config]);
 
@@ -61,20 +58,25 @@ export const OrganizationForm: FC<Props> = ({
     profile: { description, references, avatar },
   } = currentOrganization;
 
+  const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
+    if (config) return config.configuration.template.users[0].tagsets || [];
+    return [];
+  }, [config]);
+
   const tagsets = useMemo(() => {
     let {
       profile: { tagsets },
     } = currentOrganization;
-    return availableTagsets.reduce(
+    return tagsetsTemplate.reduce(
       (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.toLowerCase())) {
-          acc.push({ name: cur, tags: [] });
+        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
+          acc.push({ name: cur.name, tags: [] });
         }
         return acc;
       },
       [...(tagsets as Tagset[])]
     );
-  }, [currentOrganization, availableTagsets]);
+  }, [currentOrganization, tagsetsTemplate]);
 
   const initialValues = {
     name: name || '',
@@ -148,12 +150,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values, references)}
         >
-          {({
-            values: { name, references, tagsets, avatar, description },
-            setFieldValue: _setFieldValue,
-            handleChange: _handleChange,
-            handleSubmit,
-          }) => {
+          {({ values: { name, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
                 <Form.Row>

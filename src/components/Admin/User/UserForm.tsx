@@ -1,12 +1,13 @@
 import { Formik } from 'formik';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import * as yup from 'yup';
-import { useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { TagsetTemplate, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
 import countriesList from '../../../utils/countriesList.json';
 import { EditMode } from '../../../utils/editMode';
+import Loading from '../../core/Loading';
 import SearchDropdown from '../../core/SearchDropdown';
 import Typography from '../../core/Typography';
 import { InputField } from '../Common/InputField';
@@ -29,20 +30,15 @@ export const UserForm: FC<UserProps> = ({
   onCancel,
   title = 'User',
 }) => {
-  const [availableTagsets, setAvailableTagsets] = useState<string[]>([]);
   const [removeRef] = useRemoveReferenceMutation();
 
   const genders = ['not specified', 'male', 'female'];
-  const { data: config } = useTagsetsTemplateQuery({
-    onCompleted: data => {
-      const { tagsets: templateTagsets } = data.configuration.template.users[0];
-      const userTagsets = currentUser?.profile.tagsets.map(t => t.name.toLowerCase());
-      const availableTagsetNames = templateTagsets?.filter(tt => !userTagsets.includes(tt.toLowerCase())) || [];
-      setAvailableTagsets(availableTagsetNames);
-    },
-  });
+  const { data: config, loading } = useTagsetsTemplateQuery();
 
-  useEffect(() => {}, [config]);
+  const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
+    if (config) return config.configuration.template.users[0].tagsets || [];
+    return [];
+  }, [config]);
 
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
@@ -64,16 +60,16 @@ export const UserForm: FC<UserProps> = ({
     let {
       profile: { tagsets },
     } = currentUser;
-    return availableTagsets.reduce(
+    return tagsetsTemplate.reduce(
       (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.toLowerCase())) {
-          acc.push({ name: cur, tags: [] });
+        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
+          acc.push({ name: cur.name, tags: [] });
         }
         return acc;
       },
       [...(tagsets as Tagset[])]
     );
-  }, [currentUser, availableTagsets]);
+  }, [currentUser, tagsetsTemplate]);
 
   const initialValues = {
     name: name || '',
@@ -151,6 +147,8 @@ export const UserForm: FC<UserProps> = ({
       {isEditMode ? 'Cancel' : 'Back'}
     </Button>
   );
+
+  if (loading) return <Loading text={'Loading'} />;
 
   return (
     <>
@@ -288,7 +286,7 @@ export const UserForm: FC<UserProps> = ({
                 />
               </Form.Row>
 
-              <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+              <TagsetSegment tagsets={tagsets} template={tagsetsTemplate} readOnly={isReadOnlyMode} />
               <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
 
               {isEditMode && (
