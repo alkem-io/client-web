@@ -828,6 +828,14 @@ export type TagsetInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type TagsetTemplate = {
+  __typename?: 'TagsetTemplate';
+  /** Tagset name */
+  name: Scalars['String'];
+  /** Tagset placeholder */
+  placeholder?: Maybe<Scalars['String']>;
+};
+
 export type Template = {
   __typename?: 'Template';
   /** Template description. */
@@ -910,7 +918,7 @@ export type UserTemplate = {
   /** Template user name. */
   name: Scalars['String'];
   /** Template tagsets. */
-  tagsets?: Maybe<Array<Scalars['String']>>;
+  tagsets?: Maybe<Array<TagsetTemplate>>;
 };
 
 export type WebClientConfig = {
@@ -1081,7 +1089,11 @@ export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
 export type TagsetsTemplateQuery = { __typename?: 'Query' } & {
   configuration: { __typename?: 'Config' } & {
     template: { __typename?: 'Template' } & {
-      users: Array<{ __typename?: 'UserTemplate' } & Pick<UserTemplate, 'tagsets'>>;
+      users: Array<
+        { __typename?: 'UserTemplate' } & {
+          tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate' } & Pick<TagsetTemplate, 'name' | 'placeholder'>>>;
+        }
+      >;
     };
   };
 };
@@ -2638,7 +2650,10 @@ export const TagsetsTemplateDocument = gql`
     configuration {
       template {
         users {
-          tagsets
+          tagsets {
+            name
+            placeholder
+          }
         }
       }
     }
