@@ -77,15 +77,21 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
         <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
           <InfoCircle width={25} height={25} className={styles.icon} /> General
         </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.firstName}{' '}
-        </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.lastName}{' '}
-        </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.gender && `(${user?.gender})`}
-        </Typography>
+        {user?.firstName && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {user?.firstName}{' '}
+          </Typography>
+        )}
+        {user?.lastName && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {user?.lastName}{' '}
+          </Typography>
+        )}
+        {user?.gender && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {`(${user?.gender})`}
+          </Typography>
+        )}
         {user?.profile?.description && (
           <Typography weight={'medium'} color={'neutral'} as={'p'}>
             {user?.profile.description}
@@ -159,9 +165,11 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
         <Typography weight={'medium'} as={'p'}>
           {user?.email}
         </Typography>
-        <Typography weight={'medium'} as={'p'}>
-          {user?.country} {user?.city}
-        </Typography>
+        {(user?.country || user?.city) && (
+          <Typography weight={'medium'} as={'p'}>
+            {user?.country} {user?.city}
+          </Typography>
+        )}
         {refs && refs.length > 0 && (
           <>
             <Typography>References: </Typography>
