@@ -12,6 +12,10 @@ import Button from '../core/Button';
 import { useUserQuery } from '../../generated/graphql';
 
 const useUserPopUpStyles = createStyles(theme => ({
+  body: {
+    maxHeight: 600,
+    overflow: 'auto',
+  },
   centeredText: {
     textAlign: 'center',
     display: 'flex',
@@ -59,29 +63,35 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
   return (
     <Modal show={true} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">User Details</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className={'d-flex align-items-center mb-3'}>
-          <Avatar src={user?.profile?.avatar} size={'lg'} />
-          <div className={'ml-3'}>
-            <Typography variant={'h3'}>{user?.name}</Typography>
-            <Tags tags={terms} />
+        <Modal.Title id="contained-modal-title-vcenter">
+          <div className={'d-flex align-items-center mb-3'}>
+            <Avatar src={user?.profile?.avatar} size={'lg'} />
+            <div className={'ml-3'}>
+              <Typography variant={'h3'}>{user?.name}</Typography>
+              <Tags tags={terms} />
+            </div>
           </div>
-        </div>
-
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className={styles.body}>
         <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
           <InfoCircle width={25} height={25} className={styles.icon} /> General
         </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.firstName}{' '}
-        </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.lastName}{' '}
-        </Typography>
-        <Typography weight={'medium'} color={'neutral'} as={'span'}>
-          {user?.gender && `(${user?.gender})`}
-        </Typography>
+        {user?.firstName && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {user?.firstName}{' '}
+          </Typography>
+        )}
+        {user?.lastName && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {user?.lastName}{' '}
+          </Typography>
+        )}
+        {user?.gender && (
+          <Typography weight={'medium'} color={'neutral'} as={'span'}>
+            {`(${user?.gender})`}
+          </Typography>
+        )}
         {user?.profile?.description && (
           <Typography weight={'medium'} color={'neutral'} as={'p'}>
             {user?.profile.description}
@@ -155,9 +165,11 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
         <Typography weight={'medium'} as={'p'}>
           {user?.email}
         </Typography>
-        <Typography weight={'medium'} as={'p'}>
-          {user?.country} {user?.city}
-        </Typography>
+        {(user?.country || user?.city) && (
+          <Typography weight={'medium'} as={'p'}>
+            {user?.country} {user?.city}
+          </Typography>
+        )}
         {refs && refs.length > 0 && (
           <>
             <Typography>References: </Typography>

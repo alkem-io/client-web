@@ -9,7 +9,7 @@ import { createStyles } from '../../hooks/useTheme';
 import Divider from '../core/Divider';
 import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';
-import { UserProvider } from '../../pages';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 const groupPopUpStyles = createStyles(() => ({
   title: {
@@ -58,7 +58,7 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
 
         <Divider noPadding />
 
-        <UserProvider users={members} count={10}>
+        <AvatarsProvider users={members} count={10}>
           {populated => (
             <AvatarContainer className="d-flex" title={'Active community members'}>
               {shuffleCollection(populated).map((u, i) => (
@@ -71,7 +71,7 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
               )}
             </AvatarContainer>
           )}
-        </UserProvider>
+        </AvatarsProvider>
 
         {profile?.references && profile?.references.length > 0 && (
           <>
