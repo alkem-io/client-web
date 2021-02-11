@@ -12,6 +12,7 @@ import { Formik } from 'formik';
 import { TextArea } from '../core/TextInput';
 import { createStyles } from '../../hooks/useTheme';
 import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
+import { replaceAll } from '../../utils/replaceAll';
 
 interface Props {
   show: boolean;
@@ -48,7 +49,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const availableTypes =
     isCreate && existingAspectNames
-      ? aspectsTypes?.filter(at => !existingAspectNames.includes(at.replaceAll('_', ' ')))
+      ? aspectsTypes?.filter(at => !existingAspectNames.includes(replaceAll('_', ' ', at)))
       : aspectsTypes;
 
   const initialValues: AspectInput = {
@@ -139,11 +140,11 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
                     }}
                     size={'lg'}
                     disabled={!isCreate}
-                    defaultValue={values.title?.replaceAll('_', ' ')}
+                    defaultValue={values.title ? replaceAll('_', ' ', values.title) : values.title}
                   >
                     {availableTypes?.map((at, index) => (
                       <option value={at} key={index}>
-                        {at.replaceAll('_', ' ')}
+                        {replaceAll('_', ' ', at)}
                       </option>
                     ))}
                   </Form.Control>

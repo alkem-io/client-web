@@ -22,6 +22,7 @@ import {
   QUERY_OPPORTUNITY_RELATIONS,
 } from '../../graphql/opportunity';
 import AspectEdit from './AspectEdit';
+import { replaceAll } from '../../utils/replaceAll';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -290,7 +291,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
             background: (theme: Theme) => theme.palette.background,
           },
         }}
-        primaryTextProps={{ text: title.replaceAll('_', ' ') }}
+        primaryTextProps={{ text: replaceAll('_', ' ', title) }}
         actions={
           isAdmin
             ? [
