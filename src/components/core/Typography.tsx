@@ -3,6 +3,7 @@ import React, { FC, useMemo, useRef } from 'react';
 import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import _clamp from 'clamp-js';
+import { replaceAll } from '../../utils/replaceAll';
 
 const useTypographyStyles = createStyles(theme => ({
   h1: {
@@ -111,7 +112,7 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
-  const removeSlashes = (string: string) => string?.replace('\\n', '<br/>')?.replace('\\"', '"');
+  const removeSlashes = (string: string) => replaceAll('\\"', '"', replaceAll('\\n', '<br/>', string));
 
   const plainText = children as string;
 
