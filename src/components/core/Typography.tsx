@@ -111,7 +111,7 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
-  const removeSlashes = (string: string) => string?.replaceAll('\\n', '<br/>')?.replaceAll('\\"', '"');
+  const removeSlashes = (string: string) => string?.replace('\\n', '<br/>')?.replace('\\"', '"');
 
   const plainText = children as string;
 
