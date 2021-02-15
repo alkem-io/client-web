@@ -62,6 +62,7 @@
     "build": "react-scripts build",
     "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
     "postcodegen": "prettier --write src/generated/*.ts{,x}",
@@ -111,5 +112,12 @@
     "src/generated/graphql.tsx",
     "**/node_modules/**",
     "**/build**"
-  ]
+  ],
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/graphql",
+      "<rootDir>/src/generated",
+      "<rootDir>/src/sentry"
+    ]
+  }
 }
