@@ -1,7 +1,6 @@
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, Fragment, useMemo, useState } from 'react';
-import { FormControl, FormGroup, FormLabel } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/esm/ListGroup';
+import { FormControl, FormGroup, FormLabel, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Button from '../core/Button';
 import Icon from '../core/Icon';

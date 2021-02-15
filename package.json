@@ -62,6 +62,7 @@
     "build": "react-scripts build",
     "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
     "postcodegen": "prettier --write src/generated/*.ts{,x}",
@@ -91,9 +92,12 @@
     "@graphql-codegen/typescript": "^1.20.0",
     "@graphql-codegen/typescript-operations": "^1.17.13",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
+    "@types/enzyme": "^3.10.8",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-redux": "^7.1.15",
     "@types/uuid": "^8.3.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "enzyme": "^3.11.0",
     "gulp": "^4.0.2",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
@@ -108,5 +112,12 @@
     "src/generated/graphql.tsx",
     "**/node_modules/**",
     "**/build**"
-  ]
+  ],
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/graphql",
+      "<rootDir>/src/generated",
+      "<rootDir>/src/sentry"
+    ]
+  }
 }

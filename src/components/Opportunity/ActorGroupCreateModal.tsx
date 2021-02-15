@@ -5,6 +5,7 @@ import { TextArea } from '../core/TextInput';
 import { useCreateActorGroupMutation } from '../../generated/graphql';
 import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
 import Loading from '../core/Loading';
+import { replaceAll } from '../../utils/replaceAll';
 
 interface P {
   onHide: () => void;
@@ -67,7 +68,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
               >
                 {availableActorGroupNames?.map((ag, index) => (
                   <option value={ag} key={index}>
-                    {ag.replaceAll('_', ' ')}
+                    {replaceAll('_', ' ', ag)}
                   </option>
                 ))}
               </Form.Control>
