@@ -37,6 +37,10 @@ import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
+import { CommunitySection } from '../components/Community/CommunitySection';
+import { community } from '../components/core/Typography.dummy.json';
+import { useHistory } from 'react-router-dom';
+import { replaceAll } from '../utils/replaceAll';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -83,6 +87,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
+  const history = useHistory();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -108,7 +113,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
   const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
 
-  const existingAspectNames = aspects?.map(a => a.title.replaceAll('_', ' ')) || [];
+  const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
   const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
@@ -317,7 +322,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       {actorGroups
         ?.filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
         ?.map(({ id: actorGroupId, actors = [], name }, index) => {
-          const _name = name.replaceAll('_', ' ');
+          const _name = replaceAll('_', ' ', name);
           return (
             <CardContainer
               key={index}
@@ -350,6 +355,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </SectionHeader>
         <SubHeader text={'Teams & People that showed interest'} />
       </Section>
+
+      <Divider />
       {isNoRelations ? (
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
@@ -416,6 +423,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
           ))}
         </CardContainer>
       )}
+      <Divider />
+      <CommunitySection
+        title={community.header}
+        subTitle={'The heroes working on this opportunity'}
+        users={users}
+        shuffle={true}
+        onExplore={() => history.push('/community')}
+      />
       <Divider />
       <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>

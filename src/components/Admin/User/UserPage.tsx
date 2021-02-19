@@ -96,6 +96,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const isSaving = updateMutationLoading || createMutationLoading;
 
+  const handleCancel = () => history.goBack();
+
   const handleSave = (user: UserModel) => {
     // Convert UserModel to UserInput
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -189,7 +191,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
           </Button>
         )}
       </div>
-      <UserForm editMode={mode} onSave={handleSave} title={title} user={user} />
+      <UserForm editMode={mode} onSave={handleSave} onCancel={handleCancel} title={title} user={user} />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}

@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { EditUserProfile } from '../components/UserProfile';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
+import AboutPage from '../pages/About';
 import { Admin } from './admin/admin';
 import { Community } from './community';
 import { Ecoverses } from './ecoverse';
 import { Messages } from './messages';
+import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
-import AboutPage from '../pages/About';
-import { RegisterRoute } from './register';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -37,6 +38,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <RestrictedRoute exact path="/messages">
         <Messages />
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/profile/edit">
+        <EditUserProfile />
       </RestrictedRoute>
       <RestrictedRoute exact path="/profile">
         <UserProfile />

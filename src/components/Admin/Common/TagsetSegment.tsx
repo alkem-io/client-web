@@ -1,18 +1,18 @@
 import { FieldArray, useField } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { Col, Form } from 'react-bootstrap';
-import { Tagset } from '../../../models/Profile';
 import * as yup from 'yup';
+import { TagsetTemplate } from '../../../generated/graphql';
+import { Tagset } from '../../../models/Profile';
+import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 
 interface TagsSegmentProps {
   tagsets: Tagset[];
+  template?: TagsetTemplate[];
   readOnly: boolean;
 }
 
-const getTagsetName = (name: string) => {
-  return name === 'default' ? 'Tags' : `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`;
-};
-
+const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
 export const tagsetSchemaFragment = yup.array().of(
   yup.object().shape({
     name: yup.string(),
@@ -20,7 +20,15 @@ export const tagsetSchemaFragment = yup.array().of(
   })
 );
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, template }) => {
+  const getTagsetPlaceholder = useCallback(
+    (name: string) => {
+      if (!template) return DEFAULT_PLACEHOLDER;
+      return template.find(x => x.name.toLowerCase() === name.toLowerCase())?.placeholder || DEFAULT_PLACEHOLDER;
+    },
+    [template]
+  );
+
   return (
     <FieldArray name={'tagsets'}>
       {() =>
@@ -29,7 +37,8 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly }) => {
             key={index}
             name={`tagsets[${index}].tags`}
             value={tagSet.tags}
-            title={getTagsetName(tagSet.name)}
+            title={toFirstCaptitalLetter(tagSet.name)}
+            placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
           />
         ))
@@ -65,7 +74,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         <Form.Control
           name={name}
           type={'text'}
-          placeholder={placeholder || 'innovation, AI, technology, blockchain'}
+          placeholder={placeholder}
           value={value?.join(',')}
           readOnly={readOnly}
           required={required}

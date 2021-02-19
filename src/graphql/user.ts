@@ -45,6 +45,11 @@ export const USER_MEMBER_OF_FRAGMENT = gql`
         id
         name
       }
+      opportunities {
+        id
+        name
+        textID
+      }
     }
   }
 `;
@@ -142,4 +147,13 @@ export const QUERY_USER_CARD = gql`
       ...UserDetails
     }
   }
+`;
+
+export const MUTATION_UPDATE_MY_PROFILE = gql`
+  mutation updateMyProfile($user: UserInput!) {
+    updateMyProfile(userData: $user) {
+      ...UserDetails
+    }
+  }
+  ${USER_DETAILS_FRAGMENT}
 `;

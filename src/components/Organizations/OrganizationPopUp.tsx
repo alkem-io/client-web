@@ -12,9 +12,9 @@ import Button from '../core/Button';
 import Loading from '../core/Loading';
 import shuffleCollection from '../../utils/shuffleCollection';
 import Tags from '../Community/Tags';
-import { UserProvider } from '../../pages';
 import { createStyles } from '../../hooks/useTheme';
 import { useOrganizationDetailsQuery, User } from '../../generated/graphql';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 const groupPopUpStyles = createStyles(theme => ({
   title: {
@@ -164,7 +164,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
               </Typography>
 
               {groups?.map((g, index) => (
-                <UserProvider users={g.members as User[]} count={10} key={index}>
+                <AvatarsProvider users={g.members as User[]} count={10} key={index}>
                   {populated => (
                     <AvatarContainer className="d-flex" title={g.name}>
                       {shuffleCollection(populated).map((u, i) => (
@@ -180,7 +180,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                       )}
                     </AvatarContainer>
                   )}
-                </UserProvider>
+                </AvatarsProvider>
               ))}
             </>
           )}
