@@ -69,6 +69,34 @@ export type ApiConfig = {
   resourceScope: Scalars['String'];
 };
 
+export type Application = {
+  __typename?: 'Application';
+  id: Scalars['ID'];
+  questions: Array<Question>;
+  reason?: Maybe<Scalars['String']>;
+  status: ApplicationStatus;
+  user: User;
+};
+
+export type ApplicationInput = {
+  questions: Array<NvpInput>;
+  userId: Scalars['Float'];
+};
+
+export enum ApplicationStatus {
+  Approved = 'approved',
+  New = 'new',
+  Rejected = 'rejected',
+}
+
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   explanation: Scalars['String'];
@@ -85,6 +113,7 @@ export type AspectInput = {
 
 export type Challenge = {
   __typename?: 'Challenge';
+  applications: Array<Application>;
   /** The shared understanding for the challenge */
   context?: Maybe<Context>;
   /** All users that are contributing to this challenge. */
@@ -112,6 +141,14 @@ export type ChallengeInput = {
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
   textID?: Maybe<Scalars['String']>;
+};
+
+export type ChallengeTemplate = {
+  __typename?: 'ChallengeTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Challenge template name. */
+  name: Scalars['String'];
 };
 
 export type Config = {
@@ -176,6 +213,14 @@ export type EcoverseInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type EcoverseTemplate = {
+  __typename?: 'EcoverseTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Ecoverse template name. */
+  name: Scalars['String'];
+};
+
 export type MemberOf = {
   __typename?: 'MemberOf';
   /** References to the challenges the user is a member of */
@@ -238,6 +283,12 @@ export type Mutation = {
   createActor: Actor;
   /** Create a new actor group on the Opportunity identified by the ID */
   createActorGroup: ActorGroup;
+  /** Create application to join this ecoverse */
+  createApplication: Application;
+  /** Create application to join this challenge */
+  createApplicationForChallenge: Application;
+  /** Create application to join this opportunity */
+  createApplicationForOpportunity: Application;
   /** Create a new aspect on the Opportunity identified by the ID */
   createAspect: Aspect;
   /** Create a new aspect on the Project identified by the ID */
@@ -266,12 +317,10 @@ export type Mutation = {
   createRelation: Relation;
   /** Creates a new tagset with the specified name for the profile with given id */
   createTagsetOnProfile: Tagset;
-  /** Creates a new user as a member of the ecoverse, including an account if enabled */
+  /** Creates a new user profile on behalf of another user. */
   createUser: User;
-  /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
-  createUserAccount: Scalars['Boolean'];
-  /** Creates a new user as a member of the ecoverse, without an account */
-  createUserProfile: User;
+  /** Creates a new user profile for the currently authenticated user. */
+  createUserForMe: User;
   /** Removes the actor  with the specified ID */
   removeActor: Scalars['Boolean'];
   /** Removes the actor group with the specified ID */
@@ -292,8 +341,8 @@ export type Mutation = {
   removeReference: Scalars['Boolean'];
   /** Removes the relation with the specified ID */
   removeRelation: Scalars['Boolean'];
-  /** Removes the specified user from the ecoverse */
-  removeUser: Scalars['Boolean'];
+  /** Removes the specified user profile. */
+  removeUser: User;
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes the user group with the specified ID */
@@ -320,8 +369,6 @@ export type Mutation = {
   updateProject: Project;
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
-  /** Updates the user account password */
-  updateUserAccountPassword: Scalars['Boolean'];
   /** Update the user group information. */
   updateUserGroup: UserGroup;
 };
@@ -364,6 +411,20 @@ export type MutationCreateActorArgs = {
 export type MutationCreateActorGroupArgs = {
   actorGroupData: ActorGroupInput;
   opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateApplicationArgs = {
+  applicationData: ApplicationInput;
+};
+
+export type MutationCreateApplicationForChallengeArgs = {
+  applicationData: ApplicationInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationCreateApplicationForOpportunityArgs = {
+  applicationData: ApplicationInput;
+  ID: Scalars['Float'];
 };
 
 export type MutationCreateAspectArgs = {
@@ -437,12 +498,7 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateUserAccountArgs = {
-  password: Scalars['String'];
-  userID: Scalars['Float'];
-};
-
-export type MutationCreateUserProfileArgs = {
+export type MutationCreateUserForMeArgs = {
   userData: UserInput;
 };
 
@@ -557,10 +613,16 @@ export type MutationUpdateUserGroupArgs = {
   userGroupData: UserGroupInput;
 };
 
+export type NvpInput = {
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type Opportunity = {
   __typename?: 'Opportunity';
   /** The set of actor groups within the context of this Opportunity. */
   actorGroups?: Maybe<Array<ActorGroup>>;
+  applications: Array<Application>;
   /** The set of aspects within the context of this Opportunity. */
   aspects?: Maybe<Array<Aspect>>;
   /** The shared understanding for the opportunity */
@@ -593,6 +655,8 @@ export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
   /** Template actor groups. */
   actorGroups?: Maybe<Array<Scalars['String']>>;
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
   /** Template aspects. */
   aspects?: Maybe<Array<Scalars['String']>>;
   /** Template opportunity name. */
@@ -663,6 +727,10 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** All applications to join */
+  application: Application;
+  /** All applications for this ecoverse */
+  applications: Array<Application>;
   /** A particular challenge */
   challenge: Challenge;
   /** All challenges */
@@ -683,6 +751,8 @@ export type Query = {
   host: Organisation;
   /** The currently logged in user */
   me: User;
+  /** The members of this ecoverse */
+  members: Array<User>;
   /** Cherrytwist Services Metadata */
   metadata: Metadata;
   /** The name for this ecoverse */
@@ -705,10 +775,14 @@ export type Query = {
   tagset: Tagset;
   /** A particular user, identified by the ID or by email */
   user: User;
-  /** The members of this this ecoverse */
+  /** The users who have profiles on this platform */
   users: Array<User>;
-  /** The members of this this ecoverse filtered by list of IDs. */
+  /** The users filtered by list of IDs. */
   usersById: Array<User>;
+};
+
+export type QueryApplicationArgs = {
+  ID: Scalars['Float'];
 };
 
 export type QueryChallengeArgs = {
@@ -745,6 +819,21 @@ export type QueryUserArgs = {
 
 export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['String']>;
+};
+
+export type Question = {
+  __typename?: 'Question';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type QuestionTemplate = {
+  __typename?: 'QuestionTemplate';
+  /** Question template. */
+  question: Scalars['String'];
+  /** Is question required? */
+  required: Scalars['Boolean'];
 };
 
 export type Reference = {
@@ -830,7 +919,7 @@ export type TagsetInput = {
 
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
-  /** Tagset name */
+  /** Tagset template name. */
   name: Scalars['String'];
   /** Tagset placeholder */
   placeholder?: Maybe<Scalars['String']>;
@@ -838,13 +927,17 @@ export type TagsetTemplate = {
 
 export type Template = {
   __typename?: 'Template';
+  /** Challenge templates. */
+  challenges: Array<ChallengeTemplate>;
   /** Template description. */
   description: Scalars['String'];
+  /** Ecoverse templates. */
+  ecoverses: Array<EcoverseTemplate>;
   /** Template name. */
   name: Scalars['String'];
-  /** Opportunities template. */
+  /** Opportunity templates. */
   opportunities: Array<OpportunityTemplate>;
-  /** Users template. */
+  /** User templates. */
   users: Array<UserTemplate>;
 };
 
@@ -915,9 +1008,9 @@ export type UserInput = {
 
 export type UserTemplate = {
   __typename?: 'UserTemplate';
-  /** Template user name. */
+  /** User template name. */
   name: Scalars['String'];
-  /** Template tagsets. */
+  /** Tagset templates. */
   tagsets?: Maybe<Array<TagsetTemplate>>;
 };
 
@@ -993,7 +1086,9 @@ export type RemoveUserMutationVariables = Exact<{
   userID: Scalars['Float'];
 }>;
 
-export type RemoveUserMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUser'>;
+export type RemoveUserMutation = { __typename?: 'Mutation' } & {
+  removeUser: { __typename?: 'User' } & UserDetailsFragment;
+};
 
 export type AddUserToGroupMutationVariables = Exact<{
   groupID: Scalars['Float'];
@@ -2141,8 +2236,11 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RemoveUserDocument = gql`
   mutation removeUser($userID: Float!) {
-    removeUser(userID: $userID)
+    removeUser(userID: $userID) {
+      ...UserDetails
+    }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type RemoveUserMutationFn = Apollo.MutationFunction<RemoveUserMutation, RemoveUserMutationVariables>;
 

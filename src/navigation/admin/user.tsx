@@ -23,9 +23,10 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <UserList users={users} paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/new`}>
+      {/* creating users is disabled */}
+      {/* <Route exact path={`${path}/new`}>
         <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
-      </Route>
+      </Route> */}
       <Route exact path={`${path}/:userId/edit`}>
         <UserRoute mode={EditMode.edit} paths={currentPaths} />
       </Route>
