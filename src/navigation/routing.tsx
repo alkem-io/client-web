@@ -7,6 +7,7 @@ import AboutPage from '../pages/About';
 import { Admin } from './admin/admin';
 import { Community } from './community';
 import { Ecoverses } from './ecoverse';
+import LoginRoute from './login';
 import { Messages } from './messages';
 import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
@@ -29,6 +30,9 @@ export const Routing: FC = () => {
       </Route>
       <Route path="/ecoverse">
         <Ecoverses />
+      </Route>
+      <Route exact path="/login">
+        <LoginRoute />
       </Route>
       <Route exact path="/register">
         <RegisterRoute />
