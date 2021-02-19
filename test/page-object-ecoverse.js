@@ -3,6 +3,13 @@ const { browser, element, by } = require('protractor');
 const PageObjectsEcoverse = function () {
   var EC = protractor.ExpectedConditions;
 
+  const ecoverseTitle = element(by.cssContainingText('h2 span', 'Cherrytwist'));
+  const ecoverseButton = element(by.css('[href="/"]'));
+  this.clicksEcoverseButton = async function () {
+    await ecoverseButton.click();
+    await browser.wait(EC.visibilityOf(ecoverseTitle), 60000);
+  };
+
   const selectChallenge = element(by.css('[href="/ecoverse/1/challenges/balance-grid"]'));
   this.exploreChallenge = async function () {
     await selectChallenge.click();
