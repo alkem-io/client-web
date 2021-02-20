@@ -78,8 +78,11 @@ export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
 
 export const MUTATION_REMOVE_USER = gql`
   mutation removeUser($userID: Float!) {
-    removeUser(userID: $userID)
+    removeUser(userID: $userID) {
+      ...UserDetails
+    }
   }
+  ${USER_DETAILS_FRAGMENT}
 `;
 
 export const MUTATION_ADD_USER_TO_GROUP = gql`
