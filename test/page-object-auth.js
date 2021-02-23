@@ -34,6 +34,11 @@ const PageObjects = function () {
     await browser.wait(EC.invisibilityOf(signInButton), 60000);
     await browser.wait(EC.visibilityOf(ecoverseTitle), 60000);
   };
+
+  this.unauthenticated = async function () {
+    await browser.get(browser.params.login.urlUnAuthenticated);
+    await browser.wait(EC.visibilityOf(ecoverseTitle), 60000);
+  };
 };
 
 module.exports = new PageObjects();
