@@ -3,8 +3,7 @@ exports.config = {
   framework: 'jasmine',
   directConnect: true, // enabled, when used without webdriver-manager
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['simple-test.js'],
-  directConnect: true,
+  specs: ['test/**/*.spec.js'],
   capabilities: {
     browserName: 'firefox',
     'moz:firefoxOptions': {

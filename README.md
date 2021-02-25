@@ -110,3 +110,22 @@ We have automated the creation and deployment of containers to docker hub via a 
 - Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
 - Create a github release and tag it with the appropriate version number ie. `v0.1.3`
 - Go to github actions and view the `push to docker` action to see if everything ran correctly.
+
+## Testing
+
+### Tools
+
+- [VS Code](https://code.visualstudio.com/) - development environment
+- [Jest](https://jestjs.io/) - component testing
+- [Enzyme](https://enzymejs.github.io/enzyme/) - component testing
+- [Protractor](https://www.protractortest.org/#/) - UI E2E testing
+
+### Test levels
+
+- Component tests - testing each component in isolation
+  - Run tests with coverage `npm run-script test:coverage`
+- UI E2E tests - testing main business flows
+  - Tests are running against OS: Ubuntu, Browser: Firefox
+  - Before running the tests execute the following command `sudo node_modules/protractor/bin/webdriver-manager update`
+  - Run tests with coverage `npm run-script test:ui`
+  - Password for admin user must be provided in `conf.js` file
