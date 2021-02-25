@@ -82,7 +82,16 @@ const App = ({ children }): React.ReactElement => {
               onSignIn={safeAuthenticate}
               onSignOut={safeUnauthenticate}
             />
-            {!user && <Button text={'Sign in'} style={{ marginLeft: 20 }} onClick={() => safeAuthenticate()} small />}
+            {!user && (
+              <Button
+                text={'Sign in'}
+                style={{ marginLeft: 20 }}
+                onClick={() => {
+                  history.push('/login');
+                }}
+                small
+              />
+            )}
             {!user && (
               <Button
                 text={'Sign up'}

@@ -1,3 +1,4 @@
+import { STATUS_KEY, TOKEN_KEY } from '../../models/Constantes';
 import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {
@@ -19,12 +20,11 @@ export default function authReducer(state = initialState, action: AuthActionType
       };
     case UPDATE_TOKEN:
       if (action.payload) {
-        console.debug('Token: ', action.payload.accessToken);
-        console.debug('Token ExpirationTime: ', new Date(action.payload.idTokenClaims['exp'] * 1000).toString());
+        console.debug('Token: ', action.payload);
+        localStorage.setItem(TOKEN_KEY, action.payload);
         return {
           ...state,
-          idToken: action.payload.idTokenClaims as Record<string, never>,
-          accessToken: action.payload.accessToken,
+          accessToken: action.payload,
           isAuthenticated: true,
         };
       } else {
@@ -42,6 +42,7 @@ export default function authReducer(state = initialState, action: AuthActionType
         isAuthenticated: false,
       };
     case UPDATE_STATUS:
+      localStorage.setItem(STATUS_KEY, action.payload);
       return {
         ...state,
         status: action.payload,

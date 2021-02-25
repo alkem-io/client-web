@@ -37,6 +37,7 @@
     "formik": "^2.2.6",
     "generate-password": "^1.5.1",
     "graphql": "^15.4.0",
+    "http-proxy-middleware": "^1.0.6",
     "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",

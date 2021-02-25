@@ -26,12 +26,12 @@ const authenticate = async (
     const username = result.account.username;
     const tokenResult = await context.acquireToken(username);
     if (tokenResult) {
-      dispatch(updateToken(tokenResult));
+      dispatch(updateToken(tokenResult.accessToken));
       await resetStore(client);
       dispatch(updateStatus('done'));
     }
   } else {
-    dispatch(updateToken(null));
+    dispatch(updateToken());
     await resetStore(client);
     dispatch(updateStatus('done'));
   }
@@ -53,14 +53,14 @@ const refresh = async (
   if (!userName && !targetAccount) {
     dispatch(updateStatus('unauthenticated'));
     !keepStorage && (await resetStore(client));
-    dispatch(updateToken(null));
+    dispatch(updateToken());
     return;
   }
 
   const result = await context.acquireToken(userName || targetAccount.username);
 
   if (result) {
-    dispatch(updateToken(result));
+    dispatch(updateToken(result.accessToken));
     !keepStorage && (await resetStore(client));
     dispatch(updateStatus('done'));
   }
@@ -81,7 +81,7 @@ const unauthenticate = async (
   }
 
   dispatch(updateStatus('signingout'));
-  dispatch(updateToken(null));
+  dispatch(updateToken());
   await context.signOut(targetAccount.username);
 
   await resetStore(client);
@@ -123,7 +123,7 @@ export const useAuthenticate = () => {
             dispatch(updateStatus('unauthenticated'));
             return;
           }
-          dispatch(updateToken(data));
+          dispatch(updateToken(data.accessToken));
           return data;
         })
         .catch(err => {

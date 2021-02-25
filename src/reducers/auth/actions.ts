@@ -1,12 +1,12 @@
-import { AccountInfo, AuthenticationResult } from '@azure/msal-browser';
+import { AccountInfo } from '@azure/msal-browser';
 import {
   AuthActionTypes,
-  ErrorPayload,
   AuthStatus,
+  ErrorPayload,
   UPDATE_ACCOUNT,
   UPDATE_ERROR,
-  UPDATE_TOKEN,
   UPDATE_STATUS,
+  UPDATE_TOKEN,
 } from './types';
 
 export function updateAccount(account: AccountInfo | null): AuthActionTypes {
@@ -23,10 +23,10 @@ export function updateError(error: ErrorPayload): AuthActionTypes {
   };
 }
 
-export function updateToken(authenticationResult: AuthenticationResult | undefined | null): AuthActionTypes {
+export function updateToken(accessToken?: string): AuthActionTypes {
   return {
     type: UPDATE_TOKEN,
-    payload: authenticationResult,
+    payload: accessToken,
   };
 }
 

@@ -51,12 +51,12 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         } else {
           dispatch(updateStatus('unauthenticated'));
         }
-        dispatch(updateToken(result));
+        dispatch(updateToken(result?.accessToken));
         return result?.accessToken;
       })
       .catch(e => {
         console.error(e);
-        dispatch(updateToken(null));
+        dispatch(updateToken());
         dispatch(updateStatus('unauthenticated'));
         return undefined;
       });

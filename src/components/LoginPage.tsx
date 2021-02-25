@@ -2,8 +2,10 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
@@ -20,23 +22,23 @@ const initialValues = {
   password: '',
 };
 const loginQuery = async (username: string, password: string) => {
-  const result = await axios.post(
-    'http://localhost:3302/auth/login',
-    {
-      username,
-      password,
-    },
-    {
-      responseType: 'json',
-    }
-  );
-  if (result) {
-    console.log(result);
-  }
+  return await axios
+    .post(
+      '/auth/login',
+      {
+        username,
+        password,
+      },
+      {
+        responseType: 'json',
+      }
+    )
+    .then(result => result);
 };
 
 export const LoginPage: FC<RegisterPageProps> = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
     <Container fluid={'sm'}>
@@ -49,17 +51,30 @@ export const LoginPage: FC<RegisterPageProps> = () => {
             validationSchema={validationSchema}
             initialValues={initialValues}
             onSubmit={(values, { setSubmitting }) => {
-              loginQuery(values.email, values.password).finally(() => setSubmitting(false));
+              loginQuery(values.email, values.password)
+                .then(result => {
+                  console.log(result);
+                  dispatch(updateToken(result.data.access_token));
+                  dispatch(updateStatus('done'));
+                  history.push('/');
+                })
+                .finally(() => setSubmitting(false));
             }}
           >
             {({ values, handleSubmit, isSubmitting }) => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
-                    <InputField name={'email'} title={'Email'} value={values.email} />
+                    <InputField name={'email'} title={'Email'} disabled={isSubmitting} value={values.email} />
                   </Form.Row>
                   <Form.Row>
-                    <InputField name={'password'} title={'Password'} value={values.password} type={'password'} />
+                    <InputField
+                      name={'password'}
+                      title={'Password'}
+                      disabled={isSubmitting}
+                      value={values.password}
+                      type={'password'}
+                    />
                   </Form.Row>
                   <div className={'d-flex mt-4'}>
                     <div className={'flex-grow-1'} />
