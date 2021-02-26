@@ -8,4 +8,6 @@ install:
 - npm install
 script:
 - npm run-script lint:prod
+- npm run-script test:coverage
 - CI=false npm run-script build
+
