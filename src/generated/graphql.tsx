@@ -73,7 +73,6 @@ export type Application = {
   __typename?: 'Application';
   id: Scalars['ID'];
   questions: Array<Question>;
-  reason?: Maybe<Scalars['String']>;
   status: ApplicationStatus;
   user: User;
 };
@@ -109,6 +108,20 @@ export type AspectInput = {
   explanation?: Maybe<Scalars['String']>;
   framing?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+};
+
+export type AuthenticationProviderConfig = {
+  __typename?: 'AuthenticationProviderConfig';
+  /** Configuration of the authenticaiton provider */
+  config: ConfigUnion;
+  /** Is the authentication provider enabled? */
+  enabled: Scalars['Boolean'];
+  /** CDN location of an icon of the authentication provider login button. */
+  icon: Scalars['String'];
+  /** Label of the authentication provider. */
+  label: Scalars['String'];
+  /** Name of the authentication provider. */
+  name: Scalars['String'];
 };
 
 export type Challenge = {
@@ -153,11 +166,13 @@ export type ChallengeTemplate = {
 
 export type Config = {
   __typename?: 'Config';
+  /** Cherrytwist Authentication Providers Config. */
+  authenticationProviders: Array<AuthenticationProviderConfig>;
   /** Cherrytwist Template. */
   template: Template;
-  /** Cherrytwist Web Client Config. */
-  webClient: WebClientConfig;
 };
+
+export type ConfigUnion = AadConfig | SimpleAuthProviderConfig;
 
 export type Context = {
   __typename?: 'Context';
@@ -277,6 +292,8 @@ export type Mutation = {
   addUserToGroup: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified opportunity */
   addUserToOpportunity: UserGroup;
+  /** Create application to join this ecoverse */
+  approveApplication: Application;
   /** Assign the user with the given ID as focal point for the given group */
   assignGroupFocalPoint?: Maybe<UserGroup>;
   /** Create a new actor on the ActorGroup with the specified ID */
@@ -396,6 +413,10 @@ export type MutationAddUserToGroupArgs = {
 export type MutationAddUserToOpportunityArgs = {
   opportunityID: Scalars['Float'];
   userID: Scalars['Float'];
+};
+
+export type MutationApproveApplicationArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationAssignGroupFocalPointArgs = {
@@ -735,8 +756,6 @@ export type Query = {
   challenge: Challenge;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** Cherrytwist Web Client AAD Configuration */
-  clientConfig: AadConfig;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
   /** The shared understanding for this ecoverse */
@@ -905,6 +924,14 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type SimpleAuthProviderConfig = {
+  __typename?: 'SimpleAuthProviderConfig';
+  /** Simple authentication provider issuer endpoint. */
+  issuer: Scalars['String'];
+  /** Simple authentication provider token endpoint. Use json payload in the form of username + password to login and obtain valid jwt token. */
+  tokenEndpoint: Scalars['String'];
+};
+
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -1012,12 +1039,6 @@ export type UserTemplate = {
   name: Scalars['String'];
   /** Tagset templates. */
   tagsets?: Maybe<Array<TagsetTemplate>>;
-};
-
-export type WebClientConfig = {
-  __typename?: 'WebClientConfig';
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
 };
 
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
