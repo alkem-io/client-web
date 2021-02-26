@@ -62,7 +62,7 @@
     "build": "react-scripts build",
     "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:coverage": "react-scripts test --coverage --watchAll=false | coveralls",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
     "postcodegen": "prettier --write src/generated/*.ts{,x}",
