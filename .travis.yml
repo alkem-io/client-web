@@ -9,5 +9,4 @@ install:
 script:
   - npm run-script lint:prod
   - npm run-script test:coverage
-  - npm run coveralls
   - CI=false npm run-script build
