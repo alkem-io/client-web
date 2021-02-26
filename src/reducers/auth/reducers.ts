@@ -1,4 +1,4 @@
-import { STATUS_KEY, TOKEN_KEY } from '../../models/Constantes';
+import { AUTHENTICATED_KEY, STATUS_KEY, TOKEN_KEY } from '../../models/Constantes';
 import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {
@@ -13,6 +13,7 @@ const initialState: AuthState = {
 export default function authReducer(state = initialState, action: AuthActionTypes): AuthState {
   switch (action.type) {
     case UPDATE_ACCOUNT:
+      localStorage.setItem(AUTHENTICATED_KEY, action.payload !== null ? 'true' : 'false');
       return {
         ...state,
         account: action.payload,
@@ -22,12 +23,14 @@ export default function authReducer(state = initialState, action: AuthActionType
       if (action.payload) {
         console.debug('Token: ', action.payload);
         localStorage.setItem(TOKEN_KEY, action.payload);
+        localStorage.setItem(AUTHENTICATED_KEY, 'true');
         return {
           ...state,
           accessToken: action.payload,
           isAuthenticated: true,
         };
       } else {
+        localStorage.setItem(AUTHENTICATED_KEY, 'false');
         return {
           ...state,
           idToken: null,
@@ -36,6 +39,7 @@ export default function authReducer(state = initialState, action: AuthActionType
         };
       }
     case UPDATE_ERROR:
+      localStorage.setItem(AUTHENTICATED_KEY, 'false');
       return {
         ...state,
         error: action.payload,

@@ -145,6 +145,10 @@ export const useAuthenticate = () => {
     }
   }, [unauthenticateWired, dispatch]);
 
+  const resetStoreWired = useCallback(() => {
+    return resetStore(client);
+  }, [client]);
+
   return {
     authenticate: authenticateWired,
     safeAuthenticate,
@@ -153,6 +157,7 @@ export const useAuthenticate = () => {
     unauthenticateWired,
     safeUnauthenticate,
     status,
+    resetStore: resetStoreWired,
     isAuthenticated,
   };
 };

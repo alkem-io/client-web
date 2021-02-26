@@ -5,6 +5,7 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
@@ -39,14 +40,51 @@ const loginQuery = async (username: string, password: string) => {
 export const LoginPage: FC<RegisterPageProps> = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const { authenticate, resetStore } = useAuthenticate();
 
   return (
     <Container fluid={'sm'}>
       <Row className={'justify-content-center'}>
-        <Col sm={3}>
+        <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
             Sign in
           </Typography>
+          <Button
+            variant="primary"
+            type={'submit'}
+            small
+            block
+            onClick={() => authenticate().then(() => history.push('/'))}
+          >
+            Log in with Microsoft
+          </Button>
+          <div className={'mt-4'}>
+            <div className={'col-xs-12'}>
+              <div
+                style={{
+                  borderTop: '1px solid',
+                  borderColor: '#d9dadc',
+                  display: 'block',
+                  lineHeight: '1px',
+                  margin: '15px 0',
+                  position: 'relative',
+                  textAlign: 'center',
+                }}
+              >
+                <strong
+                  style={{
+                    background: '#fff',
+                    fontSize: '12px',
+                    letterSpacing: '1px',
+                    padding: '0 20px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  OR
+                </strong>
+              </div>
+            </div>
+          </div>
           <Formik
             validationSchema={validationSchema}
             initialValues={initialValues}
@@ -56,7 +94,9 @@ export const LoginPage: FC<RegisterPageProps> = () => {
                   console.log(result);
                   dispatch(updateToken(result.data.access_token));
                   dispatch(updateStatus('done'));
-                  history.push('/');
+                  resetStore().then(() => {
+                    history.push('/');
+                  });
                 })
                 .finally(() => setSubmitting(false));
             }}
