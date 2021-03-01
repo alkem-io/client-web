@@ -39,6 +39,7 @@ export const silentRequest: Scope = {
 };
 
 export const getConfig = (config?: AadConfig): AadConfig => {
+  debugger;
   const defaultConfig: AadConfig = {
     msalConfig,
     apiConfig,

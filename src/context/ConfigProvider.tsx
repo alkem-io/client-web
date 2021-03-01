@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
 import { AadConfig } from '../generated/graphql';
 import { QUERY_CONFIG_STRING } from '../graphql/config';
-import { getConfig } from '../models/AadConfig';
+import { getConfig } from '../utils/configHelper';
 import { Error } from '../pages/Error';
 export interface ConfigContext {
   aadConfig: AadConfig;
@@ -38,7 +38,8 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
         }
       );
       if (result) {
-        return getConfig(result.data.data.clientConfig);
+        debugger;
+        return getConfig(result.data.data.configuration);
       }
     };
 
