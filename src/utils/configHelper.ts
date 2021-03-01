@@ -1,4 +1,5 @@
-import { ApiConfig, AadConfig, Scope, MsalConfig } from '../generated/graphql';
+import { ApiConfig, Config, MsalConfig, Scope } from '../generated/graphql';
+import { Configuration } from '../models/Configuration';
 
 // For a full list of msal.js configuration parameters,
 
@@ -38,20 +39,33 @@ export const silentRequest: Scope = {
   scopes: ['openid', 'profile', apiConfig.resourceScope],
 };
 
-export const getConfig = (config?: AadConfig): AadConfig => {
-  debugger;
-  const defaultConfig: AadConfig = {
-    msalConfig,
-    apiConfig,
-    loginRequest,
-    tokenRequest,
-    silentRequest,
-    authEnabled: true,
-  };
+export const getConfig = (config?: Config): Configuration => {
+  // const defaultAADConfig: AadConfig = {
+  //   msalConfig,
+  //   apiConfig,
+  //   loginRequest,
+  //   tokenRequest,
+  //   silentRequest,
+  //   authEnabled: true,
+  // };
 
-  if (!config) return defaultConfig;
+  const authenticationProviders =
+    config?.authenticationProviders
+      .map(x => {
+        const { __typename: type, ...rest } = x.config;
+        if (type)
+          return {
+            ...x,
+            config: {
+              type,
+              ...rest,
+            },
+          };
+        return undefined;
+      })
+      .filter(x => x !== undefined) || [];
 
   return {
-    ...config,
+    authenticationProviders,
   };
 };

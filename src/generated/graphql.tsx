@@ -1489,6 +1489,32 @@ export type OrganizationCardQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    authenticationProviders: Array<
+      { __typename?: 'AuthenticationProviderConfig' } & Pick<
+        AuthenticationProviderConfig,
+        'name' | 'label' | 'icon'
+      > & {
+          config:
+            | ({ __typename: 'AadConfig' } & Pick<AadConfig, 'authEnabled'> & {
+                  msalConfig: { __typename?: 'MsalConfig' } & {
+                    auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
+                    cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
+                  };
+                  apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
+                  loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                  tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                  silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                })
+            | ({ __typename: 'SimpleAuthProviderConfig' } & Pick<SimpleAuthProviderConfig, 'issuer' | 'tokenEndpoint'>);
+        }
+    >;
+  };
+};
+
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
@@ -3941,6 +3967,75 @@ export function useOrganizationCardLazyQuery(
 export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
 export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
 export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
+export const ConfigDocument = gql`
+  query config {
+    configuration {
+      authenticationProviders {
+        name
+        label
+        icon
+        config {
+          __typename
+          ... on AadConfig {
+            msalConfig {
+              auth {
+                authority
+                clientId
+                redirectUri
+              }
+              cache {
+                cacheLocation
+                storeAuthStateInCookie
+              }
+            }
+            apiConfig {
+              resourceScope
+            }
+            loginRequest {
+              scopes
+            }
+            tokenRequest {
+              scopes
+            }
+            silentRequest {
+              scopes
+            }
+            authEnabled
+          }
+          ... on SimpleAuthProviderConfig {
+            issuer
+            tokenEndpoint
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useConfigQuery__
+ *
+ * To run a query within a React component, call `useConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigQuery(baseOptions?: Apollo.QueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useLazyQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
+export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
+export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name

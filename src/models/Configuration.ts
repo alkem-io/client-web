@@ -1,4 +1,6 @@
-export type Ccnfiguration = {
+import { AadConfig } from '../generated/graphql';
+
+export type Configuration = {
   authenticationProviders: AuthenticationProvider[];
 };
 
@@ -9,7 +11,7 @@ export type AuthenticationProvider = {
   config: AADConfig | SimpleAuthProviderConfig;
 };
 
-export type AADConfig = {
+export type AADConfig = AadConfig & {
   type: 'AadConfig';
 };
 
