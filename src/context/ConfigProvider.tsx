@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
 import { AadConfig } from '../generated/graphql';
 import { QUERY_CONFIG_STRING } from '../graphql/config';
-import { getConfig } from '../utils/authConfig';
+import { getConfig } from '../models/AadConfig';
 import { Error } from '../pages/Error';
 export interface ConfigContext {
   aadConfig: AadConfig;
