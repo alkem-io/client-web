@@ -9,7 +9,7 @@ import Typography from './core/Typography';
 interface RegisterPageProps {}
 
 const validationSchema = yup.object().shape({
-  userName: yup.string().required('This is the required field'),
+  // userName: yup.string().required('This is the required field'),
   firstName: yup.string().required('This is the required field'),
   lastName: yup.string().required('This is the required field'),
   email: yup.string().email('Email is not valid').required('This is the required field'),
@@ -43,18 +43,30 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
         {({ values, handleSubmit, isSubmitting }) => {
           return (
             <Form onSubmit={handleSubmit}>
-              <Form.Row>
+              {/* <Form.Row>
                 <InputField name={'userName'} title={'Username'} value={values.userName} />
-              </Form.Row>
+              </Form.Row> */}
               <Form.Row>
                 <InputField name={'firstName'} title={'First Name'} value={values.firstName} />
                 <InputField name={'lastName'} title={'Last Name'} value={values.lastName} />
               </Form.Row>
               <Form.Row>
-                <InputField name={'email'} title={'Email'} value={values.email} type={'email'} />
+                <InputField
+                  name={'email'}
+                  title={'Email'}
+                  value={values.email}
+                  type={'email'}
+                  autoComplete={'username'}
+                />
               </Form.Row>
               <Form.Row>
-                <InputField name={'password'} title={'Password'} value={values.password} type={'password'} />
+                <InputField
+                  name={'password'}
+                  title={'Password'}
+                  value={values.password}
+                  type={'password'}
+                  autoComplete={'new-password'}
+                />
               </Form.Row>
               <Form.Row>
                 <InputField
@@ -62,6 +74,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                   title={'Confirm Password'}
                   value={values.passwordConfirmation}
                   type={'password'}
+                  autoComplete={'new-password'}
                 />
               </Form.Row>
               <div className={'d-flex mt-4'}>
