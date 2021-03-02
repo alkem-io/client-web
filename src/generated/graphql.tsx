@@ -13,8 +13,8 @@ export type Scalars = {
   Float: number;
 };
 
-export type AadConfig = {
-  __typename?: 'AadConfig';
+export type AadAuthProviderConfig = {
+  __typename?: 'AadAuthProviderConfig';
   /** Config for accessing the Cherrytwist API. */
   apiConfig: ApiConfig;
   /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
@@ -119,7 +119,7 @@ export type AuthenticationConfig = {
 export type AuthenticationProviderConfig = {
   __typename?: 'AuthenticationProviderConfig';
   /** Configuration of the authenticaiton provider */
-  config: ConfigUnion;
+  config: AuthenticationProviderConfigUnion;
   /** Is the authentication provider enabled? */
   enabled: Scalars['Boolean'];
   /** CDN location of an icon of the authentication provider login button. */
@@ -129,6 +129,8 @@ export type AuthenticationProviderConfig = {
   /** Name of the authentication provider. */
   name: Scalars['String'];
 };
+
+export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | SimpleAuthProviderConfig;
 
 export type Challenge = {
   __typename?: 'Challenge';
@@ -177,8 +179,6 @@ export type Config = {
   /** Cherrytwist template configuration. */
   template: Template;
 };
-
-export type ConfigUnion = AadConfig | SimpleAuthProviderConfig;
 
 export type Context = {
   __typename?: 'Context';
@@ -1506,7 +1506,7 @@ export type ConfigQuery = { __typename?: 'Query' } & {
             'name' | 'label' | 'icon'
           > & {
               config:
-                | ({ __typename: 'AadConfig' } & {
+                | ({ __typename: 'AadAuthProviderConfig' } & {
                     msalConfig: { __typename?: 'MsalConfig' } & {
                       auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
                       cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
@@ -3989,7 +3989,7 @@ export const ConfigDocument = gql`
           icon
           config {
             __typename
-            ... on AadConfig {
+            ... on AadAuthProviderConfig {
               msalConfig {
                 auth {
                   authority
