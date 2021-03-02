@@ -11,7 +11,7 @@ export const QUERY_CONFIG = gql`
           icon
           config {
             __typename
-            ... on AadConfig {
+            ... on AadAuthProviderConfig {
               msalConfig {
                 auth {
                   authority
