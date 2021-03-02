@@ -13,12 +13,10 @@ export type Scalars = {
   Float: number;
 };
 
-export type AadConfig = {
-  __typename?: 'AadConfig';
+export type AadAuthProviderConfig = {
+  __typename?: 'AadAuthProviderConfig';
   /** Config for accessing the Cherrytwist API. */
   apiConfig: ApiConfig;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
   /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
   loginRequest: Scope;
   /** Config for MSAL authentication library on Cherrytwist Web Client. */
@@ -73,7 +71,6 @@ export type Application = {
   __typename?: 'Application';
   id: Scalars['ID'];
   questions: Array<Question>;
-  reason?: Maybe<Scalars['String']>;
   status: ApplicationStatus;
   user: User;
 };
@@ -110,6 +107,30 @@ export type AspectInput = {
   framing?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
 };
+
+export type AuthenticationConfig = {
+  __typename?: 'AuthenticationConfig';
+  /** Is authentication enabled? */
+  enabled: Scalars['Boolean'];
+  /** Cherrytwist Authentication Providers Config. */
+  providers: Array<AuthenticationProviderConfig>;
+};
+
+export type AuthenticationProviderConfig = {
+  __typename?: 'AuthenticationProviderConfig';
+  /** Configuration of the authenticaiton provider */
+  config: AuthenticationProviderConfigUnion;
+  /** Is the authentication provider enabled? */
+  enabled: Scalars['Boolean'];
+  /** CDN location of an icon of the authentication provider login button. */
+  icon: Scalars['String'];
+  /** Label of the authentication provider. */
+  label: Scalars['String'];
+  /** Name of the authentication provider. */
+  name: Scalars['String'];
+};
+
+export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | SimpleAuthProviderConfig;
 
 export type Challenge = {
   __typename?: 'Challenge';
@@ -153,10 +174,10 @@ export type ChallengeTemplate = {
 
 export type Config = {
   __typename?: 'Config';
-  /** Cherrytwist Template. */
+  /** Cherrytwist authentication configuration. */
+  authentication: AuthenticationConfig;
+  /** Cherrytwist template configuration. */
   template: Template;
-  /** Cherrytwist Web Client Config. */
-  webClient: WebClientConfig;
 };
 
 export type Context = {
@@ -277,6 +298,8 @@ export type Mutation = {
   addUserToGroup: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified opportunity */
   addUserToOpportunity: UserGroup;
+  /** Create application to join this ecoverse */
+  approveApplication: Application;
   /** Assign the user with the given ID as focal point for the given group */
   assignGroupFocalPoint?: Maybe<UserGroup>;
   /** Create a new actor on the ActorGroup with the specified ID */
@@ -396,6 +419,10 @@ export type MutationAddUserToGroupArgs = {
 export type MutationAddUserToOpportunityArgs = {
   opportunityID: Scalars['Float'];
   userID: Scalars['Float'];
+};
+
+export type MutationApproveApplicationArgs = {
+  ID: Scalars['Float'];
 };
 
 export type MutationAssignGroupFocalPointArgs = {
@@ -735,8 +762,6 @@ export type Query = {
   challenge: Challenge;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** Cherrytwist Web Client AAD Configuration */
-  clientConfig: AadConfig;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
   /** The shared understanding for this ecoverse */
@@ -905,6 +930,14 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type SimpleAuthProviderConfig = {
+  __typename?: 'SimpleAuthProviderConfig';
+  /** Simple authentication provider issuer endpoint. */
+  issuer: Scalars['String'];
+  /** Simple authentication provider token endpoint. Use json payload in the form of username + password to login and obtain valid jwt token. */
+  tokenEndpoint: Scalars['String'];
+};
+
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -1012,12 +1045,6 @@ export type UserTemplate = {
   name: Scalars['String'];
   /** Tagset templates. */
   tagsets?: Maybe<Array<TagsetTemplate>>;
-};
-
-export type WebClientConfig = {
-  __typename?: 'WebClientConfig';
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
 };
 
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
@@ -1466,6 +1493,37 @@ export type OrganizationCardQuery = { __typename?: 'Query' } & {
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'>;
     };
+};
+
+export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    authentication: { __typename?: 'AuthenticationConfig' } & Pick<AuthenticationConfig, 'enabled'> & {
+        providers: Array<
+          { __typename?: 'AuthenticationProviderConfig' } & Pick<
+            AuthenticationProviderConfig,
+            'name' | 'label' | 'icon'
+          > & {
+              config:
+                | ({ __typename: 'AadAuthProviderConfig' } & {
+                    msalConfig: { __typename?: 'MsalConfig' } & {
+                      auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
+                      cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
+                    };
+                    apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
+                    loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                  })
+                | ({ __typename: 'SimpleAuthProviderConfig' } & Pick<
+                    SimpleAuthProviderConfig,
+                    'issuer' | 'tokenEndpoint'
+                  >);
+            }
+        >;
+      };
+  };
 };
 
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
@@ -3920,6 +3978,77 @@ export function useOrganizationCardLazyQuery(
 export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
 export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
 export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
+export const ConfigDocument = gql`
+  query config {
+    configuration {
+      authentication {
+        enabled
+        providers {
+          name
+          label
+          icon
+          config {
+            __typename
+            ... on AadAuthProviderConfig {
+              msalConfig {
+                auth {
+                  authority
+                  clientId
+                  redirectUri
+                }
+                cache {
+                  cacheLocation
+                  storeAuthStateInCookie
+                }
+              }
+              apiConfig {
+                resourceScope
+              }
+              loginRequest {
+                scopes
+              }
+              tokenRequest {
+                scopes
+              }
+              silentRequest {
+                scopes
+              }
+            }
+            ... on SimpleAuthProviderConfig {
+              issuer
+              tokenEndpoint
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useConfigQuery__
+ *
+ * To run a query within a React component, call `useConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigQuery(baseOptions?: Apollo.QueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useLazyQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
+export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
+export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name

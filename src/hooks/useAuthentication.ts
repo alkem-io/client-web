@@ -7,7 +7,7 @@ import {
 } from '@azure/msal-browser';
 import { useCallback, useContext, useMemo } from 'react';
 import { configContext } from '../context/ConfigProvider';
-import { AadConfig } from '../generated/graphql';
+import { AadAuthProviderConfig } from '../generated/graphql';
 
 export interface UseAuthenticationResult {
   signIn: () => Promise<AuthenticationResult | undefined>;
@@ -18,7 +18,7 @@ export interface UseAuthenticationResult {
   loading: boolean;
 }
 
-const signIn = async (msalApp?: PublicClientApplication, aadConfig?: AadConfig) => {
+const signIn = async (msalApp?: PublicClientApplication, aadConfig?: AadAuthProviderConfig) => {
   if (!msalApp || !aadConfig) return;
 
   return await msalApp.loginPopup(aadConfig.loginRequest);
@@ -30,7 +30,11 @@ const signOut = async (msalApp?: PublicClientApplication, userName?: string) => 
   return msalApp.logout({ account: msalApp.getAccountByUsername(userName) || undefined });
 };
 
-const acquireTokenSilent = async (msalApp?: PublicClientApplication, aadConfig?: AadConfig, userName?: string) => {
+const acquireTokenSilent = async (
+  msalApp?: PublicClientApplication,
+  aadConfig?: AadAuthProviderConfig,
+  userName?: string
+) => {
   if (!msalApp || !aadConfig || !userName) return;
 
   const silentRequest = {
@@ -41,7 +45,11 @@ const acquireTokenSilent = async (msalApp?: PublicClientApplication, aadConfig?:
   return msalApp.acquireTokenSilent(silentRequest);
 };
 
-const acquireTokenPopup = async (msalApp?: PublicClientApplication, aadConfig?: AadConfig, userName?: string) => {
+const acquireTokenPopup = async (
+  msalApp?: PublicClientApplication,
+  aadConfig?: AadAuthProviderConfig,
+  userName?: string
+) => {
   if (!msalApp || !aadConfig || !userName) return;
 
   const tokenRequest = {
@@ -52,13 +60,21 @@ const acquireTokenPopup = async (msalApp?: PublicClientApplication, aadConfig?: 
   return msalApp.acquireTokenPopup(tokenRequest);
 };
 
-const acquireToken = async (msalApp?: PublicClientApplication, aadConfig?: AadConfig, userName?: string) => {
+const acquireToken = async (
+  msalApp?: PublicClientApplication,
+  aadConfig?: AadAuthProviderConfig,
+  userName?: string
+) => {
   return await acquireTokenSilent(msalApp, aadConfig, userName).catch(async _err => {
     return await acquireTokenPopup(msalApp, aadConfig, userName);
   });
 };
 
-const refreshToken = async (msalApp?: PublicClientApplication, aadConfig?: AadConfig, userName?: string) => {
+const refreshToken = async (
+  msalApp?: PublicClientApplication,
+  aadConfig?: AadAuthProviderConfig,
+  userName?: string
+) => {
   const account = msalApp?.getAllAccounts() || [];
 
   const _userName = userName || (account && account[0]?.username);
@@ -69,9 +85,15 @@ const refreshToken = async (msalApp?: PublicClientApplication, aadConfig?: AadCo
 };
 
 export const useAuthentication = (): UseAuthenticationResult => {
-  const { loading: configLoading, aadConfig } = useContext(configContext);
+  const { loading: configLoading, config } = useContext(configContext);
+
+  const aadConfig = useMemo(() => {
+    return config.authentication.providers.find(x => x.config.__typename === 'AadAuthProviderConfig')
+      ?.config as AadAuthProviderConfig;
+  }, [config]);
+
   const msalApp = useMemo(() => {
-    if (configLoading) {
+    if (configLoading || aadConfig === undefined) {
       return undefined;
     }
 
