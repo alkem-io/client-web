@@ -53,7 +53,15 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   });
 
   const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
-    refetchQueries: ['users'],
+    update(cache, data) {
+      cache.modify({
+        fields: {
+          users(existingUsers = [], { readField }) {
+            return existingUsers.filter(x => readField('id', x) !== data['id']);
+          },
+        },
+      });
+    },
     awaitRefetchQueries: true,
     onCompleted: () => {
       history.push('/admin/users');

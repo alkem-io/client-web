@@ -2,10 +2,7 @@ export const managementData = {
   adminLvl: [
     {
       name: 'Users',
-      buttons: [
-        { description: 'Edit', url: '/users' },
-        { description: 'Create new', url: '/users/new' },
-      ],
+      buttons: [{ description: 'Edit', url: '/users' }],
     },
     {
       name: 'Ecoverse groups',
