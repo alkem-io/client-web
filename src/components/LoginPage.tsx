@@ -17,12 +17,12 @@ interface RegisterPageProps {
 }
 
 const validationSchema = yup.object().shape({
-  email: yup.string().required('Please enter your email address.'),
+  username: yup.string().required('Please enter your email address.'),
   password: yup.string().required('Please enter your password.'),
 });
 
 const initialValues = {
-  email: '',
+  username: '',
   password: '',
 };
 const loginQuery = async (username: string, password: string) => {
@@ -67,15 +67,6 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
                 </Button>
               );
             })}
-          {/* <Button
-            variant="primary"
-            type={'submit'}
-            small
-            block
-            onClick={() => authenticate().then(() => history.push('/'))}
-          >
-            Log in with Microsoft
-          </Button> */}
           <div className={'mt-4'}>
             <div className={'col-xs-12'}>
               <div
@@ -107,12 +98,12 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
             validationSchema={validationSchema}
             initialValues={initialValues}
             onSubmit={(values, { setSubmitting }) => {
-              loginQuery(values.email, values.password)
+              loginQuery(values.username, values.password)
                 .then(result => {
-                  console.log(result);
                   dispatch(updateToken(result.data.access_token));
                   dispatch(updateStatus('done'));
-                  resetStore().then(() => {
+                  resetStore().then(result => {
+                    console.log(result);
                     history.push('/');
                   });
                 })
@@ -123,7 +114,13 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
-                    <InputField name={'email'} title={'Email'} disabled={isSubmitting} value={values.email} />
+                    <InputField
+                      name={'username'}
+                      title={'Email'}
+                      disabled={isSubmitting}
+                      value={values.username}
+                      autoComplete={'username'}
+                    />
                   </Form.Row>
                   <Form.Row>
                     <InputField
@@ -132,6 +129,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
                       disabled={isSubmitting}
                       value={values.password}
                       type={'password'}
+                      autoComplete={'password'}
                     />
                   </Form.Row>
                   <div className={'d-flex mt-4'}>
