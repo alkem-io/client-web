@@ -5,13 +5,16 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
 
-interface RegisterPageProps {}
+interface RegisterPageProps {
+  providers: AuthenticationProviderConfig[];
+}
 
 const validationSchema = yup.object().shape({
   email: yup.string().required('Please enter your email address.'),
@@ -37,7 +40,7 @@ const loginQuery = async (username: string, password: string) => {
     .then(result => result);
 };
 
-export const LoginPage: FC<RegisterPageProps> = () => {
+export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate, resetStore } = useAuthenticate();
@@ -49,7 +52,22 @@ export const LoginPage: FC<RegisterPageProps> = () => {
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
             Sign in
           </Typography>
-          <Button
+          {providers
+            .filter(x => x.config.__typename !== 'SimpleAuthProviderConfig')
+            .map((provider, index) => {
+              return (
+                <Button
+                  key={index}
+                  variant="primary"
+                  small
+                  block
+                  onClick={() => authenticate().then(() => history.push('/'))}
+                >
+                  {provider.label}
+                </Button>
+              );
+            })}
+          {/* <Button
             variant="primary"
             type={'submit'}
             small
@@ -57,7 +75,7 @@ export const LoginPage: FC<RegisterPageProps> = () => {
             onClick={() => authenticate().then(() => history.push('/'))}
           >
             Log in with Microsoft
-          </Button>
+          </Button> */}
           <div className={'mt-4'}>
             <div className={'col-xs-12'}>
               <div
