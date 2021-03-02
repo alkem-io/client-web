@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
+import { AUTH_PROVIDER_KEY } from '../models/Constantes';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
@@ -19,6 +20,8 @@ const authenticate = async (
   client: ApolloClient<object>
 ) => {
   dispatch(updateStatus('authenticating'));
+
+  localStorage.setItem(AUTH_PROVIDER_KEY, 'msal');
 
   const result = await context.signIn();
 
@@ -46,6 +49,12 @@ const refresh = async (
   userName?: string,
   keepStorage?: boolean
 ) => {
+  if (localStorage.getItem(AUTH_PROVIDER_KEY) === 'SimpleAuth') {
+    dispatch(updateStatus('unauthenticated'));
+    !keepStorage && (await resetStore(client));
+    dispatch(updateToken());
+    return;
+  }
   dispatch(updateStatus('refreshing'));
   const accounts = context.getAccounts();
   const targetAccount = accounts[0];
