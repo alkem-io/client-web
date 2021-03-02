@@ -40,32 +40,11 @@ export const silentRequest: Scope = {
 };
 
 export const getConfig = (config?: Config): Configuration => {
-  // const defaultAADConfig: AadConfig = {
-  //   msalConfig,
-  //   apiConfig,
-  //   loginRequest,
-  //   tokenRequest,
-  //   silentRequest,
-  //   authEnabled: true,
-  // };
-
-  const authenticationProviders =
-    config?.authenticationProviders
-      .map(x => {
-        const { __typename: type, ...rest } = x.config;
-        if (type)
-          return {
-            ...x,
-            config: {
-              type,
-              ...rest,
-            },
-          };
-        return undefined;
-      })
-      .filter(x => x !== undefined) || [];
-
   return {
-    authenticationProviders,
+    authentication: {
+      ...config?.authentication,
+      enabled: config?.authentication.enabled === undefined ?? false,
+      providers: config?.authentication.providers || [],
+    },
   };
 };

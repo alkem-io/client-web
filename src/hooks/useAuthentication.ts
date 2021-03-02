@@ -69,9 +69,14 @@ const refreshToken = async (msalApp?: PublicClientApplication, aadConfig?: AadCo
 };
 
 export const useAuthentication = (): UseAuthenticationResult => {
-  const { loading: configLoading, aadConfig } = useContext(configContext);
+  const { loading: configLoading, config } = useContext(configContext);
+
+  const aadConfig = useMemo(() => {
+    return config.authentication.providers.find(x => x.config.__typename === 'AadConfig')?.config as AadConfig;
+  }, [config]);
+
   const msalApp = useMemo(() => {
-    if (configLoading) {
+    if (configLoading || aadConfig === undefined) {
       return undefined;
     }
 

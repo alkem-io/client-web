@@ -17,8 +17,6 @@ export type AadConfig = {
   __typename?: 'AadConfig';
   /** Config for accessing the Cherrytwist API. */
   apiConfig: ApiConfig;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
   /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
   loginRequest: Scope;
   /** Config for MSAL authentication library on Cherrytwist Web Client. */
@@ -110,6 +108,14 @@ export type AspectInput = {
   title?: Maybe<Scalars['String']>;
 };
 
+export type AuthenticationConfig = {
+  __typename?: 'AuthenticationConfig';
+  /** Is authentication enabled? */
+  enabled: Scalars['Boolean'];
+  /** Cherrytwist Authentication Providers Config. */
+  providers: Array<AuthenticationProviderConfig>;
+};
+
 export type AuthenticationProviderConfig = {
   __typename?: 'AuthenticationProviderConfig';
   /** Configuration of the authenticaiton provider */
@@ -166,9 +172,9 @@ export type ChallengeTemplate = {
 
 export type Config = {
   __typename?: 'Config';
-  /** Cherrytwist Authentication Providers Config. */
-  authenticationProviders: Array<AuthenticationProviderConfig>;
-  /** Cherrytwist Template. */
+  /** Cherrytwist authentication configuration. */
+  authentication: AuthenticationConfig;
+  /** Cherrytwist template configuration. */
   template: Template;
 };
 
@@ -1493,25 +1499,30 @@ export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigQuery = { __typename?: 'Query' } & {
   configuration: { __typename?: 'Config' } & {
-    authenticationProviders: Array<
-      { __typename?: 'AuthenticationProviderConfig' } & Pick<
-        AuthenticationProviderConfig,
-        'name' | 'label' | 'icon'
-      > & {
-          config:
-            | ({ __typename: 'AadConfig' } & Pick<AadConfig, 'authEnabled'> & {
-                  msalConfig: { __typename?: 'MsalConfig' } & {
-                    auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
-                    cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
-                  };
-                  apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
-                  loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                  tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                  silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                })
-            | ({ __typename: 'SimpleAuthProviderConfig' } & Pick<SimpleAuthProviderConfig, 'issuer' | 'tokenEndpoint'>);
-        }
-    >;
+    authentication: { __typename?: 'AuthenticationConfig' } & Pick<AuthenticationConfig, 'enabled'> & {
+        providers: Array<
+          { __typename?: 'AuthenticationProviderConfig' } & Pick<
+            AuthenticationProviderConfig,
+            'name' | 'label' | 'icon'
+          > & {
+              config:
+                | ({ __typename: 'AadConfig' } & {
+                    msalConfig: { __typename?: 'MsalConfig' } & {
+                      auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
+                      cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
+                    };
+                    apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
+                    loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                  })
+                | ({ __typename: 'SimpleAuthProviderConfig' } & Pick<
+                    SimpleAuthProviderConfig,
+                    'issuer' | 'tokenEndpoint'
+                  >);
+            }
+        >;
+      };
   };
 };
 
@@ -3970,41 +3981,43 @@ export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQue
 export const ConfigDocument = gql`
   query config {
     configuration {
-      authenticationProviders {
-        name
-        label
-        icon
-        config {
-          __typename
-          ... on AadConfig {
-            msalConfig {
-              auth {
-                authority
-                clientId
-                redirectUri
+      authentication {
+        enabled
+        providers {
+          name
+          label
+          icon
+          config {
+            __typename
+            ... on AadConfig {
+              msalConfig {
+                auth {
+                  authority
+                  clientId
+                  redirectUri
+                }
+                cache {
+                  cacheLocation
+                  storeAuthStateInCookie
+                }
               }
-              cache {
-                cacheLocation
-                storeAuthStateInCookie
+              apiConfig {
+                resourceScope
+              }
+              loginRequest {
+                scopes
+              }
+              tokenRequest {
+                scopes
+              }
+              silentRequest {
+                scopes
               }
             }
-            apiConfig {
-              resourceScope
+            ... on SimpleAuthProviderConfig {
+              issuer
+              tokenEndpoint
             }
-            loginRequest {
-              scopes
-            }
-            tokenRequest {
-              scopes
-            }
-            silentRequest {
-              scopes
-            }
-            authEnabled
-          }
-          ... on SimpleAuthProviderConfig {
-            issuer
-            tokenEndpoint
           }
         }
       }

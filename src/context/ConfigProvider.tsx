@@ -3,16 +3,16 @@ import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
 import { QUERY_CONFIG } from '../graphql/config';
-import { AuthenticationProvider } from '../models/Configuration';
+import { Configuration } from '../models/Configuration';
 import { Error } from '../pages/Error';
 import { getConfig } from '../utils/configHelper';
 export interface ConfigContext {
-  authenticationProviders: AuthenticationProvider[];
+  config: Configuration;
   loading: boolean;
 }
 
 const configContext = React.createContext<ConfigContext>({
-  authenticationProviders: getConfig().authenticationProviders,
+  config: getConfig(),
   loading: true,
 });
 
@@ -21,7 +21,7 @@ interface ConfigProviderProps {
 }
 
 const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
-  const [authenticationProviders, setConfig] = useState(getConfig().authenticationProviders);
+  const [config, setConfig] = useState(getConfig());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -62,7 +62,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
   return (
     <configContext.Provider
       value={{
-        authenticationProviders,
+        config,
         loading,
       }}
     >
