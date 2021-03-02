@@ -15,9 +15,9 @@ import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
+import { STATUS_KEY, TOKEN_KEY } from '../models/Constantes';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
-import { AuthStatus } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
@@ -25,13 +25,9 @@ const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const dispatch = useDispatch();
-  const { context, status: _status, token: _token } = useAuthenticationContext();
+  const { context } = useAuthenticationContext();
 
-  // Preserve the token and status from the reduxStore to be used inside the memoized apollo client
-  const status = useRef<AuthStatus>('unauthenticated');
-  const token = useRef<string | undefined>();
-  token.current = _token;
-  status.current = _status;
+  const status = localStorage.getItem(STATUS_KEY);
 
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
@@ -94,7 +90,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:
           case ErrorStatus.UNAUTHENTICATED:
-            if (status.current === 'done')
+            if (status === 'done')
               return fromPromise(refreshToken())
                 .filter(value => Boolean(value))
                 .flatMap(accessToken => {
@@ -132,14 +128,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   const authLink = setContext(async (_, { headers }) => {
-    let internalToken = token.current;
-
-    if (status.current === 'unauthenticated') {
-      const result = await refreshToken();
-      if (result) {
-        internalToken = result;
-      }
-    }
+    let internalToken = localStorage.getItem(TOKEN_KEY) || '';
 
     if (!internalToken) return headers;
 
