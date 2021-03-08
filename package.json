@@ -65,7 +65,7 @@
     "test:ui": "protractor conf.js",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --config codegen.yml",
+    "codegen": "cross-env VERBOSE=1 cross-env DEBUG=1 graphql-codegen --config codegen.yml",
     "postcodegen": "prettier --write src/generated/*.ts{,x}",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",

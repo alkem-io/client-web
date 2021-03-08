@@ -13,12 +13,10 @@ export type Scalars = {
   Float: number;
 };
 
-export type AadConfig = {
-  __typename?: 'AadConfig';
+export type AadAuthProviderConfig = {
+  __typename?: 'AadAuthProviderConfig';
   /** Config for accessing the Cherrytwist API. */
   apiConfig: ApiConfig;
-  /** Is the client and server authentication enabled? */
-  authEnabled: Scalars['Boolean'];
   /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
   loginRequest: Scope;
   /** Config for MSAL authentication library on Cherrytwist Web Client. */
@@ -69,6 +67,33 @@ export type ApiConfig = {
   resourceScope: Scalars['String'];
 };
 
+export type Application = {
+  __typename?: 'Application';
+  id: Scalars['ID'];
+  questions: Array<Question>;
+  status: ApplicationStatus;
+  user: User;
+};
+
+export type ApplicationInput = {
+  questions: Array<NvpInput>;
+  userId: Scalars['Float'];
+};
+
+export enum ApplicationStatus {
+  Approved = 'approved',
+  New = 'new',
+  Rejected = 'rejected',
+}
+
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   explanation: Scalars['String'];
@@ -83,8 +108,33 @@ export type AspectInput = {
   title?: Maybe<Scalars['String']>;
 };
 
+export type AuthenticationConfig = {
+  __typename?: 'AuthenticationConfig';
+  /** Is authentication enabled? */
+  enabled: Scalars['Boolean'];
+  /** Cherrytwist Authentication Providers Config. */
+  providers: Array<AuthenticationProviderConfig>;
+};
+
+export type AuthenticationProviderConfig = {
+  __typename?: 'AuthenticationProviderConfig';
+  /** Configuration of the authenticaiton provider */
+  config: AuthenticationProviderConfigUnion;
+  /** Is the authentication provider enabled? */
+  enabled: Scalars['Boolean'];
+  /** CDN location of an icon of the authentication provider login button. */
+  icon: Scalars['String'];
+  /** Label of the authentication provider. */
+  label: Scalars['String'];
+  /** Name of the authentication provider. */
+  name: Scalars['String'];
+};
+
+export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | SimpleAuthProviderConfig;
+
 export type Challenge = {
   __typename?: 'Challenge';
+  applications: Array<Application>;
   /** The shared understanding for the challenge */
   context?: Maybe<Context>;
   /** All users that are contributing to this challenge. */
@@ -114,12 +164,20 @@ export type ChallengeInput = {
   textID?: Maybe<Scalars['String']>;
 };
 
+export type ChallengeTemplate = {
+  __typename?: 'ChallengeTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Challenge template name. */
+  name: Scalars['String'];
+};
+
 export type Config = {
   __typename?: 'Config';
-  /** Cherrytwist Template. */
+  /** Cherrytwist authentication configuration. */
+  authentication: AuthenticationConfig;
+  /** Cherrytwist template configuration. */
   template: Template;
-  /** Cherrytwist Web Client Config. */
-  webClient: WebClientConfig;
 };
 
 export type Context = {
@@ -174,6 +232,14 @@ export type EcoverseInput = {
   name?: Maybe<Scalars['String']>;
   /** The set of tags to apply to this ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type EcoverseTemplate = {
+  __typename?: 'EcoverseTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Ecoverse template name. */
+  name: Scalars['String'];
 };
 
 export type MemberOf = {
@@ -232,12 +298,20 @@ export type Mutation = {
   addUserToGroup: Scalars['Boolean'];
   /** Adds the user with the given identifier as a member of the specified opportunity */
   addUserToOpportunity: UserGroup;
+  /** Create application to join this ecoverse */
+  approveApplication: Application;
   /** Assign the user with the given ID as focal point for the given group */
   assignGroupFocalPoint?: Maybe<UserGroup>;
   /** Create a new actor on the ActorGroup with the specified ID */
   createActor: Actor;
   /** Create a new actor group on the Opportunity identified by the ID */
   createActorGroup: ActorGroup;
+  /** Create application to join this ecoverse */
+  createApplication: Application;
+  /** Create application to join this challenge */
+  createApplicationForChallenge: Application;
+  /** Create application to join this opportunity */
+  createApplicationForOpportunity: Application;
   /** Create a new aspect on the Opportunity identified by the ID */
   createAspect: Aspect;
   /** Create a new aspect on the Project identified by the ID */
@@ -266,12 +340,10 @@ export type Mutation = {
   createRelation: Relation;
   /** Creates a new tagset with the specified name for the profile with given id */
   createTagsetOnProfile: Tagset;
-  /** Creates a new user as a member of the ecoverse, including an account if enabled */
+  /** Creates a new user profile on behalf of another user. */
   createUser: User;
-  /** Creates a new account on the identity provider for the user profile with the given ID and with the given one time password */
-  createUserAccount: Scalars['Boolean'];
-  /** Creates a new user as a member of the ecoverse, without an account */
-  createUserProfile: User;
+  /** Creates a new user profile for the currently authenticated user. */
+  createUserForMe: User;
   /** Removes the actor  with the specified ID */
   removeActor: Scalars['Boolean'];
   /** Removes the actor group with the specified ID */
@@ -292,8 +364,8 @@ export type Mutation = {
   removeReference: Scalars['Boolean'];
   /** Removes the relation with the specified ID */
   removeRelation: Scalars['Boolean'];
-  /** Removes the specified user from the ecoverse */
-  removeUser: Scalars['Boolean'];
+  /** Removes the specified user profile. */
+  removeUser: User;
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes the user group with the specified ID */
@@ -320,8 +392,6 @@ export type Mutation = {
   updateProject: Project;
   /** Update the base user information. Note: email address cannot be updated. */
   updateUser: User;
-  /** Updates the user account password */
-  updateUserAccountPassword: Scalars['Boolean'];
   /** Update the user group information. */
   updateUserGroup: UserGroup;
 };
@@ -351,6 +421,10 @@ export type MutationAddUserToOpportunityArgs = {
   userID: Scalars['Float'];
 };
 
+export type MutationApproveApplicationArgs = {
+  ID: Scalars['Float'];
+};
+
 export type MutationAssignGroupFocalPointArgs = {
   groupID: Scalars['Float'];
   userID: Scalars['Float'];
@@ -364,6 +438,20 @@ export type MutationCreateActorArgs = {
 export type MutationCreateActorGroupArgs = {
   actorGroupData: ActorGroupInput;
   opportunityID: Scalars['Float'];
+};
+
+export type MutationCreateApplicationArgs = {
+  applicationData: ApplicationInput;
+};
+
+export type MutationCreateApplicationForChallengeArgs = {
+  applicationData: ApplicationInput;
+  ID: Scalars['Float'];
+};
+
+export type MutationCreateApplicationForOpportunityArgs = {
+  applicationData: ApplicationInput;
+  ID: Scalars['Float'];
 };
 
 export type MutationCreateAspectArgs = {
@@ -437,12 +525,7 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateUserAccountArgs = {
-  password: Scalars['String'];
-  userID: Scalars['Float'];
-};
-
-export type MutationCreateUserProfileArgs = {
+export type MutationCreateUserForMeArgs = {
   userData: UserInput;
 };
 
@@ -557,10 +640,16 @@ export type MutationUpdateUserGroupArgs = {
   userGroupData: UserGroupInput;
 };
 
+export type NvpInput = {
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type Opportunity = {
   __typename?: 'Opportunity';
   /** The set of actor groups within the context of this Opportunity. */
   actorGroups?: Maybe<Array<ActorGroup>>;
+  applications: Array<Application>;
   /** The set of aspects within the context of this Opportunity. */
   aspects?: Maybe<Array<Aspect>>;
   /** The shared understanding for the opportunity */
@@ -593,6 +682,8 @@ export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
   /** Template actor groups. */
   actorGroups?: Maybe<Array<Scalars['String']>>;
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
   /** Template aspects. */
   aspects?: Maybe<Array<Scalars['String']>>;
   /** Template opportunity name. */
@@ -663,12 +754,14 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** All applications to join */
+  application: Application;
+  /** All applications for this ecoverse */
+  applications: Array<Application>;
   /** A particular challenge */
   challenge: Challenge;
   /** All challenges */
   challenges: Array<Challenge>;
-  /** Cherrytwist Web Client AAD Configuration */
-  clientConfig: AadConfig;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
   /** The shared understanding for this ecoverse */
@@ -683,6 +776,8 @@ export type Query = {
   host: Organisation;
   /** The currently logged in user */
   me: User;
+  /** The members of this ecoverse */
+  members: Array<User>;
   /** Cherrytwist Services Metadata */
   metadata: Metadata;
   /** The name for this ecoverse */
@@ -705,10 +800,14 @@ export type Query = {
   tagset: Tagset;
   /** A particular user, identified by the ID or by email */
   user: User;
-  /** The members of this this ecoverse */
+  /** The users who have profiles on this platform */
   users: Array<User>;
-  /** The members of this this ecoverse filtered by list of IDs. */
+  /** The users filtered by list of IDs. */
   usersById: Array<User>;
+};
+
+export type QueryApplicationArgs = {
+  ID: Scalars['Float'];
 };
 
 export type QueryChallengeArgs = {
@@ -745,6 +844,21 @@ export type QueryUserArgs = {
 
 export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['String']>;
+};
+
+export type Question = {
+  __typename?: 'Question';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type QuestionTemplate = {
+  __typename?: 'QuestionTemplate';
+  /** Question template. */
+  question: Scalars['String'];
+  /** Is question required? */
+  required: Scalars['Boolean'];
 };
 
 export type Reference = {
@@ -816,6 +930,14 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type SimpleAuthProviderConfig = {
+  __typename?: 'SimpleAuthProviderConfig';
+  /** Simple authentication provider issuer endpoint. */
+  issuer: Scalars['String'];
+  /** Simple authentication provider token endpoint. Use json payload in the form of username + password to login and obtain valid jwt token. */
+  tokenEndpoint: Scalars['String'];
+};
+
 export type Tagset = {
   __typename?: 'Tagset';
   id: Scalars['ID'];
@@ -830,7 +952,7 @@ export type TagsetInput = {
 
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
-  /** Tagset name */
+  /** Tagset template name. */
   name: Scalars['String'];
   /** Tagset placeholder */
   placeholder?: Maybe<Scalars['String']>;
@@ -838,13 +960,17 @@ export type TagsetTemplate = {
 
 export type Template = {
   __typename?: 'Template';
+  /** Challenge templates. */
+  challenges: Array<ChallengeTemplate>;
   /** Template description. */
   description: Scalars['String'];
+  /** Ecoverse templates. */
+  ecoverses: Array<EcoverseTemplate>;
   /** Template name. */
   name: Scalars['String'];
-  /** Opportunities template. */
+  /** Opportunity templates. */
   opportunities: Array<OpportunityTemplate>;
-  /** Users template. */
+  /** User templates. */
   users: Array<UserTemplate>;
 };
 
@@ -915,16 +1041,10 @@ export type UserInput = {
 
 export type UserTemplate = {
   __typename?: 'UserTemplate';
-  /** Template user name. */
+  /** User template name. */
   name: Scalars['String'];
-  /** Template tagsets. */
+  /** Tagset templates. */
   tagsets?: Maybe<Array<TagsetTemplate>>;
-};
-
-export type WebClientConfig = {
-  __typename?: 'WebClientConfig';
-  /** Cherrytwist Client AAD config. */
-  aadConfig: AadConfig;
 };
 
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
@@ -993,7 +1113,9 @@ export type RemoveUserMutationVariables = Exact<{
   userID: Scalars['Float'];
 }>;
 
-export type RemoveUserMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUser'>;
+export type RemoveUserMutation = { __typename?: 'Mutation' } & {
+  removeUser: { __typename?: 'User' } & UserDetailsFragment;
+};
 
 export type AddUserToGroupMutationVariables = Exact<{
   groupID: Scalars['Float'];
@@ -1371,6 +1493,37 @@ export type OrganizationCardQuery = { __typename?: 'Query' } & {
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'>;
     };
+};
+
+export type ConfigQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    authentication: { __typename?: 'AuthenticationConfig' } & Pick<AuthenticationConfig, 'enabled'> & {
+        providers: Array<
+          { __typename?: 'AuthenticationProviderConfig' } & Pick<
+            AuthenticationProviderConfig,
+            'name' | 'label' | 'icon'
+          > & {
+              config:
+                | ({ __typename: 'AadAuthProviderConfig' } & {
+                    msalConfig: { __typename?: 'MsalConfig' } & {
+                      auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
+                      cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
+                    };
+                    apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
+                    loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                    silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
+                  })
+                | ({ __typename: 'SimpleAuthProviderConfig' } & Pick<
+                    SimpleAuthProviderConfig,
+                    'issuer' | 'tokenEndpoint'
+                  >);
+            }
+        >;
+      };
+  };
 };
 
 export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
@@ -2141,8 +2294,11 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RemoveUserDocument = gql`
   mutation removeUser($userID: Float!) {
-    removeUser(userID: $userID)
+    removeUser(userID: $userID) {
+      ...UserDetails
+    }
   }
+  ${UserDetailsFragmentDoc}
 `;
 export type RemoveUserMutationFn = Apollo.MutationFunction<RemoveUserMutation, RemoveUserMutationVariables>;
 
@@ -3822,6 +3978,77 @@ export function useOrganizationCardLazyQuery(
 export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
 export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
 export type OrganizationCardQueryResult = Apollo.QueryResult<OrganizationCardQuery, OrganizationCardQueryVariables>;
+export const ConfigDocument = gql`
+  query config {
+    configuration {
+      authentication {
+        enabled
+        providers {
+          name
+          label
+          icon
+          config {
+            __typename
+            ... on AadAuthProviderConfig {
+              msalConfig {
+                auth {
+                  authority
+                  clientId
+                  redirectUri
+                }
+                cache {
+                  cacheLocation
+                  storeAuthStateInCookie
+                }
+              }
+              apiConfig {
+                resourceScope
+              }
+              loginRequest {
+                scopes
+              }
+              tokenRequest {
+                scopes
+              }
+              silentRequest {
+                scopes
+              }
+            }
+            ... on SimpleAuthProviderConfig {
+              issuer
+              tokenEndpoint
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useConfigQuery__
+ *
+ * To run a query within a React component, call `useConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigQuery(baseOptions?: Apollo.QueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigQuery, ConfigQueryVariables>) {
+  return Apollo.useLazyQuery<ConfigQuery, ConfigQueryVariables>(ConfigDocument, baseOptions);
+}
+export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
+export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
+export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
 export const EcoverseListDocument = gql`
   query ecoverseList {
     name
