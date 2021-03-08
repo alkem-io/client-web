@@ -126,6 +126,6 @@ We have automated the creation and deployment of containers to docker hub via a 
   - Run tests with coverage `npm run-script test:coverage`
 - UI E2E tests - testing main business flows
   - Tests are running against OS: Ubuntu, Browser: Firefox
-  - Before running the tests execute the following command `sudo node_modules/protractor/bin/webdriver-manager update`
+  - Before running the tests execute the following command `npm webdriver-manager update`
   - Run tests with coverage `npm run-script test:ui`
   - Password for admin user must be provided in `conf.js` file
