@@ -18,6 +18,21 @@
         "CI": "true"
       },
       "disableOptimisticBPs": true
+    },
+    {
+      "name": "CT Client",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+      "args": ["start"],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "CI": "true"
+      },
+      "disableOptimisticBPs": true
     }
   ]
 }
