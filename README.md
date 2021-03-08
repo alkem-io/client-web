@@ -7,7 +7,7 @@ It is in part inspired by the following article: https://blog.logrocket.com/buil
 The intention is that this repository contains over time a selection of React components for working with Cherrytwist instances, as well as a sample web client that uses those components.
 
 ![AKS dev CI/CD pipeline](https://github.com/cherrytwist/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
-[![Coverage Status](https://coveralls.io/repos/github/cherrytwist/Client.Web/badge.svg?branch=client-466)](https://coveralls.io/github/cherrytwist/Client.Web?branch=client-466)
+[![Coverage Status](https://coveralls.io/repos/github/cherrytwist/Client.Web/badge.svg?branch=develop)](https://coveralls.io/github/cherrytwist/Client.Web?branch=develop)
 [![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
 
 ## Configuration
