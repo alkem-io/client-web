@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { AuthenticationProviderConfig } from '../generated/graphql';
+import { AuthenticationProviderConfig, SimpleAuthProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { AuthenticationResult } from '../models/AuthenticationResult';
 import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constantes';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
@@ -26,25 +27,33 @@ const initialValues = {
   username: '',
   password: '',
 };
-const loginQuery = async (username: string, password: string) => {
-  return await axios
-    .post(
-      '/auth/login',
-      {
-        username,
-        password,
-      },
-      {
-        responseType: 'json',
-      }
-    )
-    .then(result => result);
-};
 
 export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate, resetStore } = useAuthenticate();
+
+  const loginQuery = useCallback(
+    async (username: string, password: string) => {
+      const provider = providers.find(x => x.config.__typename === 'SimpleAuthProviderConfig');
+
+      const config = provider?.config as SimpleAuthProviderConfig;
+
+      return axios
+        .post<AuthenticationResult>(
+          config.tokenEndpoint,
+          {
+            username,
+            password,
+          },
+          {
+            responseType: 'json',
+          }
+        )
+        .then(result => result.data);
+    },
+    [providers]
+  );
 
   return (
     <Container fluid={'sm'}>
@@ -104,7 +113,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
               localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
               loginQuery(values.username, values.password)
                 .then(result => {
-                  dispatch(updateToken(result.data.access_token));
+                  dispatch(updateToken(result.access_token));
                   dispatch(updateStatus('done'));
                   resetStore().then(result => {
                     console.log(result);
