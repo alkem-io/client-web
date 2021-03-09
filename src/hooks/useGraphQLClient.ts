@@ -170,7 +170,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const retryLink = new RetryLink({
     delay: {
       initial: 1000,
-      max: 60000,
+      max: 5000,
       jitter: true,
     },
     attempts: {
