@@ -92,7 +92,8 @@ const App = ({ children }): React.ReactElement => {
                 small
               />
             )}
-            {!user && (
+            {/* Hide register button until functionality is implemented */}
+            {/* {!user && (
               <Button
                 text={'Sign up'}
                 style={{ marginLeft: 20 }}
@@ -100,7 +101,7 @@ const App = ({ children }): React.ReactElement => {
                 small
                 variant={'default'}
               />
-            )}
+            )} */}
           </div>
         )}
       </Header>

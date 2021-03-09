@@ -160,10 +160,11 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
                 }}
               ></div>
             </div>
-            <Typography variant={'h5'}>Don't have an account?</Typography>
+            {/* Hide register button until functionality is implemented */}
+            {/* <Typography variant={'h5'}>Don't have an account?</Typography>
             <Button variant="primary" type={'submit'} small block onClick={() => history.push('/register')}>
               Sign up
-            </Button>
+            </Button> */}
           </div>
         </Col>
       </Row>
