@@ -6,10 +6,8 @@ It is in part inspired by the following article: https://blog.logrocket.com/buil
 
 The intention is that this repository contains over time a selection of React components for working with Cherrytwist instances, as well as a sample web client that uses those components.
 
-Build Status
 ![AKS dev CI/CD pipeline](https://github.com/cherrytwist/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
-
-Build Quality:
+[![Coverage Status](https://coveralls.io/repos/github/cherrytwist/Client.Web/badge.svg?branch=develop)](https://coveralls.io/github/cherrytwist/Client.Web?branch=develop)
 [![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
 
 ## Configuration
@@ -110,3 +108,22 @@ We have automated the creation and deployment of containers to docker hub via a 
 - Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
 - Create a github release and tag it with the appropriate version number ie. `v0.1.3`
 - Go to github actions and view the `push to docker` action to see if everything ran correctly.
+
+## Testing
+
+### Tools
+
+- [VS Code](https://code.visualstudio.com/) - development environment
+- [Jest](https://jestjs.io/) - component testing
+- [Enzyme](https://enzymejs.github.io/enzyme/) - component testing
+- [Protractor](https://www.protractortest.org/#/) - UI E2E testing
+
+### Test levels
+
+- Component tests - testing each component in isolation
+  - Run tests with coverage `npm run-script test:coverage`
+- UI E2E tests - testing main business flows
+  - Tests are running against OS: Ubuntu, Browser: Firefox
+  - Before running the tests execute the following command `npm webdriver-manager update`
+  - Run tests with coverage `npm run-script test:ui`
+  - Password for admin user must be provided in `conf.js` file
