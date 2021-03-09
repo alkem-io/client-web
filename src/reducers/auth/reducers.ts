@@ -31,6 +31,7 @@ export default function authReducer(state = initialState, action: AuthActionType
         };
       } else {
         localStorage.setItem(AUTHENTICATED_KEY, 'false');
+        localStorage.removeItem(TOKEN_KEY);
         return {
           ...state,
           idToken: null,

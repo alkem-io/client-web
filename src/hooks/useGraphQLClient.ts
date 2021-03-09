@@ -130,7 +130,9 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const authLink = setContext(async (_, { headers }) => {
     let internalToken = localStorage.getItem(TOKEN_KEY) || '';
 
-    if (!internalToken) return headers;
+    if (!internalToken) {
+      return headers;
+    }
 
     return {
       headers: {

@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { AUTH_PROVIDER_KEY, AUTH_USER_KEY } from '../models/Constantes';
+import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constantes';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
@@ -101,7 +101,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
             onSubmit={(values, { setSubmitting }) => {
               dispatch(updateStatus('authenticating'));
               localStorage.setItem(AUTH_USER_KEY, values.username);
-              localStorage.setItem(AUTH_PROVIDER_KEY, 'SimpleAuth');
+              localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
               loginQuery(values.username, values.password)
                 .then(result => {
                   dispatch(updateToken(result.data.access_token));

@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
-import { AUTH_PROVIDER_KEY } from '../models/Constantes';
+import { AUTH_PROVIDER_KEY, PROVIDER_MSAL } from '../models/Constantes';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
@@ -82,16 +82,23 @@ const unauthenticate = async (
   dispatch: Dispatch<AuthActionTypes>,
   client: ApolloClient<object>
 ) => {
-  const accounts = context.getAccounts();
-  const targetAccount = accounts[0];
+  const provider = localStorage.getItem(AUTH_PROVIDER_KEY);
 
-  if (!targetAccount) {
-    return;
+  if (provider === PROVIDER_MSAL) {
+    const accounts = context.getAccounts();
+    const targetAccount = accounts[0];
+
+    if (!targetAccount) {
+      return;
+    }
+
+    dispatch(updateStatus('signingout'));
+    dispatch(updateToken());
+    await context.signOut(targetAccount.username);
+  } else {
+    dispatch(updateStatus('signingout'));
+    dispatch(updateToken());
   }
-
-  dispatch(updateStatus('signingout'));
-  dispatch(updateToken());
-  await context.signOut(targetAccount.username);
 
   await resetStore(client);
 };
@@ -145,13 +152,11 @@ export const useAuthenticate = () => {
   );
 
   const safeUnauthenticate = useCallback(() => {
-    try {
-      return unauthenticateWired();
-    } catch (ex) {
+    return unauthenticateWired().catch(ex => {
       const error = new Error(ex);
       logError(error, scope => scope.setTag('authentication', 'signout'));
       dispatch(pushError(error));
-    }
+    });
   }, [unauthenticateWired, dispatch]);
 
   const resetStoreWired = useCallback(() => {
