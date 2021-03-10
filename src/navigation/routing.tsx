@@ -1,16 +1,19 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { EditUserProfile } from '../components/UserProfile';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
+import AboutPage from '../pages/About';
 import { Admin } from './admin/admin';
 import { Community } from './community';
 import { Ecoverses } from './ecoverse';
+import LoginRoute from './login';
+import LogoutRoute from './logout';
 import { Messages } from './messages';
+import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
-import AboutPage from '../pages/About';
-import { EditUserProfile } from '../components/UserProfile';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -29,6 +32,15 @@ export const Routing: FC = () => {
       <Route path="/ecoverse">
         <Ecoverses />
       </Route>
+      <Route exact path="/login">
+        <LoginRoute />
+      </Route>
+      <Route exact path="/logout">
+        <LogoutRoute />
+      </Route>
+      <Route exact path="/register">
+        <RegisterRoute />
+      </Route>
       <RestrictedRoute exact path="/community">
         <Community />
       </RestrictedRoute>
@@ -41,6 +53,7 @@ export const Routing: FC = () => {
       <RestrictedRoute exact path="/profile">
         <UserProfile />
       </RestrictedRoute>
+
       <Route exact path="/signin">
         <SignIn />
       </Route>
