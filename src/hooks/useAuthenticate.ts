@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
-import { AUTH_PROVIDER_KEY, PROVIDER_MSAL } from '../models/Constantes';
+import { AUTH_PROVIDER_KEY, PROVIDER_MSAL } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';

@@ -1,4 +1,4 @@
-import { AUTHENTICATED_KEY, STATUS_KEY, TOKEN_KEY } from '../../models/Constantes';
+import { AUTHENTICATED_KEY, STATUS_KEY, TOKEN_KEY } from '../../models/Constants';
 import { AuthActionTypes, AuthState, UPDATE_ACCOUNT, UPDATE_ERROR, UPDATE_STATUS, UPDATE_TOKEN } from './types';
 
 const initialState: AuthState = {

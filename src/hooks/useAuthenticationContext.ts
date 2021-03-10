@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { AuthenticationContext } from '../context/AuthenticationProvider';
-import { AUTHENTICATED_KEY, STATUS_KEY, TOKEN_KEY } from '../models/Constantes';
+import { AUTHENTICATED_KEY, STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { AuthStatus } from '../reducers/auth/types';
 
 export const useAuthenticationContext = () => {

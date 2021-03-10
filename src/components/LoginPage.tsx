@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { AuthenticationProviderConfig, SimpleAuthProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { AuthenticationResult } from '../models/AuthenticationResult';
-import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constantes';
+import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';

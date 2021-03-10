@@ -15,7 +15,7 @@ import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
-import { STATUS_KEY, TOKEN_KEY } from '../models/Constantes';
+import { STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
