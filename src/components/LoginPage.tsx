@@ -53,7 +53,6 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
           }
         )
         .then(result => {
-          debugger;
           dispatch(updateToken(result.data.access_token));
           dispatch(updateStatus('done'));
           resetStore().then(result => {
