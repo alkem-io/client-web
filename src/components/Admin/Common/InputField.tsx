@@ -11,6 +11,7 @@ interface InputFieldProps {
   disabled?: boolean;
   type?: string;
   placeholder?: string;
+  autoComplete?: string;
   as?: React.ElementType;
 }
 
@@ -24,6 +25,7 @@ export const InputField: FC<InputFieldProps> = ({
   type,
   placeholder,
   as,
+  autoComplete,
 }) => {
   const [field, meta] = useField(name);
 
@@ -45,6 +47,7 @@ export const InputField: FC<InputFieldProps> = ({
         disabled={disabled}
         isValid={required ? Boolean(!meta.error) && meta.touched : undefined}
         isInvalid={Boolean(!!meta.error) && meta.touched}
+        autoComplete={autoComplete}
         onBlur={field.onBlur}
       />
       <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>

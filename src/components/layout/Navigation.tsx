@@ -43,7 +43,7 @@ const useNavigationStyles = createStyles(theme => ({
   },
 }));
 
-const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignOut }) => {
+const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);
@@ -142,12 +142,11 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata, onSignOut }) 
                   {userMetadata && (
                     <Button
                       text="Sign out"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        onSignOut();
-                      }}
+                      as={Link}
+                      to="/logout"
                       inset
                       className={styles.menuItem}
+                      onClick={() => setDropdownOpen(false)}
                     >
                       <Icon component={DoorOpenIcon} color="inherit" size="sm" />
                     </Button>

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { User, UserInput, useUpdateMyProfileMutation, useUserProfileQuery } from '../../generated/graphql';
+import { User, UserInput, useUpdateUserMutation, useUserProfileQuery } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { EditMode } from '../../utils/editMode';
@@ -14,7 +14,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
-  const [updateUser] = useUpdateMyProfileMutation({
+  const [updateUser] = useUpdateUserMutation({
     onError: error => console.log(error),
     onCompleted: () => {
       notify('User updated successfully', 'success');
@@ -38,6 +38,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     updateUser({
       variables: {
         user: userInput,
+        userId: Number(userID),
       },
     });
   };

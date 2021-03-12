@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useAuthenticate } from '../../hooks/useAuthenticate';
+import { useHistory } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
 import Backdrop from '../core/Backdrop';
@@ -30,7 +30,7 @@ interface Props {
 }
 
 const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }) => {
-  const { safeAuthenticate } = useAuthenticate();
+  const history = useHistory();
   const { user } = useUserContext();
   const styles = useBackdropStyles();
 
@@ -44,7 +44,7 @@ const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }
           Please sign in to check out the {blockName}.
         </Typography>
         <div>
-          <Button onClick={() => safeAuthenticate()} text={'Sign in'} />
+          <Button onClick={() => history.push('/login')} text={'Sign in'} />
         </div>
       </div>
     </div>

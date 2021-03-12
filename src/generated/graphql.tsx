@@ -340,10 +340,8 @@ export type Mutation = {
   createRelation: Relation;
   /** Creates a new tagset with the specified name for the profile with given id */
   createTagsetOnProfile: Tagset;
-  /** Creates a new user profile on behalf of another user. */
+  /** Creates a new user profile on behalf of an admin or the user account owner. */
   createUser: User;
-  /** Creates a new user profile for the currently authenticated user. */
-  createUserForMe: User;
   /** Removes the actor  with the specified ID */
   removeActor: Scalars['Boolean'];
   /** Removes the actor group with the specified ID */
@@ -380,8 +378,6 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Updates the Ecoverse with the provided data */
   updateEcoverse: Ecoverse;
-  /** Update user profile. */
-  updateMyProfile: User;
   /** Updates the specified Opportunity with the provided data (merge) */
   updateOpportunity: Opportunity;
   /** Updates the organisation with the given data */
@@ -525,10 +521,6 @@ export type MutationCreateUserArgs = {
   userData: UserInput;
 };
 
-export type MutationCreateUserForMeArgs = {
-  userData: UserInput;
-};
-
 export type MutationRemoveActorArgs = {
   ID: Scalars['Float'];
 };
@@ -604,10 +596,6 @@ export type MutationUpdateChallengeArgs = {
 
 export type MutationUpdateEcoverseArgs = {
   ecoverseData: EcoverseInput;
-};
-
-export type MutationUpdateMyProfileArgs = {
-  userData: UserInput;
 };
 
 export type MutationUpdateOpportunityArgs = {
@@ -1934,14 +1922,6 @@ export type UserCardDataQuery = { __typename?: 'Query' } & {
       >;
     } & UserDetailsFragment
   >;
-};
-
-export type UpdateMyProfileMutationVariables = Exact<{
-  user: UserInput;
-}>;
-
-export type UpdateMyProfileMutation = { __typename?: 'Mutation' } & {
-  updateMyProfile: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export const GroupMembersFragmentDoc = gql`
@@ -5649,47 +5629,3 @@ export function useUserCardDataLazyQuery(
 export type UserCardDataQueryHookResult = ReturnType<typeof useUserCardDataQuery>;
 export type UserCardDataLazyQueryHookResult = ReturnType<typeof useUserCardDataLazyQuery>;
 export type UserCardDataQueryResult = Apollo.QueryResult<UserCardDataQuery, UserCardDataQueryVariables>;
-export const UpdateMyProfileDocument = gql`
-  mutation updateMyProfile($user: UserInput!) {
-    updateMyProfile(userData: $user) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-export type UpdateMyProfileMutationFn = Apollo.MutationFunction<
-  UpdateMyProfileMutation,
-  UpdateMyProfileMutationVariables
->;
-
-/**
- * __useUpdateMyProfileMutation__
- *
- * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
- *   variables: {
- *      user: // value for 'user'
- *   },
- * });
- */
-export function useUpdateMyProfileMutation(
-  baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>
-) {
-  return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(
-    UpdateMyProfileDocument,
-    baseOptions
-  );
-}
-export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
-export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
-export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<
-  UpdateMyProfileMutation,
-  UpdateMyProfileMutationVariables
->;

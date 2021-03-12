@@ -25,6 +25,11 @@ const useButtonStyles = createStyles(theme => ({
       padding: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
     },
 
+    '&.block': {
+      display: 'block',
+      width: '100%',
+    },
+
     '&:hover': {
       textDecoration: 'none',
     },
@@ -184,6 +189,7 @@ interface ButtonProps extends Record<string, unknown> {
   variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent' | 'whiteStatic';
   inset?: boolean;
   small?: boolean;
+  block?: boolean;
   disabled?: boolean;
 }
 
@@ -193,6 +199,7 @@ const Button: FC<ButtonProps> = ({
   variant = 'default',
   inset = false,
   small = false,
+  block = false,
   disabled = false,
   children,
   as: Component = 'button',
@@ -219,6 +226,7 @@ const Button: FC<ButtonProps> = ({
         styles[variant],
         inset && 'inset',
         small && 'small',
+        block && 'block',
         disabled && styles.disabled,
         className
       )}
