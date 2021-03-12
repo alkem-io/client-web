@@ -9,3 +9,16 @@ export type AuthenticationResult = {
   };
   access_token: string;
 };
+
+export type RegisterResult = {
+  email: string;
+  password: string;
+  salt: string;
+  id: number;
+  role: Role;
+};
+
+export type Role = {
+  id: number;
+  name: string;
+};

@@ -1,13 +1,12 @@
-import axios from 'axios';
 import { Formik } from 'formik';
 import React, { FC, useCallback, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { AuthenticationProviderConfig, SimpleAuthProviderConfig } from '../generated/graphql';
+import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { AuthenticationResult } from '../models/AuthenticationResult';
+import { useSimpleAuth } from '../hooks/useSimpleAuth';
 import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
@@ -32,28 +31,18 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate, resetStore } = useAuthenticate();
+  const { login } = useSimpleAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
 
-  const login = useCallback(
+  const handleLogin = useCallback(
     async (username: string, password: string) => {
-      const provider = providers.find(x => x.config.__typename === 'SimpleAuthProviderConfig');
+      dispatch(updateStatus('authenticating'));
+      localStorage.setItem(AUTH_USER_KEY, username);
+      localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
 
-      const config = provider?.config as SimpleAuthProviderConfig;
-
-      return axios
-        .post<AuthenticationResult>(
-          config.tokenEndpoint,
-          {
-            username,
-            password,
-          },
-          {
-            responseType: 'json',
-            timeout: 5000,
-          }
-        )
+      return login(username, password)
         .then(result => {
-          dispatch(updateToken(result.data.access_token));
+          dispatch(updateToken(result?.access_token));
           dispatch(updateStatus('done'));
           resetStore().then(result => {
             console.log(result);
@@ -74,7 +63,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
           }
         });
     },
-    [providers]
+    [login, dispatch]
   );
 
   return (
@@ -135,10 +124,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
             validationSchema={validationSchema}
             initialValues={initialValues}
             onSubmit={(values, { setSubmitting }) => {
-              dispatch(updateStatus('authenticating'));
-              localStorage.setItem(AUTH_USER_KEY, values.username);
-              localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
-              login(values.username, values.password).finally(() => setSubmitting(false));
+              handleLogin(values.username, values.password).finally(() => setSubmitting(false));
             }}
           >
             {({ values, handleSubmit, isSubmitting }) => {

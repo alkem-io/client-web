@@ -15,7 +15,7 @@ import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
-import { STATUS_KEY, TOKEN_KEY } from '../models/Constants';
+import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { pushError } from '../reducers/error/actions';
@@ -27,7 +27,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const dispatch = useDispatch();
   const { context } = useAuthenticationContext();
 
-  const status = localStorage.getItem(STATUS_KEY);
+  const status = localStorage.getItem(AUTH_STATUS_KEY);
 
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
