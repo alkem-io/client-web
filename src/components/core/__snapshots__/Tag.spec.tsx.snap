@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render correctly Tag component 1`] = `
+exports[`Tag component render correctly Tag component 1`] = `
 <span
   className="tag-0-2-18 positive-0-2-20"
 >
@@ -23,6 +23,11 @@ exports[`render correctly Tag component 1`] = `
 </span>
 `;
 
-exports[`render correctly Typography component 1`] = `ReactWrapper {}`;
-
-
+exports[`Tag component render correctly Typography component 1`] = `
+<DocumentFragment>
+  <div
+    class="caption-0-2-6 inherit-0-2-17"
+    style="font-weight: 500;"
+  />
+</DocumentFragment>
+`;

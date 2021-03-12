@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Formik } from 'formik';
-import React, { FC, useCallback } from 'react';
-import { Col, Container, Form, Row } from 'react-bootstrap';
+import React, { FC, useCallback, useState } from 'react';
+import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
@@ -32,8 +32,9 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate, resetStore } = useAuthenticate();
+  const [errorMessage, setErrorMessage] = useState<string>();
 
-  const loginQuery = useCallback(
+  const login = useCallback(
     async (username: string, password: string) => {
       const provider = providers.find(x => x.config.__typename === 'SimpleAuthProviderConfig');
 
@@ -48,9 +49,30 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
           },
           {
             responseType: 'json',
+            timeout: 5000,
           }
         )
-        .then(result => result.data);
+        .then(result => {
+          dispatch(updateToken(result.data.access_token));
+          dispatch(updateStatus('done'));
+          resetStore().then(result => {
+            console.log(result);
+            history.push('/');
+          });
+        })
+        .catch(error => {
+          if (error.response) {
+            // Request made and server responded
+            setErrorMessage(error.response.data.message);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            setErrorMessage(error.message);
+            console.log('Error', error.message);
+          }
+        });
     },
     [providers]
   );
@@ -104,6 +126,11 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
               </div>
             </div>
           </div>
+          {errorMessage && (
+            <Alert variant={'danger'} onClose={() => setErrorMessage(undefined)} dismissible>
+              {errorMessage}
+            </Alert>
+          )}
           <Formik
             validationSchema={validationSchema}
             initialValues={initialValues}
@@ -111,16 +138,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
               dispatch(updateStatus('authenticating'));
               localStorage.setItem(AUTH_USER_KEY, values.username);
               localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
-              loginQuery(values.username, values.password)
-                .then(result => {
-                  dispatch(updateToken(result.access_token));
-                  dispatch(updateStatus('done'));
-                  resetStore().then(result => {
-                    console.log(result);
-                    history.push('/');
-                  });
-                })
-                .finally(() => setSubmitting(false));
+              login(values.username, values.password).finally(() => setSubmitting(false));
             }}
           >
             {({ values, handleSubmit, isSubmitting }) => {

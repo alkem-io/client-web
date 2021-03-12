@@ -1,29 +1,40 @@
-import { mount } from 'enzyme';
 import renderer from 'react-test-renderer';
 import React from 'react';
-
 import Tag from './Tag';
 import Typography from './Typography';
+import { render, screen } from '@testing-library/react';
 
-test('render correctly Typography component', () => {
-  const TypographyComponent = mount(<Typography variant="caption" color="inherit" />);
-  expect(TypographyComponent).toMatchSnapshot();
-});
+describe('Tag component', () => {
+  test('render correctly Typography component', () => {
+    // arrange
+    const { asFragment } = render(<Typography variant="caption" color="inherit" />);
 
-test('render correctly Tag component', () => {
-  const text = 'Please wait';
-  const TextComponent = renderer.create(<Tag text={text} />).toJSON();
-  expect(TextComponent).toMatchSnapshot();
-});
+    // act
+    const html = asFragment();
 
-test('check Tag with message', () => {
-  const message = 'Tag message';
-  const TagComp = mount(<Tag text={message} />);
-  expect(TagComp.text()).toEqual(message);
-});
+    // assert
+    expect(html).toMatchSnapshot();
+  });
 
-test('check Tag without message', () => {
-  const message = '';
-  const TagComp = mount(<Tag text={message} />);
-  expect(TagComp.text()).toEqual(message);
+  test('render correctly Tag component', () => {
+    // arrange
+    const text = 'Please wait';
+
+    // act
+    const TextComponent = renderer.create(<Tag text={text} />).toJSON();
+
+    // assert
+    expect(TextComponent).toMatchSnapshot();
+  });
+
+  test('check Tag with message', async () => {
+    // arrange
+    const message = 'Tag message';
+
+    // act
+    render(<Tag text={message} />);
+
+    // assert
+    expect(screen.getByText(message)).toBeInTheDocument();
+  });
 });

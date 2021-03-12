@@ -1,35 +1,51 @@
-import { mount } from 'enzyme';
 import renderer from 'react-test-renderer';
-import React from 'react';
-
 import Loading from './Loading';
 import { Spinner } from 'react-bootstrap';
 import Typography from './Typography';
+import { render, screen } from '@testing-library/react';
 
-test('render correctly Spinner component', () => {
-  const SpinnerComponent = mount(<Spinner animation="grow" />);
-  expect(SpinnerComponent).toMatchSnapshot();
-});
+describe('Loading component', () => {
+  test('render correctly Spinner component', () => {
+    // arrange
+    const { asFragment } = render(<Spinner animation="grow" />);
 
-test('render correctly Typography component', () => {
-  const TypographyComponent = mount(<Typography variant="caption" color="primary" />);
-  expect(TypographyComponent).toMatchSnapshot();
-});
+    // act
+    const html = asFragment();
 
-test('render correctly loading component', () => {
-  const text = 'Please wait';
-  const TextComponent = renderer.create(<Loading text={text} />).toJSON();
-  expect(TextComponent).toMatchSnapshot();
-});
+    // assert
+    expect(html).toMatchSnapshot();
+  });
 
-test('check loading with message', () => {
-  const message = 'Loading indicator';
-  const LoadingComp = mount(<Loading text={message} />);
-  expect(LoadingComp.text()).toEqual(message);
-});
+  test('render correctly Typography component', () => {
+    // arrange
+    const { asFragment } = render(<Typography variant="caption" color="primary" />);
 
-test('check loading without message', () => {
-  const message = '';
-  const LoadingComp = mount(<Loading text={message} />);
-  expect(LoadingComp.text()).toEqual(message);
+    // act
+    const html = asFragment();
+
+    // assert
+    expect(html).toMatchSnapshot();
+  });
+
+  test('render correctly loading component', () => {
+    // arrange
+    const text = 'Please wait';
+
+    // act
+    const TextComponent = renderer.create(<Loading text={text} />).toJSON();
+
+    // assert
+    expect(TextComponent).toMatchSnapshot();
+  });
+
+  test('check loading with message', async () => {
+    // arrange
+    const message = 'Loading indicator';
+
+    // act
+    render(<Loading text={message} />);
+
+    // assert
+    expect(screen.getByText(message)).toBeInTheDocument();
+  });
 });

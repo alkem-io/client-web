@@ -1,10 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render correctly Spinner component 1`] = `ReactWrapper {}`;
+exports[`Loading component render correctly Spinner component 1`] = `
+<DocumentFragment>
+  <div
+    class="spinner-grow"
+  />
+</DocumentFragment>
+`;
 
-exports[`render correctly Typography component 1`] = `ReactWrapper {}`;
+exports[`Loading component render correctly Typography component 1`] = `
+<DocumentFragment>
+  <div
+    class="caption-0-2-6 primary-0-2-9"
+    style="font-weight: 500;"
+  />
+</DocumentFragment>
+`;
 
-exports[`render correctly loading component 1`] = `
+exports[`Loading component render correctly loading component 1`] = `
 <div
   className="d-flex flex-grow-1"
   style={
