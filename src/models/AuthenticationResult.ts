@@ -11,14 +11,6 @@ export type AuthenticationResult = {
 };
 
 export type RegisterResult = {
-  email: string;
-  password: string;
-  salt: string;
-  id: number;
-  role: Role;
-};
-
-export type Role = {
-  id: number;
-  name: string;
+  access_token: string;
+  user: string;
 };

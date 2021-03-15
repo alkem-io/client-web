@@ -1,13 +1,16 @@
 import axios from 'axios';
 import { useCallback, useContext, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { configContext } from '../context/ConfigProvider';
-import { SimpleAuthProviderConfig } from '../generated/graphql';
+import { SimpleAuthProviderConfig, useCreateUserMutation } from '../generated/graphql';
 import { AuthenticationResult, RegisterResult } from '../models/AuthenticationResult';
 import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
+import { updateStatus, updateToken } from '../reducers/auth/actions';
 
 export const useSimpleAuth = () => {
+  const dispatch = useDispatch();
   const { config } = useContext(configContext);
-
+  const [createUser] = useCreateUserMutation();
   const simpleAuthProvider = useMemo(() => {
     return config.authentication.providers.find(x => x.config.__typename === 'SimpleAuthProviderConfig')
       ?.config as SimpleAuthProviderConfig;
@@ -38,20 +41,43 @@ export const useSimpleAuth = () => {
   }, [config]);
 
   const register = useCallback(
-    async (email: string, password: string) => {
+    async (
+      name: string,
+      firstName: string,
+      lastName: string,
+      email: string,
+      password: string,
+      confirmPassword: string
+    ) => {
       if (!simpleAuthProvider) return;
       const result = await axios.post<RegisterResult>(
-        '/users/create',
+        '/auth/register',
         {
           email,
           password,
+          confirmPassword,
         },
         {
           responseType: 'json',
           timeout: 5000,
         }
       );
-      return result.data;
+
+      dispatch(updateToken(result?.data.access_token));
+      dispatch(updateStatus('userRegistration'));
+
+      await createUser({
+        variables: {
+          user: {
+            name,
+            firstName,
+            lastName,
+            email,
+          },
+        },
+      });
+
+      dispatch(updateStatus('done'));
     },
     [simpleAuthProvider]
   );
