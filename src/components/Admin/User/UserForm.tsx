@@ -142,12 +142,6 @@ export const UserForm: FC<UserProps> = ({
     onSave && onSave(user);
   };
 
-  const backButton = (
-    <Button variant={isEditMode ? 'secondary' : 'primary'} onClick={() => onCancel && onCancel()}>
-      {isEditMode ? 'Cancel' : 'Back'}
-    </Button>
-  );
-
   if (loading) return <Loading text={'Loading'} />;
 
   return (
@@ -162,21 +156,7 @@ export const UserForm: FC<UserProps> = ({
         onSubmit={values => handleSubmit(values, references)}
       >
         {({
-          values: {
-            name,
-            firstName,
-            lastName,
-            email,
-            city,
-            phone,
-            country,
-            references,
-            tagsets,
-            avatar,
-            gender,
-            accountUpn,
-            bio,
-          },
+          values: { name, firstName, lastName, email, city, phone, country, references, tagsets, avatar, gender, bio },
           setFieldValue,
           handleChange,
           handleSubmit,
@@ -220,13 +200,13 @@ export const UserForm: FC<UserProps> = ({
                   required={true && !isReadOnlyMode}
                   readOnly={isReadOnlyMode || isEditMode}
                 />
-                <InputField
+                {/* <InputField
                   name={'upn'}
                   title={'Azure user name'}
                   value={accountUpn}
                   readOnly={true}
                   placeholder={'Azure user name'}
-                />
+                /> */}
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} sm={6}>
@@ -292,7 +272,11 @@ export const UserForm: FC<UserProps> = ({
               {isEditMode && (
                 <div className={'d-flex mt-4'}>
                   <div className={'flex-grow-1'} />
-                  {backButton}
+                  {onCancel && (
+                    <Button variant={isEditMode ? 'secondary' : 'primary'} onClick={() => onCancel()}>
+                      {isEditMode ? 'Cancel' : 'Back'}
+                    </Button>
+                  )}
                   <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
                     Save
                   </Button>

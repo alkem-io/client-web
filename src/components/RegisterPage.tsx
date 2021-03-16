@@ -75,7 +75,6 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
         return handleErrors(error);
       }
     } catch (error) {
-      debugger;
       return handleErrors(error);
     }
   };

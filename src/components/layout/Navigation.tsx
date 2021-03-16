@@ -16,6 +16,7 @@ import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import { useAuthenticate } from '../../hooks/useAuthenticate';
 
 interface NavigationProps {
   maximize: boolean;
@@ -45,6 +46,7 @@ const useNavigationStyles = createStyles(theme => ({
 
 const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
   const styles = useNavigationStyles();
+  const { isAuthenticated } = useAuthenticate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);
   const popoverAnchorMdDown = useRef(null);
@@ -96,7 +98,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
             </span>
           </OverlayTrigger>
           <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
-            {userMetadata && (
+            {isAuthenticated && (
               <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
                 <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
               </IconButton>
@@ -139,7 +141,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                       <Icon component={SlidersIcon} color="inherit" size="sm" />
                     </Button>
                   )}
-                  {userMetadata && (
+                  {isAuthenticated && (
                     <Button
                       text="Sign out"
                       as={Link}

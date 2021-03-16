@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { EditUserProfile } from '../components/UserProfile';
+import { CreateUserProfile, EditUserProfile } from '../components/UserProfile';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
@@ -49,6 +49,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <RestrictedRoute exact path="/profile/edit">
         <EditUserProfile />
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/profile/create">
+        <CreateUserProfile />
       </RestrictedRoute>
       <RestrictedRoute exact path="/profile">
         <UserProfile />

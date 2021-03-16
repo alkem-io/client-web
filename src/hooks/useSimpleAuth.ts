@@ -50,6 +50,7 @@ export const useSimpleAuth = () => {
       confirmPassword: string
     ) => {
       if (!simpleAuthProvider) return;
+      dispatch(updateStatus('userRegistration'));
       const result = await axios.post<RegisterResult>(
         '/auth/register',
         {
@@ -64,7 +65,6 @@ export const useSimpleAuth = () => {
       );
 
       dispatch(updateToken(result?.data.access_token));
-      dispatch(updateStatus('userRegistration'));
 
       await createUser({
         variables: {

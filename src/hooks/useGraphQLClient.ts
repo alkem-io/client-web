@@ -13,21 +13,24 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
 import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
+import { AuthStatus } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const { context } = useAuthenticationContext();
 
-  const status = localStorage.getItem(AUTH_STATUS_KEY);
+  const status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
 
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
@@ -105,6 +108,10 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
                     });
                   return forward(operation);
                 });
+            break;
+          case ErrorStatus.USER_NOT_REGISTERED:
+            dispatch(updateStatus('userRegistration'));
+            history.push('/profile/create');
             break;
           default:
             const newMessage = `${err.message}`;
