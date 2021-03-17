@@ -12,7 +12,7 @@ import LogoutRoute from './logout';
 import { Messages } from './messages';
 import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
-import RestrictedRoute from './route.extensions';
+import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
 import { SignIn } from './signin';
 /*local files imports end*/
 
@@ -29,9 +29,9 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <Redirect to="/ecoverse/1" />
       </Route>
-      <Route path="/ecoverse">
+      <AuthenticatedRoute path="/ecoverse">
         <Ecoverses />
-      </Route>
+      </AuthenticatedRoute>
       <Route exact path="/login">
         <LoginRoute />
       </Route>

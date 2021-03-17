@@ -7,8 +7,6 @@ import * as yup from 'yup';
 import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useSimpleAuth } from '../hooks/useSimpleAuth';
-import { AUTH_PROVIDER_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE } from '../models/Constants';
-import { updateStatus, updateToken } from '../reducers/auth/actions';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
@@ -30,37 +28,18 @@ const initialValues = {
 export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { authenticate, resetStore } = useAuthenticate();
+  const { authenticate } = useAuthenticate();
   const { login } = useSimpleAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
-      dispatch(updateStatus('authenticating'));
-      localStorage.setItem(AUTH_USER_KEY, username);
-      localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
-
       return login(username, password)
-        .then(result => {
-          dispatch(updateToken(result?.access_token));
-          dispatch(updateStatus('done'));
-          resetStore().then(result => {
-            console.log(result);
-            history.push('/');
-          });
+        .then(() => {
+          history.push('/');
         })
-        .catch(error => {
-          if (error.response) {
-            // Request made and server responded
-            setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            // The request was made but no response was received
-            console.log(error.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            setErrorMessage(error.message);
-            console.log('Error', error.message);
-          }
+        .catch((error: Error) => {
+          setErrorMessage(error.message);
         });
     },
     [login, dispatch]
