@@ -7,4 +7,4 @@ export const AUTH_USER_KEY = 'username';
 export const PROVIDER_MSAL = 'msal';
 export const PROVIDER_SIMPLE = 'SimpleAuth';
 
-export const WELCOME_PAGE = '/';
+export const WELCOME_PAGE = '/welcome';
