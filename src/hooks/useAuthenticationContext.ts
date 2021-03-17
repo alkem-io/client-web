@@ -7,8 +7,9 @@ export const useAuthenticationContext = () => {
   const handleStorageChange = e => {
     console.log(e.key, ' - ', e.oldValue, ' -> ', e.newValue);
   };
+
   useEffect(() => {
-    window.addEventListener('storage', handleStorageChange, false);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
