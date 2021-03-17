@@ -14,6 +14,7 @@ import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { SignIn } from './signin';
+import WelcomeRoute from './welcome';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -37,6 +38,9 @@ export const Routing: FC = () => {
       </Route>
       <Route exact path="/logout">
         <LogoutRoute />
+      </Route>
+      <Route exact path="/welcome">
+        <WelcomeRoute />
       </Route>
       <Route exact path="/register">
         <RegisterRoute />
