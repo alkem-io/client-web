@@ -43,7 +43,7 @@ export const useLocalStorage = <T>(key: string, initialValue?: T): [T, (value: T
     return () => {
       window.removeEventListener('storage', handler);
     };
-  });
+  }, []);
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.

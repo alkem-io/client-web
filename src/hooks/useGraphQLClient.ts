@@ -30,8 +30,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const dispatch = useDispatch();
   const { context } = useAuthenticationContext();
 
-  const status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
-
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
 
@@ -87,6 +85,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   };
 
   const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
+    const status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
     let errors: Error[] = [];
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
