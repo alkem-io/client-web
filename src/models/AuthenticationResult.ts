@@ -9,3 +9,8 @@ export type AuthenticationResult = {
   };
   access_token: string;
 };
+
+export type RegisterResult = {
+  access_token: string;
+  user: string;
+};

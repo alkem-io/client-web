@@ -12,7 +12,8 @@ export type AuthStatus =
   | 'refreshing'
   | 'done'
   | 'signingout'
-  | 'refreshRequested';
+  | 'refreshRequested'
+  | 'userRegistration';
 export interface UpdateAccountAction {
   type: typeof UPDATE_ACCOUNT;
   payload: AccountInfo | null;

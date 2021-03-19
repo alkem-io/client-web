@@ -84,6 +84,9 @@ const unauthenticate = async (
 ) => {
   const provider = localStorage.getItem(AUTH_PROVIDER_KEY);
 
+  dispatch(updateStatus('signingout'));
+  dispatch(updateToken());
+
   if (provider === PROVIDER_MSAL) {
     const accounts = context.getAccounts();
     const targetAccount = accounts[0];
@@ -92,13 +95,9 @@ const unauthenticate = async (
       return;
     }
 
-    dispatch(updateStatus('signingout'));
-    dispatch(updateToken());
     await context.signOut(targetAccount.username);
-  } else {
-    dispatch(updateStatus('signingout'));
-    dispatch(updateToken());
   }
+  dispatch(updateStatus('unauthenticated'));
 
   await resetStore(client);
 };

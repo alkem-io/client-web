@@ -9,6 +9,8 @@ interface RestrictedRoutePros extends Record<string, unknown> {
   strict?: boolean;
 }
 
+interface AuthenticatedRoutePros extends Record<string, unknown> {}
+
 const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = [], strict = false, ...rest }) => {
   const { pathname } = useLocation();
   const { user, loading: userLoading } = useUserContext();
@@ -25,6 +27,18 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = []
   if (allowedGroups.every(x => !user || !user.ofGroup(x, strict)) && allowedGroups.length !== 0) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
+
+  return (
+    // Show the component only when the user is logged in
+    // Otherwise, redirect the user to /signin page
+    <Route {...rest}>{children}</Route>
+  );
+};
+
+export const AuthenticatedRoute: FC<AuthenticatedRoutePros> = ({ children, ...rest }) => {
+  const { status } = useAuthenticate();
+
+  if (status === 'userRegistration') return <Redirect to={'/profile/create'} />;
 
   return (
     // Show the component only when the user is logged in

@@ -165,7 +165,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite]);
-
   return (
     <>
       <Section
