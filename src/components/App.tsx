@@ -41,7 +41,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  const { safeAuthenticate, safeUnauthenticate } = useAuthenticate();
+  const { safeAuthenticate, safeUnauthenticate, isAuthenticated } = useAuthenticate();
   const { user, loading } = useUserContext();
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
@@ -82,7 +82,7 @@ const App = ({ children }): React.ReactElement => {
               onSignIn={safeAuthenticate}
               onSignOut={safeUnauthenticate}
             />
-            {!user && (
+            {!isAuthenticated && (
               <Button
                 text={'Sign in'}
                 style={{ marginLeft: 20 }}
@@ -92,8 +92,7 @@ const App = ({ children }): React.ReactElement => {
                 small
               />
             )}
-            {/* Hide register button until functionality is implemented */}
-            {/* {!user && (
+            {!isAuthenticated && (
               <Button
                 text={'Sign up'}
                 style={{ marginLeft: 20 }}
@@ -101,7 +100,7 @@ const App = ({ children }): React.ReactElement => {
                 small
                 variant={'default'}
               />
-            )} */}
+            )}
           </div>
         )}
       </Header>
