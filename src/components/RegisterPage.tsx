@@ -150,7 +150,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                   <div className={'d-flex mt-4'}>
                     <div className={'flex-grow-1'} />
                     <Button variant="primary" type={'submit'} className={'ml-3'} disabled={isSubmitting} small>
-                      Register
+                      Register Now
                     </Button>
                   </div>
                 </Form>
