@@ -5,35 +5,36 @@ import { useHistory } from 'react-router';
 import * as yup from 'yup';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useSimpleAuth } from '../hooks/useSimpleAuth';
+import CheckBoxField from './Admin/Common/CheckBoxField';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
 
 interface RegisterPageProps {}
 interface FormValues {
-  name: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  passwordConfirmation: string;
+  confirmPassword: string;
+  acceptTerms: boolean;
 }
 const validationSchema = yup.object().shape({
-  name: yup.string().required('This is the required field'),
-  firstName: yup.string().required('This is the required field'),
-  lastName: yup.string().required('This is the required field'),
-  email: yup.string().email('Email is not valid').required('This is the required field'),
+  firstName: yup.string().required('This is required field.'),
+  lastName: yup.string().required('This is required field.'),
+  email: yup.string().email('Email is not valid').required('This is required field.'),
   password: yup.string().required('Password can not be empty').min(8, 'Password should be at least 8 symbols long'),
-  passwordConfirmation: yup.string().oneOf([yup.ref('password'), undefined], 'Passwords must match'),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), undefined], 'Passwords must match'),
+  acceptTerms: yup.boolean().oneOf([true], 'The terms of use and privacy policy must be accepted.'),
 });
 
 const initialValues: FormValues = {
-  name: '',
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  passwordConfirmation: '',
+  confirmPassword: '',
+  acceptTerms: false,
 };
 
 export const RegisterPage: FC<RegisterPageProps> = () => {
@@ -57,14 +58,15 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
   };
 
   const handleRegister = async (values: FormValues) => {
+    debugger;
     try {
       await register(
-        values.name,
         values.firstName,
         values.lastName,
         values.email,
         values.password,
-        values.passwordConfirmation
+        values.confirmPassword,
+        values.acceptTerms
       );
 
       try {
@@ -102,9 +104,6 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
-                    <InputField name={'name'} title={'Name'} value={values.name} />
-                  </Form.Row>
-                  <Form.Row>
                     <InputField name={'firstName'} title={'First Name'} value={values.firstName} />
                     <InputField name={'lastName'} title={'Last Name'} value={values.lastName} />
                   </Form.Row>
@@ -128,12 +127,25 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                   </Form.Row>
                   <Form.Row>
                     <InputField
-                      name={'passwordConfirmation'}
+                      name={'confirmPassword'}
                       title={'Confirm Password'}
-                      value={values.passwordConfirmation}
+                      value={values.confirmPassword}
                       type={'password'}
                       autoComplete={'new-password'}
                     />
+                  </Form.Row>
+                  <Form.Row>
+                    <CheckBoxField name={'acceptTerms'} type={'checkbox'} required>
+                      {'I accept the '}
+                      <a href={'https://cherrytwist.org/privacy/'} target={'_blank'} rel={'noreferrer'}>
+                        Terms of Use
+                      </a>
+                      {' and '}
+                      <a href={'https://cherrytwist.org/privacy/'} target={'_blank'} rel={'noreferrer'}>
+                        Privacy Policy
+                      </a>
+                      .
+                    </CheckBoxField>
                   </Form.Row>
                   <div className={'d-flex mt-4'}>
                     <div className={'flex-grow-1'} />
