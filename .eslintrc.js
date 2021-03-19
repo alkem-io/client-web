@@ -27,7 +27,7 @@ module.exports = {
     serviceworker: true,
   },
   rules: {
-    quotes: ['error', 'single'],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'no-multiple-empty-lines': 'error',
     'no-console': env(1, 0),
     'no-debugger': env(1, 0),
