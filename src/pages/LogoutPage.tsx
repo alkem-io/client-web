@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import Loading from './core/Loading';
+import Loading from '../components/core/Loading';
 
 interface LogoutPageProps {}
 

@@ -7,11 +7,12 @@ import * as yup from 'yup';
 import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useSimpleAuth } from '../hooks/useSimpleAuth';
-import InputField from './Admin/Common/InputField';
-import Button from './core/Button';
-import Typography from './core/Typography';
+import InputField from '../components/Admin/Common/InputField';
+import Button from '../components/core/Button';
+import Typography from '../components/core/Typography';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 
-interface RegisterPageProps {
+interface LoginPageProps {
   providers: AuthenticationProviderConfig[];
 }
 
@@ -25,7 +26,8 @@ const initialValues = {
   password: '',
 };
 
-export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
+export const LoginPage: FC<LoginPageProps> = ({ providers }) => {
+  useUpdateNavigation({ currentPaths: [] });
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate } = useAuthenticate();

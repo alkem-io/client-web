@@ -5,10 +5,11 @@ import { useHistory } from 'react-router';
 import * as yup from 'yup';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useSimpleAuth } from '../hooks/useSimpleAuth';
-import CheckBoxField from './Admin/Common/CheckBoxField';
-import InputField from './Admin/Common/InputField';
-import Button from './core/Button';
-import Typography from './core/Typography';
+import CheckBoxField from '../components/Admin/Common/CheckBoxField';
+import InputField from '../components/Admin/Common/InputField';
+import Button from '../components/core/Button';
+import Typography from '../components/core/Typography';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 
 interface RegisterPageProps {}
 interface FormValues {
@@ -38,6 +39,7 @@ const initialValues: FormValues = {
 };
 
 export const RegisterPage: FC<RegisterPageProps> = () => {
+  useUpdateNavigation({ currentPaths: [] });
   const { register } = useSimpleAuth();
   const history = useHistory();
   const { resetStore } = useAuthenticate();

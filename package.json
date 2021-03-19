@@ -75,9 +75,6 @@
     "gulp": "gulp",
     "webdriver-manager": "webdriver-manager"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
