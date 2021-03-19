@@ -1,15 +1,16 @@
 import { Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import * as yup from 'yup';
-import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useSimpleAuth } from '../hooks/useSimpleAuth';
 import CheckBoxField from '../components/Admin/Common/CheckBoxField';
 import InputField from '../components/Admin/Common/InputField';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
+import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useEcoverse } from '../hooks/useEcoverse';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import { useSimpleAuth } from '../hooks/useSimpleAuth';
 
 interface RegisterPageProps {}
 interface FormValues {
@@ -39,7 +40,9 @@ const initialValues: FormValues = {
 };
 
 export const RegisterPage: FC<RegisterPageProps> = () => {
-  useUpdateNavigation({ currentPaths: [] });
+  const { ecoverse } = useEcoverse();
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
   const { register } = useSimpleAuth();
   const history = useHistory();
   const { resetStore } = useAuthenticate();
@@ -60,7 +63,6 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
   };
 
   const handleRegister = async (values: FormValues) => {
-    debugger;
     try {
       await register(
         values.firstName,
@@ -88,7 +90,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
       <Row className={'justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            Register User
+            Create an account on the <strong>{ecoverse?.name}</strong> ecoverse
           </Typography>
           {errorMessage && (
             <Alert variant={'danger'} onClose={() => setErrorMessage(undefined)} dismissible>
@@ -139,7 +141,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                   <Form.Row>
                     <CheckBoxField name={'acceptTerms'} type={'checkbox'} required>
                       {'I accept the '}
-                      <a href={'https://cherrytwist.org/privacy/'} target={'_blank'} rel={'noreferrer'}>
+                      <a href={'/terms-of-use.html'} target={'_blank'} rel={'noreferrer'}>
                         Terms of Use
                       </a>
                       {' and '}

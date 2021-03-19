@@ -8,12 +8,12 @@ import {
   useChallengeProfileQuery,
   useChallengesQuery,
   useChallengeUserIdsQuery,
-  useEcoverseInfoQuery,
   useEcoverseUserIdsQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
   User,
 } from '../generated/graphql';
+import { useEcoverse } from '../hooks/useEcoverse';
 import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
@@ -50,7 +50,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   // const { id } = useParams<{ id: string }>();
   // at some point the ecoverse needs to be queried
 
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseInfoQuery({ errorPolicy: 'all' });
+  const { ecoverse, loading: ecoverseLoading } = useEcoverse();
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
     errorPolicy: 'all',
   });

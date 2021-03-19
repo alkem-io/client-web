@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -27,7 +27,8 @@ const initialValues = {
 };
 
 export const LoginPage: FC<LoginPageProps> = ({ providers }) => {
-  useUpdateNavigation({ currentPaths: [] });
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate } = useAuthenticate();
