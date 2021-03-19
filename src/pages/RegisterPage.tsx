@@ -27,7 +27,7 @@ const validationSchema = yup.object().shape({
   email: yup.string().email('Email is not valid').required('This is required field.'),
   password: yup.string().required('Password can not be empty').min(8, 'Password should be at least 8 symbols long'),
   confirmPassword: yup.string().oneOf([yup.ref('password'), undefined], 'Passwords must match'),
-  acceptTerms: yup.boolean().oneOf([true], 'The terms of use and privacy policy must be accepted.'),
+  acceptTerms: yup.boolean().oneOf([true], 'The terms of use and the privacy policy must be accepted.'),
 });
 
 const initialValues: FormValues = {
@@ -108,13 +108,24 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
-                    <InputField name={'firstName'} title={'First Name'} value={values.firstName} />
-                    <InputField name={'lastName'} title={'Last Name'} value={values.lastName} />
+                    <InputField
+                      name={'firstName'}
+                      title={'First Name'}
+                      placeholder={'Enter your first name'}
+                      value={values.firstName}
+                    />
+                    <InputField
+                      name={'lastName'}
+                      title={'Last Name'}
+                      placeholder={'Enter your last name'}
+                      value={values.lastName}
+                    />
                   </Form.Row>
                   <Form.Row>
                     <InputField
                       name={'email'}
                       title={'Email'}
+                      placeholder={'Enter your email'}
                       value={values.email}
                       type={'email'}
                       autoComplete={'username'}
@@ -124,6 +135,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                     <InputField
                       name={'password'}
                       title={'Password'}
+                      placeholder={'Enter a strong password'}
                       value={values.password}
                       type={'password'}
                       autoComplete={'new-password'}
@@ -133,6 +145,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                     <InputField
                       name={'confirmPassword'}
                       title={'Confirm Password'}
+                      placeholder={'Confirm the password'}
                       value={values.confirmPassword}
                       type={'password'}
                       autoComplete={'new-password'}
