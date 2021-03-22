@@ -22,19 +22,25 @@ export const MUTATION_UPDATE_USER = gql`
 `;
 
 export const QUERY_ECOVERSE_GROUPS = gql`
-  query ecoverseChallengeGroups {
-    name
-    groups {
-      id
+  query ecoverse {
+    ecoverse {
       name
-    }
-    challenges {
-      id
-      name
-      textID
-      groups {
+      community {
+        groups {
+          id
+          name
+        }
+      }
+      challenges {
         id
         name
+        textID
+        community {
+          groups {
+            id
+            name
+          }
+        }
       }
     }
   }
@@ -111,7 +117,7 @@ export const QUERY_ECOVERSE_GROUPS_LIST = gql`
 `;
 
 export const QUERY_ORGANIZATION_NAME = gql`
-  query organizationName($id: Float!) {
+  query organizationName($id: String!) {
     organisation(ID: $id) {
       name
     }
@@ -128,7 +134,7 @@ export const QUERY_ORGANIZATIONS_LIST = gql`
 `;
 
 export const QUERY_CHALLENGE_NAME = gql`
-  query challengeName($id: Float!) {
+  query challengeName($id: String!) {
     challenge(ID: $id) {
       id
       name
@@ -137,18 +143,20 @@ export const QUERY_CHALLENGE_NAME = gql`
 `;
 
 export const QUERY_CHALLENGE_GROUPS = gql`
-  query challengeGroups($id: Float!) {
+  query challengeGroups($id: String!) {
     challenge(ID: $id) {
-      groups {
-        id
-        name
+      community {
+        groups {
+          id
+          name
+        }
       }
     }
   }
 `;
 
 export const QUERY_ORGANIZATION_GROUPS = gql`
-  query organizationGroups($id: Float!) {
+  query organizationGroups($id: String!) {
     organisation(ID: $id) {
       groups {
         id
@@ -159,7 +167,7 @@ export const QUERY_ORGANIZATION_GROUPS = gql`
 `;
 
 export const QUERY_CHALLENGE_OPPORTUNITIES = gql`
-  query challengeOpportunities($id: Float!) {
+  query challengeOpportunities($id: String!) {
     challenge(ID: $id) {
       opportunities {
         id
@@ -170,18 +178,20 @@ export const QUERY_CHALLENGE_OPPORTUNITIES = gql`
 `;
 
 export const QUERY_OPPORTUNITY_GROUPS = gql`
-  query opportunityGroups($id: Float!) {
+  query opportunityGroups($id: String!) {
     opportunity(ID: $id) {
-      groups {
-        id
-        name
+      community {
+        groups {
+          id
+          name
+        }
       }
     }
   }
 `;
 
 export const QUERY_OPPORTUNITY_NAME = gql`
-  query opportunityName($id: Float!) {
+  query opportunityName($id: String!) {
     opportunity(ID: $id) {
       id
       name
@@ -223,7 +233,7 @@ export const MUTATION_UPDATE_CHALLENGE = gql`
 `;
 
 export const QUERY_CHALLENGE_PROFILE_INFO = gql`
-  query challengeProfileInfo($id: Float!) {
+  query challengeProfileInfo($id: String!) {
     challenge(ID: $id) {
       id
       textID
@@ -246,8 +256,8 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
 `;
 
 export const MUTATION_CREATE_OPPORTUNITY = gql`
-  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
-    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+  mutation createOpportunity($opportunityData: OpportunityInput!) {
+    createOpportunity(opportunityData: $opportunityData) {
       ...NewOpportunites
     }
   }
@@ -255,8 +265,8 @@ export const MUTATION_CREATE_OPPORTUNITY = gql`
 `;
 
 export const MUTATION_UPDATE_OPPORTUNITY = gql`
-  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
-    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+  mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
+    updateOpportunity(opportunityData: $opportunityData) {
       id
       name
     }
@@ -264,7 +274,7 @@ export const MUTATION_UPDATE_OPPORTUNITY = gql`
 `;
 
 export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
-  query opportunityProfileInfo($id: Float!) {
+  query opportunityProfileInfo($id: String!) {
     opportunity(ID: $id) {
       id
       textID
@@ -296,8 +306,8 @@ export const MUTATION_CREATE_ORGANIZATION = gql`
 `;
 
 export const MUTATION_UPDATE_ORGANIZATION = gql`
-  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
-    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+  mutation updateOrganization($organisationData: UpdateOrganisationInput!) {
+    updateOrganisation(organisationData: $organisationData) {
       id
       name
     }
@@ -305,7 +315,7 @@ export const MUTATION_UPDATE_ORGANIZATION = gql`
 `;
 
 export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
-  query organisationProfileInfo($id: Float!) {
+  query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
       name
@@ -328,27 +338,9 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
   }
 `;
 
-export const MUTATION_CREATE_GROUP_ON_ECOVERSE = gql`
-  mutation createGroupOnEcoverse($groupName: String!) {
-    createGroupOnEcoverse(groupName: $groupName) {
-      id
-      name
-    }
-  }
-`;
-
-export const MUTATION_CREATE_GROUP_ON_CHALLENGE = gql`
-  mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
-    createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
-      id
-      name
-    }
-  }
-`;
-
-export const MUTATION_CREATE_GROUP_ON_OPPORTUNITY = gql`
-  mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
-    createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
+export const MUTATION_CREATE_GROUP_ON_COMMUNITY = gql`
+  mutation createGroupOnEcoverse($communityID: Float!, $groupName: String!) {
+    createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
       id
       name
     }
@@ -365,7 +357,7 @@ export const MUTATION_CREATE_GROUP_ON_ORGANIZATION = gql`
 `;
 
 export const QUERY_ORGANIZATION_DETAILS = gql`
-  query organizationDetails($id: Float!) {
+  query organizationDetails($id: String!) {
     organisation(ID: $id) {
       id
       name

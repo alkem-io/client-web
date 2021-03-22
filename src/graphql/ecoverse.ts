@@ -1,35 +1,39 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_ECOVERSES_LIST = gql`
-  query ecoverseList {
-    name
-    context {
-      tagline
-    }
-    challenges {
-      id
-      name
-    }
-  }
-`;
+// export const QUERY_ECOVERSES_LIST = gql`
+//   query ecoverseList {
+//     ecoverse {
+//       name
+//       context {
+//         tagline
+//       }
+//       challenges {
+//         id
+//         name
+//       }
+//     }
+//   }
+// `;
 
-export const QUERY_ECOVERSE_NAME = gql`
-  query ecoverseName {
-    name
-  }
-`;
+// export const QUERY_ECOVERSE_NAME = gql`
+//   query ecoverseName {
+//     name
+//   }
+// `;
 
 export const QUERY_ECOVERSE_DETAILS = gql`
   query ecoverseInfo {
-    name
-    context {
-      tagline
-      vision
-      impact
-      background
-      references {
-        name
-        uri
+    ecoverse {
+      name
+      context {
+        tagline
+        vision
+        impact
+        background
+        references {
+          name
+          uri
+        }
       }
     }
   }
@@ -90,12 +94,14 @@ export const QUERY_OPPORTUNITIES = gql`
 
 export const QUERY_ECOVERSE_HOST_REFERENCES = gql`
   query ecoverseHostReferences {
-    host {
-      profile {
-        id
-        references {
-          name
-          uri
+    ecoverse {
+      host {
+        profile {
+          id
+          references {
+            name
+            uri
+          }
         }
       }
     }
