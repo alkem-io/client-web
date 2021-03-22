@@ -134,15 +134,12 @@ export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | SimpleAu
 
 export type Challenge = {
   __typename?: 'Challenge';
-  applications: Array<Application>;
+  /** The community for the challenge */
+  community?: Maybe<Community>;
   /** The shared understanding for the challenge */
   context?: Maybe<Context>;
-  /** All users that are contributing to this challenge. */
-  contributors?: Maybe<Array<User>>;
-  /** Groups of users related to a challenge. */
-  groups?: Maybe<Array<UserGroup>>;
   id: Scalars['ID'];
-  /** The leads for the challenge. The focal point for the user group is the primary challenge lead. */
+  /** The Organisations that are leading this Challenge. */
   leadOrganisations: Array<Organisation>;
   /** The name of the challenge */
   name: Scalars['String'];
@@ -170,6 +167,21 @@ export type ChallengeTemplate = {
   applications?: Maybe<Array<ApplicationTemplate>>;
   /** Challenge template name. */
   name: Scalars['String'];
+};
+
+export type Community = {
+  __typename?: 'Community';
+  /** Application available for this community. */
+  applications: Array<Application>;
+  /** Groups of users related to a Community. */
+  groups?: Maybe<Array<UserGroup>>;
+  id: Scalars['ID'];
+  /** All users that are contributing to this Community. */
+  members?: Maybe<Array<User>>;
+  /** The name of the Community */
+  name: Scalars['String'];
+  /** The type of the Community */
+  type: Scalars['String'];
 };
 
 export type Config = {
@@ -209,18 +221,16 @@ export type ContextInput = {
 
 export type Ecoverse = {
   __typename?: 'Ecoverse';
-  /** The Challenges hosted by the Ecoverse */
+  /** The challenges for the ecoverse. */
   challenges?: Maybe<Array<Challenge>>;
+  /** The community for the ecoverse. */
+  community?: Maybe<Community>;
   /** The shared understanding for the Ecoverse */
   context?: Maybe<Context>;
-  /** The set of groups at the Ecoverse level */
-  groups?: Maybe<Array<UserGroup>>;
   /** The organisation that hosts this Ecoverse instance */
   host?: Maybe<Organisation>;
   id: Scalars['ID'];
   name: Scalars['String'];
-  /** The set of partner organisations associated with this Ecoverse */
-  organisations?: Maybe<Array<Organisation>>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
 };
@@ -228,6 +238,8 @@ export type Ecoverse = {
 export type EcoverseInput = {
   /** Updated context for the ecoverse; will be merged with existing context */
   context?: Maybe<ContextInput>;
+  /** The host Organisation for the ecoverse */
+  hostID?: Maybe<Scalars['Float']>;
   /** The new name for the ecoverse */
   name?: Maybe<Scalars['String']>;
   /** The set of tags to apply to this ecoverse */
@@ -244,12 +256,8 @@ export type EcoverseTemplate = {
 
 export type MemberOf = {
   __typename?: 'MemberOf';
-  /** References to the challenges the user is a member of */
-  challenges: Array<Challenge>;
-  /** References to the groups the user is in at the ecoverse level */
-  groups: Array<UserGroup>;
-  /** References to the opportunities the user is a member of */
-  opportunities: Array<Opportunity>;
+  /** References to the Communities the user is a member of */
+  communities: Array<Community>;
   /** References to the orgnaisaitons the user is a member of */
   organisations: Array<Organisation>;
 };
@@ -288,16 +296,14 @@ export type MsalConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Adds the specified organisation as a lead for the specified challenge */
+  /** Adds the specified organisation as a lead for the specified Community */
   addChallengeLead: Scalars['Boolean'];
   /** Add the provided tag to the tagset with the given ID */
   addTagToTagset: Tagset;
-  /** Adds the user with the given identifier as a member of the specified challenge */
-  addUserToChallenge: UserGroup;
+  /** Adds the user with the given identifier as a member of the specified Community */
+  addUserToCommunity: UserGroup;
   /** Adds the user with the given identifier to the specified user group */
   addUserToGroup: Scalars['Boolean'];
-  /** Adds the user with the given identifier as a member of the specified opportunity */
-  addUserToOpportunity: UserGroup;
   /** Create application to join this ecoverse */
   approveApplication: Application;
   /** Assign the user with the given ID as focal point for the given group */
@@ -306,28 +312,20 @@ export type Mutation = {
   createActor: Actor;
   /** Create a new actor group on the Opportunity identified by the ID */
   createActorGroup: ActorGroup;
-  /** Create application to join this ecoverse */
+  /** Create application to join this Community */
   createApplication: Application;
-  /** Create application to join this challenge */
-  createApplicationForChallenge: Application;
-  /** Create application to join this opportunity */
-  createApplicationForOpportunity: Application;
   /** Create a new aspect on the Opportunity identified by the ID */
   createAspect: Aspect;
   /** Create a new aspect on the Project identified by the ID */
   createAspectOnProject: Aspect;
   /** Creates a new challenge and registers it with the ecoverse */
   createChallenge: Challenge;
-  /** Creates a new user group for the challenge with the given id */
-  createGroupOnChallenge: UserGroup;
-  /** Creates a new user group at the ecoverse level */
-  createGroupOnEcoverse: UserGroup;
-  /** Creates a new user group for the opportunity with the given id */
-  createGroupOnOpportunity: UserGroup;
+  /** Creates a new user group for the Community with the given id */
+  createGroupOnCommunity: UserGroup;
   /** Creates a new user group for the organisation with the given id */
   createGroupOnOrganisation: UserGroup;
   /** Creates a new Opportunity for the challenge with the given id */
-  createOpportunityOnChallenge: Opportunity;
+  createOpportunity: Opportunity;
   /** Creates a new organisation and registers it with the ecoverse */
   createOrganisation: Organisation;
   /** Create a new Project on the Opportunity identified by the ID */
@@ -350,7 +348,7 @@ export type Mutation = {
   removeAspect: Scalars['Boolean'];
   /** Removes the Challenge with the specified ID */
   removeChallenge: Scalars['Boolean'];
-  /** Remove the specified organisation as a lead for the specified challenge */
+  /** Remove the specified organisation as a lead for the specified Challenge */
   removeChallengeLead: Scalars['Boolean'];
   /** Remove the focal point for the given group */
   removeGroupFocalPoint?: Maybe<UserGroup>;
@@ -393,8 +391,8 @@ export type Mutation = {
 };
 
 export type MutationAddChallengeLeadArgs = {
-  challengeID: Scalars['Float'];
-  organisationID: Scalars['Float'];
+  challengeID: Scalars['String'];
+  organisationID: Scalars['String'];
 };
 
 export type MutationAddTagToTagsetArgs = {
@@ -402,18 +400,13 @@ export type MutationAddTagToTagsetArgs = {
   tagsetID: Scalars['Float'];
 };
 
-export type MutationAddUserToChallengeArgs = {
-  challengeID: Scalars['Float'];
+export type MutationAddUserToCommunityArgs = {
+  communityID: Scalars['Float'];
   userID: Scalars['Float'];
 };
 
 export type MutationAddUserToGroupArgs = {
   groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationAddUserToOpportunityArgs = {
-  opportunityID: Scalars['Float'];
   userID: Scalars['Float'];
 };
 
@@ -438,16 +431,7 @@ export type MutationCreateActorGroupArgs = {
 
 export type MutationCreateApplicationArgs = {
   applicationData: ApplicationInput;
-};
-
-export type MutationCreateApplicationForChallengeArgs = {
-  applicationData: ApplicationInput;
-  ID: Scalars['Float'];
-};
-
-export type MutationCreateApplicationForOpportunityArgs = {
-  applicationData: ApplicationInput;
-  ID: Scalars['Float'];
+  communityID: Scalars['Float'];
 };
 
 export type MutationCreateAspectArgs = {
@@ -464,18 +448,9 @@ export type MutationCreateChallengeArgs = {
   challengeData: ChallengeInput;
 };
 
-export type MutationCreateGroupOnChallengeArgs = {
-  challengeID: Scalars['Float'];
+export type MutationCreateGroupOnCommunityArgs = {
+  communityID: Scalars['Float'];
   groupName: Scalars['String'];
-};
-
-export type MutationCreateGroupOnEcoverseArgs = {
-  groupName: Scalars['String'];
-};
-
-export type MutationCreateGroupOnOpportunityArgs = {
-  groupName: Scalars['String'];
-  opportunityID: Scalars['Float'];
 };
 
 export type MutationCreateGroupOnOrganisationArgs = {
@@ -483,8 +458,7 @@ export type MutationCreateGroupOnOrganisationArgs = {
   orgID: Scalars['Float'];
 };
 
-export type MutationCreateOpportunityOnChallengeArgs = {
-  challengeID: Scalars['Float'];
+export type MutationCreateOpportunityArgs = {
   opportunityData: OpportunityInput;
 };
 
@@ -538,8 +512,8 @@ export type MutationRemoveChallengeArgs = {
 };
 
 export type MutationRemoveChallengeLeadArgs = {
-  challengeID: Scalars['Float'];
-  organisationID: Scalars['Float'];
+  challengeID: Scalars['String'];
+  organisationID: Scalars['String'];
 };
 
 export type MutationRemoveGroupFocalPointArgs = {
@@ -599,13 +573,11 @@ export type MutationUpdateEcoverseArgs = {
 };
 
 export type MutationUpdateOpportunityArgs = {
-  ID: Scalars['Float'];
-  opportunityData: OpportunityInput;
+  opportunityData: UpdateOpportunityInput;
 };
 
 export type MutationUpdateOrganisationArgs = {
-  organisationData: OrganisationInput;
-  orgID: Scalars['Float'];
+  organisationData: UpdateOrganisationInput;
 };
 
 export type MutationUpdateProfileArgs = {
@@ -637,15 +609,12 @@ export type Opportunity = {
   __typename?: 'Opportunity';
   /** The set of actor groups within the context of this Opportunity. */
   actorGroups?: Maybe<Array<ActorGroup>>;
-  applications: Array<Application>;
   /** The set of aspects within the context of this Opportunity. */
   aspects?: Maybe<Array<Aspect>>;
+  /** The community for the opportunity */
+  community?: Maybe<Community>;
   /** The shared understanding for the opportunity */
   context?: Maybe<Context>;
-  /** All users that are contributing to this Opportunity. */
-  contributors?: Maybe<Array<User>>;
-  /** Groups of users related to a Opportunity. */
-  groups?: Maybe<Array<UserGroup>>;
   id: Scalars['ID'];
   /** The name of the Opportunity */
   name: Scalars['String'];
@@ -655,14 +624,18 @@ export type Opportunity = {
   relations?: Maybe<Array<Relation>>;
   /** The maturity phase of the Opportunity i.e. new, being refined, ongoing etc */
   state?: Maybe<Scalars['String']>;
+  /** The set of tags for the Opportunity */
+  tagset?: Maybe<Tagset>;
   /** A short text identifier for this Opportunity */
   textID: Scalars['String'];
 };
 
 export type OpportunityInput = {
+  challengeID?: Maybe<Scalars['String']>;
   context?: Maybe<ContextInput>;
   name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
   textID?: Maybe<Scalars['String']>;
 };
 
@@ -744,39 +717,33 @@ export type Query = {
   __typename?: 'Query';
   /** All applications to join */
   application: Application;
-  /** All applications for this ecoverse */
+  /** All applications to join */
   applications: Array<Application>;
-  /** A particular challenge */
+  /** A particular Challenge, either by its ID or textID */
   challenge: Challenge;
-  /** All challenges */
+  /** The Challenges on this platform */
   challenges: Array<Challenge>;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
-  /** The shared understanding for this ecoverse */
-  context: Context;
+  /** The ecoverse. */
+  ecoverse: Ecoverse;
   /** The user group with the specified id anywhere in the ecoverse */
   group: UserGroup;
-  /** All groups at the ecoverse level */
+  /** The user groups on this platform */
   groups: Array<UserGroup>;
   /** All groups that have the provided tag */
   groupsWithTag: Array<UserGroup>;
-  /** The host organisation for the ecoverse */
-  host: Organisation;
   /** The currently logged in user */
   me: User;
-  /** The members of this ecoverse */
-  members: Array<User>;
   /** Cherrytwist Services Metadata */
   metadata: Metadata;
-  /** The name for this ecoverse */
-  name: Scalars['String'];
   /** All opportunities within the ecoverse */
   opportunities: Array<Opportunity>;
-  /** A particular opportunitiy, identified by the ID */
+  /** A particular opportunitiy, identified by the ID or textID */
   opportunity: Opportunity;
-  /** A particular organisation */
+  /** A particular Organisation */
   organisation: Organisation;
-  /** All organisations */
+  /** The Organisations on this platform */
   organisations: Array<Organisation>;
   /** A particular Project, identified by the ID */
   project: Project;
@@ -784,8 +751,6 @@ export type Query = {
   projects: Array<Project>;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
-  /** The tagset associated with this Ecoverse */
-  tagset: Tagset;
   /** A particular user, identified by the ID or by email */
   user: User;
   /** The users who have profiles on this platform */
@@ -799,7 +764,7 @@ export type QueryApplicationArgs = {
 };
 
 export type QueryChallengeArgs = {
-  ID: Scalars['Float'];
+  ID: Scalars['String'];
 };
 
 export type QueryGroupArgs = {
@@ -811,11 +776,11 @@ export type QueryGroupsWithTagArgs = {
 };
 
 export type QueryOpportunityArgs = {
-  ID: Scalars['Float'];
+  ID: Scalars['String'];
 };
 
 export type QueryOrganisationArgs = {
-  ID: Scalars['Float'];
+  ID: Scalars['String'];
 };
 
 export type QueryProjectArgs = {
@@ -964,10 +929,25 @@ export type Template = {
 
 export type UpdateChallengeInput = {
   context?: Maybe<ContextInput>;
-  ID: Scalars['Float'];
+  ID: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UpdateOpportunityInput = {
+  context?: Maybe<ContextInput>;
+  ID: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UpdateOrganisationInput = {
+  ID: Scalars['String'];
+  /** The name for this organisation */
+  name?: Maybe<Scalars['String']>;
+  profileData?: Maybe<ProfileInput>;
 };
 
 export type User = {
@@ -993,10 +973,10 @@ export type User = {
 
 export type UserGroup = {
   __typename?: 'UserGroup';
-  /** The focal point for this group */
+  /** The User that is the focal point of this User Group. */
   focalPoint?: Maybe<User>;
   id: Scalars['ID'];
-  /** The set of users that are members of this group */
+  /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
   name: Scalars['String'];
   /** Containing entity for this UserGroup. */
@@ -1010,7 +990,7 @@ export type UserGroupInput = {
   profileData?: Maybe<ProfileInput>;
 };
 
-export type UserGroupParent = Challenge | Ecoverse | Opportunity | Organisation;
+export type UserGroupParent = Community | Organisation;
 
 export type UserInput = {
   aadPassword?: Maybe<Scalars['String']>;
@@ -1060,16 +1040,28 @@ export type UpdateUserMutation = { __typename?: 'Mutation' } & {
   updateUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
-export type EcoverseChallengeGroupsQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoverseChallengeGroupsQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
-    groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
-    challenges: Array<
-      { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+export type EcoverseQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'name'> & {
+      community?: Maybe<
+        { __typename?: 'Community' } & {
           groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
         }
-    >;
-  };
+      >;
+      challenges?: Maybe<
+        Array<
+          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+              community?: Maybe<
+                { __typename?: 'Community' } & {
+                  groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+                }
+              >;
+            }
+        >
+      >;
+    };
+};
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
   User,
@@ -1125,7 +1117,7 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
 };
 
 export type OrganizationNameQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OrganizationNameQuery = { __typename?: 'Query' } & {
@@ -1139,7 +1131,7 @@ export type OrganizationsListQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeNameQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
@@ -1147,17 +1139,21 @@ export type ChallengeNameQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & {
-    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+    community?: Maybe<
+      { __typename?: 'Community' } & {
+        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+      }
+    >;
   };
 };
 
 export type OrganizationGroupsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
@@ -1167,7 +1163,7 @@ export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeOpportunitiesQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeOpportunitiesQuery = { __typename?: 'Query' } & {
@@ -1177,17 +1173,21 @@ export type ChallengeOpportunitiesQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityGroupsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & {
-    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+    community?: Maybe<
+      { __typename?: 'Community' } & {
+        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+      }
+    >;
   };
 };
 
 export type OpportunityNameQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
@@ -1225,7 +1225,7 @@ export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
@@ -1242,16 +1242,14 @@ export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
 
 export type CreateOpportunityMutationVariables = Exact<{
   opportunityData: OpportunityInput;
-  challengeID: Scalars['Float'];
 }>;
 
 export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunityOnChallenge: { __typename?: 'Opportunity' } & NewOpportunitesFragment;
+  createOpportunity: { __typename?: 'Opportunity' } & NewOpportunitesFragment;
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
-  opportunityData: OpportunityInput;
-  ID: Scalars['Float'];
+  opportunityData: UpdateOpportunityInput;
 }>;
 
 export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
@@ -1259,7 +1257,7 @@ export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
 };
 
 export type OpportunityProfileInfoQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
@@ -1283,8 +1281,7 @@ export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateOrganizationMutationVariables = Exact<{
-  organisationData: OrganisationInput;
-  orgID: Scalars['Float'];
+  organisationData: UpdateOrganisationInput;
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
@@ -1292,7 +1289,7 @@ export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type OrganisationProfileInfoQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
@@ -1305,29 +1302,12 @@ export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateGroupOnEcoverseMutationVariables = Exact<{
+  communityID: Scalars['Float'];
   groupName: Scalars['String'];
 }>;
 
 export type CreateGroupOnEcoverseMutation = { __typename?: 'Mutation' } & {
-  createGroupOnEcoverse: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
-};
-
-export type CreateGroupOnChallengeMutationVariables = Exact<{
-  groupName: Scalars['String'];
-  challengeID: Scalars['Float'];
-}>;
-
-export type CreateGroupOnChallengeMutation = { __typename?: 'Mutation' } & {
-  createGroupOnChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
-};
-
-export type CreateGroupOnOpportunityMutationVariables = Exact<{
-  groupName: Scalars['String'];
-  opportunityID: Scalars['Float'];
-}>;
-
-export type CreateGroupOnOpportunityMutation = { __typename?: 'Mutation' } & {
-  createGroupOnOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+  createGroupOnCommunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export type CreateGroupOnOrganizationMutationVariables = Exact<{
@@ -1340,7 +1320,7 @@ export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type OrganizationDetailsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
@@ -1366,7 +1346,7 @@ export type RemoveUserGroupMutationVariables = Exact<{
 export type RemoveUserGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUserGroup'>;
 
 export type ChallengeProfileQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
@@ -1378,7 +1358,9 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
             >;
           }
       >;
-      contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+      community?: Maybe<
+        { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
+      >;
       tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
       opportunities?: Maybe<
         Array<
@@ -1410,23 +1392,18 @@ export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
-export type AddUserToChallengeMutationVariables = Exact<{
-  challengeID: Scalars['Float'];
-  userID: Scalars['Float'];
-}>;
-
-export type AddUserToChallengeMutation = { __typename?: 'Mutation' } & {
-  addUserToChallenge: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
-};
-
 export type ChallengeMembersQueryVariables = Exact<{
-  challengeID: Scalars['Float'];
+  challengeID: Scalars['String'];
 }>;
 
 export type ChallengeMembersQuery = { __typename?: 'Query' } & {
   challenge: { __typename?: 'Challenge' } & {
-    contributors?: Maybe<
-      Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
+    community?: Maybe<
+      { __typename?: 'Community' } & {
+        members?: Maybe<
+          Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
+        >;
+      }
     >;
   };
 };
@@ -1456,9 +1433,7 @@ export type GroupCardQueryVariables = Exact<{
 export type GroupCardQuery = { __typename?: 'Query' } & {
   group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
       parent?: Maybe<
-        | ({ __typename: 'Challenge' } & Pick<Challenge, 'name'>)
-        | ({ __typename: 'Ecoverse' } & Pick<Ecoverse, 'name'>)
-        | ({ __typename: 'Opportunity' } & Pick<Opportunity, 'name'>)
+        | ({ __typename: 'Community' } & Pick<Community, 'name'>)
         | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
       >;
       members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
@@ -1472,7 +1447,7 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
 };
 
 export type OrganizationCardQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OrganizationCardQuery = { __typename?: 'Query' } & {
@@ -1514,24 +1489,17 @@ export type ConfigQuery = { __typename?: 'Query' } & {
   };
 };
 
-export type EcoverseListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EcoverseListQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
-    context: { __typename?: 'Context' } & Pick<Context, 'tagline'>;
-    challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
-  };
-
-export type EcoverseNameQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EcoverseNameQuery = { __typename?: 'Query' } & Pick<Query, 'name'>;
-
 export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoverseInfoQuery = { __typename?: 'Query' } & Pick<Query, 'name'> & {
-    context: { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
-        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-      };
-  };
+export type EcoverseInfoQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'name'> & {
+      context?: Maybe<
+        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          }
+      >;
+    };
+};
 
 export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1578,15 +1546,19 @@ export type OpportunitiesQuery = { __typename?: 'Query' } & {
 export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
-  host: { __typename?: 'Organisation' } & {
-    profile: { __typename?: 'Profile' } & Pick<Profile, 'id'> & {
-        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-      };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    host?: Maybe<
+      { __typename?: 'Organisation' } & {
+        profile: { __typename?: 'Profile' } & Pick<Profile, 'id'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+          };
+      }
+    >;
   };
 };
 
 export type OpportunityProfileQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
@@ -1597,12 +1569,16 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           }
       >;
-      groups?: Maybe<
-        Array<
-          { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-              members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
-            }
-        >
+      community?: Maybe<
+        { __typename?: 'Community' } & {
+          groups?: Maybe<
+            Array<
+              { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+                  members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+                }
+            >
+          >;
+        }
       >;
       relations?: Maybe<
         Array<
@@ -1637,7 +1613,7 @@ export type CreateRelationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type RelationsListQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type RelationsListQuery = { __typename?: 'Query' } & {
@@ -1653,24 +1629,6 @@ export type RelationsListQuery = { __typename?: 'Query' } & {
   };
 };
 
-export type UpdateOpportunityContextMutationVariables = Exact<{
-  opportunityID: Scalars['Float'];
-  opportunityData: OpportunityInput;
-}>;
-
-export type UpdateOpportunityContextMutation = { __typename?: 'Mutation' } & {
-  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'name'>;
-};
-
-export type AddUserToOpportunityMutationVariables = Exact<{
-  opportunityID: Scalars['Float'];
-  userID: Scalars['Float'];
-}>;
-
-export type AddUserToOpportunityMutation = { __typename?: 'Mutation' } & {
-  addUserToOpportunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>;
-};
-
 export type CreateActorMutationVariables = Exact<{
   actorData: ActorInput;
   actorGroupID: Scalars['Float'];
@@ -1681,7 +1639,7 @@ export type CreateActorMutation = { __typename?: 'Mutation' } & {
 };
 
 export type OpportunityActorGroupsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
@@ -1700,7 +1658,7 @@ export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
 
 export type UpdateActorMutationVariables = Exact<{
   actorData: ActorInput;
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type UpdateActorMutation = { __typename?: 'Mutation' } & {
@@ -1708,19 +1666,19 @@ export type UpdateActorMutation = { __typename?: 'Mutation' } & {
 };
 
 export type RemoveActorMutationVariables = Exact<{
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type RemoveActorMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeActor'>;
 
 export type RemoveRelationMutationVariables = Exact<{
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type RemoveRelationMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeRelation'>;
 
 export type QueryOpportunityRelationsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
@@ -1735,7 +1693,7 @@ export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
 
 export type UpdateAspectMutationVariables = Exact<{
   aspectData: AspectInput;
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type UpdateAspectMutation = { __typename?: 'Mutation' } & {
@@ -1743,7 +1701,7 @@ export type UpdateAspectMutation = { __typename?: 'Mutation' } & {
 };
 
 export type OpportunityAspectsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
@@ -1753,7 +1711,7 @@ export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
 };
 
 export type RemoveAspectMutationVariables = Exact<{
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
@@ -1789,13 +1747,13 @@ export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
 };
 
 export type RemoveReferenceMutationVariables = Exact<{
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
 
 export type RemoveOpportunityMutationVariables = Exact<{
-  ID: Scalars['Float'];
+  id: Scalars['Float'];
 }>;
 
 export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeOpportunity'>;
@@ -1842,10 +1800,8 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
 export type UserMembersFragment = { __typename?: 'User' } & {
   memberof?: Maybe<
     { __typename?: 'MemberOf' } & {
-      groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
-      challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'>>;
+      communities: Array<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'>>;
       organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
-      opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'>>;
     }
   >;
 };
@@ -1869,21 +1825,25 @@ export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeUserIdsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & { contributors?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> };
+  challenge: { __typename?: 'Challenge' } & {
+    community?: Maybe<
+      { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
+    >;
+  };
 };
 
 export type OpportunityUserIdsQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
   opportunity: { __typename?: 'Opportunity' } & {
-    groups?: Maybe<
-      Array<{ __typename?: 'UserGroup' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }>
+    community?: Maybe<
+      { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
     >;
   };
 };
@@ -1915,13 +1875,21 @@ export type UserCardDataQuery = { __typename?: 'Query' } & {
     { __typename: 'User' } & {
       memberof?: Maybe<
         { __typename?: 'MemberOf' } & {
-          groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>;
-          challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'name'>>;
+          communities: Array<{ __typename?: 'Community' } & Pick<Community, 'name'>>;
           organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
         }
       >;
     } & UserDetailsFragment
   >;
+};
+
+export type AddUserToCommunityMutationVariables = Exact<{
+  communityId: Scalars['Float'];
+  userID: Scalars['Float'];
+}>;
+
+export type AddUserToCommunityMutation = { __typename?: 'Mutation' } & {
+  addUserToCommunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export const GroupMembersFragmentDoc = gql`
@@ -1994,23 +1962,14 @@ export const UserDetailsFragmentDoc = gql`
 export const UserMembersFragmentDoc = gql`
   fragment UserMembers on User {
     memberof {
-      groups {
+      communities {
         id
         name
-      }
-      challenges {
-        id
-        name
-        textID
+        type
       }
       organisations {
         id
         name
-      }
-      opportunities {
-        id
-        name
-        textID
       }
     }
   }
@@ -2125,62 +2084,55 @@ export function useUpdateUserMutation(
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
-export const EcoverseChallengeGroupsDocument = gql`
-  query ecoverseChallengeGroups {
-    name
-    groups {
-      id
+export const EcoverseDocument = gql`
+  query ecoverse {
+    ecoverse {
       name
-    }
-    challenges {
-      id
-      name
-      textID
-      groups {
+      community {
+        groups {
+          id
+          name
+        }
+      }
+      challenges {
         id
         name
+        textID
+        community {
+          groups {
+            id
+            name
+          }
+        }
       }
     }
   }
 `;
 
 /**
- * __useEcoverseChallengeGroupsQuery__
+ * __useEcoverseQuery__
  *
- * To run a query within a React component, call `useEcoverseChallengeGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseChallengeGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEcoverseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseChallengeGroupsQuery({
+ * const { data, loading, error } = useEcoverseQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEcoverseChallengeGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
-) {
-  return Apollo.useQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
-    EcoverseChallengeGroupsDocument,
-    baseOptions
-  );
+export function useEcoverseQuery(baseOptions?: Apollo.QueryHookOptions<EcoverseQuery, EcoverseQueryVariables>) {
+  return Apollo.useQuery<EcoverseQuery, EcoverseQueryVariables>(EcoverseDocument, baseOptions);
 }
-export function useEcoverseChallengeGroupsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>
-) {
-  return Apollo.useLazyQuery<EcoverseChallengeGroupsQuery, EcoverseChallengeGroupsQueryVariables>(
-    EcoverseChallengeGroupsDocument,
-    baseOptions
-  );
+export function useEcoverseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EcoverseQuery, EcoverseQueryVariables>) {
+  return Apollo.useLazyQuery<EcoverseQuery, EcoverseQueryVariables>(EcoverseDocument, baseOptions);
 }
-export type EcoverseChallengeGroupsQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsQuery>;
-export type EcoverseChallengeGroupsLazyQueryHookResult = ReturnType<typeof useEcoverseChallengeGroupsLazyQuery>;
-export type EcoverseChallengeGroupsQueryResult = Apollo.QueryResult<
-  EcoverseChallengeGroupsQuery,
-  EcoverseChallengeGroupsQueryVariables
->;
+export type EcoverseQueryHookResult = ReturnType<typeof useEcoverseQuery>;
+export type EcoverseLazyQueryHookResult = ReturnType<typeof useEcoverseLazyQuery>;
+export type EcoverseQueryResult = Apollo.QueryResult<EcoverseQuery, EcoverseQueryVariables>;
 export const GroupMembersDocument = gql`
   query groupMembers($id: Float!) {
     group(ID: $id) {
@@ -2439,7 +2391,7 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   EcoverseGroupsListQueryVariables
 >;
 export const OrganizationNameDocument = gql`
-  query organizationName($id: Float!) {
+  query organizationName($id: String!) {
     organisation(ID: $id) {
       name
     }
@@ -2522,7 +2474,7 @@ export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganization
 export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
 export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQuery, OrganizationsListQueryVariables>;
 export const ChallengeNameDocument = gql`
-  query challengeName($id: Float!) {
+  query challengeName($id: String!) {
     challenge(ID: $id) {
       id
       name
@@ -2560,11 +2512,13 @@ export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQue
 export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNameLazyQuery>;
 export type ChallengeNameQueryResult = Apollo.QueryResult<ChallengeNameQuery, ChallengeNameQueryVariables>;
 export const ChallengeGroupsDocument = gql`
-  query challengeGroups($id: Float!) {
+  query challengeGroups($id: String!) {
     challenge(ID: $id) {
-      groups {
-        id
-        name
+      community {
+        groups {
+          id
+          name
+        }
       }
     }
   }
@@ -2600,7 +2554,7 @@ export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroup
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<ChallengeGroupsQuery, ChallengeGroupsQueryVariables>;
 export const OrganizationGroupsDocument = gql`
-  query organizationGroups($id: Float!) {
+  query organizationGroups($id: String!) {
     organisation(ID: $id) {
       groups {
         id
@@ -2649,7 +2603,7 @@ export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   OrganizationGroupsQueryVariables
 >;
 export const ChallengeOpportunitiesDocument = gql`
-  query challengeOpportunities($id: Float!) {
+  query challengeOpportunities($id: String!) {
     challenge(ID: $id) {
       opportunities {
         id
@@ -2698,11 +2652,13 @@ export type ChallengeOpportunitiesQueryResult = Apollo.QueryResult<
   ChallengeOpportunitiesQueryVariables
 >;
 export const OpportunityGroupsDocument = gql`
-  query opportunityGroups($id: Float!) {
+  query opportunityGroups($id: String!) {
     opportunity(ID: $id) {
-      groups {
-        id
-        name
+      community {
+        groups {
+          id
+          name
+        }
       }
     }
   }
@@ -2744,7 +2700,7 @@ export type OpportunityGroupsQueryHookResult = ReturnType<typeof useOpportunityG
 export type OpportunityGroupsLazyQueryHookResult = ReturnType<typeof useOpportunityGroupsLazyQuery>;
 export type OpportunityGroupsQueryResult = Apollo.QueryResult<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>;
 export const OpportunityNameDocument = gql`
-  query opportunityName($id: Float!) {
+  query opportunityName($id: String!) {
     opportunity(ID: $id) {
       id
       name
@@ -2913,7 +2869,7 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   UpdateChallengeMutationVariables
 >;
 export const ChallengeProfileInfoDocument = gql`
-  query challengeProfileInfo($id: Float!) {
+  query challengeProfileInfo($id: String!) {
     challenge(ID: $id) {
       id
       textID
@@ -2974,8 +2930,8 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   ChallengeProfileInfoQueryVariables
 >;
 export const CreateOpportunityDocument = gql`
-  mutation createOpportunity($opportunityData: OpportunityInput!, $challengeID: Float!) {
-    createOpportunityOnChallenge(opportunityData: $opportunityData, challengeID: $challengeID) {
+  mutation createOpportunity($opportunityData: OpportunityInput!) {
+    createOpportunity(opportunityData: $opportunityData) {
       ...NewOpportunites
     }
   }
@@ -3000,7 +2956,6 @@ export type CreateOpportunityMutationFn = Apollo.MutationFunction<
  * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
  *   variables: {
  *      opportunityData: // value for 'opportunityData'
- *      challengeID: // value for 'challengeID'
  *   },
  * });
  */
@@ -3019,8 +2974,8 @@ export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   CreateOpportunityMutationVariables
 >;
 export const UpdateOpportunityDocument = gql`
-  mutation updateOpportunity($opportunityData: OpportunityInput!, $ID: Float!) {
-    updateOpportunity(opportunityData: $opportunityData, ID: $ID) {
+  mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
+    updateOpportunity(opportunityData: $opportunityData) {
       id
       name
     }
@@ -3045,7 +3000,6 @@ export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
  * const [updateOpportunityMutation, { data, loading, error }] = useUpdateOpportunityMutation({
  *   variables: {
  *      opportunityData: // value for 'opportunityData'
- *      ID: // value for 'ID'
  *   },
  * });
  */
@@ -3064,7 +3018,7 @@ export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   UpdateOpportunityMutationVariables
 >;
 export const OpportunityProfileInfoDocument = gql`
-  query opportunityProfileInfo($id: Float!) {
+  query opportunityProfileInfo($id: String!) {
     opportunity(ID: $id) {
       id
       textID
@@ -3169,8 +3123,8 @@ export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   CreateOrganizationMutationVariables
 >;
 export const UpdateOrganizationDocument = gql`
-  mutation updateOrganization($organisationData: OrganisationInput!, $orgID: Float!) {
-    updateOrganisation(organisationData: $organisationData, orgID: $orgID) {
+  mutation updateOrganization($organisationData: UpdateOrganisationInput!) {
+    updateOrganisation(organisationData: $organisationData) {
       id
       name
     }
@@ -3195,7 +3149,6 @@ export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
  * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
  *   variables: {
  *      organisationData: // value for 'organisationData'
- *      orgID: // value for 'orgID'
  *   },
  * });
  */
@@ -3214,7 +3167,7 @@ export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   UpdateOrganizationMutationVariables
 >;
 export const OrganisationProfileInfoDocument = gql`
-  query organisationProfileInfo($id: Float!) {
+  query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
       name
@@ -3276,8 +3229,8 @@ export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
   OrganisationProfileInfoQueryVariables
 >;
 export const CreateGroupOnEcoverseDocument = gql`
-  mutation createGroupOnEcoverse($groupName: String!) {
-    createGroupOnEcoverse(groupName: $groupName) {
+  mutation createGroupOnEcoverse($communityID: Float!, $groupName: String!) {
+    createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
       id
       name
     }
@@ -3301,6 +3254,7 @@ export type CreateGroupOnEcoverseMutationFn = Apollo.MutationFunction<
  * @example
  * const [createGroupOnEcoverseMutation, { data, loading, error }] = useCreateGroupOnEcoverseMutation({
  *   variables: {
+ *      communityID: // value for 'communityID'
  *      groupName: // value for 'groupName'
  *   },
  * });
@@ -3318,96 +3272,6 @@ export type CreateGroupOnEcoverseMutationResult = Apollo.MutationResult<CreateGr
 export type CreateGroupOnEcoverseMutationOptions = Apollo.BaseMutationOptions<
   CreateGroupOnEcoverseMutation,
   CreateGroupOnEcoverseMutationVariables
->;
-export const CreateGroupOnChallengeDocument = gql`
-  mutation createGroupOnChallenge($groupName: String!, $challengeID: Float!) {
-    createGroupOnChallenge(groupName: $groupName, challengeID: $challengeID) {
-      id
-      name
-    }
-  }
-`;
-export type CreateGroupOnChallengeMutationFn = Apollo.MutationFunction<
-  CreateGroupOnChallengeMutation,
-  CreateGroupOnChallengeMutationVariables
->;
-
-/**
- * __useCreateGroupOnChallengeMutation__
- *
- * To run a mutation, you first call `useCreateGroupOnChallengeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateGroupOnChallengeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createGroupOnChallengeMutation, { data, loading, error }] = useCreateGroupOnChallengeMutation({
- *   variables: {
- *      groupName: // value for 'groupName'
- *      challengeID: // value for 'challengeID'
- *   },
- * });
- */
-export function useCreateGroupOnChallengeMutation(
-  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>
-) {
-  return Apollo.useMutation<CreateGroupOnChallengeMutation, CreateGroupOnChallengeMutationVariables>(
-    CreateGroupOnChallengeDocument,
-    baseOptions
-  );
-}
-export type CreateGroupOnChallengeMutationHookResult = ReturnType<typeof useCreateGroupOnChallengeMutation>;
-export type CreateGroupOnChallengeMutationResult = Apollo.MutationResult<CreateGroupOnChallengeMutation>;
-export type CreateGroupOnChallengeMutationOptions = Apollo.BaseMutationOptions<
-  CreateGroupOnChallengeMutation,
-  CreateGroupOnChallengeMutationVariables
->;
-export const CreateGroupOnOpportunityDocument = gql`
-  mutation createGroupOnOpportunity($groupName: String!, $opportunityID: Float!) {
-    createGroupOnOpportunity(groupName: $groupName, opportunityID: $opportunityID) {
-      id
-      name
-    }
-  }
-`;
-export type CreateGroupOnOpportunityMutationFn = Apollo.MutationFunction<
-  CreateGroupOnOpportunityMutation,
-  CreateGroupOnOpportunityMutationVariables
->;
-
-/**
- * __useCreateGroupOnOpportunityMutation__
- *
- * To run a mutation, you first call `useCreateGroupOnOpportunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateGroupOnOpportunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createGroupOnOpportunityMutation, { data, loading, error }] = useCreateGroupOnOpportunityMutation({
- *   variables: {
- *      groupName: // value for 'groupName'
- *      opportunityID: // value for 'opportunityID'
- *   },
- * });
- */
-export function useCreateGroupOnOpportunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>
-) {
-  return Apollo.useMutation<CreateGroupOnOpportunityMutation, CreateGroupOnOpportunityMutationVariables>(
-    CreateGroupOnOpportunityDocument,
-    baseOptions
-  );
-}
-export type CreateGroupOnOpportunityMutationHookResult = ReturnType<typeof useCreateGroupOnOpportunityMutation>;
-export type CreateGroupOnOpportunityMutationResult = Apollo.MutationResult<CreateGroupOnOpportunityMutation>;
-export type CreateGroupOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
-  CreateGroupOnOpportunityMutation,
-  CreateGroupOnOpportunityMutationVariables
 >;
 export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
@@ -3458,7 +3322,7 @@ export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOption
   CreateGroupOnOrganizationMutationVariables
 >;
 export const OrganizationDetailsDocument = gql`
-  query organizationDetails($id: Float!) {
+  query organizationDetails($id: String!) {
     organisation(ID: $id) {
       id
       name
@@ -3568,7 +3432,7 @@ export type RemoveUserGroupMutationOptions = Apollo.BaseMutationOptions<
   RemoveUserGroupMutationVariables
 >;
 export const ChallengeProfileDocument = gql`
-  query challengeProfile($id: Float!) {
+  query challengeProfile($id: String!) {
     challenge(ID: $id) {
       id
       textID
@@ -3586,8 +3450,10 @@ export const ChallengeProfileDocument = gql`
           description
         }
       }
-      contributors {
-        name
+      community {
+        members {
+          name
+        }
       }
       tagset {
         name
@@ -3699,60 +3565,17 @@ export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
   UpdateChallengeContextMutation,
   UpdateChallengeContextMutationVariables
 >;
-export const AddUserToChallengeDocument = gql`
-  mutation addUserToChallenge($challengeID: Float!, $userID: Float!) {
-    addUserToChallenge(challengeID: $challengeID, userID: $userID) {
-      id
-      name
-    }
-  }
-`;
-export type AddUserToChallengeMutationFn = Apollo.MutationFunction<
-  AddUserToChallengeMutation,
-  AddUserToChallengeMutationVariables
->;
-
-/**
- * __useAddUserToChallengeMutation__
- *
- * To run a mutation, you first call `useAddUserToChallengeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddUserToChallengeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addUserToChallengeMutation, { data, loading, error }] = useAddUserToChallengeMutation({
- *   variables: {
- *      challengeID: // value for 'challengeID'
- *      userID: // value for 'userID'
- *   },
- * });
- */
-export function useAddUserToChallengeMutation(
-  baseOptions?: Apollo.MutationHookOptions<AddUserToChallengeMutation, AddUserToChallengeMutationVariables>
-) {
-  return Apollo.useMutation<AddUserToChallengeMutation, AddUserToChallengeMutationVariables>(
-    AddUserToChallengeDocument,
-    baseOptions
-  );
-}
-export type AddUserToChallengeMutationHookResult = ReturnType<typeof useAddUserToChallengeMutation>;
-export type AddUserToChallengeMutationResult = Apollo.MutationResult<AddUserToChallengeMutation>;
-export type AddUserToChallengeMutationOptions = Apollo.BaseMutationOptions<
-  AddUserToChallengeMutation,
-  AddUserToChallengeMutationVariables
->;
 export const ChallengeMembersDocument = gql`
-  query challengeMembers($challengeID: Float!) {
+  query challengeMembers($challengeID: String!) {
     challenge(ID: $challengeID) {
-      contributors {
-        id
-        name
-        firstName
-        lastName
-        email
+      community {
+        members {
+          id
+          name
+          firstName
+          lastName
+          email
+        }
       }
     }
   }
@@ -3845,13 +3668,7 @@ export const GroupCardDocument = gql`
       name
       parent {
         __typename
-        ... on Challenge {
-          name
-        }
-        ... on Ecoverse {
-          name
-        }
-        ... on Opportunity {
+        ... on Community {
           name
         }
         ... on Organisation {
@@ -3907,7 +3724,7 @@ export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<GroupCardQuery, GroupCardQueryVariables>;
 export const OrganizationCardDocument = gql`
-  query organizationCard($id: Float!) {
+  query organizationCard($id: String!) {
     organisation(ID: $id) {
       id
       name
@@ -4029,92 +3846,19 @@ export function useConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Con
 export type ConfigQueryHookResult = ReturnType<typeof useConfigQuery>;
 export type ConfigLazyQueryHookResult = ReturnType<typeof useConfigLazyQuery>;
 export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVariables>;
-export const EcoverseListDocument = gql`
-  query ecoverseList {
-    name
-    context {
-      tagline
-    }
-    challenges {
-      id
-      name
-    }
-  }
-`;
-
-/**
- * __useEcoverseListQuery__
- *
- * To run a query within a React component, call `useEcoverseListQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEcoverseListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEcoverseListQuery(
-  baseOptions?: Apollo.QueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>
-) {
-  return Apollo.useQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
-}
-export function useEcoverseListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseListQuery, EcoverseListQueryVariables>
-) {
-  return Apollo.useLazyQuery<EcoverseListQuery, EcoverseListQueryVariables>(EcoverseListDocument, baseOptions);
-}
-export type EcoverseListQueryHookResult = ReturnType<typeof useEcoverseListQuery>;
-export type EcoverseListLazyQueryHookResult = ReturnType<typeof useEcoverseListLazyQuery>;
-export type EcoverseListQueryResult = Apollo.QueryResult<EcoverseListQuery, EcoverseListQueryVariables>;
-export const EcoverseNameDocument = gql`
-  query ecoverseName {
-    name
-  }
-`;
-
-/**
- * __useEcoverseNameQuery__
- *
- * To run a query within a React component, call `useEcoverseNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEcoverseNameQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEcoverseNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<EcoverseNameQuery, EcoverseNameQueryVariables>
-) {
-  return Apollo.useQuery<EcoverseNameQuery, EcoverseNameQueryVariables>(EcoverseNameDocument, baseOptions);
-}
-export function useEcoverseNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseNameQuery, EcoverseNameQueryVariables>
-) {
-  return Apollo.useLazyQuery<EcoverseNameQuery, EcoverseNameQueryVariables>(EcoverseNameDocument, baseOptions);
-}
-export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
-export type EcoverseNameLazyQueryHookResult = ReturnType<typeof useEcoverseNameLazyQuery>;
-export type EcoverseNameQueryResult = Apollo.QueryResult<EcoverseNameQuery, EcoverseNameQueryVariables>;
 export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
-    name
-    context {
-      tagline
-      vision
-      impact
-      background
-      references {
-        name
-        uri
+    ecoverse {
+      name
+      context {
+        tagline
+        vision
+        impact
+        background
+        references {
+          name
+          uri
+        }
       }
     }
   }
@@ -4318,12 +4062,14 @@ export type OpportunitiesLazyQueryHookResult = ReturnType<typeof useOpportunitie
 export type OpportunitiesQueryResult = Apollo.QueryResult<OpportunitiesQuery, OpportunitiesQueryVariables>;
 export const EcoverseHostReferencesDocument = gql`
   query ecoverseHostReferences {
-    host {
-      profile {
-        id
-        references {
-          name
-          uri
+    ecoverse {
+      host {
+        profile {
+          id
+          references {
+            name
+            uri
+          }
         }
       }
     }
@@ -4368,7 +4114,7 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
   EcoverseHostReferencesQueryVariables
 >;
 export const OpportunityProfileDocument = gql`
-  query opportunityProfile($id: Float!) {
+  query opportunityProfile($id: String!) {
     opportunity(ID: $id) {
       id
       textID
@@ -4392,10 +4138,12 @@ export const OpportunityProfileDocument = gql`
           uri
         }
       }
-      groups {
-        name
-        members {
+      community {
+        groups {
           name
+          members {
+            name
+          }
         }
       }
       relations {
@@ -4509,7 +4257,7 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   CreateRelationMutationVariables
 >;
 export const RelationsListDocument = gql`
-  query relationsList($id: Float!) {
+  query relationsList($id: String!) {
     opportunity(ID: $id) {
       relations {
         id
@@ -4552,94 +4300,6 @@ export function useRelationsListLazyQuery(
 export type RelationsListQueryHookResult = ReturnType<typeof useRelationsListQuery>;
 export type RelationsListLazyQueryHookResult = ReturnType<typeof useRelationsListLazyQuery>;
 export type RelationsListQueryResult = Apollo.QueryResult<RelationsListQuery, RelationsListQueryVariables>;
-export const UpdateOpportunityContextDocument = gql`
-  mutation updateOpportunityContext($opportunityID: Float!, $opportunityData: OpportunityInput!) {
-    updateOpportunity(ID: $opportunityID, opportunityData: $opportunityData) {
-      name
-    }
-  }
-`;
-export type UpdateOpportunityContextMutationFn = Apollo.MutationFunction<
-  UpdateOpportunityContextMutation,
-  UpdateOpportunityContextMutationVariables
->;
-
-/**
- * __useUpdateOpportunityContextMutation__
- *
- * To run a mutation, you first call `useUpdateOpportunityContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOpportunityContextMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateOpportunityContextMutation, { data, loading, error }] = useUpdateOpportunityContextMutation({
- *   variables: {
- *      opportunityID: // value for 'opportunityID'
- *      opportunityData: // value for 'opportunityData'
- *   },
- * });
- */
-export function useUpdateOpportunityContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>
-) {
-  return Apollo.useMutation<UpdateOpportunityContextMutation, UpdateOpportunityContextMutationVariables>(
-    UpdateOpportunityContextDocument,
-    baseOptions
-  );
-}
-export type UpdateOpportunityContextMutationHookResult = ReturnType<typeof useUpdateOpportunityContextMutation>;
-export type UpdateOpportunityContextMutationResult = Apollo.MutationResult<UpdateOpportunityContextMutation>;
-export type UpdateOpportunityContextMutationOptions = Apollo.BaseMutationOptions<
-  UpdateOpportunityContextMutation,
-  UpdateOpportunityContextMutationVariables
->;
-export const AddUserToOpportunityDocument = gql`
-  mutation addUserToOpportunity($opportunityID: Float!, $userID: Float!) {
-    addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
-      name
-    }
-  }
-`;
-export type AddUserToOpportunityMutationFn = Apollo.MutationFunction<
-  AddUserToOpportunityMutation,
-  AddUserToOpportunityMutationVariables
->;
-
-/**
- * __useAddUserToOpportunityMutation__
- *
- * To run a mutation, you first call `useAddUserToOpportunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddUserToOpportunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addUserToOpportunityMutation, { data, loading, error }] = useAddUserToOpportunityMutation({
- *   variables: {
- *      opportunityID: // value for 'opportunityID'
- *      userID: // value for 'userID'
- *   },
- * });
- */
-export function useAddUserToOpportunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<AddUserToOpportunityMutation, AddUserToOpportunityMutationVariables>
-) {
-  return Apollo.useMutation<AddUserToOpportunityMutation, AddUserToOpportunityMutationVariables>(
-    AddUserToOpportunityDocument,
-    baseOptions
-  );
-}
-export type AddUserToOpportunityMutationHookResult = ReturnType<typeof useAddUserToOpportunityMutation>;
-export type AddUserToOpportunityMutationResult = Apollo.MutationResult<AddUserToOpportunityMutation>;
-export type AddUserToOpportunityMutationOptions = Apollo.BaseMutationOptions<
-  AddUserToOpportunityMutation,
-  AddUserToOpportunityMutationVariables
->;
 export const CreateActorDocument = gql`
   mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
     createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
@@ -4676,7 +4336,7 @@ export type CreateActorMutationHookResult = ReturnType<typeof useCreateActorMuta
 export type CreateActorMutationResult = Apollo.MutationResult<CreateActorMutation>;
 export type CreateActorMutationOptions = Apollo.BaseMutationOptions<CreateActorMutation, CreateActorMutationVariables>;
 export const OpportunityActorGroupsDocument = gql`
-  query opportunityActorGroups($id: Float!) {
+  query opportunityActorGroups($id: String!) {
     opportunity(ID: $id) {
       actorGroups {
         id
@@ -4733,8 +4393,8 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   OpportunityActorGroupsQueryVariables
 >;
 export const UpdateActorDocument = gql`
-  mutation updateActor($actorData: ActorInput!, $ID: Float!) {
-    updateActor(actorData: $actorData, ID: $ID) {
+  mutation updateActor($actorData: ActorInput!, $id: Float!) {
+    updateActor(actorData: $actorData, ID: $id) {
       name
     }
   }
@@ -4755,7 +4415,7 @@ export type UpdateActorMutationFn = Apollo.MutationFunction<UpdateActorMutation,
  * const [updateActorMutation, { data, loading, error }] = useUpdateActorMutation({
  *   variables: {
  *      actorData: // value for 'actorData'
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -4768,8 +4428,8 @@ export type UpdateActorMutationHookResult = ReturnType<typeof useUpdateActorMuta
 export type UpdateActorMutationResult = Apollo.MutationResult<UpdateActorMutation>;
 export type UpdateActorMutationOptions = Apollo.BaseMutationOptions<UpdateActorMutation, UpdateActorMutationVariables>;
 export const RemoveActorDocument = gql`
-  mutation removeActor($ID: Float!) {
-    removeActor(ID: $ID)
+  mutation removeActor($id: Float!) {
+    removeActor(ID: $id)
   }
 `;
 export type RemoveActorMutationFn = Apollo.MutationFunction<RemoveActorMutation, RemoveActorMutationVariables>;
@@ -4787,7 +4447,7 @@ export type RemoveActorMutationFn = Apollo.MutationFunction<RemoveActorMutation,
  * @example
  * const [removeActorMutation, { data, loading, error }] = useRemoveActorMutation({
  *   variables: {
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -4800,8 +4460,8 @@ export type RemoveActorMutationHookResult = ReturnType<typeof useRemoveActorMuta
 export type RemoveActorMutationResult = Apollo.MutationResult<RemoveActorMutation>;
 export type RemoveActorMutationOptions = Apollo.BaseMutationOptions<RemoveActorMutation, RemoveActorMutationVariables>;
 export const RemoveRelationDocument = gql`
-  mutation removeRelation($ID: Float!) {
-    removeRelation(ID: $ID)
+  mutation removeRelation($id: Float!) {
+    removeRelation(ID: $id)
   }
 `;
 export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMutation, RemoveRelationMutationVariables>;
@@ -4819,7 +4479,7 @@ export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMut
  * @example
  * const [removeRelationMutation, { data, loading, error }] = useRemoveRelationMutation({
  *   variables: {
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -4838,7 +4498,7 @@ export type RemoveRelationMutationOptions = Apollo.BaseMutationOptions<
   RemoveRelationMutationVariables
 >;
 export const QueryOpportunityRelationsDocument = gql`
-  query queryOpportunityRelations($id: Float!) {
+  query queryOpportunityRelations($id: String!) {
     opportunity(ID: $id) {
       relations {
         actorRole
@@ -4890,8 +4550,8 @@ export type QueryOpportunityRelationsQueryResult = Apollo.QueryResult<
   QueryOpportunityRelationsQueryVariables
 >;
 export const UpdateAspectDocument = gql`
-  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
-    updateAspect(aspectData: $aspectData, ID: $ID) {
+  mutation updateAspect($aspectData: AspectInput!, $id: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $id) {
       title
     }
   }
@@ -4912,7 +4572,7 @@ export type UpdateAspectMutationFn = Apollo.MutationFunction<UpdateAspectMutatio
  * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
  *   variables: {
  *      aspectData: // value for 'aspectData'
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -4928,7 +4588,7 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
   UpdateAspectMutationVariables
 >;
 export const OpportunityAspectsDocument = gql`
-  query opportunityAspects($id: Float!) {
+  query opportunityAspects($id: String!) {
     opportunity(ID: $id) {
       aspects {
         title
@@ -4978,8 +4638,8 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   OpportunityAspectsQueryVariables
 >;
 export const RemoveAspectDocument = gql`
-  mutation removeAspect($ID: Float!) {
-    removeAspect(ID: $ID)
+  mutation removeAspect($id: Float!) {
+    removeAspect(ID: $id)
   }
 `;
 export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutation, RemoveAspectMutationVariables>;
@@ -4997,7 +4657,7 @@ export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutatio
  * @example
  * const [removeAspectMutation, { data, loading, error }] = useRemoveAspectMutation({
  *   variables: {
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -5145,8 +4805,8 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   CreateActorGroupMutationVariables
 >;
 export const RemoveReferenceDocument = gql`
-  mutation removeReference($ID: Float!) {
-    removeReference(ID: $ID)
+  mutation removeReference($id: Float!) {
+    removeReference(ID: $id)
   }
 `;
 export type RemoveReferenceMutationFn = Apollo.MutationFunction<
@@ -5167,7 +4827,7 @@ export type RemoveReferenceMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
  *   variables: {
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -5186,8 +4846,8 @@ export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
   RemoveReferenceMutationVariables
 >;
 export const RemoveOpportunityDocument = gql`
-  mutation removeOpportunity($ID: Float!) {
-    removeOpportunity(ID: $ID)
+  mutation removeOpportunity($id: Float!) {
+    removeOpportunity(ID: $id)
   }
 `;
 export type RemoveOpportunityMutationFn = Apollo.MutationFunction<
@@ -5208,7 +4868,7 @@ export type RemoveOpportunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeOpportunityMutation, { data, loading, error }] = useRemoveOpportunityMutation({
  *   variables: {
- *      ID: // value for 'ID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -5409,10 +5069,12 @@ export type EcoverseUserIdsQueryHookResult = ReturnType<typeof useEcoverseUserId
 export type EcoverseUserIdsLazyQueryHookResult = ReturnType<typeof useEcoverseUserIdsLazyQuery>;
 export type EcoverseUserIdsQueryResult = Apollo.QueryResult<EcoverseUserIdsQuery, EcoverseUserIdsQueryVariables>;
 export const ChallengeUserIdsDocument = gql`
-  query challengeUserIds($id: Float!) {
+  query challengeUserIds($id: String!) {
     challenge(ID: $id) {
-      contributors {
-        id
+      community {
+        members {
+          id
+        }
       }
     }
   }
@@ -5451,9 +5113,9 @@ export type ChallengeUserIdsQueryHookResult = ReturnType<typeof useChallengeUser
 export type ChallengeUserIdsLazyQueryHookResult = ReturnType<typeof useChallengeUserIdsLazyQuery>;
 export type ChallengeUserIdsQueryResult = Apollo.QueryResult<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>;
 export const OpportunityUserIdsDocument = gql`
-  query opportunityUserIds($id: Float!) {
+  query opportunityUserIds($id: String!) {
     opportunity(ID: $id) {
-      groups {
+      community {
         members {
           id
         }
@@ -5584,10 +5246,7 @@ export const UserCardDataDocument = gql`
     usersById(IDs: $ids) {
       __typename
       memberof {
-        groups {
-          name
-        }
-        challenges {
+        communities {
           name
         }
         organisations {
@@ -5629,3 +5288,48 @@ export function useUserCardDataLazyQuery(
 export type UserCardDataQueryHookResult = ReturnType<typeof useUserCardDataQuery>;
 export type UserCardDataLazyQueryHookResult = ReturnType<typeof useUserCardDataLazyQuery>;
 export type UserCardDataQueryResult = Apollo.QueryResult<UserCardDataQuery, UserCardDataQueryVariables>;
+export const AddUserToCommunityDocument = gql`
+  mutation addUserToCommunity($communityId: Float!, $userID: Float!) {
+    addUserToCommunity(communityID: $communityId, userID: $userID) {
+      id
+      name
+    }
+  }
+`;
+export type AddUserToCommunityMutationFn = Apollo.MutationFunction<
+  AddUserToCommunityMutation,
+  AddUserToCommunityMutationVariables
+>;
+
+/**
+ * __useAddUserToCommunityMutation__
+ *
+ * To run a mutation, you first call `useAddUserToCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToCommunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToCommunityMutation, { data, loading, error }] = useAddUserToCommunityMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useAddUserToCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddUserToCommunityMutation, AddUserToCommunityMutationVariables>
+) {
+  return Apollo.useMutation<AddUserToCommunityMutation, AddUserToCommunityMutationVariables>(
+    AddUserToCommunityDocument,
+    baseOptions
+  );
+}
+export type AddUserToCommunityMutationHookResult = ReturnType<typeof useAddUserToCommunityMutation>;
+export type AddUserToCommunityMutationResult = Apollo.MutationResult<AddUserToCommunityMutation>;
+export type AddUserToCommunityMutationOptions = Apollo.BaseMutationOptions<
+  AddUserToCommunityMutation,
+  AddUserToCommunityMutationVariables
+>;

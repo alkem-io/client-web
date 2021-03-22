@@ -30,13 +30,7 @@ export const QUERY_GROUP_CARD = gql`
       name
       parent {
         __typename
-        ... on Challenge {
-          name
-        }
-        ... on Ecoverse {
-          name
-        }
-        ... on Opportunity {
+        ... on Community {
           name
         }
         ... on Organisation {
@@ -65,7 +59,7 @@ export const QUERY_GROUP_CARD = gql`
 `;
 
 export const QUERY_ORGANIZATION_CARD = gql`
-  query organizationCard($id: Float!) {
+  query organizationCard($id: String!) {
     organisation(ID: $id) {
       id
       name

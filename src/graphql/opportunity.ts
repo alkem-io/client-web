@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const QUERY_OPPORTUNITY_PROFILE = gql`
-  query opportunityProfile($id: Float!) {
+  query opportunityProfile($id: String!) {
     opportunity(ID: $id) {
       id
       textID
@@ -25,10 +25,12 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
           uri
         }
       }
-      groups {
-        name
-        members {
+      community {
+        groups {
           name
+          members {
+            name
+          }
         }
       }
       relations {
@@ -71,7 +73,7 @@ export const MUTATION_CREATE_RELATION = gql`
 `;
 
 export const QUERY_RELATIONS_LIST = gql`
-  query relationsList($id: Float!) {
+  query relationsList($id: String!) {
     opportunity(ID: $id) {
       relations {
         id
@@ -86,15 +88,9 @@ export const QUERY_RELATIONS_LIST = gql`
 `;
 
 export const MUTATION_UPDATE_OPPORTUNITY_CONTEXT = gql`
-  mutation updateOpportunityContext($opportunityID: Float!, $opportunityData: OpportunityInput!) {
-    updateOpportunity(ID: $opportunityID, opportunityData: $opportunityData) {
-      name
-    }
-  }
-`;
-export const MUTATION_ADD_USER_TO_OPPORTUNITY = gql`
-  mutation addUserToOpportunity($opportunityID: Float!, $userID: Float!) {
-    addUserToOpportunity(opportunityID: $opportunityID, userID: $userID) {
+  mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
+    updateOpportunity(opportunityData: $opportunityData) {
+      id
       name
     }
   }
@@ -109,7 +105,7 @@ export const MUTATION_CREATE_ACTOR = gql`
 `;
 
 export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
-  query opportunityActorGroups($id: Float!) {
+  query opportunityActorGroups($id: String!) {
     opportunity(ID: $id) {
       actorGroups {
         id
@@ -128,27 +124,27 @@ export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
 `;
 
 export const MUTATION_UPDATE_ACTOR = gql`
-  mutation updateActor($actorData: ActorInput!, $ID: Float!) {
-    updateActor(actorData: $actorData, ID: $ID) {
+  mutation updateActor($actorData: ActorInput!, $id: Float!) {
+    updateActor(actorData: $actorData, ID: $id) {
       name
     }
   }
 `;
 
 export const MUTATION_REMOVE_ACTOR = gql`
-  mutation removeActor($ID: Float!) {
-    removeActor(ID: $ID)
+  mutation removeActor($id: Float!) {
+    removeActor(ID: $id)
   }
 `;
 
 export const MUTATION_RELATION_REMOVE = gql`
-  mutation removeRelation($ID: Float!) {
-    removeRelation(ID: $ID)
+  mutation removeRelation($id: Float!) {
+    removeRelation(ID: $id)
   }
 `;
 
 export const QUERY_OPPORTUNITY_RELATIONS = gql`
-  query queryOpportunityRelations($id: Float!) {
+  query queryOpportunityRelations($id: String!) {
     opportunity(ID: $id) {
       relations {
         actorRole
@@ -162,15 +158,15 @@ export const QUERY_OPPORTUNITY_RELATIONS = gql`
 `;
 
 export const MUTATION_UPDATE_ASPECT = gql`
-  mutation updateAspect($aspectData: AspectInput!, $ID: Float!) {
-    updateAspect(aspectData: $aspectData, ID: $ID) {
+  mutation updateAspect($aspectData: AspectInput!, $id: Float!) {
+    updateAspect(aspectData: $aspectData, ID: $id) {
       title
     }
   }
 `;
 
 export const QUERY_OPPORTUNITY_ASPECTS = gql`
-  query opportunityAspects($id: Float!) {
+  query opportunityAspects($id: String!) {
     opportunity(ID: $id) {
       aspects {
         title
@@ -181,8 +177,8 @@ export const QUERY_OPPORTUNITY_ASPECTS = gql`
   }
 `;
 export const MUTATION_REMOVE_ASPECT = gql`
-  mutation removeAspect($ID: Float!) {
-    removeAspect(ID: $ID)
+  mutation removeAspect($id: Float!) {
+    removeAspect(ID: $id)
   }
 `;
 
@@ -216,14 +212,14 @@ export const MUTATION_CREATE_ACTOR_GROUP = gql`
 `;
 
 export const MUTATION_REMOVE_REFERENCE = gql`
-  mutation removeReference($ID: Float!) {
-    removeReference(ID: $ID)
+  mutation removeReference($id: Float!) {
+    removeReference(ID: $id)
   }
 `;
 
 export const MUTATION_REMOVE_OPPORTUNITY = gql`
-  mutation removeOpportunity($ID: Float!) {
-    removeOpportunity(ID: $ID)
+  mutation removeOpportunity($id: Float!) {
+    removeOpportunity(ID: $id)
   }
 `;
 
