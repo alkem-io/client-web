@@ -1,26 +1,5 @@
 import { gql } from '@apollo/client';
 
-// export const QUERY_ECOVERSES_LIST = gql`
-//   query ecoverseList {
-//     ecoverse {
-//       name
-//       context {
-//         tagline
-//       }
-//       challenges {
-//         id
-//         name
-//       }
-//     }
-//   }
-// `;
-
-// export const QUERY_ECOVERSE_NAME = gql`
-//   query ecoverseName {
-//     name
-//   }
-// `;
-
 export const QUERY_ECOVERSE_DETAILS = gql`
   query ecoverseInfo {
     ecoverse {
