@@ -8,9 +8,9 @@ import InputField from '../components/Admin/Common/InputField';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useDemoAuth } from '../hooks/useDemoAuth';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useUpdateNavigation } from '../hooks/useNavigation';
-import { useSimpleAuth } from '../hooks/useSimpleAuth';
 
 interface RegisterPageProps {}
 interface FormValues {
@@ -43,7 +43,8 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
   const { ecoverse } = useEcoverse();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
-  const { register } = useSimpleAuth();
+
+  const { register } = useDemoAuth();
   const history = useHistory();
   const { resetStore } = useAuthenticate();
   const [errorMessage, setErrorMessage] = useState<string>();
