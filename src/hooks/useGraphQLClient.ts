@@ -13,8 +13,10 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { env } from '../env';
 import { typePolicies } from '../graphql/cache/typePolicies';
+import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthStatus } from '../reducers/auth/types';
@@ -24,14 +26,9 @@ import { useAuthenticationContext } from './useAuthenticationContext';
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
+  const history = useHistory();
   const dispatch = useDispatch();
-  const { context, status: _status, token: _token } = useAuthenticationContext();
-
-  // Preserve the token and status from the reduxStore to be used inside the memoized apollo client
-  const status = useRef<AuthStatus>('unauthenticated');
-  const token = useRef<string | undefined>();
-  token.current = _token;
-  status.current = _status;
+  const { context } = useAuthenticationContext();
 
   const pendingRequests = useRef<((token?: string) => void)[]>([]);
   const isRefreshing = useRef(false);
@@ -51,12 +48,12 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         } else {
           dispatch(updateStatus('unauthenticated'));
         }
-        dispatch(updateToken(result));
+        dispatch(updateToken(result?.accessToken));
         return result?.accessToken;
       })
       .catch(e => {
         console.error(e);
-        dispatch(updateToken(null));
+        dispatch(updateToken());
         dispatch(updateStatus('unauthenticated'));
         return undefined;
       });
@@ -88,13 +85,14 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   };
 
   const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
+    const status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
     let errors: Error[] = [];
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:
           case ErrorStatus.UNAUTHENTICATED:
-            if (status.current === 'done')
+            if (status === 'done')
               return fromPromise(refreshToken())
                 .filter(value => Boolean(value))
                 .flatMap(accessToken => {
@@ -109,6 +107,10 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
                     });
                   return forward(operation);
                 });
+            break;
+          case ErrorStatus.USER_NOT_REGISTERED:
+            dispatch(updateStatus('userRegistration'));
+            history.push('/profile/create');
             break;
           default:
             const newMessage = `${err.message}`;
@@ -132,16 +134,11 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   const authLink = setContext(async (_, { headers }) => {
-    let internalToken = token.current;
+    let internalToken = localStorage.getItem(TOKEN_KEY) || '';
 
-    if (status.current === 'unauthenticated') {
-      const result = await refreshToken();
-      if (result) {
-        internalToken = result;
-      }
+    if (!internalToken) {
+      return headers;
     }
-
-    if (!internalToken) return headers;
 
     return {
       headers: {
@@ -179,7 +176,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const retryLink = new RetryLink({
     delay: {
       initial: 1000,
-      max: 60000,
+      max: 5000,
       jitter: true,
     },
     attempts: {

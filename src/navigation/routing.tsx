@@ -1,15 +1,20 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { CreateUserProfile, EditUserProfile } from '../components/UserProfile';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
+import AboutPage from '../pages/About';
 import { Admin } from './admin/admin';
 import { Community } from './community';
 import { Ecoverses } from './ecoverse';
+import LoginRoute from './login';
+import LogoutRoute from './logout';
 import { Messages } from './messages';
+import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
-import RestrictedRoute from './route.extensions';
+import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
 import { SignIn } from './signin';
-import AboutPage from '../pages/About';
+import WelcomeRoute from './welcome';
 /*local files imports end*/
 
 const adminGroups = ['admin'];
@@ -25,8 +30,20 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <Redirect to="/ecoverse/1" />
       </Route>
-      <Route path="/ecoverse">
+      <AuthenticatedRoute path="/ecoverse">
         <Ecoverses />
+      </AuthenticatedRoute>
+      <Route exact path="/login">
+        <LoginRoute />
+      </Route>
+      <Route exact path="/logout">
+        <LogoutRoute />
+      </Route>
+      <Route exact path="/welcome">
+        <WelcomeRoute />
+      </Route>
+      <Route exact path="/register">
+        <RegisterRoute />
       </Route>
       <RestrictedRoute exact path="/community">
         <Community />
@@ -34,9 +51,16 @@ export const Routing: FC = () => {
       <RestrictedRoute exact path="/messages">
         <Messages />
       </RestrictedRoute>
+      <RestrictedRoute exact path="/profile/edit">
+        <EditUserProfile />
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/profile/create">
+        <CreateUserProfile />
+      </RestrictedRoute>
       <RestrictedRoute exact path="/profile">
         <UserProfile />
       </RestrictedRoute>
+
       <Route exact path="/signin">
         <SignIn />
       </Route>

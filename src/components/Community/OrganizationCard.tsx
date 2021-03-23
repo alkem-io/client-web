@@ -31,9 +31,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
   const { data, loading } = useOrganizationCardQuery({
-    variables: {
-      id: Number(id),
-    },
+    variables: { id },
   });
 
   const org = data?.organisation;
@@ -76,7 +74,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
         !isModalOpened && setIsModalOpened(true);
       }}
     >
-      {isModalOpened && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
+      {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
       {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );

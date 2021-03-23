@@ -53,7 +53,15 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   });
 
   const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
-    refetchQueries: ['users'],
+    update(cache, data) {
+      cache.modify({
+        fields: {
+          users(existingUsers = [], { readField }) {
+            return existingUsers.filter(x => readField('id', x) !== data['id']);
+          },
+        },
+      });
+    },
     awaitRefetchQueries: true,
     onCompleted: () => {
       history.push('/admin/users');
@@ -95,6 +103,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   });
 
   const isSaving = updateMutationLoading || createMutationLoading;
+
+  const handleCancel = () => history.goBack();
 
   const handleSave = (user: UserModel) => {
     // Convert UserModel to UserInput
@@ -189,7 +199,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
           </Button>
         )}
       </div>
-      <UserForm editMode={mode} onSave={handleSave} title={title} user={user} />
+      <UserForm editMode={mode} onSave={handleSave} onCancel={handleCancel} title={title} user={user} />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}

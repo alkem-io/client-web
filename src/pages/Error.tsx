@@ -2,8 +2,13 @@ import React, { FC } from 'react';
 import Button from '../components/core/Button';
 import Section from '../components/core/Section';
 import Typography from '../components/core/Typography';
+import { env } from '../env';
 
-export const Error: FC<{ error: Error }> = () => {
+const graphQLEndpoint =
+  (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
+  (process.env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
+
+export const Error: FC<{ error: Error }> = props => {
   return (
     <div style={{ display: 'flex', height: '100%', alignItems: 'center' }}>
       <Section>
@@ -11,10 +16,13 @@ export const Error: FC<{ error: Error }> = () => {
           Ooops!
         </Typography>
         <Typography as="h2" variant="h3" color="neutral">
-          Looks like something went wrong. A report has been sent and the issue will be addressed soon.
+          Looks like something went wrong: <i>{props.error.message}</i>
+        </Typography>
+        <Typography as="h2" variant="h3" color="neutral">
+          Please check that your server ({graphQLEndpoint}) is available, and reload the page.
         </Typography>
         <Typography as="h5" variant="h5" color="neutralMedium">
-          You can continue, after reloading the page.
+          If the error persists please contact support.
         </Typography>
         <div>
           <Button variant="primary" text="Reload" onClick={() => window.location.reload()} />

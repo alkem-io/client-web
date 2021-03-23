@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextIpnut component render correctly TextArea/Input component 1`] = `
+<DocumentFragment>
+  <div
+    class="inputContainer-0-2-25 primary-0-2-29"
+  >
+    <div
+      class="caption-0-2-37 inherit-0-2-48 label-0-2-28"
+      style="font-weight: 700;"
+    >
+      <span>
+        test label
+      </span>
+    </div>
+    <textarea
+      class="textArea-0-2-27 inset small ct-textarea"
+      disabled=""
+      rows="4"
+    >
+      test value
+    </textarea>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`TextIpnut component render correctly TextInput/Input component 1`] = `
+<DocumentFragment>
+  <div
+    class="inputContainer-0-2-1 primary-0-2-5"
+  >
+    <div
+      class="caption-0-2-13 inherit-0-2-24 label-0-2-4"
+      style="font-weight: 700;"
+    >
+      <span>
+        test label
+      </span>
+    </div>
+    <input
+      class="input-0-2-2 inset small ct-input"
+      disabled=""
+      type="text"
+      value="test value"
+    />
+  </div>
+</DocumentFragment>
+`;

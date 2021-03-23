@@ -1,4 +1,5 @@
 import { Organisation } from '../generated/graphql';
+import { Reference, Tagset } from './Profile';
 
 export interface UserModel {
   id: string;
@@ -20,32 +21,21 @@ export interface UserModel {
     references: Reference[];
   };
   memberof: {
-    groups: Group[];
-    challenges: Challenge[];
+    communities: Community[];
     organisations: Organisation[];
   };
 }
 
-interface Challenge {
+interface Community {
   id: string;
   name: string;
-  textID: string;
+  type: string;
+  groups: Group[];
 }
 interface Group {
   id: string;
   name: string;
 }
-export interface Tagset {
-  name: string;
-  tags: Array<string>;
-}
-
-export interface Reference {
-  id: string;
-  name: string;
-  uri: string;
-}
-
 export const defaultUser: UserModel = {
   id: '',
   name: '',
@@ -65,9 +55,8 @@ export const defaultUser: UserModel = {
     references: [],
   },
   memberof: {
-    challenges: [],
-    groups: [],
     organisations: [],
+    communities: [],
   },
 };
 
@@ -87,6 +76,4 @@ export interface UserFromGenerated {
   city: string;
   gender: string;
   bio: string;
-  challenges: string;
-  groups: string;
 }

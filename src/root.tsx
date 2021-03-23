@@ -71,23 +71,23 @@ const Root: FC = () => {
 
 const ReduxRoot: FC = () => {
   return (
-    <ConfigProvider apiUrl={graphQLEndpoint}>
-      <AuthenticationProvider>
-        <CTApolloProvider>
-          <ThemeProvider>
-            <NavigationProvider>
-              <UserProvider>
-                <BrowserRouter>
+    <BrowserRouter>
+      <ConfigProvider apiUrl={graphQLEndpoint}>
+        <AuthenticationProvider>
+          <CTApolloProvider>
+            <ThemeProvider>
+              <NavigationProvider>
+                <UserProvider>
                   <App>
                     <Routing />
                   </App>
-                </BrowserRouter>
-              </UserProvider>
-            </NavigationProvider>
-          </ThemeProvider>
-        </CTApolloProvider>
-      </AuthenticationProvider>
-    </ConfigProvider>
+                </UserProvider>
+              </NavigationProvider>
+            </ThemeProvider>
+          </CTApolloProvider>
+        </AuthenticationProvider>
+      </ConfigProvider>
+    </BrowserRouter>
   );
 };
 

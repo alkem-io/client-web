@@ -79,7 +79,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
     }
     updateActor({
       variables: {
-        ID: Number(id),
+        id: Number(id),
         actorData: values,
       },
     });

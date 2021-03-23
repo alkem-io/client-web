@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tag component render correctly Tag component 1`] = `
+<span
+  className="tag-0-2-18 positive-0-2-20"
+>
+  <div
+    className="caption-0-2-30 inherit-0-2-41"
+    style={
+      Object {
+        "fontWeight": 500,
+      }
+    }
+  >
+    <span
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "Please wait",
+        }
+      }
+    />
+  </div>
+</span>
+`;
+
+exports[`Tag component render correctly Typography component 1`] = `
+<DocumentFragment>
+  <div
+    class="caption-0-2-6 inherit-0-2-17"
+    style="font-weight: 500;"
+  />
+</DocumentFragment>
+`;

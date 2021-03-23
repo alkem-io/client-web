@@ -1,36 +1,33 @@
+import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
-import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
-import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
-import Avatar from '../components/core/Avatar';
-import AvatarContainer from '../components/core/AvatarContainer';
+import CommunitySection from '../components/Community/CommunitySection';
+import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { community, projects as projectTexts } from '../components/core/Typography.dummy.json';
+import { community as communityTexts, projects as projectTexts } from '../components/core/Typography.dummy.json';
+import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
+import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
 import { Challenge as ChallengeType, ContextInput, Organisation, User } from '../generated/graphql';
+import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import { createStyles } from '../hooks/useTheme';
+import { useUserContext } from '../hooks/useUserContext';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import { UserProvider } from './Ecoverse';
-import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../hooks/useTheme';
-import clsx from 'clsx';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
-import ContextEdit from '../components/ContextEdit';
-import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useUserContext } from '../hooks/useUserContext';
-import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -133,11 +130,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations, id, contributors } = challenge;
+  const { name, context, opportunities, leadOrganisations, id, community } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
-  const membersCount = contributors?.length || 0;
+  const membersCount = (community && community.members?.length) || 0;
 
   const projects = useMemo(
     () =>
@@ -276,30 +273,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       </Section>
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
-        <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
-          <SectionHeader text={community.header} />
-          <SubHeader text={community.subheader} />
-          <Body text={who}>
-            <UserProvider users={users}>
-              {populated => (
-                <>
-                  <AvatarContainer className="d-flex" title={'Active community members'}>
-                    {populated.map((u, i) => (
-                      <Avatar className={'d-inline-flex'} key={i} userId={u.id} src={u.profile?.avatar} />
-                    ))}
-                  </AvatarContainer>
-                  <div style={{ flexBasis: '100%' }}></div>
-                  {users.length - populated.length > 0 && (
-                    <Typography variant="h3" as="h3" color="positive">
-                      {`... + ${users.length - populated.length} other contributors`}
-                    </Typography>
-                  )}
-                </>
-              )}
-            </UserProvider>
-            <Button text="Explore and connect" as={Link} to="/community" />
-          </Body>
-        </Section>
+        <CommunitySection
+          title={communityTexts.header}
+          subTitle={communityTexts.subheader}
+          body={who}
+          users={users}
+          onExplore={() => history.push('/community')}
+        />
       </AuthenticationBackdrop>
       <Divider />
       <div ref={opportunityRef} />

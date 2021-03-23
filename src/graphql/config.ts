@@ -1,36 +1,48 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_CONFIG_STRING = `
+export const QUERY_CONFIG = gql`
   query config {
-    clientConfig {
-      msalConfig {
-        auth {
-          authority
-          clientId
-          redirectUri
+    configuration {
+      authentication {
+        enabled
+        providers {
+          name
+          label
+          icon
+          config {
+            __typename
+            ... on AadAuthProviderConfig {
+              msalConfig {
+                auth {
+                  authority
+                  clientId
+                  redirectUri
+                }
+                cache {
+                  cacheLocation
+                  storeAuthStateInCookie
+                }
+              }
+              apiConfig {
+                resourceScope
+              }
+              loginRequest {
+                scopes
+              }
+              tokenRequest {
+                scopes
+              }
+              silentRequest {
+                scopes
+              }
+            }
+            ... on DemoAuthProviderConfig {
+              issuer
+              tokenEndpoint
+            }
+          }
         }
-        cache {
-          cacheLocation
-          storeAuthStateInCookie
-        }
       }
-      apiConfig {
-        resourceScope
-      }
-      loginRequest {
-        scopes
-      }
-      tokenRequest {
-        scopes
-      }
-      silentRequest {
-        scopes
-      }
-      authEnabled
     }
   }
-`;
-
-export const QUERY_CONFIG = gql`
-  ${QUERY_CONFIG_STRING}
 `;

@@ -1,6 +1,6 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "repository": {
@@ -25,7 +25,7 @@
     "@types/yup": "^0.29.11",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
-    "bootstrap-icons": "^1.1.0",
+    "bootstrap-icons": "1.1.0",
     "clamp-js": "^0.7.0",
     "clsx": "^1.1.1",
     "cross-env": "^7.0.3",
@@ -47,11 +47,12 @@
     "react-jss": "^10.5.0",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.1",
+    "react-scripts": "^4.0.3",
     "react-visibility-sensor": "^5.1.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "typescript": "^4.1.3",
+    "typescript": "~4.1.3",
+    "uuid": "^8.3.2",
     "yup": "^0.31.1"
   },
   "scripts": {
@@ -61,14 +62,18 @@
     "build": "react-scripts build",
     "pretest": "NODE_ENV=test gulp buildConfiguration",
     "test": "react-scripts test",
+    "test:ui": "protractor conf.js",
+    "test:cov": "react-scripts test --coverage --watchAll=false",
+    "test:coverage": "react-scripts test --coverage && cat ./coverage/lcov.info | coveralls",
     "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --config codegen.yml",
+    "codegen": "cross-env VERBOSE=1 cross-env DEBUG=1 graphql-codegen --config codegen.yml",
     "postcodegen": "prettier --write src/generated/*.ts{,x}",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "webdriver-manager": "webdriver-manager"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -90,12 +95,21 @@
     "@graphql-codegen/typescript": "^1.20.0",
     "@graphql-codegen/typescript-operations": "^1.17.13",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
+    "@testing-library/react-hooks": "^5.1.0",
+    "@types/enzyme": "^3.10.8",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-redux": "^7.1.15",
+    "@types/uuid": "^8.3.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "coveralls": "^3.1.0",
+    "enzyme": "^3.11.0",
     "gulp": "^4.0.2",
+    "http-proxy-middleware": "^1.0.6",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "protractor": "^7.0.0",
+    "webdriver-manager": "^12.1.8"
   },
   "husky": {
     "hooks": {
@@ -106,5 +120,12 @@
     "src/generated/graphql.tsx",
     "**/node_modules/**",
     "**/build**"
-  ]
+  ],
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/graphql",
+      "<rootDir>/src/generated",
+      "<rootDir>/src/sentry"
+    ]
+  }
 }

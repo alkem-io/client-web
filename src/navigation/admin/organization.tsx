@@ -59,7 +59,7 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
 
-  const { data } = useOrganisationProfileInfoQuery({ variables: { id: Number(organizationId) } });
+  const { data } = useOrganisationProfileInfoQuery({ variables: { id: organizationId } });
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
     paths,
@@ -110,7 +110,7 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
 const OrganizationGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
-  const { data } = useOrganizationGroupsQuery({ variables: { id: Number(organizationId) } });
+  const { data } = useOrganizationGroupsQuery({ variables: { id: organizationId } });
 
   const groups = data?.organisation?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 

@@ -1,13 +1,9 @@
-import {
-  useCreateGroupOnChallengeMutation,
-  useCreateGroupOnEcoverseMutation,
-  useCreateGroupOnOpportunityMutation,
-  useCreateGroupOnOrganizationMutation,
-} from '../generated/graphql';
-import { QUERY_ECOVERSE_GROUPS_LIST, QUERY_CHALLENGE_GROUPS, QUERY_OPPORTUNITY_GROUPS } from '../graphql/admin';
+import { ApolloError } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import { useCreateGroupOnCommunityMutation, useCreateGroupOnOrganizationMutation } from '../generated/graphql';
+import { QUERY_ECOVERSE_GROUPS_LIST, QUERY_ORGANIZATION_GROUPS } from '../graphql/admin';
 
-export const useCreateGroup = (name: string, id?: string) => {
+export const useCreateGroup = (name: string, id: string) => {
   const history = useHistory();
 
   const redirectToCreatedGroup = groupId => {
@@ -15,50 +11,34 @@ export const useCreateGroup = (name: string, id?: string) => {
     history.replace(`${groupsPath}/${groupId}`);
   };
 
-  const [createGroupOnEcoverse] = useCreateGroupOnEcoverseMutation({
+  const handleError = (e: ApolloError) => {
+    console.error(e.message);
+  };
+
+  const [createGroupOnCommunity] = useCreateGroupOnCommunityMutation({
     variables: {
+      communityID: Number(id),
       groupName: name,
     },
     refetchQueries: [{ query: QUERY_ECOVERSE_GROUPS_LIST }],
     awaitRefetchQueries: true,
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnEcoverse.id),
-    onError: e => console.error(e.message),
+    onCompleted: data => redirectToCreatedGroup(data.createGroupOnCommunity.id),
+    onError: handleError,
   });
-  const [createGroupOnChallenge] = useCreateGroupOnChallengeMutation({
-    variables: {
-      groupName: name,
-      challengeID: Number(id),
-    },
-    refetchQueries: [{ query: QUERY_CHALLENGE_GROUPS, variables: { id: Number(id) } }],
-    awaitRefetchQueries: true,
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnChallenge.id),
-    onError: e => console.error(e.message),
-  });
-  const [createGroupOnOpportunity] = useCreateGroupOnOpportunityMutation({
-    variables: {
-      groupName: name,
-      opportunityID: Number(id),
-    },
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_GROUPS, variables: { id: Number(id) } }],
-    awaitRefetchQueries: true,
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOpportunity.id),
-    onError: e => console.error(e.message),
-  });
+
   const [createGroupOnOrganisation] = useCreateGroupOnOrganizationMutation({
     variables: {
       groupName: name,
       orgID: Number(id),
     },
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_GROUPS, variables: { id: Number(id) } }],
+    refetchQueries: [{ query: QUERY_ORGANIZATION_GROUPS, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganisation.id),
-    onError: e => console.error(e.message),
+    onError: handleError,
   });
 
   return {
-    createEcoverseGroup: createGroupOnEcoverse,
-    createChallengeGroup: createGroupOnChallenge,
-    createOpportunityGroup: createGroupOnOpportunity,
+    createCommunityGroup: createGroupOnCommunity,
     createOrganizationGroup: createGroupOnOrganisation,
   };
 };

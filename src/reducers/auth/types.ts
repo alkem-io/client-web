@@ -1,4 +1,4 @@
-import { AccountInfo, AuthenticationResult, AuthError } from '@azure/msal-browser';
+import { AccountInfo, AuthError } from '@azure/msal-browser';
 
 export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
 export const UPDATE_ERROR = 'UPDATE_ERROR';
@@ -12,7 +12,8 @@ export type AuthStatus =
   | 'refreshing'
   | 'done'
   | 'signingout'
-  | 'refreshRequested';
+  | 'refreshRequested'
+  | 'userRegistration';
 export interface UpdateAccountAction {
   type: typeof UPDATE_ACCOUNT;
   payload: AccountInfo | null;
@@ -25,7 +26,7 @@ export interface UpdateErrorAction {
 
 export interface UpdateToken {
   type: typeof UPDATE_TOKEN;
-  payload: AuthenticationResult | null | undefined;
+  payload?: string;
 }
 export interface UpdateStatus {
   type: typeof UPDATE_STATUS;
