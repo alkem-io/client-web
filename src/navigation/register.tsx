@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { RegisterPage } from '../components/RegisterPage';
+import { RegisterPage } from '../pages/RegisterPage';
 
 export const RegisterRoute: FC = () => {
   return <RegisterPage />;

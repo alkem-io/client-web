@@ -69,12 +69,12 @@ export const useDemoAuth = () => {
 
   const register = useCallback(
     async (
-      name: string,
       firstName: string,
       lastName: string,
       email: string,
       password: string,
-      confirmPassword: string
+      confirmPassword: string,
+      termAndConditions: boolean
     ) => {
       if (!demoAuthProvider) return;
       dispatch(updateStatus('userRegistration'));
@@ -84,6 +84,7 @@ export const useDemoAuth = () => {
           email,
           password,
           confirmPassword,
+          termAndConditions,
         },
         {
           responseType: 'json',
@@ -96,7 +97,7 @@ export const useDemoAuth = () => {
       await createUser({
         variables: {
           user: {
-            name,
+            name: `${firstName} ${lastName}`.trim(),
             firstName,
             lastName,
             email,

@@ -118,36 +118,38 @@ export type MemberOfProps = {
 
 export const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities }) => {
   const styles = useMemberOfStyles();
-
   return (
     <Card primaryTextProps={{ text: 'Member of' }} className={'mt-2'}>
-      {groups.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
-            {x}
-          </Typography>
-          <div style={{ flexGrow: 1 }} />
-          <Tag text="group" color="primary" />
-        </div>
-      ))}
-      {challenges.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
-            {x}
-          </Typography>
-          <div style={{ flexGrow: 1 }} />
-          <Tag text="challenge" color="neutral" />
-        </div>
-      ))}
-      {opportunities.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
-            {x}
-          </Typography>
-          <div style={{ flexGrow: 1 }} />
-          <Tag text="opportunity" color="primary" />
-        </div>
-      ))}
+      {groups &&
+        groups?.map((x, i) => (
+          <div key={i} className={styles.listDetail}>
+            <Typography as="span" className={styles.noPadding}>
+              {x}
+            </Typography>
+            <div style={{ flexGrow: 1 }} />
+            <Tag text="group" color="primary" />
+          </div>
+        ))}
+      {challenges &&
+        challenges.map((x, i) => (
+          <div key={i} className={styles.listDetail}>
+            <Typography as="span" className={styles.noPadding}>
+              {x}
+            </Typography>
+            <div style={{ flexGrow: 1 }} />
+            <Tag text="challenge" color="neutral" />
+          </div>
+        ))}
+      {opportunities &&
+        opportunities.map((x, i) => (
+          <div key={i} className={styles.listDetail}>
+            <Typography as="span" className={styles.noPadding}>
+              {x}
+            </Typography>
+            <div style={{ flexGrow: 1 }} />
+            <Tag text="opportunity" color="primary" />
+          </div>
+        ))}
     </Card>
   );
 };
@@ -165,12 +167,14 @@ export const UserProfile: FC = () => {
   const getArrayOfNames = arr => arr?.map(el => el?.name);
 
   const references = user?.profile?.references || [];
+
   const groups =
     user?.memberof?.communities
       .flatMap(
         c => c && c.groups && c?.groups.map(x => (c.type !== CommunityType.ECOVERSE ? `${x.name} (${c.name})` : x.name))
       )
       .filter((x): x is string => x !== undefined) || [];
+
   const challenges = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
   const opportunities = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
 
