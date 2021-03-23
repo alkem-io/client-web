@@ -13,11 +13,11 @@ export const WelcomePage: FC<WelcomePageProps> = () => {
   return (
     <Container>
       <div>
-        <Typography variant={'h2'}>Welcome to the '{ecoverse?.name}' ecoverse!</Typography>
+        <Typography variant={'h2'}>Welcome to the '{ecoverse?.ecoverse?.name}' ecoverse!</Typography>
 
-        <Typography variant={'h3'}>{ecoverse?.context.tagline}</Typography>
+        <Typography variant={'h3'}>{ecoverse?.ecoverse?.context?.tagline}</Typography>
 
-        <Typography variant={'h5'}>{ecoverse?.context.background}</Typography>
+        <Typography variant={'h5'}>{ecoverse?.ecoverse?.context?.background}</Typography>
 
         <Typography>
           In order to get the most value please:

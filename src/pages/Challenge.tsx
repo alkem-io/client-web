@@ -16,7 +16,7 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { community, projects as projectTexts } from '../components/core/Typography.dummy.json';
+import { community as communityTexts, projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
@@ -130,11 +130,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations, id, contributors } = challenge;
+  const { name, context, opportunities, leadOrganisations, id, community } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
-  const membersCount = contributors?.length || 0;
+  const membersCount = (community && community.members?.length) || 0;
 
   const projects = useMemo(
     () =>
@@ -274,8 +274,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
         <CommunitySection
-          title={community.header}
-          subTitle={community.subheader}
+          title={communityTexts.header}
+          subTitle={communityTexts.subheader}
           body={who}
           users={users}
           onExplore={() => history.push('/community')}

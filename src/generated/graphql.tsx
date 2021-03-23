@@ -221,18 +221,60 @@ export type ContextInput = {
 
 export type Ecoverse = {
   __typename?: 'Ecoverse';
+  /** All applications to join */
+  application: Application;
+  /** A particular Challenge, either by its ID or textID */
+  challenge: Challenge;
   /** The challenges for the ecoverse. */
   challenges?: Maybe<Array<Challenge>>;
   /** The community for the ecoverse. */
   community?: Maybe<Community>;
   /** The shared understanding for the Ecoverse */
   context?: Maybe<Context>;
+  /** The user group with the specified id anywhere in the ecoverse */
+  group: UserGroup;
+  /** The user groups on this Ecoverse */
+  groups: Array<UserGroup>;
+  /** All groups on this Ecoverse that have the provided tag */
+  groupsWithTag: Array<UserGroup>;
   /** The organisation that hosts this Ecoverse instance */
   host?: Maybe<Organisation>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  /** All opportunities within the ecoverse */
+  opportunities: Array<Opportunity>;
+  /** A particular opportunitiy, identified by the ID or textID */
+  opportunity: Opportunity;
+  /** A particular Project, identified by the ID */
+  project: Project;
+  /** All projects within this ecoverse */
+  projects: Array<Project>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
+};
+
+export type EcoverseApplicationArgs = {
+  ID: Scalars['Float'];
+};
+
+export type EcoverseChallengeArgs = {
+  ID: Scalars['String'];
+};
+
+export type EcoverseGroupArgs = {
+  ID: Scalars['Float'];
+};
+
+export type EcoverseGroupsWithTagArgs = {
+  tag: Scalars['String'];
+};
+
+export type EcoverseOpportunityArgs = {
+  ID: Scalars['String'];
+};
+
+export type EcoverseProjectArgs = {
+  ID: Scalars['Float'];
 };
 
 export type EcoverseInput = {
@@ -663,12 +705,16 @@ export type Organisation = {
   name: Scalars['String'];
   /** The profile for this organisation. */
   profile: Profile;
+  /** A short text identifier for this Organisation */
+  textID: Scalars['String'];
 };
 
 export type OrganisationInput = {
   /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
   profileData?: Maybe<ProfileInput>;
+  /** The unique text based ID for this organisation */
+  textID?: Maybe<Scalars['String']>;
 };
 
 export type Profile = {
@@ -715,40 +761,18 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** All applications to join */
-  application: Application;
-  /** All applications to join */
-  applications: Array<Application>;
-  /** A particular Challenge, either by its ID or textID */
-  challenge: Challenge;
-  /** The Challenges on this platform */
-  challenges: Array<Challenge>;
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
   /** The ecoverse. */
   ecoverse: Ecoverse;
-  /** The user group with the specified id anywhere in the ecoverse */
-  group: UserGroup;
-  /** The user groups on this platform */
-  groups: Array<UserGroup>;
-  /** All groups that have the provided tag */
-  groupsWithTag: Array<UserGroup>;
   /** The currently logged in user */
   me: User;
   /** Cherrytwist Services Metadata */
   metadata: Metadata;
-  /** All opportunities within the ecoverse */
-  opportunities: Array<Opportunity>;
-  /** A particular opportunitiy, identified by the ID or textID */
-  opportunity: Opportunity;
   /** A particular Organisation */
   organisation: Organisation;
   /** The Organisations on this platform */
   organisations: Array<Organisation>;
-  /** A particular Project, identified by the ID */
-  project: Project;
-  /** All projects within this ecoverse */
-  projects: Array<Project>;
   /** Search the ecoverse for terms supplied */
   search: Array<SearchResultEntry>;
   /** A particular user, identified by the ID or by email */
@@ -759,32 +783,8 @@ export type Query = {
   usersById: Array<User>;
 };
 
-export type QueryApplicationArgs = {
-  ID: Scalars['Float'];
-};
-
-export type QueryChallengeArgs = {
-  ID: Scalars['String'];
-};
-
-export type QueryGroupArgs = {
-  ID: Scalars['Float'];
-};
-
-export type QueryGroupsWithTagArgs = {
-  tag: Scalars['String'];
-};
-
-export type QueryOpportunityArgs = {
-  ID: Scalars['String'];
-};
-
 export type QueryOrganisationArgs = {
   ID: Scalars['String'];
-};
-
-export type QueryProjectArgs = {
-  ID: Scalars['Float'];
 };
 
 export type QuerySearchArgs = {
@@ -1073,9 +1073,11 @@ export type GroupMembersQueryVariables = Exact<{
 }>;
 
 export type GroupMembersQuery = { __typename?: 'Query' } & {
-  group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-      members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+        members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+      };
+  };
 };
 
 export type RemoveUserFromGroupMutationVariables = Exact<{
@@ -1107,13 +1109,17 @@ export type AddUserToGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation
 export type EcoverseChallengesListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseChallengesListQuery = { __typename?: 'Query' } & {
-  challenges: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenges?: Maybe<Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>>;
+  };
 };
 
 export type EcoverseGroupsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
-  groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    groups: Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>;
+  };
 };
 
 export type OrganizationNameQueryVariables = Exact<{
@@ -1135,7 +1141,7 @@ export type ChallengeNameQueryVariables = Exact<{
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+  ecoverse: { __typename?: 'Ecoverse' } & { challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> };
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
@@ -1143,12 +1149,14 @@ export type ChallengeGroupsQueryVariables = Exact<{
 }>;
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & {
-    community?: Maybe<
-      { __typename?: 'Community' } & {
-        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-      }
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & {
+      community?: Maybe<
+        { __typename?: 'Community' } & {
+          groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+        }
+      >;
+    };
   };
 };
 
@@ -1167,8 +1175,10 @@ export type ChallengeOpportunitiesQueryVariables = Exact<{
 }>;
 
 export type ChallengeOpportunitiesQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & {
-    opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & {
+      opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>>>;
+    };
   };
 };
 
@@ -1177,12 +1187,14 @@ export type OpportunityGroupsQueryVariables = Exact<{
 }>;
 
 export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    community?: Maybe<
-      { __typename?: 'Community' } & {
-        groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-      }
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      community?: Maybe<
+        { __typename?: 'Community' } & {
+          groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+        }
+      >;
+    };
   };
 };
 
@@ -1191,7 +1203,9 @@ export type OpportunityNameQueryVariables = Exact<{
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+  };
 };
 
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
@@ -1229,15 +1243,17 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 }>;
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<
-              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-            >;
-          }
-      >;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+              references?: Maybe<
+                Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+              >;
+            }
+        >;
+      };
+  };
 };
 
 export type CreateOpportunityMutationVariables = Exact<{
@@ -1261,15 +1277,17 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<
-              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-            >;
-          }
-      >;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+              references?: Maybe<
+                Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+              >;
+            }
+        >;
+      };
+  };
 };
 
 export type CreateOrganizationMutationVariables = Exact<{
@@ -1301,12 +1319,12 @@ export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type CreateGroupOnEcoverseMutationVariables = Exact<{
+export type CreateGroupOnCommunityMutationVariables = Exact<{
   communityID: Scalars['Float'];
   groupName: Scalars['String'];
 }>;
 
-export type CreateGroupOnEcoverseMutation = { __typename?: 'Mutation' } & {
+export type CreateGroupOnCommunityMutation = { __typename?: 'Mutation' } & {
   createGroupOnCommunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
@@ -1350,46 +1368,40 @@ export type ChallengeProfileQueryVariables = Exact<{
 }>;
 
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<
-              Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-            >;
-          }
-      >;
-      community?: Maybe<
-        { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
-      >;
-      tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
-      opportunities?: Maybe<
-        Array<
-          { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
-              context?: Maybe<
-                { __typename?: 'Context' } & {
-                  references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-                }
-              >;
-              projects?: Maybe<
-                Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+              references?: Maybe<
+                Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
               >;
             }
-        >
-      >;
-      leadOrganisations: Array<
-        { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
-            profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
-          }
-      >;
-    };
-};
-
-export type UpdateChallengeContextMutationVariables = Exact<{
-  challengeData: UpdateChallengeInput;
-}>;
-
-export type UpdateChallengeContextMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+        >;
+        community?: Maybe<
+          { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
+        >;
+        tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+        opportunities?: Maybe<
+          Array<
+            { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+                context?: Maybe<
+                  { __typename?: 'Context' } & {
+                    references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+                  }
+                >;
+                projects?: Maybe<
+                  Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
+                >;
+              }
+          >
+        >;
+        leadOrganisations: Array<
+          { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+              profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
+            }
+        >;
+      };
+  };
 };
 
 export type ChallengeMembersQueryVariables = Exact<{
@@ -1397,14 +1409,16 @@ export type ChallengeMembersQueryVariables = Exact<{
 }>;
 
 export type ChallengeMembersQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & {
-    community?: Maybe<
-      { __typename?: 'Community' } & {
-        members?: Maybe<
-          Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
-        >;
-      }
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & {
+      community?: Maybe<
+        { __typename?: 'Community' } & {
+          members?: Maybe<
+            Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
+          >;
+        }
+      >;
+    };
   };
 };
 
@@ -1431,19 +1445,21 @@ export type GroupCardQueryVariables = Exact<{
 }>;
 
 export type GroupCardQuery = { __typename?: 'Query' } & {
-  group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-      parent?: Maybe<
-        | ({ __typename: 'Community' } & Pick<Community, 'name'>)
-        | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
-      >;
-      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
-      profile?: Maybe<
-        { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-          }
-      >;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+        parent?: Maybe<
+          | ({ __typename: 'Community' } & Pick<Community, 'name'>)
+          | ({ __typename: 'Organisation' } & Pick<Organisation, 'name'>)
+        >;
+        members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
+        profile?: Maybe<
+          { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+              tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+            }
+        >;
+      };
+  };
 };
 
 export type OrganizationCardQueryVariables = Exact<{
@@ -1492,7 +1508,7 @@ export type ConfigQuery = { __typename?: 'Query' } & {
 export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'name'> & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -1504,43 +1520,55 @@ export type EcoverseInfoQuery = { __typename?: 'Query' } & {
 export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChallengesQuery = { __typename?: 'Query' } & {
-  challenges: Array<
-    { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
-        context?: Maybe<
-          { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
-              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-            }
-        >;
-      }
-  >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenges?: Maybe<
+      Array<
+        { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
+            context?: Maybe<
+              { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                  references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+                }
+            >;
+          }
+      >
+    >;
+  };
 };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProjectsQuery = { __typename?: 'Query' } & {
-  projects: Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    projects: Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>;
+  };
 };
 
 export type ProjectsChainHistoryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProjectsChainHistoryQuery = { __typename?: 'Query' } & {
-  challenges: Array<
-    { __typename?: 'Challenge' } & Pick<Challenge, 'name' | 'textID'> & {
-        opportunities?: Maybe<
-          Array<
-            { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID'> & {
-                projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'textID'>>>;
-              }
-          >
-        >;
-      }
-  >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenges?: Maybe<
+      Array<
+        { __typename?: 'Challenge' } & Pick<Challenge, 'name' | 'textID'> & {
+            opportunities?: Maybe<
+              Array<
+                { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID'> & {
+                    projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'textID'>>>;
+                  }
+              >
+            >;
+          }
+      >
+    >;
+  };
 };
 
 export type OpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OpportunitiesQuery = { __typename?: 'Query' } & {
-  opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID'>>;
+  };
 };
 
 export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
@@ -1562,45 +1590,47 @@ export type OpportunityProfileQueryVariables = Exact<{
 }>;
 
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
-      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-          }
-      >;
-      community?: Maybe<
-        { __typename?: 'Community' } & {
-          groups?: Maybe<
-            Array<
-              { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-                  members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
-                }
-            >
-          >;
-        }
-      >;
-      relations?: Maybe<
-        Array<
-          { __typename?: 'Relation' } & Pick<
-            Relation,
-            'id' | 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'
-          >
-        >
-      >;
-      actorGroups?: Maybe<
-        Array<
-          { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
-              actors?: Maybe<
-                Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
-              >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
+        aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
+              references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
             }
-        >
-      >;
-      projects?: Maybe<
-        Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
-      >;
-    };
+        >;
+        community?: Maybe<
+          { __typename?: 'Community' } & {
+            groups?: Maybe<
+              Array<
+                { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+                    members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
+                  }
+              >
+            >;
+          }
+        >;
+        relations?: Maybe<
+          Array<
+            { __typename?: 'Relation' } & Pick<
+              Relation,
+              'id' | 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'
+            >
+          >
+        >;
+        actorGroups?: Maybe<
+          Array<
+            { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+                actors?: Maybe<
+                  Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
+                >;
+              }
+          >
+        >;
+        projects?: Maybe<
+          Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>>
+        >;
+      };
+  };
 };
 
 export type CreateRelationMutationVariables = Exact<{
@@ -1617,15 +1647,17 @@ export type RelationsListQueryVariables = Exact<{
 }>;
 
 export type RelationsListQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    relations?: Maybe<
-      Array<
-        { __typename?: 'Relation' } & Pick<
-          Relation,
-          'id' | 'type' | 'actorName' | 'actorType' | 'actorRole' | 'description'
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      relations?: Maybe<
+        Array<
+          { __typename?: 'Relation' } & Pick<
+            Relation,
+            'id' | 'type' | 'actorName' | 'actorType' | 'actorRole' | 'description'
+          >
         >
-      >
-    >;
+      >;
+    };
   };
 };
 
@@ -1643,16 +1675,18 @@ export type OpportunityActorGroupsQueryVariables = Exact<{
 }>;
 
 export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    actorGroups?: Maybe<
-      Array<
-        { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
-            actors?: Maybe<
-              Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
-            >;
-          }
-      >
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      actorGroups?: Maybe<
+        Array<
+          { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+              actors?: Maybe<
+                Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
+              >;
+            }
+        >
+      >;
+    };
   };
 };
 
@@ -1682,12 +1716,14 @@ export type QueryOpportunityRelationsQueryVariables = Exact<{
 }>;
 
 export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    relations?: Maybe<
-      Array<
-        { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
-      >
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      relations?: Maybe<
+        Array<
+          { __typename?: 'Relation' } & Pick<Relation, 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'>
+        >
+      >;
+    };
   };
 };
 
@@ -1705,8 +1741,10 @@ export type OpportunityAspectsQueryVariables = Exact<{
 }>;
 
 export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+    };
   };
 };
 
@@ -1773,7 +1811,7 @@ export type ProjectProfileQueryVariables = Exact<{
 }>;
 
 export type ProjectProfileQuery = { __typename?: 'Query' } & {
-  project: { __typename?: 'Project' } & ProjectDetailsFragment;
+  ecoverse: { __typename?: 'Ecoverse' } & { project: { __typename?: 'Project' } & ProjectDetailsFragment };
 };
 
 export type CreateProjectMutationVariables = Exact<{
@@ -1800,7 +1838,11 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
 export type UserMembersFragment = { __typename?: 'User' } & {
   memberof?: Maybe<
     { __typename?: 'MemberOf' } & {
-      communities: Array<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'>>;
+      communities: Array<
+        { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
+            groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
+          }
+      >;
       organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
     }
   >;
@@ -1829,10 +1871,12 @@ export type ChallengeUserIdsQueryVariables = Exact<{
 }>;
 
 export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
-  challenge: { __typename?: 'Challenge' } & {
-    community?: Maybe<
-      { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    challenge: { __typename?: 'Challenge' } & {
+      community?: Maybe<
+        { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
+      >;
+    };
   };
 };
 
@@ -1841,10 +1885,12 @@ export type OpportunityUserIdsQueryVariables = Exact<{
 }>;
 
 export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
-  opportunity: { __typename?: 'Opportunity' } & {
-    community?: Maybe<
-      { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
-    >;
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    opportunity: { __typename?: 'Opportunity' } & {
+      community?: Maybe<
+        { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
+      >;
+    };
   };
 };
 
@@ -1966,6 +2012,9 @@ export const UserMembersFragmentDoc = gql`
         id
         name
         type
+        groups {
+          name
+        }
       }
       organisations {
         id
@@ -2135,11 +2184,13 @@ export type EcoverseLazyQueryHookResult = ReturnType<typeof useEcoverseLazyQuery
 export type EcoverseQueryResult = Apollo.QueryResult<EcoverseQuery, EcoverseQueryVariables>;
 export const GroupMembersDocument = gql`
   query groupMembers($id: Float!) {
-    group(ID: $id) {
-      id
-      name
-      members {
-        ...GroupMembers
+    ecoverse {
+      group(ID: $id) {
+        id
+        name
+        members {
+          ...GroupMembers
+        }
       }
     }
   }
@@ -2300,9 +2351,11 @@ export type AddUserToGroupMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const EcoverseChallengesListDocument = gql`
   query ecoverseChallengesList {
-    challenges {
-      id
-      name
+    ecoverse {
+      challenges {
+        id
+        name
+      }
     }
   }
 `;
@@ -2346,9 +2399,11 @@ export type EcoverseChallengesListQueryResult = Apollo.QueryResult<
 >;
 export const EcoverseGroupsListDocument = gql`
   query ecoverseGroupsList {
-    groups {
-      id
-      name
+    ecoverse {
+      groups {
+        id
+        name
+      }
     }
   }
 `;
@@ -2475,9 +2530,11 @@ export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganiza
 export type OrganizationsListQueryResult = Apollo.QueryResult<OrganizationsListQuery, OrganizationsListQueryVariables>;
 export const ChallengeNameDocument = gql`
   query challengeName($id: String!) {
-    challenge(ID: $id) {
-      id
-      name
+    ecoverse {
+      challenge(ID: $id) {
+        id
+        name
+      }
     }
   }
 `;
@@ -2513,11 +2570,13 @@ export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNam
 export type ChallengeNameQueryResult = Apollo.QueryResult<ChallengeNameQuery, ChallengeNameQueryVariables>;
 export const ChallengeGroupsDocument = gql`
   query challengeGroups($id: String!) {
-    challenge(ID: $id) {
-      community {
-        groups {
-          id
-          name
+    ecoverse {
+      challenge(ID: $id) {
+        community {
+          groups {
+            id
+            name
+          }
         }
       }
     }
@@ -2604,10 +2663,12 @@ export type OrganizationGroupsQueryResult = Apollo.QueryResult<
 >;
 export const ChallengeOpportunitiesDocument = gql`
   query challengeOpportunities($id: String!) {
-    challenge(ID: $id) {
-      opportunities {
-        id
-        name
+    ecoverse {
+      challenge(ID: $id) {
+        opportunities {
+          id
+          name
+        }
       }
     }
   }
@@ -2653,11 +2714,13 @@ export type ChallengeOpportunitiesQueryResult = Apollo.QueryResult<
 >;
 export const OpportunityGroupsDocument = gql`
   query opportunityGroups($id: String!) {
-    opportunity(ID: $id) {
-      community {
-        groups {
-          id
-          name
+    ecoverse {
+      opportunity(ID: $id) {
+        community {
+          groups {
+            id
+            name
+          }
         }
       }
     }
@@ -2701,9 +2764,11 @@ export type OpportunityGroupsLazyQueryHookResult = ReturnType<typeof useOpportun
 export type OpportunityGroupsQueryResult = Apollo.QueryResult<OpportunityGroupsQuery, OpportunityGroupsQueryVariables>;
 export const OpportunityNameDocument = gql`
   query opportunityName($id: String!) {
-    opportunity(ID: $id) {
-      id
-      name
+    ecoverse {
+      opportunity(ID: $id) {
+        id
+        name
+      }
     }
   }
 `;
@@ -2870,21 +2935,23 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const ChallengeProfileInfoDocument = gql`
   query challengeProfileInfo($id: String!) {
-    challenge(ID: $id) {
-      id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
+    ecoverse {
+      challenge(ID: $id) {
+        id
+        textID
+        name
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -3019,21 +3086,23 @@ export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const OpportunityProfileInfoDocument = gql`
   query opportunityProfileInfo($id: String!) {
-    opportunity(ID: $id) {
-      id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
+    ecoverse {
+      opportunity(ID: $id) {
+        id
+        textID
+        name
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -3228,50 +3297,50 @@ export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
   OrganisationProfileInfoQuery,
   OrganisationProfileInfoQueryVariables
 >;
-export const CreateGroupOnEcoverseDocument = gql`
-  mutation createGroupOnEcoverse($communityID: Float!, $groupName: String!) {
+export const CreateGroupOnCommunityDocument = gql`
+  mutation createGroupOnCommunity($communityID: Float!, $groupName: String!) {
     createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
       id
       name
     }
   }
 `;
-export type CreateGroupOnEcoverseMutationFn = Apollo.MutationFunction<
-  CreateGroupOnEcoverseMutation,
-  CreateGroupOnEcoverseMutationVariables
+export type CreateGroupOnCommunityMutationFn = Apollo.MutationFunction<
+  CreateGroupOnCommunityMutation,
+  CreateGroupOnCommunityMutationVariables
 >;
 
 /**
- * __useCreateGroupOnEcoverseMutation__
+ * __useCreateGroupOnCommunityMutation__
  *
- * To run a mutation, you first call `useCreateGroupOnEcoverseMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateGroupOnEcoverseMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateGroupOnCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupOnCommunityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createGroupOnEcoverseMutation, { data, loading, error }] = useCreateGroupOnEcoverseMutation({
+ * const [createGroupOnCommunityMutation, { data, loading, error }] = useCreateGroupOnCommunityMutation({
  *   variables: {
  *      communityID: // value for 'communityID'
  *      groupName: // value for 'groupName'
  *   },
  * });
  */
-export function useCreateGroupOnEcoverseMutation(
-  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>
+export function useCreateGroupOnCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGroupOnCommunityMutation, CreateGroupOnCommunityMutationVariables>
 ) {
-  return Apollo.useMutation<CreateGroupOnEcoverseMutation, CreateGroupOnEcoverseMutationVariables>(
-    CreateGroupOnEcoverseDocument,
+  return Apollo.useMutation<CreateGroupOnCommunityMutation, CreateGroupOnCommunityMutationVariables>(
+    CreateGroupOnCommunityDocument,
     baseOptions
   );
 }
-export type CreateGroupOnEcoverseMutationHookResult = ReturnType<typeof useCreateGroupOnEcoverseMutation>;
-export type CreateGroupOnEcoverseMutationResult = Apollo.MutationResult<CreateGroupOnEcoverseMutation>;
-export type CreateGroupOnEcoverseMutationOptions = Apollo.BaseMutationOptions<
-  CreateGroupOnEcoverseMutation,
-  CreateGroupOnEcoverseMutationVariables
+export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
+export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<CreateGroupOnCommunityMutation>;
+export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
+  CreateGroupOnCommunityMutation,
+  CreateGroupOnCommunityMutationVariables
 >;
 export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
@@ -3433,56 +3502,58 @@ export type RemoveUserGroupMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const ChallengeProfileDocument = gql`
   query challengeProfile($id: String!) {
-    challenge(ID: $id) {
-      id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
-        }
-      }
-      community {
-        members {
-          name
-        }
-      }
-      tagset {
-        name
-        tags
-      }
-      opportunities {
+    ecoverse {
+      challenge(ID: $id) {
         id
-        name
         textID
+        name
         context {
+          tagline
+          background
+          vision
+          impact
+          who
           references {
+            id
             name
             uri
+            description
           }
         }
-        projects {
-          id
-          textID
-          name
-          description
-          state
+        community {
+          members {
+            name
+          }
         }
-      }
-      leadOrganisations {
-        id
-        name
-        profile {
+        tagset {
+          name
+          tags
+        }
+        opportunities {
           id
-          avatar
+          name
+          textID
+          context {
+            references {
+              name
+              uri
+            }
+          }
+          projects {
+            id
+            textID
+            name
+            description
+            state
+          }
+        }
+        leadOrganisations {
+          id
+          name
+          profile {
+            id
+            avatar
+          }
         }
       }
     }
@@ -3521,60 +3592,18 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
-export const UpdateChallengeContextDocument = gql`
-  mutation updateChallengeContext($challengeData: UpdateChallengeInput!) {
-    updateChallenge(challengeData: $challengeData) {
-      id
-      name
-    }
-  }
-`;
-export type UpdateChallengeContextMutationFn = Apollo.MutationFunction<
-  UpdateChallengeContextMutation,
-  UpdateChallengeContextMutationVariables
->;
-
-/**
- * __useUpdateChallengeContextMutation__
- *
- * To run a mutation, you first call `useUpdateChallengeContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateChallengeContextMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateChallengeContextMutation, { data, loading, error }] = useUpdateChallengeContextMutation({
- *   variables: {
- *      challengeData: // value for 'challengeData'
- *   },
- * });
- */
-export function useUpdateChallengeContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>
-) {
-  return Apollo.useMutation<UpdateChallengeContextMutation, UpdateChallengeContextMutationVariables>(
-    UpdateChallengeContextDocument,
-    baseOptions
-  );
-}
-export type UpdateChallengeContextMutationHookResult = ReturnType<typeof useUpdateChallengeContextMutation>;
-export type UpdateChallengeContextMutationResult = Apollo.MutationResult<UpdateChallengeContextMutation>;
-export type UpdateChallengeContextMutationOptions = Apollo.BaseMutationOptions<
-  UpdateChallengeContextMutation,
-  UpdateChallengeContextMutationVariables
->;
 export const ChallengeMembersDocument = gql`
   query challengeMembers($challengeID: String!) {
-    challenge(ID: $challengeID) {
-      community {
-        members {
-          id
-          name
-          firstName
-          lastName
-          email
+    ecoverse {
+      challenge(ID: $challengeID) {
+        community {
+          members {
+            id
+            name
+            firstName
+            lastName
+            email
+          }
         }
       }
     }
@@ -3663,33 +3692,35 @@ export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const GroupCardDocument = gql`
   query groupCard($id: Float!) {
-    group(ID: $id) {
-      __typename
-      name
-      parent {
+    ecoverse {
+      group(ID: $id) {
         __typename
-        ... on Community {
-          name
-        }
-        ... on Organisation {
-          name
-        }
-      }
-      members {
-        id
         name
-      }
-      profile {
-        id
-        avatar
-        description
-        references {
-          name
-          description
+        parent {
+          __typename
+          ... on Community {
+            name
+          }
+          ... on Organisation {
+            name
+          }
         }
-        tagsets {
+        members {
+          id
           name
-          tags
+        }
+        profile {
+          id
+          avatar
+          description
+          references {
+            name
+            description
+          }
+          tagsets {
+            name
+            tags
+          }
         }
       }
     }
@@ -3849,6 +3880,7 @@ export type ConfigQueryResult = Apollo.QueryResult<ConfigQuery, ConfigQueryVaria
 export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
     ecoverse {
+      id
       name
       context {
         tagline
@@ -3894,15 +3926,17 @@ export type EcoverseInfoLazyQueryHookResult = ReturnType<typeof useEcoverseInfoL
 export type EcoverseInfoQueryResult = Apollo.QueryResult<EcoverseInfoQuery, EcoverseInfoQueryVariables>;
 export const ChallengesDocument = gql`
   query challenges {
-    challenges {
-      id
-      name
-      textID
-      context {
-        tagline
-        references {
-          name
-          uri
+    ecoverse {
+      challenges {
+        id
+        name
+        textID
+        context {
+          tagline
+          references {
+            name
+            uri
+          }
         }
       }
     }
@@ -3937,12 +3971,14 @@ export type ChallengesLazyQueryHookResult = ReturnType<typeof useChallengesLazyQ
 export type ChallengesQueryResult = Apollo.QueryResult<ChallengesQuery, ChallengesQueryVariables>;
 export const ProjectsDocument = gql`
   query projects {
-    projects {
-      id
-      textID
-      name
-      description
-      state
+    ecoverse {
+      projects {
+        id
+        textID
+        name
+        description
+        state
+      }
     }
   }
 `;
@@ -3973,13 +4009,15 @@ export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery
 export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
 export const ProjectsChainHistoryDocument = gql`
   query projectsChainHistory {
-    challenges {
-      name
-      textID
-      opportunities {
+    ecoverse {
+      challenges {
+        name
         textID
-        projects {
+        opportunities {
           textID
+          projects {
+            textID
+          }
         }
       }
     }
@@ -4025,9 +4063,11 @@ export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
 >;
 export const OpportunitiesDocument = gql`
   query opportunities {
-    opportunities {
-      id
-      textID
+    ecoverse {
+      opportunities {
+        id
+        textID
+      }
     }
   }
 `;
@@ -4115,63 +4155,65 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
 >;
 export const OpportunityProfileDocument = gql`
   query opportunityProfile($id: String!) {
-    opportunity(ID: $id) {
-      id
-      textID
-      name
-      state
-      aspects {
-        id
-        title
-        framing
-        explanation
-      }
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-        }
-      }
-      community {
-        groups {
-          name
-          members {
-            name
-          }
-        }
-      }
-      relations {
-        id
-        actorRole
-        actorName
-        actorType
-        description
-        type
-      }
-      actorGroups {
-        id
-        name
-        description
-        actors {
-          id
-          name
-          description
-          value
-          impact
-        }
-      }
-      projects {
+    ecoverse {
+      opportunity(ID: $id) {
         id
         textID
         name
-        description
         state
+        aspects {
+          id
+          title
+          framing
+          explanation
+        }
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+          }
+        }
+        community {
+          groups {
+            name
+            members {
+              name
+            }
+          }
+        }
+        relations {
+          id
+          actorRole
+          actorName
+          actorType
+          description
+          type
+        }
+        actorGroups {
+          id
+          name
+          description
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
+        }
+        projects {
+          id
+          textID
+          name
+          description
+          state
+        }
       }
     }
   }
@@ -4258,14 +4300,16 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RelationsListDocument = gql`
   query relationsList($id: String!) {
-    opportunity(ID: $id) {
-      relations {
-        id
-        type
-        actorName
-        actorType
-        actorRole
-        description
+    ecoverse {
+      opportunity(ID: $id) {
+        relations {
+          id
+          type
+          actorName
+          actorType
+          actorRole
+          description
+        }
       }
     }
   }
@@ -4337,17 +4381,19 @@ export type CreateActorMutationResult = Apollo.MutationResult<CreateActorMutatio
 export type CreateActorMutationOptions = Apollo.BaseMutationOptions<CreateActorMutation, CreateActorMutationVariables>;
 export const OpportunityActorGroupsDocument = gql`
   query opportunityActorGroups($id: String!) {
-    opportunity(ID: $id) {
-      actorGroups {
-        id
-        name
-        description
-        actors {
+    ecoverse {
+      opportunity(ID: $id) {
+        actorGroups {
           id
           name
           description
-          value
-          impact
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
         }
       }
     }
@@ -4499,13 +4545,15 @@ export type RemoveRelationMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const QueryOpportunityRelationsDocument = gql`
   query queryOpportunityRelations($id: String!) {
-    opportunity(ID: $id) {
-      relations {
-        actorRole
-        actorName
-        actorType
-        description
-        type
+    ecoverse {
+      opportunity(ID: $id) {
+        relations {
+          actorRole
+          actorName
+          actorType
+          description
+          type
+        }
       }
     }
   }
@@ -4589,11 +4637,13 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const OpportunityAspectsDocument = gql`
   query opportunityAspects($id: String!) {
-    opportunity(ID: $id) {
-      aspects {
-        title
-        framing
-        explanation
+    ecoverse {
+      opportunity(ID: $id) {
+        aspects {
+          title
+          framing
+          explanation
+        }
       }
     }
   }
@@ -4888,8 +4938,10 @@ export type RemoveOpportunityMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {
-    project(ID: $id) {
-      ...ProjectDetails
+    ecoverse {
+      project(ID: $id) {
+        ...ProjectDetails
+      }
     }
   }
   ${ProjectDetailsFragmentDoc}
@@ -5070,10 +5122,12 @@ export type EcoverseUserIdsLazyQueryHookResult = ReturnType<typeof useEcoverseUs
 export type EcoverseUserIdsQueryResult = Apollo.QueryResult<EcoverseUserIdsQuery, EcoverseUserIdsQueryVariables>;
 export const ChallengeUserIdsDocument = gql`
   query challengeUserIds($id: String!) {
-    challenge(ID: $id) {
-      community {
-        members {
-          id
+    ecoverse {
+      challenge(ID: $id) {
+        community {
+          members {
+            id
+          }
         }
       }
     }
@@ -5114,10 +5168,12 @@ export type ChallengeUserIdsLazyQueryHookResult = ReturnType<typeof useChallenge
 export type ChallengeUserIdsQueryResult = Apollo.QueryResult<ChallengeUserIdsQuery, ChallengeUserIdsQueryVariables>;
 export const OpportunityUserIdsDocument = gql`
   query opportunityUserIds($id: String!) {
-    opportunity(ID: $id) {
-      community {
-        members {
-          id
+    ecoverse {
+      opportunity(ID: $id) {
+        community {
+          members {
+            id
+          }
         }
       }
     }

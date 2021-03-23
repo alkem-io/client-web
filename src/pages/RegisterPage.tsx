@@ -90,7 +90,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
       <Row className={'justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            Create an account on the <strong>{ecoverse?.name}</strong> ecoverse
+            Create an account on the <strong>{ecoverse?.ecoverse?.name}</strong> ecoverse
           </Typography>
           {errorMessage && (
             <Alert variant={'danger'} onClose={() => setErrorMessage(undefined)} dismissible>

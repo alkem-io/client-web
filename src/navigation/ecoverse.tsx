@@ -50,16 +50,16 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
   // const { id } = useParams<{ id: string }>();
   // at some point the ecoverse needs to be queried
 
-  const { ecoverse, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
     errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
-  const currentPaths = useMemo(() => (ecoverse ? [...paths, { value: url, name: ecoverse.name, real: true }] : paths), [
-    paths,
-    ecoverse,
-  ]);
+  const currentPaths = useMemo(
+    () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.name, real: true }] : paths),
+    [paths, ecoverseInfo]
+  );
 
   const loading = ecoverseLoading || usersLoading || challengesLoading;
 
@@ -67,7 +67,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
     return <Loading text={'Loading ecoverse'} />;
   }
 
-  if (!ecoverse) {
+  if (!ecoverseInfo) {
     return <FourOuFour />;
   }
 
@@ -76,7 +76,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
       <Route exact path={path}>
         {!loading && (
           <EcoversePage
-            ecoverse={ecoverse}
+            ecoverse={ecoverseInfo}
             challenges={{ data: challenges, error: challengesError }}
             users={(usersQuery?.users || undefined) as User[] | undefined}
             paths={currentPaths}
@@ -100,17 +100,17 @@ interface ChallengeRootProps extends PageProps {
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = challenges?.challenges?.find(x => x.textID === id);
+  const target = challenges?.ecoverse.challenges?.find(x => x.textID === id)?.id || '';
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
-    variables: { id: Number(target?.id) },
+    variables: { id: target },
     errorPolicy: 'all',
   });
   const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
-    variables: { id: Number(target?.id) },
+    variables: { id: target },
     errorPolicy: 'all',
   });
-  const { challenge } = query || {};
+  const challenge = query?.ecoverse.challenge;
 
   const currentPaths = useMemo(
     () => (challenge ? [...paths, { value: url, name: challenge.name, real: true }] : paths),
@@ -133,7 +133,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         {!loading && (
           <ChallengePage
             challenge={challenge as ChallengeType}
-            users={(usersQuery?.challenge.contributors || undefined) as User[] | undefined}
+            users={(usersQuery?.ecoverse.challenge.community?.members || undefined) as User[] | undefined}
             paths={currentPaths}
           />
         )}
@@ -157,21 +157,21 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { user } = useUserContext();
-  const target = opportunities.find(x => x.textID === id);
+  const target = opportunities.find(x => x.textID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
-    variables: { id: Number(target?.id) },
+    variables: { id: target },
   });
 
   const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
-    variables: { id: Number(target?.id) },
+    variables: { id: target },
     errorPolicy: 'all',
   });
 
-  const { opportunity } = query || {};
-  const { opportunity: opportunityGroups } = usersQuery || {};
-  const { groups } = opportunityGroups || {};
-  const users = useMemo(() => groups?.flatMap(x => x.members) || [], [groups]);
+  const opportunity = query?.ecoverse.opportunity;
+  const opportunityGroups = usersQuery?.ecoverse.opportunity;
+  const members = opportunityGroups?.community?.members;
+  const users = useMemo(() => members || [], [members]);
 
   const currentPaths = useMemo(
     () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),

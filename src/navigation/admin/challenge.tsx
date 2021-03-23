@@ -23,7 +23,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { data: challengesListQuery } = useEcoverseChallengesListQuery();
 
-  const challengesList = challengesListQuery?.challenges?.map(c => ({
+  const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
     id: c.id,
     value: c.name,
     url: `${url}/${c.id}`,
@@ -31,7 +31,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [
     paths,
-    challengesListQuery?.challenges,
+    challengesListQuery?.ecoverse?.challenges,
   ]);
 
   return (
@@ -59,12 +59,12 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
 
-  const { data } = useChallengeNameQuery({ variables: { id: Number(challengeId) } });
+  const { data } = useChallengeNameQuery({ variables: { id: challengeId } });
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.challenge?.name || '', real: true }], [
-    paths,
-    data?.challenge?.name,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: data?.ecoverse?.challenge?.name || '', real: true }],
+    [paths, data?.ecoverse?.challenge?.name]
+  );
 
   useUpdateNavigation({ currentPaths });
 
@@ -110,10 +110,14 @@ const ChallengeGroupRoutes: FC<PageProps> = ({ paths }) => {
 const ChallengeGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
-  const { data } = useChallengeGroupsQuery({ variables: { id: Number(challengeId) } });
+  const { data } = useChallengeGroupsQuery({ variables: { id: challengeId } });
 
   const { removeGroup } = useRemoveUserGroup(['challengeGroups']);
-  const groups = data?.challenge?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+  const groups = data?.ecoverse?.challenge?.community?.groups?.map(g => ({
+    id: g.id,
+    value: g.name,
+    url: `${url}/${g.id}`,
+  }));
 
   return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={removeGroup} />;
 };
@@ -122,9 +126,9 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
 
-  const { data } = useChallengeOpportunitiesQuery({ variables: { id: Number(challengeId) } });
+  const { data } = useChallengeOpportunitiesQuery({ variables: { id: challengeId } });
 
-  const opportunities = data?.challenge?.opportunities?.map(o => ({
+  const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
     id: o.id,
     value: o.name,
     url: `${url}/${o.id}`,

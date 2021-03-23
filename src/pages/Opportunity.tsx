@@ -38,7 +38,7 @@ import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { CommunitySection } from '../components/Community/CommunitySection';
-import { community } from '../components/core/Typography.dummy.json';
+import { community as communityTexts } from '../components/core/Typography.dummy.json';
 import { useHistory } from 'react-router-dom';
 import { replaceAll } from '../utils/replaceAll';
 
@@ -100,13 +100,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, aspects, projects = [], relations = [], actorGroups, context, groups, id } = opportunity;
+  const { name, aspects, projects = [], relations = [], actorGroups, context, community, id } = opportunity;
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
-  const membersCount = groups?.find(g => g.name === 'members')?.members?.length || 0;
+  const membersCount = (community && community.members?.length) || 0;
 
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
@@ -424,7 +424,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
       <Divider />
       <CommunitySection
-        title={community.header}
+        title={communityTexts.header}
         subTitle={'The heroes working on this opportunity'}
         users={users}
         shuffle={true}

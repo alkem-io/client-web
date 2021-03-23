@@ -73,8 +73,10 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     if (mode === EditMode.edit) {
       updateOrganization({
         variables: {
-          organisationData: organisationInput,
-          orgID: Number(orgID),
+          organisationData: {
+            ID: orgID,
+            ...organisationInput,
+          },
         },
       });
     }

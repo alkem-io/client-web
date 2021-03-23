@@ -2,65 +2,71 @@ import { gql } from '@apollo/client';
 
 export const QUERY_CHALLENGE_PROFILE = gql`
   query challengeProfile($id: String!) {
-    challenge(ID: $id) {
+    ecoverse {
       id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
-        }
-      }
-      community {
-        members {
-          name
-        }
-      }
-
-      tagset {
-        name
-        tags
-      }
-      opportunities {
+      id
+      id
+      id
+      challenge(ID: $id) {
         id
-        name
         textID
+        name
         context {
+          tagline
+          background
+          vision
+          impact
+          who
           references {
+            id
             name
             uri
+            description
           }
         }
-        projects {
-          id
-          textID
-          name
-          description
-          state
+        community {
+          members {
+            name
+          }
         }
-      }
-      leadOrganisations {
-        id
-        name
-        profile {
+
+        tagset {
+          name
+          tags
+        }
+        opportunities {
           id
-          avatar
+          name
+          textID
+          context {
+            references {
+              name
+              uri
+            }
+          }
+          projects {
+            id
+            textID
+            name
+            description
+            state
+          }
+        }
+        leadOrganisations {
+          id
+          name
+          profile {
+            id
+            avatar
+          }
         }
       }
     }
   }
 `;
 
-export const MUTATION_UPDATE_CHALLENGE_CONTEXT = gql`
-  mutation updateChallengeContext($challengeData: UpdateChallengeInput!) {
+export const MUTATION_UPDATE_CHALLENGE = gql`
+  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
     updateChallenge(challengeData: $challengeData) {
       id
       name
@@ -70,14 +76,17 @@ export const MUTATION_UPDATE_CHALLENGE_CONTEXT = gql`
 // used to get list of users that can be added to an opportunity
 export const QUERY_CHALLENGE_MEMBERS = gql`
   query challengeMembers($challengeID: String!) {
-    challenge(ID: $challengeID) {
-      community {
-        members {
-          id
-          name
-          firstName
-          lastName
-          email
+    ecoverse {
+      id
+      challenge(ID: $challengeID) {
+        community {
+          members {
+            id
+            name
+            firstName
+            lastName
+            email
+          }
         }
       }
     }

@@ -53,10 +53,10 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
 
   const user = data?.user;
 
-  const groups = getArrayOfNames(user?.memberof?.groups);
-  const challenges = getArrayOfNames(user?.memberof?.challenges);
+  const groups = getArrayOfNames(user?.memberof?.communities.map(x => x.groups));
+  const challenges = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
   const organisations = getArrayOfNames(user?.memberof?.organisations);
-  const opportunities = getArrayOfNames(user?.memberof?.opportunities);
+  const opportunities = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 

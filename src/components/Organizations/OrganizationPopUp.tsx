@@ -74,14 +74,14 @@ const ProfileTable: FC<TableProps> = ({ headerTitles, children, icon: Icon, icon
 };
 
 interface OrganizationPopUpProps {
-  id?: string | null;
+  id: string;
   onHide: () => void;
 }
 
 const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
   const styles = groupPopUpStyles();
 
-  const { data, loading } = useOrganizationDetailsQuery({ variables: { id: Number(id) } });
+  const { data, loading } = useOrganizationDetailsQuery({ variables: { id } });
   const profile = data?.organisation?.profile;
   const name = data?.organisation?.name;
   const groups = data?.organisation?.groups;

@@ -8,3 +8,9 @@ export const PROVIDER_MSAL = 'msal';
 export const PROVIDER_SIMPLE = 'SimpleAuth';
 
 export const WELCOME_PAGE = '/welcome';
+
+export enum CommunityType {
+  ECOVERSE = 'ecoverse',
+  CHALLENGE = 'challenge',
+  OPPORTUNITY = 'opportunity',
+}
