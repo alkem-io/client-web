@@ -25,39 +25,36 @@ export const QUERY_COMMUNITY_SEARCH = gql`
 
 export const QUERY_GROUP_CARD = gql`
   query groupCard($id: Float!) {
-    group(ID: $id) {
-      __typename
-      name
-      parent {
+    ecoverse {
+      id
+      group(ID: $id) {
         __typename
-        ... on Challenge {
-          name
-        }
-        ... on Ecoverse {
-          name
-        }
-        ... on Opportunity {
-          name
-        }
-        ... on Organisation {
-          name
-        }
-      }
-      members {
-        id
         name
-      }
-      profile {
-        id
-        avatar
-        description
-        references {
-          name
-          description
+        parent {
+          __typename
+          ... on Community {
+            name
+          }
+          ... on Organisation {
+            name
+          }
         }
-        tagsets {
+        members {
+          id
           name
-          tags
+        }
+        profile {
+          id
+          avatar
+          description
+          references {
+            name
+            description
+          }
+          tagsets {
+            name
+            tags
+          }
         }
       }
     }
@@ -65,7 +62,7 @@ export const QUERY_GROUP_CARD = gql`
 `;
 
 export const QUERY_ORGANIZATION_CARD = gql`
-  query organizationCard($id: Float!) {
+  query organizationCard($id: String!) {
     organisation(ID: $id) {
       id
       name

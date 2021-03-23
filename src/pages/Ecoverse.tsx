@@ -53,7 +53,7 @@ const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
   </div>
 );
 
-const Ecoverse: FC<EcoversePageProps> = ({
+const EcoversePage: FC<EcoversePageProps> = ({
   paths,
   ecoverse,
   challenges: challengesQuery,
@@ -69,17 +69,17 @@ const Ecoverse: FC<EcoversePageProps> = ({
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();
 
-  const challenges = challengesQuery?.data?.challenges || [];
+  const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
-  const projects = _projects?.projects || [];
-  const opportunities = _opportunities?.opportunities || [];
-  const projectsNestHistory = _projectsNestHistory?.challenges || [];
+  const projects = _projects?.ecoverse?.projects || [];
+  const opportunities = _opportunities?.ecoverse?.opportunities || [];
+  const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {} } = ecoverse;
+  const { name, context = {} } = ecoverse.ecoverse;
   const { tagline, impact, vision, background, references } = context;
-  const ecoverseLogo = hostData?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
+  const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
 
   /**
@@ -238,4 +238,4 @@ const Ecoverse: FC<EcoversePageProps> = ({
   );
 };
 
-export { Ecoverse };
+export { EcoversePage as Ecoverse };

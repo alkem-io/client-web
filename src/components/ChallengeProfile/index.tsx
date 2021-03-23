@@ -3,12 +3,12 @@ import { useChallengeProfileQuery } from '../../generated/graphql';
 import ChallengeProfile from './ChallengeProfile';
 
 interface OwnProps {
-  id: number;
+  id: string;
 }
 
 const ChallengeProfileContainer: React.FC<OwnProps> = ({ id }) => {
   const { data, error, loading, refetch } = useChallengeProfileQuery({
-    variables: { id: Number(id) },
+    variables: { id },
   });
   React.useEffect(() => {
     refetch();

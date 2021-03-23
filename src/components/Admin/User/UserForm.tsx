@@ -126,7 +126,7 @@ export const UserForm: FC<UserProps> = ({
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
-      await removeRef({ variables: { ID: Number(ref.id) } });
+      await removeRef({ variables: { id: Number(ref.id) } });
     }
 
     const user: UserModel = {

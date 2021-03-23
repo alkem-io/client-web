@@ -4,7 +4,7 @@ import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import * as yup from 'yup';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useSimpleAuth } from '../hooks/useSimpleAuth';
+import { useDemoAuth } from '../hooks/useDemoAuth';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
@@ -37,7 +37,7 @@ const initialValues: FormValues = {
 };
 
 export const RegisterPage: FC<RegisterPageProps> = () => {
-  const { register } = useSimpleAuth();
+  const { register } = useDemoAuth();
   const history = useHistory();
   const { resetStore } = useAuthenticate();
   const [errorMessage, setErrorMessage] = useState<string>();

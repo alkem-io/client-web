@@ -1,35 +1,20 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_ECOVERSES_LIST = gql`
-  query ecoverseList {
-    name
-    context {
-      tagline
-    }
-    challenges {
-      id
-      name
-    }
-  }
-`;
-
-export const QUERY_ECOVERSE_NAME = gql`
-  query ecoverseName {
-    name
-  }
-`;
-
 export const QUERY_ECOVERSE_DETAILS = gql`
   query ecoverseInfo {
-    name
-    context {
-      tagline
-      vision
-      impact
-      background
-      references {
-        name
-        uri
+    ecoverse {
+      id
+      id
+      name
+      context {
+        tagline
+        vision
+        impact
+        background
+        references {
+          name
+          uri
+        }
       }
     }
   }
@@ -37,15 +22,18 @@ export const QUERY_ECOVERSE_DETAILS = gql`
 
 export const QUERY_CHALLENGES = gql`
   query challenges {
-    challenges {
+    ecoverse {
       id
-      name
-      textID
-      context {
-        tagline
-        references {
-          name
-          uri
+      challenges {
+        id
+        name
+        textID
+        context {
+          tagline
+          references {
+            name
+            uri
+          }
         }
       }
     }
@@ -54,25 +42,31 @@ export const QUERY_CHALLENGES = gql`
 
 export const QUERY_PROJECTS = gql`
   query projects {
-    projects {
+    ecoverse {
       id
-      textID
-      name
-      description
-      state
+      projects {
+        id
+        textID
+        name
+        description
+        state
+      }
     }
   }
 `;
 
 export const QUERY_PROJECTS_CHAIN_HISTORY = gql`
   query projectsChainHistory {
-    challenges {
-      name
-      textID
-      opportunities {
+    ecoverse {
+      id
+      challenges {
+        name
         textID
-        projects {
+        opportunities {
           textID
+          projects {
+            textID
+          }
         }
       }
     }
@@ -81,21 +75,27 @@ export const QUERY_PROJECTS_CHAIN_HISTORY = gql`
 
 export const QUERY_OPPORTUNITIES = gql`
   query opportunities {
-    opportunities {
+    ecoverse {
       id
-      textID
+      opportunities {
+        id
+        textID
+      }
     }
   }
 `;
 
 export const QUERY_ECOVERSE_HOST_REFERENCES = gql`
   query ecoverseHostReferences {
-    host {
-      profile {
-        id
-        references {
-          name
-          uri
+    ecoverse {
+      id
+      host {
+        profile {
+          id
+          references {
+            name
+            uri
+          }
         }
       }
     }

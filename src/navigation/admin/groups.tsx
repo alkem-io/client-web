@@ -18,7 +18,7 @@ export const GroupsRoute: FC<PageProps> = ({ paths }) => {
     result: { loading: removingGroup },
   } = useRemoveUserGroup(['ecoverseGroupsList']);
 
-  const groupsList = data?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` }));
+  const groupsList = data?.ecoverse?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` }));
 
   if (loading) return <Loading text={'Loading Groups ...'} />;
   return (

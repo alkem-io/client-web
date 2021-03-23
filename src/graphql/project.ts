@@ -21,8 +21,11 @@ const PROJECT_FRAGMENT = gql`
 
 export const QUERY_PROJECT_PROFILE = gql`
   query projectProfile($id: Float!) {
-    project(ID: $id) {
-      ...ProjectDetails
+    ecoverse {
+      id
+      project(ID: $id) {
+        ...ProjectDetails
+      }
     }
   }
   ${PROJECT_FRAGMENT}

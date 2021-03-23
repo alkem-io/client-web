@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { User, useUserProfileQuery } from '../generated/graphql';
+import { CommunityType } from '../models/Constants';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -9,7 +10,7 @@ export interface UserContextContract {
 export interface UserMetadata {
   user: User;
   ofGroup: (name: string, strict: boolean) => boolean;
-  ofChallenge: (id: string) => boolean;
+  ofChallenge: (name: string) => boolean;
   isAdmin: boolean;
   roles: string[];
 }
@@ -22,10 +23,18 @@ const wrapUser = (user: User | undefined): UserMetadata | undefined => {
   const metadata = {
     user,
     ofGroup: (name, strict = true) =>
-      Boolean(user.memberof?.groups.find(x => (strict ? x.name === name : x.name.includes(name)))),
-    ofChallenge: id => Boolean(user.memberof?.challenges.find(x => x.id === id)),
+      Boolean(
+        user.memberof?.communities.find(
+          c => c && c.groups && c.groups.find(x => (strict ? x.name === name : x.name.includes(name)) !== undefined)
+        )
+      ),
+    ofChallenge: name =>
+      Boolean(user.memberof?.communities.find(c => c && c.type === CommunityType.CHALLENGE && c.name === name)),
     isAdmin: false,
-    roles: user?.memberof?.groups.map(x => x.name) || [],
+    roles:
+      user?.memberof?.communities
+        .flatMap(c => c.groups?.map(g => g.name))
+        .filter((x): x is string => x !== undefined) || [],
   };
 
   metadata.isAdmin = metadata.ofGroup('admin', false);
