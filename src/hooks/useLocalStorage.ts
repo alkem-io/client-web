@@ -34,7 +34,6 @@ export const useLocalStorage = <T>(key: string, initialValue?: T): [T, (value: T
   // on every render, re-subscribe to the storage event
   useEffect(() => {
     const handler = (e: StorageEvent) => {
-      debugger;
       if (e.storageArea === localStorage && e.key === key) {
         setStoredValue(e.newValue as any);
       }
