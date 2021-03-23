@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
+import { EcoverseProvider } from './context/EcoverseProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
@@ -78,9 +79,11 @@ const ReduxRoot: FC = () => {
             <ThemeProvider>
               <NavigationProvider>
                 <UserProvider>
-                  <App>
-                    <Routing />
-                  </App>
+                  <EcoverseProvider>
+                    <App>
+                      <Routing />
+                    </App>
+                  </EcoverseProvider>
                 </UserProvider>
               </NavigationProvider>
             </ThemeProvider>

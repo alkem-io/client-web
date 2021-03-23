@@ -1,6 +1,6 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "repository": {
@@ -74,9 +74,6 @@
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "gulp": "gulp",
     "webdriver-manager": "webdriver-manager"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

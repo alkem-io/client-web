@@ -1,42 +1,49 @@
 import { Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import * as yup from 'yup';
+import CheckBoxField from '../components/Admin/Common/CheckBoxField';
+import InputField from '../components/Admin/Common/InputField';
+import Button from '../components/core/Button';
+import Typography from '../components/core/Typography';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useDemoAuth } from '../hooks/useDemoAuth';
-import InputField from './Admin/Common/InputField';
-import Button from './core/Button';
-import Typography from './core/Typography';
+import { useEcoverse } from '../hooks/useEcoverse';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 
 interface RegisterPageProps {}
 interface FormValues {
-  name: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  passwordConfirmation: string;
+  confirmPassword: string;
+  acceptTerms: boolean;
 }
 const validationSchema = yup.object().shape({
-  name: yup.string().required('This is the required field'),
-  firstName: yup.string().required('This is the required field'),
-  lastName: yup.string().required('This is the required field'),
-  email: yup.string().email('Email is not valid').required('This is the required field'),
+  firstName: yup.string().required('This is required field.'),
+  lastName: yup.string().required('This is required field.'),
+  email: yup.string().email('Email is not valid').required('This is required field.'),
   password: yup.string().required('Password can not be empty').min(8, 'Password should be at least 8 symbols long'),
-  passwordConfirmation: yup.string().oneOf([yup.ref('password'), undefined], 'Passwords must match'),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), undefined], 'Passwords must match'),
+  acceptTerms: yup.boolean().oneOf([true], 'The terms of use and the privacy policy must be accepted.'),
 });
 
 const initialValues: FormValues = {
-  name: '',
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  passwordConfirmation: '',
+  confirmPassword: '',
+  acceptTerms: false,
 };
 
 export const RegisterPage: FC<RegisterPageProps> = () => {
+  const { ecoverse } = useEcoverse();
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
+
   const { register } = useDemoAuth();
   const history = useHistory();
   const { resetStore } = useAuthenticate();
@@ -59,12 +66,12 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
   const handleRegister = async (values: FormValues) => {
     try {
       await register(
-        values.name,
         values.firstName,
         values.lastName,
         values.email,
         values.password,
-        values.passwordConfirmation
+        values.confirmPassword,
+        values.acceptTerms
       );
 
       try {
@@ -84,7 +91,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
       <Row className={'justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            Register User
+            Create an account on the <strong>{ecoverse?.ecoverse?.name}</strong> ecoverse
           </Typography>
           {errorMessage && (
             <Alert variant={'danger'} onClose={() => setErrorMessage(undefined)} dismissible>
@@ -102,16 +109,24 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
-                    <InputField name={'name'} title={'Name'} value={values.name} />
-                  </Form.Row>
-                  <Form.Row>
-                    <InputField name={'firstName'} title={'First Name'} value={values.firstName} />
-                    <InputField name={'lastName'} title={'Last Name'} value={values.lastName} />
+                    <InputField
+                      name={'firstName'}
+                      title={'First Name'}
+                      placeholder={'Enter your first name'}
+                      value={values.firstName}
+                    />
+                    <InputField
+                      name={'lastName'}
+                      title={'Last Name'}
+                      placeholder={'Enter your last name'}
+                      value={values.lastName}
+                    />
                   </Form.Row>
                   <Form.Row>
                     <InputField
                       name={'email'}
                       title={'Email'}
+                      placeholder={'Enter your email'}
                       value={values.email}
                       type={'email'}
                       autoComplete={'username'}
@@ -121,6 +136,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                     <InputField
                       name={'password'}
                       title={'Password'}
+                      placeholder={'Enter a strong password'}
                       value={values.password}
                       type={'password'}
                       autoComplete={'new-password'}
@@ -128,17 +144,31 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
                   </Form.Row>
                   <Form.Row>
                     <InputField
-                      name={'passwordConfirmation'}
+                      name={'confirmPassword'}
                       title={'Confirm Password'}
-                      value={values.passwordConfirmation}
+                      placeholder={'Confirm the password'}
+                      value={values.confirmPassword}
                       type={'password'}
                       autoComplete={'new-password'}
                     />
                   </Form.Row>
+                  <Form.Row>
+                    <CheckBoxField name={'acceptTerms'} type={'checkbox'} required>
+                      {'I accept the '}
+                      <a href={'/terms-of-use.html'} target={'_blank'} rel={'noreferrer'}>
+                        Terms of Use
+                      </a>
+                      {' and '}
+                      <a href={'https://cherrytwist.org/privacy/'} target={'_blank'} rel={'noreferrer'}>
+                        Privacy Policy
+                      </a>
+                      .
+                    </CheckBoxField>
+                  </Form.Row>
                   <div className={'d-flex mt-4'}>
                     <div className={'flex-grow-1'} />
                     <Button variant="primary" type={'submit'} className={'ml-3'} disabled={isSubmitting} small>
-                      Register
+                      Register Now
                     </Button>
                   </div>
                 </Form>

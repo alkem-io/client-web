@@ -1,6 +1,6 @@
 import React, { FC, useContext } from 'react';
 import { Loading } from '../components/core/Loading';
-import LoginPage from '../components/LoginPage';
+import LoginPage from '../pages/LoginPage';
 import { configContext } from '../context/ConfigProvider';
 
 export const LoginRoute: FC = () => {
