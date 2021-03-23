@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
-import { AUTH_PROVIDER_KEY, PROVIDER_MSAL } from '../models/Constants';
+import { AUTH_PROVIDER_KEY, PROVIDER_MSAL, PROVIDER_DEMO } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
@@ -49,7 +49,7 @@ const refresh = async (
   userName?: string,
   keepStorage?: boolean
 ) => {
-  if (localStorage.getItem(AUTH_PROVIDER_KEY) === 'SimpleAuth') {
+  if (localStorage.getItem(AUTH_PROVIDER_KEY) === PROVIDER_DEMO) {
     dispatch(updateStatus('unauthenticated'));
     !keepStorage && (await resetStore(client));
     dispatch(updateToken());

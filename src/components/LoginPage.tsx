@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useSimpleAuth } from '../hooks/useSimpleAuth';
+import { useDemoAuth } from '../hooks/useDemoAuth';
 import InputField from './Admin/Common/InputField';
 import Button from './core/Button';
 import Typography from './core/Typography';
@@ -29,7 +29,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate } = useAuthenticate();
-  const { login } = useSimpleAuth();
+  const { login } = useDemoAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleLogin = useCallback(
@@ -53,7 +53,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
             Sign in
           </Typography>
           {providers
-            .filter(x => x.config.__typename !== 'SimpleAuthProviderConfig')
+            .filter(x => x.config.__typename !== 'DemoAuthProviderConfig')
             .map((provider, index) => {
               return (
                 <Button

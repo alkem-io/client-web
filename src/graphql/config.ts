@@ -36,7 +36,7 @@ export const QUERY_CONFIG = gql`
                 scopes
               }
             }
-            ... on SimpleAuthProviderConfig {
+            ... on DemoAuthProviderConfig {
               issuer
               tokenEndpoint
             }
