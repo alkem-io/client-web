@@ -36,7 +36,7 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
     },
   });
 
-  const group = data?.group as UserGroup;
+  const group = data?.ecoverse?.group as UserGroup;
   const avatar = group?.profile?.avatar;
   const level = group?.parent?.__typename || '';
   const parentName = group?.parent?.name || '';

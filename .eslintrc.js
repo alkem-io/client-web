@@ -12,7 +12,14 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'prettier', 'react', 'jest'],
-  extends: ['react-app', 'prettier', 'prettier/react', 'prettier/@typescript-eslint', 'plugin:prettier/recommended'],
+  extends: [
+    'react-app',
+    'react-app/jest',
+    'prettier',
+    'prettier/react',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
+  ],
   env: {
     browser: true,
     es6: true,
@@ -20,7 +27,7 @@ module.exports = {
     serviceworker: true,
   },
   rules: {
-    quotes: ['error', 'single'],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'no-multiple-empty-lines': 'error',
     'no-console': env(1, 0),
     'no-debugger': env(1, 0),

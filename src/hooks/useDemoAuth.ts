@@ -2,32 +2,32 @@ import axios from 'axios';
 import { useCallback, useContext, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { configContext } from '../context/ConfigProvider';
-import { SimpleAuthProviderConfig, useCreateUserMutation } from '../generated/graphql';
+import { DemoAuthProviderConfig, useCreateUserMutation } from '../generated/graphql';
 import { AuthenticationResult, RegisterResult } from '../models/AuthenticationResult';
-import { AUTH_PROVIDER_KEY, AUTH_STATUS_KEY, AUTH_USER_KEY, PROVIDER_SIMPLE, TOKEN_KEY } from '../models/Constants';
+import { AUTH_PROVIDER_KEY, AUTH_STATUS_KEY, AUTH_USER_KEY, PROVIDER_DEMO, TOKEN_KEY } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { useAuthenticate } from './useAuthenticate';
 
-export const useSimpleAuth = () => {
+export const useDemoAuth = () => {
   const dispatch = useDispatch();
   const { resetStore } = useAuthenticate();
   const { config } = useContext(configContext);
   const [createUser] = useCreateUserMutation();
-  const simpleAuthProvider = useMemo(() => {
-    return config.authentication.providers.find(x => x.config.__typename === 'SimpleAuthProviderConfig')
-      ?.config as SimpleAuthProviderConfig;
+  const demoAuthProvider = useMemo(() => {
+    return config.authentication.providers.find(x => x.config.__typename === 'DemoAuthProviderConfig')
+      ?.config as DemoAuthProviderConfig;
   }, [config]);
 
   const login = useCallback(
     async (username: string, password: string) => {
       dispatch(updateStatus('authenticating'));
       localStorage.setItem(AUTH_USER_KEY, username);
-      localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_SIMPLE);
+      localStorage.setItem(AUTH_PROVIDER_KEY, PROVIDER_DEMO);
 
-      if (!simpleAuthProvider) return;
+      if (!demoAuthProvider) return;
       try {
         const result = await axios.post<AuthenticationResult>(
-          simpleAuthProvider.tokenEndpoint,
+          demoAuthProvider.tokenEndpoint,
           {
             username,
             password,
@@ -59,7 +59,7 @@ export const useSimpleAuth = () => {
         }
       }
     },
-    [simpleAuthProvider]
+    [demoAuthProvider]
   );
 
   const logout = useCallback(() => {
@@ -69,14 +69,14 @@ export const useSimpleAuth = () => {
 
   const register = useCallback(
     async (
-      name: string,
       firstName: string,
       lastName: string,
       email: string,
       password: string,
-      confirmPassword: string
+      confirmPassword: string,
+      termAndConditions: boolean
     ) => {
-      if (!simpleAuthProvider) return;
+      if (!demoAuthProvider) return;
       dispatch(updateStatus('userRegistration'));
       const result = await axios.post<RegisterResult>(
         '/auth/register',
@@ -84,6 +84,7 @@ export const useSimpleAuth = () => {
           email,
           password,
           confirmPassword,
+          termAndConditions,
         },
         {
           responseType: 'json',
@@ -96,7 +97,7 @@ export const useSimpleAuth = () => {
       await createUser({
         variables: {
           user: {
-            name,
+            name: `${firstName} ${lastName}`.trim(),
             firstName,
             lastName,
             email,
@@ -106,7 +107,7 @@ export const useSimpleAuth = () => {
 
       dispatch(updateStatus('done'));
     },
-    [simpleAuthProvider]
+    [demoAuthProvider]
   );
 
   return {

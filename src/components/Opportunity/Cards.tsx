@@ -81,7 +81,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   const [removeRelation] = useRemoveRelationMutation({
-    variables: { ID: Number(id) },
+    variables: { id: Number(id) },
     onCompleted: () => setShowRemove(false),
     onError: e => console.error(e), // eslint-disable-line no-console
     refetchQueries: [{ query: QUERY_OPPORTUNITY_RELATIONS, variables: { id: Number(opportunityID) } }],
@@ -149,7 +149,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
     awaitRefetchQueries: true,
   });
 
-  const onRemove = () => removeActor({ variables: { ID: Number(id) } });
+  const onRemove = () => removeActor({ variables: { id: Number(id) } });
 
   return (
     <>
@@ -276,7 +276,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
-  const onRemove = () => removeAspect({ variables: { ID: Number(id) } });
+  const onRemove = () => removeAspect({ variables: { id: Number(id) } });
 
   const styles = useCardStyles();
   const { user } = useUserContext();

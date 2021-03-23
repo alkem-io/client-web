@@ -20,10 +20,10 @@ export const MemberSelector: FC<UserListProps> = ({ existingMembersIds = [], onU
 
   const [getAllUsers, { data: users, loading }] = useUsersLazyQuery();
   const [getChallengeMembers, { data: opportunityMembers }] = useChallengeMembersLazyQuery({
-    variables: { challengeID: Number(challengeId) },
+    variables: { challengeID: challengeId },
   });
 
-  const members = users?.users || opportunityMembers?.challenge.contributors;
+  const members = users?.users || opportunityMembers?.ecoverse?.challenge.community?.members;
 
   const getMembers = () => {
     if (opportunityId) {

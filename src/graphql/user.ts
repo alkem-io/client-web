@@ -32,23 +32,17 @@ export const USER_DETAILS_FRAGMENT = gql`
 export const USER_MEMBER_OF_FRAGMENT = gql`
   fragment UserMembers on User {
     memberof {
-      groups {
+      communities {
         id
         name
-      }
-      challenges {
-        id
-        name
-        textID
+        type
+        groups {
+          name
+        }
       }
       organisations {
         id
         name
-      }
-      opportunities {
-        id
-        name
-        textID
       }
     }
   }
@@ -83,21 +77,29 @@ export const QUERY_ECOVERSE_USER_IDS = gql`
 `;
 
 export const QUERY_CHALLENGE_USER_IDS = gql`
-  query challengeUserIds($id: Float!) {
-    challenge(ID: $id) {
-      contributors {
-        id
+  query challengeUserIds($id: String!) {
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        community {
+          members {
+            id
+          }
+        }
       }
     }
   }
 `;
 
 export const QUERY_OPPORTUNITY_USER_IDS = gql`
-  query opportunityUserIds($id: Float!) {
-    opportunity(ID: $id) {
-      groups {
-        members {
-          id
+  query opportunityUserIds($id: String!) {
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        community {
+          members {
+            id
+          }
         }
       }
     }
@@ -134,10 +136,7 @@ export const QUERY_USER_CARD = gql`
     usersById(IDs: $ids) {
       __typename
       memberof {
-        groups {
-          name
-        }
-        challenges {
+        communities {
           name
         }
         organisations {
@@ -145,6 +144,15 @@ export const QUERY_USER_CARD = gql`
         }
       }
       ...UserDetails
+    }
+  }
+`;
+
+export const MUTATION_ADD_USER_TO_COMMUNITY = gql`
+  mutation addUserToCommunity($communityId: Float!, $userID: Float!) {
+    addUserToCommunity(communityID: $communityId, userID: $userID) {
+      id
+      name
     }
   }
 `;

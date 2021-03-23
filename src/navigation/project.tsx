@@ -72,7 +72,7 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
     variables: { id: Number(target?.id) },
   });
 
-  const { project } = query || {};
+  const project = query?.ecoverse.project;
 
   const currentPaths = useMemo(() => (project ? [...paths, { value: url, name: project.name, real: true }] : paths), [
     paths,

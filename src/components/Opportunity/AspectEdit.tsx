@@ -90,7 +90,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
     }
     await updateAspect({
       variables: {
-        ID: Number(id),
+        id: Number(id),
         aspectData: values,
       },
     });

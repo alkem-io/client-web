@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import WelcomePage from '../components/WelcomePage';
+import WelcomePage from '../pages/WelcomePage';
 
 export const WelcomeRoute: FC = () => {
   return <WelcomePage />;

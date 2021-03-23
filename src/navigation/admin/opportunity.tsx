@@ -39,13 +39,12 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { opportunityId } = useParams<AdminParameters>();
 
-  const { data } = useOpportunityNameQuery({ variables: { id: Number(opportunityId) } });
+  const { data } = useOpportunityNameQuery({ variables: { id: opportunityId } });
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.opportunity?.name || '', real: true }], [
-    paths,
-    data?.opportunity?.name,
-    url,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.name || '', real: true }],
+    [paths, data?.ecoverse?.opportunity?.name, url]
+  );
 
   return (
     <Switch>
@@ -72,11 +71,15 @@ const OpportunityGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { opportunityId } = useParams<AdminParameters>();
 
-  const { data } = useOpportunityGroupsQuery({ variables: { id: Number(opportunityId) } });
+  const { data } = useOpportunityGroupsQuery({ variables: { id: opportunityId } });
 
   const { removeGroup } = useRemoveUserGroup(['opportunityGroups']);
 
-  const groups = data?.opportunity?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+  const groups = data?.ecoverse?.opportunity?.community?.groups?.map(g => ({
+    id: g.id,
+    value: g.name,
+    url: `${url}/${g.id}`,
+  }));
 
   return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={removeGroup} />;
 };

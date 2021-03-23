@@ -1,17 +1,18 @@
 import { Formik } from 'formik';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import InputField from '../components/Admin/Common/InputField';
+import Button from '../components/core/Button';
+import Typography from '../components/core/Typography';
 import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
-import { useSimpleAuth } from '../hooks/useSimpleAuth';
-import InputField from './Admin/Common/InputField';
-import Button from './core/Button';
-import Typography from './core/Typography';
+import { useDemoAuth } from '../hooks/useDemoAuth';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 
-interface RegisterPageProps {
+interface LoginPageProps {
   providers: AuthenticationProviderConfig[];
 }
 
@@ -25,11 +26,13 @@ const initialValues = {
   password: '',
 };
 
-export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
+export const LoginPage: FC<LoginPageProps> = ({ providers }) => {
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
   const history = useHistory();
   const dispatch = useDispatch();
   const { authenticate } = useAuthenticate();
-  const { login } = useSimpleAuth();
+  const { login } = useDemoAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleLogin = useCallback(
@@ -53,7 +56,7 @@ export const LoginPage: FC<RegisterPageProps> = ({ providers }) => {
             Sign in
           </Typography>
           {providers
-            .filter(x => x.config.__typename !== 'SimpleAuthProviderConfig')
+            .filter(x => x.config.__typename !== 'DemoAuthProviderConfig')
             .map((provider, index) => {
               return (
                 <Button
