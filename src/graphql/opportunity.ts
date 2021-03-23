@@ -2,63 +2,66 @@ import { gql } from '@apollo/client';
 
 export const QUERY_OPPORTUNITY_PROFILE = gql`
   query opportunityProfile($id: String!) {
-    opportunity(ID: $id) {
+    ecoverse {
       id
-      textID
-      name
-      state
-      aspects {
-        id
-        title
-        framing
-        explanation
-      }
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-        }
-      }
-      community {
-        groups {
-          name
-          members {
-            name
-          }
-        }
-      }
-      relations {
-        id
-        actorRole
-        actorName
-        actorType
-        description
-        type
-      }
-      actorGroups {
-        id
-        name
-        description
-        actors {
-          id
-          name
-          description
-          value
-          impact
-        }
-      }
-      projects {
+      opportunity(ID: $id) {
         id
         textID
         name
-        description
         state
+        aspects {
+          id
+          title
+          framing
+          explanation
+        }
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+          }
+        }
+        community {
+          groups {
+            name
+            members {
+              name
+            }
+          }
+        }
+        relations {
+          id
+          actorRole
+          actorName
+          actorType
+          description
+          type
+        }
+        actorGroups {
+          id
+          name
+          description
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
+        }
+        projects {
+          id
+          textID
+          name
+          description
+          state
+        }
       }
     }
   }
@@ -74,20 +77,23 @@ export const MUTATION_CREATE_RELATION = gql`
 
 export const QUERY_RELATIONS_LIST = gql`
   query relationsList($id: String!) {
-    opportunity(ID: $id) {
-      relations {
-        id
-        type
-        actorName
-        actorType
-        actorRole
-        description
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        relations {
+          id
+          type
+          actorName
+          actorType
+          actorRole
+          description
+        }
       }
     }
   }
 `;
 
-export const MUTATION_UPDATE_OPPORTUNITY_CONTEXT = gql`
+export const MUTATION_UPDATE_OPPORTUNITY = gql`
   mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $opportunityData) {
       id
@@ -106,17 +112,20 @@ export const MUTATION_CREATE_ACTOR = gql`
 
 export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
   query opportunityActorGroups($id: String!) {
-    opportunity(ID: $id) {
-      actorGroups {
-        id
-        name
-        description
-        actors {
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        actorGroups {
           id
           name
           description
-          value
-          impact
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
         }
       }
     }
@@ -145,13 +154,16 @@ export const MUTATION_RELATION_REMOVE = gql`
 
 export const QUERY_OPPORTUNITY_RELATIONS = gql`
   query queryOpportunityRelations($id: String!) {
-    opportunity(ID: $id) {
-      relations {
-        actorRole
-        actorName
-        actorType
-        description
-        type
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        relations {
+          actorRole
+          actorName
+          actorType
+          description
+          type
+        }
       }
     }
   }
@@ -167,11 +179,14 @@ export const MUTATION_UPDATE_ASPECT = gql`
 
 export const QUERY_OPPORTUNITY_ASPECTS = gql`
   query opportunityAspects($id: String!) {
-    opportunity(ID: $id) {
-      aspects {
-        title
-        framing
-        explanation
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        aspects {
+          title
+          framing
+          explanation
+        }
       }
     }
   }

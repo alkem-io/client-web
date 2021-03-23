@@ -24,6 +24,7 @@ export const MUTATION_UPDATE_USER = gql`
 export const QUERY_ECOVERSE_GROUPS = gql`
   query ecoverse {
     ecoverse {
+      id
       name
       community {
         groups {
@@ -58,11 +59,14 @@ export const GROUP_MEMBERS_FRAGMENT = gql`
 
 export const QUERY_GROUP_MEMBERS = gql`
   query groupMembers($id: Float!) {
-    group(ID: $id) {
+    ecoverse {
       id
-      name
-      members {
-        ...GroupMembers
+      group(ID: $id) {
+        id
+        name
+        members {
+          ...GroupMembers
+        }
       }
     }
   }
@@ -100,18 +104,24 @@ export const MUTATION_ADD_USER_TO_GROUP = gql`
 
 export const QUERY_ECOVERSE_CHALLENGES_LIST = gql`
   query ecoverseChallengesList {
-    challenges {
+    ecoverse {
       id
-      name
+      challenges {
+        id
+        name
+      }
     }
   }
 `;
 
 export const QUERY_ECOVERSE_GROUPS_LIST = gql`
   query ecoverseGroupsList {
-    groups {
+    ecoverse {
       id
-      name
+      groups {
+        id
+        name
+      }
     }
   }
 `;
@@ -135,20 +145,26 @@ export const QUERY_ORGANIZATIONS_LIST = gql`
 
 export const QUERY_CHALLENGE_NAME = gql`
   query challengeName($id: String!) {
-    challenge(ID: $id) {
+    ecoverse {
       id
-      name
+      challenge(ID: $id) {
+        id
+        name
+      }
     }
   }
 `;
 
 export const QUERY_CHALLENGE_GROUPS = gql`
   query challengeGroups($id: String!) {
-    challenge(ID: $id) {
-      community {
-        groups {
-          id
-          name
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        community {
+          groups {
+            id
+            name
+          }
         }
       }
     }
@@ -168,20 +184,10 @@ export const QUERY_ORGANIZATION_GROUPS = gql`
 
 export const QUERY_CHALLENGE_OPPORTUNITIES = gql`
   query challengeOpportunities($id: String!) {
-    challenge(ID: $id) {
-      opportunities {
-        id
-        name
-      }
-    }
-  }
-`;
-
-export const QUERY_OPPORTUNITY_GROUPS = gql`
-  query opportunityGroups($id: String!) {
-    opportunity(ID: $id) {
-      community {
-        groups {
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        opportunities {
           id
           name
         }
@@ -190,11 +196,30 @@ export const QUERY_OPPORTUNITY_GROUPS = gql`
   }
 `;
 
+export const QUERY_OPPORTUNITY_GROUPS = gql`
+  query opportunityGroups($id: String!) {
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        community {
+          groups {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const QUERY_OPPORTUNITY_NAME = gql`
   query opportunityName($id: String!) {
-    opportunity(ID: $id) {
+    ecoverse {
       id
-      name
+      opportunity(ID: $id) {
+        id
+        name
+      }
     }
   }
 `;
@@ -234,21 +259,24 @@ export const MUTATION_UPDATE_CHALLENGE = gql`
 
 export const QUERY_CHALLENGE_PROFILE_INFO = gql`
   query challengeProfileInfo($id: String!) {
-    challenge(ID: $id) {
+    ecoverse {
       id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
+      challenge(ID: $id) {
+        id
+        textID
+        name
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -275,21 +303,24 @@ export const MUTATION_UPDATE_OPPORTUNITY = gql`
 
 export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
   query opportunityProfileInfo($id: String!) {
-    opportunity(ID: $id) {
+    ecoverse {
       id
-      textID
-      name
-      context {
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
+      opportunity(ID: $id) {
+        id
+        textID
+        name
+        context {
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -339,7 +370,7 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
 `;
 
 export const MUTATION_CREATE_GROUP_ON_COMMUNITY = gql`
-  mutation createGroupOnEcoverse($communityID: Float!, $groupName: String!) {
+  mutation createGroupOnCommunity($communityID: Float!, $groupName: String!) {
     createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
       id
       name

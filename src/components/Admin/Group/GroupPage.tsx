@@ -2,9 +2,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Button, Col, FormControl, InputGroup, Row, Table } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import {
-  useAddUserToChallengeMutation,
   useAddUserToGroupMutation,
-  useAddUserToOpportunityMutation,
   useGroupMembersQuery,
   useRemoveUserFromGroupMutation,
 } from '../../../generated/graphql';
@@ -21,22 +19,21 @@ interface Parameters {
 type GroupPageProps = PageProps;
 
 export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
-  const { groupId, challengeId, opportunityId } = useParams<Parameters>();
+  const { groupId } = useParams<Parameters>();
 
   const [addUserToGroup] = useAddUserToGroupMutation();
-  const [addUserToChallenge] = useAddUserToChallengeMutation();
-  const [addUserToOpportunity] = useAddUserToOpportunityMutation();
+
   const [removeUserFromGroup] = useRemoveUserFromGroupMutation();
   const { data } = useGroupMembersQuery({ variables: { id: Number(groupId) } });
 
   const [filterBy, setFilterBy] = useState('');
 
-  const members = data?.group?.members || [];
+  const members = data?.ecoverse?.group?.members || [];
   const filteredMembers = members.filter(item =>
     filterBy ? item.name.toLowerCase().includes(filterBy.toLowerCase()) : true
   );
   const existingMembersIds = useMemo(() => members.map(x => x.id), [members]);
-  const groupName = data?.group.name || '';
+  const groupName = data?.ecoverse?.group.name || '';
   const currentPaths = useMemo(() => [...paths, { name: groupName, real: false }], [paths, groupName]);
   useUpdateNavigation({ currentPaths });
 
@@ -83,11 +80,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   // });
 
   const handleUserAdding = async (userID: string) => {
-    if (groupName === 'members' && opportunityId)
-      await addUserToOpportunity(gqlOptions(userID, { opportunityID: Number(opportunityId) }));
-    else if (groupName === 'members' && challengeId)
-      await addUserToChallenge(gqlOptions(userID, { challengeID: Number(challengeId) }));
-    else await addUserToGroup(gqlOptions(userID, { groupID: Number(groupId) }));
+    await addUserToGroup(gqlOptions(userID, { groupID: Number(groupId) }));
   };
 
   return (

@@ -1,11 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from '../core/Button';
-import {
-  ContextInput,
-  useUpdateChallengeContextMutation,
-  useUpdateOpportunityContextMutation,
-} from '../../generated/graphql';
+import { ContextInput, useUpdateChallengeMutation, useUpdateOpportunityMutation } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 
 import { QUERY_OPPORTUNITY_PROFILE } from '../../graphql/opportunity';
@@ -30,13 +26,13 @@ const useContextEditStyles = createStyles(() => ({
 const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const styles = useContextEditStyles();
 
-  const [updateChallenge] = useUpdateChallengeContextMutation({
+  const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
     refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE, variables: { id: Number(id) } }],
     awaitRefetchQueries: true,
   });
-  const [updateOpportunity] = useUpdateOpportunityContextMutation({
+  const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
     refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE, variables: { id: Number(id) } }],
@@ -57,15 +53,17 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
     if (variant === 'challenge') {
       await updateChallenge({
         variables: {
-          challengeData: { ID: Number(id), ...challengeUpdateData },
+          challengeData: { ID: id, ...challengeUpdateData },
         },
       });
     } else if (variant === 'opportunity') {
       await updateOpportunity({
         variables: {
-          opportunityID: Number(id),
           opportunityData: {
-            context: contextWithUpdatedRefs,
+            ID: id,
+            context: {
+              ...context,
+            },
           },
         },
       });

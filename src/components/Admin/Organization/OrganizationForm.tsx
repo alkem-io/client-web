@@ -106,7 +106,7 @@ export const OrganizationForm: FC<Props> = ({
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
-      await removeRef({ variables: { ID: Number(ref) } });
+      await removeRef({ variables: { id: Number(ref.id) } });
     }
 
     const organization: Organisation = {

@@ -5,9 +5,9 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import roles from '../../configs/roles.json';
 import { User, useUserProfileQuery } from '../../generated/graphql';
-/*components imports end*/
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
+import { CommunityType } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
 import Avatar from '../core/Avatar';
@@ -16,8 +16,6 @@ import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
 import Tag from '../core/Tag';
 import Typography from '../core/Typography';
-
-/*local files imports end*/
 
 const useUserRoleStyles = createStyles(theme => ({
   roleContainer: {
@@ -35,7 +33,8 @@ export const UserRoles: FC = () => {
   const styles = useUserRoleStyles();
   const { data } = useUserProfileQuery();
 
-  const groups = data?.me?.memberof?.groups.map(g => g.name) || [];
+  const groups =
+    data?.me?.memberof?.communities.flatMap(c => (c && c.groups ? c.groups.map(g => g.name) : undefined)) || [];
 
   const getMyRoles = () => {
     const specialRoles = roles['groups-roles'].filter(r => groups.includes(r.group));
@@ -162,10 +161,18 @@ export const UserProfile: FC = () => {
 
   const user = (data?.me as User) || defaultUser || {};
 
+  // TODO [ATS]: this code is copy paste from UserPopUp.tsx
+  const getArrayOfNames = arr => arr?.map(el => el?.name);
+
   const references = user?.profile?.references || [];
-  const groups = user?.memberof?.groups.map(g => g.name) || [];
-  const challenges = user?.memberof?.challenges.map(c => c.name) || [];
-  const opportunities = user?.memberof?.opportunities.map(c => c.name) || [];
+  const groups =
+    user?.memberof?.communities
+      .flatMap(
+        c => c && c.groups && c?.groups.map(x => (c.type !== CommunityType.ECOVERSE ? `${x.name} (${c.name})` : x.name))
+      )
+      .filter((x): x is string => x !== undefined) || [];
+  const challenges = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
+  const opportunities = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
 
   const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {

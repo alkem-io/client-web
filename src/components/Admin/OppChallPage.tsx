@@ -37,7 +37,7 @@ interface Params {
 }
 
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
-  const { challengeId, opportunityId } = useParams<Params>();
+  const { challengeId = '', opportunityId = '' } = useParams<Params>();
   const [message, setMessage] = useState<string | null>(null);
   const [variant, setVariant] = useState<'success' | 'error'>('success');
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
@@ -66,13 +66,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
     update: (cache, { data }) => {
       if (data) {
-        const { createOpportunityOnChallenge } = data;
+        const { createOpportunity } = data;
 
         cache.modify({
           fields: {
             opportunities(existingOpportunities = []) {
               const newOpportunities = cache.writeFragment({
-                data: createOpportunityOnChallenge,
+                data: createOpportunity,
                 fragment: NEW_OPPORTUNITY_FRAGMENT,
               });
               return [...existingOpportunities, newOpportunities];
@@ -98,15 +98,14 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   });
 
   useEffect(() => {
-    if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: Number(challengeId) } });
-    if (mode === ProfileSubmitMode.updateOpportunity)
-      getOpportunityProfileInfo({ variables: { id: Number(opportunityId) } });
+    if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: challengeId } });
+    if (mode === ProfileSubmitMode.updateOpportunity) getOpportunityProfileInfo({ variables: { id: opportunityId } });
   }, []);
 
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
 
   const isLoading = loading1 || loading2 || loading3 || loading4;
-  const profile = challengeProfile?.challenge || opportunityProfile?.opportunity;
+  const profile = challengeProfile?.ecoverse?.challenge || opportunityProfile?.ecoverse?.opportunity;
   const profileTopLvlInfo = {
     name: profile?.name,
     textID: profile?.textID,
@@ -148,23 +147,27 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         case ProfileSubmitMode.updateChallenge:
           updateChallenge({
             variables: {
-              challengeData: { ID: Number(challengeId), ...updateData },
+              challengeData: { ...updateData, ID: challengeId },
             },
           });
           break;
         case ProfileSubmitMode.createOpportunity:
           createOpportunity({
             variables: {
-              opportunityData: data,
-              challengeID: Number(challengeId),
+              opportunityData: {
+                ...data,
+                challengeID: challengeId,
+              },
             },
           });
           break;
         case ProfileSubmitMode.updateOpportunity:
           updateOpportunity({
             variables: {
-              opportunityData: data,
-              ID: Number(opportunityId),
+              opportunityData: {
+                ...data,
+                ID: opportunityId,
+              },
             },
           });
           break;

@@ -25,33 +25,36 @@ export const QUERY_COMMUNITY_SEARCH = gql`
 
 export const QUERY_GROUP_CARD = gql`
   query groupCard($id: Float!) {
-    group(ID: $id) {
-      __typename
-      name
-      parent {
+    ecoverse {
+      id
+      group(ID: $id) {
         __typename
-        ... on Community {
-          name
-        }
-        ... on Organisation {
-          name
-        }
-      }
-      members {
-        id
         name
-      }
-      profile {
-        id
-        avatar
-        description
-        references {
-          name
-          description
+        parent {
+          __typename
+          ... on Community {
+            name
+          }
+          ... on Organisation {
+            name
+          }
         }
-        tagsets {
+        members {
+          id
           name
-          tags
+        }
+        profile {
+          id
+          avatar
+          description
+          references {
+            name
+            description
+          }
+          tagsets {
+            name
+            tags
+          }
         }
       }
     }

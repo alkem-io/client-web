@@ -36,6 +36,9 @@ export const USER_MEMBER_OF_FRAGMENT = gql`
         id
         name
         type
+        groups {
+          name
+        }
       }
       organisations {
         id
@@ -75,10 +78,13 @@ export const QUERY_ECOVERSE_USER_IDS = gql`
 
 export const QUERY_CHALLENGE_USER_IDS = gql`
   query challengeUserIds($id: String!) {
-    challenge(ID: $id) {
-      community {
-        members {
-          id
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        community {
+          members {
+            id
+          }
         }
       }
     }
@@ -87,10 +93,13 @@ export const QUERY_CHALLENGE_USER_IDS = gql`
 
 export const QUERY_OPPORTUNITY_USER_IDS = gql`
   query opportunityUserIds($id: String!) {
-    opportunity(ID: $id) {
-      community {
-        members {
-          id
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        community {
+          members {
+            id
+          }
         }
       }
     }
