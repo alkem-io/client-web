@@ -17,7 +17,6 @@ import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 // import Tag from '../components/core/Tag';
-import { projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
@@ -38,9 +37,9 @@ import { PageProps } from './common';
 import ContextEdit from '../components/ContextEdit';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { CommunitySection } from '../components/Community/CommunitySection';
-import { community as communityTexts } from '../components/core/Typography.dummy.json';
 import { useHistory } from 'react-router-dom';
 import { replaceAll } from '../utils/replaceAll';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -82,6 +81,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   permissions,
   onProjectTransition,
 }): React.ReactElement => {
+  const { t } = useTranslation();
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
@@ -424,7 +424,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
       <Divider />
       <CommunitySection
-        title={communityTexts.header}
+        title={t('community.header')}
         subTitle={'The heroes working on this opportunity'}
         users={users}
         shuffle={true}
@@ -433,7 +433,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
+        <SectionHeader text={t('project.header')} tagText={'Coming soon'} />
         <SubHeader text={'Changing the world one project at a time'} />
         <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
       </Section>

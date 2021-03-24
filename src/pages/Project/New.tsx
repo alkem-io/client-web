@@ -1,12 +1,12 @@
 import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
 import React, { FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import TextInput, { TextArea } from '../../components/core/TextInput';
-import { projects as projectTexts } from '../../components/core/Typography.dummy.json';
 import { ContentCard } from '../../components/Project/Cards';
 import { Project as ProjectType, User } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
@@ -51,6 +51,7 @@ const createTextId = (value: string) => {
 };
 
 const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.ReactElement => {
+  const { t } = useTranslation();
   const styles = useStyles();
   const history = useHistory();
 
@@ -69,7 +70,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
       <Section avatar={<Icon component={FileEarmarkPostIcon} color="primary" size="xl" />}>
         <SectionHeader text={'new project'} />
         <SubHeader text={'This could be the project that makes the difference'} />
-        <Body text={projectTexts.new_project}></Body>
+        <Body text={t('projects.new-project')}></Body>
         <ContentCard title="Project name & description">
           <TextInput label="project name" value={name} error={!name} onChange={e => setName(e.target.value)} />
           <div className={styles.spacer}></div>

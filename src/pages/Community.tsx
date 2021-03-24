@@ -12,14 +12,16 @@ import MultipleSelect from '../components/core/MultipleSelect';
 import Typography from '../components/core/Typography';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import { tags as _tags } from '../components/core/Typography.dummy.json';
 import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
 import { PageProps } from './common';
 import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { Organisation, User, UserGroup } from '../generated/graphql';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
+import { useTranslation } from 'react-i18next';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
+  const { t } = useTranslation();
+
   const filtersConfig = {
     all: {
       title: 'No filters',
@@ -42,6 +44,42 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       typename: 'Organisation',
     },
   };
+  // TODO [ATS]: Read most used tags from backend
+  const _tags = [
+    {
+      name: 'innovation',
+    },
+    {
+      name: 'non-profit',
+    },
+    {
+      name: 'blockchain',
+    },
+    {
+      name: 'AI',
+    },
+    {
+      name: 'front-end development',
+    },
+    {
+      name: 'back-end development',
+    },
+    {
+      name: 'good',
+    },
+    {
+      name: 'data',
+    },
+    {
+      name: 'api',
+    },
+    {
+      name: 'arificial intelligence',
+    },
+    {
+      name: 'incubator',
+    },
+  ];
 
   const [community, setCommunity] = useState<Array<User | UserGroup | Organisation>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
@@ -90,14 +128,14 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'Community'} />
-        <SubHeader text={'Need help? Find skilled masters within the ecosystem'} className={'mb-4'} />
+        <SectionHeader text={t('community.header')} />
+        <SubHeader text={t('community.alternativesubheader')} className={'mb-4'} />
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
           onInput={value => (searchTerm = value)}
           onSearch={handleSearch}
-          elements={_tags.list}
+          elements={_tags}
           allowUnknownValues
         />
       </Section>

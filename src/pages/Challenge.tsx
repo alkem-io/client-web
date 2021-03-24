@@ -5,6 +5,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
@@ -16,7 +17,6 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { community as communityTexts, projects as projectTexts } from '../components/core/Typography.dummy.json';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
@@ -120,6 +120,7 @@ const useChallengeStyles = createStyles(theme => ({
 }));
 
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
   const { isAuthenticated } = useAuthenticate();
   const history = useHistory();
@@ -274,8 +275,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
         <CommunitySection
-          title={communityTexts.header}
-          subTitle={communityTexts.subheader}
+          title={t('community.header')}
+          subTitle={t('community.subheader')}
           body={who}
           users={users}
           onExplore={() => history.push('/community')}
@@ -299,7 +300,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'projects'}>
         <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-          <SectionHeader text={projectTexts.header} tagText={'Coming soon'} />
+          <SectionHeader text={t('project.header')} tagText={'Coming soon'} />
           <SubHeader text={'Changing the world one project at a time'} />
           <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
         </Section>
