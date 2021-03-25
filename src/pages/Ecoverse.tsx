@@ -4,6 +4,7 @@ import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-o
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
@@ -13,11 +14,6 @@ import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import {
-  challenges as challengeLabels,
-  community,
-  projects as projectTexts,
-} from '../components/core/Typography.dummy.json';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
@@ -59,6 +55,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   challenges: challengesQuery,
   users = [],
 }): React.ReactElement => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
   const user = useUserContext();
@@ -177,7 +174,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
       </Section>
       <Divider />
       <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
-        <SectionHeader text={challengeLabels.header} />
+        <SectionHeader text={t('challenges.header')} />
         <SubHeader text={background} />
         <Body text={impact} />
       </Section>
@@ -206,10 +203,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
         <CommunitySection
-          title={community.header}
+          title={t('community.header')}
           subTitle={'The heroes working on this challenge'}
           users={users}
-          body={community.body}
+          body={t('community.body')}
           shuffle={true}
           onExplore={() => history.push('/community')}
         />
@@ -219,8 +216,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
         {ecoverseProjects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-              <SectionHeader text={projectTexts.header} tagText={'Work in progress'} />
-              <SubHeader text={`${projectTexts.subheader} ${name} Evoverse`} />
+              <SectionHeader text={t('projects.header')} tagText={'Work in progress'} />
+              <SubHeader text={t('projects.subheader', { ecoverse: name })} />
             </Section>
             {isAuthenticated && (
               <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>

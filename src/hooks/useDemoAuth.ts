@@ -79,7 +79,7 @@ export const useDemoAuth = () => {
       if (!demoAuthProvider) return;
       dispatch(updateStatus('userRegistration'));
       const result = await axios.post<RegisterResult>(
-        '/auth/register',
+        `${demoAuthProvider.issuer}/auth/register`,
         {
           email,
           password,
