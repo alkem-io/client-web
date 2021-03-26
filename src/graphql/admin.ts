@@ -109,6 +109,10 @@ export const QUERY_ECOVERSE_CHALLENGES_LIST = gql`
       challenges {
         id
         name
+        community {
+          id
+          name
+        }
       }
     }
   }
@@ -150,6 +154,10 @@ export const QUERY_CHALLENGE_NAME = gql`
       challenge(ID: $id) {
         id
         name
+        community {
+          id
+          name
+        }
       }
     }
   }

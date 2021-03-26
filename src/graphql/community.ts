@@ -1,5 +1,27 @@
 import { gql } from '@apollo/client';
 
+export const COMMUNITY_DETAILS_FRAGMENT = gql`
+  fragment CommunityDetails on Community {
+    id
+    name
+    type
+    applications {
+      id
+    }
+    groups {
+      id
+      name
+      members {
+        id
+        name
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;
+
 export const QUERY_COMMUNITY_SEARCH = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {

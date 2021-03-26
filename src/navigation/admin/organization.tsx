@@ -98,10 +98,10 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
         <OrganizationGroups paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateGroupPage action={'createOrganizationGroup'} paths={currentPaths} />
+        <CreateGroupPage action={'createGroupOnOrganisation'} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} />
+        <GroupPage paths={currentPaths} parentMembers={[]} />
       </Route>
     </Switch>
   );

@@ -55,13 +55,13 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunityGroups paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups/new`}>
-        <CreateGroupPage action={'createOpportunityGroup'} paths={currentPaths} />
+        <CreateGroupPage action={'createCommunityGroup'} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
         <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/groups/:groupId`}>
-        <GroupPage paths={currentPaths} />
+        <GroupPage paths={currentPaths} parentMembers={[]} />
       </Route>
     </Switch>
   );

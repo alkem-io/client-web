@@ -34,10 +34,10 @@ export const GroupsRoute: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateGroupPage action={'createEcoverseGroup'} paths={currentPaths} />
+        <CreateGroupPage action={'createCommunityGroup'} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} />
+        <GroupPage paths={currentPaths} parentMembers={[]} />
       </Route>
       <Route path="*">
         <FourOuFour />

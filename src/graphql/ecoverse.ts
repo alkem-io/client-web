@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { COMMUNITY_DETAILS_FRAGMENT } from './community';
 
 export const QUERY_ECOVERSE_DETAILS = gql`
   query ecoverseInfo {
@@ -15,6 +16,10 @@ export const QUERY_ECOVERSE_DETAILS = gql`
           name
           uri
         }
+      }
+      community {
+        id
+        name
       }
     }
   }
@@ -100,4 +105,16 @@ export const QUERY_ECOVERSE_HOST_REFERENCES = gql`
       }
     }
   }
+`;
+
+export const QUERY_ECOVERSE_COMMUNITY = gql`
+  query ecoverseCommunity {
+    ecoverse {
+      id
+      community {
+        ...CommunityDetails
+      }
+    }
+  }
+  ${COMMUNITY_DETAILS_FRAGMENT}
 `;

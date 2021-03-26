@@ -8,12 +8,7 @@ import { PageProps } from '../../../pages';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 
 interface Props extends PageProps {
-  action:
-    | 'updateGroup'
-    | 'createEcoverseGroup'
-    | 'createChallengeGroup'
-    | 'createOpportunityGroup'
-    | 'createOrganizationGroup';
+  action: 'updateGroup' | 'createCommunityGroup' | 'createGroupOnOrganisation';
 }
 
 interface Params {

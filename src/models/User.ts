@@ -77,3 +77,11 @@ export interface UserFromGenerated {
   gender: string;
   bio: string;
 }
+
+export interface Member {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

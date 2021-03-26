@@ -5,24 +5,25 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/users' }],
     },
     {
-      name: 'Ecoverse groups',
+      name: 'Ecoverse community',
       buttons: [
-        { description: 'Manage', url: '/groups' },
-        { description: 'Create New', url: '/groups/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+        { description: 'Applications', url: '/community/applications' },
       ],
     },
     {
       name: 'Challenges',
       buttons: [
         { description: 'Manage', url: '/challenges' },
-        { description: 'Create New', url: '/challenges/new' },
+        { description: 'New', url: '/challenges/new' },
       ],
     },
     {
       name: 'Organizations',
       buttons: [
         { description: 'Manage', url: '/organizations' },
-        { description: 'Create New', url: '/organizations/new' },
+        { description: 'New', url: '/organizations/new' },
       ],
     },
   ],
@@ -32,17 +33,18 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
-      name: 'Challenge groups',
+      name: 'Challenge community',
       buttons: [
-        { description: 'Manage groups', url: '/groups' },
-        { description: 'Create new', url: '/groups/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+        { description: 'Applications', url: '/community/applications' },
       ],
     },
     {
       name: 'Opportunities',
       buttons: [
         { description: 'Manage', url: '/opportunities' },
-        { description: 'Create new', url: '/opportunities/new' },
+        { description: 'New', url: '/opportunities/new' },
       ],
     },
   ],
@@ -52,10 +54,11 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
-      name: 'Opportunity groups',
+      name: 'Opportunity community',
       buttons: [
-        { description: 'Manage groups', url: '/groups' },
-        { description: 'Create new', url: '/groups/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+        { description: 'Applications', url: '/community/applications' },
       ],
     },
   ],
@@ -67,8 +70,8 @@ export const managementData = {
     {
       name: 'Organization groups',
       buttons: [
-        { description: 'Manage groups', url: '/groups' },
-        { description: 'Create new', url: '/groups/new' },
+        { description: 'Manage', url: '/community/groups' },
+        { description: 'New', url: '/community/groups/new' },
       ],
     },
   ],
