@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { COMMUNITY_DETAILS_FRAGMENT } from './community';
 
 export const QUERY_CHALLENGE_PROFILE = gql`
   query challengeProfile($id: String!) {
@@ -98,4 +99,20 @@ export const NEW_CHALLENGE_FRAGMENT = gql`
     id
     name
   }
+`;
+
+export const QUERY_CHALLENGE_COMMUNITY = gql`
+  query challengeCommunity($id: String!) {
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        id
+        name
+        community {
+          ...CommunityDetails
+        }
+      }
+    }
+  }
+  ${COMMUNITY_DETAILS_FRAGMENT}
 `;

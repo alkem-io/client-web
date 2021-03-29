@@ -1,9 +1,8 @@
-import { ApolloError, gql } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
 import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import UserForm from './UserForm';
 import {
   useCreateUserMutation,
   useRemoveUserMutation,
@@ -14,11 +13,12 @@ import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
+import { EditMode } from '../../../utils/editMode';
 import Button from '../../core/Button';
 import { Loading } from '../../core/Loading';
 import PasswordPrompt from '../PasswordPrompt';
+import UserForm from './UserForm';
 import UserRemoveModal from './UserRemoveModal';
-import { EditMode } from '../../../utils/editMode';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
@@ -90,9 +90,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
             users(existingUsers = []) {
               const newUserRef = cache.writeFragment({
                 data: createUser,
-                fragment: gql`
-                  ${USER_DETAILS_FRAGMENT}
-                `,
+                fragment: USER_DETAILS_FRAGMENT,
               });
               return [...existingUsers, newUserRef];
             },
