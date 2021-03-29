@@ -1252,7 +1252,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
           context?: Maybe<
             { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
                 references?: Maybe<
@@ -1377,7 +1377,7 @@ export type ChallengeProfileQueryVariables = Exact<{
 
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
           context?: Maybe<
             { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
                 references?: Maybe<
@@ -1391,7 +1391,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
           opportunities?: Maybe<
             Array<
-              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'state' | 'textID'> & {
                   context?: Maybe<
                     { __typename?: 'Context' } & {
                       references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -1445,6 +1445,8 @@ export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
         };
     };
 };
+
+export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
@@ -2007,6 +2009,12 @@ export const GroupMembersFragmentDoc = gql`
 `;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
+    id
+    name
+  }
+`;
+export const GroupDetailsFragmentDoc = gql`
+  fragment groupDetails on UserGroup {
     id
     name
   }
@@ -3037,6 +3045,7 @@ export const ChallengeProfileInfoDocument = gql`
         id
         textID
         name
+        state
         context {
           tagline
           background
@@ -3602,13 +3611,11 @@ export const ChallengeProfileDocument = gql`
   query challengeProfile($id: String!) {
     ecoverse {
       id
-      id
-      id
-      id
       challenge(ID: $id) {
         id
         textID
         name
+        state
         context {
           tagline
           background
@@ -3634,6 +3641,7 @@ export const ChallengeProfileDocument = gql`
         opportunities {
           id
           name
+          state
           textID
           context {
             references {

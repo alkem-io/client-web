@@ -1,9 +1,10 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import Typography from '../../core/Typography';
 import InputField from './InputField';
 import * as yup from 'yup';
+import Button from '../../core/Button';
 
 interface CreateGroupFormProps {
   onCreate: (name: string) => Promise<void>;
