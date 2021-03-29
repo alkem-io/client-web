@@ -14,7 +14,7 @@ import {
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
-import CommunityRoute from './community';
+import { CommunityRoute } from './community';
 import { OpportunitiesRoutes } from './opportunity';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {

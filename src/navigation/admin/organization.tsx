@@ -15,9 +15,9 @@ import {
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { EditMode } from '../../utils/editMode';
-import { AdminParameters } from './admin';
+import { AdminParameters, WithParentMembersProps } from './admin';
 
-export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
+export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
   const { data: organizationsListQuery } = useOrganizationsListQuery();
 
@@ -46,7 +46,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:organizationId`}>
-        <OrganizationRoutes paths={currentPaths} />
+        <OrganizationRoutes paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -55,7 +55,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
   );
 };
 
-export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
+export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
 
@@ -77,7 +77,7 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
         <OrganizationPage organization={data?.organisation as Organisation} mode={EditMode.edit} paths={currentPaths} />
       </Route>
       <Route path={`${path}/groups`}>
-        <OrganizationGroupRoutes paths={currentPaths} />
+        <OrganizationGroupRoutes paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -86,7 +86,7 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   );
 };
 
-const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
+const OrganizationGroupRoutes: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
@@ -101,7 +101,7 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
         <CreateGroupPage action={'createGroupOnOrganisation'} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} parentMembers={[]} />
+        <GroupPage paths={currentPaths} parentMembers={parentMembers} />
       </Route>
     </Switch>
   );

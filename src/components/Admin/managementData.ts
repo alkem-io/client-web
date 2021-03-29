@@ -70,8 +70,8 @@ export const managementData = {
     {
       name: 'Organization groups',
       buttons: [
-        { description: 'Manage', url: '/community/groups' },
-        { description: 'New', url: '/community/groups/new' },
+        { description: 'Manage', url: '/groups' },
+        { description: 'New', url: '/groups/new' },
       ],
     },
   ],

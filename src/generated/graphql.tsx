@@ -1848,7 +1848,7 @@ export type OpportunityCommunityQueryVariables = Exact<{
 
 export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'> & {
           community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
         };
     };
@@ -5161,6 +5161,7 @@ export const OpportunityCommunityDocument = gql`
       id
       opportunity(ID: $id) {
         id
+        name
         community {
           ...CommunityDetails
         }

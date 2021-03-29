@@ -252,6 +252,7 @@ export const QUERY_OPPORTUNITY_COMMUNITY = gql`
       id
       opportunity(ID: $id) {
         id
+        name
         community {
           ...CommunityDetails
         }
