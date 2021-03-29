@@ -1,7 +1,7 @@
-import { gql } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { useCreateGroupOnOrganizationMutation, useOrganizationNameQuery } from '../../../generated/graphql';
+import { GROUP_DETAILS_FRAGMENT } from '../../../graphql/community';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -32,13 +32,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
             groups(existingGroups = []) {
               const newUserRef = cache.writeFragment({
                 data: newGroup,
-                // TODO: [ATS] Move this fragment outside.
-                fragment: gql`
-                  fragment userGroupDetails on UserGroup {
-                    id
-                    name
-                  }
-                `,
+                fragment: GROUP_DETAILS_FRAGMENT,
               });
               return [...existingGroups, newUserRef];
             },
@@ -48,14 +42,17 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
     },
   });
 
-  const handler = useCallback(async (name: string) => {
-    createGroup({
-      variables: {
-        orgID: Number(organizationId),
-        groupName: name,
-      },
-    });
-  }, []);
+  const handler = useCallback(
+    async (name: string) => {
+      createGroup({
+        variables: {
+          orgID: Number(organizationId),
+          groupName: name,
+        },
+      });
+    },
+    [organizationId]
+  );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });

@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client';
 
+export const GROUP_DETAILS_FRAGMENT = gql`
+  fragment groupDetails on UserGroup {
+    id
+    name
+  }
+`;
+
 export const COMMUNITY_DETAILS_FRAGMENT = gql`
   fragment CommunityDetails on Community {
     id
