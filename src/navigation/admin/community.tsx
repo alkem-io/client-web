@@ -1,22 +1,18 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { GroupPage, ListPage } from '../../components/Admin';
-import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
+import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { SearchableListItem } from '../../components/Admin/SearchableList';
-import { CommunityDetailsFragment } from '../../generated/graphql';
 import { FourOuFour } from '../../pages';
-import { WithParentMembersProps } from './admin';
 
-interface CommunityRouteProps extends WithParentMembersProps {
-  community?: CommunityDetailsFragment;
-}
+interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {}
 
 export const CommunityRoute: FC<CommunityRouteProps> = ({ paths, community, parentMembers }) => {
   const { path, url } = useRouteMatch();
 
   const groupId = community?.groups?.find(g => g.name.toLowerCase() === 'members')?.id || '';
-  console.log('Path: ', path);
-  console.log('Url: ', url);
+
   return (
     <Switch>
       <Route exact path={`${path}/members`}>
@@ -52,7 +48,7 @@ export const CommunityGroupsRoute: FC<CommunityRouteProps> = ({ paths, community
         />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateGroupPage action={'createCommunityGroup'} paths={currentPaths} />
+        <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} parentMembers={parentMembers} />

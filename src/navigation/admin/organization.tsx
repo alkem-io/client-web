@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
+import { WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
@@ -15,7 +16,7 @@ import {
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { EditMode } from '../../utils/editMode';
-import { AdminParameters, WithParentMembersProps } from './admin';
+import { AdminParameters } from './admin';
 
 export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
@@ -98,7 +99,7 @@ const OrganizationGroupRoutes: FC<WithParentMembersProps> = ({ paths, parentMemb
         <OrganizationGroups paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateGroupPage action={'createGroupOnOrganisation'} paths={currentPaths} />
+        <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
         <GroupPage paths={currentPaths} parentMembers={parentMembers} />

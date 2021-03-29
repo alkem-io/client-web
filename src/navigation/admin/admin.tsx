@@ -6,8 +6,7 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import Loading from '../../components/core/Loading';
 import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
-import { Member } from '../../models/User';
-import { FourOuFour, PageProps } from '../../pages';
+import { FourOuFour } from '../../pages';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import { OrganizationsRoute } from './organization';
@@ -18,11 +17,6 @@ export interface AdminParameters {
   organizationId: string;
   groupId: string;
 }
-
-export interface WithParentMembersProps extends PageProps {
-  parentMembers: Member[];
-}
-
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
