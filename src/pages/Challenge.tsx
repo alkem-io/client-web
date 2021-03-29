@@ -300,7 +300,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'projects'}>
         <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-          <SectionHeader text={t('project.header')} tagText={'Coming soon'} />
+          <SectionHeader text={t('projects.header')} tagText={'Coming soon'} />
           <SubHeader text={'Changing the world one project at a time'} />
           <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
         </Section>

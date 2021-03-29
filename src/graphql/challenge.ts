@@ -5,13 +5,11 @@ export const QUERY_CHALLENGE_PROFILE = gql`
   query challengeProfile($id: String!) {
     ecoverse {
       id
-      id
-      id
-      id
       challenge(ID: $id) {
         id
         textID
         name
+        state
         context {
           tagline
           background
@@ -38,6 +36,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
         opportunities {
           id
           name
+          state
           textID
           context {
             references {
