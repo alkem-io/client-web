@@ -68,6 +68,9 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, 
   const { references } = context || {};
   const visual = references?.find(x => x.name === 'poster');
 
+  let statusTxt = '';
+  if (state) statusTxt = `Status: ${state}`;
+
   return (
     <Card
       classes={{
@@ -86,7 +89,7 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, 
         },
       }}
       tagProps={{
-        text: state || '',
+        text: statusTxt,
         color: 'background',
       }}
     >
