@@ -273,6 +273,7 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
         id
         textID
         name
+        state
         context {
           tagline
           background

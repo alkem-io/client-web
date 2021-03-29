@@ -64,7 +64,7 @@ interface OpportunityCardProps extends Opportunity {
   url: string;
 }
 
-export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url }) => {
+export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, state }) => {
   const { references } = context || {};
   const visual = references?.find(x => x.name === 'poster');
 
@@ -84,6 +84,10 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url }
         classes: {
           color: (theme: Theme) => theme.palette.neutralLight,
         },
+      }}
+      tagProps={{
+        text: state || '',
+        color: 'background',
       }}
     >
       <div className="flex-grow-1"></div>
