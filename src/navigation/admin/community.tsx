@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { GroupPage, ListPage } from '../../components/Admin';
+import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { SearchableListItem } from '../../components/Admin/SearchableList';
@@ -22,7 +23,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({ paths, community, pare
         <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
       </Route>
       <Route path={`${path}/applications`}>
-        <div>Applications</div>
+        <ApplicationPage paths={paths} />
       </Route>
     </Switch>
   );
