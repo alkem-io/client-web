@@ -10,6 +10,7 @@ import { FourOuFour } from '../../pages';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import { OrganizationsRoute } from './organization';
+import { UsersRoute } from './user';
 
 export interface AdminParameters {
   challengeId: string;
@@ -33,6 +34,9 @@ export const Admin: FC = () => {
       <Switch>
         <Route exact path={`${path}`}>
           <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
+        </Route>
+        <Route path={`${path}/users`}>
+          <UsersRoute paths={currentPaths} />
         </Route>
         <Route path={`${path}/community`}>
           <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
