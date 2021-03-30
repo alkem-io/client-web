@@ -9,6 +9,8 @@ export const PROVIDER_DEMO = 'demo-auth';
 
 export const WELCOME_PAGE = '/welcome';
 
+export const LOG_REFERNCE_NAME = 'logo';
+
 export enum CommunityType {
   ECOVERSE = 'ecoverse',
   CHALLENGE = 'challenge',
