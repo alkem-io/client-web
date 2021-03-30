@@ -32,7 +32,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
     user && (
       <User
         name={user.name}
-        title={roles[roles.length - 1] || 'unknown'}
+        title={roles[roles.length - 1] || 'Registered'}
         orientation={orientation}
         src={user.profile?.avatar}
       />
