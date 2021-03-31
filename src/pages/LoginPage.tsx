@@ -50,13 +50,15 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
     [login, dispatch]
   );
 
-  const demoProvider = useMemo(() => providers.find(x => x.config.__typename === 'DemoAuthProviderConfig'), [
-    providers,
-  ]);
+  const demoProvider = useMemo(
+    () => providers.filter(x => x.enabled).find(x => x.config.__typename === 'DemoAuthProviderConfig'),
+    [providers]
+  );
 
-  const nonDemoProviders = useMemo(() => providers.filter(x => x.config.__typename !== 'DemoAuthProviderConfig'), [
-    providers,
-  ]);
+  const nonDemoProviders = useMemo(
+    () => providers.filter(x => x.config.__typename !== 'DemoAuthProviderConfig' && x.enabled),
+    [providers]
+  );
 
   return (
     <Container fluid={'sm'}>
@@ -81,6 +83,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
                 block
                 onClick={() => authenticate().then(() => history.push('/'))}
                 className={'d-flex text-center justify-content-center'}
+                disabled={!provider.enabled}
               >
                 {provider.icon && (
                   <img src={provider.icon} style={{ maxHeight: '16px' }} alt={provider.label} className={'mr-2'} />
@@ -117,7 +120,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
                         <InputField
                           name={'username'}
                           title={'Email'}
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || !demoProvider.enabled}
                           value={values.username}
                           autoComplete={'username'}
                         />
@@ -126,7 +129,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
                         <InputField
                           name={'password'}
                           title={'Password'}
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || !demoProvider.enabled}
                           value={values.password}
                           type={'password'}
                           autoComplete={'password'}
@@ -134,7 +137,13 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
                       </Form.Row>
                       <div className={'d-flex mt-4'}>
                         <div className={'flex-grow-1'} />
-                        <Button variant="primary" type={'submit'} className={'ml-3'} disabled={isSubmitting} small>
+                        <Button
+                          variant="primary"
+                          type={'submit'}
+                          className={'ml-3'}
+                          disabled={isSubmitting || !demoProvider.enabled}
+                          small
+                        >
                           Sign in
                         </Button>
                       </div>
