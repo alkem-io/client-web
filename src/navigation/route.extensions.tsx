@@ -21,7 +21,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = []
   }
 
   if (!isAuthenticated) {
-    return <Redirect to={`/signin?redirect=${encodeURI(pathname)}`} />;
+    return <Redirect to={`/login?redirect=${encodeURI(pathname)}`} />;
   }
 
   if (allowedGroups.every(x => !user || !user.ofGroup(x, strict)) && allowedGroups.length !== 0) {
