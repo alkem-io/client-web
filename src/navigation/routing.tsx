@@ -13,7 +13,6 @@ import { Messages } from './messages';
 import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
 import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
-import { SignIn } from './signin';
 import WelcomeRoute from './welcome';
 /*local files imports end*/
 
@@ -61,9 +60,6 @@ export const Routing: FC = () => {
         <UserProfile />
       </RestrictedRoute>
 
-      <Route exact path="/signin">
-        <SignIn />
-      </Route>
       <Route exact path="/about">
         <AboutPage />
       </Route>

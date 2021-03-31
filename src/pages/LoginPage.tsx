@@ -16,6 +16,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 interface LoginPageProps {
   providers: AuthenticationProviderConfig[];
   logo?: string;
+  redirect?: string;
 }
 
 const validationSchema = yup.object().shape({
@@ -28,7 +29,7 @@ const initialValues = {
   password: '',
 };
 
-export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
+export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => {
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
   const history = useHistory();
@@ -41,7 +42,8 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo }) => {
     async (username: string, password: string) => {
       return login(username, password)
         .then(() => {
-          history.push('/');
+          if (redirect) history.push(redirect);
+          else history.push('/');
         })
         .catch((error: Error) => {
           setErrorMessage(error.message);
