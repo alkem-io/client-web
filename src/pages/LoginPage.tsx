@@ -34,7 +34,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
   useUpdateNavigation({ currentPaths });
   const history = useHistory();
   const dispatch = useDispatch();
-  const { authenticate } = useAuthenticate();
+  const { authenticate, status } = useAuthenticate();
   const { login } = useDemoAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -62,6 +62,10 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
     [providers]
   );
 
+  const disabled = useMemo(() => {
+    return status === 'authenticating';
+  }, [status]);
+
   return (
     <Container fluid={'sm'}>
       {logo && (
@@ -83,9 +87,9 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                 variant="primary"
                 small
                 block
-                onClick={() => authenticate().then(() => history.push('/'))}
+                onClick={() => authenticate().then(result => result && history.push('/'))}
                 className={'d-flex text-center justify-content-center'}
-                disabled={!provider.enabled}
+                disabled={!provider.enabled || disabled}
               >
                 {provider.icon && (
                   <img src={provider.icon} style={{ maxHeight: '16px' }} alt={provider.label} className={'mr-2'} />
@@ -122,7 +126,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                         <InputField
                           name={'username'}
                           title={'Email'}
-                          disabled={isSubmitting || !demoProvider.enabled}
+                          disabled={isSubmitting || !demoProvider.enabled || disabled}
                           value={values.username}
                           autoComplete={'username'}
                         />
@@ -131,7 +135,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                         <InputField
                           name={'password'}
                           title={'Password'}
-                          disabled={isSubmitting || !demoProvider.enabled}
+                          disabled={isSubmitting || !demoProvider.enabled || disabled}
                           value={values.password}
                           type={'password'}
                           autoComplete={'password'}
@@ -143,7 +147,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                           variant="primary"
                           type={'submit'}
                           className={'ml-3'}
-                          disabled={isSubmitting || !demoProvider.enabled}
+                          disabled={isSubmitting || !demoProvider.enabled || disabled}
                           small
                         >
                           Sign in
@@ -158,7 +162,14 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                 <Typography variant={'h5'} className={'mb-2'}>
                   Don't have an account?
                 </Typography>
-                <Button variant="primary" type={'submit'} small block onClick={() => history.push('/register')}>
+                <Button
+                  variant="primary"
+                  type={'submit'}
+                  small
+                  block
+                  onClick={() => history.push('/register')}
+                  disabled={disabled}
+                >
                   Sign up
                 </Button>
               </div>

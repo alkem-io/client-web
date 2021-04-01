@@ -1,13 +1,16 @@
-import React, { FC, useContext, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { Loading } from '../components/core/Loading';
-import { configContext } from '../context/ConfigProvider';
+import { useConfig } from '../hooks/useConfig';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useQueryParams } from '../hooks/useQueryParams';
 import { LOGO_REFERNCE_NAME } from '../models/Constants';
 import LoginPage from '../pages/LoginPage';
+import { hideLoginNavigation, showLoginNavigation } from '../reducers/ui/loginNavigation/actions';
 
 export const LoginRoute: FC = () => {
-  const { loading, config } = useContext(configContext);
+  const { loading, authentication } = useConfig();
+  const dispatch = useDispatch();
   const ecoverse = useEcoverse();
   const params = useQueryParams();
   const redirect = params.get('redirect');
@@ -16,11 +19,18 @@ export const LoginRoute: FC = () => {
     [ecoverse]
   );
 
+  useEffect(() => {
+    dispatch(hideLoginNavigation());
+    return () => {
+      dispatch(showLoginNavigation());
+    };
+  }, []);
+
   if (loading) {
     return <Loading text={'Loading config'} />;
   }
 
-  return <LoginPage providers={config.authentication.providers} logo={logo} redirect={redirect ?? undefined} />;
+  return <LoginPage providers={authentication.providers} logo={logo} redirect={redirect ?? undefined} />;
 };
 
 export default LoginRoute;

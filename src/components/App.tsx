@@ -1,5 +1,5 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { FC, useRef } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { UserMetadata } from '../context/UserProvider';
 import { useAuthenticate } from '../hooks/useAuthenticate';
@@ -20,6 +20,8 @@ import User from './layout/User';
 import NavRings from './NavRings';
 import { useServerMetadataQuery } from '../generated/graphql';
 import { useHistory } from 'react-router-dom';
+import { useConfig } from '../hooks/useConfig';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -41,8 +43,10 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
-  const { safeAuthenticate, safeUnauthenticate, isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticate();
   const { user, loading } = useUserContext();
+  const { authentication, loading: configLoading } = useConfig();
+  const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   useUserScope(user);
@@ -64,7 +68,12 @@ const App = ({ children }): React.ReactElement => {
     },
   });
 
-  if (loading) {
+  const registrationEnabled = useMemo(
+    () => authentication.providers.find(x => x.config.__typename === 'DemoAuthProviderConfig')?.enabled || false,
+    [authentication]
+  );
+
+  if (loading || configLoading) {
     return <Loading text={'Loading Application ...'} />;
   }
 
@@ -76,30 +85,29 @@ const App = ({ children }): React.ReactElement => {
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
             {user && <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />}
             <div style={{ display: 'flex', flexGrow: 1 }} />
-            <Navigation
-              maximize={isVisible}
-              userMetadata={user}
-              onSignIn={safeAuthenticate}
-              onSignOut={safeUnauthenticate}
-            />
-            {!isAuthenticated && (
-              <Button
-                text={'Sign in'}
-                style={{ marginLeft: 20 }}
-                onClick={() => {
-                  history.push('/login');
-                }}
-                small
-              />
-            )}
-            {!isAuthenticated && (
-              <Button
-                text={'Sign up'}
-                style={{ marginLeft: 20 }}
-                onClick={() => history.push('/register')}
-                small
-                variant={'default'}
-              />
+            <Navigation maximize={isVisible} userMetadata={user} />
+            {loginVisible && (
+              <>
+                {!isAuthenticated && (
+                  <Button
+                    text={'Sign in'}
+                    style={{ marginLeft: 20 }}
+                    onClick={() => {
+                      history.push('/login');
+                    }}
+                    small
+                  />
+                )}
+                {!isAuthenticated && registrationEnabled && (
+                  <Button
+                    text={'Sign up'}
+                    style={{ marginLeft: 20 }}
+                    onClick={() => history.push('/register')}
+                    small
+                    variant={'default'}
+                  />
+                )}
+              </>
             )}
           </div>
         )}

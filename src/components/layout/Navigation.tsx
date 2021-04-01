@@ -21,8 +21,6 @@ import { useAuthenticate } from '../../hooks/useAuthenticate';
 interface NavigationProps {
   maximize: boolean;
   userMetadata: UserMetadata | undefined;
-  onSignIn: () => void;
-  onSignOut: () => void;
 }
 
 const useNavigationStyles = createStyles(theme => ({
