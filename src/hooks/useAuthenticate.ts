@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AuthContext } from '../context/AuthenticationProvider';
-import { AUTH_PROVIDER_KEY, PROVIDER_MSAL, PROVIDER_DEMO } from '../models/Constants';
+import { AUTH_PROVIDER_KEY, PROVIDER_DEMO, PROVIDER_MSAL } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthActionTypes } from '../reducers/auth/types';
 import { pushError } from '../reducers/error/actions';
@@ -22,24 +22,40 @@ const authenticate = async (
   dispatch(updateStatus('authenticating'));
 
   localStorage.setItem(AUTH_PROVIDER_KEY, 'msal');
+  try {
+    const result = await context.signIn();
 
-  const result = await context.signIn();
+    if (result && result.account) {
+      const username = result.account.username;
+      try {
+        const tokenResult = await context.acquireToken(username);
 
-  if (result && result.account) {
-    const username = result.account.username;
-    const tokenResult = await context.acquireToken(username);
-    if (tokenResult) {
-      dispatch(updateToken(tokenResult.accessToken));
+        if (tokenResult) {
+          dispatch(updateToken(tokenResult.accessToken));
+          await resetStore(client);
+          dispatch(updateStatus('done'));
+        }
+      } catch (err) {
+        dispatch(updateToken());
+        dispatch(updateStatus('unauthenticated'));
+        if (err && err.errorCode && err.errorCode !== 'user_cancelled') {
+          throw err;
+        }
+      }
+    } else {
+      dispatch(updateToken());
       await resetStore(client);
       dispatch(updateStatus('done'));
     }
-  } else {
-    dispatch(updateToken());
-    await resetStore(client);
-    dispatch(updateStatus('done'));
-  }
 
-  return result;
+    return result;
+  } catch (err) {
+    dispatch(updateToken());
+    dispatch(updateStatus('unauthenticated'));
+    if (err && err.errorCode && err.errorCode !== 'user_cancelled') {
+      throw err;
+    }
+  }
 };
 
 const refresh = async (
@@ -126,6 +142,7 @@ export const useAuthenticate = () => {
     return authenticateWired().catch(ex => {
       const error = new Error(ex);
       logError(error, scope => scope.setTag('authentication', 'signin'));
+      dispatch(updateStatus('unauthenticated'));
       dispatch(pushError(new Error(ex)));
     });
   }, [authenticateWired, dispatch]);

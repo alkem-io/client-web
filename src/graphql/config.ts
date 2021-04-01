@@ -9,6 +9,7 @@ export const QUERY_CONFIG = gql`
           name
           label
           icon
+          enabled
           config {
             __typename
             ... on AadAuthProviderConfig {

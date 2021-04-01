@@ -412,6 +412,8 @@ export type Mutation = {
   removeRelation: Scalars['Boolean'];
   /** Removes the specified user profile. */
   removeUser: User;
+  /** Removes the user with the given identifier as a member of the specified Community */
+  removeUserFromCommunity: UserGroup;
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes the user group with the specified ID */
@@ -587,6 +589,11 @@ export type MutationRemoveRelationArgs = {
 };
 
 export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
+export type MutationRemoveUserFromCommunityArgs = {
+  communityID: Scalars['Float'];
   userID: Scalars['Float'];
 };
 
@@ -1519,7 +1526,7 @@ export type ConfigQuery = { __typename?: 'Query' } & {
         providers: Array<
           { __typename?: 'AuthenticationProviderConfig' } & Pick<
             AuthenticationProviderConfig,
-            'name' | 'label' | 'icon'
+            'name' | 'label' | 'icon' | 'enabled'
           > & {
               config:
                 | ({ __typename: 'AadAuthProviderConfig' } & {
@@ -3981,6 +3988,7 @@ export const ConfigDocument = gql`
           name
           label
           icon
+          enabled
           config {
             __typename
             ... on AadAuthProviderConfig {

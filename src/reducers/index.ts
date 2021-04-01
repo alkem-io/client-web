@@ -7,15 +7,22 @@ import notifications from './notifincations/reducers';
 import { NotificationActionTypes } from './notifincations/types';
 import profile from './profile/reducers';
 import { ProfileActionTypes } from './profile/types';
+import ui, { UiStoreActions } from './ui';
 
 const rootReducer = combineReducers({
   auth,
   profile,
   error,
   notifications,
+  ui,
 });
 
 export default rootReducer;
 
 export type RootState = ReturnType<typeof rootReducer>;
-export type StoreActions = AuthActionTypes | ProfileActionTypes | ErrorActionTypes | NotificationActionTypes;
+export type StoreActions =
+  | AuthActionTypes
+  | ProfileActionTypes
+  | ErrorActionTypes
+  | NotificationActionTypes
+  | UiStoreActions;
