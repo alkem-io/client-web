@@ -1,15 +1,103 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
-import { Button, ImageProps, Image as BootstrapImage, Spinner } from 'react-bootstrap';
+import React, { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from 'react';
+import { Button, Image as BootstrapImage, ImageProps, Spinner } from 'react-bootstrap';
+import { useUploadFileMutation } from '../generated/graphql';
 
 interface TestPageProps {}
 
 export const TestPage: FC<TestPageProps> = () => {
+  const [uploadFile, { loading: saving }] = useUploadFileMutation();
+
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
+    debugger;
+    // const errs = [];
+    console.log(e);
+    const file = e && e.target && e.target.files && e.target.files[0];
+    if (file) {
+      uploadFile({
+        variables: {
+          file,
+        },
+      });
+    }
+    // const files = Array.from(e.target.files);
+
+    // if (files.length > 3) {
+    //   const msg = 'Only 3 images can be uploaded at a time';
+    //   return this.toast(msg, 'custom', 2000, toastColor);
+    // }
+
+    // const formData = new FormData();
+    // const types = ['image/png', 'image/jpeg', 'image/gif'];
+
+    // files.forEach((file, i) => {
+    //   if (types.every(type => file.type !== type)) {
+    //     errs.push(`'${file.type}' is not a supported format`);
+    //   }
+
+    //   if (file.size > 150000) {
+    //     errs.push(`'${file.name}' is too large, please pick a smaller file`);
+    //   }
+
+    //   formData.append(i, file);
+    // });
+
+    // if (errs.length) {
+    //   return errs.forEach(err => this.toast(err, 'custom', 2000, toastColor));
+    // }
+
+    // this.setState({ uploading: true });
+
+    // fetch(`${API_URL}/image-upload`, {
+    //   method: 'POST',
+    //   body: formData,
+    // })
+    //   .then(res => {
+    //     if (!res.ok) {
+    //       throw res;
+    //     }
+    //     return res.json();
+    //   })
+    //   .then(images => {
+    //     this.setState({
+    //       uploading: false,
+    //       images,
+    //     });
+    //   })
+    //   .catch(err => {
+    //     err.json().then(e => {
+    //       this.toast(e.message, 'custom', 2000, toastColor);
+    //       this.setState({ uploading: false });
+    //     });
+    //   });
+  };
+  if (saving) return <div>Uploading!</div>;
   return (
     <Button>
-      <input type="file" accept={'image/*'} />;
+      <input type="file" accept={'image/*'} onChange={handleFile} />;
     </Button>
   );
+  // return <FileInput />;
 };
+
+export const FileInput: FC = () => {
+  const ref = useRef<HTMLInputElement>(null);
+  const handleFile = (e: FormEvent) => {
+    e.preventDefault();
+    if (ref && ref.current && ref.current.files) alert(`Selected file - ${ref.current.files[0].name}`);
+  };
+
+  return (
+    <form onSubmit={handleFile}>
+      <label>
+        Upload file:
+        <input type="file" ref={ref} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
 export default TestPage;
 
 // interface ImageProps extends Imag {

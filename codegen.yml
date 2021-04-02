@@ -8,5 +8,7 @@ generates:
       - "typescript-operations"
       - "typescript-react-apollo"
     config:
+      scalars:
+        Upload: File
       withHooks: true
       maybeValue: T | undefined
