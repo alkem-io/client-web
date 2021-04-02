@@ -38,7 +38,7 @@ export const WelcomePage: FC<WelcomePageProps> = () => {
         <SubHeader text={tagline} />
       </Section>
       <div>
-        <Typography variant={'h4'}>
+        <Typography variant={'h5'} className={'mb-4'}>
           Thank you for signing up - you are now a registered user on the platform and can explore the challenges hosted
           here further.
         </Typography>
@@ -77,9 +77,18 @@ export const WelcomePage: FC<WelcomePageProps> = () => {
         </Typography>
 
         <Typography>
-          Once you are a member of the Ecoverse then there are additional options: * Contribute: After browsing the
-          Challenges and Opportunites, join those that you want to contribute to and apply to join them. * Connect to
-          other members [link to search] functionality to find other relevant members , groups, organisations.
+          Once you are a member of the Ecoverse then there are additional options:
+          <ul>
+            <li>
+              <strong>Contribute</strong>: After browsing the Challenges and Opportunites, join those that you want to
+              contribute to and apply to join them.
+            </li>
+            <li>
+              <Link to={'/community'}>
+                <strong>Connect to other members.</strong>
+              </Link>
+            </li>
+          </ul>
         </Typography>
 
         <Typography>As with any community, the more everyone brings in the more everyone gets out!</Typography>
