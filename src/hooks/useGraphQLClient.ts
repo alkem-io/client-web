@@ -1,16 +1,9 @@
-import {
-  ApolloLink,
-  createHttpLink,
-  from,
-  fromPromise,
-  InMemoryCache,
-  NormalizedCacheObject,
-  Operation,
-} from '@apollo/client';
+import { ApolloLink, from, fromPromise, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { createUploadLink } from 'apollo-upload-client';
 import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -163,7 +156,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     });
   });
 
-  const httpLink = createHttpLink({
+  const httpLink = createUploadLink({
     uri: graphQLEndpoint,
   });
 
@@ -194,8 +187,11 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     a failure on the server-side because _typename is not specified
     in the schema. This middleware removes it.
   */
+  // TODO [ATS] Find a way around this
   const omitTypenameLink = new ApolloLink((operation, forward) => {
+    debugger;
     if (operation.variables) {
+      // DOES NOT WORK WITH UPLOAD
       operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
     }
     return forward ? forward(operation) : null;
@@ -205,6 +201,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     console.log('Create apollo client!');
     return new ApolloClient({
       link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
+      // link: from([authLink, errorLink, retryLink, consoleLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
     });
   }, [dispatch]);

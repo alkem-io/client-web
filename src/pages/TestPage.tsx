@@ -1,24 +1,22 @@
+import { useMutation } from '@apollo/client';
 import React, { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { Button, Image as BootstrapImage, ImageProps, Spinner } from 'react-bootstrap';
-import { useUploadFileMutation } from '../generated/graphql';
+import { UPLOAD_FILE_MUTATION } from '../graphql/upload';
 
 interface TestPageProps {}
 
 export const TestPage: FC<TestPageProps> = () => {
-  const [uploadFile, { loading: saving }] = useUploadFileMutation();
+  const [uploadFile, { loading: saving }] = useMutation(UPLOAD_FILE_MUTATION);
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    debugger;
-    // const errs = [];
-    console.log(e);
     const file = e && e.target && e.target.files && e.target.files[0];
-    if (file) {
+    const valid = e?.target?.validity?.valid;
+    if (valid) {
       uploadFile({
-        variables: {
-          file,
-        },
+        variables: { file },
       });
     }
+
     // const files = Array.from(e.target.files);
 
     // if (files.length > 3) {
