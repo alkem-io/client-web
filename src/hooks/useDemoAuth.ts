@@ -52,7 +52,7 @@ export const useDemoAuth = () => {
           throw new Error(error.response.data.message);
         } else if (error.request) {
           // The request was made but no response was received
-          console.log(error.request);
+          throw new Error('No connection to the Demo authentication server!');
         } else {
           // Something happened in setting up the request that triggered an Error
           throw new Error(error.message);

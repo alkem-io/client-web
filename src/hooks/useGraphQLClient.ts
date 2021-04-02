@@ -91,7 +91,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:
-          case ErrorStatus.UNAUTHENTICATED:
             if (status === 'done')
               return fromPromise(refreshToken())
                 .filter(value => Boolean(value))

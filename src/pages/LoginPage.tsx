@@ -107,14 +107,14 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
 
           {demoProvider && (
             <>
+              <Typography variant={'caption'} className={'mt-4 mb-4'}>
+                {demoProvider.label}
+              </Typography>
               {errorMessage && (
                 <Alert variant={'danger'} onClose={() => setErrorMessage(undefined)} dismissible>
                   {errorMessage}
                 </Alert>
               )}
-              <Typography variant={'caption'} className={'mt-4 mb-4'}>
-                {demoProvider.label}
-              </Typography>
               <Formik
                 validationSchema={validationSchema}
                 initialValues={initialValues}
