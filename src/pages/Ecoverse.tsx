@@ -29,7 +29,7 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { PageProps } from './common';
-import { Image } from '../pages/TestPage';
+import { Image } from '../components/core/Image';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
   challenges: {
