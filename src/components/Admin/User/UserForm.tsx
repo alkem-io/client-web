@@ -286,15 +286,6 @@ export const UserForm: FC<UserProps> = ({
                   as={'textarea'}
                 />
               </Form.Row>
-              <Form.Row>
-                <InputField
-                  name={'avatar'}
-                  title={'Avatar'}
-                  value={avatar}
-                  readOnly={true || isReadOnlyMode}
-                  placeholder={'Avatar'}
-                />
-              </Form.Row>
 
               <TagsetSegment tagsets={tagsets} template={tagsetsTemplate} readOnly={isReadOnlyMode} />
               <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
