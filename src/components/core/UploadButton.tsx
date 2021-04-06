@@ -2,7 +2,7 @@ import React, { ChangeEvent, ChangeEventHandler, FC, useCallback, useRef } from 
 import Button from './Button';
 
 interface UploadButtonProps extends Record<string, unknown> {
-  onChange?: ChangeEventHandler;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   accept?: string;
 }
 
@@ -17,7 +17,7 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, children, ...pro
   };
 
   const handleChange = useCallback(
-    (e: ChangeEvent) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       if (onChange) {
         onChange(e);
       }

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import TestPage from '../pages/TestPage';
+import WelcomePage from '../pages/WelcomePage';
 
 export const WelcomeRoute: FC = () => {
-  return <TestPage />;
+  return <WelcomePage />;
 };
 export default WelcomeRoute;

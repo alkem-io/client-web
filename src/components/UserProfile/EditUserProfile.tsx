@@ -1,7 +1,14 @@
+import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { User, UserInput, useUpdateUserMutation, useUserProfileQuery } from '../../generated/graphql';
+import {
+  User,
+  UserInput,
+  useUpdateUserMutation,
+  useUploadFileMutation,
+  useUserProfileQuery,
+} from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { EditMode } from '../../utils/editMode';
@@ -14,12 +21,17 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
+  const [uploadFile] = useUploadFileMutation();
   const [updateUser] = useUpdateUserMutation({
-    onError: error => console.log(error),
+    onError: error => handleError(error),
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
   });
+
+  const handleError = (error: ApolloError) => {
+    console.log(error);
+  };
 
   const handleSave = (user: UserModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,6 +57,28 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
 
   const handleCancel = () => history.goBack();
 
+  const handleAvatarChange = (file: File) => {
+    uploadFile({
+      variables: { file },
+    })
+      .then(result => {
+        if (user && user.id) {
+          updateUser({
+            variables: {
+              userId: Number(user.id),
+              user: {
+                email: user.email,
+                profileData: {
+                  avatar: result.data?.uploadFile,
+                },
+              },
+            },
+          }).catch(err => handleError(err));
+        }
+      })
+      .catch(err => handleError(err));
+  };
+
   const user = data?.me as User;
   if (loading) return <Loading text={'Loading User Profile ...'} />;
   return (
@@ -55,6 +89,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
         editMode={EditMode.edit}
         onSave={handleSave}
         onCancel={handleCancel}
+        onAvatarChange={handleAvatarChange}
       />
     </Container>
   );
