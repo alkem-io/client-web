@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { COMMUNITY_DETAILS_FRAGMENT } from './community';
 
 export const QUERY_OPPORTUNITY_PROFILE = gql`
   query opportunityProfile($id: String!) {
@@ -243,4 +244,20 @@ export const NEW_OPPORTUNITY_FRAGMENT = gql`
     id
     name
   }
+`;
+
+export const QUERY_OPPORTUNITY_COMMUNITY = gql`
+  query opportunityCommunity($id: String!) {
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        id
+        name
+        community {
+          ...CommunityDetails
+        }
+      }
+    }
+  }
+  ${COMMUNITY_DETAILS_FRAGMENT}
 `;

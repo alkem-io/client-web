@@ -412,6 +412,8 @@ export type Mutation = {
   removeRelation: Scalars['Boolean'];
   /** Removes the specified user profile. */
   removeUser: User;
+  /** Removes the user with the given identifier as a member of the specified Community */
+  removeUserFromCommunity: UserGroup;
   /** Remove the user with the given identifier to the specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes the user group with the specified ID */
@@ -587,6 +589,11 @@ export type MutationRemoveRelationArgs = {
 };
 
 export type MutationRemoveUserArgs = {
+  userID: Scalars['Float'];
+};
+
+export type MutationRemoveUserFromCommunityArgs = {
+  communityID: Scalars['Float'];
   userID: Scalars['Float'];
 };
 
@@ -960,8 +967,6 @@ export type User = {
   firstName: Scalars['String'];
   gender: Scalars['String'];
   id: Scalars['ID'];
-  /** The last timestamp, in seconds, when this user was modified - either via creation or via update. Note: updating of profile data or group memberships does not update this field. */
-  lastModified?: Maybe<Scalars['Int']>;
   lastName: Scalars['String'];
   /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
   memberof?: Maybe<MemberOf>;
@@ -1110,7 +1115,13 @@ export type EcoverseChallengesListQueryVariables = Exact<{ [key: string]: never 
 
 export type EcoverseChallengesListQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenges?: Maybe<Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>>;
+      challenges?: Maybe<
+        Array<
+          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+              community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name'>>;
+            }
+        >
+      >;
     };
 };
 
@@ -1142,7 +1153,9 @@ export type ChallengeNameQueryVariables = Exact<{
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+          community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name'>>;
+        };
     };
 };
 
@@ -1246,7 +1259,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
           context?: Maybe<
             { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
                 references?: Maybe<
@@ -1371,7 +1384,7 @@ export type ChallengeProfileQueryVariables = Exact<{
 
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
           context?: Maybe<
             { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
                 references?: Maybe<
@@ -1385,7 +1398,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
           opportunities?: Maybe<
             Array<
-              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'state' | 'textID'> & {
                   context?: Maybe<
                     { __typename?: 'Context' } & {
                       references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -1427,6 +1440,33 @@ export type ChallengeMembersQuery = { __typename?: 'Query' } & {
 };
 
 export type NewChallengeFragment = { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
+
+export type ChallengeCommunityQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'> & {
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
+export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+
+export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
+    applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
+    groups?: Maybe<
+      Array<
+        { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+            members?: Maybe<
+              Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
+            >;
+          }
+      >
+    >;
+  };
 
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
@@ -1486,7 +1526,7 @@ export type ConfigQuery = { __typename?: 'Query' } & {
         providers: Array<
           { __typename?: 'AuthenticationProviderConfig' } & Pick<
             AuthenticationProviderConfig,
-            'name' | 'label' | 'icon'
+            'name' | 'label' | 'icon' | 'enabled'
           > & {
               config:
                 | ({ __typename: 'AadAuthProviderConfig' } & {
@@ -1515,6 +1555,7 @@ export type EcoverseInfoQuery = { __typename?: 'Query' } & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
           }
       >;
+      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name'>>;
     };
 };
 
@@ -1583,6 +1624,14 @@ export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
             };
         }
       >;
+    };
+};
+
+export type EcoverseCommunityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
     };
 };
 
@@ -1802,6 +1851,18 @@ export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & Pick<Mutat
 
 export type NewOpportunitesFragment = { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 
+export type OpportunityCommunityQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'> & {
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description' | 'state'
@@ -1957,6 +2018,33 @@ export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
     name
+  }
+`;
+export const GroupDetailsFragmentDoc = gql`
+  fragment groupDetails on UserGroup {
+    id
+    name
+  }
+`;
+export const CommunityDetailsFragmentDoc = gql`
+  fragment CommunityDetails on Community {
+    id
+    name
+    type
+    applications {
+      id
+    }
+    groups {
+      id
+      name
+      members {
+        id
+        name
+        firstName
+        lastName
+        email
+      }
+    }
   }
 `;
 export const NewOpportunitesFragmentDoc = gql`
@@ -2364,6 +2452,10 @@ export const EcoverseChallengesListDocument = gql`
       challenges {
         id
         name
+        community {
+          id
+          name
+        }
       }
     }
   }
@@ -2545,6 +2637,10 @@ export const ChallengeNameDocument = gql`
       challenge(ID: $id) {
         id
         name
+        community {
+          id
+          name
+        }
       }
     }
   }
@@ -2956,6 +3052,7 @@ export const ChallengeProfileInfoDocument = gql`
         id
         textID
         name
+        state
         context {
           tagline
           background
@@ -3521,13 +3618,11 @@ export const ChallengeProfileDocument = gql`
   query challengeProfile($id: String!) {
     ecoverse {
       id
-      id
-      id
-      id
       challenge(ID: $id) {
         id
         textID
         name
+        state
         context {
           tagline
           background
@@ -3553,6 +3648,7 @@ export const ChallengeProfileDocument = gql`
         opportunities {
           id
           name
+          state
           textID
           context {
             references {
@@ -3664,6 +3760,60 @@ export function useChallengeMembersLazyQuery(
 export type ChallengeMembersQueryHookResult = ReturnType<typeof useChallengeMembersQuery>;
 export type ChallengeMembersLazyQueryHookResult = ReturnType<typeof useChallengeMembersLazyQuery>;
 export type ChallengeMembersQueryResult = Apollo.QueryResult<ChallengeMembersQuery, ChallengeMembersQueryVariables>;
+export const ChallengeCommunityDocument = gql`
+  query challengeCommunity($id: String!) {
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        id
+        name
+        community {
+          ...CommunityDetails
+        }
+      }
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useChallengeCommunityQuery__
+ *
+ * To run a query within a React component, call `useChallengeCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCommunityQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChallengeCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<ChallengeCommunityQuery, ChallengeCommunityQueryVariables>
+) {
+  return Apollo.useQuery<ChallengeCommunityQuery, ChallengeCommunityQueryVariables>(
+    ChallengeCommunityDocument,
+    baseOptions
+  );
+}
+export function useChallengeCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ChallengeCommunityQuery, ChallengeCommunityQueryVariables>
+) {
+  return Apollo.useLazyQuery<ChallengeCommunityQuery, ChallengeCommunityQueryVariables>(
+    ChallengeCommunityDocument,
+    baseOptions
+  );
+}
+export type ChallengeCommunityQueryHookResult = ReturnType<typeof useChallengeCommunityQuery>;
+export type ChallengeCommunityLazyQueryHookResult = ReturnType<typeof useChallengeCommunityLazyQuery>;
+export type ChallengeCommunityQueryResult = Apollo.QueryResult<
+  ChallengeCommunityQuery,
+  ChallengeCommunityQueryVariables
+>;
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -3838,6 +3988,7 @@ export const ConfigDocument = gql`
           name
           label
           icon
+          enabled
           config {
             __typename
             ... on AadAuthProviderConfig {
@@ -3915,6 +4066,10 @@ export const EcoverseInfoDocument = gql`
           name
           uri
         }
+      }
+      community {
+        id
+        name
       }
     }
   }
@@ -4182,6 +4337,52 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
   EcoverseHostReferencesQuery,
   EcoverseHostReferencesQueryVariables
 >;
+export const EcoverseCommunityDocument = gql`
+  query ecoverseCommunity {
+    ecoverse {
+      id
+      community {
+        ...CommunityDetails
+      }
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useEcoverseCommunityQuery__
+ *
+ * To run a query within a React component, call `useEcoverseCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseCommunityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoverseCommunityQuery(
+  baseOptions?: Apollo.QueryHookOptions<EcoverseCommunityQuery, EcoverseCommunityQueryVariables>
+) {
+  return Apollo.useQuery<EcoverseCommunityQuery, EcoverseCommunityQueryVariables>(
+    EcoverseCommunityDocument,
+    baseOptions
+  );
+}
+export function useEcoverseCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EcoverseCommunityQuery, EcoverseCommunityQueryVariables>
+) {
+  return Apollo.useLazyQuery<EcoverseCommunityQuery, EcoverseCommunityQueryVariables>(
+    EcoverseCommunityDocument,
+    baseOptions
+  );
+}
+export type EcoverseCommunityQueryHookResult = ReturnType<typeof useEcoverseCommunityQuery>;
+export type EcoverseCommunityLazyQueryHookResult = ReturnType<typeof useEcoverseCommunityLazyQuery>;
+export type EcoverseCommunityQueryResult = Apollo.QueryResult<EcoverseCommunityQuery, EcoverseCommunityQueryVariables>;
 export const OpportunityProfileDocument = gql`
   query opportunityProfile($id: String!) {
     ecoverse {
@@ -4969,6 +5170,60 @@ export type RemoveOpportunityMutationResult = Apollo.MutationResult<RemoveOpport
 export type RemoveOpportunityMutationOptions = Apollo.BaseMutationOptions<
   RemoveOpportunityMutation,
   RemoveOpportunityMutationVariables
+>;
+export const OpportunityCommunityDocument = gql`
+  query opportunityCommunity($id: String!) {
+    ecoverse {
+      id
+      opportunity(ID: $id) {
+        id
+        name
+        community {
+          ...CommunityDetails
+        }
+      }
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCommunityQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCommunityQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<OpportunityCommunityQuery, OpportunityCommunityQueryVariables>
+) {
+  return Apollo.useQuery<OpportunityCommunityQuery, OpportunityCommunityQueryVariables>(
+    OpportunityCommunityDocument,
+    baseOptions
+  );
+}
+export function useOpportunityCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<OpportunityCommunityQuery, OpportunityCommunityQueryVariables>
+) {
+  return Apollo.useLazyQuery<OpportunityCommunityQuery, OpportunityCommunityQueryVariables>(
+    OpportunityCommunityDocument,
+    baseOptions
+  );
+}
+export type OpportunityCommunityQueryHookResult = ReturnType<typeof useOpportunityCommunityQuery>;
+export type OpportunityCommunityLazyQueryHookResult = ReturnType<typeof useOpportunityCommunityLazyQuery>;
+export type OpportunityCommunityQueryResult = Apollo.QueryResult<
+  OpportunityCommunityQuery,
+  OpportunityCommunityQueryVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {

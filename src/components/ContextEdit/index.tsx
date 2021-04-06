@@ -29,13 +29,13 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE, variables: { id: Number(id) } }],
+    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE, variables: { id } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE, variables: { id: Number(id) } }],
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE, variables: { id } }],
     awaitRefetchQueries: true,
   });
 
@@ -62,7 +62,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
           opportunityData: {
             ID: id,
             context: {
-              ...context,
+              ...contextWithUpdatedRefs,
             },
           },
         },

@@ -1,16 +1,14 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { ListPage } from '../../components/Admin';
-import CreateGroupPage from '../../components/Admin/Group/CreateGroupPage';
-import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import { useOpportunityGroupsQuery, useOpportunityNameQuery } from '../../generated/graphql';
-import { useRemoveUserGroup } from '../../hooks/useRemoveGroup';
+import Loading from '../../components/core/Loading';
+import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
 import { ChallengeOpportunities } from './challenge';
+import { CommunityRoute } from './community';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -37,49 +35,38 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
 
 export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { opportunityId } = useParams<AdminParameters>();
+  const { opportunityId, challengeId } = useParams<AdminParameters>();
 
-  const { data } = useOpportunityNameQuery({ variables: { id: opportunityId } });
+  const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({ variables: { id: opportunityId } });
+  const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
+    variables: { id: challengeId },
+  });
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.name || '', real: true }],
     [paths, data?.ecoverse?.opportunity?.name, url]
   );
 
+  const community = data?.ecoverse?.opportunity?.community;
+  const parentMembers =
+    challengeData?.ecoverse?.challenge.community?.groups?.find(g => g.name === 'members')?.members || [];
+
+  if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;
+
   return (
     <Switch>
       <Route exact path={`${path}`}>
         <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/groups`}>
-        <OpportunityGroups paths={currentPaths} />
-      </Route>
-      <Route exact path={`${path}/groups/new`}>
-        <CreateGroupPage action={'createOpportunityGroup'} paths={currentPaths} />
-      </Route>
       <Route exact path={`${path}/edit`}>
         <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/groups/:groupId`}>
-        <GroupPage paths={currentPaths} />
+      <Route path={`${path}/community`}>
+        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
       </Route>
     </Switch>
   );
-};
-
-const OpportunityGroups: FC<PageProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
-  const { opportunityId } = useParams<AdminParameters>();
-
-  const { data } = useOpportunityGroupsQuery({ variables: { id: opportunityId } });
-
-  const { removeGroup } = useRemoveUserGroup(['opportunityGroups']);
-
-  const groups = data?.ecoverse?.opportunity?.community?.groups?.map(g => ({
-    id: g.id,
-    value: g.name,
-    url: `${url}/${g.id}`,
-  }));
-
-  return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} onDelete={removeGroup} />;
 };

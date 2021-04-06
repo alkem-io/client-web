@@ -5,7 +5,7 @@ import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
 
 interface LoadingProps {
-  text: string;
+  text?: string;
 }
 
 const useStyles = createStyles(theme => ({
@@ -17,7 +17,7 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export const Loading: FC<LoadingProps> = ({ text }) => {
+export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
   const styles = useStyles();
 
   return (

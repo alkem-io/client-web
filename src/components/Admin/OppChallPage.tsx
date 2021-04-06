@@ -39,7 +39,7 @@ interface Params {
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const { challengeId = '', opportunityId = '' } = useParams<Params>();
   const [message, setMessage] = useState<string | null>(null);
-  const [variant, setVariant] = useState<'success' | 'error'>('success');
+  const [variant, setVariant] = useState<'success' | 'danger'>('success');
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
@@ -87,13 +87,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: e => onError(e.message),
-    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE_INFO, variables: { id: Number(challengeId) } }],
+    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE_INFO, variables: { id: challengeId } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: e => onError(e.message),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE_INFO, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE_INFO, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -117,7 +117,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   };
 
   const onError = (message: string) => {
-    setVariant('error');
+    setVariant('danger');
     setMessage(message);
   };
 
@@ -165,7 +165,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
           updateOpportunity({
             variables: {
               opportunityData: {
-                ...data,
+                ...updateData,
                 ID: opportunityId,
               },
             },

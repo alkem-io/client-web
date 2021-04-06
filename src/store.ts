@@ -1,6 +1,9 @@
 import { applyMiddleware, compose, createStore, Store } from 'redux';
 import thunk from 'redux-thunk';
+import { AUTH_STATUS_KEY, TOKEN_KEY } from './models/Constants';
 import reducers, { RootState, StoreActions } from './reducers';
+import { AuthState, AuthStatus } from './reducers/auth/types';
+import { isAuthenticated } from './utils/isAuthenitcated';
 
 declare global {
   interface Window {
@@ -10,6 +13,36 @@ declare global {
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const preservedState = () => {
+  try {
+    let status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
+    status = status === 'done' ? status : 'unauthenticated';
+    const token = status === 'done' ? localStorage.getItem(TOKEN_KEY) : undefined;
+    return {
+      auth: {
+        status,
+        isAuthenticated: isAuthenticated(status),
+        accessToken: token,
+      } as AuthState,
+    };
+  } catch {}
+};
+
 export default function configureStore(): Store<RootState, StoreActions> {
-  return createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+  const store = createStore(reducers, preservedState(), composeEnhancers(applyMiddleware(thunk)));
+
+  store.subscribe(() => {
+    const auth = store.getState().auth;
+    try {
+      if (auth.accessToken) localStorage.setItem(TOKEN_KEY, auth.accessToken);
+      else localStorage.removeItem(TOKEN_KEY);
+
+      if (auth.status) localStorage.setItem(AUTH_STATUS_KEY, auth.status);
+      else localStorage.removeItem(AUTH_STATUS_KEY);
+    } catch {
+      // Ignore errors
+    }
+  });
+
+  return store;
 }
