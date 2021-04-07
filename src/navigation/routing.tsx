@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { CreateUserProfile, EditUserProfile } from '../components/UserProfile';
-import UserProfile from '../components/UserProfile/UserProfile';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import { Admin } from './admin/admin';
@@ -10,6 +8,7 @@ import { Ecoverses } from './ecoverse';
 import LoginRoute from './login';
 import LogoutRoute from './logout';
 import { Messages } from './messages';
+import ProfileRoute from './profile';
 import { RegisterRoute } from './register';
 import { Restricted } from './restricted';
 import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
@@ -50,16 +49,9 @@ export const Routing: FC = () => {
       <RestrictedRoute exact path="/messages">
         <Messages />
       </RestrictedRoute>
-      <RestrictedRoute exact path="/profile/edit">
-        <EditUserProfile />
+      <RestrictedRoute path="/profile">
+        <ProfileRoute />
       </RestrictedRoute>
-      <RestrictedRoute exact path="/profile/create">
-        <CreateUserProfile />
-      </RestrictedRoute>
-      <RestrictedRoute exact path="/profile">
-        <UserProfile />
-      </RestrictedRoute>
-
       <Route exact path="/about">
         <AboutPage />
       </Route>

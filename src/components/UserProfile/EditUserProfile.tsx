@@ -1,7 +1,14 @@
+import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { User, UserInput, useUpdateUserMutation, useUserProfileQuery } from '../../generated/graphql';
+import {
+  User,
+  UserInput,
+  useUpdateUserMutation,
+  useUploadAvatarMutation,
+  useUserProfileQuery,
+} from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { EditMode } from '../../utils/editMode';
@@ -14,12 +21,17 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
+  const [uploadAvatar] = useUploadAvatarMutation();
   const [updateUser] = useUpdateUserMutation({
-    onError: error => console.log(error),
+    onError: error => handleError(error),
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
   });
+
+  const handleError = (error: ApolloError) => {
+    console.log(error);
+  };
 
   const handleSave = (user: UserModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,6 +57,17 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
 
   const handleCancel = () => history.goBack();
 
+  const handleAvatarChange = (file: File) => {
+    if (user && user.id && user.profile?.id) {
+      uploadAvatar({
+        variables: {
+          profileId: Number(user.profile.id),
+          file,
+        },
+      }).catch(err => handleError(err));
+    }
+  };
+
   const user = data?.me as User;
   if (loading) return <Loading text={'Loading User Profile ...'} />;
   return (
@@ -55,6 +78,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
         editMode={EditMode.edit}
         onSave={handleSave}
         onCancel={handleCancel}
+        onAvatarChange={handleAvatarChange}
       />
     </Container>
   );
