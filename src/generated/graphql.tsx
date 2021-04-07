@@ -442,6 +442,7 @@ export type Mutation = {
   updateUser: User;
   /** Update the user group information. */
   updateUserGroup: UserGroup;
+  uploadAvatar: Profile;
   uploadFile: Scalars['String'];
 };
 
@@ -658,6 +659,11 @@ export type MutationUpdateUserArgs = {
 export type MutationUpdateUserGroupArgs = {
   ID: Scalars['Float'];
   userGroupData: UserGroupInput;
+};
+
+export type MutationUploadAvatarArgs = {
+  file: Scalars['Upload'];
+  profileID: Scalars['Float'];
 };
 
 export type MutationUploadFileArgs = {
@@ -1870,6 +1876,17 @@ export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type AvatarFragment = { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
+
+export type UploadAvatarMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  profileId: Scalars['Float'];
+}>;
+
+export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
+  uploadAvatar: { __typename?: 'Profile' } & AvatarFragment;
+};
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description' | 'state'
@@ -2064,6 +2081,12 @@ export const NewOpportunitesFragmentDoc = gql`
   fragment NewOpportunites on Opportunity {
     id
     name
+  }
+`;
+export const AvatarFragmentDoc = gql`
+  fragment Avatar on Profile {
+    id
+    avatar
   }
 `;
 export const ProjectDetailsFragmentDoc = gql`
@@ -5237,6 +5260,45 @@ export type OpportunityCommunityLazyQueryHookResult = ReturnType<typeof useOppor
 export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   OpportunityCommunityQuery,
   OpportunityCommunityQueryVariables
+>;
+export const UploadAvatarDocument = gql`
+  mutation uploadAvatar($file: Upload!, $profileId: Float!) {
+    uploadAvatar(file: $file, profileID: $profileId) {
+      ...Avatar
+    }
+  }
+  ${AvatarFragmentDoc}
+`;
+export type UploadAvatarMutationFn = Apollo.MutationFunction<UploadAvatarMutation, UploadAvatarMutationVariables>;
+
+/**
+ * __useUploadAvatarMutation__
+ *
+ * To run a mutation, you first call `useUploadAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      profileId: // value for 'profileId'
+ *   },
+ * });
+ */
+export function useUploadAvatarMutation(
+  baseOptions?: Apollo.MutationHookOptions<UploadAvatarMutation, UploadAvatarMutationVariables>
+) {
+  return Apollo.useMutation<UploadAvatarMutation, UploadAvatarMutationVariables>(UploadAvatarDocument, baseOptions);
+}
+export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
+export type UploadAvatarMutationResult = Apollo.MutationResult<UploadAvatarMutation>;
+export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
+  UploadAvatarMutation,
+  UploadAvatarMutationVariables
 >;
 export const ProjectProfileDocument = gql`
   query projectProfile($id: Float!) {

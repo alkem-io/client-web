@@ -6,7 +6,7 @@ import {
   User,
   UserInput,
   useUpdateUserMutation,
-  useUploadFileMutation,
+  useUploadAvatarMutation,
   useUserProfileQuery,
 } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
@@ -21,7 +21,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
-  const [uploadFile] = useUploadFileMutation();
+  const [uploadAvatar] = useUploadAvatarMutation();
   const [updateUser] = useUpdateUserMutation({
     onError: error => handleError(error),
     onCompleted: () => {
@@ -58,25 +58,14 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const handleCancel = () => history.goBack();
 
   const handleAvatarChange = (file: File) => {
-    uploadFile({
-      variables: { file },
-    })
-      .then(result => {
-        if (user && user.id) {
-          updateUser({
-            variables: {
-              userId: Number(user.id),
-              user: {
-                email: user.email,
-                profileData: {
-                  avatar: result.data?.uploadFile,
-                },
-              },
-            },
-          }).catch(err => handleError(err));
-        }
-      })
-      .catch(err => handleError(err));
+    if (user && user.id && user.profile?.id) {
+      uploadAvatar({
+        variables: {
+          profileId: Number(user.profile.id),
+          file,
+        },
+      }).catch(err => handleError(err));
+    }
   };
 
   const user = data?.me as User;
