@@ -4091,7 +4091,6 @@ export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
     ecoverse {
       id
-      id
       name
       context {
         tagline

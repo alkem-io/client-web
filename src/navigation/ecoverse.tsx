@@ -28,17 +28,22 @@ import { Project } from './project';
 
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
+  const { ecoverse, loading } = useEcoverse();
   const { path, url } = useRouteMatch();
+
+  if (loading) {
+    return <Loading text={'Loading ecoverses'} />;
+  }
 
   return (
     <Switch>
-      <Route path={`${path}/:id`}>
+      <Route path={`${path}:id`} name={'Ecoverse'}>
         <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
       </Route>
       <Route exact path={`${path}`}>
-        <Redirect to="/ecoverse/1" />
+        <Redirect to={`${url}${ecoverse?.ecoverse.id}`} />
       </Route>
-      <Route path="*">
+      <Route path="*" name={'404'}>
         <FourOuFour />
       </Route>
     </Switch>

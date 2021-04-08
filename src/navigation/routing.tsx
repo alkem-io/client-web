@@ -19,18 +19,13 @@ const adminGroups = ['admin'];
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
+
   return (
     <Switch>
       <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
       <RestrictedRoute path="/admin" allowedGroups={adminGroups} strict={false}>
         <Admin />
       </RestrictedRoute>
-      <Route exact path="/">
-        <Redirect to="/ecoverse/1" />
-      </Route>
-      <AuthenticatedRoute path="/ecoverse">
-        <Ecoverses />
-      </AuthenticatedRoute>
       <Route exact path="/login">
         <LoginRoute />
       </Route>
@@ -43,7 +38,7 @@ export const Routing: FC = () => {
       <Route exact path="/register">
         <RegisterRoute />
       </Route>
-      <RestrictedRoute exact path="/community">
+      <RestrictedRoute path="/community">
         <Community />
       </RestrictedRoute>
       <RestrictedRoute exact path="/messages">
@@ -58,6 +53,9 @@ export const Routing: FC = () => {
       <Route exact path="/restricted">
         <Restricted />
       </Route>
+      <AuthenticatedRoute path="/">
+        <Ecoverses />
+      </AuthenticatedRoute>
       <Route path="*">
         <FourOuFour />
       </Route>
