@@ -161,6 +161,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
     variables: { id: target },
+    errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
