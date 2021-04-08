@@ -7,9 +7,11 @@ import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
 import countriesList from '../../../utils/countriesList.json';
 import { EditMode } from '../../../utils/editMode';
+import Avatar from '../../core/Avatar';
 import Loading from '../../core/Loading';
 import SearchDropdown from '../../core/SearchDropdown';
 import Typography from '../../core/Typography';
+import UploadButton from '../../core/UploadButton';
 import { InputField } from '../Common/InputField';
 import { ReferenceSegment } from '../Common/ReferenceSegment';
 import TagsetSegment from '../Common/TagsetSegment';
@@ -20,6 +22,7 @@ interface UserProps {
   editMode?: EditMode;
   onSave?: (user: UserModel) => void;
   onCancel?: () => void;
+  onAvatarChange?: (file: File) => void;
   title?: string;
 }
 
@@ -28,6 +31,7 @@ export const UserForm: FC<UserProps> = ({
   editMode = EditMode.readOnly,
   onSave,
   onCancel,
+  onAvatarChange,
   title = 'User',
 }) => {
   const [removeRef] = useRemoveReferenceMutation();
@@ -71,7 +75,21 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, tagsetsTemplate]);
 
-  const initialValues = {
+  const initialValues: {
+    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    gender: string;
+    city: string;
+    country: string;
+    phone: string;
+    avatar: string;
+    tagsets: Tagset[];
+    references: Reference[];
+    accountUpn: string;
+    bio: string;
+  } = {
     name: name || '',
     firstName: firstName || '',
     lastName: lastName || '',
@@ -164,6 +182,25 @@ export const UserForm: FC<UserProps> = ({
           return (
             <Form noValidate>
               <Form.Row>
+                <Avatar src={avatar} size={'lg'} className={'mb-2'} name={'Avatar'} />
+              </Form.Row>
+              {onAvatarChange && (
+                <Form.Row>
+                  <UploadButton
+                    accept={'image/*'}
+                    onChange={e => {
+                      const file = e && e.target && e.target.files && e.target.files[0];
+                      if (onAvatarChange && file) onAvatarChange(file);
+                    }}
+                    className={'mb-4'}
+                    small
+                  >
+                    Edit
+                  </UploadButton>
+                </Form.Row>
+              )}
+
+              <Form.Row>
                 <InputField
                   name={'name'}
                   title={'Full Name'}
@@ -200,13 +237,6 @@ export const UserForm: FC<UserProps> = ({
                   required={true && !isReadOnlyMode}
                   readOnly={isReadOnlyMode || isEditMode}
                 />
-                {/* <InputField
-                  name={'upn'}
-                  title={'Azure user name'}
-                  value={accountUpn}
-                  readOnly={true}
-                  placeholder={'Azure user name'}
-                /> */}
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} sm={6}>
@@ -254,15 +284,6 @@ export const UserForm: FC<UserProps> = ({
                   readOnly={isReadOnlyMode}
                   placeholder={'Bio'}
                   as={'textarea'}
-                />
-              </Form.Row>
-              <Form.Row>
-                <InputField
-                  name={'avatar'}
-                  title={'Avatar'}
-                  value={avatar}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'Avatar'}
                 />
               </Form.Row>
 

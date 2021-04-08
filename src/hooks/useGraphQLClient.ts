@@ -1,16 +1,9 @@
-import {
-  ApolloLink,
-  createHttpLink,
-  from,
-  fromPromise,
-  InMemoryCache,
-  NormalizedCacheObject,
-  Operation,
-} from '@apollo/client';
+import { ApolloLink, from, fromPromise, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { createUploadLink } from 'apollo-upload-client';
 import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -162,7 +155,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     });
   });
 
-  const httpLink = createHttpLink({
+  const httpLink = createUploadLink({
     uri: graphQLEndpoint,
   });
 
@@ -194,7 +187,9 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     in the schema. This middleware removes it.
   */
   const omitTypenameLink = new ApolloLink((operation, forward) => {
-    if (operation.variables) {
+    // Do not clear __typename when there is a file fo upload,
+    // Otherwise the JSON parse/stringify will remove the File variable
+    if (operation.variables && !operation.variables.file) {
       operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
     }
     return forward ? forward(operation) : null;

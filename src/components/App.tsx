@@ -49,6 +49,7 @@ const App = ({ children }): React.ReactElement => {
   const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
+  const isUserSegmentVisible = useTypedSelector<boolean>(state => state.ui.userSegment.visible);
   useUserScope(user);
 
   const history = useHistory();
@@ -83,7 +84,9 @@ const App = ({ children }): React.ReactElement => {
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-            {user && <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />}
+            {isUserSegmentVisible && user && (
+              <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />
+            )}
             <div style={{ display: 'flex', flexGrow: 1 }} />
             <Navigation maximize={isVisible} userMetadata={user} />
             {loginVisible && (

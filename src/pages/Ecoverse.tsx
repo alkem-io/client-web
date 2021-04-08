@@ -29,7 +29,7 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { PageProps } from './common';
-
+import { Image } from '../components/core/Image';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
   challenges: {
@@ -155,7 +155,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
       <Section
         avatar={
           ecoverseLogo ? (
-            <img
+            <Image
               src={ecoverseLogo}
               alt={`${name} logo`}
               style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
