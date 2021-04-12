@@ -22,6 +22,7 @@ export const USER_DETAILS_FRAGMENT = gql`
         uri
       }
       tagsets {
+        id
         name
         tags
       }

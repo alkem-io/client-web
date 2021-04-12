@@ -4,7 +4,6 @@ import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import {
   CreateUserInput,
-  UpdateUserInput,
   useCreateUserMutation,
   useRemoveUserMutation,
   useUpdateUserMutation,
@@ -16,6 +15,7 @@ import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
 import Button from '../../core/Button';
 import { Loading } from '../../core/Loading';
+import { getUpdateUserInput } from '../../UserProfile';
 import UserForm from './UserForm';
 import UserRemoveModal from './UserRemoveModal';
 
@@ -119,29 +119,9 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         },
       });
     } else if (isEditMode && user.id) {
-      const userInput: UpdateUserInput = {
-        ID: user.id,
-        ...rest,
-        profileData: {
-          ID: user.profile.id || '',
-          avatar: profile.avatar,
-          description: profile.description,
-          createReferencesData: profile.references.filter(r => !r.id).map(t => ({ name: t.name, uri: t.uri })),
-          updateReferencesData: profile.references
-            .filter(r => r.id)
-            .map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
-          updateTagsetsData: profile.tagsets
-            .filter(t => t.id)
-            .map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
-          createTagsetsData: profile.tagsets
-            .filter(t => !t.id)
-            .map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
-        },
-      };
-
       updateUser({
         variables: {
-          input: userInput,
+          input: getUpdateUserInput(user),
         },
       });
     }
