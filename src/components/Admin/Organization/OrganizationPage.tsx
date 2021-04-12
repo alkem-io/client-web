@@ -2,10 +2,11 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import {
+  CreateOrganisationInput,
   Organisation,
-  OrganisationInput,
   Reference,
   Tagset,
+  UpdateOrganisationInput,
   useCreateOrganizationMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
@@ -53,7 +54,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
   const handleSubmit = (organisation: Organisation) => {
     const { id: orgID, profile, ...rest } = organisation;
-    const organisationInput: OrganisationInput = {
+    const organisationInput: CreateOrganisationInput = {
       ...rest,
       profileData: {
         avatar: profile.avatar,
@@ -66,17 +67,17 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     if (mode === EditMode.new) {
       createOrganization({
         variables: {
-          organisationData: organisationInput,
+          input: organisationInput,
         },
       });
     }
     if (mode === EditMode.edit) {
       updateOrganization({
         variables: {
-          organisationData: {
-            ID: orgID,
+          input: {
             ...organisationInput,
-          },
+            ID: orgID,
+          } as UpdateOrganisationInput,
         },
       });
     }

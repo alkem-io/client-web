@@ -56,8 +56,7 @@ export const UserForm: FC<UserProps> = ({
     gender,
     phone,
     country,
-    accountUpn,
-    profile: { description: bio, references, avatar },
+    profile: { id: profileId, description: bio, references, avatar },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -75,21 +74,7 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, tagsetsTemplate]);
 
-  const initialValues: {
-    name: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gender: string;
-    city: string;
-    country: string;
-    phone: string;
-    avatar: string;
-    tagsets: Tagset[];
-    references: Reference[];
-    accountUpn: string;
-    bio: string;
-  } = {
+  const initialValues: UserFromGenerated = {
     name: name || '',
     firstName: firstName || '',
     lastName: lastName || '',
@@ -101,8 +86,8 @@ export const UserForm: FC<UserProps> = ({
     avatar: avatar || '',
     tagsets: tagsets,
     references: references || '',
-    accountUpn: accountUpn || '',
     bio: bio || '',
+    profileId: profileId || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -139,18 +124,18 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { tagsets, avatar, references, bio, ...otherData } = userData;
+    const { tagsets, avatar, references, bio, profileId, ...otherData } = userData;
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
-      await removeRef({ variables: { id: Number(ref.id) } });
+      await removeRef({ variables: { input: { ID: Number(ref.id) } } });
     }
 
     const user: UserModel = {
       ...currentUser,
       ...otherData,
       profile: {
+        id: profileId,
         description: bio,
         avatar,
         references,

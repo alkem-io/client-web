@@ -46,8 +46,10 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
     async (name: string) => {
       await createGroup({
         variables: {
-          communityID: Number(community?.id),
-          groupName: name,
+          input: {
+            parentID: Number(community?.id),
+            name,
+          },
         },
       });
     },

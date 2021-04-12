@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { useCreateUserMutation, UserInput } from '../../generated/graphql';
+import { CreateUserInput, useCreateUserMutation } from '../../generated/graphql';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useNotification } from '../../hooks/useNotification';
 import { AUTH_USER_KEY, WELCOME_PAGE } from '../../models/Constants';
@@ -27,10 +27,9 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   });
 
   const handleSave = (user: UserModel) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: userID, memberof, profile, ...rest } = user;
 
-    const userInput: UserInput = {
+    const userInput: CreateUserInput = {
       ...rest,
       profileData: {
         avatar: profile.avatar,
@@ -42,7 +41,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
 
     createUser({
       variables: {
-        user: userInput,
+        input: userInput,
       },
     });
   };

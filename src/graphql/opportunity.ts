@@ -17,6 +17,7 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
           explanation
         }
         context {
+          id
           tagline
           background
           vision
@@ -69,8 +70,8 @@ export const QUERY_OPPORTUNITY_PROFILE = gql`
 `;
 
 export const MUTATION_CREATE_RELATION = gql`
-  mutation createRelation($opportunityId: Float!, $relationData: RelationInput!) {
-    createRelation(opportunityID: $opportunityId, relationData: $relationData) {
+  mutation createRelation($input: CreateRelationInput!) {
+    createRelation(relationData: $input) {
       id
     }
   }
@@ -104,8 +105,8 @@ export const MUTATION_UPDATE_OPPORTUNITY = gql`
 `;
 
 export const MUTATION_CREATE_ACTOR = gql`
-  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
-    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+  mutation createActor($input: CreateActorInput!) {
+    createActor(actorData: $input) {
       name
     }
   }
@@ -134,22 +135,27 @@ export const QUERY_OPPORTUNITY_ACTOR_GROUPS = gql`
 `;
 
 export const MUTATION_UPDATE_ACTOR = gql`
-  mutation updateActor($actorData: ActorInput!, $id: Float!) {
-    updateActor(actorData: $actorData, ID: $id) {
+  mutation updateActor($input: UpdateActorInput!) {
+    updateActor(actorData: $input) {
+      id
       name
     }
   }
 `;
 
 export const MUTATION_REMOVE_ACTOR = gql`
-  mutation removeActor($id: Float!) {
-    removeActor(ID: $id)
+  mutation removeActor($input: RemoveEntityInput!) {
+    removeActor(removeData: $input) {
+      id
+    }
   }
 `;
 
 export const MUTATION_RELATION_REMOVE = gql`
-  mutation removeRelation($id: Float!) {
-    removeRelation(ID: $id)
+  mutation removeRelation($input: RemoveEntityInput!) {
+    removeRelation(removeData: $input) {
+      id
+    }
   }
 `;
 
@@ -171,8 +177,9 @@ export const QUERY_OPPORTUNITY_RELATIONS = gql`
 `;
 
 export const MUTATION_UPDATE_ASPECT = gql`
-  mutation updateAspect($aspectData: AspectInput!, $id: Float!) {
-    updateAspect(aspectData: $aspectData, ID: $id) {
+  mutation updateAspect($input: UpdateAspectInput!) {
+    updateAspect(aspectData: $input) {
+      id
       title
     }
   }
@@ -193,8 +200,10 @@ export const QUERY_OPPORTUNITY_ASPECTS = gql`
   }
 `;
 export const MUTATION_REMOVE_ASPECT = gql`
-  mutation removeAspect($id: Float!) {
-    removeAspect(ID: $id)
+  mutation removeAspect($input: RemoveEntityInput!) {
+    removeAspect(removeData: $input) {
+      id
+    }
   }
 `;
 
@@ -212,35 +221,39 @@ export const QUERY_OPPORTUNITY_TEMPLATE = gql`
 `;
 
 export const MUTATION_CREATE_ASPECT = gql`
-  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
-    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+  mutation createAspect($input: CreateAspectInput!) {
+    createAspect(aspectData: $input) {
       title
     }
   }
 `;
 
 export const MUTATION_CREATE_ACTOR_GROUP = gql`
-  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
-    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+  mutation createActorGroup($input: CreateActorGroupInput!) {
+    createActorGroup(actorGroupData: $input) {
       name
     }
   }
 `;
 
 export const MUTATION_REMOVE_REFERENCE = gql`
-  mutation removeReference($id: Float!) {
-    removeReference(ID: $id)
+  mutation removeReference($input: RemoveEntityInput!) {
+    removeReference(removeData: $input) {
+      id
+    }
   }
 `;
 
 export const MUTATION_REMOVE_OPPORTUNITY = gql`
-  mutation removeOpportunity($id: Float!) {
-    removeOpportunity(ID: $id)
+  mutation removeOpportunity($input: RemoveEntityInput!) {
+    removeOpportunity(removeData: $input) {
+      id
+    }
   }
 `;
 
 export const NEW_OPPORTUNITY_FRAGMENT = gql`
-  fragment NewOpportunites on Opportunity {
+  fragment NewOpportunity on Opportunity {
     id
     name
   }

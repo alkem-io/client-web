@@ -20,7 +20,7 @@ const PROJECT_FRAGMENT = gql`
 `;
 
 export const QUERY_PROJECT_PROFILE = gql`
-  query projectProfile($id: Float!) {
+  query projectProfile($id: String!) {
     ecoverse {
       id
       project(ID: $id) {
@@ -32,8 +32,8 @@ export const QUERY_PROJECT_PROFILE = gql`
 `;
 
 export const MUTATION_CREATE_PROJECT = gql`
-  mutation createProject($opportunityID: Float!, $project: ProjectInput!) {
-    createProject(opportunityID: $opportunityID, projectData: $project) {
+  mutation createProject($input: CreateProjectInput!) {
+    createProject(projectData: $input) {
       ...ProjectDetails
     }
   }

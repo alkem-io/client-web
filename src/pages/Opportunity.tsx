@@ -22,7 +22,7 @@ import InterestModal from '../components/Ecoverse/InterestModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import {
-  ContextInput,
+  Context,
   Opportunity as OpportunityType,
   Project,
   useOpportunityTemplateQuery,
@@ -214,7 +214,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                   variant={'opportunity'}
                   show={isEditOpened}
                   onHide={() => setIsEditOpened(false)}
-                  data={opportunity.context as ContextInput}
+                  data={opportunity.context as Context}
                   id={id}
                 />
               </>
