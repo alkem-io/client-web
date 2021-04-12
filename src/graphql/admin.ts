@@ -75,7 +75,7 @@ export const QUERY_GROUP_MEMBERS = gql`
 `;
 
 export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
-  mutation removeUserFromGroup($input: UpdateMembershipInput!) {
+  mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
       id
       name
@@ -87,18 +87,23 @@ export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
   ${GROUP_MEMBERS_FRAGMENT}
 `;
 
-export const MUTATION_REMOVE_USER = gql`
-  mutation removeUser($input: RemoveEntityInput!) {
-    removeUser(removeData: $input) {
+export const MUTATION_DELETE_USER = gql`
+  mutation deleteUser($input: DeleteUserInput!) {
+    deleteUser(deleteData: $input) {
       ...UserDetails
     }
   }
   ${USER_DETAILS_FRAGMENT}
 `;
 
-export const MUTATION_ADD_USER_TO_GROUP = gql`
-  mutation addUserToGroup($input: UpdateMembershipInput!) {
-    addUserToGroup(membershipData: $input)
+export const MUTATION_ASSIGN_USER_TO_GROUP = gql`
+  mutation addUserToGroup($input: AssignUserGroupMemberInput!) {
+    assignUserToGroup(membershipData: $input) {
+      id
+      members {
+        ...GroupMembers
+      }
+    }
   }
   ${GROUP_MEMBERS_FRAGMENT}
 `;
@@ -401,9 +406,9 @@ export const QUERY_ORGANIZATION_DETAILS = gql`
   }
 `;
 
-export const MUTATION_REMOVE_GROUP = gql`
-  mutation removeUserGroup($input: RemoveEntityInput!) {
-    removeUserGroup(removeData: $input) {
+export const MUTATION_DELETE_GROUP = gql`
+  mutation removeUserGroup($input: DeleteUserGroupInput!) {
+    deleteUserGroup(deleteData: $input) {
       id
     }
   }

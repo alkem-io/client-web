@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ButtonGroup } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
-import { useRemoveUserMutation } from '../../../generated/graphql';
+import { useDeleteUserMutation } from '../../../generated/graphql';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
@@ -17,15 +17,15 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
 
   const data = users.map(u => ({ id: u.id, value: `${u.name} (${u.email})`, url: `${url}/${u.id}` }));
 
-  const [remove] = useRemoveUserMutation({
+  const [deleteUser] = useDeleteUserMutation({
     refetchQueries: ['users'],
     awaitRefetchQueries: true,
 
     onError: e => console.error('User remove error---> ', e),
   });
 
-  const handleRemove = (item: SearchableListItem) => {
-    remove({
+  const handleDelete = (item: SearchableListItem) => {
+    deleteUser({
       variables: {
         input: {
           ID: Number(item.id),
@@ -41,7 +41,7 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
           New
         </Button> */}
       </ButtonGroup>
-      <SearchableList data={data} edit={true} onDelete={handleRemove} />
+      <SearchableList data={data} edit={true} onDelete={handleDelete} />
     </>
   );
 };

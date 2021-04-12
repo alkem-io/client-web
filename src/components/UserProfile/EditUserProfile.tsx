@@ -70,8 +70,11 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     if (user && user.id && user.profile?.id) {
       uploadAvatar({
         variables: {
-          profileId: Number(user.profile.id),
           file,
+          input: {
+            file: '',
+            profileID: user.profile.id,
+          },
         },
       }).catch(err => handleError(err));
     }

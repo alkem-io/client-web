@@ -139,7 +139,10 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         case ProfileSubmitMode.createChallenge:
           createChallenge({
             variables: {
-              input: data,
+              input: {
+                ...data,
+                parentID: -1, // TODO [ATS] Where is this coming from?
+              },
             },
           });
           break;
