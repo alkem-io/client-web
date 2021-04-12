@@ -81,7 +81,9 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
   const [removeRelation] = useRemoveRelationMutation({
-    variables: { id: Number(id) },
+    variables: {
+      input: { ID: Number(id) },
+    },
     onCompleted: () => setShowRemove(false),
     onError: e => console.error(e), // eslint-disable-line no-console
     refetchQueries: [{ query: QUERY_OPPORTUNITY_RELATIONS, variables: { id: Number(opportunityID) } }],
@@ -149,7 +151,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
     awaitRefetchQueries: true,
   });
 
-  const onRemove = () => removeActor({ variables: { id: Number(id) } });
+  const onRemove = () => removeActor({ variables: { input: { ID: Number(id) } } });
 
   return (
     <>
@@ -191,7 +193,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
       <ActorEdit
         show={isEditOpened}
         onHide={() => setEditOpened(false)}
-        data={{ name, description, value, impact }}
+        data={{ id, name, description, value, impact }}
         opportunityId={opportunityId}
         id={id}
       />
@@ -276,7 +278,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
     refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
-  const onRemove = () => removeAspect({ variables: { id: Number(id) } });
+  const onRemove = () => removeAspect({ variables: { input: { ID: Number(id) } } });
 
   const styles = useCardStyles();
   const { user } = useUserContext();
@@ -321,7 +323,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
       <AspectEdit
         show={isEditOpened}
         onHide={() => setEditOpened(false)}
-        data={{ title, framing, explanation }}
+        data={{ id, title, framing: framing || '', explanation: explanation || '' }}
         opportunityId={opportunityId}
         id={id}
       />

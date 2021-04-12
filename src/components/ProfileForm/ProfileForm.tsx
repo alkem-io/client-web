@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Col, Form, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
-import { ContextInput, useRemoveReferenceMutation } from '../../generated/graphql';
+import { Context, useRemoveReferenceMutation } from '../../generated/graphql';
 import * as yup from 'yup';
 import { FieldArray, Formik } from 'formik';
 import TextInput, { TextArea } from '../core/TextInput';
@@ -18,7 +18,7 @@ interface Profile {
 }
 
 interface Props {
-  context: ContextInput;
+  context?: Context;
   profile?: Profile;
   onSubmit: (formData: any) => void;
   wireSubmit: (setter: () => void) => void;
@@ -26,7 +26,7 @@ interface Props {
   isEdit: boolean;
 }
 
-interface InitialValues extends ContextInput, Profile {}
+interface ValuesType extends Omit<Context, 'id' | '__typename'>, Profile {}
 
 const useProfileStyles = createStyles(theme => ({
   field: {
@@ -45,7 +45,7 @@ const useProfileStyles = createStyles(theme => ({
 const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit, contextOnly = false }) => {
   const styles = useProfileStyles();
 
-  const initialValues: InitialValues = {
+  const initialValues: ValuesType = {
     name: profile?.name || '',
     textID: profile?.textID || '',
     // state: profile?.state || '',

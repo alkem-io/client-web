@@ -28,7 +28,9 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
   const handleRemove = (item: SearchableListItem) => {
     remove({
       variables: {
-        userID: Number(item.id),
+        input: {
+          ID: Number(item.id),
+        },
       },
     });
   };

@@ -35,6 +35,7 @@ module.exports = {
       env(2, 1),
       {
         argsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
       },
     ],
     'import/prefer-default-export': 'off',

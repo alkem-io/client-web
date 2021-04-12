@@ -139,12 +139,11 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { tagsets, avatar, references, bio, ...otherData } = userData;
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
-      await removeRef({ variables: { id: Number(ref.id) } });
+      await removeRef({ variables: { input: { ID: Number(ref.id) } } });
     }
 
     const user: UserModel = {

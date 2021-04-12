@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import {
   User,
-  UserInput,
+  UpdateUserInput,
   useUpdateUserMutation,
   useUploadAvatarMutation,
   useUserProfileQuery,
@@ -34,23 +34,31 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   };
 
   const handleSave = (user: UserModel) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: userID, memberof, profile, ...rest } = user;
 
-    const userInput: UserInput = {
+    const userInput: UpdateUserInput = {
       ...rest,
+      ID: userID,
       profileData: {
+        ID: user.profile.id || '',
         avatar: profile.avatar,
         description: profile.description,
-        referencesData: [...profile.references].map(t => ({ name: t.name, uri: t.uri })),
-        tagsetsData: [...profile.tagsets],
+        createReferencesData: profile.references.filter(r => !r.id).map(t => ({ name: t.name, uri: t.uri })),
+        updateReferencesData: profile.references
+          .filter(r => r.id)
+          .map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
+        updateTagsetsData: profile.tagsets
+          .filter(t => t.id)
+          .map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
+        createTagsetsData: profile.tagsets
+          .filter(t => !t.id)
+          .map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
       },
     };
 
     updateUser({
       variables: {
-        user: userInput,
-        userId: Number(userID),
+        input: userInput,
       },
     });
   };

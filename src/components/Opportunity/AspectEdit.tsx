@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Form, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import {
-  AspectInput,
+  Aspect,
   useOpportunityTemplateQuery,
   useCreateAspectMutation,
   useUpdateAspectMutation,
@@ -17,7 +17,7 @@ import { replaceAll } from '../../utils/replaceAll';
 interface Props {
   show: boolean;
   onHide: () => void;
-  data?: AspectInput;
+  data?: Aspect;
   id?: string;
   opportunityId?: string | undefined;
   actorGroupId?: string;
@@ -43,17 +43,20 @@ const useContextEditStyles = createStyles(theme => ({
   },
 }));
 
-const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate, existingAspectNames }) => {
+const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
   const styles = useContextEditStyles();
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
+  const isCreate = !id;
+
   const availableTypes =
     isCreate && existingAspectNames
       ? aspectsTypes?.filter(at => !existingAspectNames.includes(replaceAll('_', ' ', at)))
       : aspectsTypes;
 
-  const initialValues: AspectInput = {
-    title: isCreate ? availableTypes && availableTypes[0] : data?.title || '',
+  const initialValues: Aspect = {
+    id: id || '',
+    title: (isCreate ? availableTypes && availableTypes[0] : data?.title) || '',
     framing: data?.framing || '',
     explanation: data?.explanation || '',
   };
@@ -77,23 +80,28 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, isCreate
     awaitRefetchQueries: true,
   });
 
-  const onSubmit = async values => {
-    if (isCreate) {
+  const onSubmit = async (values: Aspect) => {
+    if (!id) {
       await createAspect({
         variables: {
-          opportunityID: Number(opportunityId),
-          aspectData: values,
+          input: {
+            parentID: Number(opportunityId),
+            ...values,
+          },
         },
       });
 
       return;
+    } else {
+      await updateAspect({
+        variables: {
+          input: {
+            ID: id,
+            ...values,
+          },
+        },
+      });
     }
-    await updateAspect({
-      variables: {
-        id: Number(id),
-        aspectData: values,
-      },
-    });
   };
 
   let submitWired;

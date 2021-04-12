@@ -1,18 +1,17 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import Button from '../core/Button';
-import { ContextInput, useUpdateChallengeMutation, useUpdateOpportunityMutation } from '../../generated/graphql';
-import { createStyles } from '../../hooks/useTheme';
-
-import { QUERY_OPPORTUNITY_PROFILE } from '../../graphql/opportunity';
+import { Context, useUpdateChallengeMutation, useUpdateOpportunityMutation } from '../../generated/graphql';
 import { QUERY_CHALLENGE_PROFILE } from '../../graphql/challenge';
+import { QUERY_OPPORTUNITY_PROFILE } from '../../graphql/opportunity';
+import { createStyles } from '../../hooks/useTheme';
+import Button from '../core/Button';
 import ProfileForm from '../ProfileForm/ProfileForm';
 
 interface Props {
   variant: 'challenge' | 'opportunity';
   show: boolean;
   onHide: () => void;
-  data: ContextInput;
+  data: Context;
   id: string;
 }
 
@@ -42,7 +41,6 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   let submitWired;
 
   const onSubmit = async values => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { name, textID, state, ...context } = values;
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name }));
@@ -53,7 +51,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
     if (variant === 'challenge') {
       await updateChallenge({
         variables: {
-          challengeData: { ID: id, ...challengeUpdateData },
+          input: { ID: id, ...challengeUpdateData },
         },
       });
     } else if (variant === 'opportunity') {

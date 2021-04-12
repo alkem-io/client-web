@@ -53,7 +53,7 @@ export const QUERY_COMMUNITY_SEARCH = gql`
 `;
 
 export const QUERY_GROUP_CARD = gql`
-  query groupCard($id: Float!) {
+  query groupCard($id: String!) {
     ecoverse {
       id
       group(ID: $id) {

@@ -1,17 +1,17 @@
+import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import Button from '../core/Button';
-import { ActorInput, useCreateActorMutation, useUpdateActorMutation } from '../../generated/graphql';
 import * as yup from 'yup';
-import { Formik } from 'formik';
-import TextInput, { TextArea } from '../core/TextInput';
-import { createStyles } from '../../hooks/useTheme';
+import { Actor, useCreateActorMutation, useUpdateActorMutation } from '../../generated/graphql';
 import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
+import { createStyles } from '../../hooks/useTheme';
+import Button from '../core/Button';
+import TextInput, { TextArea } from '../core/TextInput';
 
 interface Props {
   show: boolean;
   onHide: () => void;
-  data?: ActorInput;
+  data?: Actor;
   id?: string;
   opportunityId?: string | undefined;
   actorGroupId?: string | undefined;
@@ -36,15 +36,17 @@ const useContextEditStyles = createStyles(theme => ({
   },
 }));
 
-const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId, isCreate = false }) => {
+const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
   const styles = useContextEditStyles();
 
-  const initialValues: ActorInput = {
+  const initialValues: Actor = {
+    id: id || '',
     name: data?.name || '',
     description: data?.description || '',
     value: data?.value || '',
     impact: data?.impact || '',
   };
+
   const validationSchema = yup.object().shape({
     name: yup.string().required(),
     description: yup.string().required(),
@@ -66,23 +68,30 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
     awaitRefetchQueries: true,
   });
 
-  const onSubmit = values => {
-    if (isCreate) {
+  const onSubmit = (values: Actor) => {
+    const { id: actorId, __typename, ...rest } = values;
+    if (!id) {
       createActor({
         variables: {
-          actorData: values,
-          actorGroupID: Number(actorGroupId),
+          input: {
+            parentID: Number(actorGroupId),
+            ...rest,
+          },
         },
       });
 
       return;
     }
-    updateActor({
-      variables: {
-        id: Number(id),
-        actorData: values,
-      },
-    });
+    if (id) {
+      updateActor({
+        variables: {
+          input: {
+            ID: id,
+            ...rest,
+          },
+        },
+      });
+    }
   };
 
   let submitWired;
@@ -90,7 +99,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>
       <Modal.Header closeButton>
-        <Modal.Title>{isCreate ? 'Create' : 'Edit'} Actor</Modal.Title>
+        <Modal.Title>{!id ? 'Create' : 'Edit'} Actor</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.body}>
         <Formik
@@ -145,7 +154,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
           CANCEL
         </Button>
         <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          {isCreate ? 'Create' : 'SAVE'}
+          {!id ? 'Create' : 'SAVE'}
         </Button>
       </Modal.Footer>
     </Modal>

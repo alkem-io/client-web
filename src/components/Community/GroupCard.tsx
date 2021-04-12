@@ -32,7 +32,7 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
   const styles = groupCardStyles();
   const { data, loading } = useGroupCardQuery({
     variables: {
-      id: Number(id),
+      id,
     },
   });
 
