@@ -22,6 +22,7 @@ export const USER_DETAILS_FRAGMENT = gql`
         uri
       }
       tagsets {
+        id
         name
         tags
       }
@@ -148,9 +149,9 @@ export const QUERY_USER_CARD = gql`
   }
 `;
 
-export const MUTATION_ADD_USER_TO_COMMUNITY = gql`
-  mutation addUserToCommunity($communityId: Float!, $userID: Float!) {
-    addUserToCommunity(communityID: $communityId, userID: $userID) {
+export const MUTATION_ASSIGN_USER_TO_COMMUNITY = gql`
+  mutation addUserToCommunity($membershipData: AssignCommunityMemberInput!) {
+    assignUserToCommunity(membershipData: $membershipData) {
       id
       name
     }

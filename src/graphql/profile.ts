@@ -8,8 +8,8 @@ export const AVATAR_FRAGMENT = gql`
 `;
 
 export const UPLOAD_AVATAR_MUTATION = gql`
-  mutation uploadAvatar($file: Upload!, $profileId: Float!) {
-    uploadAvatar(file: $file, profileID: $profileId) {
+  mutation uploadAvatar($file: Upload!, $input: UploadProfileAvatarInput!) {
+    uploadAvatar(file: $file, uploadData: $input) {
       ...Avatar
     }
   }

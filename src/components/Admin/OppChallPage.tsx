@@ -125,7 +125,6 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = values => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, name, textID, state, ...context } = values;
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name })); // removing id from refs
@@ -140,23 +139,26 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         case ProfileSubmitMode.createChallenge:
           createChallenge({
             variables: {
-              challengeData: data,
+              input: {
+                ...data,
+                parentID: -1, // TODO [ATS] Where is this coming from?
+              },
             },
           });
           break;
         case ProfileSubmitMode.updateChallenge:
           updateChallenge({
             variables: {
-              challengeData: { ...updateData, ID: challengeId },
+              input: { ...updateData, ID: challengeId },
             },
           });
           break;
         case ProfileSubmitMode.createOpportunity:
           createOpportunity({
             variables: {
-              opportunityData: {
+              input: {
                 ...data,
-                challengeID: challengeId,
+                parentID: challengeId,
               },
             },
           });
@@ -185,7 +187,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       <ProfileForm
         isEdit={isEdit}
         profile={profileTopLvlInfo || {}}
-        context={profile?.context || {}}
+        context={profile?.context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

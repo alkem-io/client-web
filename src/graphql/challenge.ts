@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { COMMUNITY_DETAILS_FRAGMENT } from './community';
+import { CONTEXT_DETAL_FRAGMENT } from './context';
 
 export const QUERY_CHALLENGE_PROFILE = gql`
   query challengeProfile($id: String!) {
@@ -11,17 +12,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
         name
         state
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
         community {
           members {
@@ -39,10 +30,7 @@ export const QUERY_CHALLENGE_PROFILE = gql`
           state
           textID
           context {
-            references {
-              name
-              uri
-            }
+            ...ContextDetails
           }
           projects {
             id
@@ -63,11 +51,12 @@ export const QUERY_CHALLENGE_PROFILE = gql`
       }
     }
   }
+  ${CONTEXT_DETAL_FRAGMENT}
 `;
 
 export const MUTATION_UPDATE_CHALLENGE = gql`
-  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
-    updateChallenge(challengeData: $challengeData) {
+  mutation updateChallenge($input: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $input) {
       id
       name
     }

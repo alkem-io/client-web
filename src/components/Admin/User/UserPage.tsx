@@ -1,12 +1,11 @@
 import { ApolloError } from '@apollo/client';
-import generator from 'generate-password';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import {
+  CreateUserInput,
   useCreateUserMutation,
-  useRemoveUserMutation,
-  UserInput,
+  useDeleteUserMutation,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
 import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
@@ -16,7 +15,7 @@ import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
 import Button from '../../core/Button';
 import { Loading } from '../../core/Loading';
-import PasswordPrompt from '../PasswordPrompt';
+import { getUpdateUserInput } from '../../UserProfile';
 import UserForm from './UserForm';
 import UserRemoveModal from './UserRemoveModal';
 
@@ -27,11 +26,8 @@ interface UserPageProps extends PageProps {
 }
 
 export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, title = 'User', paths }) => {
-  const [newUserId, setNewUserId] = useState<string | undefined>('1');
   const [status, setStatus] = useState<'success' | 'error' | undefined>();
   const [message, setMessage] = useState<string | undefined>(undefined);
-  const [password, setPassword] = useState<string>('');
-  const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
 
@@ -52,7 +48,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     },
   });
 
-  const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
+  const [remove, { loading: userRemoveLoading }] = useDeleteUserMutation({
     update(cache, data) {
       cache.modify({
         fields: {
@@ -75,9 +71,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
     onError: handleError,
-    onCompleted: data => {
-      setNewUserId(data.createUser.id);
-      setIsBlocked(true);
+    onCompleted: () => {
       setStatus('success');
       setMessage('User saved successfully!');
     },
@@ -106,11 +100,10 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const handleSave = (user: UserModel) => {
     // Convert UserModel to UserInput
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: userID, memberof, profile, ...rest } = user;
 
     if (mode === EditMode.new) {
-      const userInput: UserInput = {
+      const userInput: CreateUserInput = {
         ...rest,
         profileData: {
           avatar: profile.avatar,
@@ -120,39 +113,15 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         },
       };
 
-      const passwordBase = generator.generate({
-        length: 4,
-        numbers: true,
-        symbols: false,
-        excludeSimilarCharacters: true,
-        exclude: '"', // avoid causing invalid Json
-        strict: true,
-      });
-      const aadPassword = `Cherrytwist-${passwordBase}!`;
-
-      userInput.aadPassword = aadPassword;
-
-      setPassword(aadPassword);
       createUser({
         variables: {
-          user: userInput,
+          input: userInput,
         },
       });
     } else if (isEditMode && user.id) {
-      const userInput: UserInput = {
-        ...rest,
-        profileData: {
-          avatar: profile.avatar,
-          description: profile.description,
-          referencesData: [...profile.references].map(t => ({ name: t.name, uri: t.uri })),
-          tagsetsData: [...profile.tagsets],
-        },
-      };
-
       updateUser({
         variables: {
-          userId: Number(userID),
-          user: userInput,
+          input: getUpdateUserInput(user),
         },
       });
     }
@@ -161,7 +130,9 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const handleRemoveUser = () => {
     remove({
       variables: {
-        userID: Number(user?.id),
+        input: {
+          ID: Number(user?.id),
+        },
       },
     }).finally(() => setModalOpened(false));
   };
@@ -174,17 +145,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     setStatus(undefined);
   };
 
-  const closePasswordPrompt = () => {
-    if (newUserId) {
-      history.replace(`/admin/users/${newUserId}/edit`);
-    } else {
-      history.replace('/admin/users');
-    }
-  };
-
   return (
     <div>
-      <PasswordPrompt password={password} show={isBlocked} onClose={closePasswordPrompt} />
       <Alert show={status !== undefined} variant={status === 'error' ? 'danger' : status} onClose={dismiss} dismissible>
         {message}
       </Alert>

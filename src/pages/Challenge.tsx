@@ -21,7 +21,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { Challenge as ChallengeType, ContextInput, Organisation, User } from '../generated/graphql';
+import { Challenge as ChallengeType, Context, Organisation, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -234,7 +234,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                   variant={'challenge'}
                   show={isEditOpened}
                   onHide={() => setIsEditOpened(false)}
-                  data={challenge.context as ContextInput}
+                  data={challenge.context as Context}
                   id={id}
                 />
               </>

@@ -11,8 +11,6 @@ export interface UserModel {
   city: string;
   country: string;
   gender: string;
-  aadPassword: string;
-  accountUpn: string;
   profile: {
     id?: string;
     description: string;
@@ -20,7 +18,7 @@ export interface UserModel {
     tagsets: Tagset[];
     references: Reference[];
   };
-  memberof: {
+  memberof?: {
     communities: Community[];
     organisations: Organisation[];
   };
@@ -46,9 +44,8 @@ export const defaultUser: UserModel = {
   city: '',
   country: '',
   gender: '',
-  aadPassword: '',
-  accountUpn: '',
   profile: {
+    id: '',
     description: '',
     avatar: '',
     tagsets: [],
@@ -76,6 +73,7 @@ export interface UserFromGenerated {
   city: string;
   gender: string;
   bio: string;
+  profileId: string;
 }
 
 export interface Member {

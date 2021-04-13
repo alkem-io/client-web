@@ -14,7 +14,7 @@ export function useRemoveUserGroup(refetchQueries: string[]) {
     if (item) {
       remove({
         variables: {
-          groupId: Number(item.id),
+          input: { ID: Number(item.id) },
         },
       });
     }

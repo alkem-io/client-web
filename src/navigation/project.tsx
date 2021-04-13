@@ -54,8 +54,13 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
       onCreate={({ name, textID, description }) =>
         createProject({
           variables: {
-            project: { name, description, textID, state: 'new' },
-            opportunityID: opportunityId,
+            input: {
+              parentID: opportunityId,
+              name,
+              description,
+              textID,
+              state: 'new',
+            },
           },
         })
       }
@@ -69,7 +74,7 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const target = projects?.find(x => x.textID === id);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { id: Number(target?.id) },
+    variables: { id: target?.id || '' },
   });
 
   const project = query?.ecoverse.project;
