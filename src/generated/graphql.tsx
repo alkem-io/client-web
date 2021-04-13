@@ -246,6 +246,19 @@ export type CreateContextInput = {
   who?: Maybe<Scalars['String']>;
 };
 
+export type CreateEcoverseInput = {
+  /** Context for the Ecoverse. */
+  context?: Maybe<CreateContextInput>;
+  /** The host Organisation for the ecoverse */
+  hostID?: Maybe<Scalars['String']>;
+  /** The name for the ecoverse */
+  name: Scalars['String'];
+  /** The set of tags to apply to this Ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+  /** The unique text ID for the ecoverse */
+  textID: Scalars['String'];
+};
+
 export type CreateNvpInput = {
   name: Scalars['String'];
   value: Scalars['String'];
@@ -394,7 +407,7 @@ export type Ecoverse = {
   context?: Maybe<Context>;
   /** The user group with the specified id anywhere in the ecoverse */
   group: UserGroup;
-  /** The user groups on this Ecoverse */
+  /** The User Groups on this Ecoverse */
   groups: Array<UserGroup>;
   /** All groups on this Ecoverse that have the provided tag */
   groupsWithTag: Array<UserGroup>;
@@ -412,6 +425,8 @@ export type Ecoverse = {
   projects: Array<Project>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
+  /** A short text identifier for this Ecoverse */
+  textID: Scalars['String'];
 };
 
 export type EcoverseApplicationArgs = {
@@ -510,6 +525,8 @@ export type Mutation = {
   createAspectOnProject: Aspect;
   /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
+  /** Creates a new Ecoverse. */
+  createEcoverse: Ecoverse;
   /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
   /** Creates a new User Group for the specified Organisation. */
@@ -630,6 +647,10 @@ export type MutationCreateAspectOnProjectArgs = {
 
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeInput;
+};
+
+export type MutationCreateEcoverseArgs = {
+  ecoverseData: CreateEcoverseInput;
 };
 
 export type MutationCreateGroupOnCommunityArgs = {
@@ -870,7 +891,7 @@ export type Query = {
   __typename?: 'Query';
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
-  /** The ecoverse. */
+  /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
   ecoverse: Ecoverse;
   /** The currently logged in user */
   me: User;
@@ -888,6 +909,10 @@ export type Query = {
   users: Array<User>;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
+};
+
+export type QueryEcoverseArgs = {
+  ID?: Maybe<Scalars['Float']>;
 };
 
 export type QueryOrganisationArgs = {
@@ -1686,7 +1711,7 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
 export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'name'> & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -4202,7 +4227,7 @@ export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
     ecoverse {
       id
-      id
+      textID
       name
       context {
         tagline
