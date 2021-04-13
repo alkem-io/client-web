@@ -23,8 +23,11 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
+import { Admin } from './admin/admin';
 import { Project } from './project';
-/*local files imports end*/
+import RestrictedRoute from './route.extensions';
+
+const adminGroups = ['admin'];
 
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
@@ -37,11 +40,11 @@ export const Ecoverses: FC = () => {
 
   return (
     <Switch>
-      <Route path={`${path}:id`} name={'Ecoverse'}>
-        <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
-      </Route>
       <Route exact path={`${path}`}>
-        <Redirect to={`${url}${ecoverse?.ecoverse.id}`} />
+        <Redirect to={`${url}${ecoverse?.ecoverse.textID}`} />
+      </Route>
+      <Route path={`${path}:ecoverseId`} name={'Ecoverse'}>
+        <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
       </Route>
       <Route path="*" name={'404'}>
         <FourOuFour />
@@ -52,10 +55,11 @@ export const Ecoverses: FC = () => {
 
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  // const { id } = useParams<{ id: string }>();
+  // const { ecoverseId: textId } = useParams<{ ecoverseId: string }>();
   // at some point the ecoverse needs to be queried
 
   const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
+
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
     errorPolicy: 'all',
   });
@@ -91,6 +95,9 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} challenges={challenges} />
       </Route>
+      <RestrictedRoute path={`${path}/admin`} allowedGroups={adminGroups} strict={false}>
+        <Admin />
+      </RestrictedRoute>
       <Route path="*">
         <FourOuFour />
       </Route>
