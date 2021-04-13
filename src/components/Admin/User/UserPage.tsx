@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import {
   CreateUserInput,
   useCreateUserMutation,
-  useRemoveUserMutation,
+  useDeleteUserMutation,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
 import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
@@ -48,7 +48,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     },
   });
 
-  const [remove, { loading: userRemoveLoading }] = useRemoveUserMutation({
+  const [remove, { loading: userRemoveLoading }] = useDeleteUserMutation({
     update(cache, data) {
       cache.modify({
         fields: {

@@ -149,9 +149,9 @@ export const QUERY_USER_CARD = gql`
   }
 `;
 
-export const MUTATION_ADD_USER_TO_COMMUNITY = gql`
-  mutation addUserToCommunity($membershipData: UpdateMembershipInput!) {
-    addUserToCommunity(membershipData: $membershipData) {
+export const MUTATION_ASSIGN_USER_TO_COMMUNITY = gql`
+  mutation addUserToCommunity($membershipData: AssignCommunityMemberInput!) {
+    assignUserToCommunity(membershipData: $membershipData) {
       id
       name
     }

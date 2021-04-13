@@ -42,7 +42,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         input: {
           parentID: Number(opportunityId),
           type: 'incoming',
-          actorName: userData?.me.name,
+          actorName: userData?.me.name || '',
           actorType: 'user',
           actorRole: customRole || role,
           description: description,

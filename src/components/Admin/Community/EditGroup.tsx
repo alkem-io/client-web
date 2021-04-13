@@ -33,8 +33,8 @@ export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers })
     addUser({
       variables: {
         input: {
-          parentID: Number(groupId),
-          childID: Number(member.id),
+          groupID: Number(groupId),
+          userID: Number(member.id),
         },
       },
       refetchQueries: ['groupMembers'],
@@ -45,8 +45,8 @@ export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers })
     removeUser({
       variables: {
         input: {
-          parentID: Number(groupId),
-          childID: Number(member.id),
+          groupID: Number(groupId),
+          userID: Number(member.id),
         },
       },
       refetchQueries: ['groupMembers'],
