@@ -14,5 +14,16 @@
     "header": "Projects",
     "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
     "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+  },
+  "buttons": {
+    "learn-more": "Learn more",
+    "explore": "Explore"
+  },
+  "authentication": {
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "sign-out": "Sign out",
+    "log-out": "Log out",
+    "log-in": "Log in"
   }
 }

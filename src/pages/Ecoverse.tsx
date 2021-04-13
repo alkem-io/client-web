@@ -169,7 +169,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
         <Body text={`${vision}`}>
-          {more && <Button text="Learn more" as={'a'} href={`${more.uri}`} target="_blank" />}
+          {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
         </Body>
       </Section>
       <Divider />

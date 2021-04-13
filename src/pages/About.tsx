@@ -4,6 +4,7 @@ import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
 import { useServerMetadataQuery } from '../generated/graphql';
+import { useTranslation } from 'react-i18next';
 
 const useAboutStyles = createStyles(theme => ({
   row: {
@@ -52,7 +53,7 @@ const useAboutStyles = createStyles(theme => ({
 const AboutPage = () => {
   const styles = useAboutStyles();
   const { data } = useServerMetadataQuery();
-
+  const { t } = useTranslation();
   return (
     <>
       <div className={styles.row}>
@@ -77,7 +78,7 @@ const AboutPage = () => {
               multi stakeholder collaboration
             </Typography>
             <a href="https://cherrytwist.org/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
-              <Button>Learn more</Button>
+              <Button>{t('buttons.learn-more')}</Button>
             </a>
           </div>
         </Col>

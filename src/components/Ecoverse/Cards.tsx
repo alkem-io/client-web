@@ -11,6 +11,7 @@ import Typography from '../core/Typography';
 import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import Icon from '../core/Icon';
+import { useTranslation } from 'react-i18next';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -83,6 +84,7 @@ interface ChallengeCardProps {
 }
 
 export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url }) => {
+  const { t } = useTranslation();
   const styles = useCardStyles();
   const { tag, tagline, references } = context;
   const tagProps = tag
@@ -116,7 +118,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url 
         <span>{tagline}</span>
       </Typography>
       <div>
-        <Button text="Explore" as={Link} to={url} />
+        <Button text={t('buttons.explore')} as={Link} to={url} />
       </div>
     </Card>
   );

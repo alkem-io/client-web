@@ -22,6 +22,7 @@ import { useServerMetadataQuery } from '../generated/graphql';
 import { useHistory } from 'react-router-dom';
 import { useConfig } from '../hooks/useConfig';
 import { useTypedSelector } from '../hooks/useTypedSelector';
+import { useTranslation } from 'react-i18next';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -43,6 +44,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 };
 
 const App = ({ children }): React.ReactElement => {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticate();
   const { user, loading } = useUserContext();
   const { authentication, loading: configLoading } = useConfig();
@@ -93,7 +95,7 @@ const App = ({ children }): React.ReactElement => {
               <>
                 {!isAuthenticated && (
                   <Button
-                    text={'Sign in'}
+                    text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
                     onClick={() => {
                       history.push('/login');
@@ -103,7 +105,7 @@ const App = ({ children }): React.ReactElement => {
                 )}
                 {!isAuthenticated && registrationEnabled && (
                   <Button
-                    text={'Sign up'}
+                    text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
                     onClick={() => history.push('/register')}
                     small
