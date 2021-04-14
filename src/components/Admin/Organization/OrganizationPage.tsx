@@ -50,21 +50,21 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     },
   });
 
-  // TODO: need remove org method when its ready on backend
-
   const handleSubmit = (organisation: Organisation) => {
-    const { id: orgID, profile, ...rest } = organisation;
-    const organisationInput: CreateOrganisationInput = {
-      ...rest,
-      profileData: {
-        avatar: profile.avatar,
-        description: profile.description || '',
-        referencesData: [...(profile.references as Reference[])],
-        tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
-      },
-    };
+    const { id: orgID, textID, profile, ...rest } = organisation;
 
     if (mode === EditMode.new) {
+      const organisationInput: CreateOrganisationInput = {
+        ...rest,
+        textID,
+        profileData: {
+          avatar: profile.avatar,
+          description: profile.description || '',
+          referencesData: [...(profile.references as Reference[])],
+          tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
+        },
+      };
+
       createOrganization({
         variables: {
           input: organisationInput,
@@ -72,12 +72,20 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       });
     }
     if (mode === EditMode.edit) {
+      const organisationInput: UpdateOrganisationInput = {
+        ID: orgID,
+        ...rest,
+        profileData: {
+          ID: '-1', // TODO: Mustn't be provided.
+          avatar: profile.avatar,
+          description: profile.description || '',
+        },
+      };
       updateOrganization({
         variables: {
           input: {
             ...organisationInput,
-            ID: orgID,
-          } as UpdateOrganisationInput,
+          },
         },
       });
     }
