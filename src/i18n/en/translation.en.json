@@ -1,5 +1,4 @@
 {
-  "ecoverse": {},
   "projects": {
     "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
     "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
@@ -104,6 +103,15 @@
       "title": "Reimagining collaboration",
       "description": "Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for multi stakeholder collaboration",
       "powered-by": "Powered by {{name}} v{{version}}"
+    },
+    "error": {
+      "title": "Ooops!",
+      "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
+      "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
+      "line3": "If the error persists please contact support.",
+      "buttons": {
+        "reload": "Reload"
+      }
     }
   }
 }
