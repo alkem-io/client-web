@@ -50,11 +50,12 @@ export const OrganizationForm: FC<Props> = ({
   useEffect(() => {}, [config]);
 
   const isCreateMode = editMode === EditMode.new;
-  // const isEditMode = editMode === EditMode.edit;
+  const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
     name,
+    textID,
     profile: { description, references, avatar },
   } = currentOrganization;
 
@@ -80,6 +81,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const initialValues = {
     name: name || '',
+    textID: textID || '',
     description: description || '',
     avatar: avatar || '',
     tagsets: tagsets || [],
@@ -88,6 +90,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('This is the required field'),
+    textID: yup.string().required('This is the required field'),
     avatar: yup.string(),
     description: yup.string().max(400),
     tagsets: tagsetSchemaFragment,
@@ -150,7 +153,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values, references)}
         >
-          {({ values: { name, references, tagsets, avatar, description }, handleSubmit }) => {
+          {({ values: { name, textID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
                 <Form.Row>
@@ -160,6 +163,16 @@ export const OrganizationForm: FC<Props> = ({
                     value={name}
                     required={true}
                     readOnly={isReadOnlyMode}
+                  />
+                </Form.Row>
+
+                <Form.Row>
+                  <InputField
+                    name={'textID'}
+                    title={'Text ID'}
+                    value={textID}
+                    required={true}
+                    readOnly={isReadOnlyMode || isEditMode}
                   />
                 </Form.Row>
 
