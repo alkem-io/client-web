@@ -35,6 +35,11 @@
       "required": "This field is required!"
     }
   },
+  "components": {
+    "authentication-backdrop": {
+      "message": "Please sign in to check out the {{blockName}}."
+    }
+  },
   "pages": {
     "ecoverse": {
       "cards": {
