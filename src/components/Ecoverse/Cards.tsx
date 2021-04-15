@@ -35,6 +35,7 @@ const useCardStyles = createStyles(theme => ({
 
 export const ActivityCard: FC = () => {
   const styles = useCardStyles();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -46,7 +47,7 @@ export const ActivityCard: FC = () => {
           background: (theme: Theme) => theme.palette.background,
         },
       }}
-      primaryTextProps={{ text: 'ecoverse activity' }}
+      primaryTextProps={{ text: t('card.ecoverse.activity') }}
     >
       <div className={styles.item}>
         <Typography>Challenges:</Typography>

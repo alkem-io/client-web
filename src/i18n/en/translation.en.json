@@ -1,4 +1,5 @@
 {
+  "ecoverse": {},
   "challenges": {
     "header": "Challenges",
     "subheader": "There is no final frontier",
@@ -25,5 +26,12 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in"
+  },
+  "card": {
+    "ecoverse": {
+      "activity": {
+        "title": "ecoverse activity"
+      }
+    }
   }
 }
