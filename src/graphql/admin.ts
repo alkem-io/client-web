@@ -337,6 +337,7 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
   query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
+      textID
       name
       profile {
         id

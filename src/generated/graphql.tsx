@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A short text based identifier, 3 <= length <= 20. Used for URL paths in clients.  */
+  TextID: string;
   /** The `Upload` scalar type represents a file upload. */
   Upload: File;
 };
@@ -233,7 +235,7 @@ export type CreateChallengeInput = {
   parentID: Scalars['Float'];
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
-  textID: Scalars['String'];
+  textID: Scalars['TextID'];
 };
 
 export type CreateContextInput = {
@@ -256,7 +258,7 @@ export type CreateEcoverseInput = {
   /** The set of tags to apply to this Ecoverse */
   tags?: Maybe<Array<Scalars['String']>>;
   /** The unique text ID for the ecoverse */
-  textID: Scalars['String'];
+  textID: Scalars['TextID'];
 };
 
 export type CreateNvpInput = {
@@ -270,7 +272,7 @@ export type CreateOpportunityInput = {
   parentID: Scalars['String'];
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
-  textID: Scalars['String'];
+  textID: Scalars['TextID'];
 };
 
 export type CreateOrganisationInput = {
@@ -293,7 +295,7 @@ export type CreateProjectInput = {
   name: Scalars['String'];
   parentID: Scalars['Float'];
   state?: Maybe<Scalars['String']>;
-  textID: Scalars['String'];
+  textID: Scalars['TextID'];
 };
 
 export type CreateReferenceInput = {
@@ -595,6 +597,8 @@ export type Mutation = {
   updateProfile: Profile;
   /** Updates the specified Project. */
   updateProject: Project;
+  /** Update the specified Reference. */
+  updateReference: Reference;
   /** Updates the Tagset. */
   updateTagset: Tagset;
   /** Updates the User. Note: email address cannot be updated. */
@@ -787,6 +791,10 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateProjectArgs = {
   projectData: UpdateProjectInput;
+};
+
+export type MutationUpdateReferenceArgs = {
+  updateData: UpdateReferenceInput;
 };
 
 export type MutationUpdateTagsetArgs = {
@@ -1121,6 +1129,13 @@ export type UpdateProjectInput = {
   name: Scalars['String'];
   state?: Maybe<Scalars['String']>;
   textID: Scalars['String'];
+};
+
+export type UpdateReferenceInput = {
+  ID: Scalars['Float'];
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type UpdateTagsetInput = {
@@ -1483,7 +1498,7 @@ export type OrganisationProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'textID' | 'name'> & {
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
@@ -3493,6 +3508,7 @@ export const OrganisationProfileInfoDocument = gql`
   query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
+      textID
       name
       profile {
         id

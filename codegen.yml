@@ -10,5 +10,6 @@ generates:
     config:
       scalars:
         Upload: File
+        TextID: string
       withHooks: true
       maybeValue: T | undefined
