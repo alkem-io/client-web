@@ -119,6 +119,9 @@
       "buttons": {
         "home": "Take me home"
       }
+    },
+    "logout": {
+      "loading": "Signing off ..."
     }
   }
 }
