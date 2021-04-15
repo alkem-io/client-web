@@ -40,14 +40,17 @@ interface EcoversePageProps extends PageProps {
   users: User[] | undefined;
 }
 
-const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => (
-  <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
-    <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
-    <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
-      Sorry, an error occurred while loading {blockName}
-    </Typography>
-  </div>
-);
+const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
+  const { t } = useTranslation();
+  return (
+    <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
+      <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
+      <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
+        {t('pages.ecoverse.errorblock.message', { blockName: blockName.toLocaleLowerCase() })}
+      </Typography>
+    </div>
+  );
+};
 
 const EcoversePage: FC<EcoversePageProps> = ({
   paths,
@@ -127,14 +130,14 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const activitySummary = useMemo(() => {
     const initial = [
-      { name: 'Challenges', digit: challenges.length, color: 'neutral' },
+      { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
       {
-        name: 'Opportunities',
+        name: t('pages.ecoverse.cards.activity.opportunities'),
         digit: opportunities.length,
         color: 'primary',
       },
       {
-        name: 'Projects',
+        name: t('pages.ecoverse.cards.activity.projects'),
         digit: projects.length,
         color: 'positive',
       },
@@ -142,7 +145,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
     const withMembers = [
       ...initial,
       {
-        name: 'Members',
+        name: t('pages.ecoverse.cards.activity.members'),
         digit: users.length,
         color: 'neutralMedium',
       },
@@ -174,13 +177,13 @@ const EcoversePage: FC<EcoversePageProps> = ({
       </Section>
       <Divider />
       <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('challenges.header')} />
+        <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
         <SubHeader text={background} />
         <Body text={impact} />
       </Section>
       {challengesError ? (
         <Col xs={12}>
-          <ErrorBlock blockName={'challenges'} />
+          <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
         </Col>
       ) : (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
@@ -191,7 +194,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               context={{
                 ...challenge.context,
                 tag: user.user?.ofChallenge(challenge.id)
-                  ? 'You are in'
+                  ? t('pages.ecoverse.cards.tags.you-are-in')
                   : (challenge.context as Record<string, any>)['tag'],
               }}
               url={`${url}/challenges/${challenge.textID}`}
@@ -203,21 +206,21 @@ const EcoversePage: FC<EcoversePageProps> = ({
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
         <CommunitySection
-          title={t('community.header')}
-          subTitle={'The heroes working on this challenge'}
+          title={t('pages.ecoverse.sections.community.title')}
+          subTitle={t('pages.ecoverse.sections.community.subtitle')}
           users={users}
-          body={t('community.body')}
+          body={t('pages.ecoverse.sections.community.body')}
           shuffle={true}
           onExplore={() => history.push('/community')}
         />
       </AuthenticationBackdrop>
       <Divider />
-      <AuthenticationBackdrop blockName={'projects'}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
         {ecoverseProjects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-              <SectionHeader text={t('projects.header')} tagText={'Work in progress'} />
-              <SubHeader text={t('projects.subheader', { ecoverse: name })} />
+              <SectionHeader text={t('pages.ecoverse.sections.projects.header')} tagText={'Work in progress'} />
+              <SubHeader text={t('pages.ecoverse.sections.projects.subheader', { ecoverse: name })} />
             </Section>
             {isAuthenticated && (
               <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
