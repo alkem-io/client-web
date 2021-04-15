@@ -14,7 +14,8 @@
     "explore": "Explore",
     "create": "Create",
     "save": "Save",
-    "back": "Back"
+    "back": "Back",
+    "see-more": "See more"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -76,9 +77,44 @@
       }
     },
     "challenge": {
+      "organizationBanner": {
+        "load-more": "And more ..."
+      },
       "sections": {
+        "activity": {
+          "title": "challenge activity",
+          "opportunities": "Opportunities",
+          "projects": "Projects",
+          "members": "Members"
+        },
+        "header": {
+          "buttons": {
+            "edit": {
+              "tooltip": "Edit challenge context"
+            }
+          }
+        },
+        "details": {
+          "header": "Challenge details"
+        },
+        "community": {
+          "header": "Community",
+          "subheader": "Building the future together",
+          "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
+          "body": ""
+        },
+        "opportunities": {
+          "header": "Opportunities",
+          "subheader": "Potential solutions for this challenge",
+          "body-missing": "No opportunities found for this challenge"
+        },
         "projects": {
-          "header": "Projects"
+          "header": {
+            "text": "Projects",
+            "tag": "Coming soon"
+          },
+          "subheader": "Potential solutions for this challenge",
+          "body": "Manage your projects and suggest new ones to your stakeholders."
         }
       }
     },
