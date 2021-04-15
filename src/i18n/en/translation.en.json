@@ -18,7 +18,10 @@
   },
   "buttons": {
     "learn-more": "Learn more",
-    "explore": "Explore"
+    "explore": "Explore",
+    "create": "Create",
+    "save": "Save",
+    "back": "Back"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -32,6 +35,35 @@
       "activity": {
         "title": "ecoverse activity"
       }
+    }
+  },
+  "common": {
+    "genders": {
+      "notSpecified": "not specified",
+      "male": "male",
+      "female": "female"
+    }
+  },
+  "forms": {
+    "validations": {
+      "required": "This field is required!"
+    }
+  },
+  "pages": {
+    "login": {
+      "title": "Sign in",
+      "demo-provider": {
+        "question": "Don't have an account?"
+      },
+      "validations": {
+        "email": "Please enter your email address.",
+        "password": "Please enter your password."
+      },
+      "buttons": {
+        "sign-in": "Sign in",
+        "sign-up": "Sign up"
+      },
+      "logo": "{{ecoverse}} ecoverse logo"
     }
   }
 }

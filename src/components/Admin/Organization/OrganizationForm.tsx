@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import {
@@ -43,6 +44,7 @@ export const OrganizationForm: FC<Props> = ({
   title = 'Organization',
 }) => {
   const history = useHistory();
+  const { t } = useTranslation();
   const [removeRef] = useRemoveReferenceMutation();
 
   const { data: config } = useTagsetsTemplateQuery({});
@@ -87,7 +89,7 @@ export const OrganizationForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required('This is the required field'),
+    name: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
     tagsets: tagsetSchemaFragment,

@@ -30,7 +30,14 @@ export const LoginRoute: FC = () => {
     return <Loading text={'Loading config'} />;
   }
 
-  return <LoginPage providers={authentication.providers} logo={logo} redirect={redirect ?? undefined} />;
+  return (
+    <LoginPage
+      providers={authentication.providers}
+      logo={logo}
+      ecoverseName={ecoverse.ecoverse?.ecoverse.name}
+      redirect={redirect ?? undefined}
+    />
+  );
 };
 
 export default LoginRoute;

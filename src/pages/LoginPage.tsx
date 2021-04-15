@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Alert, Col, Container, Form, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
@@ -17,19 +18,11 @@ interface LoginPageProps {
   providers: AuthenticationProviderConfig[];
   logo?: string;
   redirect?: string;
+  ecoverseName?: string;
 }
 
-const validationSchema = yup.object().shape({
-  username: yup.string().required('Please enter your email address.'),
-  password: yup.string().required('Please enter your password.'),
-});
-
-const initialValues = {
-  username: '',
-  password: '',
-};
-
-export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => {
+export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect, ecoverseName }) => {
+  const { t } = useTranslation();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
   const history = useHistory();
@@ -52,6 +45,16 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
     [login, dispatch]
   );
 
+  const validationSchema = yup.object().shape({
+    username: yup.string().required(t('pages.login.validations.email')),
+    password: yup.string().required(t('pages.login.validations.password')),
+  });
+
+  const initialValues = {
+    username: '',
+    password: '',
+  };
+
   const demoProvider = useMemo(
     () => providers.filter(x => x.enabled).find(x => x.config.__typename === 'DemoAuthProviderConfig'),
     [providers]
@@ -71,14 +74,18 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
       {logo && (
         <Row className={'justify-content-center'}>
           <Col sm={2}>
-            <img src={logo} className={'img-fluid'} alt={''} />
+            <img
+              src={logo}
+              className={'img-fluid'}
+              alt={ecoverseName ? t('pages.login.logo', { ecoverse: ecoverseName }) : ''}
+            />
           </Col>
         </Row>
       )}
       <Row className={'justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            Sign in
+            {t('pages.login.title')}
           </Typography>
           {nonDemoProviders.map((provider, index) => {
             return (
@@ -153,7 +160,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                           disabled={isSubmitting || !demoProvider.enabled || disabled}
                           small
                         >
-                          Sign in
+                          {t('pages.login.buttons.sign-in')}
                         </Button>
                       </div>
                     </Form>
@@ -163,7 +170,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
               <div className={'mt-4'}>
                 <Delimeter />
                 <Typography variant={'h5'} className={'mb-2'}>
-                  Don't have an account?
+                  {t('pages.login.demo-provider.question')}
                 </Typography>
                 <Button
                   variant="primary"
@@ -173,7 +180,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect }) => 
                   onClick={() => history.push('/register')}
                   disabled={disabled}
                 >
-                  Sign up
+                  {t('pages.login.buttons.sign-up')}
                 </Button>
               </div>
             </>

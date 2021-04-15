@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { TagsetTemplate, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { Reference, Tagset } from '../../../models/Profile';
@@ -34,9 +35,10 @@ export const UserForm: FC<UserProps> = ({
   onAvatarChange,
   title = 'User',
 }) => {
+  const { t } = useTranslation();
   const [removeRef] = useRemoveReferenceMutation();
 
-  const genders = ['not specified', 'male', 'female'];
+  const genders = [t('common.genders.notSpecified'), t('common.genders.male'), t('common.genders.female')];
   const { data: config, loading } = useTagsetsTemplateQuery();
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -91,10 +93,10 @@ export const UserForm: FC<UserProps> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required('This is the required field'),
-    firstName: yup.string().required('This is the required field'),
-    lastName: yup.string().required('This is the required field'),
-    email: yup.string().email('Email is not valid').required('This is the required field'),
+    name: yup.string().required(t('forms.validations.required')),
+    firstName: yup.string().required(t('forms.validations.required')),
+    lastName: yup.string().required(t('forms.validations.required')),
+    email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
     gender: yup.string(),
     city: yup.string(),
     country: yup.string(),

@@ -47,7 +47,7 @@ export const ActivityCard: FC = () => {
           background: (theme: Theme) => theme.palette.background,
         },
       }}
-      primaryTextProps={{ text: t('card.ecoverse.activity') }}
+      primaryTextProps={{ text: t('card.ecoverse.activity.title') }}
     >
       <div className={styles.item}>
         <Typography>Challenges:</Typography>
