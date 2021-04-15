@@ -113,6 +113,12 @@
       "buttons": {
         "reload": "Reload"
       }
+    },
+    "four-ou-four": {
+      "message": "The resource you are looking for could not be found.",
+      "buttons": {
+        "home": "Take me home"
+      }
     }
   }
 }
