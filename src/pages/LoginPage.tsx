@@ -160,7 +160,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect, ecove
                           disabled={isSubmitting || !demoProvider.enabled || disabled}
                           small
                         >
-                          {t('pages.login.buttons.sign-in')}
+                          {t('authentication.sign-in')}
                         </Button>
                       </div>
                     </Form>
@@ -180,7 +180,7 @@ export const LoginPage: FC<LoginPageProps> = ({ providers, logo, redirect, ecove
                   onClick={() => history.push('/register')}
                   disabled={disabled}
                 >
-                  {t('pages.login.buttons.sign-up')}
+                  {t('authentication.sign-up')}
                 </Button>
               </div>
             </>

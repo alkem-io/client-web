@@ -93,10 +93,6 @@
         "email": "Please enter your email address.",
         "password": "Please enter your password."
       },
-      "buttons": {
-        "sign-in": "Sign in",
-        "sign-up": "Sign up"
-      },
       "logo": "{{ecoverse}} ecoverse logo"
     },
     "about": {
