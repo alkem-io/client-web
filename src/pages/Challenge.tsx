@@ -7,7 +7,7 @@ import React, { FC, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
 import CommunitySection from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
@@ -21,7 +21,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { Challenge as ChallengeType, ContextInput, Organisation, User } from '../generated/graphql';
+import { Challenge as ChallengeType, Context, Organisation, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -61,6 +61,7 @@ const useOrganizationStyles = createStyles(theme => ({
 }));
 
 const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
+  const { t } = useTranslation();
   const styles = useOrganizationStyles();
   const [modalId, setModalId] = useState<string | null>(null);
 
@@ -91,7 +92,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.name).join(', ')}</Tooltip>}
         >
           <div className={'d-flex'}>
-            <Typography variant="h3">And more...</Typography>
+            <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
           </div>
         </OverlayTrigger>
       )}
@@ -180,7 +181,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         digit: membersCount,
         color: 'neutralMedium',
       },
-    ];
+    ] as ActivityCardItem[];
   }, [opportunities, projects, users]);
 
   const challengeRefs = challenge?.context?.references
@@ -192,9 +193,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Section
         details={
           <ActivityCard
-            title={'challenge activity'}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            items={activitySummary as any}
+            title={t('pages.challenge.sections.activity.title')}
+            items={activitySummary}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
           />
         }
@@ -220,7 +220,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
               <>
                 <OverlayTrigger
                   placement={'bottom'}
-                  overlay={<Tooltip id={'Edit challenge context'}>Edit challenge context</Tooltip>}
+                  overlay={
+                    <Tooltip id={'Edit challenge context'}>
+                      {t('pages.challenge.sections.header.buttons.edit.tooltip')}
+                    </Tooltip>
+                  }
                 >
                   <Edit
                     color={'white'}
@@ -234,7 +238,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
                   variant={'challenge'}
                   show={isEditOpened}
                   onHide={() => setIsEditOpened(false)}
-                  data={challenge.context as ContextInput}
+                  data={challenge.context as Context}
                   id={id}
                 />
               </>
@@ -275,8 +279,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'community'}>
         <CommunitySection
-          title={t('community.header')}
-          subTitle={t('community.subheader')}
+          title={t('pages.challenge.sections.community.header')}
+          subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
           users={users}
           onExplore={() => history.push('/community')}
@@ -285,10 +289,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
-        <SectionHeader text="OPPORTUNITIES" />
-        <SubHeader text="Potential solutions for this challenge" />
+        <SectionHeader text={t('pages.challenge.sections.opportunities.header')} />
+        <SubHeader text={t('pages.challenge.sections.opportunities.subheader')} />
         {!opportunities ||
-          (opportunities.length === 0 && <Body text={'No opportunities found for this challenge'}></Body>)}
+          (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
       {opportunities && (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
@@ -300,9 +304,12 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Divider />
       <AuthenticationBackdrop blockName={'projects'}>
         <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-          <SectionHeader text={t('projects.header')} tagText={'Coming soon'} />
-          <SubHeader text={'Changing the world one project at a time'} />
-          <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
+          <SectionHeader
+            text={t('pages.challenge.sections.projects.header.text')}
+            tagText={t('pages.challenge.sections.projects.header.tag')}
+          />
+          <SubHeader text={t('pages.challenge.sections.projects.subheader')} />
+          <Body text={t('pages.challenge.sections.projects.body')} />
         </Section>
         {isAuthenticated && (
           <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>

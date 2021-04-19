@@ -1,8 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import ProfileForm from '../ProfileForm/ProfileForm';
-import Button from '../core/Button';
+import { Alert } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
 import {
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
@@ -11,13 +10,15 @@ import {
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
-import { useParams } from 'react-router-dom';
 import { QUERY_CHALLENGE_PROFILE_INFO, QUERY_OPPORTUNITY_PROFILE_INFO } from '../../graphql/admin';
-import Typography from '../core/Typography';
-import { Alert } from 'react-bootstrap';
-import Loading from '../core/Loading';
-import { NEW_OPPORTUNITY_FRAGMENT } from '../../graphql/opportunity';
 import { NEW_CHALLENGE_FRAGMENT } from '../../graphql/challenge';
+import { NEW_OPPORTUNITY_FRAGMENT } from '../../graphql/opportunity';
+import { useEcoverse } from '../../hooks/useEcoverse';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import Button from '../core/Button';
+import Loading from '../core/Loading';
+import Typography from '../core/Typography';
+import ProfileForm from '../ProfileForm/ProfileForm';
 
 export enum ProfileSubmitMode {
   createChallenge,
@@ -34,10 +35,12 @@ interface Props {
 interface Params {
   challengeId?: string;
   opportunityId?: string;
+  ecoverseId?: string;
 }
 
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
-  const { challengeId = '', opportunityId = '' } = useParams<Params>();
+  const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
+  const { toEcoverseId } = useEcoverse();
   const [message, setMessage] = useState<string | null>(null);
   const [variant, setVariant] = useState<'success' | 'danger'>('success');
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
@@ -125,7 +128,6 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = values => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, name, textID, state, ...context } = values;
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name })); // removing id from refs
@@ -135,28 +137,32 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     const data = { name, textID, state: '', context: contextWithUpdatedRefs };
     const updateData = { name, state: '', context: contextWithUpdatedRefs };
 
-    if (ProfileSubmitMode)
+    if (ProfileSubmitMode) {
+      debugger;
       switch (mode) {
         case ProfileSubmitMode.createChallenge:
           createChallenge({
             variables: {
-              challengeData: data,
+              input: {
+                ...data,
+                parentID: Number(toEcoverseId(ecoverseId)), // TODO [ATS] Where is this coming from?
+              },
             },
           });
           break;
         case ProfileSubmitMode.updateChallenge:
           updateChallenge({
             variables: {
-              challengeData: { ...updateData, ID: challengeId },
+              input: { ...updateData, ID: challengeId },
             },
           });
           break;
         case ProfileSubmitMode.createOpportunity:
           createOpportunity({
             variables: {
-              opportunityData: {
+              input: {
                 ...data,
-                challengeID: challengeId,
+                parentID: challengeId,
               },
             },
           });
@@ -174,6 +180,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         default:
           throw new Error('Submit handler not found');
       }
+    }
   };
 
   let submitWired;
@@ -185,7 +192,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       <ProfileForm
         isEdit={isEdit}
         profile={profileTopLvlInfo || {}}
-        context={profile?.context || {}}
+        context={profile?.context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

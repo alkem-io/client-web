@@ -68,9 +68,9 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
   return (
     <>
       <Section avatar={<Icon component={FileEarmarkPostIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'new project'} />
-        <SubHeader text={'This could be the project that makes the difference'} />
-        <Body text={t('projects.new-project')}></Body>
+        <SectionHeader text={t('pages.opportunity.sections.projects.new-project.header')} />
+        <SubHeader text={t('pages.opportunity.sections.projects.new-project.subheader')} />
+        <Body text={t('pages.opportunity.sections.projects.new-project.body')}></Body>
         <ContentCard title="Project name & description">
           <TextInput label="project name" value={name} error={!name} onChange={e => setName(e.target.value)} />
           <div className={styles.spacer}></div>

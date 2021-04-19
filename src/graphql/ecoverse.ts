@@ -5,7 +5,7 @@ export const QUERY_ECOVERSE_DETAILS = gql`
   query ecoverseInfo {
     ecoverse {
       id
-      id
+      textID
       name
       context {
         tagline

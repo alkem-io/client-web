@@ -8,14 +8,15 @@ import { createStyles } from '../../hooks/useTheme';
 import { Theme } from '../../context/ThemeProvider';
 import activitiesMock from './tempMockActivities';
 
+export interface ActivityCardItem {
+  name: string;
+  digit: number;
+  // color: Pick<Palette, 'positive' | 'neutral' | 'primary' | 'neutralMedium'>;
+  color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
+}
 interface ActivityCardProps extends CardProps {
   title: string;
-  items: Array<{
-    name: string;
-    digit: number;
-    // color: Pick<Palette, 'positive' | 'neutral' | 'primary' | 'neutralMedium'>;
-    color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
-  }>;
+  items: Array<ActivityCardItem>;
 }
 
 const useCardStyles = createStyles(theme => ({

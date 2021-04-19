@@ -34,10 +34,10 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   const onSubmit = () => {
     createActorGroup({
       variables: {
-        opportunityID: Number(opportunityId),
-        actorGroupData: {
-          name: name,
-          description: description,
+        input: {
+          parentID: Number(opportunityId),
+          name,
+          description,
         },
       },
     }).then(() => {

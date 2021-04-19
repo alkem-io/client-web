@@ -1,11 +1,12 @@
 import { gql } from '@apollo/client';
 import { NEW_CHALLENGE_FRAGMENT } from './challenge';
+import { CONTEXT_DETAL_FRAGMENT } from './context';
 import { NEW_OPPORTUNITY_FRAGMENT } from './opportunity';
 import { USER_DETAILS_FRAGMENT } from './user';
 
 export const MUTATION_CREATE_USER = gql`
-  mutation createUser($user: UserInput!) {
-    createUser(userData: $user) {
+  mutation createUser($input: CreateUserInput!) {
+    createUser(userData: $input) {
       ...UserDetails
     }
   }
@@ -13,8 +14,8 @@ export const MUTATION_CREATE_USER = gql`
 `;
 
 export const MUTATION_UPDATE_USER = gql`
-  mutation updateUser($user: UserInput!, $userId: Float!) {
-    updateUser(userData: $user, userID: $userId) {
+  mutation updateUser($input: UpdateUserInput!) {
+    updateUser(userData: $input) {
       ...UserDetails
     }
   }
@@ -58,7 +59,7 @@ export const GROUP_MEMBERS_FRAGMENT = gql`
 `;
 
 export const QUERY_GROUP_MEMBERS = gql`
-  query groupMembers($id: Float!) {
+  query groupMembers($id: String!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -74,8 +75,8 @@ export const QUERY_GROUP_MEMBERS = gql`
 `;
 
 export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
-  mutation removeUserFromGroup($groupID: Float!, $userID: Float!) {
-    removeUserFromGroup(groupID: $groupID, userID: $userID) {
+  mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
+    removeUserFromGroup(membershipData: $input) {
       id
       name
       members {
@@ -86,18 +87,23 @@ export const MUTATION_REMOVE_USER_FROM_GROUP = gql`
   ${GROUP_MEMBERS_FRAGMENT}
 `;
 
-export const MUTATION_REMOVE_USER = gql`
-  mutation removeUser($userID: Float!) {
-    removeUser(userID: $userID) {
+export const MUTATION_DELETE_USER = gql`
+  mutation deleteUser($input: DeleteUserInput!) {
+    deleteUser(deleteData: $input) {
       ...UserDetails
     }
   }
   ${USER_DETAILS_FRAGMENT}
 `;
 
-export const MUTATION_ADD_USER_TO_GROUP = gql`
-  mutation addUserToGroup($groupID: Float!, $userID: Float!) {
-    addUserToGroup(groupID: $groupID, userID: $userID)
+export const MUTATION_ASSIGN_USER_TO_GROUP = gql`
+  mutation addUserToGroup($input: AssignUserGroupMemberInput!) {
+    assignUserToGroup(membershipData: $input) {
+      id
+      members {
+        ...GroupMembers
+      }
+    }
   }
   ${GROUP_MEMBERS_FRAGMENT}
 `;
@@ -248,21 +254,12 @@ export const QUERY_TAGSETS_TEMPLATE = gql`
 `;
 
 export const MUTATION_CREATE_CHALLENGE = gql`
-  mutation createChallenge($challengeData: ChallengeInput!) {
-    createChallenge(challengeData: $challengeData) {
+  mutation createChallenge($input: CreateChallengeInput!) {
+    createChallenge(challengeData: $input) {
       ...NewChallenge
     }
   }
   ${NEW_CHALLENGE_FRAGMENT}
-`;
-
-export const MUTATION_UPDATE_CHALLENGE = gql`
-  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
-    updateChallenge(challengeData: $challengeData) {
-      id
-      name
-    }
-  }
 `;
 
 export const QUERY_CHALLENGE_PROFILE_INFO = gql`
@@ -275,27 +272,18 @@ export const QUERY_CHALLENGE_PROFILE_INFO = gql`
         name
         state
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
       }
     }
   }
+  ${CONTEXT_DETAL_FRAGMENT}
 `;
 
 export const MUTATION_CREATE_OPPORTUNITY = gql`
-  mutation createOpportunity($opportunityData: OpportunityInput!) {
-    createOpportunity(opportunityData: $opportunityData) {
-      ...NewOpportunites
+  mutation createOpportunity($input: CreateOpportunityInput!) {
+    createOpportunity(opportunityData: $input) {
+      ...NewOpportunity
     }
   }
   ${NEW_OPPORTUNITY_FRAGMENT}
@@ -319,26 +307,17 @@ export const QUERY_OPPORTUNITY_PROFILE_INFO = gql`
         textID
         name
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
       }
     }
   }
+  ${CONTEXT_DETAL_FRAGMENT}
 `;
 
 export const MUTATION_CREATE_ORGANIZATION = gql`
-  mutation createOrganization($organisationData: OrganisationInput!) {
-    createOrganisation(organisationData: $organisationData) {
+  mutation createOrganization($input: CreateOrganisationInput!) {
+    createOrganisation(organisationData: $input) {
       id
       name
     }
@@ -346,8 +325,8 @@ export const MUTATION_CREATE_ORGANIZATION = gql`
 `;
 
 export const MUTATION_UPDATE_ORGANIZATION = gql`
-  mutation updateOrganization($organisationData: UpdateOrganisationInput!) {
-    updateOrganisation(organisationData: $organisationData) {
+  mutation updateOrganization($input: UpdateOrganisationInput!) {
+    updateOrganisation(organisationData: $input) {
       id
       name
     }
@@ -358,6 +337,7 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
   query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
+      textID
       name
       profile {
         id
@@ -379,8 +359,8 @@ export const QUERY_ORGANIZATION_PROFILE_INFO = gql`
 `;
 
 export const MUTATION_CREATE_GROUP_ON_COMMUNITY = gql`
-  mutation createGroupOnCommunity($communityID: Float!, $groupName: String!) {
-    createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
+  mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
+    createGroupOnCommunity(groupData: $input) {
       id
       name
     }
@@ -388,8 +368,8 @@ export const MUTATION_CREATE_GROUP_ON_COMMUNITY = gql`
 `;
 
 export const MUTATION_CREATE_GROUP_ON_ORGANIZATION = gql`
-  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
-    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
+  mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
+    createGroupOnOrganisation(groupData: $input) {
       id
       name
     }
@@ -427,8 +407,10 @@ export const QUERY_ORGANIZATION_DETAILS = gql`
   }
 `;
 
-export const MUTATION_REMOVE_GROUP = gql`
-  mutation removeUserGroup($groupId: Float!) {
-    removeUserGroup(ID: $groupId)
+export const MUTATION_DELETE_GROUP = gql`
+  mutation removeUserGroup($input: DeleteUserGroupInput!) {
+    deleteUserGroup(deleteData: $input) {
+      id
+    }
   }
 `;

@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A short text based identifier, 3 <= length <= 20. Used for URL paths in clients.  */
+  TextID: string;
   /** The `Upload` scalar type represents a file upload. */
   Upload: File;
 };
@@ -51,18 +53,6 @@ export type ActorGroup = {
   name: Scalars['String'];
 };
 
-export type ActorGroupInput = {
-  description?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type ActorInput = {
-  description?: Maybe<Scalars['String']>;
-  impact?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
-};
-
 export type ApiConfig = {
   __typename?: 'ApiConfig';
   /** Configuration payload for the Cherrytwist API. */
@@ -75,11 +65,6 @@ export type Application = {
   questions: Array<Question>;
   status: ApplicationStatus;
   user: User;
-};
-
-export type ApplicationInput = {
-  questions: Array<NvpInput>;
-  userId: Scalars['Float'];
 };
 
 export enum ApplicationStatus {
@@ -104,10 +89,24 @@ export type Aspect = {
   title: Scalars['String'];
 };
 
-export type AspectInput = {
-  explanation?: Maybe<Scalars['String']>;
-  framing?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
+export type AssignChallengeLeadInput = {
+  challengeID: Scalars['String'];
+  organisationID: Scalars['String'];
+};
+
+export type AssignCommunityMemberInput = {
+  communityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type AssignUserGroupFocalPointInput = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type AssignUserGroupMemberInput = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
 };
 
 export type AuthenticationConfig = {
@@ -153,14 +152,6 @@ export type Challenge = {
   tagset?: Maybe<Tagset>;
   /** A short text identifier for this challenge */
   textID: Scalars['String'];
-};
-
-export type ChallengeInput = {
-  context?: Maybe<ContextInput>;
-  name?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-  textID?: Maybe<Scalars['String']>;
 };
 
 export type ChallengeTemplate = {
@@ -211,14 +202,189 @@ export type Context = {
   who?: Maybe<Scalars['String']>;
 };
 
-export type ContextInput = {
+export type CreateActorGroupInput = {
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  parentID: Scalars['Float'];
+};
+
+export type CreateActorInput = {
+  description?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  parentID: Scalars['Float'];
+  value?: Maybe<Scalars['String']>;
+};
+
+export type CreateApplicationInput = {
+  parentID: Scalars['Float'];
+  questions: Array<CreateNvpInput>;
+  userId: Scalars['Float'];
+};
+
+export type CreateAspectInput = {
+  explanation: Scalars['String'];
+  framing: Scalars['String'];
+  parentID: Scalars['Float'];
+  title: Scalars['String'];
+};
+
+export type CreateChallengeInput = {
+  context?: Maybe<CreateContextInput>;
+  name: Scalars['String'];
+  parentID: Scalars['Float'];
+  state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  textID: Scalars['TextID'];
+};
+
+export type CreateContextInput = {
   background?: Maybe<Scalars['String']>;
   impact?: Maybe<Scalars['String']>;
-  /** Set of references to _replace_ the existing references */
-  references?: Maybe<Array<ReferenceInput>>;
+  /** Set of References for the new Context. */
+  references?: Maybe<Array<CreateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
   who?: Maybe<Scalars['String']>;
+};
+
+export type CreateEcoverseInput = {
+  /** Context for the Ecoverse. */
+  context?: Maybe<CreateContextInput>;
+  /** The host Organisation for the ecoverse */
+  hostID?: Maybe<Scalars['String']>;
+  /** The name for the ecoverse */
+  name: Scalars['String'];
+  /** The set of tags to apply to this Ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+  /** The unique text ID for the ecoverse */
+  textID: Scalars['TextID'];
+};
+
+export type CreateNvpInput = {
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type CreateOpportunityInput = {
+  context?: Maybe<CreateContextInput>;
+  name: Scalars['String'];
+  parentID: Scalars['String'];
+  state?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  textID: Scalars['TextID'];
+};
+
+export type CreateOrganisationInput = {
+  /** The name for this organisation */
+  name: Scalars['String'];
+  profileData?: Maybe<CreateProfileInput>;
+  /** The unique text based ID for this organisation */
+  textID: Scalars['String'];
+};
+
+export type CreateProfileInput = {
+  avatar?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  referencesData?: Maybe<Array<CreateReferenceInput>>;
+  tagsetsData?: Maybe<Array<CreateTagsetInput>>;
+};
+
+export type CreateProjectInput = {
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  parentID: Scalars['Float'];
+  state?: Maybe<Scalars['String']>;
+  textID: Scalars['TextID'];
+};
+
+export type CreateReferenceInput = {
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  parentID?: Maybe<Scalars['Float']>;
+  uri?: Maybe<Scalars['String']>;
+};
+
+export type CreateRelationInput = {
+  actorName: Scalars['String'];
+  actorRole?: Maybe<Scalars['String']>;
+  actorType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  parentID: Scalars['Float'];
+  type: Scalars['String'];
+};
+
+export type CreateTagsetInput = {
+  name: Scalars['String'];
+  parentID?: Maybe<Scalars['Float']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type CreateUserGroupInput = {
+  name: Scalars['String'];
+  parentID: Scalars['Float'];
+  profileData?: Maybe<CreateProfileInput>;
+};
+
+export type CreateUserInput = {
+  accountUpn?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  profileData?: Maybe<CreateProfileInput>;
+};
+
+export type DeleteActorGroupInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteActorInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteApplicationInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteAspectInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteChallengeInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteOpportunityInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteOrganisationInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteProjectInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteReferenceInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteRelationInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteUserGroupInput = {
+  ID: Scalars['Float'];
+};
+
+export type DeleteUserInput = {
+  ID: Scalars['Float'];
 };
 
 export type DemoAuthProviderConfig = {
@@ -243,7 +409,7 @@ export type Ecoverse = {
   context?: Maybe<Context>;
   /** The user group with the specified id anywhere in the ecoverse */
   group: UserGroup;
-  /** The user groups on this Ecoverse */
+  /** The User Groups on this Ecoverse */
   groups: Array<UserGroup>;
   /** All groups on this Ecoverse that have the provided tag */
   groupsWithTag: Array<UserGroup>;
@@ -261,6 +427,8 @@ export type Ecoverse = {
   projects: Array<Project>;
   /** The set of tags for the ecoverse */
   tagset?: Maybe<Tagset>;
+  /** A short text identifier for this Ecoverse */
+  textID: Scalars['String'];
 };
 
 export type EcoverseApplicationArgs = {
@@ -272,7 +440,7 @@ export type EcoverseChallengeArgs = {
 };
 
 export type EcoverseGroupArgs = {
-  ID: Scalars['Float'];
+  ID: Scalars['String'];
 };
 
 export type EcoverseGroupsWithTagArgs = {
@@ -284,18 +452,7 @@ export type EcoverseOpportunityArgs = {
 };
 
 export type EcoverseProjectArgs = {
-  ID: Scalars['Float'];
-};
-
-export type EcoverseInput = {
-  /** Updated context for the ecoverse; will be merged with existing context */
-  context?: Maybe<ContextInput>;
-  /** The host Organisation for the ecoverse */
-  hostID?: Maybe<Scalars['Float']>;
-  /** The new name for the ecoverse */
-  name?: Maybe<Scalars['String']>;
-  /** The set of tags to apply to this ecoverse */
-  tags?: Maybe<Array<Scalars['String']>>;
+  ID: Scalars['String'];
 };
 
 export type EcoverseTemplate = {
@@ -348,281 +505,268 @@ export type MsalConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Adds the specified organisation as a lead for the specified Community */
-  addChallengeLead: Scalars['Boolean'];
-  /** Add the provided tag to the tagset with the given ID */
-  addTagToTagset: Tagset;
-  /** Adds the user with the given identifier as a member of the specified Community */
-  addUserToCommunity: UserGroup;
-  /** Adds the user with the given identifier to the specified user group */
-  addUserToGroup: Scalars['Boolean'];
-  /** Create application to join this ecoverse */
+  /** Approve a User Application to join this Community. */
   approveApplication: Application;
-  /** Assign the user with the given ID as focal point for the given group */
+  /** Assigns an organisation as a lead for the Challenge. */
+  assignChallengeLead: Challenge;
+  /** Assigns a User as the focal point of the specified User Group. */
   assignGroupFocalPoint?: Maybe<UserGroup>;
-  /** Create a new actor on the ActorGroup with the specified ID */
+  /** Assigns a User as a member of the specified Community. */
+  assignUserToCommunity: UserGroup;
+  /** Assigns a User as a member of the specified User Group. */
+  assignUserToGroup: UserGroup;
+  /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
-  /** Create a new actor group on the Opportunity identified by the ID */
+  /** Create a new Actor Group on the Opportunity. */
   createActorGroup: ActorGroup;
-  /** Create application to join this Community */
+  /** Creates Application for a User to join this Community. */
   createApplication: Application;
-  /** Create a new aspect on the Opportunity identified by the ID */
+  /** Create a new Aspect on the Opportunity. */
   createAspect: Aspect;
-  /** Create a new aspect on the Project identified by the ID */
+  /** Create a new Aspect on the Project. */
   createAspectOnProject: Aspect;
-  /** Creates a new challenge and registers it with the ecoverse */
+  /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
-  /** Creates a new user group for the Community with the given id */
+  /** Creates a new Ecoverse. */
+  createEcoverse: Ecoverse;
+  /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
-  /** Creates a new user group for the organisation with the given id */
+  /** Creates a new User Group for the specified Organisation. */
   createGroupOnOrganisation: UserGroup;
-  /** Creates a new Opportunity for the challenge with the given id */
+  /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
-  /** Creates a new organisation and registers it with the ecoverse */
+  /** Creates a new Organisation on the platform. */
   createOrganisation: Organisation;
-  /** Create a new Project on the Opportunity identified by the ID */
+  /** Create a new Project on the Opportunity */
   createProject: Project;
-  /** Creates a new reference with the specified name for the context with given id */
+  /** Creates a new Reference on the specified Context. */
   createReferenceOnContext: Reference;
-  /** Creates a new reference with the specified name for the profile with given id */
+  /** Creates a new Reference on the specified Profile. */
   createReferenceOnProfile: Reference;
-  /** Create a new relation on the Opportunity identified by the ID */
+  /** Create a new Relation on the Opportunity. */
   createRelation: Relation;
-  /** Creates a new tagset with the specified name for the profile with given id */
+  /** Creates a new Tagset on the specified Profile */
   createTagsetOnProfile: Tagset;
-  /** Creates a new user profile on behalf of an admin or the user account owner. */
+  /** Creates a new User on the platform. */
   createUser: User;
-  /** Removes the actor  with the specified ID */
-  removeActor: Scalars['Boolean'];
-  /** Removes the actor group with the specified ID */
-  removeActorGroup: Scalars['Boolean'];
-  /** Removes the aspect with the specified ID */
-  removeAspect: Scalars['Boolean'];
-  /** Removes the Challenge with the specified ID */
-  removeChallenge: Scalars['Boolean'];
-  /** Remove the specified organisation as a lead for the specified Challenge */
-  removeChallengeLead: Scalars['Boolean'];
-  /** Remove the focal point for the given group */
+  /** Deletes the specified Actor. */
+  deleteActor: Actor;
+  /** Deletes the specified Actor Group, including contained Actors. */
+  deleteActorGroup: ActorGroup;
+  /** Deletes the specified Aspect. */
+  deleteAspect: Aspect;
+  /** Deletes the specified Challenge. */
+  deleteChallenge: Challenge;
+  /** Deletes the Opportunity. */
+  deleteOpportunity: Opportunity;
+  /** Deletes the specified Organisation. */
+  deleteOrganisation: Organisation;
+  /** Deletes the specified Project. */
+  deleteProject: Project;
+  /** Deletes the specified Reference. */
+  deleteReference: Reference;
+  /** Deletes the specified Relation. */
+  deleteRelation: Relation;
+  /** Deletes the specified User. */
+  deleteUser: User;
+  /** Removes the specified User Application. */
+  deleteUserApplication: Application;
+  /** Deletes the specified User Group. */
+  deleteUserGroup: UserGroup;
+  /** Remove an organisation as a lead for the Challenge. */
+  removeChallengeLead: Challenge;
+  /** Removes the focal point for the specified User Group. */
   removeGroupFocalPoint?: Maybe<UserGroup>;
-  /** Removes the Opportunity with the specified ID */
-  removeOpportunity: Scalars['Boolean'];
-  /** Removes the Project with the specified ID */
-  removeProject: Scalars['Boolean'];
-  /** Removes the reference  with the specified ID */
-  removeReference: Scalars['Boolean'];
-  /** Removes the relation with the specified ID */
-  removeRelation: Scalars['Boolean'];
-  /** Removes the specified user profile. */
-  removeUser: User;
-  /** Removes the user with the given identifier as a member of the specified Community */
+  /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: UserGroup;
-  /** Remove the user with the given identifier to the specified user group */
+  /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Removes the user group with the specified ID */
-  removeUserGroup: Scalars['Boolean'];
-  /** Replace the set of tags in a tagset with the provided tags */
-  replaceTagsOnTagset: Tagset;
-  /** Updates the actor with the specified ID with the supplied data */
+  /** Updates the specified Actor. */
   updateActor: Actor;
-  /** Updates the aspect with the specified ID */
+  /** Updates the specified Aspect. */
   updateAspect: Aspect;
-  /** Updates the specified Challenge with the provided data (merge) */
+  /** Updates the specified Challenge. */
   updateChallenge: Challenge;
-  /** Updates the Ecoverse with the provided data */
+  /** Updates the Ecoverse. */
   updateEcoverse: Ecoverse;
-  /** Updates the specified Opportunity with the provided data (merge) */
+  /** Updates the Opportunity. */
   updateOpportunity: Opportunity;
-  /** Updates the organisation with the given data */
+  /** Updates the specified Organisation. */
   updateOrganisation: Organisation;
-  /** Updates the fields on the Profile, such as avatar location or description */
-  updateProfile: Scalars['Boolean'];
-  /** Updates the Project with the specified ID */
+  /** Updates the specified Profile. */
+  updateProfile: Profile;
+  /** Updates the specified Project. */
   updateProject: Project;
-  /** Update the base user information. Note: email address cannot be updated. */
+  /** Update the specified Reference. */
+  updateReference: Reference;
+  /** Updates the Tagset. */
+  updateTagset: Tagset;
+  /** Updates the User. Note: email address cannot be updated. */
   updateUser: User;
-  /** Update the user group information. */
+  /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
+  /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
-  uploadFile: Scalars['String'];
-};
-
-export type MutationAddChallengeLeadArgs = {
-  challengeID: Scalars['String'];
-  organisationID: Scalars['String'];
-};
-
-export type MutationAddTagToTagsetArgs = {
-  tag: Scalars['String'];
-  tagsetID: Scalars['Float'];
-};
-
-export type MutationAddUserToCommunityArgs = {
-  communityID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationAddUserToGroupArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
 };
 
 export type MutationApproveApplicationArgs = {
   ID: Scalars['Float'];
 };
 
+export type MutationAssignChallengeLeadArgs = {
+  assignInput: AssignChallengeLeadInput;
+};
+
 export type MutationAssignGroupFocalPointArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
+  membershipData: AssignUserGroupFocalPointInput;
+};
+
+export type MutationAssignUserToCommunityArgs = {
+  membershipData: AssignCommunityMemberInput;
+};
+
+export type MutationAssignUserToGroupArgs = {
+  membershipData: AssignUserGroupMemberInput;
 };
 
 export type MutationCreateActorArgs = {
-  actorData: ActorInput;
-  actorGroupID: Scalars['Float'];
+  actorData: CreateActorInput;
 };
 
 export type MutationCreateActorGroupArgs = {
-  actorGroupData: ActorGroupInput;
-  opportunityID: Scalars['Float'];
+  actorGroupData: CreateActorGroupInput;
 };
 
 export type MutationCreateApplicationArgs = {
-  applicationData: ApplicationInput;
-  communityID: Scalars['Float'];
+  applicationData: CreateApplicationInput;
 };
 
 export type MutationCreateAspectArgs = {
-  aspectData: AspectInput;
-  opportunityID: Scalars['Float'];
+  aspectData: CreateAspectInput;
 };
 
 export type MutationCreateAspectOnProjectArgs = {
-  aspectData: AspectInput;
-  projectID: Scalars['Float'];
+  aspectData: CreateAspectInput;
 };
 
 export type MutationCreateChallengeArgs = {
-  challengeData: ChallengeInput;
+  challengeData: CreateChallengeInput;
+};
+
+export type MutationCreateEcoverseArgs = {
+  ecoverseData: CreateEcoverseInput;
 };
 
 export type MutationCreateGroupOnCommunityArgs = {
-  communityID: Scalars['Float'];
-  groupName: Scalars['String'];
+  groupData: CreateUserGroupInput;
 };
 
 export type MutationCreateGroupOnOrganisationArgs = {
-  groupName: Scalars['String'];
-  orgID: Scalars['Float'];
+  groupData: CreateUserGroupInput;
 };
 
 export type MutationCreateOpportunityArgs = {
-  opportunityData: OpportunityInput;
+  opportunityData: CreateOpportunityInput;
 };
 
 export type MutationCreateOrganisationArgs = {
-  organisationData: OrganisationInput;
+  organisationData: CreateOrganisationInput;
 };
 
 export type MutationCreateProjectArgs = {
-  opportunityID: Scalars['Float'];
-  projectData: ProjectInput;
+  projectData: CreateProjectInput;
 };
 
 export type MutationCreateReferenceOnContextArgs = {
-  contextID: Scalars['Float'];
-  referenceInput: ReferenceInput;
+  referenceInput: CreateReferenceInput;
 };
 
 export type MutationCreateReferenceOnProfileArgs = {
-  profileID: Scalars['Float'];
-  referenceInput: ReferenceInput;
+  referenceInput: CreateReferenceInput;
 };
 
 export type MutationCreateRelationArgs = {
-  opportunityID: Scalars['Float'];
-  relationData: RelationInput;
+  relationData: CreateRelationInput;
 };
 
 export type MutationCreateTagsetOnProfileArgs = {
-  profileID: Scalars['Float'];
-  tagsetName: Scalars['String'];
+  tagsetData: CreateTagsetInput;
 };
 
 export type MutationCreateUserArgs = {
-  userData: UserInput;
+  userData: CreateUserInput;
 };
 
-export type MutationRemoveActorArgs = {
-  ID: Scalars['Float'];
+export type MutationDeleteActorArgs = {
+  deleteData: DeleteActorInput;
 };
 
-export type MutationRemoveActorGroupArgs = {
-  ID: Scalars['Float'];
+export type MutationDeleteActorGroupArgs = {
+  deleteData: DeleteActorGroupInput;
 };
 
-export type MutationRemoveAspectArgs = {
-  ID: Scalars['Float'];
+export type MutationDeleteAspectArgs = {
+  deleteData: DeleteAspectInput;
 };
 
-export type MutationRemoveChallengeArgs = {
-  ID: Scalars['Float'];
+export type MutationDeleteChallengeArgs = {
+  deleteData: DeleteChallengeInput;
+};
+
+export type MutationDeleteOpportunityArgs = {
+  deleteData: DeleteOpportunityInput;
+};
+
+export type MutationDeleteOrganisationArgs = {
+  deleteData: DeleteOrganisationInput;
+};
+
+export type MutationDeleteProjectArgs = {
+  deleteData: DeleteProjectInput;
+};
+
+export type MutationDeleteReferenceArgs = {
+  deleteData: DeleteReferenceInput;
+};
+
+export type MutationDeleteRelationArgs = {
+  deleteData: DeleteRelationInput;
+};
+
+export type MutationDeleteUserArgs = {
+  deleteData: DeleteUserInput;
+};
+
+export type MutationDeleteUserApplicationArgs = {
+  deleteData: DeleteApplicationInput;
+};
+
+export type MutationDeleteUserGroupArgs = {
+  deleteData: DeleteUserGroupInput;
 };
 
 export type MutationRemoveChallengeLeadArgs = {
-  challengeID: Scalars['String'];
-  organisationID: Scalars['String'];
+  removeData: RemoveChallengeLeadInput;
 };
 
 export type MutationRemoveGroupFocalPointArgs = {
-  groupID: Scalars['Float'];
-};
-
-export type MutationRemoveOpportunityArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveProjectArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveReferenceArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveRelationArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationRemoveUserArgs = {
-  userID: Scalars['Float'];
+  removeData: RemoveUserGroupFocalPoint;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
-  communityID: Scalars['Float'];
-  userID: Scalars['Float'];
+  membershipData: RemoveCommunityMemberInput;
 };
 
 export type MutationRemoveUserFromGroupArgs = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
-export type MutationRemoveUserGroupArgs = {
-  ID: Scalars['Float'];
-};
-
-export type MutationReplaceTagsOnTagsetArgs = {
-  tags: Array<Scalars['String']>;
-  tagsetID: Scalars['Float'];
+  membershipData: RemoveUserGroupMemberInput;
 };
 
 export type MutationUpdateActorArgs = {
-  ID: Scalars['Float'];
-  actorData: ActorInput;
+  actorData: UpdateActorInput;
 };
 
 export type MutationUpdateAspectArgs = {
-  ID: Scalars['Float'];
-  aspectData: AspectInput;
+  aspectData: UpdateAspectInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -630,7 +774,7 @@ export type MutationUpdateChallengeArgs = {
 };
 
 export type MutationUpdateEcoverseArgs = {
-  ecoverseData: EcoverseInput;
+  ecoverseData: UpdateEcoverseInput;
 };
 
 export type MutationUpdateOpportunityArgs = {
@@ -642,37 +786,32 @@ export type MutationUpdateOrganisationArgs = {
 };
 
 export type MutationUpdateProfileArgs = {
-  ID: Scalars['Float'];
-  profileData: ProfileInput;
+  profileData: UpdateProfileInput;
 };
 
 export type MutationUpdateProjectArgs = {
-  ID: Scalars['Float'];
-  projectData: ProjectInput;
+  projectData: UpdateProjectInput;
+};
+
+export type MutationUpdateReferenceArgs = {
+  updateData: UpdateReferenceInput;
+};
+
+export type MutationUpdateTagsetArgs = {
+  tagsetData: UpdateTagsetInput;
 };
 
 export type MutationUpdateUserArgs = {
-  userData: UserInput;
-  userID: Scalars['Float'];
+  userData: UpdateUserInput;
 };
 
 export type MutationUpdateUserGroupArgs = {
-  ID: Scalars['Float'];
-  userGroupData: UserGroupInput;
+  userGroupData: UpdateUserGroupInput;
 };
 
 export type MutationUploadAvatarArgs = {
   file: Scalars['Upload'];
-  profileID: Scalars['Float'];
-};
-
-export type MutationUploadFileArgs = {
-  file: Scalars['Upload'];
-};
-
-export type NvpInput = {
-  name: Scalars['String'];
-  value: Scalars['String'];
+  uploadData: UploadProfileAvatarInput;
 };
 
 export type Opportunity = {
@@ -698,15 +837,6 @@ export type Opportunity = {
   tagset?: Maybe<Tagset>;
   /** A short text identifier for this Opportunity */
   textID: Scalars['String'];
-};
-
-export type OpportunityInput = {
-  challengeID?: Maybe<Scalars['String']>;
-  context?: Maybe<ContextInput>;
-  name?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-  textID?: Maybe<Scalars['String']>;
 };
 
 export type OpportunityTemplate = {
@@ -737,14 +867,6 @@ export type Organisation = {
   textID: Scalars['String'];
 };
 
-export type OrganisationInput = {
-  /** The name for this organisation */
-  name?: Maybe<Scalars['String']>;
-  profileData?: Maybe<ProfileInput>;
-  /** The unique text based ID for this organisation */
-  textID?: Maybe<Scalars['String']>;
-};
-
 export type Profile = {
   __typename?: 'Profile';
   /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
@@ -756,13 +878,6 @@ export type Profile = {
   references?: Maybe<Array<Reference>>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
-};
-
-export type ProfileInput = {
-  avatar?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  referencesData?: Maybe<Array<ReferenceInput>>;
-  tagsetsData?: Maybe<Array<TagsetInput>>;
 };
 
 export type Project = {
@@ -780,18 +895,11 @@ export type Project = {
   textID: Scalars['String'];
 };
 
-export type ProjectInput = {
-  description?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  textID?: Maybe<Scalars['String']>;
-};
-
 export type Query = {
   __typename?: 'Query';
   /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
   configuration: Config;
-  /** The ecoverse. */
+  /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
   ecoverse: Ecoverse;
   /** The currently logged in user */
   me: User;
@@ -809,6 +917,10 @@ export type Query = {
   users: Array<User>;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
+};
+
+export type QueryEcoverseArgs = {
+  ID?: Maybe<Scalars['Float']>;
 };
 
 export type QueryOrganisationArgs = {
@@ -850,12 +962,6 @@ export type Reference = {
   uri: Scalars['String'];
 };
 
-export type ReferenceInput = {
-  description?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  uri?: Maybe<Scalars['String']>;
-};
-
 export type Relation = {
   __typename?: 'Relation';
   actorName: Scalars['String'];
@@ -866,12 +972,23 @@ export type Relation = {
   type: Scalars['String'];
 };
 
-export type RelationInput = {
-  actorName?: Maybe<Scalars['String']>;
-  actorRole?: Maybe<Scalars['String']>;
-  actorType?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
+export type RemoveChallengeLeadInput = {
+  challengeID: Scalars['String'];
+  organisationID: Scalars['String'];
+};
+
+export type RemoveCommunityMemberInput = {
+  communityID: Scalars['Float'];
+  userID: Scalars['Float'];
+};
+
+export type RemoveUserGroupFocalPoint = {
+  groupID: Scalars['Float'];
+};
+
+export type RemoveUserGroupMemberInput = {
+  groupID: Scalars['Float'];
+  userID: Scalars['Float'];
 };
 
 export type Scope = {
@@ -918,11 +1035,6 @@ export type Tagset = {
   tags: Array<Scalars['String']>;
 };
 
-export type TagsetInput = {
-  name?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
   /** Tagset template name. */
@@ -947,17 +1059,52 @@ export type Template = {
   users: Array<UserTemplate>;
 };
 
+export type UpdateActorInput = {
+  ID: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type UpdateAspectInput = {
+  ID: Scalars['String'];
+  explanation?: Maybe<Scalars['String']>;
+  framing?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+};
+
 export type UpdateChallengeInput = {
   ID: Scalars['String'];
-  context?: Maybe<ContextInput>;
+  context?: Maybe<UpdateContextInput>;
   name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type UpdateContextInput = {
+  background?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['String']>;
+};
+
+export type UpdateEcoverseInput = {
+  ID: Scalars['String'];
+  /** Updated context for the ecoverse; will be merged with existing context */
+  context?: Maybe<UpdateContextInput>;
+  /** The host Organisation for the ecoverse */
+  hostID?: Maybe<Scalars['String']>;
+  /** The new name for the ecoverse */
+  name?: Maybe<Scalars['String']>;
+  /** The set of tags to apply to this ecoverse */
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
 export type UpdateOpportunityInput = {
   ID: Scalars['String'];
-  context?: Maybe<ContextInput>;
+  context?: Maybe<UpdateContextInput>;
   name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
@@ -967,7 +1114,58 @@ export type UpdateOrganisationInput = {
   ID: Scalars['String'];
   /** The name for this organisation */
   name?: Maybe<Scalars['String']>;
-  profileData?: Maybe<ProfileInput>;
+  profileData?: Maybe<UpdateProfileInput>;
+};
+
+export type UpdateProfileInput = {
+  ID: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type UpdateProjectInput = {
+  ID: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  state?: Maybe<Scalars['String']>;
+  textID: Scalars['String'];
+};
+
+export type UpdateReferenceInput = {
+  ID: Scalars['Float'];
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  uri?: Maybe<Scalars['String']>;
+};
+
+export type UpdateTagsetInput = {
+  ID: Scalars['Float'];
+  name?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UpdateUserGroupInput = {
+  ID: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  profileData?: Maybe<UpdateProfileInput>;
+};
+
+export type UpdateUserInput = {
+  ID: Scalars['String'];
+  accountUpn?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  profileData?: Maybe<UpdateProfileInput>;
+};
+
+export type UploadProfileAvatarInput = {
+  file: Scalars['String'];
+  profileID: Scalars['String'];
 };
 
 export type User = {
@@ -1003,27 +1201,7 @@ export type UserGroup = {
   profile?: Maybe<Profile>;
 };
 
-export type UserGroupInput = {
-  name?: Maybe<Scalars['String']>;
-  profileData?: Maybe<ProfileInput>;
-};
-
 export type UserGroupParent = Community | Organisation;
-
-export type UserInput = {
-  aadPassword?: Maybe<Scalars['String']>;
-  accountUpn?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  /** Email address is required for mutations! */
-  email?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  profileData?: Maybe<ProfileInput>;
-};
 
 export type UserTemplate = {
   __typename?: 'UserTemplate';
@@ -1042,7 +1220,7 @@ export type ServerMetadataQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateUserMutationVariables = Exact<{
-  user: UserInput;
+  input: CreateUserInput;
 }>;
 
 export type CreateUserMutation = { __typename?: 'Mutation' } & {
@@ -1050,8 +1228,7 @@ export type CreateUserMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateUserMutationVariables = Exact<{
-  user: UserInput;
-  userId: Scalars['Float'];
+  input: UpdateUserInput;
 }>;
 
 export type UpdateUserMutation = { __typename?: 'Mutation' } & {
@@ -1087,7 +1264,7 @@ export type GroupMembersFragment = { __typename?: 'User' } & Pick<
 >;
 
 export type GroupMembersQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type GroupMembersQuery = { __typename?: 'Query' } & {
@@ -1099,8 +1276,7 @@ export type GroupMembersQuery = { __typename?: 'Query' } & {
 };
 
 export type RemoveUserFromGroupMutationVariables = Exact<{
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
+  input: RemoveUserGroupMemberInput;
 }>;
 
 export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
@@ -1109,20 +1285,23 @@ export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
     };
 };
 
-export type RemoveUserMutationVariables = Exact<{
-  userID: Scalars['Float'];
+export type DeleteUserMutationVariables = Exact<{
+  input: DeleteUserInput;
 }>;
 
-export type RemoveUserMutation = { __typename?: 'Mutation' } & {
-  removeUser: { __typename?: 'User' } & UserDetailsFragment;
+export type DeleteUserMutation = { __typename?: 'Mutation' } & {
+  deleteUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export type AddUserToGroupMutationVariables = Exact<{
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
+  input: AssignUserGroupMemberInput;
 }>;
 
-export type AddUserToGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'addUserToGroup'>;
+export type AddUserToGroupMutation = { __typename?: 'Mutation' } & {
+  assignUserToGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id'> & {
+      members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+    };
+};
 
 export type EcoverseChallengesListQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1251,19 +1430,11 @@ export type TagsetsTemplateQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateChallengeMutationVariables = Exact<{
-  challengeData: ChallengeInput;
+  input: CreateChallengeInput;
 }>;
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
-};
-
-export type UpdateChallengeMutationVariables = Exact<{
-  challengeData: UpdateChallengeInput;
-}>;
-
-export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
-  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
@@ -1273,23 +1444,17 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-                >;
-              }
-          >;
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
     };
 };
 
 export type CreateOpportunityMutationVariables = Exact<{
-  opportunityData: OpportunityInput;
+  input: CreateOpportunityInput;
 }>;
 
 export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunity: { __typename?: 'Opportunity' } & NewOpportunitesFragment;
+  createOpportunity: { __typename?: 'Opportunity' } & NewOpportunityFragment;
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
@@ -1307,19 +1472,13 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-                >;
-              }
-          >;
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
     };
 };
 
 export type CreateOrganizationMutationVariables = Exact<{
-  organisationData: OrganisationInput;
+  input: CreateOrganisationInput;
 }>;
 
 export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
@@ -1327,7 +1486,7 @@ export type CreateOrganizationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateOrganizationMutationVariables = Exact<{
-  organisationData: UpdateOrganisationInput;
+  input: UpdateOrganisationInput;
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
@@ -1339,7 +1498,7 @@ export type OrganisationProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'textID' | 'name'> & {
       profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
           tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
@@ -1348,8 +1507,7 @@ export type OrganisationProfileInfoQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateGroupOnCommunityMutationVariables = Exact<{
-  communityID: Scalars['Float'];
-  groupName: Scalars['String'];
+  input: CreateUserGroupInput;
 }>;
 
 export type CreateGroupOnCommunityMutation = { __typename?: 'Mutation' } & {
@@ -1357,8 +1515,7 @@ export type CreateGroupOnCommunityMutation = { __typename?: 'Mutation' } & {
 };
 
 export type CreateGroupOnOrganizationMutationVariables = Exact<{
-  groupName: Scalars['String'];
-  orgID: Scalars['Float'];
+  input: CreateUserGroupInput;
 }>;
 
 export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
@@ -1386,10 +1543,12 @@ export type OrganizationDetailsQuery = { __typename?: 'Query' } & {
 };
 
 export type RemoveUserGroupMutationVariables = Exact<{
-  groupId: Scalars['Float'];
+  input: DeleteUserGroupInput;
 }>;
 
-export type RemoveUserGroupMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeUserGroup'>;
+export type RemoveUserGroupMutation = { __typename?: 'Mutation' } & {
+  deleteUserGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id'>;
+};
 
 export type ChallengeProfileQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1398,13 +1557,7 @@ export type ChallengeProfileQueryVariables = Exact<{
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name' | 'state'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-                >;
-              }
-          >;
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
           community?: Maybe<
             { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
           >;
@@ -1412,11 +1565,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           opportunities?: Maybe<
             Array<
               { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'state' | 'textID'> & {
-                  context?: Maybe<
-                    { __typename?: 'Context' } & {
-                      references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-                    }
-                  >;
+                  context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
                   projects?: Maybe<
                     Array<
                       { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description' | 'state'>
@@ -1432,6 +1581,14 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           >;
         };
     };
+};
+
+export type UpdateChallengeMutationVariables = Exact<{
+  input: UpdateChallengeInput;
+}>;
+
+export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
+  updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>;
 };
 
 export type ChallengeMembersQueryVariables = Exact<{
@@ -1498,7 +1655,7 @@ export type SearchQuery = { __typename?: 'Query' } & {
 };
 
 export type GroupCardQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type GroupCardQuery = { __typename?: 'Query' } & {
@@ -1559,10 +1716,17 @@ export type ConfigQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
+  Context,
+  'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
+> & {
+    references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>>;
+  };
+
 export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'name'> & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'textID' | 'name'> & {
       context?: Maybe<
         { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
             references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
@@ -1657,9 +1821,10 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name' | 'state'> & {
           aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
           context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'tagline' | 'background' | 'vision' | 'impact' | 'who'> & {
-                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-              }
+            { __typename?: 'Context' } & Pick<
+              Context,
+              'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
+            > & { references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>> }
           >;
           community?: Maybe<
             { __typename?: 'Community' } & {
@@ -1697,8 +1862,7 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateRelationMutationVariables = Exact<{
-  opportunityId: Scalars['Float'];
-  relationData: RelationInput;
+  input: CreateRelationInput;
 }>;
 
 export type CreateRelationMutation = { __typename?: 'Mutation' } & {
@@ -1725,8 +1889,7 @@ export type RelationsListQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateActorMutationVariables = Exact<{
-  actorData: ActorInput;
-  actorGroupID: Scalars['Float'];
+  input: CreateActorInput;
 }>;
 
 export type CreateActorMutation = { __typename?: 'Mutation' } & {
@@ -1754,25 +1917,28 @@ export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
 };
 
 export type UpdateActorMutationVariables = Exact<{
-  actorData: ActorInput;
-  id: Scalars['Float'];
+  input: UpdateActorInput;
 }>;
 
 export type UpdateActorMutation = { __typename?: 'Mutation' } & {
-  updateActor: { __typename?: 'Actor' } & Pick<Actor, 'name'>;
+  updateActor: { __typename?: 'Actor' } & Pick<Actor, 'id' | 'name'>;
 };
 
 export type RemoveActorMutationVariables = Exact<{
-  id: Scalars['Float'];
+  input: DeleteActorInput;
 }>;
 
-export type RemoveActorMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeActor'>;
+export type RemoveActorMutation = { __typename?: 'Mutation' } & {
+  deleteActor: { __typename?: 'Actor' } & Pick<Actor, 'id'>;
+};
 
 export type RemoveRelationMutationVariables = Exact<{
-  id: Scalars['Float'];
+  input: DeleteRelationInput;
 }>;
 
-export type RemoveRelationMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeRelation'>;
+export type RemoveRelationMutation = { __typename?: 'Mutation' } & {
+  deleteRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
+};
 
 export type QueryOpportunityRelationsQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1794,12 +1960,11 @@ export type QueryOpportunityRelationsQuery = { __typename?: 'Query' } & {
 };
 
 export type UpdateAspectMutationVariables = Exact<{
-  aspectData: AspectInput;
-  id: Scalars['Float'];
+  input: UpdateAspectInput;
 }>;
 
 export type UpdateAspectMutation = { __typename?: 'Mutation' } & {
-  updateAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'title'>;
+  updateAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title'>;
 };
 
 export type OpportunityAspectsQueryVariables = Exact<{
@@ -1815,10 +1980,12 @@ export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
 };
 
 export type RemoveAspectMutationVariables = Exact<{
-  id: Scalars['Float'];
+  input: DeleteAspectInput;
 }>;
 
-export type RemoveAspectMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAspect'>;
+export type RemoveAspectMutation = { __typename?: 'Mutation' } & {
+  deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
+};
 
 export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1833,8 +2000,7 @@ export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateAspectMutationVariables = Exact<{
-  aspectData: AspectInput;
-  opportunityID: Scalars['Float'];
+  input: CreateAspectInput;
 }>;
 
 export type CreateAspectMutation = { __typename?: 'Mutation' } & {
@@ -1842,8 +2008,7 @@ export type CreateAspectMutation = { __typename?: 'Mutation' } & {
 };
 
 export type CreateActorGroupMutationVariables = Exact<{
-  actorGroupData: ActorGroupInput;
-  opportunityID: Scalars['Float'];
+  input: CreateActorGroupInput;
 }>;
 
 export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
@@ -1851,18 +2016,22 @@ export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
 };
 
 export type RemoveReferenceMutationVariables = Exact<{
-  id: Scalars['Float'];
+  input: DeleteReferenceInput;
 }>;
 
-export type RemoveReferenceMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeReference'>;
+export type RemoveReferenceMutation = { __typename?: 'Mutation' } & {
+  deleteReference: { __typename?: 'Reference' } & Pick<Reference, 'id'>;
+};
 
 export type RemoveOpportunityMutationVariables = Exact<{
-  id: Scalars['Float'];
+  input: DeleteOpportunityInput;
 }>;
 
-export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeOpportunity'>;
+export type RemoveOpportunityMutation = { __typename?: 'Mutation' } & {
+  deleteOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'>;
+};
 
-export type NewOpportunitesFragment = { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
+export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
 
 export type OpportunityCommunityQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1880,7 +2049,7 @@ export type AvatarFragment = { __typename?: 'Profile' } & Pick<Profile, 'id' | '
 
 export type UploadAvatarMutationVariables = Exact<{
   file: Scalars['Upload'];
-  profileId: Scalars['Float'];
+  input: UploadProfileAvatarInput;
 }>;
 
 export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
@@ -1896,7 +2065,7 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   };
 
 export type ProjectProfileQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['String'];
 }>;
 
 export type ProjectProfileQuery = { __typename?: 'Query' } & {
@@ -1906,19 +2075,12 @@ export type ProjectProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type CreateProjectMutationVariables = Exact<{
-  opportunityID: Scalars['Float'];
-  project: ProjectInput;
+  input: CreateProjectInput;
 }>;
 
 export type CreateProjectMutation = { __typename?: 'Mutation' } & {
   createProject: { __typename?: 'Project' } & ProjectDetailsFragment;
 };
-
-export type UploadFileMutationVariables = Exact<{
-  file: Scalars['Upload'];
-}>;
-
-export type UploadFileMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'uploadFile'>;
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
@@ -1927,7 +2089,7 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
         }
     >;
   };
@@ -2027,12 +2189,11 @@ export type UserCardDataQuery = { __typename?: 'Query' } & {
 };
 
 export type AddUserToCommunityMutationVariables = Exact<{
-  communityId: Scalars['Float'];
-  userID: Scalars['Float'];
+  membershipData: AssignCommunityMemberInput;
 }>;
 
 export type AddUserToCommunityMutation = { __typename?: 'Mutation' } & {
-  addUserToCommunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+  assignUserToCommunity: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
 export const GroupMembersFragmentDoc = gql`
@@ -2077,8 +2238,24 @@ export const CommunityDetailsFragmentDoc = gql`
     }
   }
 `;
-export const NewOpportunitesFragmentDoc = gql`
-  fragment NewOpportunites on Opportunity {
+export const ContextDetailsFragmentDoc = gql`
+  fragment ContextDetails on Context {
+    id
+    tagline
+    background
+    vision
+    impact
+    who
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+`;
+export const NewOpportunityFragmentDoc = gql`
+  fragment NewOpportunity on Opportunity {
     id
     name
   }
@@ -2129,6 +2306,7 @@ export const UserDetailsFragmentDoc = gql`
         uri
       }
       tagsets {
+        id
         name
         tags
       }
@@ -2193,8 +2371,8 @@ export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQ
 export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
 export type ServerMetadataQueryResult = Apollo.QueryResult<ServerMetadataQuery, ServerMetadataQueryVariables>;
 export const CreateUserDocument = gql`
-  mutation createUser($user: UserInput!) {
-    createUser(userData: $user) {
+  mutation createUser($input: CreateUserInput!) {
+    createUser(userData: $input) {
       ...UserDetails
     }
   }
@@ -2215,7 +2393,7 @@ export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, C
  * @example
  * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
  *   variables: {
- *      user: // value for 'user'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -2228,8 +2406,8 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const UpdateUserDocument = gql`
-  mutation updateUser($user: UserInput!, $userId: Float!) {
-    updateUser(userData: $user, userID: $userId) {
+  mutation updateUser($input: UpdateUserInput!) {
+    updateUser(userData: $input) {
       ...UserDetails
     }
   }
@@ -2250,8 +2428,7 @@ export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, U
  * @example
  * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
  *   variables: {
- *      user: // value for 'user'
- *      userId: // value for 'userId'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -2314,7 +2491,7 @@ export type EcoverseQueryHookResult = ReturnType<typeof useEcoverseQuery>;
 export type EcoverseLazyQueryHookResult = ReturnType<typeof useEcoverseLazyQuery>;
 export type EcoverseQueryResult = Apollo.QueryResult<EcoverseQuery, EcoverseQueryVariables>;
 export const GroupMembersDocument = gql`
-  query groupMembers($id: Float!) {
+  query groupMembers($id: String!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -2359,8 +2536,8 @@ export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery
 export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
 export type GroupMembersQueryResult = Apollo.QueryResult<GroupMembersQuery, GroupMembersQueryVariables>;
 export const RemoveUserFromGroupDocument = gql`
-  mutation removeUserFromGroup($groupID: Float!, $userID: Float!) {
-    removeUserFromGroup(groupID: $groupID, userID: $userID) {
+  mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
+    removeUserFromGroup(membershipData: $input) {
       id
       name
       members {
@@ -2388,8 +2565,7 @@ export type RemoveUserFromGroupMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
  *   variables: {
- *      groupID: // value for 'groupID'
- *      userID: // value for 'userID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -2407,45 +2583,51 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   RemoveUserFromGroupMutation,
   RemoveUserFromGroupMutationVariables
 >;
-export const RemoveUserDocument = gql`
-  mutation removeUser($userID: Float!) {
-    removeUser(userID: $userID) {
+export const DeleteUserDocument = gql`
+  mutation deleteUser($input: DeleteUserInput!) {
+    deleteUser(deleteData: $input) {
       ...UserDetails
     }
   }
   ${UserDetailsFragmentDoc}
 `;
-export type RemoveUserMutationFn = Apollo.MutationFunction<RemoveUserMutation, RemoveUserMutationVariables>;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
 
 /**
- * __useRemoveUserMutation__
+ * __useDeleteUserMutation__
  *
- * To run a mutation, you first call `useRemoveUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeUserMutation, { data, loading, error }] = useRemoveUserMutation({
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
  *   variables: {
- *      userID: // value for 'userID'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useRemoveUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<RemoveUserMutation, RemoveUserMutationVariables>
+export function useDeleteUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>
 ) {
-  return Apollo.useMutation<RemoveUserMutation, RemoveUserMutationVariables>(RemoveUserDocument, baseOptions);
+  return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, baseOptions);
 }
-export type RemoveUserMutationHookResult = ReturnType<typeof useRemoveUserMutation>;
-export type RemoveUserMutationResult = Apollo.MutationResult<RemoveUserMutation>;
-export type RemoveUserMutationOptions = Apollo.BaseMutationOptions<RemoveUserMutation, RemoveUserMutationVariables>;
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const AddUserToGroupDocument = gql`
-  mutation addUserToGroup($groupID: Float!, $userID: Float!) {
-    addUserToGroup(groupID: $groupID, userID: $userID)
+  mutation addUserToGroup($input: AssignUserGroupMemberInput!) {
+    assignUserToGroup(membershipData: $input) {
+      id
+      members {
+        ...GroupMembers
+      }
+    }
   }
+  ${GroupMembersFragmentDoc}
 `;
 export type AddUserToGroupMutationFn = Apollo.MutationFunction<AddUserToGroupMutation, AddUserToGroupMutationVariables>;
 
@@ -2462,8 +2644,7 @@ export type AddUserToGroupMutationFn = Apollo.MutationFunction<AddUserToGroupMut
  * @example
  * const [addUserToGroupMutation, { data, loading, error }] = useAddUserToGroupMutation({
  *   variables: {
- *      groupID: // value for 'groupID'
- *      userID: // value for 'userID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -2993,8 +3174,8 @@ export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplat
 export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
 export type TagsetsTemplateQueryResult = Apollo.QueryResult<TagsetsTemplateQuery, TagsetsTemplateQueryVariables>;
 export const CreateChallengeDocument = gql`
-  mutation createChallenge($challengeData: ChallengeInput!) {
-    createChallenge(challengeData: $challengeData) {
+  mutation createChallenge($input: CreateChallengeInput!) {
+    createChallenge(challengeData: $input) {
       ...NewChallenge
     }
   }
@@ -3018,7 +3199,7 @@ export type CreateChallengeMutationFn = Apollo.MutationFunction<
  * @example
  * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
  *   variables: {
- *      challengeData: // value for 'challengeData'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3036,50 +3217,6 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   CreateChallengeMutation,
   CreateChallengeMutationVariables
 >;
-export const UpdateChallengeDocument = gql`
-  mutation updateChallenge($challengeData: UpdateChallengeInput!) {
-    updateChallenge(challengeData: $challengeData) {
-      id
-      name
-    }
-  }
-`;
-export type UpdateChallengeMutationFn = Apollo.MutationFunction<
-  UpdateChallengeMutation,
-  UpdateChallengeMutationVariables
->;
-
-/**
- * __useUpdateChallengeMutation__
- *
- * To run a mutation, you first call `useUpdateChallengeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateChallengeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
- *   variables: {
- *      challengeData: // value for 'challengeData'
- *   },
- * });
- */
-export function useUpdateChallengeMutation(
-  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeMutation, UpdateChallengeMutationVariables>
-) {
-  return Apollo.useMutation<UpdateChallengeMutation, UpdateChallengeMutationVariables>(
-    UpdateChallengeDocument,
-    baseOptions
-  );
-}
-export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
-export type UpdateChallengeMutationResult = Apollo.MutationResult<UpdateChallengeMutation>;
-export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
-  UpdateChallengeMutation,
-  UpdateChallengeMutationVariables
->;
 export const ChallengeProfileInfoDocument = gql`
   query challengeProfileInfo($id: String!) {
     ecoverse {
@@ -3090,21 +3227,12 @@ export const ChallengeProfileInfoDocument = gql`
         name
         state
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
       }
     }
   }
+  ${ContextDetailsFragmentDoc}
 `;
 
 /**
@@ -3146,12 +3274,12 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   ChallengeProfileInfoQueryVariables
 >;
 export const CreateOpportunityDocument = gql`
-  mutation createOpportunity($opportunityData: OpportunityInput!) {
-    createOpportunity(opportunityData: $opportunityData) {
-      ...NewOpportunites
+  mutation createOpportunity($input: CreateOpportunityInput!) {
+    createOpportunity(opportunityData: $input) {
+      ...NewOpportunity
     }
   }
-  ${NewOpportunitesFragmentDoc}
+  ${NewOpportunityFragmentDoc}
 `;
 export type CreateOpportunityMutationFn = Apollo.MutationFunction<
   CreateOpportunityMutation,
@@ -3171,7 +3299,7 @@ export type CreateOpportunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
  *   variables: {
- *      opportunityData: // value for 'opportunityData'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3242,21 +3370,12 @@ export const OpportunityProfileInfoDocument = gql`
         textID
         name
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
       }
     }
   }
+  ${ContextDetailsFragmentDoc}
 `;
 
 /**
@@ -3298,8 +3417,8 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   OpportunityProfileInfoQueryVariables
 >;
 export const CreateOrganizationDocument = gql`
-  mutation createOrganization($organisationData: OrganisationInput!) {
-    createOrganisation(organisationData: $organisationData) {
+  mutation createOrganization($input: CreateOrganisationInput!) {
+    createOrganisation(organisationData: $input) {
       id
       name
     }
@@ -3323,7 +3442,7 @@ export type CreateOrganizationMutationFn = Apollo.MutationFunction<
  * @example
  * const [createOrganizationMutation, { data, loading, error }] = useCreateOrganizationMutation({
  *   variables: {
- *      organisationData: // value for 'organisationData'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3342,8 +3461,8 @@ export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   CreateOrganizationMutationVariables
 >;
 export const UpdateOrganizationDocument = gql`
-  mutation updateOrganization($organisationData: UpdateOrganisationInput!) {
-    updateOrganisation(organisationData: $organisationData) {
+  mutation updateOrganization($input: UpdateOrganisationInput!) {
+    updateOrganisation(organisationData: $input) {
       id
       name
     }
@@ -3367,7 +3486,7 @@ export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
  *   variables: {
- *      organisationData: // value for 'organisationData'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3389,6 +3508,7 @@ export const OrganisationProfileInfoDocument = gql`
   query organisationProfileInfo($id: String!) {
     organisation(ID: $id) {
       id
+      textID
       name
       profile {
         id
@@ -3448,8 +3568,8 @@ export type OrganisationProfileInfoQueryResult = Apollo.QueryResult<
   OrganisationProfileInfoQueryVariables
 >;
 export const CreateGroupOnCommunityDocument = gql`
-  mutation createGroupOnCommunity($communityID: Float!, $groupName: String!) {
-    createGroupOnCommunity(communityID: $communityID, groupName: $groupName) {
+  mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
+    createGroupOnCommunity(groupData: $input) {
       id
       name
     }
@@ -3473,8 +3593,7 @@ export type CreateGroupOnCommunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [createGroupOnCommunityMutation, { data, loading, error }] = useCreateGroupOnCommunityMutation({
  *   variables: {
- *      communityID: // value for 'communityID'
- *      groupName: // value for 'groupName'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3493,8 +3612,8 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   CreateGroupOnCommunityMutationVariables
 >;
 export const CreateGroupOnOrganizationDocument = gql`
-  mutation createGroupOnOrganization($groupName: String!, $orgID: Float!) {
-    createGroupOnOrganisation(groupName: $groupName, orgID: $orgID) {
+  mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
+    createGroupOnOrganisation(groupData: $input) {
       id
       name
     }
@@ -3518,8 +3637,7 @@ export type CreateGroupOnOrganizationMutationFn = Apollo.MutationFunction<
  * @example
  * const [createGroupOnOrganizationMutation, { data, loading, error }] = useCreateGroupOnOrganizationMutation({
  *   variables: {
- *      groupName: // value for 'groupName'
- *      orgID: // value for 'orgID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3610,8 +3728,10 @@ export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   OrganizationDetailsQueryVariables
 >;
 export const RemoveUserGroupDocument = gql`
-  mutation removeUserGroup($groupId: Float!) {
-    removeUserGroup(ID: $groupId)
+  mutation removeUserGroup($input: DeleteUserGroupInput!) {
+    deleteUserGroup(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveUserGroupMutationFn = Apollo.MutationFunction<
@@ -3632,7 +3752,7 @@ export type RemoveUserGroupMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeUserGroupMutation, { data, loading, error }] = useRemoveUserGroupMutation({
  *   variables: {
- *      groupId: // value for 'groupId'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -3660,17 +3780,7 @@ export const ChallengeProfileDocument = gql`
         name
         state
         context {
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
         }
         community {
           members {
@@ -3687,10 +3797,7 @@ export const ChallengeProfileDocument = gql`
           state
           textID
           context {
-            references {
-              name
-              uri
-            }
+            ...ContextDetails
           }
           projects {
             id
@@ -3711,6 +3818,7 @@ export const ChallengeProfileDocument = gql`
       }
     }
   }
+  ${ContextDetailsFragmentDoc}
 `;
 
 /**
@@ -3745,6 +3853,50 @@ export function useChallengeProfileLazyQuery(
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
 export type ChallengeProfileLazyQueryHookResult = ReturnType<typeof useChallengeProfileLazyQuery>;
 export type ChallengeProfileQueryResult = Apollo.QueryResult<ChallengeProfileQuery, ChallengeProfileQueryVariables>;
+export const UpdateChallengeDocument = gql`
+  mutation updateChallenge($input: UpdateChallengeInput!) {
+    updateChallenge(challengeData: $input) {
+      id
+      name
+    }
+  }
+`;
+export type UpdateChallengeMutationFn = Apollo.MutationFunction<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
+
+/**
+ * __useUpdateChallengeMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeMutation, { data, loading, error }] = useUpdateChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateChallengeMutation, UpdateChallengeMutationVariables>
+) {
+  return Apollo.useMutation<UpdateChallengeMutation, UpdateChallengeMutationVariables>(
+    UpdateChallengeDocument,
+    baseOptions
+  );
+}
+export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
+export type UpdateChallengeMutationResult = Apollo.MutationResult<UpdateChallengeMutation>;
+export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChallengeMutation,
+  UpdateChallengeMutationVariables
+>;
 export const ChallengeMembersDocument = gql`
   query challengeMembers($challengeID: String!) {
     ecoverse {
@@ -3899,7 +4051,7 @@ export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const GroupCardDocument = gql`
-  query groupCard($id: Float!) {
+  query groupCard($id: String!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -4091,7 +4243,7 @@ export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
     ecoverse {
       id
-      id
+      textID
       name
       context {
         tagline
@@ -4435,6 +4587,7 @@ export const OpportunityProfileDocument = gql`
           explanation
         }
         context {
+          id
           tagline
           background
           vision
@@ -4525,8 +4678,8 @@ export type OpportunityProfileQueryResult = Apollo.QueryResult<
   OpportunityProfileQueryVariables
 >;
 export const CreateRelationDocument = gql`
-  mutation createRelation($opportunityId: Float!, $relationData: RelationInput!) {
-    createRelation(opportunityID: $opportunityId, relationData: $relationData) {
+  mutation createRelation($input: CreateRelationInput!) {
+    createRelation(relationData: $input) {
       id
     }
   }
@@ -4546,8 +4699,7 @@ export type CreateRelationMutationFn = Apollo.MutationFunction<CreateRelationMut
  * @example
  * const [createRelationMutation, { data, loading, error }] = useCreateRelationMutation({
  *   variables: {
- *      opportunityId: // value for 'opportunityId'
- *      relationData: // value for 'relationData'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4613,8 +4765,8 @@ export type RelationsListQueryHookResult = ReturnType<typeof useRelationsListQue
 export type RelationsListLazyQueryHookResult = ReturnType<typeof useRelationsListLazyQuery>;
 export type RelationsListQueryResult = Apollo.QueryResult<RelationsListQuery, RelationsListQueryVariables>;
 export const CreateActorDocument = gql`
-  mutation createActor($actorData: ActorInput!, $actorGroupID: Float!) {
-    createActor(actorData: $actorData, actorGroupID: $actorGroupID) {
+  mutation createActor($input: CreateActorInput!) {
+    createActor(actorData: $input) {
       name
     }
   }
@@ -4634,8 +4786,7 @@ export type CreateActorMutationFn = Apollo.MutationFunction<CreateActorMutation,
  * @example
  * const [createActorMutation, { data, loading, error }] = useCreateActorMutation({
  *   variables: {
- *      actorData: // value for 'actorData'
- *      actorGroupID: // value for 'actorGroupID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4708,8 +4859,9 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   OpportunityActorGroupsQueryVariables
 >;
 export const UpdateActorDocument = gql`
-  mutation updateActor($actorData: ActorInput!, $id: Float!) {
-    updateActor(actorData: $actorData, ID: $id) {
+  mutation updateActor($input: UpdateActorInput!) {
+    updateActor(actorData: $input) {
+      id
       name
     }
   }
@@ -4729,8 +4881,7 @@ export type UpdateActorMutationFn = Apollo.MutationFunction<UpdateActorMutation,
  * @example
  * const [updateActorMutation, { data, loading, error }] = useUpdateActorMutation({
  *   variables: {
- *      actorData: // value for 'actorData'
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4743,8 +4894,10 @@ export type UpdateActorMutationHookResult = ReturnType<typeof useUpdateActorMuta
 export type UpdateActorMutationResult = Apollo.MutationResult<UpdateActorMutation>;
 export type UpdateActorMutationOptions = Apollo.BaseMutationOptions<UpdateActorMutation, UpdateActorMutationVariables>;
 export const RemoveActorDocument = gql`
-  mutation removeActor($id: Float!) {
-    removeActor(ID: $id)
+  mutation removeActor($input: DeleteActorInput!) {
+    deleteActor(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveActorMutationFn = Apollo.MutationFunction<RemoveActorMutation, RemoveActorMutationVariables>;
@@ -4762,7 +4915,7 @@ export type RemoveActorMutationFn = Apollo.MutationFunction<RemoveActorMutation,
  * @example
  * const [removeActorMutation, { data, loading, error }] = useRemoveActorMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4775,8 +4928,10 @@ export type RemoveActorMutationHookResult = ReturnType<typeof useRemoveActorMuta
 export type RemoveActorMutationResult = Apollo.MutationResult<RemoveActorMutation>;
 export type RemoveActorMutationOptions = Apollo.BaseMutationOptions<RemoveActorMutation, RemoveActorMutationVariables>;
 export const RemoveRelationDocument = gql`
-  mutation removeRelation($id: Float!) {
-    removeRelation(ID: $id)
+  mutation removeRelation($input: DeleteRelationInput!) {
+    deleteRelation(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMutation, RemoveRelationMutationVariables>;
@@ -4794,7 +4949,7 @@ export type RemoveRelationMutationFn = Apollo.MutationFunction<RemoveRelationMut
  * @example
  * const [removeRelationMutation, { data, loading, error }] = useRemoveRelationMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4868,8 +5023,9 @@ export type QueryOpportunityRelationsQueryResult = Apollo.QueryResult<
   QueryOpportunityRelationsQueryVariables
 >;
 export const UpdateAspectDocument = gql`
-  mutation updateAspect($aspectData: AspectInput!, $id: Float!) {
-    updateAspect(aspectData: $aspectData, ID: $id) {
+  mutation updateAspect($input: UpdateAspectInput!) {
+    updateAspect(aspectData: $input) {
+      id
       title
     }
   }
@@ -4889,8 +5045,7 @@ export type UpdateAspectMutationFn = Apollo.MutationFunction<UpdateAspectMutatio
  * @example
  * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
  *   variables: {
- *      aspectData: // value for 'aspectData'
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -4959,8 +5114,10 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   OpportunityAspectsQueryVariables
 >;
 export const RemoveAspectDocument = gql`
-  mutation removeAspect($id: Float!) {
-    removeAspect(ID: $id)
+  mutation removeAspect($input: DeleteAspectInput!) {
+    deleteAspect(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutation, RemoveAspectMutationVariables>;
@@ -4978,7 +5135,7 @@ export type RemoveAspectMutationFn = Apollo.MutationFunction<RemoveAspectMutatio
  * @example
  * const [removeAspectMutation, { data, loading, error }] = useRemoveAspectMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5044,8 +5201,8 @@ export type OpportunityTemplateQueryResult = Apollo.QueryResult<
   OpportunityTemplateQueryVariables
 >;
 export const CreateAspectDocument = gql`
-  mutation createAspect($aspectData: AspectInput!, $opportunityID: Float!) {
-    createAspect(aspectData: $aspectData, opportunityID: $opportunityID) {
+  mutation createAspect($input: CreateAspectInput!) {
+    createAspect(aspectData: $input) {
       title
     }
   }
@@ -5065,8 +5222,7 @@ export type CreateAspectMutationFn = Apollo.MutationFunction<CreateAspectMutatio
  * @example
  * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
  *   variables: {
- *      aspectData: // value for 'aspectData'
- *      opportunityID: // value for 'opportunityID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5082,8 +5238,8 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   CreateAspectMutationVariables
 >;
 export const CreateActorGroupDocument = gql`
-  mutation createActorGroup($actorGroupData: ActorGroupInput!, $opportunityID: Float!) {
-    createActorGroup(actorGroupData: $actorGroupData, opportunityID: $opportunityID) {
+  mutation createActorGroup($input: CreateActorGroupInput!) {
+    createActorGroup(actorGroupData: $input) {
       name
     }
   }
@@ -5106,8 +5262,7 @@ export type CreateActorGroupMutationFn = Apollo.MutationFunction<
  * @example
  * const [createActorGroupMutation, { data, loading, error }] = useCreateActorGroupMutation({
  *   variables: {
- *      actorGroupData: // value for 'actorGroupData'
- *      opportunityID: // value for 'opportunityID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5126,8 +5281,10 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   CreateActorGroupMutationVariables
 >;
 export const RemoveReferenceDocument = gql`
-  mutation removeReference($id: Float!) {
-    removeReference(ID: $id)
+  mutation removeReference($input: DeleteReferenceInput!) {
+    deleteReference(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveReferenceMutationFn = Apollo.MutationFunction<
@@ -5148,7 +5305,7 @@ export type RemoveReferenceMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeReferenceMutation, { data, loading, error }] = useRemoveReferenceMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5167,8 +5324,10 @@ export type RemoveReferenceMutationOptions = Apollo.BaseMutationOptions<
   RemoveReferenceMutationVariables
 >;
 export const RemoveOpportunityDocument = gql`
-  mutation removeOpportunity($id: Float!) {
-    removeOpportunity(ID: $id)
+  mutation removeOpportunity($input: DeleteOpportunityInput!) {
+    deleteOpportunity(deleteData: $input) {
+      id
+    }
   }
 `;
 export type RemoveOpportunityMutationFn = Apollo.MutationFunction<
@@ -5189,7 +5348,7 @@ export type RemoveOpportunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeOpportunityMutation, { data, loading, error }] = useRemoveOpportunityMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5262,8 +5421,8 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   OpportunityCommunityQueryVariables
 >;
 export const UploadAvatarDocument = gql`
-  mutation uploadAvatar($file: Upload!, $profileId: Float!) {
-    uploadAvatar(file: $file, profileID: $profileId) {
+  mutation uploadAvatar($file: Upload!, $input: UploadProfileAvatarInput!) {
+    uploadAvatar(file: $file, uploadData: $input) {
       ...Avatar
     }
   }
@@ -5285,7 +5444,7 @@ export type UploadAvatarMutationFn = Apollo.MutationFunction<UploadAvatarMutatio
  * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
  *   variables: {
  *      file: // value for 'file'
- *      profileId: // value for 'profileId'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5301,7 +5460,7 @@ export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
   UploadAvatarMutationVariables
 >;
 export const ProjectProfileDocument = gql`
-  query projectProfile($id: Float!) {
+  query projectProfile($id: String!) {
     ecoverse {
       id
       project(ID: $id) {
@@ -5342,8 +5501,8 @@ export type ProjectProfileQueryHookResult = ReturnType<typeof useProjectProfileQ
 export type ProjectProfileLazyQueryHookResult = ReturnType<typeof useProjectProfileLazyQuery>;
 export type ProjectProfileQueryResult = Apollo.QueryResult<ProjectProfileQuery, ProjectProfileQueryVariables>;
 export const CreateProjectDocument = gql`
-  mutation createProject($opportunityID: Float!, $project: ProjectInput!) {
-    createProject(opportunityID: $opportunityID, projectData: $project) {
+  mutation createProject($input: CreateProjectInput!) {
+    createProject(projectData: $input) {
       ...ProjectDetails
     }
   }
@@ -5364,8 +5523,7 @@ export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutat
  * @example
  * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
  *   variables: {
- *      opportunityID: // value for 'opportunityID'
- *      project: // value for 'project'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -5380,38 +5538,6 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   CreateProjectMutation,
   CreateProjectMutationVariables
 >;
-export const UploadFileDocument = gql`
-  mutation uploadFile($file: Upload!) {
-    uploadFile(file: $file)
-  }
-`;
-export type UploadFileMutationFn = Apollo.MutationFunction<UploadFileMutation, UploadFileMutationVariables>;
-
-/**
- * __useUploadFileMutation__
- *
- * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadFileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
- *   variables: {
- *      file: // value for 'file'
- *   },
- * });
- */
-export function useUploadFileMutation(
-  baseOptions?: Apollo.MutationHookOptions<UploadFileMutation, UploadFileMutationVariables>
-) {
-  return Apollo.useMutation<UploadFileMutation, UploadFileMutationVariables>(UploadFileDocument, baseOptions);
-}
-export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
-export type UploadFileMutationResult = Apollo.MutationResult<UploadFileMutation>;
-export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMutation, UploadFileMutationVariables>;
 export const UsersDocument = gql`
   query users {
     users {
@@ -5744,8 +5870,8 @@ export type UserCardDataQueryHookResult = ReturnType<typeof useUserCardDataQuery
 export type UserCardDataLazyQueryHookResult = ReturnType<typeof useUserCardDataLazyQuery>;
 export type UserCardDataQueryResult = Apollo.QueryResult<UserCardDataQuery, UserCardDataQueryVariables>;
 export const AddUserToCommunityDocument = gql`
-  mutation addUserToCommunity($communityId: Float!, $userID: Float!) {
-    addUserToCommunity(communityID: $communityId, userID: $userID) {
+  mutation addUserToCommunity($membershipData: AssignCommunityMemberInput!) {
+    assignUserToCommunity(membershipData: $membershipData) {
       id
       name
     }
@@ -5769,8 +5895,7 @@ export type AddUserToCommunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [addUserToCommunityMutation, { data, loading, error }] = useAddUserToCommunityMutation({
  *   variables: {
- *      communityId: // value for 'communityId'
- *      userID: // value for 'userID'
+ *      membershipData: // value for 'membershipData'
  *   },
  * });
  */

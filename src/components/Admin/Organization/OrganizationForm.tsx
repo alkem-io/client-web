@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import {
@@ -43,6 +44,7 @@ export const OrganizationForm: FC<Props> = ({
   title = 'Organization',
 }) => {
   const history = useHistory();
+  const { t } = useTranslation();
   const [removeRef] = useRemoveReferenceMutation();
 
   const { data: config } = useTagsetsTemplateQuery({});
@@ -50,11 +52,12 @@ export const OrganizationForm: FC<Props> = ({
   useEffect(() => {}, [config]);
 
   const isCreateMode = editMode === EditMode.new;
-  // const isEditMode = editMode === EditMode.edit;
+  const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
     name,
+    textID,
     profile: { description, references, avatar },
   } = currentOrganization;
 
@@ -80,6 +83,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const initialValues = {
     name: name || '',
+    textID: textID || '',
     description: description || '',
     avatar: avatar || '',
     tagsets: tagsets || [],
@@ -87,7 +91,8 @@ export const OrganizationForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required('This is the required field'),
+    name: yup.string().required(t('forms.validations.required')),
+    textID: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
     tagsets: tagsetSchemaFragment,
@@ -106,7 +111,7 @@ export const OrganizationForm: FC<Props> = ({
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
 
     for (const ref of toRemove) {
-      await removeRef({ variables: { id: Number(ref.id) } });
+      await removeRef({ variables: { input: { ID: Number(ref.id) } } });
     }
 
     const organization: Organisation = {
@@ -150,7 +155,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values, references)}
         >
-          {({ values: { name, references, tagsets, avatar, description }, handleSubmit }) => {
+          {({ values: { name, textID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
                 <Form.Row>
@@ -160,6 +165,16 @@ export const OrganizationForm: FC<Props> = ({
                     value={name}
                     required={true}
                     readOnly={isReadOnlyMode}
+                  />
+                </Form.Row>
+
+                <Form.Row>
+                  <InputField
+                    name={'textID'}
+                    title={'Text ID'}
+                    value={textID}
+                    required={true}
+                    readOnly={isReadOnlyMode || isEditMode}
                   />
                 </Form.Row>
 

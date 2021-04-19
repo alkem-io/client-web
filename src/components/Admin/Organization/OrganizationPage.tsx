@@ -2,10 +2,11 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import {
+  CreateOrganisationInput,
   Organisation,
-  OrganisationInput,
   Reference,
   Tagset,
+  UpdateOrganisationInput,
   useCreateOrganizationMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
@@ -49,32 +50,40 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     },
   });
 
-  // TODO: need remove org method when its ready on backend
-
   const handleSubmit = (organisation: Organisation) => {
-    const { id: orgID, profile, ...rest } = organisation;
-    const organisationInput: OrganisationInput = {
-      ...rest,
-      profileData: {
-        avatar: profile.avatar,
-        description: profile.description || '',
-        referencesData: [...(profile.references as Reference[])],
-        tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
-      },
-    };
+    const { id: orgID, textID, profile, ...rest } = organisation;
 
     if (mode === EditMode.new) {
+      const organisationInput: CreateOrganisationInput = {
+        ...rest,
+        textID,
+        profileData: {
+          avatar: profile.avatar,
+          description: profile.description || '',
+          referencesData: [...(profile.references as Reference[])],
+          tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
+        },
+      };
+
       createOrganization({
         variables: {
-          organisationData: organisationInput,
+          input: organisationInput,
         },
       });
     }
     if (mode === EditMode.edit) {
+      const organisationInput: UpdateOrganisationInput = {
+        ID: orgID,
+        ...rest,
+        profileData: {
+          ID: '-1', // TODO: Mustn't be provided.
+          avatar: profile.avatar,
+          description: profile.description || '',
+        },
+      };
       updateOrganization({
         variables: {
-          organisationData: {
-            ID: orgID,
+          input: {
             ...organisationInput,
           },
         },

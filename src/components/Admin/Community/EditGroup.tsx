@@ -17,7 +17,7 @@ interface EditGroupProps extends PageProps {
 
 export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers }) => {
   const { data } = useGroupMembersQuery({
-    variables: { id: Number(groupId) },
+    variables: { id: groupId },
   });
   const [addUser] = useAddUserToGroupMutation();
   const [removeUser] = useRemoveUserFromGroupMutation();
@@ -32,8 +32,10 @@ export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers })
   const handleAdd = (member: Member) => {
     addUser({
       variables: {
-        groupID: Number(groupId),
-        userID: Number(member.id),
+        input: {
+          groupID: Number(groupId),
+          userID: Number(member.id),
+        },
       },
       refetchQueries: ['groupMembers'],
       awaitRefetchQueries: true,
@@ -42,8 +44,10 @@ export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers })
   const handleRemove = (member: Member) => {
     removeUser({
       variables: {
-        groupID: Number(groupId),
-        userID: Number(member.id),
+        input: {
+          groupID: Number(groupId),
+          userID: Number(member.id),
+        },
       },
       refetchQueries: ['groupMembers'],
       awaitRefetchQueries: true,

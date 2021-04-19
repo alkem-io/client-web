@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -30,6 +31,7 @@ interface Props {
 }
 
 const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { user } = useUserContext();
   const styles = useBackdropStyles();
@@ -41,10 +43,10 @@ const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }
       <Backdrop>{children}</Backdrop>
       <div className={styles.backdropContainer}>
         <Typography variant="h3" className={styles.message}>
-          Please sign in to check out the {blockName}.
+          {t('components.authentication-backdrop.message', { blockName: blockName.toLocaleLowerCase() })}
         </Typography>
         <div>
-          <Button onClick={() => history.push('/login')} text={'Sign in'} />
+          <Button onClick={() => history.push('/login')} text={t('authentication.sign-in')} />
         </div>
       </div>
     </div>

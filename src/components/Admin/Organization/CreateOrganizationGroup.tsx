@@ -46,8 +46,10 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
     async (name: string) => {
       createGroup({
         variables: {
-          orgID: Number(organizationId),
-          groupName: name,
+          input: {
+            parentID: Number(organizationId),
+            name,
+          },
         },
       });
     },
