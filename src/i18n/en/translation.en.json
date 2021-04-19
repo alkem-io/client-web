@@ -1,18 +1,246 @@
 {
-  "challenges": {
-    "header": "Challenges",
-    "subheader": "There is no final frontier",
-    "body": ""
-  },
   "community": {
     "header": "Community",
     "subheader": "Building the future together",
     "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
     "body": ""
   },
-  "projects": {
-    "header": "Projects",
-    "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
-    "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+  "buttons": {
+    "learn-more": "Learn more",
+    "explore": "Explore",
+    "create": "Create",
+    "save": "Save",
+    "back": "Back",
+    "see-more": "See more"
+  },
+  "authentication": {
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "sign-out": "Sign out",
+    "log-out": "Log out",
+    "log-in": "Log in"
+  },
+  "common": {
+    "genders": {
+      "notSpecified": "not specified",
+      "male": "male",
+      "female": "female"
+    }
+  },
+  "forms": {
+    "validations": {
+      "required": "This field is required!"
+    }
+  },
+  "components": {
+    "authentication-backdrop": {
+      "message": "Please sign in to check out the {{blockName}}."
+    }
+  },
+  "pages": {
+    "ecoverse": {
+      "cards": {
+        "activity": {
+          "title": "ecoverse activity",
+          "challenges": "Challenges",
+          "opportunities": "Opportunities",
+          "projects": "Projects",
+          "members": "Members"
+        },
+        "tags": {
+          "you-are-in": "You are in"
+        }
+      },
+      "sections": {
+        "challenges": {
+          "header": "Challenges",
+          "subheader": "There is no final frontier",
+          "body": ""
+        },
+        "community": {
+          "title": "Community",
+          "subtitle": "The heroes working on this challenge",
+          "body": ""
+        },
+        "projects": {
+          "header": "Projects",
+          "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
+          "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+        }
+      },
+      "errorblock": {
+        "message": "Sorry, an error occurred while loading {{blockName}}."
+      }
+    },
+    "challenge": {
+      "organizationBanner": {
+        "load-more": "And more ..."
+      },
+      "sections": {
+        "activity": {
+          "title": "challenge activity",
+          "opportunities": "Opportunities",
+          "projects": "Projects",
+          "members": "Members"
+        },
+        "header": {
+          "buttons": {
+            "edit": {
+              "tooltip": "Edit challenge context"
+            }
+          }
+        },
+        "details": {
+          "header": "Challenge details"
+        },
+        "community": {
+          "header": "Community",
+          "subheader": "Building the future together",
+          "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
+          "body": ""
+        },
+        "opportunities": {
+          "header": "Opportunities",
+          "subheader": "Potential solutions for this challenge",
+          "body-missing": "No opportunities found for this challenge"
+        },
+        "projects": {
+          "header": {
+            "text": "Projects",
+            "tag": "Coming soon"
+          },
+          "subheader": "Potential solutions for this challenge",
+          "body": "Manage your projects and suggest new ones to your stakeholders."
+        }
+      }
+    },
+    "opportunity": {
+      "sections": {
+        "header": {
+          "buttons": {
+            "edit": {
+              "tooltip": "Edit opportunity context"
+            },
+            "projects": {
+              "text": "Projects"
+            }
+          }
+        },
+        "problem": {
+          "header": "Problem"
+        },
+        "long-term-vision": {
+          "header": "Long term vision"
+        },
+        "who": {
+          "header": "Who"
+        },
+        "impact": {
+          "header": "Impact"
+        },
+        "adoption-ecosystem": {
+          "header": "Adoption cosystem",
+          "subheader": "Stakeholders & Key users",
+          "buttons": {
+            "add-actor-group": {
+              "text": "Add actor group"
+            }
+          }
+        },
+        "potential": {
+          "header": "Collaborative potential",
+          "subheader": "Teams & People that showed interest",
+          "buttons": {
+            "apply": {
+              "text": "Interested in collaborating?"
+            }
+          }
+        },
+        "collaborators": {
+          "missing-collaborators": "Sorry, there are no related people or groups yet",
+          "cards": {
+            "users": {
+              "title": "Users"
+            },
+            "groups": {
+              "title": "Groups"
+            }
+          }
+        },
+        "solution": {
+          "header": "Solution details",
+          "subheader": "How we envision the first steps"
+        },
+        "projects": {
+          "header": {
+            "text": "Projects",
+            "tag": "Coming soon"
+          },
+          "subheader": "Changing the world one project at a time",
+          "body": "Manage your projects and suggest new ones to your stakeholders.",
+          "more-projects": "MORE PROJECTS STARTING SOON",
+          "new-project": {
+            "header": "New project",
+            "subheader": "This could be the project that makes the difference",
+            "body": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+          }
+        },
+        "community": {
+          "title": "Community",
+          "subtitle": "The heroes working on this opportunity",
+          "body": ""
+        }
+      }
+    },
+    "login": {
+      "title": "Sign in",
+      "demo-provider": {
+        "question": "Don't have an account?"
+      },
+      "validations": {
+        "email": "Please enter your email address.",
+        "password": "Please enter your password."
+      },
+      "logo": "{{ecoverse}} ecoverse logo"
+    },
+    "about": {
+      "title": "Reimagining collaboration",
+      "description": "Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for multi stakeholder collaboration",
+      "powered-by": "Powered by {{name}} v{{version}}"
+    },
+    "error": {
+      "title": "Ooops!",
+      "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
+      "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
+      "line3": "If the error persists please contact support.",
+      "buttons": {
+        "reload": "Reload"
+      }
+    },
+    "four-ou-four": {
+      "message": "The resource you are looking for could not be found.",
+      "buttons": {
+        "home": "Take me home"
+      }
+    },
+    "logout": {
+      "loading": "Signing off ..."
+    },
+    "register": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid",
+          "password": "Password ca not be empty",
+          "password-strength": "Password must be at least 8 symbols long",
+          "confirm-password": "Passwords must match",
+          "terms": "The terms of use and the privacy policy must be accepted."
+        }
+      },
+      "header": "Create an account on the <strong>{{ecoverseName}}</strong> ecoverse",
+      "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
+      "buttons": {
+        "register": "Register"
+      }
+    }
   }
 }

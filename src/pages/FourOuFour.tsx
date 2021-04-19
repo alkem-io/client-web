@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Section from '../components/core/Section';
@@ -10,15 +11,15 @@ const paths = { currentPaths: [] };
 
 export const FourOuFour: FC = () => {
   useUpdateNavigation(paths);
-
+  const { t } = useTranslation();
   return (
     <Section>
       <Typography as="h1" variant="h1">
         404
       </Typography>
-      <Typography as="h5">The resource you are looking for could not be found.</Typography>
+      <Typography as="h5">{t('pages.four-ou-four.message')}</Typography>
       <div>
-        <Button variant="primary" as={Link} to="/" text="Take me home" />
+        <Button variant="primary" as={Link} to="/" text={t('pages.four-ou-four.buttons.home')} />
       </div>
     </Section>
   );

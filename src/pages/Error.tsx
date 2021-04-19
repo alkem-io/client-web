@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import Button from '../components/core/Button';
 import Section from '../components/core/Section';
 import Typography from '../components/core/Typography';
@@ -8,24 +9,32 @@ const graphQLEndpoint =
   (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
   (process.env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
 
-export const Error: FC<{ error: Error }> = props => {
+export const Error: FC<{ error: Error }> = ({ error }) => {
+  const { t } = useTranslation();
+
   return (
     <div style={{ display: 'flex', height: '100%', alignItems: 'center' }}>
       <Section>
         <Typography as="h1" variant="h1" weight="bold">
-          Ooops!
+          {t('pages.error.title')}
         </Typography>
         <Typography as="h2" variant="h3" color="neutral">
-          Looks like something went wrong: <i>{props.error.message}</i>
+          <Trans
+            i18nKey="pages.error.line1"
+            values={{ message: error.message }}
+            components={{
+              italic: <i />,
+            }}
+          />
         </Typography>
         <Typography as="h2" variant="h3" color="neutral">
-          Please check that your server ({graphQLEndpoint}) is available, and reload the page.
+          {t('pages.error.line2', { graphQLEndpoint })}
         </Typography>
         <Typography as="h5" variant="h5" color="neutralMedium">
-          If the error persists please contact support.
+          {t('pages.error.line3')}
         </Typography>
         <div>
-          <Button variant="primary" text="Reload" onClick={() => window.location.reload()} />
+          <Button variant="primary" text={t('pages.error.buttons.reload')} onClick={() => window.location.reload()} />
         </div>
       </Section>
     </div>

@@ -4,6 +4,7 @@ import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
 import { useServerMetadataQuery } from '../generated/graphql';
+import { useTranslation } from 'react-i18next';
 
 const useAboutStyles = createStyles(theme => ({
   row: {
@@ -52,7 +53,7 @@ const useAboutStyles = createStyles(theme => ({
 const AboutPage = () => {
   const styles = useAboutStyles();
   const { data } = useServerMetadataQuery();
-
+  const { t } = useTranslation();
   return (
     <>
       <div className={styles.row}>
@@ -65,19 +66,19 @@ const AboutPage = () => {
             </div>
             {data && (
               <Typography color={'neutralMedium'} className={'mb-4'}>
-                Powered by {data?.metadata.services[0].name} v{data?.metadata.services[0].version}
+                {t('pages.about.powered-by', {
+                  name: data?.metadata.services[0].name,
+                  version: data?.metadata.services[0].version,
+                })}
               </Typography>
             )}
 
             <Typography variant={'h3'} color={'neutralMedium'} className={'mb-4'}>
-              Reimagining collaboration
+              {t('pages.about.title')}
             </Typography>
-            <Typography className={'mb-4'}>
-              Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for
-              multi stakeholder collaboration
-            </Typography>
+            <Typography className={'mb-4'}>{t('pages.about.description')}</Typography>
             <a href="https://cherrytwist.org/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
-              <Button>Learn more</Button>
+              <Button>{t('buttons.learn-more')}</Button>
             </a>
           </div>
         </Col>

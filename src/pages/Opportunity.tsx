@@ -150,21 +150,21 @@ const Opportunity: FC<OpportunityPageProps> = ({
         onSelect: () => onProjectTransition(p),
       })),
       {
-        title: 'MORE PROJECTS STARTING SOON',
+        title: t('pages.opportunity.sections.projects.more-projects'),
         type: 'more',
       },
     ];
 
     if (permissions.projectWrite) {
       projectList.push({
-        title: 'New project',
+        title: t('pages.opportunity.sections.projects.new-project.header'),
         type: 'add',
         onSelect: () => onProjectTransition(undefined),
       });
     }
 
     return projectList;
-  }, [projects, onProjectTransition, permissions.projectWrite]);
+  }, [projects, onProjectTransition, permissions.projectWrite, t]);
   return (
     <>
       <Section
@@ -200,7 +200,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
               <>
                 <OverlayTrigger
                   placement={'bottom'}
-                  overlay={<Tooltip id={'Edit challenge context'}>Edit opportunity context</Tooltip>}
+                  overlay={
+                    <Tooltip id={'Edit opportunity context'}>
+                      {t('pages.opportunity.sections.header.buttons.edit.tooltip')}
+                    </Tooltip>
+                  }
                 >
                   <Edit
                     color={'white'}
@@ -224,8 +228,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
             <Button
               className={styles.offset}
               inset
-              variant="primary"
-              text="projects"
+              variant={'primary'}
+              text={t('pages.opportunity.sections.header.buttons.projects.text')}
               onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
             <>
@@ -235,7 +239,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                   as="a"
                   className={clsx(styles.offset, styles.link)}
                   inset
-                  variant="primary"
+                  variant={'primary'}
                   text={l.name}
                   href={l.uri}
                   target="_blank"
@@ -259,13 +263,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Problem'} />
+              <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
               <SubHeader text={background} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Long term vision'} icon={<StopWatch />} />
+              <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
               <SubHeader text={vision} />
             </Section>
           </Col>
@@ -273,13 +277,13 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <Row>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Who'} />
+              <SectionHeader text={t('pages.opportunity.sections.who.header')} />
               <SubHeader text={who} />
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={'Impact'} />
+              <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
               <SubHeader text={impact} />
             </Section>
           </Col>
@@ -311,12 +315,16 @@ const Opportunity: FC<OpportunityPageProps> = ({
       </Container>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'ADOPTION ECOSYSTEM'}>
+        <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
           {isAdmin && availableActorGroupNames.length > 0 && (
-            <Button text={'Add actor group'} onClick={() => setShowActorGroupModal(true)} className={'ml-4'} />
+            <Button
+              text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
+              onClick={() => setShowActorGroupModal(true)}
+              className={'ml-4'}
+            />
           )}
         </SectionHeader>
-        <SubHeader text={'Stakeholders & Key users'} />
+        <SubHeader text={t('pages.opportunity.sections.adoption-ecosystem.subheader')} />
       </Section>
       {actorGroups
         ?.filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
@@ -343,16 +351,16 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
 
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'Collaborative potential'}>
+        <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
           {isAuthenticated && !isMemberOfOpportunity && (
             <Button
-              text={'Interested in collaborating?'}
+              text={t('pages.opportunity.sections.potential.buttons.apply.text')}
               onClick={() => setShowInterestModal(true)}
               className={'ml-4'}
             />
           )}
         </SectionHeader>
-        <SubHeader text={'Teams & People that showed interest'} />
+        <SubHeader text={t('pages.opportunity.sections.potential.subheader')} />
       </Section>
 
       <Divider />
@@ -360,20 +368,32 @@ const Opportunity: FC<OpportunityPageProps> = ({
         <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
           <Typography variant={'h3'} color={'neutralMedium'}>
-            Sorry, there are no related people or groups yet
+            {t('pages.opportunity.sections.collaborators.missing-collaborators')}
           </Typography>
         </div>
       ) : (
         <>
           {incoming && incoming.length > 0 && (
-            <CardContainer title={'Users'} xs={12} md={6} lg={4} xl={3}>
+            <CardContainer
+              title={t('pages.opportunity.sections.collaborators.cards.users.title')}
+              xs={12}
+              md={6}
+              lg={4}
+              xl={3}
+            >
               {incoming?.map((props, i) => (
                 <RelationCard key={i} opportunityID={id} {...props} />
               ))}
             </CardContainer>
           )}
           {outgoing && outgoing.length > 0 && (
-            <CardContainer title={'Groups'} xs={12} md={6} lg={4} xl={3}>
+            <CardContainer
+              title={t('pages.opportunity.sections.collaborators.cards.groups.title')}
+              xs={12}
+              md={6}
+              lg={4}
+              xl={3}
+            >
               {outgoing?.map((props, i) => (
                 <RelationCard key={i} opportunityID={id} {...props} />
               ))}
@@ -396,8 +416,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
       <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
-        <SectionHeader text={'Solution details'} />
-        <SubHeader text={'How we envision the first steps'} />
+        <SectionHeader text={t('pages.opportunity.sections.solution.header')} />
+        <SubHeader text={t('pages.opportunity.sections.solution.subheader')} />
       </Section>
 
       {aspects && (
@@ -424,8 +444,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
       <Divider />
       <CommunitySection
-        title={t('community.header')}
-        subTitle={'The heroes working on this opportunity'}
+        title={t('pages.opportunity.sections.community.title')}
+        subTitle={t('pages.opportunity.sections.community.subtitle')}
         users={users}
         shuffle={true}
         onExplore={() => history.push('/community')}
@@ -433,9 +453,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <div ref={projectRef} />
       <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('projects.header')} tagText={'Coming soon'} />
-        <SubHeader text={'Changing the world one project at a time'} />
-        <Body text={'Manage your projects and suggest new ones to your stakeholders.'} />
+        <SectionHeader
+          text={t('pages.opportunity.sections.projects.header.text')}
+          tagText={t('pages.opportunity.sections.projects.header.tag')}
+        />
+        <SubHeader text={t('pages.opportunity.sections.projects.subheader')} />
+        <Body text={t('pages.opportunity.sections.projects.body')} />
       </Section>
       <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
         {opportunityProjects.map(({ type, ...rest }, i) => {

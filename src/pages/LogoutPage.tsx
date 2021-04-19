@@ -3,10 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import Loading from '../components/core/Loading';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import { useTranslation } from 'react-i18next';
 
 interface LogoutPageProps {}
 
 export const LogoutPage: FC<LogoutPageProps> = () => {
+  const { t } = useTranslation();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
   const { safeUnauthenticate } = useAuthenticate();
@@ -19,7 +21,7 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
     return () => {};
   }, []);
 
-  return <Loading text={'Loggin out'} />;
+  return <Loading text={t('pages.logout.loading')} />;
 };
 
 export default LogoutPage;
