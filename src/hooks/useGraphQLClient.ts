@@ -3,6 +3,7 @@ import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { Severity } from '@sentry/react';
 import { createUploadLink } from 'apollo-upload-client';
 import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -13,7 +14,7 @@ import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthStatus } from '../reducers/auth/types';
-import { pushError } from '../reducers/error/actions';
+import { pushNotification } from '../reducers/notifincations/actions';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
@@ -111,10 +112,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       }
     }
 
-    if (errors.length > 0) {
-      console.error(errors);
-    }
-
     if (networkError) {
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
@@ -122,7 +119,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    errors.forEach(e => dispatch(pushError(e)));
+    errors.forEach(e => dispatch(pushNotification(e.message, Severity.Error)));
   });
 
   const authLink = setContext(async (_, { headers }) => {

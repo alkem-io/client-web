@@ -52,7 +52,6 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   });
 
   const handleError = (error: ApolloError) => {
-    debugger;
     console.log(error);
   };
 

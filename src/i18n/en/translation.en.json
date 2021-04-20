@@ -35,6 +35,12 @@
   "components": {
     "authentication-backdrop": {
       "message": "Please sign in to check out the {{blockName}}."
+    },
+    "notifications": {
+      "error": "Error",
+      "information": "Information",
+      "warning": "Warning",
+      "success": "Success"
     }
   },
   "pages": {
