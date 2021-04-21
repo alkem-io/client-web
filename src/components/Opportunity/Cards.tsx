@@ -23,6 +23,7 @@ import {
 } from '../../graphql/opportunity';
 import AspectEdit from './AspectEdit';
 import { replaceAll } from '../../utils/replaceAll';
+import { Spacer } from '../shared/Spacer';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -45,24 +46,12 @@ const useCardStyles = createStyles(theme => ({
   border: {
     border: `1px solid ${theme.palette.neutralMedium}`,
   },
-  mdSpacer: {
-    marginTop: theme.shape.spacing(2),
-  },
-  lgSpacer: {
-    marginTop: theme.shape.spacing(4),
-  },
   iconWrapper: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
 }));
-
-export const Spacer: FC<{ variant?: 'lg' | 'md' }> = ({ variant = 'md' }) => {
-  const styles = useCardStyles();
-
-  return <div className={styles[`${variant}Spacer`]} />;
-};
 
 interface RelationCardProps {
   actorName: string;
