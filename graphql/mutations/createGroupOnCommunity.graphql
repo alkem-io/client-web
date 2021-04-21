@@ -1,0 +1,6 @@
+mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
+  createGroupOnCommunity(groupData: $input) {
+    id
+    name
+  }
+}

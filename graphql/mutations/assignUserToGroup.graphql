@@ -1,0 +1,8 @@
+mutation assignUserToGroup($input: AssignUserGroupMemberInput!) {
+    assignUserToGroup(membershipData: $input) {
+      id
+      members {
+        ...GroupMembers
+      }
+    }
+  }

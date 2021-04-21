@@ -1,0 +1,7 @@
+mutation createOpportunity($input: CreateOpportunityInput!) {
+  createOpportunity(opportunityData: $input) {
+    id
+    textID
+    name
+  }
+}

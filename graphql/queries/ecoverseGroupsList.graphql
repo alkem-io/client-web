@@ -1,0 +1,9 @@
+query ecoverseGroupsList {
+  ecoverse {
+    id
+    groups {
+      id
+      name
+    }
+  }
+}

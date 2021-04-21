@@ -1,0 +1,19 @@
+query opportunityActorGroups($id: String!) {
+  ecoverse {
+    id
+    opportunity(ID: $id) {
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          id
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+}

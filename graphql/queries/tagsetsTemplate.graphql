@@ -1,0 +1,12 @@
+query tagsetsTemplate {
+  configuration {
+    template {
+      users {
+        tagsets {
+          name
+          placeholder
+        }
+      }
+    }
+  }
+}

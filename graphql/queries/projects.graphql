@@ -1,0 +1,12 @@
+query projects {
+  ecoverse {
+    id
+    projects {
+      id
+      textID
+      name
+      description
+      state
+    }
+  }
+}

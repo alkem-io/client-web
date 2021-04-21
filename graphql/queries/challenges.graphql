@@ -1,0 +1,17 @@
+query challenges {
+  ecoverse {
+    id
+    challenges {
+      id
+      name
+      textID
+      context {
+        tagline
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+}

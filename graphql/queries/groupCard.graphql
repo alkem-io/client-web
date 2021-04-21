@@ -1,0 +1,35 @@
+query groupCard($id: String!) {
+  ecoverse {
+    id
+    group(ID: $id) {
+      __typename
+      name
+      parent {
+        __typename
+        ... on Community {
+          name
+        }
+        ... on Organisation {
+          name
+        }
+      }
+      members {
+        id
+        name
+      }
+      profile {
+        id
+        avatar
+        description
+        references {
+          name
+          description
+        }
+        tagsets {
+          name
+          tags
+        }
+      }
+    }
+  }
+}

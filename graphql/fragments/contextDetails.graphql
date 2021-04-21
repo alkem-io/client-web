@@ -1,0 +1,14 @@
+fragment ContextDetails on Context {
+  id
+  tagline
+  background
+  vision
+  impact
+  who
+  references {
+    id
+    name
+    uri
+    description
+  }
+}
