@@ -3,12 +3,12 @@ import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import {
-  CreateUserInput,
   useCreateUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
   UserDetailsFragmentDoc,
 } from '../../../generated/graphql';
+import { CreateUserInput } from '../../../types/graphql-schema';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';

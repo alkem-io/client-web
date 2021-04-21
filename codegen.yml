@@ -2,10 +2,21 @@ overwrite: true
 schema: "http://localhost:4000/graphql"
 documents: "graphql/**/*.graphql"
 generates:
-  src/generated/graphql.tsx:
+  src/types/graphql-schema.ts:
     plugins:
-      - "typescript"
+      - typescript
       - "typescript-operations"
+    config:
+      maybeValue: T | undefined
+      scalars:
+        Upload: File
+        TextID: string
+  src/generated/graphql.tsx:
+    preset: import-types
+    presetConfig:
+      typesPath: ../types/graphql-schema
+      importTypesNamespace: SchemaTypes
+    plugins:
       - "typescript-react-apollo"
     config:
       scalars:

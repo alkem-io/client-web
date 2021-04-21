@@ -2,10 +2,11 @@ import axios from 'axios';
 import { useCallback, useContext, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { configContext } from '../context/ConfigProvider';
-import { DemoAuthProviderConfig, useCreateUserMutation } from '../generated/graphql';
+import { useCreateUserMutation } from '../generated/graphql';
 import { AuthenticationResult, RegisterResult } from '../models/AuthenticationResult';
 import { AUTH_PROVIDER_KEY, AUTH_STATUS_KEY, AUTH_USER_KEY, PROVIDER_DEMO, TOKEN_KEY } from '../models/Constants';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
+import { DemoAuthProviderConfig } from '../types/graphql-schema';
 import { useAuthenticate } from './useAuthenticate';
 
 export const useDemoAuth = () => {

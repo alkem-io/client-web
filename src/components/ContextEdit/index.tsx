@@ -2,12 +2,11 @@ import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import {
   ChallengeProfileDocument,
-  Context,
   OpportunityProfileDocument,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
-
+import { Context } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import ProfileForm from '../ProfileForm/ProfileForm';

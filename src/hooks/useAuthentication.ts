@@ -7,7 +7,7 @@ import {
 } from '@azure/msal-browser';
 import { useCallback, useContext, useMemo } from 'react';
 import { configContext } from '../context/ConfigProvider';
-import { AadAuthProviderConfig } from '../generated/graphql';
+import { AadAuthProviderConfig } from '../types/graphql-schema';
 
 export interface UseAuthenticationResult {
   signIn: () => Promise<AuthenticationResult | undefined>;

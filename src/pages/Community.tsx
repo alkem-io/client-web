@@ -1,22 +1,21 @@
-import React, { FC, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
-
-import { UserCard } from '../components/Community/UserCard';
+import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
+import React, { FC, useEffect, useState } from 'react';
+import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { GroupCard } from '../components/Community/GroupCard';
+import { OrganizationCard } from '../components/Community/OrganizationCard';
+import { UserCard } from '../components/Community/UserCard';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
-import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
-import { useUpdateNavigation } from '../hooks/useNavigation';
 import MultipleSelect from '../components/core/MultipleSelect';
+import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-
-import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
+import { SearchDocument } from '../generated/graphql';
+import { useUpdateNavigation } from '../hooks/useNavigation';
+import { Organisation, User, UserGroup } from '../types/graphql-schema';
 import { PageProps } from './common';
-import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
-import { Organisation, SearchDocument, User, UserGroup } from '../generated/graphql';
-import { OrganizationCard } from '../components/Community/OrganizationCard';
-import { useTranslation } from 'react-i18next';
 
 const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();

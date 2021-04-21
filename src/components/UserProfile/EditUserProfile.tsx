@@ -2,15 +2,10 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import {
-  User,
-  UpdateUserInput,
-  useUpdateUserMutation,
-  useUploadAvatarMutation,
-  useMeQuery,
-} from '../../generated/graphql';
+import { useMeQuery, useUpdateUserMutation, useUploadAvatarMutation } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
+import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';

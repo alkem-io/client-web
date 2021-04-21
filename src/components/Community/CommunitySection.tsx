@@ -1,7 +1,7 @@
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC } from 'react';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { User } from '../../generated/graphql';
+import { User } from '../../types/graphql-schema';
 import { shuffleCollection } from '../../utils/shuffleCollection';
 import Avatar from '../core/Avatar';
 import AvatarContainer from '../core/AvatarContainer';

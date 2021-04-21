@@ -1,4 +1,4 @@
-import { CommunityDetailsFragment } from '../../../generated/graphql';
+import { CommunityDetailsFragment } from '../../../types/graphql-schema';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
 

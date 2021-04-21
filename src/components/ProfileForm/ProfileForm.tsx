@@ -1,15 +1,16 @@
+import clsx from 'clsx';
+import { FieldArray, Formik } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import Button from '../core/Button';
-import { Context, useDeleteReferenceMutation } from '../../generated/graphql';
 import * as yup from 'yup';
-import { FieldArray, Formik } from 'formik';
-import TextInput, { TextArea } from '../core/TextInput';
+import { useDeleteReferenceMutation } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
-import clsx from 'clsx';
-import Typography from '../core/Typography';
-import Divider from '../core/Divider';
+import { Context } from '../../types/graphql-schema';
 import { removeReferences } from '../../utils/removeReferences';
+import Button from '../core/Button';
+import Divider from '../core/Divider';
+import TextInput, { TextArea } from '../core/TextInput';
+import Typography from '../core/Typography';
 
 interface Profile {
   name?: string;

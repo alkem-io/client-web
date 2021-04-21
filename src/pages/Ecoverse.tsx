@@ -18,17 +18,15 @@ import Typography from '../components/core/Typography';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
-  ChallengesQuery,
-  EcoverseInfoQuery,
   useAllOpportunitiesQuery,
   useEcoverseHostReferencesQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
-  User,
 } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
+import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;

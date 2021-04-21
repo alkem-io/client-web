@@ -9,10 +9,10 @@ import InputField from '../components/Admin/Common/InputField';
 import Button from '../components/core/Button';
 import Delimeter from '../components/core/Delimeter';
 import Typography from '../components/core/Typography';
-import { AuthenticationProviderConfig } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useDemoAuth } from '../hooks/useDemoAuth';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import { AuthenticationProviderConfig } from '../types/graphql-schema';
 
 interface LoginPageProps {
   providers: AuthenticationProviderConfig[];

@@ -1,18 +1,18 @@
+import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Form, Modal } from 'react-bootstrap';
-import Button from '../core/Button';
-import {
-  Aspect,
-  useOpportunityTemplateQuery,
-  useCreateAspectMutation,
-  useUpdateAspectMutation,
-  OpportunityActorGroupsDocument,
-} from '../../generated/graphql';
 import * as yup from 'yup';
-import { Formik } from 'formik';
-import { TextArea } from '../core/TextInput';
+import {
+  OpportunityActorGroupsDocument,
+  useCreateAspectMutation,
+  useOpportunityTemplateQuery,
+  useUpdateAspectMutation,
+} from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
+import { Aspect } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
+import Button from '../core/Button';
+import { TextArea } from '../core/TextInput';
 
 interface Props {
   show: boolean;

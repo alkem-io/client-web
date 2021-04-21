@@ -1,15 +1,14 @@
 import React, { FC, memo, useState } from 'react';
-
+import roles from '../../configs/roles.json';
 import { Theme } from '../../context/ThemeProvider';
+import { useUserCardDataQuery } from '../../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
+import { User } from '../../types/graphql-schema';
+import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import UserPopUp from './UserPopUp';
-
-import roles from '../../configs/roles.json';
-import { User, useUserCardDataQuery } from '../../generated/graphql';
-import { createStyles } from '../../hooks/useTheme';
-import hexToRGBA from '../../utils/hexToRGBA';
 import { Loading } from '../core/Loading';
+import UserPopUp from './UserPopUp';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;

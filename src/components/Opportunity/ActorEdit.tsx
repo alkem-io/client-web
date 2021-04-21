@@ -3,11 +3,11 @@ import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import * as yup from 'yup';
 import {
-  Actor,
   OpportunityActorGroupsDocument,
   useCreateActorMutation,
   useUpdateActorMutation,
 } from '../../generated/graphql';
+import { Actor } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';

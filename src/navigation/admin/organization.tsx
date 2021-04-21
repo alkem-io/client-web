@@ -1,20 +1,20 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
-import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
 import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
 import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
 import {
-  Organisation,
-  useOrganizationProfileInfoQuery,
   useOrganizationGroupsQuery,
+  useOrganizationProfileInfoQuery,
   useOrganizationsListQuery,
 } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
+import { Organisation } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { AdminParameters } from './admin';
 

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { User, useMeQuery } from '../generated/graphql';
+import { useMeQuery } from '../generated/graphql';
 import { CommunityType } from '../models/Constants';
+import { User } from '../types/graphql-schema';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
