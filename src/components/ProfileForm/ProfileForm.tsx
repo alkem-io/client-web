@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Col, Form, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
-import { Context, useRemoveReferenceMutation } from '../../generated/graphql';
+import { Context, useDeleteReferenceMutation } from '../../generated/graphql';
 import * as yup from 'yup';
 import { FieldArray, Formik } from 'formik';
 import TextInput, { TextArea } from '../core/TextInput';
@@ -81,7 +81,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
     ),
   });
 
-  const [removeRef] = useRemoveReferenceMutation();
+  const [removeRef] = useDeleteReferenceMutation();
 
   let isSubmitWired = false;
   let referencesToRemove: string[] = [];

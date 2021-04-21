@@ -1,4 +1,4 @@
-query hallengesList {
+query challengesWithCommunity {
   ecoverse {
     id
     challenges {

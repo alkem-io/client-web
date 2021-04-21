@@ -7,7 +7,7 @@ import {
   UpdateUserInput,
   useUpdateUserMutation,
   useUploadAvatarMutation,
-  useUserProfileQuery,
+  useMeQuery,
 } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
@@ -41,7 +41,7 @@ export const getUpdateUserInput = (user: UserModel) => {
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
-  const { data, loading } = useUserProfileQuery();
+  const { data, loading } = useMeQuery();
   const notify = useNotification();
   const [uploadAvatar] = useUploadAvatarMutation();
   const [updateUser] = useUpdateUserMutation({

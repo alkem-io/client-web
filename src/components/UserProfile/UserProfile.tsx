@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import roles from '../../configs/roles.json';
-import { User, useUserProfileQuery } from '../../generated/graphql';
+import { User, useMeQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { CommunityType } from '../../models/Constants';
@@ -31,7 +31,7 @@ const useUserRoleStyles = createStyles(theme => ({
 
 export const UserRoles: FC = () => {
   const styles = useUserRoleStyles();
-  const { data } = useUserProfileQuery();
+  const { data } = useMeQuery();
 
   const groups =
     data?.me?.memberof?.communities.flatMap(c => (c && c.groups ? c.groups.map(g => g.name) : undefined)) || [];
@@ -159,7 +159,7 @@ export const UserProfile: FC = () => {
   const styles = useMemberOfStyles();
 
   useTransactionScope({ type: 'authentication' });
-  const { data, loading } = useUserProfileQuery();
+  const { data, loading } = useMeQuery();
 
   const user = (data?.me as User) || defaultUser || {};
 

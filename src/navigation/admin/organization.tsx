@@ -9,7 +9,7 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
 import {
   Organisation,
-  useOrganisationProfileInfoQuery,
+  useOrganizationProfileInfoQuery,
   useOrganizationGroupsQuery,
   useOrganizationsListQuery,
 } from '../../generated/graphql';
@@ -60,7 +60,7 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
 
-  const { data } = useOrganisationProfileInfoQuery({ variables: { id: organizationId } });
+  const { data } = useOrganizationProfileInfoQuery({ variables: { id: organizationId } });
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
     paths,

@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { TagsetTemplate, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { TagsetTemplate, useDeleteReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
 import countriesList from '../../../utils/countriesList.json';
@@ -36,7 +36,7 @@ export const UserForm: FC<UserProps> = ({
   title = 'User',
 }) => {
   const { t } = useTranslation();
-  const [removeRef] = useRemoveReferenceMutation();
+  const [removeRef] = useDeleteReferenceMutation();
 
   const genders = [t('common.genders.notSpecified'), t('common.genders.male'), t('common.genders.female')];
   const { data: config, loading } = useTagsetsTemplateQuery();

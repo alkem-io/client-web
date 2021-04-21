@@ -3,8 +3,7 @@ import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
-import { useCreateRelationMutation, useUserProfileQuery } from '../../generated/graphql';
-import { QUERY_RELATIONS_LIST } from '../../graphql/opportunity';
+import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
 import Loading from '../core/Loading';
 
 interface P {
@@ -15,11 +14,11 @@ interface P {
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
-  const { data: userData } = useUserProfileQuery();
+  const { data: userData } = useMeQuery();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: error => console.log(error),
-    refetchQueries: [{ query: QUERY_RELATIONS_LIST, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

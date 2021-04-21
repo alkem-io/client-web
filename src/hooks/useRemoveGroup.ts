@@ -1,8 +1,8 @@
 import { SearchableListItem } from '../components/Admin/SearchableList';
-import { useRemoveUserGroupMutation } from '../generated/graphql';
+import { useDeleteGroupMutation } from '../generated/graphql';
 
 export function useRemoveUserGroup(refetchQueries: string[]) {
-  const [remove, result] = useRemoveUserGroupMutation({
+  const [remove, result] = useDeleteGroupMutation({
     refetchQueries,
     awaitRefetchQueries: true,
     onError: e => {

@@ -7,8 +7,8 @@ import {
   useCreateUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
+  UserDetailsFragmentDoc,
 } from '../../../generated/graphql';
-import { USER_DETAILS_FRAGMENT } from '../../../graphql/user';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
@@ -84,7 +84,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
             users(existingUsers = []) {
               const newUserRef = cache.writeFragment({
                 data: createUser,
-                fragment: USER_DETAILS_FRAGMENT,
+                fragment: UserDetailsFragmentDoc,
               });
               return [...existingUsers, newUserRef];
             },

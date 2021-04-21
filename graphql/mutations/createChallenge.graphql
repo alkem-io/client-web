@@ -1,7 +1,5 @@
 mutation createChallenge($input: CreateChallengeInput!) {
   createChallenge(challengeData: $input) {
-    id
-    textID
-    name
+    ...NewChallenge
   }
 }

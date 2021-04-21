@@ -1,4 +1,4 @@
-mutation deleteUserGroup($input: DeleteUserGroupInput!) {
+mutation deleteGroup($input: DeleteUserGroupInput!) {
   deleteUserGroup(deleteData: $input) {
     id
   }

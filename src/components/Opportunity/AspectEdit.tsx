@@ -6,12 +6,12 @@ import {
   useOpportunityTemplateQuery,
   useCreateAspectMutation,
   useUpdateAspectMutation,
+  OpportunityActorGroupsDocument,
 } from '../../generated/graphql';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { TextArea } from '../core/TextInput';
 import { createStyles } from '../../hooks/useTheme';
-import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
 import { replaceAll } from '../../utils/replaceAll';
 
 interface Props {
@@ -69,14 +69,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
     awaitRefetchQueries: true,
   });
 

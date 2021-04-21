@@ -12,10 +12,9 @@ import MultipleSelect from '../components/core/MultipleSelect';
 import Typography from '../components/core/Typography';
 
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import { QUERY_COMMUNITY_SEARCH } from '../graphql/community';
 import { PageProps } from './common';
 import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
-import { Organisation, User, UserGroup } from '../generated/graphql';
+import { Organisation, SearchDocument, User, UserGroup } from '../generated/graphql';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
 import { useTranslation } from 'react-i18next';
 
@@ -91,7 +90,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
-  const [search] = useLazyQuery(QUERY_COMMUNITY_SEARCH, {
+  const [search] = useLazyQuery(SearchDocument, {
     onCompleted: data => {
       const searchData = data?.search || [];
       const updatedCommunity = searchData

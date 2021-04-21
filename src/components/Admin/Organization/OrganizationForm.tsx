@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import {
   Organisation,
   TagsetTemplate,
-  useRemoveReferenceMutation,
+  useDeleteReferenceMutation,
   useTagsetsTemplateQuery,
 } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
@@ -45,7 +45,7 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const [removeRef] = useRemoveReferenceMutation();
+  const [removeRef] = useDeleteReferenceMutation();
 
   const { data: config } = useTagsetsTemplateQuery({});
 

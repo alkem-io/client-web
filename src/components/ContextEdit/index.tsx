@@ -1,8 +1,13 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import { Context, useUpdateChallengeMutation, useUpdateOpportunityMutation } from '../../generated/graphql';
-import { QUERY_CHALLENGE_PROFILE } from '../../graphql/challenge';
-import { QUERY_OPPORTUNITY_PROFILE } from '../../graphql/opportunity';
+import {
+  ChallengeProfileDocument,
+  Context,
+  OpportunityProfileDocument,
+  useUpdateChallengeMutation,
+  useUpdateOpportunityMutation,
+} from '../../generated/graphql';
+
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import ProfileForm from '../ProfileForm/ProfileForm';
@@ -28,13 +33,13 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE, variables: { id } }],
+    refetchQueries: [{ query: ChallengeProfileDocument, variables: { id } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE, variables: { id } }],
+    refetchQueries: [{ query: OpportunityProfileDocument, variables: { id } }],
     awaitRefetchQueries: true,
   });
 

@@ -1,0 +1,5 @@
+fragment NewChallenge on Challenge {
+  id
+  textID
+  name
+}
