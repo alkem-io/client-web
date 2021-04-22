@@ -4,12 +4,14 @@ import { ReactComponent as InfoCircleFill } from 'bootstrap-icons/icons/info-cir
 import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
 import React, { FC } from 'react';
 import { Toast } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { clearNotification } from '../reducers/notifincations/actions';
 import { Notification, Severity } from '../reducers/notifincations/types';
 
 export const NotificationHandler: FC = () => {
+  const { t } = useTranslation();
   const notifications = useTypedSelector<Notification[]>(state => state.notifications.notifications);
 
   const dispatch = useDispatch();
@@ -19,7 +21,8 @@ export const NotificationHandler: FC = () => {
   };
 
   const getIcon = (severity: Severity) => {
-    if (severity === 'error') return <XCircleFill className="bi bi-alert-triangle text- mr-2" height="20" width="20" />;
+    if (severity === 'error')
+      return <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />;
     else if (severity === 'warning')
       return <ExclamationCircleFill className="bi bi-alert-triangle text-warning mr-2" height="20" width="20" />;
     else if (severity === 'success')
@@ -35,7 +38,7 @@ export const NotificationHandler: FC = () => {
             <Toast key={i} show={true} onClose={() => closeMessage(x.id)}>
               <Toast.Header>
                 {getIcon(x.severity)}
-                <strong className="mr-auto">Notification</strong>
+                <strong className="mr-auto">{t(`components.notifications.${x.severity}` as const)}</strong>
               </Toast.Header>
               <Toast.Body>{x.message}</Toast.Body>
             </Toast>

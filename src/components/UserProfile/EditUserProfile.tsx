@@ -1,6 +1,8 @@
 import { ApolloError } from '@apollo/client';
+import { Severity } from '@sentry/react';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   User,
@@ -11,6 +13,7 @@ import {
 } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
+import { pushNotification } from '../../reducers/notifincations/actions';
 import { EditMode } from '../../utils/editMode';
 import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';
@@ -40,6 +43,7 @@ export const getUpdateUserInput = (user: UserModel) => {
 };
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const { data, loading } = useUserProfileQuery();
   const notify = useNotification();
@@ -52,8 +56,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   });
 
   const handleError = (error: ApolloError) => {
-    debugger;
-    console.log(error);
+    dispatch(pushNotification(error.message, Severity.Error));
   };
 
   const handleSave = (user: UserModel) => {
