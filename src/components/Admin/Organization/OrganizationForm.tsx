@@ -9,7 +9,8 @@ import { OrganisationModel } from '../../../models/Organisation';
 import { Reference, Tagset } from '../../../models/Profile';
 import { Organisation, TagsetTemplate } from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
-import Typography from '../../core/Typography';
+import Section, { Header } from '../../core/Section';
+import EditableAvatar from '../../EditableAvatar';
 import InputField from '../Common/InputField';
 import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSegment';
 import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
@@ -30,6 +31,7 @@ interface Props {
   organization?: any;
   editMode?: EditMode;
   onSave?: (organization) => void;
+  onAvatarChange?;
   title?: string;
 }
 
@@ -54,7 +56,7 @@ export const OrganizationForm: FC<Props> = ({
   const {
     name,
     textID,
-    profile: { description, references, avatar },
+    profile: { id: profileId, description, references, avatar },
   } = currentOrganization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -142,9 +144,6 @@ export const OrganizationForm: FC<Props> = ({
   } else {
     return (
       <>
-        <Typography variant={'h3'} className={'mt-4 mb-4'}>
-          {title}
-        </Typography>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -154,61 +153,59 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { name, textID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
-                <Form.Row>
-                  <InputField
-                    name={'name'}
-                    title={'Full Name'}
-                    value={name}
-                    required={true}
-                    readOnly={isReadOnlyMode}
-                  />
-                </Form.Row>
+                <Section
+                  avatar={
+                    <EditableAvatar src={avatar} size={'xl'} className={'mb-2'} name={'Avatar'} profileId={profileId} />
+                  }
+                >
+                  <Header text={title} />
+                  <Form.Row>
+                    <InputField
+                      name={'name'}
+                      title={'Full Name'}
+                      value={name}
+                      required={true}
+                      readOnly={isReadOnlyMode}
+                    />
+                  </Form.Row>
 
-                <Form.Row>
-                  <InputField
-                    name={'textID'}
-                    title={'Text ID'}
-                    value={textID}
-                    required={true}
-                    readOnly={isReadOnlyMode || isEditMode}
-                  />
-                </Form.Row>
+                  <Form.Row>
+                    <InputField
+                      name={'textID'}
+                      title={'Text ID'}
+                      value={textID}
+                      required={true}
+                      readOnly={isReadOnlyMode || isEditMode}
+                    />
+                  </Form.Row>
 
-                {!isCreateMode && (
-                  <>
-                    <Form.Row>
-                      <InputField
-                        name={'description'}
-                        title={'Description'}
-                        value={description}
-                        readOnly={isReadOnlyMode}
-                        placeholder={'Description'}
-                        as={'textarea'}
-                      />
-                    </Form.Row>
-                    <Form.Row>
-                      <InputField
-                        name={'avatar'}
-                        title={'Avatar'}
-                        value={avatar}
-                        readOnly={isReadOnlyMode}
-                        placeholder={'Avatar'}
-                      />
-                    </Form.Row>
+                  {!isCreateMode && (
+                    <>
+                      <Form.Row>
+                        <InputField
+                          name={'description'}
+                          title={'Description'}
+                          value={description}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'Description'}
+                          as={'textarea'}
+                        />
+                      </Form.Row>
 
-                    <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                    <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
-                  </>
-                )}
-                {!isReadOnlyMode && (
-                  <div className={'d-flex mt-4'}>
-                    <div className={'flex-grow-1'} />
-                    {backButton}
-                    <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
-                      Save
-                    </Button>
-                  </div>
-                )}
+                      <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                      <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
+                    </>
+                  )}
+                  {!isReadOnlyMode && (
+                    <div className={'d-flex mt-4'}>
+                      <div className={'flex-grow-1'} />
+                      {backButton}
+                      <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                        Save
+                      </Button>
+                    </div>
+                  )}
+                </Section>
               </Form>
             );
           }}

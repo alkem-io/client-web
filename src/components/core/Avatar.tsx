@@ -1,26 +1,31 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Typography from './Typography';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import UserPopUp from '../Community/UserPopUp';
+import Typography from './Typography';
 
 const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
     display: 'flex',
-
+    alignItems: 'center',
+    placeContent: 'center',
     '&.md': {
-      maxWidth: 40,
-      maxHeight: 40,
+      width: 40,
+      height: 40,
     },
     '&.sm': {
-      maxWidth: 15,
-      maxHeight: 15,
+      width: 15,
+      hight: 15,
     },
     '&.lg': {
-      maxWidth: 80,
-      maxHeight: 80,
+      width: 80,
+      height: 80,
+    },
+    '&.xl': {
+      width: 160,
+      height: 160,
     },
   },
   clickable: {
@@ -84,11 +89,11 @@ const useAvatarStyles = createStyles(theme => ({
   },
 }));
 
-interface AvatarProps {
+export interface AvatarProps {
   src?: string;
   className?: string;
   classes?: unknown;
-  size?: 'md' | 'sm' | 'lg';
+  size?: 'md' | 'sm' | 'lg' | 'xl';
   theme?: 'light' | 'dark';
   name?: string;
   userId?: string;
