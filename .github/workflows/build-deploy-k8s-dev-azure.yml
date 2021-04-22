@@ -1,4 +1,4 @@
-name: AKS dev CI/CD pipeline
+name: Build & Deploy to Dev
 
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
       - uses: Azure/k8s-deploy@v1
         with:
           manifests: |
-            manifests/25-web-deployment.yaml
+            manifests/25-web-deployment-dev.yaml
             manifests/30-web-service.yaml
           images: |
             ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
