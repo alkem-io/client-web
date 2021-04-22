@@ -4,9 +4,10 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../Community/UserPopUp';
+import Image from './Image';
 import Typography from './Typography';
 
-const useAvatarStyles = createStyles(theme => ({
+export const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -76,13 +77,13 @@ const useAvatarStyles = createStyles(theme => ({
     },
   },
   dark: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralMedium,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium,
     color: theme.palette.background,
     alignItems: 'center',
     placeContent: 'center',
   },
   light: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.background,
     color: theme.palette.neutralMedium,
     alignItems: 'center',
     placeContent: 'center',
@@ -119,7 +120,7 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
       )}
       {src && !fallback && name && (
         <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
-          <img
+          <Image
             className={clsx(styles.avatar, size, className)}
             src={src}
             alt="user"
@@ -128,7 +129,12 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
         </OverlayTrigger>
       )}
       {src && !fallback && !name && (
-        <img className={clsx(styles.avatar, size, className)} src={src} alt="user" onError={() => setFallback(true)} />
+        <Image
+          className={clsx(styles.avatar, size, className)}
+          src={src}
+          alt="user"
+          onError={() => setFallback(true)}
+        />
       )}
       {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
     </div>

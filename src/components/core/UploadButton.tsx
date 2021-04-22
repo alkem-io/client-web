@@ -1,7 +1,7 @@
 import React, { ChangeEvent, ChangeEventHandler, FC, useCallback, useRef } from 'react';
-import Button from './Button';
+import Button, { ButtonProps } from './Button';
 
-interface UploadButtonProps extends Record<string, unknown> {
+interface UploadButtonProps extends Omit<ButtonProps, 'onClick'> {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   accept?: string;
 }

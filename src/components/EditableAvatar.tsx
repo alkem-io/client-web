@@ -6,7 +6,8 @@ import { useDispatch } from 'react-redux';
 import { useUploadAvatarMutation } from '../generated/graphql';
 import { createStyles } from '../hooks/useTheme';
 import { pushNotification } from '../reducers/notifincations/actions';
-import Avatar, { AvatarProps } from './core/Avatar';
+import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
+import { Spinner } from './core/Spinner';
 import UploadButton from './core/UploadButton';
 
 const useEditableAvatarStyles = createStyles(() => ({
@@ -14,7 +15,6 @@ const useEditableAvatarStyles = createStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
   },
-
   upload: {
     display: 'flex',
     flexDirection: 'row-reverse',
@@ -26,8 +26,9 @@ interface EditableAvatarProps extends AvatarProps {
 }
 
 const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
-  const styles = useEditableAvatarStyles(props.classes);
-  const [uploadAvatar] = useUploadAvatarMutation();
+  const avatarStyles = useAvatarStyles();
+  const styles = useEditableAvatarStyles();
+  const [uploadAvatar, { loading }] = useUploadAvatarMutation();
   const dispatch = useDispatch();
 
   const handleError = (error: ApolloError) => {
@@ -53,10 +54,18 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
 
   return (
     <div className={clsx(styles.outerEditableAvatarWrapper)}>
-      <Avatar {...props} />
+      {loading ? (
+        <div className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}>
+          <Spinner />
+        </div>
+      ) : (
+        <Avatar {...props} />
+      )}
+
       {profileId && (
         <div className={clsx(styles.upload)}>
           <UploadButton
+            disabled={loading}
             accept={'image/*'}
             onChange={e => {
               const file = e && e.target && e.target.files && e.target.files[0];
