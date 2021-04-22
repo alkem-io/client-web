@@ -2,16 +2,12 @@ import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import {
-  Challenge as ChallengeType,
-  ChallengesQuery,
-  Opportunity as OpportunityType,
   useChallengeProfileQuery,
   useChallengesQuery,
   useChallengeUserIdsQuery,
   useEcoverseUserIdsQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
-  User,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useTransactionScope } from '../hooks/useSentry';
@@ -23,6 +19,12 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
+import {
+  Challenge as ChallengeType,
+  ChallengesQuery,
+  Opportunity as OpportunityType,
+  User,
+} from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { Project } from './project';
 import RestrictedRoute from './route.extensions';

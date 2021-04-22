@@ -1,0 +1,10 @@
+query userAvatars($ids: [String!]!) {
+  usersById(IDs: $ids) {
+    id
+    name
+    profile {
+      id
+      avatar
+    }
+  }
+}

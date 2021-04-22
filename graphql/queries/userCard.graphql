@@ -1,0 +1,14 @@
+query userCardData($ids: [String!]!) {
+  usersById(IDs: $ids) {
+    __typename
+    memberof {
+      communities {
+        name
+      }
+      organisations {
+        name
+      }
+    }
+    ...UserDetails
+  }
+}

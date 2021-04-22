@@ -1,0 +1,17 @@
+query organizationCard($id: String!) {
+  organisation(ID: $id) {
+    id
+    name
+    groups {
+      name
+    }
+    members {
+      id
+    }
+    profile {
+      id
+      description
+      avatar
+    }
+  }
+}

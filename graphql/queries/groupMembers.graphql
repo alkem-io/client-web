@@ -1,0 +1,12 @@
+query groupMembers($id: String!) {
+    ecoverse {
+      id
+      group(ID: $id) {
+        id
+        name
+        members {
+          ...GroupMembers
+        }
+      }
+    }
+  }

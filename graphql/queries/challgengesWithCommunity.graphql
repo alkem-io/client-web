@@ -1,0 +1,13 @@
+query challengesWithCommunity {
+  ecoverse {
+    id
+    challenges {
+      id
+      name
+      community {
+        id
+        name
+      }
+    }
+  }
+}

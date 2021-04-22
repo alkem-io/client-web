@@ -1,17 +1,16 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert } from 'react-bootstrap';
+import { useCreateOrganizationMutation, useUpdateOrganizationMutation } from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { PageProps } from '../../../pages';
 import {
   CreateOrganisationInput,
   Organisation,
   Reference,
   Tagset,
   UpdateOrganisationInput,
-  useCreateOrganizationMutation,
-  useUpdateOrganizationMutation,
-} from '../../../generated/graphql';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { PageProps } from '../../../pages';
+} from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import OrganizationForm from './OrganizationForm';
 interface Props extends PageProps {

@@ -1,0 +1,9 @@
+query allOpportunities {
+  ecoverse {
+    id
+    opportunities {
+      id
+      textID
+    }
+  }
+}

@@ -12,24 +12,22 @@ import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import { Image } from '../components/core/Image';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
-  ChallengesQuery,
-  EcoverseInfoQuery,
+  useAllOpportunitiesQuery,
   useEcoverseHostReferencesQuery,
-  useOpportunitiesQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
-  User,
 } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
+import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
-import { Image } from '../components/core/Image';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
   challenges: {
@@ -64,7 +62,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const user = useUserContext();
   const { isAuthenticated } = useAuthenticate();
 
-  const { data: _opportunities } = useOpportunitiesQuery();
+  const { data: _opportunities } = useAllOpportunitiesQuery();
   const { data: _projects } = useProjectsQuery();
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();

@@ -1,0 +1,6 @@
+mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
+  assignUserToCommunity(membershipData: $membershipData) {
+    id
+    name
+  }
+}

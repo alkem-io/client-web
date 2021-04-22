@@ -1,0 +1,15 @@
+query relations($id: String!) {
+  ecoverse {
+    id
+    opportunity(ID: $id) {
+      relations {
+        id
+        type
+        actorName
+        actorType
+        actorRole
+        description
+      }
+    }
+  }
+}

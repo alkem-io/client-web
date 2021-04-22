@@ -1,0 +1,12 @@
+query opportunityCommunity($id: String!) {
+  ecoverse {
+    id
+    opportunity(ID: $id) {
+      id
+      name
+      community {
+        ...CommunityDetails
+      }
+    }
+  }
+}

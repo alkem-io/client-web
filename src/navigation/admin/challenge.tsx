@@ -7,8 +7,8 @@ import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChall
 import Button from '../../components/core/Button';
 import {
   useChallengeCommunityQuery,
-  useChallengeOpportunitiesQuery,
-  useEcoverseChallengesListQuery,
+  useOpportunitiesQuery,
+  useChallengesWithCommunityQuery,
   useEcoverseCommunityQuery,
 } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
@@ -19,7 +19,7 @@ import { OpportunitiesRoutes } from './opportunity';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { data: challengesListQuery } = useEcoverseChallengesListQuery();
+  const { data: challengesListQuery } = useChallengesWithCommunityQuery();
 
   const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
     id: c.id,
@@ -92,7 +92,7 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
 
-  const { data } = useChallengeOpportunitiesQuery({ variables: { id: challengeId } });
+  const { data } = useOpportunitiesQuery({ variables: { id: challengeId } });
 
   const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
     id: o.id,

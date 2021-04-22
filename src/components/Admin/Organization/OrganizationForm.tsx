@@ -4,14 +4,10 @@ import { Button, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import {
-  Organisation,
-  TagsetTemplate,
-  useRemoveReferenceMutation,
-  useTagsetsTemplateQuery,
-} from '../../../generated/graphql';
+import { useDeleteReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
 import { Reference, Tagset } from '../../../models/Profile';
+import { Organisation, TagsetTemplate } from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import Typography from '../../core/Typography';
 import InputField from '../Common/InputField';
@@ -45,7 +41,7 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const [removeRef] = useRemoveReferenceMutation();
+  const [removeRef] = useDeleteReferenceMutation();
 
   const { data: config } = useTagsetsTemplateQuery({});
 

@@ -1,0 +1,28 @@
+query organizationDetails($id: String!) {
+  organisation(ID: $id) {
+    id
+    name
+    profile {
+      id
+      avatar
+      description
+      references {
+        name
+        uri
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+    groups {
+      id
+      name
+      members {
+        id
+        name
+      }
+    }
+  }
+}

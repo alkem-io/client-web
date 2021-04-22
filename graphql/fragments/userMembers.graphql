@@ -1,0 +1,16 @@
+fragment UserMembers on User {
+  memberof {
+    communities {
+      id
+      name
+      type
+      groups {
+        name
+      }
+    }
+    organisations {
+      id
+      name
+    }
+  }
+}

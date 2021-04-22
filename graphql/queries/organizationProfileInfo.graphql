@@ -1,0 +1,22 @@
+query organizationProfileInfo($id: String!) {
+    organisation(ID: $id) {
+      id
+      textID
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          id
+          name
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }

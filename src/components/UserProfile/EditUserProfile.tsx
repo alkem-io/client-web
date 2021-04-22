@@ -4,16 +4,11 @@ import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  User,
-  UpdateUserInput,
-  useUpdateUserMutation,
-  useUploadAvatarMutation,
-  useUserProfileQuery,
-} from '../../generated/graphql';
+import { useMeQuery, useUpdateUserMutation, useUploadAvatarMutation } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { pushNotification } from '../../reducers/notifincations/actions';
+import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';
@@ -45,7 +40,7 @@ export const getUpdateUserInput = (user: UserModel) => {
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { data, loading } = useUserProfileQuery();
+  const { data, loading } = useMeQuery();
   const notify = useNotification();
   const [uploadAvatar] = useUploadAvatarMutation();
   const [updateUser] = useUpdateUserMutation({

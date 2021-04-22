@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChallengeProfileQuery } from '../../generated/graphql';
+import { ChallengeProfileQuery } from '../../types/graphql-schema';
 import './styles.css';
 
 interface Props {

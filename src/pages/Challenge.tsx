@@ -21,11 +21,11 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { Challenge as ChallengeType, Context, Organisation, User } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
+import { Challenge as ChallengeType, Context, Organisation, User } from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 

@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import {
-  useAddUserToGroupMutation,
+  useAssignUserToGroupMutation,
   useGroupMembersQuery,
   useRemoveUserFromGroupMutation,
 } from '../../../generated/graphql';
@@ -19,7 +19,7 @@ export const EditGroup: FC<EditGroupProps> = ({ paths, groupId, parentMembers })
   const { data } = useGroupMembersQuery({
     variables: { id: groupId },
   });
-  const [addUser] = useAddUserToGroupMutation();
+  const [addUser] = useAssignUserToGroupMutation();
   const [removeUser] = useRemoveUserFromGroupMutation();
 
   const name = data?.ecoverse.group.name || '';

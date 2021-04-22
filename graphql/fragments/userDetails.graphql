@@ -1,0 +1,27 @@
+fragment UserDetails on User {
+  id
+  name
+  firstName
+  lastName
+  email
+  gender
+  country
+  city
+  phone
+  accountUpn
+  profile {
+    id
+    description
+    avatar
+    references {
+      id
+      name
+      uri
+    }
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}

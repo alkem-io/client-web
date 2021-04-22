@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
-import { Opportunity } from '../../generated/graphql';
+import { Opportunity } from '../../types/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';

@@ -1,0 +1,13 @@
+query opportunityProfileInfo($id: String!) {
+  ecoverse {
+    id
+    opportunity(ID: $id) {
+      id
+      textID
+      name
+      context {
+        ...ContextDetails
+      }
+    }
+  }
+}

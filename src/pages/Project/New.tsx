@@ -8,9 +8,9 @@ import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import TextInput, { TextArea } from '../../components/core/TextInput';
 import { ContentCard } from '../../components/Project/Cards';
-import { Project as ProjectType, User } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { createStyles } from '../../hooks/useTheme';
+import { Project as ProjectType, User } from '../../types/graphql-schema';
 import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({

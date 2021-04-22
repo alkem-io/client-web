@@ -9,10 +9,11 @@ import {
   useOpportunityProfileInfoLazyQuery,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
+  NewOpportunityFragmentDoc,
+  NewChallengeFragmentDoc,
+  ChallengeProfileInfoDocument,
+  OpportunityProfileInfoDocument,
 } from '../../generated/graphql';
-import { QUERY_CHALLENGE_PROFILE_INFO, QUERY_OPPORTUNITY_PROFILE_INFO } from '../../graphql/admin';
-import { NEW_CHALLENGE_FRAGMENT } from '../../graphql/challenge';
-import { NEW_OPPORTUNITY_FRAGMENT } from '../../graphql/opportunity';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import Button from '../core/Button';
@@ -55,7 +56,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             challenges(exitingChallenges = []) {
               const newChallenge = cache.writeFragment({
                 data: createChallenge,
-                fragment: NEW_CHALLENGE_FRAGMENT,
+                fragment: NewChallengeFragmentDoc,
               });
               return [...exitingChallenges, newChallenge];
             },
@@ -76,7 +77,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             opportunities(existingOpportunities = []) {
               const newOpportunities = cache.writeFragment({
                 data: createOpportunity,
-                fragment: NEW_OPPORTUNITY_FRAGMENT,
+                fragment: NewOpportunityFragmentDoc,
               });
               return [...existingOpportunities, newOpportunities];
             },
@@ -90,13 +91,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: e => onError(e.message),
-    refetchQueries: [{ query: QUERY_CHALLENGE_PROFILE_INFO, variables: { id: challengeId } }],
+    refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { id: challengeId } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: e => onError(e.message),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_PROFILE_INFO, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
