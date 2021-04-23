@@ -178,7 +178,7 @@ const useButtonStyles = createStyles(theme => ({
   },
 }));
 
-interface ButtonProps extends Record<string, unknown> {
+export interface ButtonProps extends Record<string, unknown> {
   paddingClass?: string;
   className?: string;
   classes?: unknown;
