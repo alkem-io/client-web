@@ -33,7 +33,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, description, state, aspects } = project;
+  const { name, description, lifecycle, aspects } = project;
 
   return (
     <>
@@ -49,7 +49,9 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
       >
         <SectionHeader text={name} />
         <Body text={description} />
-        {state && <Tag text={state} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}
+        {lifecycle?.state && (
+          <Tag text={lifecycle?.state} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />
+        )}
       </Section>
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={'Solution details'} />

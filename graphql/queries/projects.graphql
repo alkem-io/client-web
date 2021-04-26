@@ -6,7 +6,9 @@ query projects {
       textID
       name
       description
-      state
+      lifecycle {
+        state
+      }
     }
   }
 }

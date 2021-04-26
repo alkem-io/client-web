@@ -74,7 +74,9 @@ export const ProjectDetailsFragmentDoc = gql`
     textID
     name
     description
-    state
+    lifecycle {
+      state
+    }
     tagset {
       name
       tags
@@ -1797,7 +1799,9 @@ export const ChallengeProfileDocument = gql`
         id
         textID
         name
-        state
+        lifecycle {
+          state
+        }
         context {
           ...ContextDetails
         }
@@ -1813,7 +1817,9 @@ export const ChallengeProfileDocument = gql`
         opportunities {
           id
           name
-          state
+          lifecycle {
+            state
+          }
           textID
           context {
             ...ContextDetails
@@ -1823,7 +1829,9 @@ export const ChallengeProfileDocument = gql`
             textID
             name
             description
-            state
+            lifecycle {
+              state
+            }
           }
         }
         leadOrganisations {
@@ -1889,7 +1897,9 @@ export const ChallengeProfileInfoDocument = gql`
         id
         textID
         name
-        state
+        lifecycle {
+          state
+        }
         context {
           ...ContextDetails
         }
@@ -2904,7 +2914,9 @@ export const OpportunityProfileDocument = gql`
         id
         textID
         name
-        state
+        lifecycle {
+          state
+        }
         aspects {
           id
           title
@@ -2957,7 +2969,9 @@ export const OpportunityProfileDocument = gql`
           textID
           name
           description
-          state
+          lifecycle {
+            state
+          }
         }
       }
     }
@@ -3662,7 +3676,9 @@ export const ProjectsDocument = gql`
         textID
         name
         description
-        state
+        lifecycle {
+          state
+        }
       }
     }
   }

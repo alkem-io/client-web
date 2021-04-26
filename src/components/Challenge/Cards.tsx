@@ -10,12 +10,12 @@ interface OpportunityCardProps extends Opportunity {
   url: string;
 }
 
-export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, state }) => {
+export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, lifecycle }) => {
   const { references } = context || {};
   const visual = references?.find(x => x.name === 'poster');
 
   let statusTxt = '';
-  if (state) statusTxt = `Status: ${state}`;
+  if (lifecycle?.state) statusTxt = `Status: ${lifecycle?.state}`;
 
   return (
     <Card
