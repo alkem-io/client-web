@@ -77,7 +77,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
     },
     onCompleted: () => setShowRemove(false),
     onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: Number(opportunityID) } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityID } }],
     awaitRefetchQueries: true,
   });
 
@@ -138,7 +138,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -266,7 +266,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const onRemove = () => removeAspect({ variables: { input: { ID: Number(id) } } });

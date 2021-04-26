@@ -69,14 +69,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 

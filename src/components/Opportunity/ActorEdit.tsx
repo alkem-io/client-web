@@ -61,7 +61,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
