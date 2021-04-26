@@ -5,7 +5,9 @@ query challengeProfileInfo($id: String!) {
       id
       textID
       name
-      state
+      lifecycle {
+        state
+      }
       context {
         ...ContextDetails
       }

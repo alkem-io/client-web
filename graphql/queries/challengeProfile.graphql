@@ -5,7 +5,9 @@ query challengeProfile($id: String!) {
       id
       textID
       name
-      state
+      lifecycle {
+        state
+      }
       context {
         ...ContextDetails
       }
@@ -22,7 +24,9 @@ query challengeProfile($id: String!) {
       opportunities {
         id
         name
-        state
+        lifecycle {
+          state
+        }
         textID
         context {
           ...ContextDetails
@@ -32,7 +36,9 @@ query challengeProfile($id: String!) {
           textID
           name
           description
-          state
+          lifecycle {
+            state
+          }
         }
       }
       leadOrganisations {

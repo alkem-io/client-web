@@ -5,7 +5,9 @@ query opportunityProfile($id: String!) {
       id
       textID
       name
-      state
+      lifecycle {
+        state
+      }
       aspects {
         id
         title
@@ -58,7 +60,9 @@ query opportunityProfile($id: String!) {
         textID
         name
         description
-        state
+        lifecycle {
+          state
+        }
       }
     }
   }

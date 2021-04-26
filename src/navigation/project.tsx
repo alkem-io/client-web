@@ -60,7 +60,6 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
               name,
               description,
               textID,
-              state: 'new',
             },
           },
         })

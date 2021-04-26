@@ -3,7 +3,9 @@ fragment ProjectDetails on Project {
   textID
   name
   description
-  state
+  lifecycle {
+    state
+  }
   tagset {
     name
     tags
