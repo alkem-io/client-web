@@ -81,7 +81,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
       </Modal.Body>
       <Modal.Footer>
         {loading ? (
-          <Loading text={'Sending the request...'} />
+          <Loading text={'Creating actor group'} />
         ) : (
           <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
             Submit

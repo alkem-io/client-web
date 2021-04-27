@@ -81,12 +81,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   });
 
   const onSubmit = async (values: Aspect) => {
-    if (!id) {
+    debugger;
+    const { id: apectId, ...rest } = values;
+    if (!apectId) {
       await createAspect({
         variables: {
           input: {
             parentID: Number(opportunityId),
-            ...values,
+            ...rest,
           },
         },
       });
@@ -96,8 +98,8 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
       await updateAspect({
         variables: {
           input: {
-            ID: id,
-            ...values,
+            ID: apectId,
+            ...rest,
           },
         },
       });
