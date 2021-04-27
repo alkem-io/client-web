@@ -16,7 +16,7 @@ interface P {
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
@@ -81,7 +81,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
       </Modal.Body>
       <Modal.Footer>
         {loading ? (
-          <Loading text={'Sending the request...'} />
+          <Loading text={'Creating actor group'} />
         ) : (
           <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
             Submit

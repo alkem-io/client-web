@@ -69,24 +69,26 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = async (values: Aspect) => {
-    if (!id) {
+    debugger;
+    const { id: apectId, ...rest } = values;
+    if (!apectId) {
       await createAspect({
         variables: {
           input: {
             parentID: Number(opportunityId),
-            ...values,
+            ...rest,
           },
         },
       });
@@ -96,8 +98,8 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
       await updateAspect({
         variables: {
           input: {
-            ID: id,
-            ...values,
+            ID: apectId,
+            ...rest,
           },
         },
       });

@@ -18,7 +18,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: error => console.log(error),
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

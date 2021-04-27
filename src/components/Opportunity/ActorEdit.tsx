@@ -61,7 +61,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -73,7 +73,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
   const onSubmit = (values: Actor) => {
     const { id: actorId, __typename, ...rest } = values;
-    if (!id) {
+    if (!actorId) {
       createActor({
         variables: {
           input: {
@@ -85,11 +85,11 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
       return;
     }
-    if (id) {
+    if (actorId) {
       updateActor({
         variables: {
           input: {
-            ID: id,
+            ID: actorId,
             ...rest,
           },
         },
