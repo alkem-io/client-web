@@ -1,7 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { Severity } from '@sentry/react';
 import React, { FC } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   useCreateReferenceOnProfileMutation,
@@ -11,11 +9,10 @@ import {
 } from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
-import { pushNotification } from '../../reducers/notifincations/actions';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
-import { UserForm } from './UserForm';
 import { Loading } from '../core/Loading';
+import { UserForm } from './UserForm';
 
 interface EditUserProfileProps {}
 
@@ -36,7 +33,6 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 };
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const { data, loading } = useMeQuery();
   const notify = useNotification();
@@ -51,7 +47,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   });
 
   const handleError = (error: ApolloError) => {
-    dispatch(pushNotification(error.message, Severity.Error));
+    notify(error.message, 'error');
   };
 
   const handleCancel = () => history.goBack();

@@ -23,6 +23,7 @@ interface UserProps {
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onCancel?: () => void;
+  onDelete?: (userId: string) => void;
   title?: string;
 }
 
@@ -31,6 +32,7 @@ export const UserForm: FC<UserProps> = ({
   editMode = EditMode.readOnly,
   onSave,
   onCancel,
+  onDelete,
   title = 'User',
 }) => {
   const { t } = useTranslation();
@@ -294,11 +296,22 @@ export const UserForm: FC<UserProps> = ({
               {isEditMode && (
                 <div className={'d-flex mt-4'}>
                   <div className={'flex-grow-1'} />
+                  {onDelete && (
+                    <Button
+                      variant={'negative'}
+                      onClick={() => onDelete(currentUser.id)}
+                      disabled={isSubmitting}
+                      className={'ml-3'}
+                    >
+                      {'Delete'}
+                    </Button>
+                  )}
                   {onCancel && (
                     <Button
                       variant={isEditMode ? 'default' : 'primary'}
                       onClick={() => onCancel()}
                       disabled={isSubmitting}
+                      className={'ml-3'}
                     >
                       {isEditMode ? 'Cancel' : 'Back'}
                     </Button>
