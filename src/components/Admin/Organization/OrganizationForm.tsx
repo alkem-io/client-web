@@ -4,9 +4,9 @@ import { Button, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { useDeleteReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
-import { Reference, Tagset } from '../../../models/Profile';
+import { Tagset } from '../../../models/Profile';
 import { Organisation, TagsetTemplate } from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import Section, { Header } from '../../core/Section';
@@ -14,8 +14,6 @@ import EditableAvatar from '../../EditableAvatar';
 import InputField from '../Common/InputField';
 import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSegment';
 import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
-
-/*local files imports end*/
 
 const emptyOrganization = {
   name: '',
@@ -43,8 +41,6 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const [removeRef] = useDeleteReferenceMutation();
-
   const { data: config } = useTagsetsTemplateQuery({});
 
   useEffect(() => {}, [config]);
@@ -103,14 +99,8 @@ export const OrganizationForm: FC<Props> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: OrganisationModel, initialReferences: Reference[]) => {
+  const handleSubmit = async (orgData: OrganisationModel) => {
     const { tagsets, avatar, references, description, ...otherData } = orgData;
-
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
-
-    for (const ref of toRemove) {
-      await removeRef({ variables: { input: { ID: Number(ref.id) } } });
-    }
 
     const organization: Organisation = {
       ...currentOrganization,
@@ -118,7 +108,7 @@ export const OrganizationForm: FC<Props> = ({
       profile: {
         description,
         avatar,
-        references: [...references].map(t => ({ name: t.name, uri: t.uri })),
+        references,
         tagsets,
       },
     };
@@ -148,7 +138,7 @@ export const OrganizationForm: FC<Props> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values, references)}
+          onSubmit={values => handleSubmit(values)}
         >
           {({ values: { name, textID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
