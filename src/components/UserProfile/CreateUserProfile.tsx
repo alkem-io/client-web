@@ -27,7 +27,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
     },
   });
 
-  const handleSave = (user: UserModel) => {
+  const handleSave = async (user: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = user;
 
     const userInput: CreateUserInput = {
@@ -40,7 +40,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
       },
     };
 
-    createUser({
+    await createUser({
       variables: {
         input: userInput,
       },

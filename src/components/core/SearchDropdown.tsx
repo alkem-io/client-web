@@ -11,6 +11,7 @@ interface Props {
   onSelect: (value: string | null) => void;
   value: string;
   readOnly?: boolean;
+  disabled?: boolean;
 }
 
 const useSearchDropdownStyles = createStyles(() => ({
@@ -45,7 +46,7 @@ const useSearchDropdownStyles = createStyles(() => ({
   },
 }));
 
-const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false }) => {
+const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false, disabled = false }) => {
   const styles = useSearchDropdownStyles();
   // forwardRef again here!
   // Dropdown needs access to the DOM of the Menu to measure it
@@ -60,6 +61,7 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false }) 
           placeholder="Type to filter.."
           onChange={e => setValue(e.target.value)}
           value={value}
+          disabled={disabled}
         />
         <ul className={clsx('list-unstyled', styles.list)}>
           {React.Children.toArray(children).filter(
@@ -71,7 +73,8 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false }) 
     );
   });
 
-  if (readOnly) return <FormControl placeholder={NOT_SELECTED} value={value} readOnly={true} />;
+  if (readOnly || disabled)
+    return <FormControl placeholder={NOT_SELECTED} value={value} readOnly={true} disabled={disabled} />;
   return (
     <Dropdown onSelect={v => onSelect(v)}>
       <Dropdown.Toggle className={styles.toggle} id="dropdown-custom-components">

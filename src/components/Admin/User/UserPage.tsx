@@ -98,7 +98,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const handleCancel = () => history.goBack();
 
-  const handleSave = (user: UserModel) => {
+  const handleSave = async (user: UserModel) => {
     // Convert UserModel to UserInput
     const { id: userID, memberof, profile, ...rest } = user;
 

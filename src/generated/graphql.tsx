@@ -649,6 +649,104 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateProjectMutation,
   SchemaTypes.CreateProjectMutationVariables
 >;
+export const CreateReferenceOnContextDocument = gql`
+  mutation createReferenceOnContext($input: CreateReferenceInput!) {
+    createReferenceOnContext(referenceInput: $input) {
+      id
+      name
+      description
+      uri
+    }
+  }
+`;
+export type CreateReferenceOnContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateReferenceOnContextMutation,
+  SchemaTypes.CreateReferenceOnContextMutationVariables
+>;
+
+/**
+ * __useCreateReferenceOnContextMutation__
+ *
+ * To run a mutation, you first call `useCreateReferenceOnContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReferenceOnContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReferenceOnContextMutation, { data, loading, error }] = useCreateReferenceOnContextMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateReferenceOnContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateReferenceOnContextMutation,
+    SchemaTypes.CreateReferenceOnContextMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.CreateReferenceOnContextMutation,
+    SchemaTypes.CreateReferenceOnContextMutationVariables
+  >(CreateReferenceOnContextDocument, baseOptions);
+}
+export type CreateReferenceOnContextMutationHookResult = ReturnType<typeof useCreateReferenceOnContextMutation>;
+export type CreateReferenceOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnContextMutation>;
+export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateReferenceOnContextMutation,
+  SchemaTypes.CreateReferenceOnContextMutationVariables
+>;
+export const CreateReferenceOnProfileDocument = gql`
+  mutation createReferenceOnProfile($input: CreateReferenceInput!) {
+    createReferenceOnProfile(referenceInput: $input) {
+      id
+      name
+      description
+      uri
+    }
+  }
+`;
+export type CreateReferenceOnProfileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateReferenceOnProfileMutation,
+  SchemaTypes.CreateReferenceOnProfileMutationVariables
+>;
+
+/**
+ * __useCreateReferenceOnProfileMutation__
+ *
+ * To run a mutation, you first call `useCreateReferenceOnProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReferenceOnProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReferenceOnProfileMutation, { data, loading, error }] = useCreateReferenceOnProfileMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateReferenceOnProfileMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateReferenceOnProfileMutation,
+    SchemaTypes.CreateReferenceOnProfileMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.CreateReferenceOnProfileMutation,
+    SchemaTypes.CreateReferenceOnProfileMutationVariables
+  >(CreateReferenceOnProfileDocument, baseOptions);
+}
+export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
+export type CreateReferenceOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
+export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateReferenceOnProfileMutation,
+  SchemaTypes.CreateReferenceOnProfileMutationVariables
+>;
 export const CreateRelationDocument = gql`
   mutation createRelation($input: CreateRelationInput!) {
     createRelation(relationData: $input) {
