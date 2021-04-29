@@ -1,0 +1,8 @@
+mutation createReferenceOnContext($input: CreateReferenceInput!) {
+  createReferenceOnContext(referenceInput: $input) {
+    id
+    name
+    description
+    uri
+  }
+}

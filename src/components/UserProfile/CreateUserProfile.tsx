@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useCreateUserMutation } from '../../generated/graphql';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
@@ -8,8 +7,8 @@ import { AUTH_USER_KEY, WELCOME_PAGE } from '../../models/Constants';
 import { defaultUser, UserModel } from '../../models/User';
 import { CreateUserInput } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
-import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';
+import { UserForm } from './UserForm';
 
 interface CreateUserProfileProps {}
 
@@ -27,7 +26,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
     },
   });
 
-  const handleSave = (user: UserModel) => {
+  const handleSave = async (user: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = user;
 
     const userInput: CreateUserInput = {
@@ -40,7 +39,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
       },
     };
 
-    createUser({
+    await createUser({
       variables: {
         input: userInput,
       },
@@ -49,14 +48,12 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
 
   if (loading) return <Loading text={'Saving User Profile ...'} />;
   return (
-    <Container className={'mt-5'}>
-      <UserForm
-        title={'To continue please create a profile!'}
-        user={{ ...defaultUser, email: localStorage.getItem(AUTH_USER_KEY) || '' }}
-        editMode={EditMode.edit}
-        onSave={handleSave}
-      />
-    </Container>
+    <UserForm
+      title={'To continue please create a profile!'}
+      user={{ ...defaultUser, email: localStorage.getItem(AUTH_USER_KEY) || '' }}
+      editMode={EditMode.edit}
+      onSave={handleSave}
+    />
   );
 };
 export default CreateUserProfile;

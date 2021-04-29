@@ -1,25 +1,29 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Alert } from 'react-bootstrap';
+import React, { FC, useEffect, useMemo } from 'react';
+import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
 import {
+  ChallengeProfileInfoDocument,
+  NewChallengeFragmentDoc,
+  NewOpportunityFragmentDoc,
+  OpportunityProfileInfoDocument,
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
+  useCreateReferenceOnContextMutation,
+  useDeleteReferenceMutation,
   useOpportunityProfileInfoLazyQuery,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
-  NewOpportunityFragmentDoc,
-  NewChallengeFragmentDoc,
-  ChallengeProfileInfoDocument,
-  OpportunityProfileInfoDocument,
 } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useNotification } from '../../hooks/useNotification';
+import { UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import Typography from '../core/Typography';
-import ProfileForm from '../ProfileForm/ProfileForm';
+import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 
 export enum ProfileSubmitMode {
   createChallenge,
@@ -40,10 +44,11 @@ interface Params {
 }
 
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
+  const notify = useNotification();
+  const [addReference] = useCreateReferenceOnContextMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
-  const [message, setMessage] = useState<string | null>(null);
-  const [variant, setVariant] = useState<'success' | 'danger'>('success');
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
@@ -116,30 +121,55 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   };
 
   const onSuccess = (message: string) => {
-    setVariant('success');
-    setMessage(message);
+    notify(message, 'success');
   };
 
   const onError = (message: string) => {
-    setVariant('danger');
-    setMessage(message);
+    notify(message, 'error');
   };
 
   const currentPaths = useMemo(() => [...paths, { name: profile?.name || 'new', real: false }], [paths, profile]);
   useUpdateNavigation({ currentPaths });
 
-  const onSubmit = values => {
-    const { id, name, textID, state, ...context } = values;
+  const onSubmit = async (values: ProfileFormValuesType) => {
+    const { name, textID, ...context } = values;
+    const contextId = profile?.context?.id || '';
 
-    const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name })); // removing id from refs
-    const contextWithUpdatedRefs = { ...context };
-    contextWithUpdatedRefs.references = updatedRefs;
+    const initialReferences = profile?.context?.references || [];
+    const toUpdate = context.references.filter(x => x.id);
 
-    const data = { name, textID, state: '', context: contextWithUpdatedRefs };
-    const updateData = { name, state: '', context: contextWithUpdatedRefs };
+    if (mode === ProfileSubmitMode.updateChallenge || mode === ProfileSubmitMode.updateOpportunity) {
+      const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
+      const toAdd = context.references.filter(x => !x.id);
+      for (const ref of toRemove) {
+        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+      }
+      for (const ref of toAdd) {
+        await addReference({
+          variables: {
+            input: {
+              parentID: Number(contextId),
+              name: ref.name,
+              description: ref.description,
+              uri: ref.uri,
+            },
+          },
+        });
+      }
+    }
+    const updatedRefs: UpdateReferenceInput[] = toUpdate.map<UpdateReferenceInput>(r => ({
+      ID: Number(r.id),
+      description: r.description,
+      name: r.name,
+      uri: r.uri,
+    }));
+
+    const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
+
+    const data = { name, textID, context };
+    const updateData = { name, context: contextWithUpdatedRefs };
 
     if (ProfileSubmitMode) {
-      debugger;
       switch (mode) {
         case ProfileSubmitMode.createChallenge:
           createChallenge({
@@ -186,8 +216,8 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
 
   let submitWired;
   return (
-    <>
-      <Typography variant={'h3'} className={'mt-4 mb-4'}>
+    <Container>
+      <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {title}
       </Typography>
       <ProfileForm
@@ -202,10 +232,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
           {isLoading ? <Loading text={'Processing'} /> : 'Save'}
         </Button>
       </div>
-      <Alert show={!!message} variant={variant} onClose={() => setMessage(null)} dismissible>
-        {message}
-      </Alert>
-    </>
+    </Container>
   );
 };
 

@@ -41,6 +41,13 @@
       "information": "Information",
       "warning": "Warning",
       "success": "Success"
+    },
+    "referenceSegment": {
+      "title": "References",
+      "tooltips": {
+        "add-reference": "Add a reference",
+        "remove-reference": "Remove the reference"
+      }
     }
   },
   "pages": {

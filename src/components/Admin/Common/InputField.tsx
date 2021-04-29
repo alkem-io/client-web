@@ -1,6 +1,6 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
-import { Form, Col } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 interface InputFieldProps {
   title: string;
@@ -30,7 +30,7 @@ export const InputField: FC<InputFieldProps> = ({
   const [field, meta] = useField(name);
 
   return (
-    <Form.Group as={Col}>
+    <>
       <Form.Label>
         {title}
         {required && <span style={{ color: '#d93636' }}>{' *'}</span>}
@@ -51,7 +51,7 @@ export const InputField: FC<InputFieldProps> = ({
         onBlur={field.onBlur}
       />
       <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-    </Form.Group>
+    </>
   );
 };
 export default InputField;

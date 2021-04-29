@@ -1,21 +1,24 @@
 import { ApolloError } from '@apollo/client';
-import { Severity } from '@sentry/react';
 import React, { FC } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
+import {
+  useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
+  useDeleteReferenceMutation,
+  useMeQuery,
+  useUpdateUserMutation,
+} from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
-import { pushNotification } from '../../reducers/notifincations/actions';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
-import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';
+import { UserForm } from './UserForm';
 
 interface EditUserProfileProps {}
 
-export const getUpdateUserInput = (user: UserModel) => {
-  const { id: userID, memberof, profile, ...rest } = user;
+export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
+  const { id: userID, email, memberof, profile, ...rest } = user;
 
   return {
     ...rest,
@@ -24,23 +27,19 @@ export const getUpdateUserInput = (user: UserModel) => {
       ID: user.profile.id || '',
       avatar: profile.avatar,
       description: profile.description,
-      createReferencesData: profile.references.filter(r => !r.id).map(t => ({ name: t.name, uri: t.uri })),
-      updateReferencesData: profile.references
-        .filter(r => r.id)
-        .map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
-      updateTagsetsData: profile.tagsets
-        .filter(t => t.id)
-        .map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
-      createTagsetsData: profile.tagsets.filter(t => !t.id).map(t => ({ name: t.name, tags: [...t.tags] })),
+      references: profile.references.filter(r => r.id).map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
+      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
     },
-  } as UpdateUserInput;
+  };
 };
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const { data, loading } = useMeQuery();
   const notify = useNotification();
+  const [createReference] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation();
 
   const [updateUser] = useUpdateUserMutation({
     onError: error => handleError(error),
@@ -50,21 +49,59 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   });
 
   const handleError = (error: ApolloError) => {
-    dispatch(pushNotification(error.message, Severity.Error));
-  };
-
-  const handleSave = (user: UserModel) => {
-    updateUser({
-      variables: {
-        input: getUpdateUserInput(user),
-      },
-    });
+    notify(error.message, 'error');
   };
 
   const handleCancel = () => history.goBack();
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
+
   const user = data?.me as User;
+
+  const handleSave = async (userToUpdate: UserModel) => {
+    const profileId = userToUpdate.profile.id;
+    const initialReferences = user?.profile?.references || [];
+    const references = userToUpdate.profile.references;
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+    const toAdd = references.filter(x => !x.id);
+    const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
+
+    for (const ref of toRemove) {
+      await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+    }
+
+    for (const ref of toAdd) {
+      await createReference({
+        variables: {
+          input: {
+            parentID: Number(profileId),
+            name: ref.name,
+            description: ref.description,
+            uri: ref.uri,
+          },
+        },
+      });
+    }
+
+    for (const tagset of tagsetsToAdd) {
+      await createTagset({
+        variables: {
+          input: {
+            name: tagset.name,
+            tags: [...tagset.tags],
+            parentID: Number(profileId),
+          },
+        },
+      });
+    }
+
+    await updateUser({
+      variables: {
+        input: getUpdateUserInput(userToUpdate),
+      },
+    });
+  };
+
   return (
     <UserForm
       title={'Profile'}
