@@ -5,6 +5,7 @@ import SearchableList, { SearchableListItem } from './SearchableList';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
+import { Container } from 'react-bootstrap';
 
 interface ListPageProps extends PageProps {
   data: SearchableListItem[];
@@ -17,7 +18,7 @@ export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDel
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <>
+    <Container>
       {(title || newLink) && (
         <div className={'d-flex mb-4'}>
           {title && <Typography variant={'h3'}>{title}</Typography>}
@@ -29,7 +30,7 @@ export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDel
         </div>
       )}
       <SearchableList data={data} onDelete={onDelete} />
-    </>
+    </Container>
   );
 };
 

@@ -76,6 +76,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
         },
       });
     }
+
     if (mode === EditMode.edit) {
       const profileId = organization?.profile?.id;
       const initialReferences = organization?.profile?.references || [];
@@ -108,6 +109,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           description: profile.description || '',
         },
       };
+
       updateOrganization({
         variables: {
           input: {
