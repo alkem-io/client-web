@@ -4,6 +4,7 @@ import {
   OrganizationProfileInfoDocument,
   useCreateOrganizationMutation,
   useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
   useDeleteReferenceMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
@@ -28,8 +29,9 @@ interface Props extends PageProps {
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   const currentPaths = useMemo(() => [...paths, { name: organization?.name ? 'edit' : 'new', real: false }], [paths]);
   const notify = useNotification();
-  const [addReference] = useCreateReferenceOnProfileMutation();
+  const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation();
 
   useUpdateNavigation({ currentPaths });
 
@@ -83,13 +85,14 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       const references = editedOrganization.profile.references || [];
       const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
       const toAdd = references.filter(x => !x.id);
+      const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
 
       for (const ref of toRemove) {
         await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
       }
 
       for (const ref of toAdd) {
-        await addReference({
+        await createReference({
           variables: {
             input: {
               parentID: Number(profileId),
@@ -100,6 +103,19 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           },
         });
       }
+
+      for (const tagset of tagsetsToAdd) {
+        await createTagset({
+          variables: {
+            input: {
+              name: tagset.name,
+              tags: [...tagset.tags],
+              parentID: Number(profileId),
+            },
+          },
+        });
+      }
+
       const organisationInput: UpdateOrganisationInput = {
         ID: orgID,
         ...rest,
@@ -107,6 +123,8 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
+          tagsets:
+            profile?.tagsets?.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })) || [],
         },
       };
 

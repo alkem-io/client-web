@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
   useDeleteReferenceMutation,
   useMeQuery,
   useUpdateUserMutation,
@@ -36,8 +37,9 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useMeQuery();
   const notify = useNotification();
-  const [addReference] = useCreateReferenceOnProfileMutation();
+  const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation();
 
   const [updateUser] = useUpdateUserMutation({
     onError: error => handleError(error),
@@ -62,13 +64,14 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     const references = userToUpdate.profile.references;
     const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
     const toAdd = references.filter(x => !x.id);
+    const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
 
     for (const ref of toRemove) {
       await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
     }
 
     for (const ref of toAdd) {
-      await addReference({
+      await createReference({
         variables: {
           input: {
             parentID: Number(profileId),
@@ -79,6 +82,19 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
         },
       });
     }
+
+    for (const tagset of tagsetsToAdd) {
+      await createTagset({
+        variables: {
+          input: {
+            name: tagset.name,
+            tags: [...tagset.tags],
+            parentID: Number(profileId),
+          },
+        },
+      });
+    }
+
     await updateUser({
       variables: {
         input: getUpdateUserInput(userToUpdate),

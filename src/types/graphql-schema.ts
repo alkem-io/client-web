@@ -1436,6 +1436,14 @@ export type CreateRelationMutation = { __typename?: 'Mutation' } & {
   createRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
 };
 
+export type CreateTagsetOnProfileMutationVariables = Exact<{
+  input: CreateTagsetInput;
+}>;
+
+export type CreateTagsetOnProfileMutation = { __typename?: 'Mutation' } & {
+  createTagsetOnProfile: { __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>;
+};
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;

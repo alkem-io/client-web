@@ -793,6 +793,54 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
+export const CreateTagsetOnProfileDocument = gql`
+  mutation createTagsetOnProfile($input: CreateTagsetInput!) {
+    createTagsetOnProfile(tagsetData: $input) {
+      id
+      name
+      tags
+    }
+  }
+`;
+export type CreateTagsetOnProfileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateTagsetOnProfileMutation,
+  SchemaTypes.CreateTagsetOnProfileMutationVariables
+>;
+
+/**
+ * __useCreateTagsetOnProfileMutation__
+ *
+ * To run a mutation, you first call `useCreateTagsetOnProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTagsetOnProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTagsetOnProfileMutation, { data, loading, error }] = useCreateTagsetOnProfileMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTagsetOnProfileMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateTagsetOnProfileMutation,
+    SchemaTypes.CreateTagsetOnProfileMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.CreateTagsetOnProfileMutation,
+    SchemaTypes.CreateTagsetOnProfileMutationVariables
+  >(CreateTagsetOnProfileDocument, baseOptions);
+}
+export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
+export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
+export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateTagsetOnProfileMutation,
+  SchemaTypes.CreateTagsetOnProfileMutationVariables
+>;
 export const CreateUserDocument = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(userData: $input) {
