@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
@@ -30,27 +29,25 @@ export const Admin: FC = () => {
   if (loadingEcoverse || loadingUsers) return <Loading text={'Loading'} />;
 
   return (
-    <Container>
-      <Switch>
-        <Route exact path={`${path}`}>
-          <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
-        </Route>
-        <Route path={`${path}/users`}>
-          <UsersRoute paths={currentPaths} />
-        </Route>
-        <Route path={`${path}/community`}>
-          <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
-        </Route>
-        <Route path={`${path}/challenges`}>
-          <ChallengesRoute paths={currentPaths} />
-        </Route>
-        <Route path={`${path}/organizations`}>
-          <OrganizationsRoute paths={currentPaths} parentMembers={parentMembers} />
-        </Route>
-        <Route path="*">
-          <FourOuFour />
-        </Route>
-      </Switch>
-    </Container>
+    <Switch>
+      <Route exact path={`${path}`}>
+        <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/users`}>
+        <UsersRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/community`}>
+        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+      </Route>
+      <Route path={`${path}/challenges`}>
+        <ChallengesRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/organizations`}>
+        <OrganizationsRoute paths={currentPaths} parentMembers={parentMembers} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
   );
 };

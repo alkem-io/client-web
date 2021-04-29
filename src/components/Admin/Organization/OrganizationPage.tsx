@@ -1,8 +1,15 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo, useState } from 'react';
-import { Alert } from 'react-bootstrap';
-import { useCreateOrganizationMutation, useUpdateOrganizationMutation } from '../../../generated/graphql';
+import React, { FC, useMemo } from 'react';
+import {
+  OrganizationProfileInfoDocument,
+  useCreateOrganizationMutation,
+  useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
+  useDeleteReferenceMutation,
+  useUpdateOrganizationMutation,
+} from '../../../generated/graphql';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
 import {
   CreateOrganisationInput,
@@ -20,21 +27,21 @@ interface Props extends PageProps {
 }
 
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
-  const [status, setStatus] = useState<'success' | 'error' | undefined>();
-  const [message, setMessage] = useState<string | undefined>(undefined);
   const currentPaths = useMemo(() => [...paths, { name: organization?.name ? 'edit' : 'new', real: false }], [paths]);
+  const notify = useNotification();
+  const [createReference] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation();
 
   useUpdateNavigation({ currentPaths });
 
   const handleError = (error: ApolloError) => {
-    setStatus('error');
-    setMessage(error.message);
+    notify(error.message, 'error');
   };
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: () => {
-      setMessage('Organization created successfully');
-      setStatus('success');
+      notify('Organization created successfully', 'success');
     },
     onError: error => handleError(error),
     awaitRefetchQueries: true,
@@ -44,13 +51,14 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   const [updateOrganization] = useUpdateOrganizationMutation({
     onError: error => handleError(error),
     onCompleted: () => {
-      setMessage('Organization updated successfully');
-      setStatus('success');
+      notify('Organization updated successfully', 'success');
     },
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: OrganizationProfileInfoDocument, variables: { id: organization?.id } }],
   });
 
-  const handleSubmit = (organisation: Organisation) => {
-    const { id: orgID, textID, profile, ...rest } = organisation;
+  const handleSubmit = async (editedOrganization: Organisation) => {
+    const { id: orgID, textID, profile, ...rest } = editedOrganization;
 
     if (mode === EditMode.new) {
       const organisationInput: CreateOrganisationInput = {
@@ -70,16 +78,56 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
         },
       });
     }
+
     if (mode === EditMode.edit) {
+      const profileId = organization?.profile?.id;
+      const initialReferences = organization?.profile?.references || [];
+      const references = editedOrganization.profile.references || [];
+      const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+      const toAdd = references.filter(x => !x.id);
+      const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
+
+      for (const ref of toRemove) {
+        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+      }
+
+      for (const ref of toAdd) {
+        await createReference({
+          variables: {
+            input: {
+              parentID: Number(profileId),
+              name: ref.name,
+              description: ref.description,
+              uri: ref.uri,
+            },
+          },
+        });
+      }
+
+      for (const tagset of tagsetsToAdd) {
+        await createTagset({
+          variables: {
+            input: {
+              name: tagset.name,
+              tags: [...tagset.tags],
+              parentID: Number(profileId),
+            },
+          },
+        });
+      }
+
       const organisationInput: UpdateOrganisationInput = {
         ID: orgID,
         ...rest,
         profileData: {
-          ID: '-1', // TODO: Mustn't be provided.
+          ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
+          tagsets:
+            profile?.tagsets?.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })) || [],
         },
       };
+
       updateOrganization({
         variables: {
           input: {
@@ -90,19 +138,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     }
   };
 
-  return (
-    <>
-      <Alert
-        show={status !== undefined}
-        variant={status === 'error' ? 'danger' : status}
-        onClose={() => setStatus(undefined)}
-        dismissible
-      >
-        {message}
-      </Alert>
-      <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} title={title} />
-    </>
-  );
+  return <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} title={title} />;
 };
 
 export default OrganizationPage;

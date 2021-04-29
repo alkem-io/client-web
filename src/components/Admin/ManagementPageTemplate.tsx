@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 import Button from '../core/Button';
@@ -25,7 +25,7 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <>
+    <Container>
       {data.map((x, i) => (
         <Row key={i} className={'mb-4'}>
           <Card
@@ -49,7 +49,7 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
           </Card>
         </Row>
       ))}
-    </>
+    </Container>
   );
 };
 

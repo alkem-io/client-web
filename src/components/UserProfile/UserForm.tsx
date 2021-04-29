@@ -1,28 +1,29 @@
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Button, Col, Form } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useDeleteReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
-import { Reference, Tagset } from '../../../models/Profile';
-import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
-import { TagsetTemplate } from '../../../types/graphql-schema';
-import countriesList from '../../../utils/countriesList.json';
-import { EditMode } from '../../../utils/editMode';
-import Loading from '../../core/Loading';
-import SearchDropdown from '../../core/SearchDropdown';
-import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../EditableAvatar';
-import { InputField } from '../Common/InputField';
-import { ReferenceSegment } from '../Common/ReferenceSegment';
-import TagsetSegment from '../Common/TagsetSegment';
-/*local files imports end*/
+import { useTagsetsTemplateQuery } from '../../generated/graphql';
+import { Tagset } from '../../models/Profile';
+import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
+import { TagsetTemplate } from '../../types/graphql-schema';
+import countriesList from '../../utils/countriesList.json';
+import { EditMode } from '../../utils/editMode';
+import Button from '../core/Button';
+import Loading from '../core/Loading';
+import SearchDropdown from '../core/SearchDropdown';
+import Section, { Header } from '../core/Section';
+import EditableAvatar from '../EditableAvatar';
+import { InputField } from '../Admin/Common/InputField';
+import { ReferenceSegment } from '../Admin/Common/ReferenceSegment';
+import TagsetSegment from '../Admin/Common/TagsetSegment';
 
 interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
-  onSave?: (user: UserModel) => void;
+  onSave?: (user: UserModel) => Promise<void>;
   onCancel?: () => void;
+  onDelete?: (userId: string) => void;
   title?: string;
 }
 
@@ -31,10 +32,10 @@ export const UserForm: FC<UserProps> = ({
   editMode = EditMode.readOnly,
   onSave,
   onCancel,
+  onDelete,
   title = 'User',
 }) => {
   const { t } = useTranslation();
-  const [removeRef] = useDeleteReferenceMutation();
 
   const genders = [t('common.genders.notSpecified'), t('common.genders.male'), t('common.genders.female')];
   const { data: config, loading } = useTagsetsTemplateQuery();
@@ -123,14 +124,8 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (userData: UserFromGenerated, initialReferences: Reference[]) => {
+  const handleSubmit = async (userData: UserFromGenerated) => {
     const { tagsets, avatar, references, bio, profileId, ...otherData } = userData;
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id === x.id));
-
-    for (const ref of toRemove) {
-      await removeRef({ variables: { input: { ID: Number(ref.id) } } });
-    }
-
     const user: UserModel = {
       ...currentUser,
       ...otherData,
@@ -142,7 +137,7 @@ export const UserForm: FC<UserProps> = ({
         tagsets,
       },
     };
-    onSave && onSave(user);
+    onSave && (await onSave(user));
   };
 
   if (loading) return <Loading text={'Loading'} />;
@@ -152,16 +147,17 @@ export const UserForm: FC<UserProps> = ({
       initialValues={initialValues}
       validationSchema={isReadOnlyMode ? undefined : validationSchema}
       enableReinitialize
-      onSubmit={values => handleSubmit(values, references)}
+      onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
     >
       {({
         values: { name, firstName, lastName, email, city, phone, country, references, tagsets, avatar, gender, bio },
         setFieldValue,
         handleChange,
         handleSubmit,
+        isSubmitting,
       }) => {
         return (
-          <Form noValidate>
+          <Form noValidate onSubmit={handleSubmit}>
             <Section
               avatar={
                 <EditableAvatar
@@ -175,42 +171,54 @@ export const UserForm: FC<UserProps> = ({
             >
               <Header text={title} />
               <Form.Row>
-                <InputField
-                  name={'name'}
-                  title={'Full Name'}
-                  value={name}
-                  required={true && !isReadOnlyMode}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'Full Name'}
-                />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'name'}
+                    title={'Full Name'}
+                    value={name}
+                    required={true && !isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Full Name'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
               <Form.Row>
-                <InputField
-                  name={'firstName'}
-                  title={'First Name'}
-                  value={firstName}
-                  required={true && !isReadOnlyMode}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'First Name'}
-                />
-                <InputField
-                  name={'lastName'}
-                  title={'Last name'}
-                  value={lastName}
-                  required={true && !isReadOnlyMode}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'Last name'}
-                />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'firstName'}
+                    title={'First Name'}
+                    value={firstName}
+                    required={true && !isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'First Name'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'lastName'}
+                    title={'Last name'}
+                    value={lastName}
+                    required={true && !isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Last name'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
               <Form.Row>
-                <InputField
-                  name={'email'}
-                  type={'email'}
-                  title={'Email'}
-                  value={email}
-                  required={true && !isReadOnlyMode}
-                  readOnly={isReadOnlyMode || isEditMode}
-                />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'email'}
+                    type={'email'}
+                    title={'Email'}
+                    value={email}
+                    required={true && !isReadOnlyMode}
+                    readOnly={isReadOnlyMode || isEditMode}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} sm={6}>
@@ -221,7 +229,7 @@ export const UserForm: FC<UserProps> = ({
                     value={gender.toLowerCase()}
                     name={'gender'}
                     readOnly={isReadOnlyMode}
-                    disabled={isReadOnlyMode}
+                    disabled={isReadOnlyMode || isSubmitting}
                   >
                     {genders.map(el => (
                       <option key={el}>{el}</option>
@@ -237,42 +245,78 @@ export const UserForm: FC<UserProps> = ({
                     data={countriesList.map(el => el.name)}
                     readOnly={isReadOnlyMode}
                     onSelect={value => setFieldValue('country', value)}
+                    disabled={isSubmitting}
                   />
                 </Form.Group>
-                <InputField name={'city'} title={'City'} value={city} readOnly={isReadOnlyMode} placeholder={'City'} />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'city'}
+                    title={'City'}
+                    value={city}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'City'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
               <Form.Row>
-                <InputField
-                  name={'phone'}
-                  title={'Phone'}
-                  value={phone}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'Phone'}
-                />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'phone'}
+                    title={'Phone'}
+                    value={phone}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Phone'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
               <Form.Row>
-                <InputField
-                  name={'bio'}
-                  title={'Bio'}
-                  value={bio}
-                  readOnly={isReadOnlyMode}
-                  placeholder={'Bio'}
-                  as={'textarea'}
-                />
+                <Form.Group as={Col}>
+                  <InputField
+                    name={'bio'}
+                    title={'Bio'}
+                    value={bio}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Bio'}
+                    as={'textarea'}
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
               </Form.Row>
 
-              <TagsetSegment tagsets={tagsets} template={tagsetsTemplate} readOnly={isReadOnlyMode} />
-              <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
+              <TagsetSegment
+                tagsets={tagsets}
+                template={tagsetsTemplate}
+                readOnly={isReadOnlyMode}
+                disabled={isSubmitting}
+              />
+              <ReferenceSegment references={references} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 
               {isEditMode && (
                 <div className={'d-flex mt-4'}>
                   <div className={'flex-grow-1'} />
+                  {onDelete && (
+                    <Button
+                      variant={'negative'}
+                      onClick={() => onDelete(currentUser.id)}
+                      disabled={isSubmitting}
+                      className={'ml-3'}
+                    >
+                      {'Delete'}
+                    </Button>
+                  )}
                   {onCancel && (
-                    <Button variant={isEditMode ? 'secondary' : 'primary'} onClick={() => onCancel()}>
+                    <Button
+                      variant={isEditMode ? 'default' : 'primary'}
+                      onClick={() => onCancel()}
+                      disabled={isSubmitting}
+                      className={'ml-3'}
+                    >
                       {isEditMode ? 'Cancel' : 'Back'}
                     </Button>
                   )}
-                  <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                  <Button variant={'primary'} type={'submit'} className={'ml-3'} disabled={isSubmitting}>
                     Save
                   </Button>
                 </div>

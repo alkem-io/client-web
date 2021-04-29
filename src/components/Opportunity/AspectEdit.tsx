@@ -81,7 +81,6 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   });
 
   const onSubmit = async (values: Aspect) => {
-    debugger;
     const { id: apectId, ...rest } = values;
     if (!apectId) {
       await createAspect({

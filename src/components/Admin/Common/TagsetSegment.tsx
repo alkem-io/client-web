@@ -10,6 +10,7 @@ interface TagsSegmentProps {
   tagsets: Tagset[];
   template?: TagsetTemplate[];
   readOnly: boolean;
+  disabled?: boolean;
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
@@ -20,7 +21,7 @@ export const tagsetSchemaFragment = yup.array().of(
   })
 );
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, template }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, template, disabled }) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
       if (!template) return DEFAULT_PLACEHOLDER;
@@ -40,6 +41,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, templat
             title={toFirstCaptitalLetter(tagSet.name)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
+            disabled={disabled}
           />
         ))
       }
@@ -56,6 +58,7 @@ interface TagsetFieldProps {
   type?: string;
   placeholder?: string;
   as?: React.ElementType;
+  disabled?: boolean;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -64,6 +67,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   value,
   required = false,
   readOnly = false,
+  disabled = false,
   placeholder,
 }) => {
   const helper = useField(name)[2];
@@ -78,6 +82,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
           value={value?.join(',')}
           readOnly={readOnly}
           required={required}
+          disabled={disabled}
           onChange={e => {
             const stringValue = e.target.value;
             const tagsetArray = stringValue.split(',');

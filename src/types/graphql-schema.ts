@@ -1412,12 +1412,36 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
   createProject: { __typename?: 'Project' } & ProjectDetailsFragment;
 };
 
+export type CreateReferenceOnContextMutationVariables = Exact<{
+  input: CreateReferenceInput;
+}>;
+
+export type CreateReferenceOnContextMutation = { __typename?: 'Mutation' } & {
+  createReferenceOnContext: { __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'description' | 'uri'>;
+};
+
+export type CreateReferenceOnProfileMutationVariables = Exact<{
+  input: CreateReferenceInput;
+}>;
+
+export type CreateReferenceOnProfileMutation = { __typename?: 'Mutation' } & {
+  createReferenceOnProfile: { __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'description' | 'uri'>;
+};
+
 export type CreateRelationMutationVariables = Exact<{
   input: CreateRelationInput;
 }>;
 
 export type CreateRelationMutation = { __typename?: 'Mutation' } & {
   createRelation: { __typename?: 'Relation' } & Pick<Relation, 'id'>;
+};
+
+export type CreateTagsetOnProfileMutationVariables = Exact<{
+  input: CreateTagsetInput;
+}>;
+
+export type CreateTagsetOnProfileMutation = { __typename?: 'Mutation' } & {
+  createTagsetOnProfile: { __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>;
 };
 
 export type CreateUserMutationVariables = Exact<{
