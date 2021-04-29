@@ -71,7 +71,7 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
               </Typography>
               <div className={'flex-grow-1'} />
               <Typography variant={'caption'} weight={'boldLight'} color={'background'}>
-                Please feel free to leave a feedback{' '}
+                Please feel free to leave feedback{' '}
                 <a
                   href={`${env?.REACT_APP_FEEDBACK_URL}`}
                   target={'_blank'}
