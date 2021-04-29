@@ -1,0 +1,7 @@
+fragment GroupMembers on User {
+  id
+  name
+  firstName
+  lastName
+  email
+}

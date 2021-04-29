@@ -15,14 +15,17 @@ import Typography from '../core/Typography';
 import ActorEdit from './ActorEdit';
 import { useUserContext } from '../../hooks/useUserContext';
 import RemoveModal from '../core/RemoveModal';
-import { useRemoveActorMutation, useRemoveAspectMutation, useRemoveRelationMutation } from '../../generated/graphql';
 import {
-  QUERY_OPPORTUNITY_ACTOR_GROUPS,
-  QUERY_OPPORTUNITY_ASPECTS,
-  QUERY_OPPORTUNITY_RELATIONS,
-} from '../../graphql/opportunity';
+  OpportunityActorGroupsDocument,
+  OpportunityAspectsDocument,
+  OpportunityRelationsDocument,
+  useDeleteActorMutation,
+  useDeleteAspectMutation,
+  useDeleteRelationMutation,
+} from '../../generated/graphql';
 import AspectEdit from './AspectEdit';
 import { replaceAll } from '../../utils/replaceAll';
+import { Spacer } from '../shared/Spacer';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -45,24 +48,12 @@ const useCardStyles = createStyles(theme => ({
   border: {
     border: `1px solid ${theme.palette.neutralMedium}`,
   },
-  mdSpacer: {
-    marginTop: theme.shape.spacing(2),
-  },
-  lgSpacer: {
-    marginTop: theme.shape.spacing(4),
-  },
   iconWrapper: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
 }));
-
-export const Spacer: FC<{ variant?: 'lg' | 'md' }> = ({ variant = 'md' }) => {
-  const styles = useCardStyles();
-
-  return <div className={styles[`${variant}Spacer`]} />;
-};
 
 interface RelationCardProps {
   actorName: string;
@@ -80,13 +71,13 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   const { user } = useUserContext();
   const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
-  const [removeRelation] = useRemoveRelationMutation({
+  const [removeRelation] = useDeleteRelationMutation({
     variables: {
       input: { ID: Number(id) },
     },
     onCompleted: () => setShowRemove(false),
     onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_RELATIONS, variables: { id: Number(opportunityID) } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityID } }],
     awaitRefetchQueries: true,
   });
 
@@ -144,10 +135,10 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const { user } = useUserContext();
   const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
 
-  const [removeActor] = useRemoveActorMutation({
+  const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -272,10 +263,10 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
 
-  const [removeAspect] = useRemoveAspectMutation({
+  const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: e => console.error(e),
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ASPECTS, variables: { id: Number(opportunityId) } }],
+    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const onRemove = () => removeAspect({ variables: { input: { ID: Number(id) } } });

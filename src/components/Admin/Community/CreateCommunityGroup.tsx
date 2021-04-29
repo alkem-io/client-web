@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { useCreateGroupOnCommunityMutation } from '../../../generated/graphql';
-import { GROUP_DETAILS_FRAGMENT } from '../../../graphql/community';
+import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../generated/graphql';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -30,11 +29,11 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
           id: cache.identify(community),
           fields: {
             groups(existingGroups = []) {
-              const newUserRef = cache.writeFragment({
+              const newGroupRef = cache.writeFragment({
                 data: newGroup,
-                fragment: GROUP_DETAILS_FRAGMENT,
+                fragment: GroupDetailsFragmentDoc,
               });
-              return [...existingGroups, newUserRef];
+              return [...existingGroups, newGroupRef];
             },
           },
         });

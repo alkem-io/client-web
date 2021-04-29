@@ -1,0 +1,8 @@
+query organizationGroups($id: String!) {
+    organisation(ID: $id) {
+      groups {
+        id
+        name
+      }
+    }
+  }

@@ -8,12 +8,11 @@ import { useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { env } from '../env';
-import { typePolicies } from '../graphql/cache/typePolicies';
+import { typePolicies } from '../graphql/typePolicies';
 import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
 import { ErrorStatus } from '../models/Errors';
 import { updateStatus, updateToken } from '../reducers/auth/actions';
 import { AuthStatus } from '../reducers/auth/types';
-import { pushError } from '../reducers/error/actions';
 import { useAuthenticationContext } from './useAuthenticationContext';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
@@ -111,10 +110,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       }
     }
 
-    if (errors.length > 0) {
-      console.error(errors);
-    }
-
     if (networkError) {
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
@@ -122,7 +117,8 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    errors.forEach(e => dispatch(pushError(e)));
+    // errors.forEach(e => dispatch(pushNotification(e.message, Severity.Error)));
+    errors.forEach(e => console.error(e));
   });
 
   const authLink = setContext(async (_, { headers }) => {

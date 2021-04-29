@@ -3,16 +3,16 @@ import React, { FC, useMemo } from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { TagsetTemplate, useRemoveReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
+import { useDeleteReferenceMutation, useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
+import { TagsetTemplate } from '../../../types/graphql-schema';
 import countriesList from '../../../utils/countriesList.json';
 import { EditMode } from '../../../utils/editMode';
-import Avatar from '../../core/Avatar';
 import Loading from '../../core/Loading';
 import SearchDropdown from '../../core/SearchDropdown';
-import Typography from '../../core/Typography';
-import UploadButton from '../../core/UploadButton';
+import Section, { Header } from '../../core/Section';
+import EditableAvatar from '../../EditableAvatar';
 import { InputField } from '../Common/InputField';
 import { ReferenceSegment } from '../Common/ReferenceSegment';
 import TagsetSegment from '../Common/TagsetSegment';
@@ -23,7 +23,6 @@ interface UserProps {
   editMode?: EditMode;
   onSave?: (user: UserModel) => void;
   onCancel?: () => void;
-  onAvatarChange?: (file: File) => void;
   title?: string;
 }
 
@@ -32,11 +31,10 @@ export const UserForm: FC<UserProps> = ({
   editMode = EditMode.readOnly,
   onSave,
   onCancel,
-  onAvatarChange,
   title = 'User',
 }) => {
   const { t } = useTranslation();
-  const [removeRef] = useRemoveReferenceMutation();
+  const [removeRef] = useDeleteReferenceMutation();
 
   const genders = [t('common.genders.notSpecified'), t('common.genders.male'), t('common.genders.female')];
   const { data: config, loading } = useTagsetsTemplateQuery();
@@ -150,43 +148,32 @@ export const UserForm: FC<UserProps> = ({
   if (loading) return <Loading text={'Loading'} />;
 
   return (
-    <>
-      <Typography variant={'h3'} className={'mt-4 mb-4'}>
-        {title}
-      </Typography>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={isReadOnlyMode ? undefined : validationSchema}
-        enableReinitialize
-        onSubmit={values => handleSubmit(values, references)}
-      >
-        {({
-          values: { name, firstName, lastName, email, city, phone, country, references, tagsets, avatar, gender, bio },
-          setFieldValue,
-          handleChange,
-          handleSubmit,
-        }) => {
-          return (
-            <Form noValidate>
-              <Form.Row>
-                <Avatar src={avatar} size={'lg'} className={'mb-2'} name={'Avatar'} />
-              </Form.Row>
-              {onAvatarChange && (
-                <Form.Row>
-                  <UploadButton
-                    accept={'image/*'}
-                    onChange={e => {
-                      const file = e && e.target && e.target.files && e.target.files[0];
-                      if (onAvatarChange && file) onAvatarChange(file);
-                    }}
-                    className={'mb-4'}
-                    small
-                  >
-                    Edit
-                  </UploadButton>
-                </Form.Row>
-              )}
-
+    <Formik
+      initialValues={initialValues}
+      validationSchema={isReadOnlyMode ? undefined : validationSchema}
+      enableReinitialize
+      onSubmit={values => handleSubmit(values, references)}
+    >
+      {({
+        values: { name, firstName, lastName, email, city, phone, country, references, tagsets, avatar, gender, bio },
+        setFieldValue,
+        handleChange,
+        handleSubmit,
+      }) => {
+        return (
+          <Form noValidate>
+            <Section
+              avatar={
+                <EditableAvatar
+                  src={avatar}
+                  size={'xl'}
+                  className={'mb-2'}
+                  name={'Avatar'}
+                  profileId={currentUser.profile.id}
+                />
+              }
+            >
+              <Header text={title} />
               <Form.Row>
                 <InputField
                   name={'name'}
@@ -290,11 +277,11 @@ export const UserForm: FC<UserProps> = ({
                   </Button>
                 </div>
               )}
-            </Form>
-          );
-        }}
-      </Formik>
-    </>
+            </Section>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 export default UserForm;

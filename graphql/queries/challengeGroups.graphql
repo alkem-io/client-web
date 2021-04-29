@@ -1,0 +1,13 @@
+query challengeGroups($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      community {
+        groups {
+          id
+          name
+        }
+      }
+    }
+  }
+}

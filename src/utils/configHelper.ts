@@ -1,5 +1,5 @@
-import { ApiConfig, Config, MsalConfig, Scope } from '../generated/graphql';
 import { Configuration } from '../models/Configuration';
+import { ApiConfig, Config, MsalConfig, Scope } from '../types/graphql-schema';
 
 // For a full list of msal.js configuration parameters,
 

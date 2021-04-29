@@ -1,9 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { Project as ProjectType, useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { pushError } from '../reducers/error/actions';
+import { Project as ProjectType } from '../types/graphql-schema';
 import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 
@@ -59,7 +60,6 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
               name,
               description,
               textID,
-              state: 'new',
             },
           },
         })

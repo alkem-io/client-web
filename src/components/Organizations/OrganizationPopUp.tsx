@@ -1,20 +1,20 @@
+import { ReactComponent as BookMarks } from 'bootstrap-icons/icons/bookmarks.svg';
+import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
+import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { ReactComponent as BookMarks } from 'bootstrap-icons/icons/bookmarks.svg';
-import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
-
-import Avatar from '../core/Avatar';
-import Typography from '../core/Typography';
-import Divider from '../core/Divider';
-import AvatarContainer from '../core/AvatarContainer';
-import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { useOrganizationDetailsQuery } from '../../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
+import { User } from '../../types/graphql-schema';
 import shuffleCollection from '../../utils/shuffleCollection';
 import Tags from '../Community/Tags';
-import { createStyles } from '../../hooks/useTheme';
-import { useOrganizationDetailsQuery, User } from '../../generated/graphql';
-import { AvatarsProvider } from '../../context/AvatarsProvider';
+import Avatar from '../core/Avatar';
+import AvatarContainer from '../core/AvatarContainer';
+import Button from '../core/Button';
+import Divider from '../core/Divider';
+import Loading from '../core/Loading';
+import Typography from '../core/Typography';
 
 const groupPopUpStyles = createStyles(theme => ({
   title: {

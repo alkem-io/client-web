@@ -1,17 +1,16 @@
+import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
+import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
-import CircleTag from '../core/CircleTag';
-import Typography from '../core/Typography';
-import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
-import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import Icon from '../core/Icon';
-import { useTranslation } from 'react-i18next';
+import Typography from '../core/Typography';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -32,46 +31,6 @@ const useCardStyles = createStyles(theme => ({
     },
   },
 }));
-
-export const ActivityCard: FC = () => {
-  const styles = useCardStyles();
-  const { t } = useTranslation();
-
-  return (
-    <Card
-      bodyProps={{
-        classes: {
-          padding: (theme: Theme, { xs, sm, md }) => {
-            return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
-          },
-          background: (theme: Theme) => theme.palette.background,
-        },
-      }}
-      primaryTextProps={{ text: t('pages.ecoverse.cards.activity.title') }}
-    >
-      <div className={styles.item}>
-        <Typography>Challenges:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'21'} />
-      </div>
-      <div className={styles.item}>
-        <Typography>Opportunities:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'94'} color="primary" />
-      </div>
-      <div className={styles.item}>
-        <Typography>Projects:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'118'} color="positive" />
-      </div>
-      <div className={styles.item}>
-        <Typography>Members:</Typography>
-        <div style={{ flexGrow: 1 }}></div>
-        <CircleTag text={'6171'} color="neutralMedium" />
-      </div>
-    </Card>
-  );
-};
 
 interface ChallengeCardProps {
   id: string | number;

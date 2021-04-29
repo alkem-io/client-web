@@ -1,0 +1,5 @@
+  mutation updateUser($input: UpdateUserInput!) {
+    updateUser(userData: $input) {
+      ...UserDetails
+    }
+  }

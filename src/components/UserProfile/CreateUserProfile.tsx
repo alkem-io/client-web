@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { CreateUserInput, useCreateUserMutation } from '../../generated/graphql';
+import { useCreateUserMutation } from '../../generated/graphql';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useNotification } from '../../hooks/useNotification';
 import { AUTH_USER_KEY, WELCOME_PAGE } from '../../models/Constants';
 import { defaultUser, UserModel } from '../../models/User';
+import { CreateUserInput } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { UserForm } from '../Admin/User/UserForm';
 import { Loading } from '../core/Loading';

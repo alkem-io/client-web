@@ -1,0 +1,8 @@
+query ecoverseCommunity {
+  ecoverse {
+    id
+    community {
+      ...CommunityDetails
+    }
+  }
+}

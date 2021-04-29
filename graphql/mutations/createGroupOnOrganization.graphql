@@ -1,0 +1,6 @@
+mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
+  createGroupOnOrganisation(groupData: $input) {
+    id
+    name
+  }
+}

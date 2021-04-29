@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { EcoverseInfoQuery, useEcoverseInfoQuery } from '../generated/graphql';
+import { useEcoverseInfoQuery } from '../generated/graphql';
+import { EcoverseInfoQuery } from '../types/graphql-schema';
 
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoQuery;

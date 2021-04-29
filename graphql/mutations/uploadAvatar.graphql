@@ -1,0 +1,6 @@
+mutation uploadAvatar($file: Upload!, $input: UploadProfileAvatarInput!) {
+  uploadAvatar(file: $file, uploadData: $input) {
+    id
+    avatar
+  }
+}

@@ -1,4 +1,4 @@
-import { Organisation } from '../generated/graphql';
+import { Organisation } from '../types/graphql-schema';
 import { Reference, Tagset } from './Profile';
 
 export interface UserModel {

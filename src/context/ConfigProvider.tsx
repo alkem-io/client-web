@@ -2,7 +2,7 @@ import axios from 'axios';
 import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
-import { QUERY_CONFIG } from '../graphql/config';
+import { AuthenticationConfigurationDocument } from '../generated/graphql';
 import { Configuration } from '../models/Configuration';
 import { Error } from '../pages/Error';
 import { getConfig } from '../utils/configHelper';
@@ -32,7 +32,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
       const result = await axios.post(
         url,
         {
-          query: print(QUERY_CONFIG),
+          query: print(AuthenticationConfigurationDocument),
         },
         {
           responseType: 'json',

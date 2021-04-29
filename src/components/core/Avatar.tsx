@@ -1,26 +1,32 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Typography from './Typography';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import UserPopUp from '../Community/UserPopUp';
+import Image from './Image';
+import Typography from './Typography';
 
-const useAvatarStyles = createStyles(theme => ({
+export const useAvatarStyles = createStyles(theme => ({
   avatarWrapper: {
     display: 'flex',
-
+    alignItems: 'center',
+    placeContent: 'center',
     '&.md': {
-      maxWidth: 40,
-      maxHeight: 40,
+      width: 40,
+      height: 40,
     },
     '&.sm': {
-      maxWidth: 15,
-      maxHeight: 15,
+      width: 15,
+      hight: 15,
     },
     '&.lg': {
-      maxWidth: 80,
-      maxHeight: 80,
+      width: 80,
+      height: 80,
+    },
+    '&.xl': {
+      width: 160,
+      height: 160,
     },
   },
   clickable: {
@@ -71,24 +77,24 @@ const useAvatarStyles = createStyles(theme => ({
     },
   },
   dark: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralMedium,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium,
     color: theme.palette.background,
     alignItems: 'center',
     placeContent: 'center',
   },
   light: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.background,
     color: theme.palette.neutralMedium,
     alignItems: 'center',
     placeContent: 'center',
   },
 }));
 
-interface AvatarProps {
+export interface AvatarProps {
   src?: string;
   className?: string;
   classes?: unknown;
-  size?: 'md' | 'sm' | 'lg';
+  size?: 'md' | 'sm' | 'lg' | 'xl';
   theme?: 'light' | 'dark';
   name?: string;
   userId?: string;
@@ -114,7 +120,7 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
       )}
       {src && !fallback && name && (
         <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
-          <img
+          <Image
             className={clsx(styles.avatar, size, className)}
             src={src}
             alt="user"
@@ -123,7 +129,12 @@ const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, th
         </OverlayTrigger>
       )}
       {src && !fallback && !name && (
-        <img className={clsx(styles.avatar, size, className)} src={src} alt="user" onError={() => setFallback(true)} />
+        <Image
+          className={clsx(styles.avatar, size, className)}
+          src={src}
+          alt="user"
+          onError={() => setFallback(true)}
+        />
       )}
       {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
     </div>

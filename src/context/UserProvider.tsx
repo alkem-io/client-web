@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { User, useUserProfileQuery } from '../generated/graphql';
+import { useMeQuery } from '../generated/graphql';
 import { CommunityType } from '../models/Constants';
+import { User } from '../types/graphql-schema';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -48,7 +49,7 @@ const UserContext = React.createContext<UserContextContract>({
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
-  const { data, loading: profileLoading } = useUserProfileQuery({ errorPolicy: 'all' });
+  const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
   const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
 

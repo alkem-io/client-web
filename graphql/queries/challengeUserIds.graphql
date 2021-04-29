@@ -1,0 +1,12 @@
+query challengeUserIds($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      community {
+        members {
+          id
+        }
+      }
+    }
+  }
+}

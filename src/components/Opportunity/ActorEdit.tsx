@@ -2,8 +2,12 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import * as yup from 'yup';
-import { Actor, useCreateActorMutation, useUpdateActorMutation } from '../../generated/graphql';
-import { QUERY_OPPORTUNITY_ACTOR_GROUPS } from '../../graphql/opportunity';
+import {
+  OpportunityActorGroupsDocument,
+  useCreateActorMutation,
+  useUpdateActorMutation,
+} from '../../generated/graphql';
+import { Actor } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
@@ -56,21 +60,20 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    onError: e => console.error(e),
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [updateActor] = useUpdateActorMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e), // eslint-disable-line no-console
-    refetchQueries: [{ query: QUERY_OPPORTUNITY_ACTOR_GROUPS, variables: { id: Number(opportunityId) } }],
+    onError: e => console.error(e),
     awaitRefetchQueries: true,
   });
 
   const onSubmit = (values: Actor) => {
     const { id: actorId, __typename, ...rest } = values;
-    if (!id) {
+    if (!actorId) {
       createActor({
         variables: {
           input: {
@@ -82,11 +85,11 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
       return;
     }
-    if (id) {
+    if (actorId) {
       updateActor({
         variables: {
           input: {
-            ID: id,
+            ID: actorId,
             ...rest,
           },
         },

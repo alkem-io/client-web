@@ -1,0 +1,9 @@
+mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
+    removeUserFromGroup(membershipData: $input) {
+      id
+      name
+      members {
+        ...GroupMembers
+      }
+    }
+  }

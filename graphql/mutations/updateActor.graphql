@@ -1,0 +1,6 @@
+mutation updateActor($input: UpdateActorInput!) {
+  updateActor(actorData: $input) {
+    id
+    name
+  }
+}

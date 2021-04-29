@@ -1,6 +1,6 @@
 {
   "name": "cherrytwist-web",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "repository": {
@@ -70,7 +70,7 @@
     "test:coverage": "react-scripts test --coverage && cat ./coverage/lcov.info | coveralls",
     "eject": "react-scripts eject",
     "codegen": "cross-env VERBOSE=1 cross-env DEBUG=1 graphql-codegen --config codegen.yml",
-    "postcodegen": "prettier --write src/generated/*.ts{,x}",
+    "postcodegen": "prettier --write src/generated/*.ts{,x} src/types/*.ts{,x}",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
@@ -92,6 +92,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.20.0",
+    "@graphql-codegen/import-types-preset": "^1.18.1",
     "@graphql-codegen/typescript": "^1.20.0",
     "@graphql-codegen/typescript-operations": "^1.17.13",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",

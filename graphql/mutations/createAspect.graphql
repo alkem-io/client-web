@@ -1,0 +1,5 @@
+mutation createAspect($input: CreateAspectInput!) {
+  createAspect(aspectData: $input) {
+    title
+  }
+}

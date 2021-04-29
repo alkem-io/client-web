@@ -1,0 +1,6 @@
+mutation createActorGroup($input: CreateActorGroupInput!) {
+  createActorGroup(actorGroupData: $input) {
+    id
+    name
+  }
+}

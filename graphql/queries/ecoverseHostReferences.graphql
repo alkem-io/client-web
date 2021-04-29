@@ -1,0 +1,14 @@
+query ecoverseHostReferences {
+  ecoverse {
+    id
+    host {
+      profile {
+        id
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+}

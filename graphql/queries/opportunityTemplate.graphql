@@ -1,0 +1,10 @@
+query opportunityTemplate {
+  configuration {
+    template {
+      opportunities {
+        aspects
+        actorGroups
+      }
+    }
+  }
+}

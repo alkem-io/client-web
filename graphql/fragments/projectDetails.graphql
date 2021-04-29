@@ -1,0 +1,18 @@
+fragment ProjectDetails on Project {
+  id
+  textID
+  name
+  description
+  lifecycle {
+    state
+  }
+  tagset {
+    name
+    tags
+  }
+  aspects {
+    title
+    framing
+    explanation
+  }
+}

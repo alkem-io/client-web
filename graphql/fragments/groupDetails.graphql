@@ -1,0 +1,4 @@
+fragment GroupDetails on UserGroup {
+  id
+  name
+}

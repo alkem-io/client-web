@@ -1,15 +1,18 @@
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
+import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
-
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
+import { CommunitySection } from '../components/Community/CommunitySection';
+import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
 import Container, { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
@@ -19,27 +22,18 @@ import Typography from '../components/core/Typography';
 // import Tag from '../components/core/Tag';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
+import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import {
-  Context,
-  Opportunity as OpportunityType,
-  Project,
-  useOpportunityTemplateQuery,
-  User,
-} from '../generated/graphql';
+import { useOpportunityTemplateQuery } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
+import { Context, Opportunity as OpportunityType, Project, User } from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
-import { PageProps } from './common';
-import ContextEdit from '../components/ContextEdit';
-import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
-import { CommunitySection } from '../components/Community/CommunitySection';
-import { useHistory } from 'react-router-dom';
 import { replaceAll } from '../utils/replaceAll';
-import { useTranslation } from 'react-i18next';
+import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
   tag: {

@@ -1,0 +1,15 @@
+query projectsChainHistory {
+  ecoverse {
+    id
+    challenges {
+      name
+      textID
+      opportunities {
+        textID
+        projects {
+          textID
+        }
+      }
+    }
+  }
+}

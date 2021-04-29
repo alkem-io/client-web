@@ -1,0 +1,54 @@
+query challengeProfile($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      id
+      textID
+      name
+      lifecycle {
+        state
+      }
+      context {
+        ...ContextDetails
+      }
+      community {
+        members {
+          name
+        }
+      }
+
+      tagset {
+        name
+        tags
+      }
+      opportunities {
+        id
+        name
+        lifecycle {
+          state
+        }
+        textID
+        context {
+          ...ContextDetails
+        }
+        projects {
+          id
+          textID
+          name
+          description
+          lifecycle {
+            state
+          }
+        }
+      }
+      leadOrganisations {
+        id
+        name
+        profile {
+          id
+          avatar
+        }
+      }
+    }
+  }
+}

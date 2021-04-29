@@ -2,8 +2,8 @@ import { FieldArray, useField } from 'formik';
 import React, { FC, useCallback } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import * as yup from 'yup';
-import { TagsetTemplate } from '../../../generated/graphql';
 import { Tagset } from '../../../models/Profile';
+import { TagsetTemplate } from '../../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 
 interface TagsSegmentProps {
