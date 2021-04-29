@@ -16,7 +16,7 @@ import { EditMode } from '../../../utils/editMode';
 import Button from '../../core/Button';
 import { Loading } from '../../core/Loading';
 import { getUpdateUserInput } from '../../UserProfile';
-import UserForm from './UserForm';
+import UserForm from '../../UserProfile/UserForm';
 import UserRemoveModal from './UserRemoveModal';
 
 interface UserPageProps extends PageProps {

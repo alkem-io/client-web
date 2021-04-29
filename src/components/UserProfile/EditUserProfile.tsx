@@ -14,7 +14,7 @@ import { UserModel } from '../../models/User';
 import { pushNotification } from '../../reducers/notifincations/actions';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
-import { UserForm } from '../Admin/User/UserForm';
+import { UserForm } from './UserForm';
 import { Loading } from '../core/Loading';
 
 interface EditUserProfileProps {}
