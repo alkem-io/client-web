@@ -1,15 +1,21 @@
 import { AuthorizationCredential } from '../types/graphql-schema';
 
-const AuthorizationCredentialBackEnd = {
-  'global-admins': AuthorizationCredential.GlobalAdmin,
-  'global-admin-challenges': AuthorizationCredential.GlobalAdminChallenges,
-  'global-community-admins': AuthorizationCredential.GlobalAdminCommunity,
-  'global-registered': AuthorizationCredential.GlobalRegistered,
-  'community-member': AuthorizationCredential.CommunityMember,
-  'organisation-member': AuthorizationCredential.OrganisationMember,
-  'user-group-member': AuthorizationCredential.UserGroupMember,
-};
+export enum AuthorizationCredentialBackEnd {
+  GlobalAdmin = 'global-admin', // able to do everything, god mode
+  GlobalAdminChallenges = 'global-admin-challenges', // able to create challenges / ecoverses / opportunities
+  GlobalAdminCommunity = 'global-admin-community', // able to manage the top level community, including assigning credentials
+  GlobalRegistered = 'global-registered', // credential issued to all registered users
+  CommunityMember = 'community-member', // Able to be a part of a community
+  OrganisationMember = 'organisation-member', // Able to be a part of an organisation
+  UserGroupMember = 'user-group-member', // Able to be a part of an user group
+  //UserUpdate = 'user-update', // able to update a user
+  // ChallengeAdmin = 'challenge-admin', // able to manage all aspects of a particular Ecoverse
+  // ChallengeCommunityAdmin = 'challenge-community-admin', // Able to manage membership of a particular community
+  // ChallengeContextAdmin = 'challenge-context-admin', // Able to update the context information for a Challenge
+}
 
-export const credentialsResolver = (value: string): AuthorizationCredential => {
-  return AuthorizationCredentialBackEnd[value];
+export const credentialsResolver = (value: string) => {
+  return Object.keys(AuthorizationCredentialBackEnd).find(
+    k => AuthorizationCredentialBackEnd[k] === value
+  ) as AuthorizationCredential;
 };

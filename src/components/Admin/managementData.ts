@@ -3,8 +3,8 @@ export const managementData = {
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Global admins', url: '/authorization/global-admins' },
-        { description: 'Global community admins', url: '/authorization/global-community-admins' },
+        { description: 'Global admins', url: '/authorization/global-admin' },
+        { description: 'Global community admins', url: '/authorization/global-admin-community' },
       ],
     },
     {

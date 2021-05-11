@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useMeQuery } from '../generated/graphql';
 import { AuthorizationCredential, User } from '../types/graphql-schema';
+import { credentialsResolver } from '../utils/credentials-resolver';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -26,7 +27,7 @@ const wrapUser = (user: User | undefined): UserMetadata | undefined => {
       Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1),
     ofChallenge: (id: string) => Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
     isAdmin: false,
-    roles: user?.agent?.credentials?.map(c => c.type) || [],
+    roles: user?.agent?.credentials?.map(c => credentialsResolver(c.type)) || [],
   };
 
   metadata.isAdmin = metadata.roles.findIndex(c => c === AuthorizationCredential.GlobalAdmin) !== -1;

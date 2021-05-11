@@ -360,7 +360,7 @@ export type Credential = {
   __typename?: 'Credential';
   id: Scalars['ID'];
   resourceID: Scalars['Float'];
-  type: AuthorizationCredential;
+  type: Scalars['String'];
 };
 
 export type DeleteActorGroupInput = {
