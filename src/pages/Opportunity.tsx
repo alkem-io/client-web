@@ -30,7 +30,13 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { Context, Opportunity as OpportunityType, Project, User } from '../types/graphql-schema';
+import {
+  AuthorizationCredential,
+  Context,
+  Opportunity as OpportunityType,
+  Project,
+  User,
+} from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
@@ -88,7 +94,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { user } = useUserContext();
   const userName = user?.user.name;
   const { isAuthenticated } = useAuthenticate();
-  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const isAdmin =
+    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;

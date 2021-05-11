@@ -48,15 +48,15 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
 
   const { data } = useUserQuery({ variables: { id } });
 
-  const getArrayOfNames = arr => arr?.map(el => el?.name);
+  //const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
   const user = data?.user;
 
-  const groups = getArrayOfNames(user?.memberof?.communities.map(x => x.groups));
-  const challenges = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
-  const organisations = getArrayOfNames(user?.memberof?.organisations);
-  const opportunities = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
+  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.map(x => x.groups));
+  const challenges = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
+  const organisations = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.organisations);
+  const opportunities = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 

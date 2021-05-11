@@ -6,6 +6,7 @@ import Loading from '../../components/core/Loading';
 import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour } from '../../pages';
+import AuthorizationRoute from './authorization';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import { OrganizationsRoute } from './organization';
@@ -35,6 +36,9 @@ export const Admin: FC = () => {
       </Route>
       <Route path={`${path}/users`}>
         <UsersRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <AuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />

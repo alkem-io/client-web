@@ -7,7 +7,6 @@ import roles from '../../configs/roles.json';
 import { useMeQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
-import { CommunityType } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
@@ -32,10 +31,9 @@ const useUserRoleStyles = createStyles(theme => ({
 
 export const UserRoles: FC = () => {
   const styles = useUserRoleStyles();
-  const { data } = useMeQuery();
+  // const { data } = useMeQuery();
 
-  const groups =
-    data?.me?.memberof?.communities.flatMap(c => (c && c.groups ? c.groups.map(g => g.name) : undefined)) || [];
+  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification    data?.me?.memberof?.communities.flatMap(c => (c && c.groups ? c.groups.map(g => g.name) : undefined)) || [];
 
   const getMyRoles = () => {
     const specialRoles = roles['groups-roles'].filter(r => groups.includes(r.group));
@@ -165,19 +163,19 @@ export const UserProfile: FC = () => {
   const user = (data?.me as User) || defaultUser || {};
 
   // TODO [ATS]: this code is copy paste from UserPopUp.tsx
-  const getArrayOfNames = arr => arr?.map(el => el?.name);
+  // const getArrayOfNames = arr => arr?.map(el => el?.name);
 
   const references = user?.profile?.references || [];
 
-  const groups =
-    user?.memberof?.communities
-      .flatMap(
-        c => c && c.groups && c?.groups.map(x => (c.type !== CommunityType.ECOVERSE ? `${x.name} (${c.name})` : x.name))
-      )
-      .filter((x): x is string => x !== undefined) || [];
+  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification
+  // user?.memberof?.communities
+  //   .flatMap(
+  //     c => c && c.groups && c?.groups.map(x => (c.type !== CommunityType.ECOVERSE ? `${x.name} (${c.name})` : x.name))
+  //   )
+  //   .filter((x): x is string => x !== undefined) || [];
 
-  const challenges = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
-  const opportunities = getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
+  const challenges = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
+  const opportunities = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
 
   const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {

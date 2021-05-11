@@ -20,6 +20,7 @@ import {
   PageProps,
 } from '../pages';
 import {
+  AuthorizationCredential,
   Challenge as ChallengeType,
   ChallengesQuery,
   Opportunity as OpportunityType,
@@ -214,7 +215,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
             history.push(`${url}/projects/${project ? project.textID : 'new'}`);
           }}
           permissions={{
-            projectWrite: user?.ofGroup('admin', false) || false,
+            projectWrite: user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || false,
           }}
         />
       </Route>

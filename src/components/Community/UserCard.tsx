@@ -39,12 +39,14 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   });
 
   const data = userData?.usersById[0] as User;
-  const groups = data?.memberof?.communities
-    ?.flatMap(c => {
-      if (c) return c.groups?.map(g => g.name.toLowerCase());
-      return undefined;
-    })
-    .filter((x): x is string => x !== undefined);
+  const groups = [] as string[];
+  // TODO [ATS]: Resolve this
+  //  data?.memberof?.communities
+  //   ?.flatMap(c => {
+  //     if (c) return c.groups?.map(g => g.name.toLowerCase());
+  //     return undefined;
+  //   })
+  //   .filter((x): x is string => x !== undefined);
 
   const role =
     (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];

@@ -88,6 +88,19 @@ export const ProjectDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserAgentFragmentDoc = gql`
+  fragment UserAgent on User {
+    agent {
+      id
+      did
+      credentials {
+        id
+        resourceID
+        type
+      }
+    }
+  }
+`;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -113,24 +126,6 @@ export const UserDetailsFragmentDoc = gql`
         id
         name
         tags
-      }
-    }
-  }
-`;
-export const UserMembersFragmentDoc = gql`
-  fragment UserMembers on User {
-    memberof {
-      communities {
-        id
-        name
-        type
-        groups {
-          name
-        }
-      }
-      organisations {
-        id
-        name
       }
     }
   }
@@ -2675,11 +2670,11 @@ export const MeDocument = gql`
   query me {
     me {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4131,11 +4126,11 @@ export const UserDocument = gql`
   query user($id: String!) {
     user(ID: $id) {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4222,18 +4217,12 @@ export const UserCardDataDocument = gql`
   query userCardData($ids: [String!]!) {
     usersById(IDs: $ids) {
       __typename
-      memberof {
-        communities {
-          name
-        }
-        organisations {
-          name
-        }
-      }
       ...UserDetails
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4311,3 +4300,59 @@ export function useUsersLazyQuery(
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>;
+export const UsersWithCredentialsDocument = gql`
+  query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
+    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
+      id
+      name
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUsersWithCredentialsQuery__
+ *
+ * To run a query within a React component, call `useUsersWithCredentialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersWithCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersWithCredentialsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersWithCredentialsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export function useUsersWithCredentialsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
+export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
+export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersWithCredentialsQuery,
+  SchemaTypes.UsersWithCredentialsQueryVariables
+>;

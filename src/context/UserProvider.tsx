@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useMeQuery } from '../generated/graphql';
-import { CommunityType } from '../models/Constants';
-import { User } from '../types/graphql-schema';
+import { AuthorizationCredential, User } from '../types/graphql-schema';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -10,8 +9,8 @@ export interface UserContextContract {
 
 export interface UserMetadata {
   user: User;
-  ofGroup: (name: string, strict: boolean) => boolean;
-  ofChallenge: (name: string) => boolean;
+  hasCredentials: (credential: AuthorizationCredential, resourceId?: number) => boolean;
+  ofChallenge: (id: string) => boolean;
   isAdmin: boolean;
   roles: string[];
 }
@@ -23,22 +22,14 @@ const wrapUser = (user: User | undefined): UserMetadata | undefined => {
 
   const metadata = {
     user,
-    ofGroup: (name, strict = true) =>
-      Boolean(
-        user.memberof?.communities.find(
-          c => c && c.groups && c.groups.find(x => (strict ? x.name === name : x.name.includes(name)) !== undefined)
-        )
-      ),
-    ofChallenge: name =>
-      Boolean(user.memberof?.communities.find(c => c && c.type === CommunityType.CHALLENGE && c.name === name)),
+    hasCredentials: (credential: AuthorizationCredential, resourceId = -1) =>
+      Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1),
+    ofChallenge: (id: string) => Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
     isAdmin: false,
-    roles:
-      user?.memberof?.communities
-        .flatMap(c => c.groups?.map(g => g.name))
-        .filter((x): x is string => x !== undefined) || [],
+    roles: user?.agent?.credentials?.map(c => c.type) || [],
   };
 
-  metadata.isAdmin = metadata.ofGroup('admin', false);
+  metadata.isAdmin = metadata.roles.findIndex(c => c === AuthorizationCredential.GlobalAdmin) !== -1;
 
   return metadata;
 };

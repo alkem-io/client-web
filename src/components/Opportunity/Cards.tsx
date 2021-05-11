@@ -26,6 +26,7 @@ import {
 import AspectEdit from './AspectEdit';
 import { replaceAll } from '../../utils/replaceAll';
 import { Spacer } from '../shared/Spacer';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -69,7 +70,9 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   const styles = useCardStyles();
   const [showRemove, setShowRemove] = useState<boolean>(false);
   const { user } = useUserContext();
-  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const isAdmin =
+    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const [removeRelation] = useDeleteRelationMutation({
     variables: {
@@ -133,7 +136,9 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const { user } = useUserContext();
-  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const isAdmin =
+    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
@@ -273,7 +278,9 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
 
   const styles = useCardStyles();
   const { user } = useUserContext();
-  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const isAdmin =
+    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   return (
     <>
