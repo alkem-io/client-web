@@ -360,7 +360,7 @@ export type Credential = {
   __typename?: 'Credential';
   id: Scalars['ID'];
   resourceID: Scalars['Float'];
-  type: Scalars['String'];
+  type: AuthorizationCredential;
 };
 
 export type DeleteActorGroupInput = {
@@ -1527,6 +1527,14 @@ export type DeleteUserMutation = { __typename?: 'Mutation' } & {
   deleteUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
+export type GrantCredentialsMutationVariables = Exact<{
+  input: GrantAuthorizationCredentialInput;
+}>;
+
+export type GrantCredentialsMutation = { __typename?: 'Mutation' } & {
+  assignCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
+};
+
 export type RemoveUserFromGroupMutationVariables = Exact<{
   input: RemoveUserGroupMemberInput;
 }>;
@@ -1535,6 +1543,14 @@ export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
   removeUserFromGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
       members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     };
+};
+
+export type RevokeCredentialsMutationVariables = Exact<{
+  input: RemoveAuthorizationCredentialInput;
+}>;
+
+export type RevokeCredentialsMutation = { __typename?: 'Mutation' } & {
+  removeCredentialFromUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
 };
 
 export type UpdateActorMutationVariables = Exact<{

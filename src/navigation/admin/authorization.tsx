@@ -8,7 +8,7 @@ interface AuthorizationRouteProps extends PageProps {}
 export const AuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
     <Switch>
