@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
+import { AuthorizationCredentialBackEnd } from '../../../hooks/useCredentialsResolver';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import { AuthorizationCredentialBackEnd } from '../../../utils/credentials-resolver';
 import EditCredentials from '../Authorization/EditCredentials';
 import { WithCommunity } from './CommunityTypes';
 

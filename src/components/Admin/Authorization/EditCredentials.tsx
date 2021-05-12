@@ -7,10 +7,10 @@ import {
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useCredentialsResolver } from '../../../hooks/useCredentialsResolver';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import { credentialsResolver } from '../../../utils/credentials-resolver';
 import Loading from '../../core/Loading';
 import { EditMembers } from '../Community/EditMembers';
 
@@ -22,11 +22,12 @@ interface EditCredentialsProps extends PageProps {
 
 export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, parentMembers, resourceId }) => {
   useUpdateNavigation({ currentPaths: paths });
+  const { toAuthenticationCredentials } = useCredentialsResolver();
 
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
     variables: {
       input: {
-        type: credentialsResolver(credential),
+        type: toAuthenticationCredentials(credential),
         resourceID: resourceId,
       },
     },
@@ -48,12 +49,15 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       variables: {
         input: {
           userID: Number(_member.id),
-          type: credentialsResolver(credential),
+          type: toAuthenticationCredentials(credential),
           resourceID: resourceId,
         },
       },
       refetchQueries: [
-        { query: UsersWithCredentialsDocument, variables: { input: { type: credentialsResolver(credential) } } },
+        {
+          query: UsersWithCredentialsDocument,
+          variables: { input: { type: toAuthenticationCredentials(credential) } },
+        },
       ],
       awaitRefetchQueries: true,
     });
@@ -64,12 +68,15 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       variables: {
         input: {
           userID: Number(_member.id),
-          type: credentialsResolver(credential),
+          type: toAuthenticationCredentials(credential),
           resourceID: resourceId,
         },
       },
       refetchQueries: [
-        { query: UsersWithCredentialsDocument, variables: { input: { type: credentialsResolver(credential) } } },
+        {
+          query: UsersWithCredentialsDocument,
+          variables: { input: { type: toAuthenticationCredentials(credential) } },
+        },
       ],
       awaitRefetchQueries: true,
     });

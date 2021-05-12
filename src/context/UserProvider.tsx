@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useMeQuery } from '../generated/graphql';
+import { useCredentialsResolver } from '../hooks/useCredentialsResolver';
 import { AuthorizationCredential, User } from '../types/graphql-schema';
-import { credentialsResolver } from '../utils/credentials-resolver';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -16,7 +16,7 @@ export interface UserMetadata {
   roles: string[];
 }
 
-const wrapUser = (user: User | undefined): UserMetadata | undefined => {
+const wrapUser = (user: User | undefined, credentialsResolver): UserMetadata | undefined => {
   if (!user) {
     return;
   }
@@ -44,11 +44,12 @@ const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
   const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
+  const { toAuthenticationCredentials } = useCredentialsResolver();
 
   return (
     <UserContext.Provider
       value={{
-        user: wrapUser(me as User),
+        user: wrapUser(me as User, toAuthenticationCredentials),
         loading,
       }}
     >
