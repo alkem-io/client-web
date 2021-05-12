@@ -544,8 +544,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Assigns an organisation as a lead for the Challenge. */
   assignChallengeLead: Challenge;
-  /** Assigns an authorization credential to a User. */
-  assignCredentialToUser: User;
   /** Assigns a User as a member of the specified Community. */
   assignUserToCommunity: UserGroup;
   /** Assigns a User as a member of the specified User Group. */
@@ -616,14 +614,16 @@ export type Mutation = {
   eventOnOpportunity: Opportunity;
   /** Trigger an event on the Project. */
   eventOnProject: Project;
+  /** Grants an authorization credential to a User. */
+  grantCredentialToUser: User;
   /** Remove an organisation as a lead for the Challenge. */
   removeChallengeLead: Challenge;
-  /** Removes an authorization credential from a User. */
-  removeCredentialFromUser: User;
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: UserGroup;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
+  /** Removes an authorization credential from a User. */
+  revokeCredentialFromUser: User;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified Aspect. */
@@ -650,10 +650,6 @@ export type Mutation = {
 
 export type MutationAssignChallengeLeadArgs = {
   assignInput: AssignChallengeLeadInput;
-};
-
-export type MutationAssignCredentialToUserArgs = {
-  assignCredentialData: GrantAuthorizationCredentialInput;
 };
 
 export type MutationAssignUserToCommunityArgs = {
@@ -796,12 +792,12 @@ export type MutationEventOnProjectArgs = {
   projectEventData: ProjectEventInput;
 };
 
-export type MutationRemoveChallengeLeadArgs = {
-  removeData: RemoveChallengeLeadInput;
+export type MutationGrantCredentialToUserArgs = {
+  grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationRemoveCredentialFromUserArgs = {
-  removeCredentialData: RemoveAuthorizationCredentialInput;
+export type MutationRemoveChallengeLeadArgs = {
+  removeData: RemoveChallengeLeadInput;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
@@ -810,6 +806,10 @@ export type MutationRemoveUserFromCommunityArgs = {
 
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
+};
+
+export type MutationRevokeCredentialFromUserArgs = {
+  revokeCredentialData: RemoveAuthorizationCredentialInput;
 };
 
 export type MutationUpdateActorArgs = {
@@ -1532,7 +1532,7 @@ export type GrantCredentialsMutationVariables = Exact<{
 }>;
 
 export type GrantCredentialsMutation = { __typename?: 'Mutation' } & {
-  assignCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
+  grantCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
 };
 
 export type RemoveUserFromGroupMutationVariables = Exact<{
@@ -1550,7 +1550,7 @@ export type RevokeCredentialsMutationVariables = Exact<{
 }>;
 
 export type RevokeCredentialsMutation = { __typename?: 'Mutation' } & {
-  removeCredentialFromUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
+  revokeCredentialFromUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
 };
 
 export type UpdateActorMutationVariables = Exact<{
