@@ -1,6 +1,10 @@
 overwrite: true
 schema: "http://localhost:4000/graphql"
 documents: "graphql/**/*.graphql"
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+    - eslint --fix
 generates:
   src/types/graphql-schema.ts:
     plugins:

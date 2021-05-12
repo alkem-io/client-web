@@ -1193,7 +1193,7 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const GrantCredentialsDocument = gql`
   mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
-    assignCredentialToUser(assignCredentialData: $input) {
+    grantCredentialToUser(grantCredentialData: $input) {
       id
       name
       ...UserAgent
@@ -1293,7 +1293,7 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RevokeCredentialsDocument = gql`
   mutation revokeCredentials($input: RemoveAuthorizationCredentialInput!) {
-    removeCredentialFromUser(removeCredentialData: $input) {
+    revokeCredentialFromUser(revokeCredentialData: $input) {
       id
       name
       ...UserAgent
