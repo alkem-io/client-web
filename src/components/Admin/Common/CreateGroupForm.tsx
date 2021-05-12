@@ -49,7 +49,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
                   placeholder={'Enter a name'}
                 />
               </Form.Row>
-              <div className={'d-flex'}>
+              <div className={'d-flex mt-2'}>
                 <Button type={'submit'} variant={'primary'} className={'ml-auto'} disabled={isSubmitting}>
                   {t('buttons.create')}
                 </Button>

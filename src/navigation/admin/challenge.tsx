@@ -1,15 +1,14 @@
 import React, { FC, useMemo } from 'react';
-import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import Button from '../../components/core/Button';
 import {
   useChallengeCommunityQuery,
-  useOpportunitiesQuery,
   useChallengesWithCommunityQuery,
   useEcoverseCommunityQuery,
+  useOpportunitiesQuery,
 } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
@@ -117,14 +116,9 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
 
   return (
     <>
-      <div className={'d-flex'}>
-        <Button className={'mb-4 ml-auto'} as={Link} to={`${url}/new`}>
-          New
-        </Button>
-      </div>
       {/* Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved */}
       {/* <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} /> */}
-      <ListPage paths={paths} data={opportunities || []} />
+      <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />
     </>
   );
 };
