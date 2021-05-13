@@ -1,15 +1,15 @@
+import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
+import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
+import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
-import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
+import { createStyles } from '../../hooks/useTheme';
+import { useUserMetadata } from '../../hooks/useUserMetadata';
 import Avatar from '../core/Avatar';
+import Button from '../core/Button';
+import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import Tags from './Tags';
-import Divider from '../core/Divider';
-import { createStyles } from '../../hooks/useTheme';
-import Button from '../core/Button';
-import { useUserQuery } from '../../generated/graphql';
 
 const useUserPopUpStyles = createStyles(theme => ({
   body: {
@@ -46,17 +46,15 @@ interface UserPopUpProps {
 const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
   const styles = useUserPopUpStyles();
 
-  const { data } = useUserQuery({ variables: { id } });
+  const userMetadata = useUserMetadata(id);
+  const user = userMetadata?.user;
 
-  //const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
-  const user = data?.user;
-
-  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.map(x => x.groups));
-  const challenges = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
-  const organisations = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.organisations);
-  const opportunities = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
+  const groups = userMetadata?.groups || [];
+  const challenges = userMetadata?.challenges || [];
+  const organizations = userMetadata?.organizations || [];
+  const opportunities = userMetadata?.opportunities || [];
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 
@@ -132,14 +130,14 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
                 <td>{getStringOfNames(challenges)}</td>
               </tr>
             )}
-            {organisations && organisations.length > 0 && (
+            {organizations && organizations.length > 0 && (
               <tr>
                 <td>
                   <Typography weight={'medium'} className={styles.centeredText}>
                     Organisations
                   </Typography>
                 </td>
-                <td>{getStringOfNames(organisations)}</td>
+                <td>{getStringOfNames(organizations)}</td>
               </tr>
             )}
             {opportunities && opportunities.length > 0 && (

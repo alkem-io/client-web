@@ -10,17 +10,17 @@ import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dot
 import React, { FC, useRef, useState } from 'react';
 import { Overlay, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
-import { UserMetadata } from '../../context/UserProvider';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
+import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 interface NavigationProps {
   maximize: boolean;
-  userMetadata: UserMetadata | undefined;
+  userMetadata?: UserMetadata;
 }
 
 const useNavigationStyles = createStyles(theme => ({

@@ -6,7 +6,7 @@ import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
 import { defaultUser } from '../../models/User';
-import { AuthorizationCredential, User } from '../../types/graphql-schema';
+import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
@@ -128,13 +128,10 @@ export const UserProfile: FC = () => {
 
   const references = user?.profile?.references || [];
 
-  const groups =
-    userMetadata?.roles.filter(r => r.type === AuthorizationCredential.UserGroupMember).map(r => r.name) || [];
+  const groups = userMetadata?.groups || [];
 
-  const challenges =
-    userMetadata?.roles.filter(r => r.type === AuthorizationCredential.CommunityMember).map(r => r.resource) || [];
-  const opportunities =
-    userMetadata?.roles.filter(r => r.type === AuthorizationCredential.CommunityMember).map(r => r.resource) || [];
+  const challenges = userMetadata?.challenges || [];
+  const opportunities = userMetadata?.opportunities || [];
 
   const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {
