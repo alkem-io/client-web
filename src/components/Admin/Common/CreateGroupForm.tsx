@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Form } from 'react-bootstrap';
+import { Container, Form } from 'react-bootstrap';
 import Typography from '../../core/Typography';
 import InputField from './InputField';
 import * as yup from 'yup';
@@ -27,7 +27,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   };
 
   return (
-    <>
+    <Container>
       <Typography variant={'h3'} className={'mb-4'}>
         Create group
       </Typography>
@@ -58,7 +58,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
           );
         }}
       </Formik>
-    </>
+    </Container>
   );
 };
 export default CreateGroupForm;

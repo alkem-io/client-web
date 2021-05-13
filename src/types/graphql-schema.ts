@@ -1283,12 +1283,11 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     groups?: Maybe<
       Array<
         { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-            members?: Maybe<
-              Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
-            >;
+            members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
           }
       >
     >;
@@ -1847,6 +1846,23 @@ export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
   users: Array<{ __typename?: 'User' } & Pick<User, 'id'>>;
+};
+
+export type GroupQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type GroupQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+          profile?: Maybe<
+            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+              }
+          >;
+        };
+    };
 };
 
 export type GroupCardQueryVariables = Exact<{

@@ -56,7 +56,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       refetchQueries: [
         {
           query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential) } },
+          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
         },
       ],
       awaitRefetchQueries: true,
@@ -75,7 +75,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       refetchQueries: [
         {
           query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential) } },
+          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
         },
       ],
       awaitRefetchQueries: true,
@@ -84,7 +84,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
 
   const availableMembers = useMemo(() => {
     return parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
-  }, [parentMembers, members]);
+  }, [parentMembers, data]);
 
   if (loadingMembers) {
     return <Loading />;

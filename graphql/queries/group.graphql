@@ -1,0 +1,22 @@
+query group($id: String!) {
+  ecoverse {
+    id
+    group(ID: $id) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          name
+          description
+        }
+        tagsets {
+          name
+          tags
+        }
+      }
+    }
+  }
+}
