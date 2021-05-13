@@ -14,7 +14,14 @@ export enum AuthorizationCredentialBackEnd {
   // ChallengeCommunityAdmin = 'challenge-community-admin', // Able to manage membership of a particular community
   // ChallengeContextAdmin = 'challenge-context-admin', // Able to update the context information for a Challenge
 }
-export const useCredentialsResolver = () => {
+
+export interface CredentialResolver {
+  toAuthenticationCredentials: (value: string) => AuthorizationCredential;
+  toRoleName: (value: AuthorizationCredential) => string;
+  toRoleOrder: (value: AuthorizationCredential) => number;
+}
+
+export const useCredentialsResolver = (): CredentialResolver => {
   const { t } = useTranslation();
 
   const toAuthenticationCredentials = (value: string) => {

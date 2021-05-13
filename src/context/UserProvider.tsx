@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useMeQuery } from '../generated/graphql';
-import { useCredentialsResolver } from '../hooks/useCredentialsResolver';
+import { CredentialResolver, useCredentialsResolver } from '../hooks/useCredentialsResolver';
+import { Role } from '../models/Role';
 import { AuthorizationCredential, User } from '../types/graphql-schema';
 
 export interface UserContextContract {
@@ -13,10 +14,10 @@ export interface UserMetadata {
   hasCredentials: (credential: AuthorizationCredential, resourceId?: number) => boolean;
   ofChallenge: (id: string) => boolean;
   isAdmin: boolean;
-  roles: string[];
+  roles: Role[];
 }
 
-const wrapUser = (user: User | undefined, credentialsResolver): UserMetadata | undefined => {
+export const toUserMetadata = (user: User | undefined, resolver: CredentialResolver): UserMetadata | undefined => {
   if (!user) {
     return;
   }
@@ -27,10 +28,23 @@ const wrapUser = (user: User | undefined, credentialsResolver): UserMetadata | u
       Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1),
     ofChallenge: (id: string) => Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
     isAdmin: false,
-    roles: user?.agent?.credentials?.map(c => credentialsResolver(c.type)) || [],
+    roles:
+      user?.agent?.credentials
+        ?.map(
+          c =>
+            ({
+              code: c.type,
+              type: resolver.toAuthenticationCredentials(c.type),
+              name: resolver.toRoleName(resolver.toAuthenticationCredentials(c.type)),
+              order: resolver.toRoleOrder(resolver.toAuthenticationCredentials(c.type)),
+              resourceId: c.resourceID,
+              resource: 'Resource can not be resolved', // TODO [ATS] Resolve the recource name (User group name, challenge, opportunity ...)
+            } as Role)
+        )
+        .sort((a, b) => a.order - b.order) || [],
   };
 
-  metadata.isAdmin = metadata.roles.findIndex(c => c === AuthorizationCredential.GlobalAdmin) !== -1;
+  metadata.isAdmin = metadata.roles.findIndex(c => c.type === AuthorizationCredential.GlobalAdmin) !== -1;
 
   return metadata;
 };
@@ -44,12 +58,12 @@ const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
   const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
-  const { toAuthenticationCredentials } = useCredentialsResolver();
+  const resolver = useCredentialsResolver();
 
   return (
     <UserContext.Provider
       value={{
-        user: wrapUser(me as User, toAuthenticationCredentials),
+        user: toUserMetadata(me as User, resolver),
         loading,
       }}
     >

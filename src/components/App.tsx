@@ -1,10 +1,15 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { UserMetadata } from '../context/UserProvider';
+import { useServerMetadataQuery } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useConfig } from '../hooks/useConfig';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useUserContext } from '../hooks/useUserContext';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
@@ -18,11 +23,6 @@ import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
-import { useServerMetadataQuery } from '../generated/graphql';
-import { useHistory } from 'react-router-dom';
-import { useConfig } from '../hooks/useConfig';
-import { useTypedSelector } from '../hooks/useTypedSelector';
-import { useTranslation } from 'react-i18next';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -31,16 +31,8 @@ interface UserSegmentProps {
 
 const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
   const { user, roles } = userMetadata;
-  return (
-    user && (
-      <User
-        name={user.name}
-        title={roles[roles.length - 1] || 'Registered'}
-        orientation={orientation}
-        src={user.profile?.avatar}
-      />
-    )
-  );
+  const role = roles[0]?.name || 'Registered';
+  return user && <User name={user.name} title={role} orientation={orientation} src={user.profile?.avatar} />;
 };
 
 const App = ({ children }): React.ReactElement => {

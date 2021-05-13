@@ -41,8 +41,8 @@
           "order": 2
         },
         "global-registered": {
-          "name": "Register",
-          "order": 3
+          "name": "Registered",
+          "order": 999
         },
         "community-member": {
           "name": "Community Member",

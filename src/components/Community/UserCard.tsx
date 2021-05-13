@@ -1,5 +1,4 @@
 import React, { FC, memo, useState } from 'react';
-import roles from '../../configs/roles.json';
 import { Theme } from '../../context/ThemeProvider';
 import { useUserCardDataQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
@@ -39,17 +38,10 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   });
 
   const data = userData?.usersById[0] as User;
-  const groups = [] as string[];
-  // TODO [ATS]: Resolve this
-  //  data?.memberof?.communities
-  //   ?.flatMap(c => {
-  //     if (c) return c.groups?.map(g => g.name.toLowerCase());
-  //     return undefined;
-  //   })
-  //   .filter((x): x is string => x !== undefined);
+  // const groups = [] as string[];
 
-  const role =
-    (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
+  const role = 'Registered';
+  // (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
   const avatar = data?.profile?.avatar;
 
   if (loading) return <Loading text={''} />;
