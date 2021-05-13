@@ -1,11 +1,8 @@
-import { ApolloError } from '@apollo/client';
-import { Severity } from '@sentry/react';
 import clsx from 'clsx';
 import React, { FC, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useUploadAvatarMutation } from '../generated/graphql';
+import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { createStyles } from '../hooks/useTheme';
-import { pushNotification } from '../reducers/notifincations/actions';
 import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
 import { Spinner } from './core/Spinner';
 import UploadButton from './core/UploadButton';
@@ -29,11 +26,8 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
   const avatarStyles = useAvatarStyles();
   const styles = useEditableAvatarStyles();
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
-  const dispatch = useDispatch();
 
-  const handleError = (error: ApolloError) => {
-    dispatch(pushNotification(error.message, Severity.Error));
-  };
+  const handleError = useApolloErrorHandler();
 
   const handleAvatarChange = useCallback(
     (file: File) => {
@@ -46,7 +40,7 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
               profileID: profileId,
             },
           },
-        }).catch(err => handleError(err));
+        }).catch(handleError);
       }
     },
     [profileId]

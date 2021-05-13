@@ -1,6 +1,6 @@
 query user($id: String!) {
   user(ID: $id) {
     ...UserDetails
-    ...UserMembers
+    ...UserAgent
   }
 }

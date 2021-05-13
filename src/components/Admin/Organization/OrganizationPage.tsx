@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import {
   OrganizationProfileInfoDocument,
@@ -8,6 +7,7 @@ import {
   useDeleteReferenceMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
@@ -35,21 +35,19 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
   useUpdateNavigation({ currentPaths });
 
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
+  const handleError = useApolloErrorHandler();
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: () => {
       notify('Organization created successfully', 'success');
     },
-    onError: error => handleError(error),
+    onError: handleError,
     awaitRefetchQueries: true,
     refetchQueries: ['organizationsList'],
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
-    onError: error => handleError(error),
+    onError: handleError,
     onCompleted: () => {
       notify('Organization updated successfully', 'success');
     },

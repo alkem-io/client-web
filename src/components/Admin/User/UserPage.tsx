@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -9,6 +8,7 @@ import {
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { UserModel } from '../../../models/User';
@@ -37,12 +37,10 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   useUpdateNavigation({ currentPaths });
 
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
+  const handleError = useApolloErrorHandler();
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: error => console.log(error),
+    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
@@ -62,9 +60,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     onCompleted: () => {
       history.push('/admin/users');
     },
-    onError: e => {
-      handleError(e);
-    },
+    onError: handleError,
   });
 
   const isEditMode = mode === EditMode.edit;

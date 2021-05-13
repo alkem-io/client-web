@@ -53,6 +53,15 @@ export type ActorGroup = {
   name: Scalars['String'];
 };
 
+export type Agent = {
+  __typename?: 'Agent';
+  /** The Credentials held by this Agent. */
+  credentials?: Maybe<Array<Credential>>;
+  /** The Decentralized Identifier (DID) for this Agent. */
+  did?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+};
+
 export type ApiConfig = {
   __typename?: 'ApiConfig';
   /** Configuration payload for the Cherrytwist API. */
@@ -98,11 +107,6 @@ export type AssignCommunityMemberInput = {
   userID: Scalars['Float'];
 };
 
-export type AssignUserGroupFocalPointInput = {
-  groupID: Scalars['Float'];
-  userID: Scalars['Float'];
-};
-
 export type AssignUserGroupMemberInput = {
   groupID: Scalars['Float'];
   userID: Scalars['Float'];
@@ -131,6 +135,16 @@ export type AuthenticationProviderConfig = {
 };
 
 export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | DemoAuthProviderConfig;
+
+export enum AuthorizationCredential {
+  CommunityMember = 'CommunityMember',
+  GlobalAdmin = 'GlobalAdmin',
+  GlobalAdminChallenges = 'GlobalAdminChallenges',
+  GlobalAdminCommunity = 'GlobalAdminCommunity',
+  GlobalRegistered = 'GlobalRegistered',
+  OrganisationMember = 'OrganisationMember',
+  UserGroupMember = 'UserGroupMember',
+}
 
 export type Challenge = {
   __typename?: 'Challenge';
@@ -342,6 +356,13 @@ export type CreateUserInput = {
   profileData?: Maybe<CreateProfileInput>;
 };
 
+export type Credential = {
+  __typename?: 'Credential';
+  id: Scalars['ID'];
+  resourceID: Scalars['Float'];
+  type: Scalars['String'];
+};
+
 export type DeleteActorGroupInput = {
   ID: Scalars['Float'];
 };
@@ -466,6 +487,14 @@ export type EcoverseTemplate = {
   name: Scalars['String'];
 };
 
+export type GrantAuthorizationCredentialInput = {
+  /** The resource to which this credential is tied. */
+  resourceID?: Maybe<Scalars['Float']>;
+  type: AuthorizationCredential;
+  /** The user to whom the credential is being granted. */
+  userID: Scalars['Float'];
+};
+
 export type Lifecycle = {
   __typename?: 'Lifecycle';
   id: Scalars['ID'];
@@ -477,14 +506,6 @@ export type Lifecycle = {
   state?: Maybe<Scalars['String']>;
   /** The Lifecycle template identifier. */
   templateId?: Maybe<Scalars['String']>;
-};
-
-export type MemberOf = {
-  __typename?: 'MemberOf';
-  /** References to the Communities the user is a member of */
-  communities: Array<Community>;
-  /** References to the orgnaisaitons the user is a member of */
-  organisations: Array<Organisation>;
 };
 
 export type Metadata = {
@@ -523,8 +544,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Assigns an organisation as a lead for the Challenge. */
   assignChallengeLead: Challenge;
-  /** Assigns a User as the focal point of the specified User Group. */
-  assignGroupFocalPoint?: Maybe<UserGroup>;
   /** Assigns a User as a member of the specified Community. */
   assignUserToCommunity: UserGroup;
   /** Assigns a User as a member of the specified User Group. */
@@ -595,14 +614,16 @@ export type Mutation = {
   eventOnOpportunity: Opportunity;
   /** Trigger an event on the Project. */
   eventOnProject: Project;
+  /** Grants an authorization credential to a User. */
+  grantCredentialToUser: User;
   /** Remove an organisation as a lead for the Challenge. */
   removeChallengeLead: Challenge;
-  /** Removes the focal point for the specified User Group. */
-  removeGroupFocalPoint?: Maybe<UserGroup>;
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: UserGroup;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
+  /** Removes an authorization credential from a User. */
+  revokeCredentialFromUser: User;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified Aspect. */
@@ -619,10 +640,6 @@ export type Mutation = {
   updateProfile: Profile;
   /** Updates the specified Project. */
   updateProject: Project;
-  /** Update the specified Reference. */
-  updateReference: Reference;
-  /** Updates the Tagset. */
-  updateTagset: Tagset;
   /** Updates the User. Note: email address cannot be updated. */
   updateUser: User;
   /** Updates the specified User Group. */
@@ -633,10 +650,6 @@ export type Mutation = {
 
 export type MutationAssignChallengeLeadArgs = {
   assignInput: AssignChallengeLeadInput;
-};
-
-export type MutationAssignGroupFocalPointArgs = {
-  membershipData: AssignUserGroupFocalPointInput;
 };
 
 export type MutationAssignUserToCommunityArgs = {
@@ -779,12 +792,12 @@ export type MutationEventOnProjectArgs = {
   projectEventData: ProjectEventInput;
 };
 
-export type MutationRemoveChallengeLeadArgs = {
-  removeData: RemoveChallengeLeadInput;
+export type MutationGrantCredentialToUserArgs = {
+  grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationRemoveGroupFocalPointArgs = {
-  removeData: RemoveUserGroupFocalPoint;
+export type MutationRemoveChallengeLeadArgs = {
+  removeData: RemoveChallengeLeadInput;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
@@ -793,6 +806,10 @@ export type MutationRemoveUserFromCommunityArgs = {
 
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
+};
+
+export type MutationRevokeCredentialFromUserArgs = {
+  revokeCredentialData: RemoveAuthorizationCredentialInput;
 };
 
 export type MutationUpdateActorArgs = {
@@ -825,14 +842,6 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateProjectArgs = {
   projectData: UpdateProjectInput;
-};
-
-export type MutationUpdateReferenceArgs = {
-  updateData: UpdateReferenceInput;
-};
-
-export type MutationUpdateTagsetArgs = {
-  tagsetData: UpdateTagsetInput;
 };
 
 export type MutationUpdateUserArgs = {
@@ -897,7 +906,7 @@ export type Organisation = {
   /** Groups defined on this organisation. */
   groups?: Maybe<Array<UserGroup>>;
   id: Scalars['ID'];
-  /** Users that are contributing to this organisation. */
+  /** All users that are members of this Organisation. */
   members?: Maybe<Array<User>>;
   name: Scalars['String'];
   /** The profile for this organisation. */
@@ -961,6 +970,8 @@ export type Query = {
   users: Array<User>;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
+  /** All Users that hold credentials matching the supplied criteria. */
+  usersWithAuthorizationCredential: Array<User>;
 };
 
 export type QueryEcoverseArgs = {
@@ -981,6 +992,10 @@ export type QueryUserArgs = {
 
 export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['String']>;
+};
+
+export type QueryUsersWithAuthorizationCredentialArgs = {
+  credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
 };
 
 export type Question = {
@@ -1016,6 +1031,14 @@ export type Relation = {
   type: Scalars['String'];
 };
 
+export type RemoveAuthorizationCredentialInput = {
+  /** The resource to which access is being removed. */
+  resourceID?: Maybe<Scalars['Float']>;
+  type: AuthorizationCredential;
+  /** The user from whom the credential is being removed. */
+  userID: Scalars['Float'];
+};
+
 export type RemoveChallengeLeadInput = {
   challengeID: Scalars['String'];
   organisationID: Scalars['String'];
@@ -1024,10 +1047,6 @@ export type RemoveChallengeLeadInput = {
 export type RemoveCommunityMemberInput = {
   communityID: Scalars['Float'];
   userID: Scalars['Float'];
-};
-
-export type RemoveUserGroupFocalPoint = {
-  groupID: Scalars['Float'];
 };
 
 export type RemoveUserGroupMemberInput = {
@@ -1218,6 +1237,8 @@ export type User = {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
+  /** The agent for this User */
+  agent?: Maybe<Agent>;
   city: Scalars['String'];
   country: Scalars['String'];
   email: Scalars['String'];
@@ -1225,18 +1246,14 @@ export type User = {
   gender: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
-  /** An overview of the groups this user is a memberof. Note: all groups are returned without members to avoid recursion. */
-  memberof?: Maybe<MemberOf>;
   name: Scalars['String'];
   phone: Scalars['String'];
-  /** The profile for this user */
+  /** The profile for this User */
   profile?: Maybe<Profile>;
 };
 
 export type UserGroup = {
   __typename?: 'UserGroup';
-  /** The User that is the focal point of this User Group. */
-  focalPoint?: Maybe<User>;
   id: Scalars['ID'];
   /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
@@ -1255,6 +1272,13 @@ export type UserTemplate = {
   name: Scalars['String'];
   /** Tagset templates. */
   tagsets?: Maybe<Array<TagsetTemplate>>;
+};
+
+export type UsersWithAuthorizationCredentialInput = {
+  /** The resource to which a credential needs to be bound. */
+  resourceID?: Maybe<Scalars['Float']>;
+  /** The type of credential. */
+  type: AuthorizationCredential;
 };
 
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
@@ -1297,6 +1321,14 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
     aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
   };
 
+export type UserAgentFragment = { __typename?: 'User' } & {
+  agent?: Maybe<
+    { __typename?: 'Agent' } & Pick<Agent, 'id' | 'did'> & {
+        credentials?: Maybe<Array<{ __typename?: 'Credential' } & Pick<Credential, 'id' | 'resourceID' | 'type'>>>;
+      }
+  >;
+};
+
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
   'id' | 'name' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
@@ -1308,19 +1340,6 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
         }
     >;
   };
-
-export type UserMembersFragment = { __typename?: 'User' } & {
-  memberof?: Maybe<
-    { __typename?: 'MemberOf' } & {
-      communities: Array<
-        { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
-            groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
-          }
-      >;
-      organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'>>;
-    }
-  >;
-};
 
 export type AssignUserToCommunityMutationVariables = Exact<{
   membershipData: AssignCommunityMemberInput;
@@ -1508,6 +1527,14 @@ export type DeleteUserMutation = { __typename?: 'Mutation' } & {
   deleteUser: { __typename?: 'User' } & UserDetailsFragment;
 };
 
+export type GrantCredentialsMutationVariables = Exact<{
+  input: GrantAuthorizationCredentialInput;
+}>;
+
+export type GrantCredentialsMutation = { __typename?: 'Mutation' } & {
+  grantCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
+};
+
 export type RemoveUserFromGroupMutationVariables = Exact<{
   input: RemoveUserGroupMemberInput;
 }>;
@@ -1516,6 +1543,14 @@ export type RemoveUserFromGroupMutation = { __typename?: 'Mutation' } & {
   removeUserFromGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
       members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     };
+};
+
+export type RevokeCredentialsMutationVariables = Exact<{
+  input: RemoveAuthorizationCredentialInput;
+}>;
+
+export type RevokeCredentialsMutation = { __typename?: 'Mutation' } & {
+  revokeCredentialFromUser: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & UserAgentFragment;
 };
 
 export type UpdateActorMutationVariables = Exact<{
@@ -1851,7 +1886,7 @@ export type GroupMembersQuery = { __typename?: 'Query' } & {
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
+  me: { __typename?: 'User' } & UserDetailsFragment & UserAgentFragment;
 };
 
 export type OpportunitiesQueryVariables = Exact<{
@@ -2220,7 +2255,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 export type UserQuery = { __typename?: 'Query' } & {
-  user: { __typename?: 'User' } & UserDetailsFragment & UserMembersFragment;
+  user: { __typename?: 'User' } & UserDetailsFragment & UserAgentFragment;
 };
 
 export type UserAvatarsQueryVariables = Exact<{
@@ -2240,18 +2275,19 @@ export type UserCardDataQueryVariables = Exact<{
 }>;
 
 export type UserCardDataQuery = { __typename?: 'Query' } & {
-  usersById: Array<
-    { __typename: 'User' } & {
-      memberof?: Maybe<
-        { __typename?: 'MemberOf' } & {
-          communities: Array<{ __typename?: 'Community' } & Pick<Community, 'name'>>;
-          organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'name'>>;
-        }
-      >;
-    } & UserDetailsFragment
-  >;
+  usersById: Array<{ __typename: 'User' } & UserDetailsFragment & UserAgentFragment>;
 };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UsersQuery = { __typename?: 'Query' } & { users: Array<{ __typename?: 'User' } & UserDetailsFragment> };
+
+export type UsersWithCredentialsQueryVariables = Exact<{
+  input: UsersWithAuthorizationCredentialInput;
+}>;
+
+export type UsersWithCredentialsQuery = { __typename?: 'Query' } & {
+  usersWithAuthorizationCredential: Array<
+    { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>
+  >;
+};

@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -8,6 +7,7 @@ import {
   useMeQuery,
   useUpdateUserMutation,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
@@ -40,17 +40,14 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const [createTagset] = useCreateTagsetOnProfileMutation();
+  const handleError = useApolloErrorHandler();
 
   const [updateUser] = useUpdateUserMutation({
-    onError: error => handleError(error),
+    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
   });
-
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
 
   const handleCancel = () => history.goBack();
 

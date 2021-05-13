@@ -1,6 +1,13 @@
 export const managementData = {
   adminLvl: [
     {
+      name: 'Authorization',
+      buttons: [
+        { description: 'Global admins', url: '/authorization/global-admin' },
+        { description: 'Global community admins', url: '/authorization/global-admin-community' },
+      ],
+    },
+    {
       name: 'Users',
       buttons: [{ description: 'Edit', url: '/users' }],
     },

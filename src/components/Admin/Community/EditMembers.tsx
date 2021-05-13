@@ -38,7 +38,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                           <td>{m.firstName}</td>
                           <td>{m.lastName}</td>
                           <td>{m.email}</td>
-                          <td>
+                          <td className={'text-right'}>
                             {onRemove && (
                               <Button variant="outline-danger" size="sm" onClick={() => onRemove(m)}>
                                 X

@@ -88,6 +88,19 @@ export const ProjectDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserAgentFragmentDoc = gql`
+  fragment UserAgent on User {
+    agent {
+      id
+      did
+      credentials {
+        id
+        resourceID
+        type
+      }
+    }
+  }
+`;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -113,24 +126,6 @@ export const UserDetailsFragmentDoc = gql`
         id
         name
         tags
-      }
-    }
-  }
-`;
-export const UserMembersFragmentDoc = gql`
-  fragment UserMembers on User {
-    memberof {
-      communities {
-        id
-        name
-        type
-        groups {
-          name
-        }
-      }
-      organisations {
-        id
-        name
       }
     }
   }
@@ -1196,6 +1191,55 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
+export const GrantCredentialsDocument = gql`
+  mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
+    grantCredentialToUser(grantCredentialData: $input) {
+      id
+      name
+      ...UserAgent
+    }
+  }
+  ${UserAgentFragmentDoc}
+`;
+export type GrantCredentialsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.GrantCredentialsMutation,
+  SchemaTypes.GrantCredentialsMutationVariables
+>;
+
+/**
+ * __useGrantCredentialsMutation__
+ *
+ * To run a mutation, you first call `useGrantCredentialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGrantCredentialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [grantCredentialsMutation, { data, loading, error }] = useGrantCredentialsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGrantCredentialsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.GrantCredentialsMutation,
+    SchemaTypes.GrantCredentialsMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.GrantCredentialsMutation, SchemaTypes.GrantCredentialsMutationVariables>(
+    GrantCredentialsDocument,
+    baseOptions
+  );
+}
+export type GrantCredentialsMutationHookResult = ReturnType<typeof useGrantCredentialsMutation>;
+export type GrantCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.GrantCredentialsMutation>;
+export type GrantCredentialsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.GrantCredentialsMutation,
+  SchemaTypes.GrantCredentialsMutationVariables
+>;
 export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
@@ -1246,6 +1290,55 @@ export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaType
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
+>;
+export const RevokeCredentialsDocument = gql`
+  mutation revokeCredentials($input: RemoveAuthorizationCredentialInput!) {
+    revokeCredentialFromUser(revokeCredentialData: $input) {
+      id
+      name
+      ...UserAgent
+    }
+  }
+  ${UserAgentFragmentDoc}
+`;
+export type RevokeCredentialsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeCredentialsMutation,
+  SchemaTypes.RevokeCredentialsMutationVariables
+>;
+
+/**
+ * __useRevokeCredentialsMutation__
+ *
+ * To run a mutation, you first call `useRevokeCredentialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeCredentialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [revokeCredentialsMutation, { data, loading, error }] = useRevokeCredentialsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRevokeCredentialsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RevokeCredentialsMutation,
+    SchemaTypes.RevokeCredentialsMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.RevokeCredentialsMutation, SchemaTypes.RevokeCredentialsMutationVariables>(
+    RevokeCredentialsDocument,
+    baseOptions
+  );
+}
+export type RevokeCredentialsMutationHookResult = ReturnType<typeof useRevokeCredentialsMutation>;
+export type RevokeCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.RevokeCredentialsMutation>;
+export type RevokeCredentialsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeCredentialsMutation,
+  SchemaTypes.RevokeCredentialsMutationVariables
 >;
 export const UpdateActorDocument = gql`
   mutation updateActor($input: UpdateActorInput!) {
@@ -2675,11 +2768,11 @@ export const MeDocument = gql`
   query me {
     me {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4131,11 +4224,11 @@ export const UserDocument = gql`
   query user($id: String!) {
     user(ID: $id) {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4222,18 +4315,12 @@ export const UserCardDataDocument = gql`
   query userCardData($ids: [String!]!) {
     usersById(IDs: $ids) {
       __typename
-      memberof {
-        communities {
-          name
-        }
-        organisations {
-          name
-        }
-      }
       ...UserDetails
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4311,3 +4398,59 @@ export function useUsersLazyQuery(
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>;
+export const UsersWithCredentialsDocument = gql`
+  query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
+    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
+      id
+      name
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUsersWithCredentialsQuery__
+ *
+ * To run a query within a React component, call `useUsersWithCredentialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersWithCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersWithCredentialsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersWithCredentialsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export function useUsersWithCredentialsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
+export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
+export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersWithCredentialsQuery,
+  SchemaTypes.UsersWithCredentialsQueryVariables
+>;

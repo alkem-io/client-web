@@ -1,6 +1,8 @@
 import React, { FC, useCallback, useMemo } from 'react';
+import { Container } from 'react-bootstrap';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -12,7 +14,7 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
   const history = useHistory();
   const { url } = useRouteMatch();
 
-  const handleError = e => console.log(e);
+  const handleError = useApolloErrorHandler();
 
   const redirectToCreatedGroup = (groupId: string) => {
     const newGroupPath = url.replace('/new', `/${groupId}`);
@@ -58,5 +60,9 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  return <CreateGroupForm onCreate={handleCreate} />;
+  return (
+    <Container>
+      <CreateGroupForm onCreate={handleCreate} />
+    </Container>
+  );
 };
