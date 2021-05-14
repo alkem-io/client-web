@@ -56,7 +56,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       refetchQueries: [
         {
           query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential) } },
+          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
         },
       ],
       awaitRefetchQueries: true,
@@ -75,7 +75,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
       refetchQueries: [
         {
           query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential) } },
+          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
         },
       ],
       awaitRefetchQueries: true,
