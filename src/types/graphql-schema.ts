@@ -1610,6 +1610,24 @@ export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
   uploadAvatar: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
 };
 
+export type AllCommunitiesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllCommunitiesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment>;
+    challenges?: Maybe<
+      Array<
+        { __typename?: 'Challenge' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+      >
+    >;
+    opportunities: Array<
+      { __typename?: 'Opportunity' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+    >;
+  };
+};
+
+export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'>;
+
 export type AllOpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
@@ -1847,6 +1865,25 @@ export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
   users: Array<{ __typename?: 'User' } & Pick<User, 'id'>>;
+};
+
+export type GroupQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type GroupQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+          profile?: Maybe<
+            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+                references?: Maybe<
+                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
+                >;
+                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+              }
+          >;
+        };
+    };
 };
 
 export type GroupCardQueryVariables = Exact<{

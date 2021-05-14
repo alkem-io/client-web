@@ -1,0 +1,25 @@
+query allCommunities {
+  ecoverse {
+    community {
+      ...AllCommunityDetails
+    }
+  }
+  ecoverse {
+    challenges {
+      community {
+        ...AllCommunityDetails
+      }
+    }
+    opportunities {
+      community {
+        ...AllCommunityDetails
+      }
+    }
+  }
+}
+
+fragment AllCommunityDetails on Community {
+  id
+  name
+  type
+}

@@ -45,7 +45,7 @@ export const UserForm: FC<UserProps> = ({
     return [];
   }, [config]);
 
-  const isEditMode = editMode === EditMode.edit;
+  const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
@@ -215,7 +215,7 @@ export const UserForm: FC<UserProps> = ({
                     title={'Email'}
                     value={email}
                     required={true && !isReadOnlyMode}
-                    readOnly={isReadOnlyMode || isEditMode}
+                    readOnly={isReadOnlyMode || (isEditMode && editMode !== EditMode.new)}
                     disabled={isSubmitting}
                   />
                 </Form.Group>

@@ -7,4 +7,5 @@ export interface Role {
   order: number;
   resourceId: number;
   resource: string;
+  resourceType: string;
 }

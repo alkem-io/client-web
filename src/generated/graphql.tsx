@@ -130,6 +130,13 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
+export const AllCommunityDetailsFragmentDoc = gql`
+  fragment AllCommunityDetails on Community {
+    id
+    name
+    type
+  }
+`;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
     assignUserToCommunity(membershipData: $membershipData) {
@@ -1659,6 +1666,66 @@ export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadAvatarMutation,
   SchemaTypes.UploadAvatarMutationVariables
 >;
+export const AllCommunitiesDocument = gql`
+  query allCommunities {
+    ecoverse {
+      community {
+        ...AllCommunityDetails
+      }
+    }
+    ecoverse {
+      challenges {
+        community {
+          ...AllCommunityDetails
+        }
+      }
+      opportunities {
+        community {
+          ...AllCommunityDetails
+        }
+      }
+    }
+  }
+  ${AllCommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useAllCommunitiesQuery__
+ *
+ * To run a query within a React component, call `useAllCommunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllCommunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllCommunitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllCommunitiesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
+    AllCommunitiesDocument,
+    baseOptions
+  );
+}
+export function useAllCommunitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
+    AllCommunitiesDocument,
+    baseOptions
+  );
+}
+export type AllCommunitiesQueryHookResult = ReturnType<typeof useAllCommunitiesQuery>;
+export type AllCommunitiesLazyQueryHookResult = ReturnType<typeof useAllCommunitiesLazyQuery>;
+export type AllCommunitiesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AllCommunitiesQuery,
+  SchemaTypes.AllCommunitiesQueryVariables
+>;
 export const AllOpportunitiesDocument = gql`
   query allOpportunities {
     ecoverse {
@@ -2637,6 +2704,63 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQuery,
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
+export const GroupDocument = gql`
+  query group($id: String!) {
+    ecoverse {
+      id
+      group(ID: $id) {
+        id
+        name
+        profile {
+          id
+          avatar
+          description
+          references {
+            id
+            uri
+            name
+            description
+          }
+          tagsets {
+            id
+            name
+            tags
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGroupQuery__
+ *
+ * To run a query within a React component, call `useGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGroupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
+}
+export function useGroupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
+}
+export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
+export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
+export type GroupQueryResult = Apollo.QueryResult<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>;
 export const GroupCardDocument = gql`
   query groupCard($id: String!) {
     ecoverse {
