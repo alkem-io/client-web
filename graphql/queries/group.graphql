@@ -9,10 +9,13 @@ query group($id: String!) {
         avatar
         description
         references {
+          id
+          uri
           name
           description
         }
         tagsets {
+          id
           name
           tags
         }

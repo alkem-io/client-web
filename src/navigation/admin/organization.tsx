@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
-import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
@@ -17,6 +16,7 @@ import { FourOuFour, PageProps } from '../../pages';
 import { Organisation } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { AdminParameters } from './admin';
+import { GroupRoute } from './group';
 
 export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
@@ -102,7 +102,7 @@ const OrganizationGroupRoutes: FC<WithParentMembersProps> = ({ paths, parentMemb
         <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} parentMembers={parentMembers} />
+        <GroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
     </Switch>
   );

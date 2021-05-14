@@ -1476,6 +1476,64 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
 >;
+export const UpdateGroupDocument = gql`
+  mutation updateGroup($input: UpdateUserGroupInput!) {
+    updateUserGroup(userGroupData: $input) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          uri
+          name
+          description
+        }
+        tagsets {
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+export type UpdateGroupMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateGroupMutation,
+  SchemaTypes.UpdateGroupMutationVariables
+>;
+
+/**
+ * __useUpdateGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>
+) {
+  return Apollo.useMutation<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>(
+    UpdateGroupDocument,
+    baseOptions
+  );
+}
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
+export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
+export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateGroupMutation,
+  SchemaTypes.UpdateGroupMutationVariables
+>;
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $opportunityData) {
@@ -2649,10 +2707,13 @@ export const GroupDocument = gql`
           avatar
           description
           references {
+            id
+            uri
             name
             description
           }
           tagsets {
+            id
             name
             tags
           }

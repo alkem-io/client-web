@@ -1576,6 +1576,21 @@ export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'>;
 };
 
+export type UpdateGroupMutationVariables = Exact<{
+  input: UpdateUserGroupInput;
+}>;
+
+export type UpdateGroupMutation = { __typename?: 'Mutation' } & {
+  updateUserGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+      profile?: Maybe<
+        { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'uri' | 'name' | 'description'>>>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+          }
+      >;
+    };
+};
+
 export type UpdateOpportunityMutationVariables = Exact<{
   opportunityData: UpdateOpportunityInput;
 }>;
@@ -1857,8 +1872,10 @@ export type GroupQuery = { __typename?: 'Query' } & {
       group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
           profile?: Maybe<
             { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+                references?: Maybe<
+                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
+                >;
+                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
               }
           >;
         };
