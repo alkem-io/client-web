@@ -2925,6 +2925,67 @@ export function useMeLazyQuery(
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
+export const MembershipDocument = gql`
+  query membership($input: MembershipInput!) {
+    membership(membershipData: $input) {
+      ecoverses {
+        id
+        name
+        challenges {
+          id
+          name
+        }
+        userGroups {
+          id
+          name
+        }
+      }
+      organisations {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useMembershipQuery__
+ *
+ * To run a query within a React component, call `useMembershipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembershipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembershipQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMembershipQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>(
+    MembershipDocument,
+    baseOptions
+  );
+}
+export function useMembershipLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>(
+    MembershipDocument,
+    baseOptions
+  );
+}
+export type MembershipQueryHookResult = ReturnType<typeof useMembershipQuery>;
+export type MembershipLazyQueryHookResult = ReturnType<typeof useMembershipLazyQuery>;
+export type MembershipQueryResult = Apollo.QueryResult<
+  SchemaTypes.MembershipQuery,
+  SchemaTypes.MembershipQueryVariables
+>;
 export const OpportunitiesDocument = gql`
   query opportunities($id: String!) {
     ecoverse {

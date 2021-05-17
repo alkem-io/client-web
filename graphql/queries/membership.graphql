@@ -1,0 +1,20 @@
+query membership($input: MembershipInput!) {
+  membership(membershipData: $input) {
+    ecoverses {
+      id
+      name
+      challenges {
+        id
+        name
+      }
+      userGroups {
+        id
+        name
+      }
+    }
+    organisations {
+      id
+      name
+    }
+  }
+}

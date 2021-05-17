@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
-import { CommunityType } from '../models/Constants';
 import { Role } from '../models/Role';
-import { AuthorizationCredential, User } from '../types/graphql-schema';
+import { AuthorizationCredential, Membership, User } from '../types/graphql-schema';
 import { useCredentialsResolver } from './useCredentialsResolver';
-import { useResourceResolver } from './useResourceResolver';
 
 export interface UserMetadata {
   user: User;
@@ -15,29 +13,35 @@ export interface UserMetadata {
   organizations: string[];
   opportunities: string[];
   challenges: string[];
+  ecoverses: string[];
 }
+
+const getName = (i: { name?: string }) => i.name || ';';
 
 export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
-  const resourceResolver = useResourceResolver();
 
   const toUserMetadata = useCallback(
-    (user: User | undefined): UserMetadata | undefined => {
+    (user: User | undefined, membershipData?: Membership): UserMetadata | undefined => {
       if (!user) {
         return;
       }
+      const ecoverses = membershipData?.ecoverses.map(getName) || [];
+      const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getName)) || [];
+      const opportunities = [];
+      const organizations = membershipData?.organisations.map(getName) || [];
+      const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getName)) || [];
+
       const roles =
         user?.agent?.credentials
           ?.map(c => {
-            const resource = resourceResolver(resolver.toAuthenticationCredentials(c.type), c.resourceID.toString());
+            // const resource = resourceResolver(resolver.toAuthenticationCredentials(c.type), c.resourceID.toString());
             return {
               code: c.type,
               type: resolver.toAuthenticationCredentials(c.type),
               name: resolver.toRoleName(resolver.toAuthenticationCredentials(c.type)),
               order: resolver.toRoleOrder(resolver.toAuthenticationCredentials(c.type)),
               resourceId: c.resourceID,
-              resource: resource.name,
-              resourceType: resource.type,
             } as Role;
           })
           .sort((a, b) => a.order - b.order) || [];
@@ -51,20 +55,11 @@ export const useUserMetadataWrapper = () => {
           Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
         isAdmin: false,
         roles,
-        groups: roles.filter(r => r.type === AuthorizationCredential.UserGroupMember).map(r => r.resource) || [],
-        challenges:
-          roles
-            .filter(
-              r => r.type === AuthorizationCredential.CommunityMember && r.resourceType === CommunityType.CHALLENGE
-            )
-            .map(r => r.resource) || [],
-        opportunities:
-          roles
-            .filter(
-              r => r.type === AuthorizationCredential.CommunityMember && r.resourceType === CommunityType.OPPORTUNITY
-            )
-            .map(r => r.resource) || [],
-        organizations: [],
+        groups,
+        challenges,
+        opportunities,
+        organizations,
+        ecoverses,
       };
 
       metadata.isAdmin = metadata.roles.findIndex(c => c.type === AuthorizationCredential.GlobalAdmin) !== -1;

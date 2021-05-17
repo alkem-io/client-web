@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useMeQuery } from '../generated/graphql';
+import { useMembershipQuery, useMeQuery } from '../generated/graphql';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks/useUserMetadataWrapper';
 import { User } from '../types/graphql-schema';
 
@@ -15,13 +15,18 @@ const UserContext = React.createContext<UserContextContract>({
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
-  const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
   const wrapper = useUserMetadataWrapper();
 
+  const { data: membershipData, loading: loadingMembership } = useMembershipQuery({
+    variables: { input: { userID: me?.id || '' } },
+    errorPolicy: 'ignore',
+  });
+
+  const loading = profileLoading || loadingMembership;
   return (
     <UserContext.Provider
       value={{
-        user: wrapper(me as User),
+        user: wrapper(me as User, membershipData?.membership),
         loading,
       }}
     >
