@@ -48,8 +48,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   );
 
   const community = data?.ecoverse?.opportunity?.community;
-  const parentMembers =
-    challengeData?.ecoverse?.challenge.community?.groups?.find(g => g.name === 'members')?.members || [];
+  const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
 
   if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;
 

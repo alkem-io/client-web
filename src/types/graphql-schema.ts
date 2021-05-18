@@ -1322,12 +1322,11 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     groups?: Maybe<
       Array<
         { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-            members?: Maybe<
-              Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'firstName' | 'lastName' | 'email'>>
-            >;
+            members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
           }
       >
     >;

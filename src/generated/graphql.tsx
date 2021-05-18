@@ -2,6 +2,15 @@ import * as SchemaTypes from '../types/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+export const GroupMembersFragmentDoc = gql`
+  fragment GroupMembers on User {
+    id
+    name
+    firstName
+    lastName
+    email
+  }
+`;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
@@ -10,18 +19,18 @@ export const CommunityDetailsFragmentDoc = gql`
     applications {
       id
     }
+    members {
+      ...GroupMembers
+    }
     groups {
       id
       name
       members {
-        id
-        name
-        firstName
-        lastName
-        email
+        ...GroupMembers
       }
     }
   }
+  ${GroupMembersFragmentDoc}
 `;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
@@ -43,15 +52,6 @@ export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
     name
-  }
-`;
-export const GroupMembersFragmentDoc = gql`
-  fragment GroupMembers on User {
-    id
-    name
-    firstName
-    lastName
-    email
   }
 `;
 export const NewChallengeFragmentDoc = gql`
