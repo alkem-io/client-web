@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../generated/graphql';
 import { GroupFormGenerated } from '../../../models/Group';
 import { Tagset as TagsetModel } from '../../../models/Profile';
-import { Reference, Tagset, TagsetTemplate, UserGroup } from '../../../types/graphql-schema';
+import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../types/graphql-schema';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
@@ -18,7 +18,7 @@ import GroupMembersDetails from './GroupMembersDetails';
 
 interface GroupFormProps {
   title?: string;
-  members?: string[];
+  members?: User[];
   group: UserGroup;
   onSave?: (group: UserGroup) => Promise<void>;
   onCancel?: () => void;

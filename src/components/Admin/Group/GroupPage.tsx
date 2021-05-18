@@ -12,7 +12,14 @@ import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
-import { AuthorizationCredential, Maybe, Profile, UpdateProfileInput, UserGroup } from '../../../types/graphql-schema';
+import {
+  AuthorizationCredential,
+  Maybe,
+  Profile,
+  UpdateProfileInput,
+  User,
+  UserGroup,
+} from '../../../types/graphql-schema';
 import Loading from '../../core/Loading';
 import GroupForm from './GroupForm';
 interface Parameters {
@@ -61,7 +68,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   const [deleteReference] = useDeleteReferenceMutation({ onError: handleError });
   const [createTagset] = useCreateTagsetOnProfileMutation({ onError: handleError });
 
-  const members = membersData?.usersWithAuthorizationCredential.map(u => u.name) || [];
+  const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
 
   const handleCancel = () => history.goBack();
 
