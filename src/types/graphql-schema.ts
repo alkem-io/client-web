@@ -508,6 +508,39 @@ export type Lifecycle = {
   templateId?: Maybe<Scalars['String']>;
 };
 
+export type Membership = {
+  __typename?: 'Membership';
+  /** Ecoverses the user is a member of, with child memberships */
+  ecoverses: Array<MembershipEcoverseResultEntry>;
+  /** Names and IDs of  the Organisations the user is a member of */
+  organisations: Array<MembershipResultEntry>;
+};
+
+export type MembershipEcoverseResultEntry = {
+  __typename?: 'MembershipEcoverseResultEntry';
+  /** Names and IDs of the Challenges the user is a member of */
+  challenges: Array<MembershipResultEntry>;
+  /** The ID of the Ecoverse */
+  id?: Maybe<Scalars['String']>;
+  /** The name of the Ecoverse. */
+  name?: Maybe<Scalars['String']>;
+  /** Names and IDs of  the UserGroups the user is a member of */
+  userGroups: Array<MembershipResultEntry>;
+};
+
+export type MembershipInput = {
+  /** The ID of the user to retrieve the membership of. */
+  userID: Scalars['String'];
+};
+
+export type MembershipResultEntry = {
+  __typename?: 'MembershipResultEntry';
+  /** ID of the entry */
+  id: Scalars['String'];
+  /** Name of the entity */
+  name: Scalars['String'];
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Cherrytwist services. */
@@ -956,6 +989,8 @@ export type Query = {
   ecoverse: Ecoverse;
   /** The currently logged in user */
   me: User;
+  /** Search the ecoverse for terms supplied */
+  membership: Membership;
   /** Cherrytwist Services Metadata */
   metadata: Metadata;
   /** A particular Organisation */
@@ -976,6 +1011,10 @@ export type Query = {
 
 export type QueryEcoverseArgs = {
   ID?: Maybe<Scalars['Float']>;
+};
+
+export type QueryMembershipArgs = {
+  membershipData: MembershipInput;
 };
 
 export type QueryOrganisationArgs = {
@@ -1624,6 +1663,24 @@ export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
   uploadAvatar: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
 };
 
+export type AllCommunitiesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllCommunitiesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment>;
+    challenges?: Maybe<
+      Array<
+        { __typename?: 'Challenge' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+      >
+    >;
+    opportunities: Array<
+      { __typename?: 'Opportunity' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+    >;
+  };
+};
+
+export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'>;
+
 export type AllOpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
@@ -1920,6 +1977,22 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & UserDetailsFragment & UserAgentFragment;
+};
+
+export type MembershipQueryVariables = Exact<{
+  input: MembershipInput;
+}>;
+
+export type MembershipQuery = { __typename?: 'Query' } & {
+  membership: { __typename?: 'Membership' } & {
+    ecoverses: Array<
+      { __typename?: 'MembershipEcoverseResultEntry' } & Pick<MembershipEcoverseResultEntry, 'id' | 'name'> & {
+          challenges: Array<{ __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'name'>>;
+          userGroups: Array<{ __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'name'>>;
+        }
+    >;
+    organisations: Array<{ __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'name'>>;
+  };
 };
 
 export type OpportunitiesQueryVariables = Exact<{

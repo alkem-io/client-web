@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { useMeQuery } from '../generated/graphql';
+import Loading from '../components/core/Loading';
+import { useMembershipQuery, useMeQuery } from '../generated/graphql';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks/useUserMetadataWrapper';
-import { User } from '../types/graphql-schema';
+import { Membership, User } from '../types/graphql-schema';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
@@ -15,19 +16,36 @@ const UserContext = React.createContext<UserContextContract>({
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
-  const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
   const wrapper = useUserMetadataWrapper();
 
+  const loading = profileLoading;
+  if (loading) return <Loading text={'Loading user'} />;
   return (
-    <UserContext.Provider
-      value={{
-        user: wrapper(me as User),
-        loading,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+    <MembershipWrapper userId={me?.id || ''}>
+      {membership => (
+        <UserContext.Provider
+          value={{
+            user: wrapper(me as User, membership),
+            loading,
+          }}
+        >
+          {children}
+        </UserContext.Provider>
+      )}
+    </MembershipWrapper>
   );
+};
+
+const MembershipWrapper: FC<{ userId: string; children: (membership?: Membership) => React.ReactNode }> = ({
+  userId,
+  children,
+}) => {
+  const { data: membershipData, loading: loadingMembership } = useMembershipQuery({
+    variables: { input: { userID: userId } },
+    errorPolicy: 'ignore',
+  });
+  if (loadingMembership) return <Loading text={'Loading membership'} />;
+  return <>{children(membershipData?.membership)}</>;
 };
 
 export { UserProvider, UserContext };

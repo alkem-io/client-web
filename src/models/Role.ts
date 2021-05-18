@@ -6,5 +6,4 @@ export interface Role {
   name: string;
   order: number;
   resourceId: number;
-  resource: string;
 }
