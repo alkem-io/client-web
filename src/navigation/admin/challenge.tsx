@@ -66,7 +66,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   );
 
   const community = data?.ecoverse?.challenge?.community;
-  const parentMembers = ecoverseCommunity?.ecoverse?.community?.groups?.find(g => g.name === 'members')?.members || [];
+  const parentMembers = ecoverseCommunity?.ecoverse?.community?.members || [];
 
   useUpdateNavigation({ currentPaths });
 

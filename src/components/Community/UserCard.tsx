@@ -1,8 +1,7 @@
 import React, { FC, memo, useState } from 'react';
-import roles from '../../configs/roles.json';
 import { Theme } from '../../context/ThemeProvider';
-import { useUserCardDataQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
+import { useUserMetadata } from '../../hooks/useUserMetadata';
 import { User } from '../../types/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
@@ -32,25 +31,12 @@ const userCardStyles = createStyles(theme => ({
 const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
-  const { data: userData, loading } = useUserCardDataQuery({
-    variables: {
-      ids: [id],
-    },
-  });
 
-  const data = userData?.usersById[0] as User;
-  const groups = [] as string[];
-  // TODO [ATS]: Resolve this
-  //  data?.memberof?.communities
-  //   ?.flatMap(c => {
-  //     if (c) return c.groups?.map(g => g.name.toLowerCase());
-  //     return undefined;
-  //   })
-  //   .filter((x): x is string => x !== undefined);
+  const { user: userMetadata, loading } = useUserMetadata(id);
 
-  const role =
-    (groups && roles['groups-roles'].find(r => groups.includes(r.group.toLowerCase()))?.role) || roles['default-role'];
-  const avatar = data?.profile?.avatar;
+  const role = userMetadata?.roles[0].name || 'Registered';
+
+  const avatar = userMetadata?.user.profile?.avatar;
 
   if (loading) return <Loading text={''} />;
   return (
@@ -73,7 +59,7 @@ const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
       onClick={() => !isPopUpShown && setIsModalShown(true)}
     >
       {avatar && <Avatar size="lg" src={avatar} />}
-      {isPopUpShown && <UserPopUp id={data.id} onHide={() => setIsModalShown(false)} terms={terms || []} />}
+      {isPopUpShown && <UserPopUp id={id} onHide={() => setIsModalShown(false)} terms={terms || []} />}
     </Card>
   );
 };

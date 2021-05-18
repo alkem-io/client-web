@@ -1,12 +1,10 @@
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
-import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import roles from '../../configs/roles.json';
-import { useMeQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
+import { useUserContext } from '../../hooks/useUserContext';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
@@ -16,40 +14,6 @@ import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
 import Tag from '../core/Tag';
 import Typography from '../core/Typography';
-
-const useUserRoleStyles = createStyles(theme => ({
-  roleContainer: {
-    display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
-  },
-  role: {
-    padding: '5px 10px',
-    backgroundColor: theme.palette.primary,
-    borderRadius: theme.shape.spacing(2),
-  },
-}));
-
-export const UserRoles: FC = () => {
-  const styles = useUserRoleStyles();
-  // const { data } = useMeQuery();
-
-  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification    data?.me?.memberof?.communities.flatMap(c => (c && c.groups ? c.groups.map(g => g.name) : undefined)) || [];
-
-  const getMyRoles = () => {
-    const specialRoles = roles['groups-roles'].filter(r => groups.includes(r.group));
-    return specialRoles.length > 0 ? specialRoles.map(r => r.role) : [roles['default-role']];
-  };
-
-  return (
-    <div className={styles.roleContainer}>
-      {getMyRoles().map((r, i) => (
-        <Typography key={i} color={'background'} variant={'caption'} className={clsx(styles.role)}>
-          {r}
-        </Typography>
-      ))}
-    </div>
-  );
-};
 
 const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   return value ? (
@@ -158,24 +122,16 @@ export const UserProfile: FC = () => {
   const styles = useMemberOfStyles();
 
   useTransactionScope({ type: 'authentication' });
-  const { data, loading } = useMeQuery();
+  const { user: userMetadata, loading } = useUserContext();
 
-  const user = (data?.me as User) || defaultUser || {};
-
-  // TODO [ATS]: this code is copy paste from UserPopUp.tsx
-  // const getArrayOfNames = arr => arr?.map(el => el?.name);
+  const user = (userMetadata?.user as User) || defaultUser || {};
 
   const references = user?.profile?.references || [];
 
-  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification
-  // user?.memberof?.communities
-  //   .flatMap(
-  //     c => c && c.groups && c?.groups.map(x => (c.type !== CommunityType.ECOVERSE ? `${x.name} (${c.name})` : x.name))
-  //   )
-  //   .filter((x): x is string => x !== undefined) || [];
+  const groups = userMetadata?.groups || [];
 
-  const challenges = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
-  const opportunities = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
+  const challenges = userMetadata?.challenges || [];
+  const opportunities = userMetadata?.opportunities || [];
 
   const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {
@@ -189,9 +145,8 @@ export const UserProfile: FC = () => {
       <Header text={user?.name}></Header>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
-          Roles
+          {userMetadata?.roles[0].name}
         </Typography>
-        <UserRoles />
       </div>
       <Body>
         <div style={{ marginTop: 20 }} />

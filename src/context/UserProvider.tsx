@@ -1,40 +1,13 @@
 import React, { FC } from 'react';
-import { useMeQuery } from '../generated/graphql';
-import { AuthorizationCredential, User } from '../types/graphql-schema';
-import { credentialsResolver } from '../utils/credentials-resolver';
+import Loading from '../components/core/Loading';
+import { useMembershipQuery, useMeQuery } from '../generated/graphql';
+import { UserMetadata, useUserMetadataWrapper } from '../hooks/useUserMetadataWrapper';
+import { Membership, User } from '../types/graphql-schema';
 
 export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;
 }
-
-export interface UserMetadata {
-  user: User;
-  hasCredentials: (credential: AuthorizationCredential, resourceId?: number) => boolean;
-  ofChallenge: (id: string) => boolean;
-  isAdmin: boolean;
-  roles: string[];
-}
-
-const wrapUser = (user: User | undefined): UserMetadata | undefined => {
-  if (!user) {
-    return;
-  }
-
-  const metadata = {
-    user,
-    hasCredentials: (credential: AuthorizationCredential, resourceId = -1) =>
-      Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1),
-    ofChallenge: (id: string) => Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
-    isAdmin: false,
-    roles: user?.agent?.credentials?.map(c => credentialsResolver(c.type)) || [],
-  };
-
-  metadata.isAdmin = metadata.roles.findIndex(c => c === AuthorizationCredential.GlobalAdmin) !== -1;
-
-  return metadata;
-};
-
 const UserContext = React.createContext<UserContextContract>({
   user: undefined,
   loading: true,
@@ -43,18 +16,36 @@ const UserContext = React.createContext<UserContextContract>({
 const UserProvider: FC<{}> = ({ children }) => {
   const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
   const { me } = data || {};
-  const loading = profileLoading; //|| status === 'authenticating' || status === 'refreshing';
+  const wrapper = useUserMetadataWrapper();
 
+  const loading = profileLoading;
+  if (loading) return <Loading text={'Loading user'} />;
   return (
-    <UserContext.Provider
-      value={{
-        user: wrapUser(me as User),
-        loading,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+    <MembershipWrapper userId={me?.id || ''}>
+      {membership => (
+        <UserContext.Provider
+          value={{
+            user: wrapper(me as User, membership),
+            loading,
+          }}
+        >
+          {children}
+        </UserContext.Provider>
+      )}
+    </MembershipWrapper>
   );
+};
+
+const MembershipWrapper: FC<{ userId: string; children: (membership?: Membership) => React.ReactNode }> = ({
+  userId,
+  children,
+}) => {
+  const { data: membershipData, loading: loadingMembership } = useMembershipQuery({
+    variables: { input: { userID: userId } },
+    errorPolicy: 'ignore',
+  });
+  if (loadingMembership) return <Loading text={'Loading membership'} />;
+  return <>{children(membershipData?.membership)}</>;
 };
 
 export { UserProvider, UserContext };

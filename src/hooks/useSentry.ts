@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { UserMetadata } from '../context/UserProvider';
 import { setUserScope, setTransactionScope, TransactionScope } from '../sentry/scope';
+import { UserMetadata } from './useUserMetadataWrapper';
 
 export const useUserScope = (metadata: UserMetadata | undefined) => {
   useEffect(() => {

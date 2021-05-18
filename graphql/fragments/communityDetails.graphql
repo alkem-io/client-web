@@ -5,15 +5,14 @@ fragment CommunityDetails on Community {
   applications {
     id
   }
+  members {
+    ...GroupMembers
+  }
   groups {
     id
     name
     members {
-      id
-      name
-      firstName
-      lastName
-      email
+      ...GroupMembers
     }
   }
 }

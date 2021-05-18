@@ -1,15 +1,16 @@
+import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
+import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
+import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { ReactComponent as At } from 'bootstrap-icons/icons/at.svg';
-import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
+import { createStyles } from '../../hooks/useTheme';
+import { useUserMetadata } from '../../hooks/useUserMetadata';
 import Avatar from '../core/Avatar';
+import Button from '../core/Button';
+import Divider from '../core/Divider';
+import Loading from '../core/Loading';
 import Typography from '../core/Typography';
 import Tags from './Tags';
-import Divider from '../core/Divider';
-import { createStyles } from '../../hooks/useTheme';
-import Button from '../core/Button';
-import { useUserQuery } from '../../generated/graphql';
 
 const useUserPopUpStyles = createStyles(theme => ({
   body: {
@@ -46,17 +47,15 @@ interface UserPopUpProps {
 const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
   const styles = useUserPopUpStyles();
 
-  const { data } = useUserQuery({ variables: { id } });
+  const { user: userMetadata, loading } = useUserMetadata(id);
+  const user = userMetadata?.user;
 
-  //const getArrayOfNames = arr => arr?.map(el => el?.name);
   const getStringOfNames = arr => arr.join(', ');
 
-  const user = data?.user;
-
-  const groups = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.map(x => x.groups));
-  const challenges = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'challenge'));
-  const organisations = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.organisations);
-  const opportunities = [] as string[]; // TODO [ATS]: Finish after resourceId unification getArrayOfNames(user?.memberof?.communities.filter(x => x.type === 'opportunity'));
+  const groups = userMetadata?.groups || [];
+  const challenges = userMetadata?.challenges || [];
+  const organizations = userMetadata?.organizations || [];
+  const opportunities = userMetadata?.opportunities || [];
 
   const refs = user?.profile?.references?.filter(r => r.uri.trim() !== '');
 
@@ -74,112 +73,118 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.body}>
-        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
-          <InfoCircle width={25} height={25} className={styles.icon} /> General
-        </Typography>
-        {user?.firstName && (
-          <Typography weight={'medium'} color={'neutral'} as={'span'}>
-            {user?.firstName}{' '}
-          </Typography>
-        )}
-        {user?.lastName && (
-          <Typography weight={'medium'} color={'neutral'} as={'span'}>
-            {user?.lastName}{' '}
-          </Typography>
-        )}
-        {user?.gender && (
-          <Typography weight={'medium'} color={'neutral'} as={'span'}>
-            {`(${user?.gender})`}
-          </Typography>
-        )}
-        {user?.profile?.description && (
-          <Typography weight={'medium'} color={'neutral'} as={'p'}>
-            {user?.profile.description}
-          </Typography>
-        )}
-
-        <Divider noPadding />
-        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
-          <People width={30} height={30} className={styles.icon} /> Member of
-        </Typography>
-        <Table striped bordered hover size="sm" className={styles.table}>
-          <thead>
-            <tr>
-              <th>Community</th>
-              <th>List</th>
-            </tr>
-          </thead>
-          <tbody>
-            {groups && groups.length > 0 && (
-              <tr>
-                <td>
-                  <Typography weight={'medium'} className={styles.centeredText}>
-                    Groups
-                  </Typography>
-                </td>
-                <td>
-                  <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
-                </td>
-              </tr>
-            )}
-            {challenges && challenges.length > 0 && (
-              <tr>
-                <td>
-                  <Typography weight={'medium'} className={styles.centeredText}>
-                    Challenges
-                  </Typography>
-                </td>
-                <td>{getStringOfNames(challenges)}</td>
-              </tr>
-            )}
-            {organisations && organisations.length > 0 && (
-              <tr>
-                <td>
-                  <Typography weight={'medium'} className={styles.centeredText}>
-                    Organisations
-                  </Typography>
-                </td>
-                <td>{getStringOfNames(organisations)}</td>
-              </tr>
-            )}
-            {opportunities && opportunities.length > 0 && (
-              <tr>
-                <td>
-                  <Typography weight={'medium'} className={styles.centeredText}>
-                    Opportunites
-                  </Typography>
-                </td>
-                <td>{getStringOfNames(opportunities)}</td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-
-        <Divider noPadding />
-
-        <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
-          <At width={30} height={30} className={styles.icon} />
-          Contact information
-        </Typography>
-
-        <Typography weight={'medium'} as={'p'}>
-          {user?.email}
-        </Typography>
-        {(user?.country || user?.city) && (
-          <Typography weight={'medium'} as={'p'}>
-            {user?.country} {user?.city}
-          </Typography>
-        )}
-        {refs && refs.length > 0 && (
+        {loading ? (
+          <Loading text={'Loading user'} />
+        ) : (
           <>
-            <Typography>References: </Typography>
-            {user?.profile?.references?.map((r, index) => (
-              <Typography key={index}>
-                <a href={r.uri} rel="noopener noreferrer" target="_blank">
-                  {r.name}
-                </a>
+            <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+              <InfoCircle width={25} height={25} className={styles.icon} /> General
+            </Typography>
+            {user?.firstName && (
+              <Typography weight={'medium'} color={'neutral'} as={'span'}>
+                {user?.firstName}{' '}
               </Typography>
-            ))}
+            )}
+            {user?.lastName && (
+              <Typography weight={'medium'} color={'neutral'} as={'span'}>
+                {user?.lastName}{' '}
+              </Typography>
+            )}
+            {user?.gender && (
+              <Typography weight={'medium'} color={'neutral'} as={'span'}>
+                {`(${user?.gender})`}
+              </Typography>
+            )}
+            {user?.profile?.description && (
+              <Typography weight={'medium'} color={'neutral'} as={'p'}>
+                {user?.profile.description}
+              </Typography>
+            )}
+
+            <Divider noPadding />
+            <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+              <People width={30} height={30} className={styles.icon} /> Member of
+            </Typography>
+            <Table striped bordered hover size="sm" className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Community</th>
+                  <th>List</th>
+                </tr>
+              </thead>
+              <tbody>
+                {groups && groups.length > 0 && (
+                  <tr>
+                    <td>
+                      <Typography weight={'medium'} className={styles.centeredText}>
+                        Groups
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
+                    </td>
+                  </tr>
+                )}
+                {challenges && challenges.length > 0 && (
+                  <tr>
+                    <td>
+                      <Typography weight={'medium'} className={styles.centeredText}>
+                        Challenges
+                      </Typography>
+                    </td>
+                    <td>{getStringOfNames(challenges)}</td>
+                  </tr>
+                )}
+                {organizations && organizations.length > 0 && (
+                  <tr>
+                    <td>
+                      <Typography weight={'medium'} className={styles.centeredText}>
+                        Organisations
+                      </Typography>
+                    </td>
+                    <td>{getStringOfNames(organizations)}</td>
+                  </tr>
+                )}
+                {opportunities && opportunities.length > 0 && (
+                  <tr>
+                    <td>
+                      <Typography weight={'medium'} className={styles.centeredText}>
+                        Opportunites
+                      </Typography>
+                    </td>
+                    <td>{getStringOfNames(opportunities)}</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+
+            <Divider noPadding />
+
+            <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
+              <At width={30} height={30} className={styles.icon} />
+              Contact information
+            </Typography>
+
+            <Typography weight={'medium'} as={'p'}>
+              {user?.email}
+            </Typography>
+            {(user?.country || user?.city) && (
+              <Typography weight={'medium'} as={'p'}>
+                {user?.country} {user?.city}
+              </Typography>
+            )}
+            {refs && refs.length > 0 && (
+              <>
+                <Typography>References: </Typography>
+                {user?.profile?.references?.map((r, index) => (
+                  <Typography key={index}>
+                    <a href={r.uri} rel="noopener noreferrer" target="_blank">
+                      {r.name}
+                    </a>
+                  </Typography>
+                ))}
+              </>
+            )}
           </>
         )}
       </Modal.Body>

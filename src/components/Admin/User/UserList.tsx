@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ButtonGroup } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
 import { useDeleteUserMutation } from '../../../generated/graphql';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
@@ -35,14 +35,14 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
   };
 
   return (
-    <>
-      <ButtonGroup className={'d-flex justify-content-end'}>
-        {/* <Button className={'mb-2'} as={Link} to={`${url}/new`}>
+    <Container>
+      {/* <ButtonGroup className={'d-flex justify-content-end'}>
+        <Button className={'mb-2'} as={Link} to={`${url}/new`}>
           New
-        </Button> */}
-      </ButtonGroup>
+        </Button>
+      </ButtonGroup> */}
       <SearchableList data={data} edit={true} onDelete={handleDelete} />
-    </>
+    </Container>
   );
 };
 export default UserList;

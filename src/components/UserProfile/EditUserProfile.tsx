@@ -18,7 +18,7 @@ import { UserForm } from './UserForm';
 interface EditUserProfileProps {}
 
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
-  const { id: userID, email, memberof, profile, ...rest } = user;
+  const { id: userID, email, memberof, profile, agent, ...rest } = user;
 
   return {
     ...rest,

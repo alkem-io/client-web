@@ -11,6 +11,7 @@ export interface UserModel {
   city: string;
   country: string;
   gender: string;
+  agent?: {};
   profile: {
     id?: string;
     description: string;
