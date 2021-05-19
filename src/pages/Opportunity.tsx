@@ -30,13 +30,7 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import {
-  AuthorizationCredential,
-  Context,
-  Opportunity as OpportunityType,
-  Project,
-  User,
-} from '../types/graphql-schema';
+import { AuthorizationCredential, Context, Challenge as OpportunityType, Project, User } from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
@@ -102,7 +96,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, aspects, projects = [], relations = [], actorGroups, context, community, id } = opportunity;
+  const { name, collaboration, context, community, id } = opportunity;
+  const projects = collaboration?.projects || [];
+  const relations = collaboration?.relations || [];
+  const aspects = context?.aspects || [];
+  const actorGroups = context?.ecosystemModel?.actorGroups || [];
   const { references, background, tagline, who, impact, vision } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
@@ -405,7 +403,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       )}
 
       {showInterestModal && (
-        <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} opportunityId={id} />
+        <InterestModal onHide={() => setShowInterestModal(false)} show={showInterestModal} challengeId={id} />
       )}
       {showActorGroupModal && (
         <ActorGroupCreateModal

@@ -39,7 +39,6 @@ describe('useLocalStorage tests', () => {
     act(() => {
       window.localStorage.setItem(TEST_KEY, '');
     });
-    debugger;
     expect(result.current[0]).toBe('NewValue');
   });
 });

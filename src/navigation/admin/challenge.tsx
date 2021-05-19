@@ -4,12 +4,16 @@ import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
+import { SearchableListItem } from '../../components/Admin/SearchableList';
 import {
+  ChildChallengesDocument,
   useChallengeCommunityQuery,
   useChallengesWithCommunityQuery,
+  useChildChallengesQuery,
+  useDeleteChallengeMutation,
   useEcoverseCommunityQuery,
-  useOpportunitiesQuery,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
@@ -89,36 +93,33 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 };
 export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
+  const handleError = useApolloErrorHandler();
+
   const { challengeId } = useParams<AdminParameters>();
+  const { data } = useChildChallengesQuery({ variables: { id: challengeId } });
 
-  const { data } = useOpportunitiesQuery({ variables: { id: challengeId } });
-
-  const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
+  const opportunities = data?.ecoverse?.challenge?.challenges?.map(o => ({
     id: o.id,
     value: o.name,
     url: `${url}/${o.id}`,
   }));
-  // TODO: [ATS] Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved
-  // const [remove] = useRemoveOpportunityMutation({
-  //   refetchQueries: ['challengeOpportunities'],
-  //   awaitRefetchQueries: true,
 
-  //   onError: e => console.error('Opportunity remove error---> ', e),
-  // });
+  const [deleteChalllenge] = useDeleteChallengeMutation({
+    refetchQueries: [{ query: ChildChallengesDocument }],
+    awaitRefetchQueries: true,
 
-  // const handleDelete = (item: SearchableListItem) => {
-  //   remove({
-  //     variables: {
-  //       ID: Number(item.id),
-  //     },
-  //   });
-  // };
+    onError: handleError,
+  });
 
-  return (
-    <>
-      {/* Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved */}
-      {/* <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} /> */}
-      <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />
-    </>
-  );
+  const handleDelete = (item: SearchableListItem) => {
+    deleteChalllenge({
+      variables: {
+        input: {
+          ID: Number(item.id),
+        },
+      },
+    });
+  };
+
+  return <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} onDelete={handleDelete} />;
 };

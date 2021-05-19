@@ -2,11 +2,7 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import * as yup from 'yup';
-import {
-  OpportunityActorGroupsDocument,
-  useCreateActorMutation,
-  useUpdateActorMutation,
-} from '../../generated/graphql';
+import { ChallengeActorGroupsDocument, useCreateActorMutation, useUpdateActorMutation } from '../../generated/graphql';
 import { Actor } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
@@ -61,7 +57,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: ChallengeActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 

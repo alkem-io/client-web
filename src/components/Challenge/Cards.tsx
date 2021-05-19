@@ -1,12 +1,18 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
-import { Opportunity } from '../../types/graphql-schema';
+import { Context, Lifecycle } from '../../types/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 
-interface OpportunityCardProps extends Opportunity {
+// interface OpportunityCardProps extends Opportunity {
+//   url: string;
+// }
+interface OpportunityCardProps {
+  name: string;
+  context?: Context;
+  lifecycle?: Lifecycle;
   url: string;
 }
 

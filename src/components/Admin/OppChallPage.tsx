@@ -5,17 +5,14 @@ import { Path } from '../../context/NavigationProvider';
 import {
   ChallengeProfileInfoDocument,
   NewChallengeFragmentDoc,
-  NewOpportunityFragmentDoc,
-  OpportunityProfileInfoDocument,
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
-  useCreateOpportunityMutation,
+  useCreateChildChallengeMutation,
   useCreateReferenceOnContextMutation,
   useDeleteReferenceMutation,
-  useOpportunityProfileInfoLazyQuery,
   useUpdateChallengeMutation,
-  useUpdateOpportunityMutation,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { useNotification } from '../../hooks/useNotification';
@@ -44,13 +41,13 @@ interface Params {
 }
 
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
+  const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const [addReference] = useCreateReferenceOnContextMutation();
   const [deleteReference] = useDeleteReferenceMutation();
-  const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
+  const { challengeId = '', ecoverseId = '' } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
-  const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
     update: (cache, { data }) => {
       if (data) {
@@ -70,21 +67,21 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       }
     },
     onCompleted: () => onSuccess('Successfully created'),
-    onError: e => onError(e.message),
+    onError: handleError,
   });
-  const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
+  const [createChildChallenge, { loading: loading2 }] = useCreateChildChallengeMutation({
     update: (cache, { data }) => {
       if (data) {
-        const { createOpportunity } = data;
+        const { createChildChallenge } = data;
 
         cache.modify({
           fields: {
-            opportunities(existingOpportunities = []) {
-              const newOpportunities = cache.writeFragment({
-                data: createOpportunity,
-                fragment: NewOpportunityFragmentDoc,
+            challenges(exitingChallenges = []) {
+              const newChallenge = cache.writeFragment({
+                data: createChildChallenge,
+                fragment: NewChallengeFragmentDoc,
               });
-              return [...existingOpportunities, newOpportunities];
+              return [...exitingChallenges, newChallenge];
             },
           },
         });
@@ -99,22 +96,15 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { id: challengeId } }],
     awaitRefetchQueries: true,
   });
-  const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
-    onCompleted: () => onSuccess('Successfully updated'),
-    onError: e => onError(e.message),
-    refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { id: opportunityId } }],
-    awaitRefetchQueries: true,
-  });
 
   useEffect(() => {
     if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: challengeId } });
-    if (mode === ProfileSubmitMode.updateOpportunity) getOpportunityProfileInfo({ variables: { id: opportunityId } });
   }, []);
 
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
 
-  const isLoading = loading1 || loading2 || loading3 || loading4;
-  const profile = challengeProfile?.ecoverse?.challenge || opportunityProfile?.ecoverse?.opportunity;
+  const isLoading = loading1 || loading2 || loading3;
+  const profile = challengeProfile?.ecoverse?.challenge;
   const profileTopLvlInfo = {
     name: profile?.name,
     textID: profile?.textID,
@@ -176,20 +166,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             variables: {
               input: {
                 ...data,
-                parentID: Number(toEcoverseId(ecoverseId)), // TODO [ATS] Where is this coming from?
+                parentID: toEcoverseId(ecoverseId),
               },
             },
           });
           break;
-        case ProfileSubmitMode.updateChallenge:
-          updateChallenge({
-            variables: {
-              input: { ...updateData, ID: challengeId },
-            },
-          });
-          break;
         case ProfileSubmitMode.createOpportunity:
-          createOpportunity({
+          createChildChallenge({
             variables: {
               input: {
                 ...data,
@@ -198,16 +181,16 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             },
           });
           break;
+
+        case ProfileSubmitMode.updateChallenge:
         case ProfileSubmitMode.updateOpportunity:
-          updateOpportunity({
+          updateChallenge({
             variables: {
-              opportunityData: {
-                ...updateData,
-                ID: opportunityId,
-              },
+              input: { ...updateData, ID: challengeId },
             },
           });
           break;
+
         default:
           throw new Error('Submit handler not found');
       }

@@ -4,7 +4,7 @@ import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import Loading from '../../components/core/Loading';
-import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
+import { useChallengeCommunityQuery } from '../../generated/graphql';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
 import { ChallengeOpportunities } from './challenge';
@@ -37,17 +37,17 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { opportunityId, challengeId } = useParams<AdminParameters>();
 
-  const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({ variables: { id: opportunityId } });
+  const { data, loading: loadingOpportunity } = useChallengeCommunityQuery({ variables: { id: opportunityId } });
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { id: challengeId },
   });
 
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.name || '', real: true }],
-    [paths, data?.ecoverse?.opportunity?.name, url]
+    () => [...paths, { value: url, name: data?.ecoverse?.challenge?.name || '', real: true }],
+    [paths, data?.ecoverse?.challenge?.name, url]
   );
 
-  const community = data?.ecoverse?.opportunity?.community;
+  const community = data?.ecoverse?.challenge?.community;
   const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
 
   if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;

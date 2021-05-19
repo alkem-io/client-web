@@ -1,24 +1,24 @@
 import React, { FC, useState } from 'react';
 import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
+import { RelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
 import Button from '../core/Button';
+import Loading from '../core/Loading';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
-import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
-import Loading from '../core/Loading';
 
 interface P {
   onHide: () => void;
   show: boolean;
-  opportunityId: string;
+  challengeId: string;
 }
 
-const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
+const InterestModal: FC<P> = ({ onHide, show, challengeId }) => {
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: error => console.log(error),
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: RelationsDocument, variables: { id: challengeId } }],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');
@@ -39,7 +39,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
     createRelation({
       variables: {
         input: {
-          parentID: Number(opportunityId),
+          parentID: Number(challengeId),
           type: 'incoming',
           actorName: userData?.me.name || '',
           actorType: 'user',

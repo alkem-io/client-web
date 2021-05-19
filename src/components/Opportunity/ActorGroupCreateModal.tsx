@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { Col, Form, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import { TextArea } from '../core/TextInput';
-import { OpportunityActorGroupsDocument, useCreateActorGroupMutation } from '../../generated/graphql';
+import { ChallengeActorGroupsDocument, useCreateActorGroupMutation } from '../../generated/graphql';
 import Loading from '../core/Loading';
 import { replaceAll } from '../../utils/replaceAll';
 
@@ -16,7 +16,7 @@ interface P {
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: ChallengeActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const [name, setName] = useState<string>(availableActorGroupNames[0]);

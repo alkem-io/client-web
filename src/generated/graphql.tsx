@@ -406,6 +406,53 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
 >;
+export const CreateChildChallengeDocument = gql`
+  mutation createChildChallenge($input: CreateChallengeInput!) {
+    createChildChallenge(challengeData: $input) {
+      ...NewChallenge
+    }
+  }
+  ${NewChallengeFragmentDoc}
+`;
+export type CreateChildChallengeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateChildChallengeMutation,
+  SchemaTypes.CreateChildChallengeMutationVariables
+>;
+
+/**
+ * __useCreateChildChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateChildChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChildChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChildChallengeMutation, { data, loading, error }] = useCreateChildChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateChildChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateChildChallengeMutation,
+    SchemaTypes.CreateChildChallengeMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.CreateChildChallengeMutation,
+    SchemaTypes.CreateChildChallengeMutationVariables
+  >(CreateChildChallengeDocument, baseOptions);
+}
+export type CreateChildChallengeMutationHookResult = ReturnType<typeof useCreateChildChallengeMutation>;
+export type CreateChildChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChildChallengeMutation>;
+export type CreateChildChallengeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateChildChallengeMutation,
+  SchemaTypes.CreateChildChallengeMutationVariables
+>;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {
@@ -916,6 +963,52 @@ export type DeleteAspectMutationResult = Apollo.MutationResult<SchemaTypes.Delet
 export type DeleteAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
+>;
+export const DeleteChallengeDocument = gql`
+  mutation deleteChallenge($input: DeleteChallengeInput!) {
+    deleteChallenge(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeleteChallengeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteChallengeMutation,
+  SchemaTypes.DeleteChallengeMutationVariables
+>;
+
+/**
+ * __useDeleteChallengeMutation__
+ *
+ * To run a mutation, you first call `useDeleteChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChallengeMutation, { data, loading, error }] = useDeleteChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteChallengeMutation,
+    SchemaTypes.DeleteChallengeMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.DeleteChallengeMutation, SchemaTypes.DeleteChallengeMutationVariables>(
+    DeleteChallengeDocument,
+    baseOptions
+  );
+}
+export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
+export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.DeleteChallengeMutation>;
+export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteChallengeMutation,
+  SchemaTypes.DeleteChallengeMutationVariables
 >;
 export const DeleteGroupDocument = gql`
   mutation deleteGroup($input: DeleteUserGroupInput!) {
@@ -2116,6 +2209,18 @@ export const ChallengeProfileDocument = gql`
           profile {
             id
             avatar
+          }
+        }
+        collaboration {
+          id
+          projects {
+            id
+            textID
+            name
+            description
+            lifecycle {
+              state
+            }
           }
         }
       }

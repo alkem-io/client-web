@@ -1386,6 +1386,14 @@ export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
 };
 
+export type CreateChildChallengeMutationVariables = Exact<{
+  input: CreateChallengeInput;
+}>;
+
+export type CreateChildChallengeMutation = { __typename?: 'Mutation' } & {
+  createChildChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
+};
+
 export type CreateGroupOnCommunityMutationVariables = Exact<{
   input: CreateUserGroupInput;
 }>;
@@ -1472,6 +1480,14 @@ export type DeleteAspectMutationVariables = Exact<{
 
 export type DeleteAspectMutation = { __typename?: 'Mutation' } & {
   deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
+};
+
+export type DeleteChallengeMutationVariables = Exact<{
+  input: DeleteChallengeInput;
+}>;
+
+export type DeleteChallengeMutation = { __typename?: 'Mutation' } & {
+  deleteChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'>;
 };
 
 export type DeleteGroupMutationVariables = Exact<{
@@ -1763,6 +1779,17 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           leadOrganisations: Array<
             { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
                 profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
+              }
+          >;
+          collaboration?: Maybe<
+            { __typename?: 'Collaboration' } & Pick<Collaboration, 'id'> & {
+                projects?: Maybe<
+                  Array<
+                    { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description'> & {
+                        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
+                      }
+                  >
+                >;
               }
           >;
         };

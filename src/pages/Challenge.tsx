@@ -132,7 +132,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations, id, community } = challenge;
+  const { name, context, challenges: opportunities, leadOrganisations, id, community } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
@@ -141,7 +141,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const projects = useMemo(
     () =>
       opportunities?.flatMap(o =>
-        o?.projects?.flatMap(p => ({
+        o?.collaboration?.projects?.flatMap(p => ({
           caption: o.name,
           url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
           ...p,

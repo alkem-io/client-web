@@ -1,0 +1,5 @@
+mutation createChildChallenge($input: CreateChallengeInput!) {
+  createChildChallenge(challengeData: $input) {
+    ...NewChallenge
+  }
+}

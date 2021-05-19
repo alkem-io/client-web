@@ -39,6 +39,18 @@ query challengeProfile($id: String!) {
           avatar
         }
       }
+      collaboration {
+        id
+        projects {
+          id
+          textID
+          name
+          description
+          lifecycle {
+            state
+          }
+        }
+      }
     }
   }
 }

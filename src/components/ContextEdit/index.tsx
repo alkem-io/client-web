@@ -1,11 +1,6 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import {
-  ChallengeProfileDocument,
-  OpportunityProfileDocument,
-  useUpdateChallengeMutation,
-  useUpdateOpportunityMutation,
-} from '../../generated/graphql';
+import { ChallengeProfileDocument, useUpdateChallengeMutation } from '../../generated/graphql';
 import { Context } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
@@ -35,12 +30,6 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
     refetchQueries: [{ query: ChallengeProfileDocument, variables: { id } }],
     awaitRefetchQueries: true,
   });
-  const [updateOpportunity] = useUpdateOpportunityMutation({
-    onCompleted: () => onHide(),
-    onError: e => console.error(e),
-    refetchQueries: [{ query: OpportunityProfileDocument, variables: { id } }],
-    awaitRefetchQueries: true,
-  });
 
   let submitWired;
 
@@ -59,16 +48,6 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
         },
       });
     } else if (variant === 'opportunity') {
-      await updateOpportunity({
-        variables: {
-          opportunityData: {
-            ID: id,
-            context: {
-              ...contextWithUpdatedRefs,
-            },
-          },
-        },
-      });
     } else {
       console.log('no handler found');
     }

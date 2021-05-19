@@ -6,8 +6,6 @@ import {
   useChallengesQuery,
   useChallengeUserIdsQuery,
   useEcoverseUserIdsQuery,
-  useOpportunityProfileQuery,
-  useOpportunityUserIdsQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useTransactionScope } from '../hooks/useSentry';
@@ -19,13 +17,7 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
-import {
-  AuthorizationCredential,
-  Challenge as ChallengeType,
-  ChallengesQuery,
-  Opportunity as OpportunityType,
-  User,
-} from '../types/graphql-schema';
+import { AuthorizationCredential, Challenge as ChallengeType, ChallengesQuery, User } from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { Project } from './project';
 import RestrictedRoute from './route.extensions';
@@ -154,7 +146,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         )}
       </Route>
       <Route path={`${path}/opportunities/:id`}>
-        <Opportnity opportunities={challenge.opportunities} paths={currentPaths} />
+        <Opportnity opportunities={challenge.challenges} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -164,7 +156,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 };
 
 interface OpportunityRootProps extends PageProps {
-  opportunities: Pick<OpportunityType, 'id' | 'textID'>[] | undefined;
+  opportunities: Pick<ChallengeType, 'id' | 'textID'>[] | undefined;
 }
 
 const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
@@ -174,18 +166,18 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const { user } = useUserContext();
   const target = opportunities.find(x => x.textID === id)?.id || '';
 
-  const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
+  const { data: query, loading: opportunityLoading } = useChallengeProfileQuery({
     variables: { id: target },
     errorPolicy: 'all',
   });
 
-  const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
+  const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
     variables: { id: target },
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.ecoverse.opportunity;
-  const opportunityGroups = usersQuery?.ecoverse.opportunity;
+  const opportunity = query?.ecoverse.challenge;
+  const opportunityGroups = usersQuery?.ecoverse.challenge;
   const members = opportunityGroups?.community?.members;
   const users = useMemo(() => members || [], [members]);
 
@@ -208,7 +200,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
     <Switch>
       <Route exact path={path}>
         <OpportunityPage
-          opportunity={opportunity as OpportunityType}
+          opportunity={opportunity as ChallengeType}
           users={users as User[] | undefined}
           paths={currentPaths}
           onProjectTransition={project => {
@@ -220,7 +212,11 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
         />
       </Route>
       <Route path={`${path}/projects`}>
-        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={Number(opportunity.id)} />
+        <Project
+          paths={currentPaths}
+          projects={opportunity?.collaboration?.projects}
+          opportunityId={Number(opportunity.id)}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />
