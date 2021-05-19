@@ -1,12 +1,13 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { GroupPage, ListPage } from '../../components/Admin';
+import { ListPage } from '../../components/Admin';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { SearchableListItem } from '../../components/Admin/SearchableList';
 import { FourOuFour } from '../../pages';
+import { GroupRoute } from './group';
 
 interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {}
 
@@ -50,8 +51,8 @@ export const CommunityGroupsRoute: FC<CommunityRouteProps> = ({ paths, community
       <Route exact path={`${path}/new`}>
         <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
-      <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} parentMembers={parentMembers} />
+      <Route path={`${path}/:groupId`}>
+        <GroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">
         <FourOuFour />

@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
 import {
   useGrantCredentialsMutation,
   useRevokeCredentialsMutation,
@@ -8,20 +7,17 @@ import {
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useCredentialsResolver } from '../../../hooks/useCredentialsResolver';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
-import { PageProps } from '../../../pages';
 import Loading from '../../core/Loading';
 import { EditMembers } from '../Community/EditMembers';
 
-interface EditCredentialsProps extends PageProps {
+interface EditCredentialsProps {
   credential: string;
   resourceId?: number;
   parentMembers: Member[];
 }
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, parentMembers, resourceId }) => {
-  useUpdateNavigation({ currentPaths: paths });
+export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
   const { toAuthenticationCredentials } = useCredentialsResolver();
 
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
@@ -84,16 +80,14 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ paths, credential, p
 
   const availableMembers = useMemo(() => {
     return parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
-  }, [parentMembers, members]);
+  }, [parentMembers, data]);
 
   if (loadingMembers) {
     return <Loading />;
   }
 
   return (
-    <Container>
-      <EditMembers members={members} availableMembers={availableMembers} onAdd={handleAdd} onRemove={handleRemove} />
-    </Container>
+    <EditMembers members={members} availableMembers={availableMembers} onAdd={handleAdd} onRemove={handleRemove} />
   );
 };
 export default EditCredentials;

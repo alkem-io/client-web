@@ -1,0 +1,20 @@
+mutation updateGroup($input: UpdateUserGroupInput!) {
+  updateUserGroup(userGroupData: $input) {
+    id
+    name
+    profile {
+      id
+      avatar
+      description
+      references {
+        uri
+        name
+        description
+      }
+      tagsets {
+        name
+        tags
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import React, { FC, useMemo } from 'react';
+import { Container } from 'react-bootstrap';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { PageProps } from '../../../pages';
 import Loading from '../../core/Loading';
 import EditCredentials from './EditCredentials';
@@ -16,6 +18,8 @@ export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { globalRole: role } = useParams<Params>();
   const currentPaths = useMemo(() => [...paths, { value: url, name: role, real: true }], [paths]);
 
+  useUpdateNavigation({ currentPaths });
+
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
   const parentMembers = useMemo(() => usersInfo?.users || [], [usersInfo]);
 
@@ -23,6 +27,10 @@ export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     return <Loading />;
   }
 
-  return <EditCredentials paths={currentPaths} credential={role} parentMembers={parentMembers} />;
+  return (
+    <Container>
+      <EditCredentials credential={role} parentMembers={parentMembers} />;
+    </Container>
+  );
 };
 export default AuthorizationPage;

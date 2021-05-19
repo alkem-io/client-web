@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { Container } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
 import { useDeleteUserMutation } from '../../../generated/graphql';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import SearchableList, { SearchableListItem } from '../SearchableList';
+import ListPage from '../ListPage';
+import { SearchableListItem } from '../SearchableList';
 
 interface UserListProps extends PageProps {
   users: UserModel[];
@@ -13,15 +13,15 @@ interface UserListProps extends PageProps {
 
 export const UserList: FC<UserListProps> = ({ users, paths }) => {
   const { url } = useRouteMatch();
-  useUpdateNavigation({ currentPaths: paths });
 
-  const data = users.map(u => ({ id: u.id, value: `${u.name} (${u.email})`, url: `${url}/${u.id}` }));
+  const data = users.map(u => ({ id: u.id, value: `${u.name} (${u.email})`, url: `${url}/${u.id}/edit` }));
+  const handleError = useApolloErrorHandler();
 
   const [deleteUser] = useDeleteUserMutation({
     refetchQueries: ['users'],
     awaitRefetchQueries: true,
 
-    onError: e => console.error('User remove error---> ', e),
+    onError: handleError,
   });
 
   const handleDelete = (item: SearchableListItem) => {
@@ -34,15 +34,6 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
     });
   };
 
-  return (
-    <Container>
-      {/* <ButtonGroup className={'d-flex justify-content-end'}>
-        <Button className={'mb-2'} as={Link} to={`${url}/new`}>
-          New
-        </Button>
-      </ButtonGroup> */}
-      <SearchableList data={data} edit={true} onDelete={handleDelete} />
-    </Container>
-  );
+  return <ListPage data={data} paths={paths} onDelete={handleDelete} />;
 };
 export default UserList;
