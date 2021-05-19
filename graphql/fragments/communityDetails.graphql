@@ -1,7 +1,6 @@
 fragment CommunityDetails on Community {
   id
   name
-  type
   applications {
     id
   }

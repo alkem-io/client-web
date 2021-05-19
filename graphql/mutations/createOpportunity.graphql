@@ -1,5 +1,0 @@
-mutation createOpportunity($input: CreateOpportunityInput!) {
-  createOpportunity(opportunityData: $input) {
-    ...NewOpportunity
-  }
-}

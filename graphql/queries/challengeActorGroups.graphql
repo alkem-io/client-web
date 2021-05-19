@@ -1,0 +1,23 @@
+query challengeActorGroups($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      context {
+        ecosystemModel {
+          actorGroups {
+            id
+            name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -148,9 +148,15 @@ export enum AuthorizationCredential {
 
 export type Challenge = {
   __typename?: 'Challenge';
+  /** The activity within this Challenge. */
+  activity?: Maybe<Array<Nvp>>;
+  /** The set of child Challenges within this challenge. */
+  challenges?: Maybe<Array<Challenge>>;
+  /** The Collaboration for the challenge. */
+  collaboration?: Maybe<Collaboration>;
   /** The community for the challenge. */
   community?: Maybe<Community>;
-  /** The shared understanding for the challenge */
+  /** The context for the challenge. */
   context?: Maybe<Context>;
   id: Scalars['ID'];
   /** The Organisations that are leading this Challenge. */
@@ -159,8 +165,6 @@ export type Challenge = {
   lifecycle?: Maybe<Lifecycle>;
   /** The name of the challenge */
   name: Scalars['String'];
-  /** The set of opportunities within this challenge. */
-  opportunities?: Maybe<Array<Opportunity>>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
   /** A short text identifier for this challenge */
@@ -180,6 +184,15 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type Collaboration = {
+  __typename?: 'Collaboration';
+  id: Scalars['ID'];
+  /** The set of projects within the context of this Collaboration */
+  projects?: Maybe<Array<Project>>;
+  /** The set of relations within the context of this Collaboration. */
+  relations?: Maybe<Array<Relation>>;
+};
+
 export type Community = {
   __typename?: 'Community';
   /** Application available for this community. */
@@ -191,8 +204,6 @@ export type Community = {
   members?: Maybe<Array<User>>;
   /** The name of the Community */
   name: Scalars['String'];
-  /** The type of the Community */
-  type: Scalars['String'];
 };
 
 export type Config = {
@@ -205,8 +216,12 @@ export type Config = {
 
 export type Context = {
   __typename?: 'Context';
+  /** The Aspects for this Context. */
+  aspects?: Maybe<Array<Aspect>>;
   /** A detailed description of the current situation */
   background?: Maybe<Scalars['String']>;
+  /** The EcosystemModel for this Context. */
+  ecosystemModel?: Maybe<EcosystemModel>;
   id: Scalars['ID'];
   /** What is the potential impact? */
   impact?: Maybe<Scalars['String']>;
@@ -223,7 +238,7 @@ export type Context = {
 export type CreateActorGroupInput = {
   description?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  parentID: Scalars['Float'];
+  parentID?: Maybe<Scalars['Float']>;
 };
 
 export type CreateActorInput = {
@@ -251,7 +266,7 @@ export type CreateChallengeInput = {
   context?: Maybe<CreateContextInput>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  parentID: Scalars['Float'];
+  parentID: Scalars['String'];
   tags?: Maybe<Array<Scalars['String']>>;
   textID: Scalars['TextID'];
 };
@@ -282,15 +297,6 @@ export type CreateEcoverseInput = {
 export type CreateNvpInput = {
   name: Scalars['String'];
   value: Scalars['String'];
-};
-
-export type CreateOpportunityInput = {
-  context?: Maybe<CreateContextInput>;
-  lifecycleTemplate?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  parentID: Scalars['String'];
-  tags?: Maybe<Array<Scalars['String']>>;
-  textID: Scalars['TextID'];
 };
 
 export type CreateOrganisationInput = {
@@ -383,10 +389,6 @@ export type DeleteChallengeInput = {
   ID: Scalars['Float'];
 };
 
-export type DeleteOpportunityInput = {
-  ID: Scalars['Float'];
-};
-
 export type DeleteOrganisationInput = {
   ID: Scalars['Float'];
 };
@@ -419,8 +421,19 @@ export type DemoAuthProviderConfig = {
   tokenEndpoint: Scalars['String'];
 };
 
+export type EcosystemModel = {
+  __typename?: 'EcosystemModel';
+  /** A list of ActorGroups */
+  actorGroups?: Maybe<Array<ActorGroup>>;
+  /** Overview of this ecosystem model. */
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+};
+
 export type Ecoverse = {
   __typename?: 'Ecoverse';
+  /** The activity within this Ecoverse. */
+  activity?: Maybe<Array<Nvp>>;
   /** All applications to join */
   application: Application;
   /** A particular Challenge, either by its ID or textID */
@@ -429,7 +442,7 @@ export type Ecoverse = {
   challenges?: Maybe<Array<Challenge>>;
   /** The community for the ecoverse. */
   community?: Maybe<Community>;
-  /** The shared understanding for the Ecoverse */
+  /** The context for the ecoverse. */
   context?: Maybe<Context>;
   /** The user group with the specified id anywhere in the ecoverse */
   group: UserGroup;
@@ -440,16 +453,15 @@ export type Ecoverse = {
   /** The organisation that hosts this Ecoverse instance */
   host?: Maybe<Organisation>;
   id: Scalars['ID'];
+  /** The name of the Ecoverse */
   name: Scalars['String'];
   /** All opportunities within the ecoverse */
-  opportunities: Array<Opportunity>;
-  /** A particular opportunitiy, identified by the ID or textID */
-  opportunity: Opportunity;
+  opportunities: Array<Challenge>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this ecoverse */
   projects: Array<Project>;
-  /** The set of tags for the ecoverse */
+  /** The set of tags for the  ecoverse. */
   tagset?: Maybe<Tagset>;
   /** A short text identifier for this Ecoverse */
   textID: Scalars['String'];
@@ -469,10 +481,6 @@ export type EcoverseGroupArgs = {
 
 export type EcoverseGroupsWithTagArgs = {
   tag: Scalars['String'];
-};
-
-export type EcoverseOpportunityArgs = {
-  ID: Scalars['String'];
 };
 
 export type EcoverseProjectArgs = {
@@ -583,7 +591,7 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
-  /** Create a new Actor Group on the Opportunity. */
+  /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
   /** Creates Application for a User to join this Community. */
   createApplication: Application;
@@ -593,14 +601,14 @@ export type Mutation = {
   createAspectOnProject: Aspect;
   /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
+  /** Creates a new child challenge within the parent Challenge. */
+  createChildChallenge: Challenge;
   /** Creates a new Ecoverse. */
   createEcoverse: Ecoverse;
   /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
   /** Creates a new User Group for the specified Organisation. */
   createGroupOnOrganisation: UserGroup;
-  /** Creates a new Opportunity within the parent Challenge. */
-  createOpportunity: Opportunity;
   /** Creates a new Organisation on the platform. */
   createOrganisation: Organisation;
   /** Create a new Project on the Opportunity */
@@ -609,7 +617,7 @@ export type Mutation = {
   createReferenceOnContext: Reference;
   /** Creates a new Reference on the specified Profile. */
   createReferenceOnProfile: Reference;
-  /** Create a new Relation on the Opportunity. */
+  /** Create a new Relation on the Collaboration. */
   createRelation: Relation;
   /** Creates a new Tagset on the specified Profile */
   createTagsetOnProfile: Tagset;
@@ -623,8 +631,6 @@ export type Mutation = {
   deleteAspect: Aspect;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
-  /** Deletes the Opportunity. */
-  deleteOpportunity: Opportunity;
   /** Deletes the specified Organisation. */
   deleteOrganisation: Organisation;
   /** Deletes the specified Project. */
@@ -643,8 +649,6 @@ export type Mutation = {
   eventOnApplication: Application;
   /** Trigger an event on the Challenge. */
   eventOnChallenge: Challenge;
-  /** Trigger an event on an Opportunity. */
-  eventOnOpportunity: Opportunity;
   /** Trigger an event on the Project. */
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
@@ -665,8 +669,6 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Updates the Ecoverse. */
   updateEcoverse: Ecoverse;
-  /** Updates the Opportunity. */
-  updateOpportunity: Opportunity;
   /** Updates the specified Organisation. */
   updateOrganisation: Organisation;
   /** Updates the specified Profile. */
@@ -717,6 +719,10 @@ export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeInput;
 };
 
+export type MutationCreateChildChallengeArgs = {
+  challengeData: CreateChallengeInput;
+};
+
 export type MutationCreateEcoverseArgs = {
   ecoverseData: CreateEcoverseInput;
 };
@@ -727,10 +733,6 @@ export type MutationCreateGroupOnCommunityArgs = {
 
 export type MutationCreateGroupOnOrganisationArgs = {
   groupData: CreateUserGroupInput;
-};
-
-export type MutationCreateOpportunityArgs = {
-  opportunityData: CreateOpportunityInput;
 };
 
 export type MutationCreateOrganisationArgs = {
@@ -777,10 +779,6 @@ export type MutationDeleteChallengeArgs = {
   deleteData: DeleteChallengeInput;
 };
 
-export type MutationDeleteOpportunityArgs = {
-  deleteData: DeleteOpportunityInput;
-};
-
 export type MutationDeleteOrganisationArgs = {
   deleteData: DeleteOrganisationInput;
 };
@@ -815,10 +813,6 @@ export type MutationEventOnApplicationArgs = {
 
 export type MutationEventOnChallengeArgs = {
   challengeEventData: ChallengeEventInput;
-};
-
-export type MutationEventOnOpportunityArgs = {
-  opportunityEventData: OpportunityEventInput;
 };
 
 export type MutationEventOnProjectArgs = {
@@ -861,10 +855,6 @@ export type MutationUpdateEcoverseArgs = {
   ecoverseData: UpdateEcoverseInput;
 };
 
-export type MutationUpdateOpportunityArgs = {
-  opportunityData: UpdateOpportunityInput;
-};
-
 export type MutationUpdateOrganisationArgs = {
   organisationData: UpdateOrganisationInput;
 };
@@ -890,34 +880,11 @@ export type MutationUploadAvatarArgs = {
   uploadData: UploadProfileAvatarInput;
 };
 
-export type Opportunity = {
-  __typename?: 'Opportunity';
-  /** The set of actor groups within the context of this Opportunity. */
-  actorGroups?: Maybe<Array<ActorGroup>>;
-  /** The set of aspects within the context of this Opportunity. */
-  aspects?: Maybe<Array<Aspect>>;
-  /** The community for the opportunity. */
-  community?: Maybe<Community>;
-  /** The shared understanding for the opportunity */
-  context?: Maybe<Context>;
+export type Nvp = {
+  __typename?: 'NVP';
   id: Scalars['ID'];
-  /** The lifeycle for the Challenge. */
-  lifecycle?: Maybe<Lifecycle>;
-  /** The name of the Opportunity */
   name: Scalars['String'];
-  /** The set of projects within the context of this Opportunity */
-  projects?: Maybe<Array<Project>>;
-  /** The set of relations within the context of this Opportunity. */
-  relations?: Maybe<Array<Relation>>;
-  /** The set of tags for the Opportunity */
-  tagset?: Maybe<Tagset>;
-  /** A short text identifier for this Opportunity */
-  textID: Scalars['String'];
-};
-
-export type OpportunityEventInput = {
-  ID: Scalars['Float'];
-  eventName: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type OpportunityTemplate = {
@@ -1205,14 +1172,6 @@ export type UpdateEcoverseInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type UpdateOpportunityInput = {
-  ID: Scalars['String'];
-  context?: Maybe<UpdateContextInput>;
-  name?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
 export type UpdateOrganisationInput = {
   ID: Scalars['String'];
   /** The name for this organisation */
@@ -1320,7 +1279,7 @@ export type UsersWithAuthorizationCredentialInput = {
   type: AuthorizationCredential;
 };
 
-export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'> & {
+export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
     members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     groups?: Maybe<
@@ -1347,8 +1306,6 @@ export type GroupMembersFragment = { __typename?: 'User' } & Pick<
 >;
 
 export type NewChallengeFragment = { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'>;
-
-export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'>;
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -1445,14 +1402,6 @@ export type CreateGroupOnOrganizationMutation = { __typename?: 'Mutation' } & {
   createGroupOnOrganisation: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 };
 
-export type CreateOpportunityMutationVariables = Exact<{
-  input: CreateOpportunityInput;
-}>;
-
-export type CreateOpportunityMutation = { __typename?: 'Mutation' } & {
-  createOpportunity: { __typename?: 'Opportunity' } & NewOpportunityFragment;
-};
-
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganisationInput;
 }>;
@@ -1533,14 +1482,6 @@ export type DeleteGroupMutation = { __typename?: 'Mutation' } & {
   deleteUserGroup: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id'>;
 };
 
-export type DeleteOpportunityMutationVariables = Exact<{
-  input: DeleteOpportunityInput;
-}>;
-
-export type DeleteOpportunityMutation = { __typename?: 'Mutation' } & {
-  deleteOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'>;
-};
-
 export type DeleteReferenceMutationVariables = Exact<{
   input: DeleteReferenceInput;
 }>;
@@ -1615,14 +1556,6 @@ export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'>;
 };
 
-export type UpdateOpportunityMutationVariables = Exact<{
-  opportunityData: UpdateOpportunityInput;
-}>;
-
-export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
-  updateOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
-};
-
 export type UpdateOrganizationMutationVariables = Exact<{
   input: UpdateOrganisationInput;
 }>;
@@ -1659,18 +1592,18 @@ export type AllCommunitiesQuery = { __typename?: 'Query' } & {
       >
     >;
     opportunities: Array<
-      { __typename?: 'Opportunity' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+      { __typename?: 'Challenge' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
     >;
   };
 };
 
-export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name' | 'type'>;
+export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'name'>;
 
 export type AllOpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID'>>;
+      opportunities: Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID'>>;
     };
 };
 
@@ -1700,6 +1633,52 @@ export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
         >;
       };
   };
+};
+
+export type ChallengeActorGroupsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type ChallengeActorGroupsQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        context?: Maybe<
+          { __typename?: 'Context' } & {
+            ecosystemModel?: Maybe<
+              { __typename?: 'EcosystemModel' } & {
+                actorGroups?: Maybe<
+                  Array<
+                    { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+                        actors?: Maybe<
+                          Array<
+                            { __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>
+                          >
+                        >;
+                      }
+                  >
+                >;
+              }
+            >;
+          }
+        >;
+      };
+    };
+};
+
+export type ChallengeAspectsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type ChallengeAspectsQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        context?: Maybe<
+          { __typename?: 'Context' } & {
+            aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
+          }
+        >;
+      };
+    };
 };
 
 export type ChallengeCommunityQueryVariables = Exact<{
@@ -1773,18 +1752,11 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
             { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
           >;
           tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
-          opportunities?: Maybe<
+          challenges?: Maybe<
             Array<
-              { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
+              { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
                   lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
                   context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
-                  projects?: Maybe<
-                    Array<
-                      { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description'> & {
-                          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
-                        }
-                    >
-                  >;
                 }
             >
           >;
@@ -1853,6 +1825,18 @@ export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
             }
         >
       >;
+    };
+};
+
+export type ChildChallengesQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type ChildChallengesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        challenges?: Maybe<Array<{ __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name'>>>;
+      };
     };
 };
 
@@ -1980,173 +1964,6 @@ export type MembershipQuery = { __typename?: 'Query' } & {
   };
 };
 
-export type OpportunitiesQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunitiesQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & {
-        opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>>>;
-      };
-    };
-};
-
-export type OpportunityActorGroupsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        actorGroups?: Maybe<
-          Array<
-            { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
-                actors?: Maybe<
-                  Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
-                >;
-              }
-          >
-        >;
-      };
-    };
-};
-
-export type OpportunityAspectsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
-      };
-    };
-};
-
-export type OpportunityCommunityQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'> & {
-          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
-        };
-    };
-};
-
-export type OpportunityGroupsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        community?: Maybe<
-          { __typename?: 'Community' } & {
-            groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-          }
-        >;
-      };
-    };
-};
-
-export type OpportunityNameQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityNameQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name'>;
-    };
-};
-
-export type OpportunityProfileQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityProfileQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
-          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
-          aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>>;
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<
-              Context,
-              'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
-            > & { references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>> }
-          >;
-          community?: Maybe<
-            { __typename?: 'Community' } & {
-              groups?: Maybe<
-                Array<
-                  { __typename?: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-                      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>>;
-                    }
-                >
-              >;
-            }
-          >;
-          relations?: Maybe<
-            Array<
-              { __typename?: 'Relation' } & Pick<
-                Relation,
-                'id' | 'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'
-              >
-            >
-          >;
-          actorGroups?: Maybe<
-            Array<
-              { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
-                  actors?: Maybe<
-                    Array<{ __typename?: 'Actor' } & Pick<Actor, 'id' | 'name' | 'description' | 'value' | 'impact'>>
-                  >;
-                }
-            >
-          >;
-          projects?: Maybe<
-            Array<
-              { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description'> & {
-                  lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
-                }
-            >
-          >;
-        };
-    };
-};
-
-export type OpportunityProfileInfoQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
-          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
-        };
-    };
-};
-
-export type OpportunityRelationsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityRelationsQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        relations?: Maybe<
-          Array<
-            { __typename?: 'Relation' } & Pick<
-              Relation,
-              'actorRole' | 'actorName' | 'actorType' | 'description' | 'type'
-            >
-          >
-        >;
-      };
-    };
-};
-
 export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
@@ -2157,20 +1974,6 @@ export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
       >;
     };
   };
-};
-
-export type OpportunityUserIdsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        community?: Maybe<
-          { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
-        >;
-      };
-    };
 };
 
 export type OrganizationCardQueryVariables = Exact<{
@@ -2271,10 +2074,14 @@ export type ProjectsChainHistoryQuery = { __typename?: 'Query' } & {
       challenges?: Maybe<
         Array<
           { __typename?: 'Challenge' } & Pick<Challenge, 'name' | 'textID'> & {
-              opportunities?: Maybe<
+              challenges?: Maybe<
                 Array<
-                  { __typename?: 'Opportunity' } & Pick<Opportunity, 'textID'> & {
-                      projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'textID'>>>;
+                  { __typename?: 'Challenge' } & Pick<Challenge, 'textID'> & {
+                      collaboration?: Maybe<
+                        { __typename?: 'Collaboration' } & {
+                          projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'textID'>>>;
+                        }
+                      >;
                     }
                 >
               >;
@@ -2290,14 +2097,18 @@ export type RelationsQueryVariables = Exact<{
 
 export type RelationsQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & {
-        relations?: Maybe<
-          Array<
-            { __typename?: 'Relation' } & Pick<
-              Relation,
-              'id' | 'type' | 'actorName' | 'actorType' | 'actorRole' | 'description'
-            >
-          >
+      challenge: { __typename?: 'Challenge' } & {
+        collaboration?: Maybe<
+          { __typename?: 'Collaboration' } & {
+            relations?: Maybe<
+              Array<
+                { __typename?: 'Relation' } & Pick<
+                  Relation,
+                  'id' | 'type' | 'actorRole' | 'actorName' | 'actorType' | 'description'
+                >
+              >
+            >;
+          }
         >;
       };
     };

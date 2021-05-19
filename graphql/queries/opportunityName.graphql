@@ -1,9 +1,0 @@
-query opportunityName($id: String!) {
-  ecoverse {
-    id
-    opportunity(ID: $id) {
-      id
-      name
-    }
-  }
-}

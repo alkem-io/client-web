@@ -1,0 +1,14 @@
+query challengeAspects($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      context {
+        aspects {
+          title
+          framing
+          explanation
+        }
+      }
+    }
+  }
+}

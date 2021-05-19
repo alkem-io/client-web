@@ -4,10 +4,12 @@ query projectsChainHistory {
     challenges {
       name
       textID
-      opportunities {
+      challenges {
         textID
-        projects {
-          textID
+        collaboration {
+          projects {
+            textID
+          }
         }
       }
     }

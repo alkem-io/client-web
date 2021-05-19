@@ -16,12 +16,11 @@ query challengeProfile($id: String!) {
           name
         }
       }
-
       tagset {
         name
         tags
       }
-      opportunities {
+      challenges {
         id
         name
         lifecycle {
@@ -30,15 +29,6 @@ query challengeProfile($id: String!) {
         textID
         context {
           ...ContextDetails
-        }
-        projects {
-          id
-          textID
-          name
-          description
-          lifecycle {
-            state
-          }
         }
       }
       leadOrganisations {

@@ -1,8 +1,8 @@
-query opportunities($id: String!) {
+query childChallenges($id: String!) {
   ecoverse {
     id
     challenge(ID: $id) {
-      opportunities {
+      challenges {
         id
         name
       }
