@@ -140,13 +140,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const projects = useMemo(
     () =>
-      opportunities?.flatMap(o =>
-        o?.collaboration?.projects?.flatMap(p => ({
-          caption: o.name,
-          url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
-          ...p,
-        }))
-      ),
+      opportunities
+        ?.flatMap(o =>
+          o?.collaboration?.projects?.map(p => ({
+            caption: o.name,
+            url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
+            ...p,
+          }))
+        )
+        .filter(x => !!x),
     [opportunities]
   );
 
