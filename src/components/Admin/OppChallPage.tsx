@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
 import {
   ChallengeProfileInfoDocument,
+  ChallengesWithCommunityDocument,
   NewChallengeFragmentDoc,
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
@@ -45,9 +46,11 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const notify = useNotification();
   const [addReference] = useCreateReferenceOnContextMutation();
   const [deleteReference] = useDeleteReferenceMutation();
-  const { challengeId = '', ecoverseId = '' } = useParams<Params>();
+  const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
+
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
+
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
     update: (cache, { data }) => {
       if (data) {
@@ -70,23 +73,8 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     onError: handleError,
   });
   const [createChildChallenge, { loading: loading2 }] = useCreateChildChallengeMutation({
-    update: (cache, { data }) => {
-      if (data) {
-        const { createChildChallenge } = data;
-
-        cache.modify({
-          fields: {
-            challenges(exitingChallenges = []) {
-              const newChallenge = cache.writeFragment({
-                data: createChildChallenge,
-                fragment: NewChallengeFragmentDoc,
-              });
-              return [...exitingChallenges, newChallenge];
-            },
-          },
-        });
-      }
-    },
+    refetchQueries: [{ query: ChallengesWithCommunityDocument, variables: { id: opportunityId } }],
+    awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: e => onError(e.message),
   });
@@ -99,6 +87,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
 
   useEffect(() => {
     if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: challengeId } });
+    if (mode === ProfileSubmitMode.updateOpportunity) getChallengeProfileInfo({ variables: { id: opportunityId } });
   }, []);
 
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
