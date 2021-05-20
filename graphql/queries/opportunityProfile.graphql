@@ -1,0 +1,82 @@
+query opportunityProfile($id: String!) {
+  ecoverse {
+    id
+    challenge(ID: $id) {
+      id
+      textID
+      name
+      lifecycle {
+        state
+      }
+      context {
+        id
+        tagline
+        background
+        vision
+        impact
+        who
+        references {
+          id
+          name
+          uri
+          description
+        }
+        aspects {
+          id
+          title
+          framing
+          explanation
+        }
+        ecosystemModel {
+          actorGroups {
+            id
+            name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
+          }
+        }
+      }
+      community {
+        members {
+          name
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+      leadOrganisations {
+        id
+        name
+        profile {
+          id
+          avatar
+        }
+      }
+      collaboration {
+        id
+        relations {
+          id
+          type
+          actorRole
+          actorName
+          actorType
+          description
+        }
+        projects {
+          ...ProjectDetails
+        }
+      }
+      activity {
+        name
+        value
+      }
+    }
+  }
+}

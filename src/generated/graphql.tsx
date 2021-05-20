@@ -1,7 +1,7 @@
-import * as Apollo from '@apollo/client';
-import { gql } from '@apollo/client';
 import * as SchemaTypes from '../types/graphql-schema';
 
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -3182,6 +3182,136 @@ export type MembershipLazyQueryHookResult = ReturnType<typeof useMembershipLazyQ
 export type MembershipQueryResult = Apollo.QueryResult<
   SchemaTypes.MembershipQuery,
   SchemaTypes.MembershipQueryVariables
+>;
+export const OpportunityProfileDocument = gql`
+  query opportunityProfile($id: String!) {
+    ecoverse {
+      id
+      challenge(ID: $id) {
+        id
+        textID
+        name
+        lifecycle {
+          state
+        }
+        context {
+          id
+          tagline
+          background
+          vision
+          impact
+          who
+          references {
+            id
+            name
+            uri
+            description
+          }
+          aspects {
+            id
+            title
+            framing
+            explanation
+          }
+          ecosystemModel {
+            actorGroups {
+              id
+              name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
+            }
+          }
+        }
+        community {
+          members {
+            name
+          }
+        }
+        tagset {
+          name
+          tags
+        }
+        leadOrganisations {
+          id
+          name
+          profile {
+            id
+            avatar
+          }
+        }
+        collaboration {
+          id
+          relations {
+            id
+            type
+            actorRole
+            actorName
+            actorType
+            description
+          }
+          projects {
+            ...ProjectDetails
+          }
+        }
+        activity {
+          name
+          value
+        }
+      }
+    }
+  }
+  ${ProjectDetailsFragmentDoc}
+`;
+
+/**
+ * __useOpportunityProfileQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOpportunityProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityProfileQuery,
+    SchemaTypes.OpportunityProfileQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export function useOpportunityProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityProfileQuery,
+    SchemaTypes.OpportunityProfileQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
+    OpportunityProfileDocument,
+    baseOptions
+  );
+}
+export type OpportunityProfileQueryHookResult = ReturnType<typeof useOpportunityProfileQuery>;
+export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportunityProfileLazyQuery>;
+export type OpportunityProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityProfileQuery,
+  SchemaTypes.OpportunityProfileQueryVariables
 >;
 export const OpportunityTemplateDocument = gql`
   query opportunityTemplate {

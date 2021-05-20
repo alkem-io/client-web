@@ -6,6 +6,7 @@ import {
   useChallengesQuery,
   useChallengeUserIdsQuery,
   useEcoverseUserIdsQuery,
+  useOpportunityProfileQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useTransactionScope } from '../hooks/useSentry';
@@ -166,7 +167,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const { user } = useUserContext();
   const target = opportunities.find(x => x.textID === id)?.id || '';
 
-  const { data: query, loading: opportunityLoading } = useChallengeProfileQuery({
+  const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
     variables: { id: target },
     errorPolicy: 'all',
   });

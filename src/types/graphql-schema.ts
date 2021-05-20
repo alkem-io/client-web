@@ -2009,6 +2009,72 @@ export type MembershipQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type OpportunityProfileQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type OpportunityProfileQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
+          context?: Maybe<
+            { __typename?: 'Context' } & Pick<
+              Context,
+              'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
+            > & {
+                references?: Maybe<
+                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
+                >;
+                aspects?: Maybe<
+                  Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>
+                >;
+                ecosystemModel?: Maybe<
+                  { __typename?: 'EcosystemModel' } & {
+                    actorGroups?: Maybe<
+                      Array<
+                        { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+                            actors?: Maybe<
+                              Array<
+                                { __typename?: 'Actor' } & Pick<
+                                  Actor,
+                                  'id' | 'name' | 'description' | 'value' | 'impact'
+                                >
+                              >
+                            >;
+                          }
+                      >
+                    >;
+                  }
+                >;
+              }
+          >;
+          community?: Maybe<
+            { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
+          >;
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+          leadOrganisations: Array<
+            { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'name'> & {
+                profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
+              }
+          >;
+          collaboration?: Maybe<
+            { __typename?: 'Collaboration' } & Pick<Collaboration, 'id'> & {
+                relations?: Maybe<
+                  Array<
+                    { __typename?: 'Relation' } & Pick<
+                      Relation,
+                      'id' | 'type' | 'actorRole' | 'actorName' | 'actorType' | 'description'
+                    >
+                  >
+                >;
+                projects?: Maybe<Array<{ __typename?: 'Project' } & ProjectDetailsFragment>>;
+              }
+          >;
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        };
+    };
+};
+
 export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
