@@ -1788,6 +1788,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
               { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'name' | 'textID'> & {
                   lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
                   context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+                  activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
                 }
             >
           >;
@@ -1807,6 +1808,7 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
                 >;
               }
           >;
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
         };
     };
 };
@@ -1922,6 +1924,7 @@ export type EcoverseInfoQuery = { __typename?: 'Query' } & {
           }
       >;
       community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'name'>>;
+      activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
     };
 };
 

@@ -1,7 +1,7 @@
+import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
 import * as SchemaTypes from '../types/graphql-schema';
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -2260,6 +2260,10 @@ export const ChallengeProfileDocument = gql`
           context {
             ...ContextDetails
           }
+          activity {
+            name
+            value
+          }
         }
         leadOrganisations {
           id
@@ -2280,6 +2284,10 @@ export const ChallengeProfileDocument = gql`
               state
             }
           }
+        }
+        activity {
+          name
+          value
         }
       }
     }
@@ -2802,6 +2810,10 @@ export const EcoverseInfoDocument = gql`
       community {
         id
         name
+      }
+      activity {
+        name
+        value
       }
     }
   }

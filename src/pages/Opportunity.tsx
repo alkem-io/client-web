@@ -10,7 +10,7 @@ import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
@@ -96,7 +96,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, collaboration, context, community, id } = opportunity;
+  const { name, collaboration, context, id, activity } = opportunity;
   const projects = collaboration?.projects || [];
   const relations = collaboration?.relations || [];
   const aspects = context?.aspects || [];
@@ -106,12 +106,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
-  const membersCount = (community && community.members?.length) || 0;
 
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
-  const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
   const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
@@ -124,21 +122,21 @@ const Opportunity: FC<OpportunityPageProps> = ({
     return [
       {
         name: 'Projects',
-        digit: projects.length,
+        digit: Number(activity?.find(x => x.name === 'challenges')?.value) || 0,
         color: 'positive',
       },
       {
         name: 'Interests',
-        digit: interestsCount,
+        digit: Number(activity?.find(x => x.name === 'interests')?.value) || 0,
         color: 'primary',
       },
       {
         name: 'Members',
-        digit: membersCount,
+        digit: Number(activity?.find(x => x.name === 'members')?.value) || 0,
         color: 'neutralMedium',
       },
-    ];
-  }, [projects, users]);
+    ] as ActivityCardItem[];
+  }, [activity]);
 
   const opportunityProjects = useMemo(() => {
     const projectList = [
@@ -181,8 +179,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         details={
           <ActivityCard
             title={'opportunity activity'}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            items={activitySummary as any}
+            items={activitySummary}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
           />
         }

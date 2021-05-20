@@ -132,11 +132,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, challenges: opportunities, leadOrganisations, id, community } = challenge;
+  const { name, context, challenges: opportunities, leadOrganisations, id, activity } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
-  const membersCount = (community && community.members?.length) || 0;
 
   const projects = useMemo(
     () =>
@@ -172,19 +171,23 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const activitySummary = useMemo(() => {
     return [
-      { name: 'Opportunities', digit: opportunities?.length || 0, color: 'primary' },
+      {
+        name: 'Opportunities',
+        digit: Number(activity?.find(x => x.name === 'challenges')?.value) || 0,
+        color: 'primary',
+      },
       {
         name: 'Projects',
-        digit: projects?.length || 0,
+        digit: Number(activity?.find(x => x.name === 'projects')?.value) || 0,
         color: 'positive',
       },
       {
         name: 'Members',
-        digit: membersCount,
+        digit: Number(activity?.find(x => x.name === 'members')?.value) || 0,
         color: 'neutralMedium',
       },
     ] as ActivityCardItem[];
-  }, [opportunities, projects, users]);
+  }, [activity]);
 
   const challengeRefs = challenge?.context?.references
     ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')

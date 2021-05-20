@@ -6,7 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
@@ -17,12 +17,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import Typography from '../components/core/Typography';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import {
-  useAllOpportunitiesQuery,
-  useEcoverseHostReferencesQuery,
-  useProjectsChainHistoryQuery,
-  useProjectsQuery,
-} from '../generated/graphql';
+import { useEcoverseHostReferencesQuery, useProjectsChainHistoryQuery, useProjectsQuery } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
@@ -62,7 +57,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const user = useUserContext();
   const { isAuthenticated } = useAuthenticate();
 
-  const { data: _opportunities } = useAllOpportunitiesQuery();
   const { data: _projects } = useProjectsQuery();
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
   const { data: hostData } = useEcoverseHostReferencesQuery();
@@ -70,12 +64,11 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
   const projects = _projects?.ecoverse?.projects || [];
-  const opportunities = _opportunities?.ecoverse?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {} } = ecoverse.ecoverse;
+  const { name, context = {}, activity } = ecoverse.ecoverse;
   const { tagline, impact, vision, background, references } = context;
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
@@ -132,28 +125,32 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const activitySummary = useMemo(() => {
     const initial = [
-      { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
+      {
+        name: t('pages.ecoverse.cards.activity.challenges'),
+        digit: Number(activity?.find(x => x.name === 'challenges')?.value) || 0,
+        color: 'neutral',
+      },
       {
         name: t('pages.ecoverse.cards.activity.opportunities'),
-        digit: opportunities.length,
+        digit: Number(activity?.find(x => x.name === 'opportunities')?.value) || 0,
         color: 'primary',
       },
       {
         name: t('pages.ecoverse.cards.activity.projects'),
-        digit: projects.length,
+        digit: Number(activity?.find(x => x.name === 'projects')?.value) || 0,
         color: 'positive',
       },
-    ];
+    ] as ActivityCardItem[];
     const withMembers = [
       ...initial,
       {
         name: t('pages.ecoverse.cards.activity.members'),
-        digit: users.length,
+        digit: Number(activity?.find(x => x.name === 'members')?.value) || 0,
         color: 'neutralMedium',
       },
-    ];
+    ] as ActivityCardItem[];
     return isAuthenticated ? withMembers : initial;
-  }, [ecoverse, projects, isAuthenticated]);
+  }, [activity]);
 
   return (
     <>
@@ -169,7 +166,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <div />
           )
         }
-        details={<ActivityCard title={'ecoverse activity'} items={activitySummary as any} />}
+        details={<ActivityCard title={'ecoverse activity'} items={activitySummary} />}
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
