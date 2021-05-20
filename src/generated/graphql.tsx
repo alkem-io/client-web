@@ -15,7 +15,6 @@ export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
     name
-    type
     applications {
       id
     }
@@ -74,7 +73,7 @@ export const ProjectDetailsFragmentDoc = gql`
     textID
     name
     description
-    lifecycle {
+    lifecycle2 {
       state
     }
     tagset {
@@ -134,7 +133,6 @@ export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
     name
-    type
   }
 `;
 export const AssignUserToCommunityDocument = gql`
@@ -2193,7 +2191,7 @@ export const ChallengeProfileDocument = gql`
             textID
             name
             description
-            lifecycle {
+            lifecycle2 {
               state
             }
           }
@@ -3101,16 +3099,21 @@ export const OpportunityActorGroupsDocument = gql`
     ecoverse {
       id
       opportunity(ID: $id) {
-        actorGroups {
-          id
-          name
-          description
-          actors {
+        context {
+          ecosystemModel {
             id
-            name
-            description
-            value
-            impact
+            actorGroups {
+              id
+              name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
+            }
           }
         }
       }
@@ -3167,10 +3170,12 @@ export const OpportunityAspectsDocument = gql`
     ecoverse {
       id
       opportunity(ID: $id) {
-        aspects {
-          title
-          framing
-          explanation
+        context {
+          aspects {
+            title
+            framing
+            explanation
+          }
         }
       }
     }
@@ -3399,12 +3404,6 @@ export const OpportunityProfileDocument = gql`
         lifecycle {
           state
         }
-        aspects {
-          id
-          title
-          framing
-          explanation
-        }
         context {
           id
           tagline
@@ -3416,48 +3415,54 @@ export const OpportunityProfileDocument = gql`
             id
             name
             uri
+            description
           }
-        }
-        community {
-          groups {
-            name
-            members {
+          aspects {
+            id
+            title
+            framing
+            explanation
+          }
+          ecosystemModel {
+            id
+            actorGroups {
+              id
               name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
             }
           }
         }
+        community {
+          members {
+            name
+          }
+        }
+        tagset {
+          name
+          tags
+        }
+        projects {
+          ...ProjectDetails
+        }
         relations {
           id
+          type
           actorRole
           actorName
           actorType
           description
-          type
-        }
-        actorGroups {
-          id
-          name
-          description
-          actors {
-            id
-            name
-            description
-            value
-            impact
-          }
-        }
-        projects {
-          id
-          textID
-          name
-          description
-          lifecycle {
-            state
-          }
         }
       }
     }
   }
+  ${ProjectDetailsFragmentDoc}
 `;
 
 /**
@@ -4158,7 +4163,7 @@ export const ProjectsDocument = gql`
         textID
         name
         description
-        lifecycle {
+        lifecycle2 {
           state
         }
       }

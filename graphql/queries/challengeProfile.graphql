@@ -36,7 +36,7 @@ query challengeProfile($id: String!) {
           textID
           name
           description
-          lifecycle {
+          lifecycle2 {
             state
           }
         }

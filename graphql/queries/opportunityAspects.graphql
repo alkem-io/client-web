@@ -2,10 +2,12 @@ query opportunityAspects($id: String!) {
   ecoverse {
     id
     opportunity(ID: $id) {
-      aspects {
-        title
-        framing
-        explanation
+      context {
+        aspects {
+          title
+          framing
+          explanation
+        }
       }
     }
   }

@@ -8,12 +8,6 @@ query opportunityProfile($id: String!) {
       lifecycle {
         state
       }
-      aspects {
-        id
-        title
-        framing
-        explanation
-      }
       context {
         id
         tagline
@@ -25,45 +19,55 @@ query opportunityProfile($id: String!) {
           id
           name
           uri
+          description
         }
-      }
-      community {
-        groups {
-          name
-          members {
+        aspects {
+          id
+          title
+          framing
+          explanation
+        }
+        ecosystemModel {
+          id
+          actorGroups {
+            id
             name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
           }
         }
       }
+      community {
+        members {
+          name
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+      projects {
+        ...ProjectDetails
+      }
       relations {
         id
+        type
         actorRole
         actorName
         actorType
         description
-        type
       }
-      actorGroups {
-        id
-        name
-        description
-        actors {
-          id
-          name
-          description
-          value
-          impact
-        }
-      }
-      projects {
-        id
-        textID
-        name
-        description
-        lifecycle {
-          state
-        }
-      }
+
+      # activity {
+      #   name
+      #   value
+      # }
     }
   }
 }

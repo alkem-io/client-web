@@ -28,7 +28,7 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
     deleteUser({
       variables: {
         input: {
-          ID: Number(item.id),
+          ID: item.id,
         },
       },
     });

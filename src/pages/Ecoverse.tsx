@@ -111,7 +111,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
           title: p?.name || '',
           description: p?.description,
           caption: parentsData?.caption,
-          tag: { status: 'positive', text: p?.lifecycle?.state || '' },
+          tag: { status: 'positive', text: p?.lifecycle2?.state || '' },
           type: 'display',
           onSelect: () => history.replace(parentsData?.url || ''),
         };

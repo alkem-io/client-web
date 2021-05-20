@@ -47,12 +47,21 @@ export const useUserMetadataWrapper = () => {
           .sort((a, b) => a.order - b.order) || [];
       const metadata = {
         user,
-        hasCredentials: (credential: AuthorizationCredential, resourceId = -1) =>
-          Boolean(
-            user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1
-          ),
+        hasCredentials: (credential: AuthorizationCredential, resourceId = -1) => {
+          return Boolean(
+            user?.agent?.credentials?.findIndex(
+              c => resolver.toAuthenticationCredentials(c.type) === credential && c.resourceID === resourceId
+            ) !== -1
+          );
+        },
         ofChallenge: (id: string) =>
-          Boolean(user?.agent?.credentials?.findIndex(c => c.resourceID === Number(id)) !== -1),
+          Boolean(
+            user?.agent?.credentials?.findIndex(
+              c =>
+                resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.CommunityMember &&
+                c.resourceID === Number(id)
+            ) !== -1
+          ),
         isAdmin: false,
         roles,
         groups,

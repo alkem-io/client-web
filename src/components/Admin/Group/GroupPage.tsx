@@ -35,8 +35,8 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
     ID: profile.id || '',
     avatar: profile.avatar,
     description: profile.description,
-    references: profile.references?.filter(r => r.id).map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
-    tagsets: profile.tagsets?.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
+    references: profile.references?.filter(r => r.id).map(t => ({ ID: t.id, name: t.name, uri: t.uri })),
+    tagsets: profile.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })),
   };
 };
 
@@ -81,7 +81,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
 
     for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+      await deleteReference({ variables: { input: { ID: ref.id } } });
     }
 
     for (const ref of toAdd) {

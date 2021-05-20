@@ -156,7 +156,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         title: p?.name || '',
         description: p?.description,
         caption: p?.caption,
-        tag: { status: 'positive', text: p?.lifecycle?.state || '' },
+        tag: { status: 'positive', text: p?.lifecycle2?.state || '' },
         type: 'display',
         onSelect: () => history.replace(p?.url || ''),
       })),
