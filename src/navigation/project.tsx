@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { useCreateProjectMutation, useOpportunityProfileQuery, useProjectProfileQuery } from '../generated/graphql';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { pushError } from '../reducers/error/actions';
 import { Project as ProjectType } from '../types/graphql-schema';
@@ -33,7 +33,8 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
 const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const { url } = useRouteMatch();
   const history = useHistory();
-
+  const { data } = useOpportunityProfileQuery({ variables: { id: `${opportunityId}` } });
+  const collaborationId = data?.ecoverse?.challenge?.collaboration?.id;
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: project }) => {
@@ -56,7 +57,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
         createProject({
           variables: {
             input: {
-              parentID: opportunityId,
+              parentID: Number(collaborationId),
               name,
               description,
               textID,
