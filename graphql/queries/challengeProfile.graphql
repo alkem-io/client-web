@@ -35,24 +35,23 @@ query challengeProfile($id: String!) {
           value
         }
       }
+      opportunities {
+        id
+        name
+        textID
+        context {
+          ...ContextDetails
+        }
+        lifecycle {
+          state
+        }
+      }
       leadOrganisations {
         id
         name
         profile {
           id
           avatar
-        }
-      }
-      collaboration {
-        id
-        projects {
-          id
-          textID
-          name
-          description
-          lifecycle {
-            state
-          }
         }
       }
       activity {

@@ -66,7 +66,7 @@ export const ProjectDetailsFragmentDoc = gql`
     textID
     name
     description
-    lifecycle {
+    lifecycle2 {
       state
     }
     tagset {
@@ -2265,24 +2265,23 @@ export const ChallengeProfileDocument = gql`
             value
           }
         }
+        opportunities {
+          id
+          name
+          textID
+          context {
+            ...ContextDetails
+          }
+          lifecycle {
+            state
+          }
+        }
         leadOrganisations {
           id
           name
           profile {
             id
             avatar
-          }
-        }
-        collaboration {
-          id
-          projects {
-            id
-            textID
-            name
-            description
-            lifecycle {
-              state
-            }
           }
         }
         activity {
@@ -3187,7 +3186,7 @@ export const OpportunityProfileDocument = gql`
   query opportunityProfile($id: String!) {
     ecoverse {
       id
-      challenge(ID: $id) {
+      opportunity(ID: $id) {
         id
         textID
         name
@@ -3237,31 +3236,16 @@ export const OpportunityProfileDocument = gql`
           name
           tags
         }
-        leadOrganisations {
-          id
-          name
-          profile {
-            id
-            avatar
-          }
+        projects {
+          ...ProjectDetails
         }
-        collaboration {
+        relations {
           id
-          relations {
-            id
-            type
-            actorRole
-            actorName
-            actorType
-            description
-          }
-          projects {
-            ...ProjectDetails
-          }
-        }
-        activity {
-          name
-          value
+          type
+          actorRole
+          actorName
+          actorType
+          description
         }
       }
     }
@@ -3786,7 +3770,7 @@ export const ProjectsDocument = gql`
         textID
         name
         description
-        lifecycle {
+        lifecycle2 {
           state
         }
       }
@@ -3830,14 +3814,14 @@ export const ProjectsChainHistoryDocument = gql`
     ecoverse {
       id
       challenges {
+        id
         name
         textID
-        challenges {
+        opportunities {
+          name
           textID
-          collaboration {
-            projects {
-              textID
-            }
+          projects {
+            textID
           }
         }
       }
@@ -3892,16 +3876,14 @@ export const RelationsDocument = gql`
   query relations($id: String!) {
     ecoverse {
       id
-      challenge(ID: $id) {
-        collaboration {
-          relations {
-            id
-            type
-            actorRole
-            actorName
-            actorType
-            description
-          }
+      opportunity(ID: $id) {
+        relations {
+          id
+          type
+          actorRole
+          actorName
+          actorType
+          description
         }
       }
     }

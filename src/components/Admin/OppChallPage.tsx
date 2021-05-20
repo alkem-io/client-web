@@ -121,7 +121,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
       const toAdd = context.references.filter(x => !x.id);
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        await deleteReference({ variables: { input: { ID: ref.id } } });
       }
       for (const ref of toAdd) {
         await addReference({
@@ -137,7 +137,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       }
     }
     const updatedRefs: UpdateReferenceInput[] = toUpdate.map<UpdateReferenceInput>(r => ({
-      ID: Number(r.id),
+      ID: r.id,
       description: r.description,
       name: r.name,
       uri: r.uri,

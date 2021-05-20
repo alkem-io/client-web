@@ -115,7 +115,7 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     deleteChalllenge({
       variables: {
         input: {
-          ID: Number(item.id),
+          ID: item.id,
         },
       },
     });

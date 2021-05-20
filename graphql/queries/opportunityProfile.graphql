@@ -1,7 +1,7 @@
 query opportunityProfile($id: String!) {
   ecoverse {
     id
-    challenge(ID: $id) {
+    opportunity(ID: $id) {
       id
       textID
       name
@@ -51,32 +51,22 @@ query opportunityProfile($id: String!) {
         name
         tags
       }
-      leadOrganisations {
+      projects {
+        ...ProjectDetails
+      }
+      relations {
         id
-        name
-        profile {
-          id
-          avatar
-        }
+        type
+        actorRole
+        actorName
+        actorType
+        description
       }
-      collaboration {
-        id
-        relations {
-          id
-          type
-          actorRole
-          actorName
-          actorType
-          description
-        }
-        projects {
-          ...ProjectDetails
-        }
-      }
-      activity {
-        name
-        value
-      }
+
+      # activity {
+      #   name
+      #   value
+      # }
     }
   }
 }

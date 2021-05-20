@@ -80,14 +80,14 @@ const EcoversePage: FC<EcoversePageProps> = ({
     () =>
       projectsNestHistory
         ?.flatMap(c =>
-          c?.challenges?.map(x => ({
+          c?.opportunities?.map(x => ({
             challenge: c.name,
             url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
             ...x,
           }))
         )
         .flatMap(o =>
-          o?.collaboration?.projects?.flatMap(p => ({
+          o?.projects?.flatMap(p => ({
             caption: o?.challenge,
             url: `${o?.url}/projects/${p.textID}`,
             ...p,
@@ -108,7 +108,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
           title: p?.name || '',
           description: p?.description,
           caption: parentsData?.caption,
-          tag: { status: 'positive', text: p?.lifecycle?.state || '' },
+          tag: { status: 'positive', text: p?.lifecycle2?.state || '' },
           type: 'display',
           onSelect: () => history.replace(parentsData?.url || ''),
         };

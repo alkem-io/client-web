@@ -132,7 +132,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, challenges: opportunities, leadOrganisations, id, activity } = challenge;
+  const { name, context, opportunities, leadOrganisations, id, activity } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
@@ -141,7 +141,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
     () =>
       opportunities
         ?.flatMap(o =>
-          o?.collaboration?.projects?.map(p => ({
+          o?.projects?.map(p => ({
             caption: o.name,
             url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
             ...p,
@@ -157,7 +157,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         title: p?.name || '',
         description: p?.description,
         caption: p?.caption,
-        tag: { status: 'positive', text: p?.lifecycle?.state || '' },
+        tag: { status: 'positive', text: p?.lifecycle2?.state || '' },
         type: 'display',
         onSelect: () => history.replace(p?.url || ''),
       })),

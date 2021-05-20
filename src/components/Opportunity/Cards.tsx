@@ -148,7 +148,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
     awaitRefetchQueries: true,
   });
 
-  const onRemove = () => removeActor({ variables: { input: { ID: Number(id) } } });
+  const onRemove = () => removeActor({ variables: { input: { ID: id } } });
 
   return (
     <>
@@ -276,7 +276,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
     refetchQueries: [{ query: ChallengeAspectsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
-  const onRemove = () => removeAspect({ variables: { input: { ID: Number(id) } } });
+  const onRemove = () => removeAspect({ variables: { input: { ID: id } } });
 
   const styles = useCardStyles();
   const { user } = useUserContext();

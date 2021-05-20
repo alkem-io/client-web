@@ -30,7 +30,13 @@ import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { AuthorizationCredential, Context, Challenge as OpportunityType, Project, User } from '../types/graphql-schema';
+import {
+  AuthorizationCredential,
+  Context,
+  Opportunity as OpportunityType,
+  Project,
+  User,
+} from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
@@ -96,9 +102,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, collaboration, context, id, activity } = opportunity;
-  const projects = collaboration?.projects || [];
-  const relations = collaboration?.relations || [];
+  const { name, projects = [], relations = [], context, id } = opportunity;
+
   const aspects = context?.aspects || [];
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
   const { references, background, tagline, who, impact, vision } = context || {};
@@ -118,25 +123,26 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const projectRef = useRef<HTMLDivElement>(null);
 
+  // TODO: [ATS] Fix after https://github.com/cherrytwist/server/issues/994 is resolved
   const activitySummary = useMemo(() => {
     return [
       {
         name: 'Projects',
-        digit: Number(activity?.find(x => x.name === 'challenges')?.value) || 0,
+        digit: 0, // Number(activity?.find(x => x.name === 'challenges')?.value) || 0,
         color: 'positive',
       },
       {
         name: 'Interests',
-        digit: Number(activity?.find(x => x.name === 'interests')?.value) || 0,
+        digit: 0, // Number(activity?.find(x => x.name === 'interests')?.value) || 0,
         color: 'primary',
       },
       {
         name: 'Members',
-        digit: Number(activity?.find(x => x.name === 'members')?.value) || 0,
+        digit: 0, // Number(activity?.find(x => x.name === 'members')?.value) || 0,
         color: 'neutralMedium',
       },
     ] as ActivityCardItem[];
-  }, [activity]);
+  }, []); //[activity]);
 
   const opportunityProjects = useMemo(() => {
     const projectList = [

@@ -18,7 +18,13 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
-import { AuthorizationCredential, Challenge as ChallengeType, ChallengesQuery, User } from '../types/graphql-schema';
+import {
+  AuthorizationCredential,
+  Challenge as ChallengeType,
+  ChallengesQuery,
+  Opportunity as OpportunityType,
+  User,
+} from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { Project } from './project';
 import RestrictedRoute from './route.extensions';
@@ -177,7 +183,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.ecoverse.challenge;
+  const opportunity = query?.ecoverse.opportunity;
   const opportunityGroups = usersQuery?.ecoverse.challenge;
   const members = opportunityGroups?.community?.members;
   const users = useMemo(() => members || [], [members]);
@@ -201,7 +207,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
     <Switch>
       <Route exact path={path}>
         <OpportunityPage
-          opportunity={opportunity as ChallengeType}
+          opportunity={opportunity as OpportunityType}
           users={users as User[] | undefined}
           paths={currentPaths}
           onProjectTransition={project => {
@@ -213,11 +219,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
         />
       </Route>
       <Route path={`${path}/projects`}>
-        <Project
-          paths={currentPaths}
-          projects={opportunity?.collaboration?.projects}
-          opportunityId={Number(opportunity.id)}
-        />
+        <Project paths={currentPaths} projects={opportunity?.projects} opportunityId={Number(opportunity.id)} />
       </Route>
       <Route path="*">
         <FourOuFour />

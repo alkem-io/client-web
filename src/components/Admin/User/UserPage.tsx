@@ -121,7 +121,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       const toAdd = references.filter(x => !x.id);
 
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        if (ref.id) await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
       for (const ref of toAdd) {
@@ -145,13 +145,14 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   };
 
   const handleRemoveUser = () => {
-    remove({
-      variables: {
-        input: {
-          ID: Number(user?.id),
+    if (user)
+      remove({
+        variables: {
+          input: {
+            ID: user?.id,
+          },
         },
-      },
-    }).finally(() => setModalOpened(false));
+      }).finally(() => setModalOpened(false));
   };
 
   const closeModal = (): void => {
