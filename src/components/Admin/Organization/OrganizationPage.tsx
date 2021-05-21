@@ -86,7 +86,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
 
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
       for (const ref of toAdd) {
@@ -121,8 +121,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
-          tagsets:
-            profile?.tagsets?.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })) || [],
+          tagsets: profile?.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })) || [],
         },
       };
 

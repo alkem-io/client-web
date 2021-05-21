@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
 import {
   ChallengeProfileInfoDocument,
-  NewChallengeFragmentDoc,
-  NewOpportunityFragmentDoc,
+  ChallengesWithCommunityDocument,
+  OpportunitiesDocument,
   OpportunityProfileInfoDocument,
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
@@ -16,6 +16,7 @@ import {
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { useNotification } from '../../hooks/useNotification';
@@ -45,63 +46,35 @@ interface Params {
 
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const notify = useNotification();
+  const handleError = useApolloErrorHandler();
   const [addReference] = useCreateReferenceOnContextMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
-  const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
-    update: (cache, { data }) => {
-      if (data) {
-        const { createChallenge } = data;
 
-        cache.modify({
-          fields: {
-            challenges(exitingChallenges = []) {
-              const newChallenge = cache.writeFragment({
-                data: createChallenge,
-                fragment: NewChallengeFragmentDoc,
-              });
-              return [...exitingChallenges, newChallenge];
-            },
-          },
-        });
-      }
-    },
+  const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
+    refetchQueries: [{ query: ChallengesWithCommunityDocument }],
+    awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
-    onError: e => onError(e.message),
+    onError: handleError,
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
-    update: (cache, { data }) => {
-      if (data) {
-        const { createOpportunity } = data;
-
-        cache.modify({
-          fields: {
-            opportunities(existingOpportunities = []) {
-              const newOpportunities = cache.writeFragment({
-                data: createOpportunity,
-                fragment: NewOpportunityFragmentDoc,
-              });
-              return [...existingOpportunities, newOpportunities];
-            },
-          },
-        });
-      }
-    },
+    refetchQueries: [{ query: OpportunitiesDocument, variables: { id: challengeId } }],
+    awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
-    onError: e => onError(e.message),
+    onError: handleError,
   });
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: e => onError(e.message),
+    onError: handleError,
     refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { id: challengeId } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: e => onError(e.message),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
@@ -124,10 +97,6 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     notify(message, 'success');
   };
 
-  const onError = (message: string) => {
-    notify(message, 'error');
-  };
-
   const currentPaths = useMemo(() => [...paths, { name: profile?.name || 'new', real: false }], [paths, profile]);
   useUpdateNavigation({ currentPaths });
 
@@ -142,7 +111,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
       const toAdd = context.references.filter(x => !x.id);
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        await deleteReference({ variables: { input: { ID: ref.id } } });
       }
       for (const ref of toAdd) {
         await addReference({
@@ -158,7 +127,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       }
     }
     const updatedRefs: UpdateReferenceInput[] = toUpdate.map<UpdateReferenceInput>(r => ({
-      ID: Number(r.id),
+      ID: r.id,
       description: r.description,
       name: r.name,
       uri: r.uri,
@@ -176,7 +145,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             variables: {
               input: {
                 ...data,
-                parentID: Number(toEcoverseId(ecoverseId)), // TODO [ATS] Where is this coming from?
+                parentID: toEcoverseId(ecoverseId), // TODO [ATS] Where is this coming from?
               },
             },
           });
@@ -193,7 +162,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             variables: {
               input: {
                 ...data,
-                parentID: challengeId,
+                challengeID: challengeId,
               },
             },
           });

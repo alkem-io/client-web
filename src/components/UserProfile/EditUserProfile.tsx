@@ -17,6 +17,7 @@ import { UserForm } from './UserForm';
 
 interface EditUserProfileProps {}
 
+// TODO [ATS] Need optimization this code is copy paste a few times.
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
   const { id: userID, email, memberof, profile, agent, ...rest } = user;
 
@@ -27,8 +28,8 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
       ID: user.profile.id || '',
       avatar: profile.avatar,
       description: profile.description,
-      references: profile.references.filter(r => r.id).map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
-      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
+      references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
+      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
     },
   };
 };
@@ -64,7 +65,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
 
     for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+      await deleteReference({ variables: { input: { ID: ref.id } } });
     }
 
     for (const ref of toAdd) {

@@ -56,7 +56,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
         createProject({
           variables: {
             input: {
-              parentID: opportunityId,
+              opportunityID: opportunityId,
               name,
               description,
               textID,

@@ -39,8 +39,8 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
 
   const group = data?.ecoverse?.group as UserGroup;
   const avatar = group?.profile?.avatar;
-  const level = group?.parent?.__typename || '';
-  const parentName = group?.parent?.name || '';
+  const level = data?.ecoverse?.group?.parent?.__typename || '';
+  const parentName = data?.ecoverse?.group?.parent?.name || '';
 
   const defaultTags = group?.profile?.tagsets?.find(ts => ts.name === 'default')?.tags;
 

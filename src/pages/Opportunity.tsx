@@ -102,8 +102,11 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, aspects, projects = [], relations = [], actorGroups, context, community, id } = opportunity;
-  const { references, background, tagline, who, impact, vision } = context || {};
+  const { name, projects = [], relations = [], context, community, id } = opportunity;
+
+  const actorGroups = context?.ecosystemModel?.actorGroups || [];
+
+  const { references, background, tagline, who, impact, vision, aspects = [] } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);

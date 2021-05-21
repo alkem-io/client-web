@@ -21,5 +21,4 @@ query allCommunities {
 fragment AllCommunityDetails on Community {
   id
   name
-  type
 }
