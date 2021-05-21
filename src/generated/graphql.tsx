@@ -73,7 +73,7 @@ export const ProjectDetailsFragmentDoc = gql`
     textID
     name
     description
-    lifecycle2 {
+    lifecycle {
       state
     }
     tagset {
@@ -2191,7 +2191,7 @@ export const ChallengeProfileDocument = gql`
             textID
             name
             description
-            lifecycle2 {
+            lifecycle {
               state
             }
           }
@@ -4163,7 +4163,7 @@ export const ProjectsDocument = gql`
         textID
         name
         description
-        lifecycle2 {
+        lifecycle {
           state
         }
       }

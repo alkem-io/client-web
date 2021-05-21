@@ -75,7 +75,7 @@ export type Application = {
   __typename?: 'Application';
   /** The ID of the entity */
   id: Scalars['ID'];
-  lifecycle: Lifecycle2;
+  lifecycle: Lifecycle;
   questions: Array<Question>;
   user: User;
 };
@@ -166,7 +166,7 @@ export type Challenge = {
   /** The Organisations that are leading this Challenge. */
   leadOrganisations: Array<Organisation>;
   /** The lifeycle for the Challenge. */
-  lifecycle?: Maybe<Lifecycle2>;
+  lifecycle?: Maybe<Lifecycle>;
   name: Scalars['String'];
   /** The Opportunities for the challenge. */
   opportunities?: Maybe<Array<Opportunity>>;
@@ -299,11 +299,11 @@ export type CreateNvpInput = {
 };
 
 export type CreateOpportunityInput = {
+  challengeID: Scalars['String'];
   context?: Maybe<CreateContextInput>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** The name for the entity. */
   name: Scalars['String'];
-  parentID: Scalars['String'];
   tags?: Maybe<Array<Scalars['String']>>;
   /** A display identifier, unique within the containing entity. */
   textID: Scalars['TextID'];
@@ -328,7 +328,7 @@ export type CreateProjectInput = {
   description?: Maybe<Scalars['String']>;
   /** The name for the entity. */
   name: Scalars['String'];
-  parentID: Scalars['Float'];
+  opportunityID: Scalars['Float'];
   /** A display identifier, unique within the containing entity. */
   textID: Scalars['TextID'];
 };
@@ -532,8 +532,8 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type Lifecycle2 = {
-  __typename?: 'Lifecycle2';
+export type Lifecycle = {
+  __typename?: 'Lifecycle';
   /** The ID of the entity */
   id: Scalars['ID'];
   /** The machine definition, describing the states, transitions etc for this Lifeycle. */
@@ -951,7 +951,7 @@ export type Opportunity = {
   /** The ID of the entity */
   id: Scalars['ID'];
   /** The lifeycle for the Opportunity. */
-  lifecycle?: Maybe<Lifecycle2>;
+  lifecycle?: Maybe<Lifecycle>;
   name: Scalars['String'];
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
@@ -1020,7 +1020,7 @@ export type Project = {
   /** The ID of the entity */
   id: Scalars['ID'];
   /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
-  lifecycle2?: Maybe<Lifecycle2>;
+  lifecycle?: Maybe<Lifecycle>;
   name: Scalars['String'];
   /** The set of tags for the project */
   tagset?: Maybe<Tagset>;
@@ -1412,7 +1412,7 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'textID' | 'name' | 'description'
 > & {
-    lifecycle2?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+    lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
     tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
     aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
   };
@@ -1840,7 +1840,7 @@ export type ChallengeProfileQueryVariables = Exact<{
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
-          lifecycle?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
           community?: Maybe<
             { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'name'>>> }
@@ -1849,12 +1849,12 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
           opportunities?: Maybe<
             Array<
               { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'name' | 'textID'> & {
-                  lifecycle?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+                  lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
                   context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
                   projects?: Maybe<
                     Array<
                       { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description'> & {
-                          lifecycle2?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+                          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
                         }
                     >
                   >;
@@ -1877,7 +1877,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'textID' | 'name'> & {
-          lifecycle?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
     };
@@ -2156,7 +2156,7 @@ export type OpportunityProfileQueryVariables = Exact<{
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'textID' | 'name'> & {
-          lifecycle?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<
             { __typename?: 'Context' } & Pick<
               Context,
@@ -2347,7 +2347,7 @@ export type ProjectsQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       projects: Array<
         { __typename?: 'Project' } & Pick<Project, 'id' | 'textID' | 'name' | 'description'> & {
-            lifecycle2?: Maybe<{ __typename?: 'Lifecycle2' } & Pick<Lifecycle2, 'state'>>;
+            lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           }
       >;
     };

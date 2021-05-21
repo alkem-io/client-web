@@ -162,7 +162,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
             variables: {
               input: {
                 ...data,
-                parentID: challengeId,
+                challengeID: challengeId,
               },
             },
           });
