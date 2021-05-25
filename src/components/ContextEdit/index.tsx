@@ -45,7 +45,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   let submitWired;
 
   const onSubmit = async values => {
-    const { name, textID, state, ...context } = values;
+    const { name, nameID, state, ...context } = values;
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name }));
     const contextWithUpdatedRefs = { ...context };

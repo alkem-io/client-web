@@ -9,7 +9,10 @@ export const useUserMetadata = (id: string) => {
 
   const { data: membershipData, loading: loadingMembership } = useMembershipQuery({
     variables: { input: { userID: id } },
-    errorPolicy: 'ignore',
+    errorPolicy: 'all',
+    onError: () => {
+      //No Op
+    },
   });
   const loading = loadingData || loadingMembership;
   return {

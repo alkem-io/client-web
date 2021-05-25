@@ -1,4 +1,4 @@
-query challengeGroups($id: String!) {
+query challengeGroups($id: UUID_NAMEID!) {
   ecoverse {
     id
     challenge(ID: $id) {

@@ -1,8 +1,8 @@
 query ecoverseInfo {
   ecoverse {
     id
-    textID
-    name
+    nameID
+    displayName
     context {
       tagline
       vision
@@ -15,7 +15,7 @@ query ecoverseInfo {
     }
     community {
       id
-      name
+      displayName
     }
   }
 }

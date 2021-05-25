@@ -1,12 +1,12 @@
-query challengeName($id: String!) {
+query challengeName($id: UUID_NAMEID!) {
   ecoverse {
     id
     challenge(ID: $id) {
       id
-      name
+      displayName
       community {
         id
-        name
+        displayName
       }
     }
   }

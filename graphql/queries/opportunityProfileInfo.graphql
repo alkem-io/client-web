@@ -1,10 +1,10 @@
-query opportunityProfileInfo($id: String!) {
+query opportunityProfileInfo($id: UUID_NAMEID!) {
   ecoverse {
     id
     opportunity(ID: $id) {
       id
-      textID
-      name
+      nameID
+      displayName
       context {
         ...ContextDetails
       }

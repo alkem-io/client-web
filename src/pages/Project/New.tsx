@@ -29,7 +29,7 @@ const useStyles = createStyles(theme => ({
 interface ProjectPageProps extends PageProps {
   users: User[] | undefined;
   loading?: boolean;
-  onCreate: (project: Pick<ProjectType, 'name' | 'description' | 'textID'>) => void;
+  onCreate: (project: Pick<ProjectType, 'displayName' | 'description' | 'nameID'>) => void;
 }
 
 const textIdValidator = (value: string) => {
@@ -104,7 +104,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
               text="create project"
               variant="primary"
               disabled={!name || !description || !formValid || loading}
-              onClick={() => onCreate({ name, description, textID: createTextId(shortName) })}
+              onClick={() => onCreate({ displayName: name, description, nameID: createTextId(shortName) })}
             />
           </div>
         </ContentCard>

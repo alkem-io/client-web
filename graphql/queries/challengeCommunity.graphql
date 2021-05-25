@@ -1,9 +1,9 @@
-query challengeCommunity($id: String!) {
+query challengeCommunity($id: UUID_NAMEID!) {
   ecoverse {
     id
     challenge(ID: $id) {
       id
-      name
+      displayName
       community {
         ...CommunityDetails
       }

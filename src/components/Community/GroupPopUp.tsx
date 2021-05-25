@@ -62,7 +62,7 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
           {populated => (
             <AvatarContainer className="d-flex" title={'Active community members'}>
               {shuffleCollection(populated).map((u, i) => (
-                <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.name} />
+                <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.displayName} />
               ))}
               {members && members?.length - populated.length > 0 && (
                 <Typography variant="h3" as="h3" color="positive">

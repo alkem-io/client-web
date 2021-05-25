@@ -3,7 +3,7 @@ import { Reference, Tagset } from './Profile';
 
 export interface UserModel {
   id: string;
-  name: string;
+  displayName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -37,7 +37,7 @@ interface Group {
 }
 export const defaultUser: UserModel = {
   id: '',
-  name: '',
+  displayName: '',
   firstName: '',
   lastName: '',
   email: '',
@@ -64,7 +64,7 @@ Generated userForm interface for yup
 export interface UserFromGenerated {
   firstName: string;
   email: string;
-  name: string;
+  displayName: string;
   avatar: string;
   tagsets: Tagset[];
   references: Reference[];
@@ -79,7 +79,7 @@ export interface UserFromGenerated {
 
 export interface Member {
   id: string;
-  name: string;
+  displayName: string;
   firstName: string;
   lastName: string;
   email: string;

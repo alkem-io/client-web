@@ -37,7 +37,7 @@ export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
       c =>
         ({
           id: c.id,
-          value: c.name,
+          value: c.displayName,
           url: `${url}/${c.id}`,
         } as SearchableListItem)
     ) || [];

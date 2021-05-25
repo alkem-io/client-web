@@ -4,7 +4,7 @@ query search($searchData: SearchInput!) {
     terms
     result {
       ... on User {
-        name
+        displayName
         id
       }
       ... on UserGroup {
@@ -12,7 +12,7 @@ query search($searchData: SearchInput!) {
         id
       }
       ... on Organisation {
-        name
+        displayName
         id
       }
     }

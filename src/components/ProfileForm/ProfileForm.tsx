@@ -10,7 +10,7 @@ import { TextArea } from '../core/TextInput';
 
 interface Profile {
   name?: string;
-  textID?: string;
+  nameID?: string;
 }
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 
 export interface ProfileFormValuesType {
   name: string;
-  textID: string;
+  nameID: string;
   background: string;
   impact: string;
   tagline: string;
@@ -52,7 +52,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
 
   const initialValues: ProfileFormValuesType = {
     name: profile?.name || '',
-    textID: profile?.textID || '',
+    nameID: profile?.nameID || '',
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
@@ -63,14 +63,14 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : yup.string().required(),
-    textID: contextOnly
+    nameID: contextOnly
       ? yup.string()
       : yup
           .string()
           .required()
-          .min(3, 'TextID should be at least 3 symbols long')
+          .min(3, 'nameID should be at least 3 symbols long')
           .max(20, 'Exceeded the limit of 20 characters')
-          .matches(/^\S*$/, 'TextID cannot contain spaces'),
+          .matches(/^\S*$/, 'nameID cannot contain spaces'),
     // state: contextOnly ? yup.string() : yup.string().required(),
     background: yup.string().required(),
     impact: yup.string().required(),
@@ -148,7 +148,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
               <>
                 {getTextArea({ name: 'name', label: 'Name' })}
                 {getTextArea({
-                  name: 'textID',
+                  name: 'nameID',
                   label: 'Text ID',
                   rows: 1,
                   placeholder:

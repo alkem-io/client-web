@@ -98,7 +98,8 @@ export const useDemoAuth = () => {
       await createUser({
         variables: {
           input: {
-            name: `${firstName} ${lastName}`.trim(),
+            nameID: `${firstName}-${lastName}`.trim(),
+            displayName: `${firstName} ${lastName}`.trim(),
             firstName,
             lastName,
             email,

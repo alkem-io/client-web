@@ -1,22 +1,22 @@
-query organizationProfileInfo($id: String!) {
-    organisation(ID: $id) {
+query organizationProfileInfo($id: UUID_NAMEID!) {
+  organisation(ID: $id) {
+    id
+    nameID
+    displayName
+    profile {
       id
-      textID
-      name
-      profile {
+      avatar
+      description
+      references {
         id
-        avatar
-        description
-        references {
-          id
-          name
-          uri
-        }
-        tagsets {
-          id
-          name
-          tags
-        }
+        name
+        uri
+      }
+      tagsets {
+        id
+        name
+        tags
       }
     }
   }
+}

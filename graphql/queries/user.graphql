@@ -1,4 +1,4 @@
-query user($id: String!) {
+query user($id: UUID_NAMEID_EMAIL!) {
   user(ID: $id) {
     ...UserDetails
     ...UserAgent

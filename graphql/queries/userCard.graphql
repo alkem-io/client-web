@@ -1,4 +1,4 @@
-query userCardData($ids: [String!]!) {
+query userCardData($ids: [UUID_NAMEID_EMAIL!]!) {
   usersById(IDs: $ids) {
     __typename
     ...UserDetails

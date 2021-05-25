@@ -44,14 +44,15 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
 
   const handleCreate = useCallback(
     async (name: string) => {
-      await createGroup({
-        variables: {
-          input: {
-            parentID: Number(community?.id),
-            name,
+      if (community)
+        await createGroup({
+          variables: {
+            input: {
+              parentID: community.id,
+              name,
+            },
           },
-        },
-      });
+        });
     },
     [community]
   );

@@ -101,7 +101,7 @@ export const RegisterPage: FC<RegisterPageProps> = () => {
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
             <Trans
               i18nKey="pages.register.header"
-              values={{ ecoverseName: ecoverse?.ecoverse.name }}
+              values={{ ecoverseName: ecoverse?.ecoverse.displayName }}
               components={{
                 strong: <strong />,
               }}

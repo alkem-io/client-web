@@ -43,8 +43,8 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   });
 
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.name || '', real: true }],
-    [paths, data?.ecoverse?.opportunity?.name, url]
+    () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.displayName || '', real: true }],
+    [paths, data?.ecoverse?.opportunity?.displayName, url]
   );
 
   const community = data?.ecoverse?.opportunity?.community;

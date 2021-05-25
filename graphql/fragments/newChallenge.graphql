@@ -1,5 +1,5 @@
 fragment NewChallenge on Challenge {
   id
-  textID
-  name
+  nameID
+  displayName
 }

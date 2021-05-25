@@ -142,7 +142,7 @@ export const UserProfile: FC = () => {
 
   return (
     <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />}>
-      <Header text={user?.name}></Header>
+      <Header text={user?.displayName}></Header>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
           {userMetadata?.roles[0].name}

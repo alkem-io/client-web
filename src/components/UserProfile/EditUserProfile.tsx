@@ -72,7 +72,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
       await createReference({
         variables: {
           input: {
-            parentID: Number(profileId),
+            parentID: profileId,
             name: ref.name,
             description: ref.description,
             uri: ref.uri,
@@ -87,7 +87,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
           input: {
             name: tagset.name,
             tags: [...tagset.tags],
-            parentID: Number(profileId),
+            parentID: profileId,
           },
         },
       });

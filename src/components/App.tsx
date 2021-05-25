@@ -32,7 +32,7 @@ interface UserSegmentProps {
 const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
   const { user, roles } = userMetadata;
   const role = roles[0]?.name || 'Registered';
-  return user && <User name={user.name} title={role} orientation={orientation} src={user.profile?.avatar} />;
+  return user && <User name={user.displayName} title={role} orientation={orientation} src={user.profile?.avatar} />;
 };
 
 const App = ({ children }): React.ReactElement => {

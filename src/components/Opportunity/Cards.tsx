@@ -76,7 +76,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
 
   const [removeRelation] = useDeleteRelationMutation({
     variables: {
-      input: { ID: Number(id) },
+      input: { ID: id },
     },
     onCompleted: () => setShowRemove(false),
     onError: e => console.error(e), // eslint-disable-line no-console

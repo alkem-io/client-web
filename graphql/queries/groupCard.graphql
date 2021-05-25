@@ -1,4 +1,4 @@
-query groupCard($id: String!) {
+query groupCard($id: UUID!) {
   ecoverse {
     id
     group(ID: $id) {
@@ -7,15 +7,15 @@ query groupCard($id: String!) {
       parent {
         __typename
         ... on Community {
-          name
+          displayName
         }
         ... on Organisation {
-          name
+          displayName
         }
       }
       members {
         id
-        name
+        displayName
       }
       profile {
         id

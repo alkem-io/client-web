@@ -39,7 +39,13 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               <>
                 <AvatarContainer className="d-flex" title={'Active community members'}>
                   {avatars.map((u, i) => (
-                    <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} userId={u.id} name={u.name} />
+                    <Avatar
+                      className={'d-inline-flex'}
+                      key={i}
+                      src={u.profile?.avatar}
+                      userId={u.id}
+                      name={u.displayName}
+                    />
                   ))}
                 </AvatarContainer>
                 <div style={{ flexBasis: '100%' }} />

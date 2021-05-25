@@ -1,10 +1,10 @@
-query challengeProfile($id: String!) {
+query challengeProfile($id: UUID_NAMEID!) {
   ecoverse {
     id
     challenge(ID: $id) {
       id
-      textID
-      name
+      nameID
+      displayName
       lifecycle {
         state
       }
@@ -13,7 +13,7 @@ query challengeProfile($id: String!) {
       }
       community {
         members {
-          name
+          displayName
         }
       }
 
@@ -23,18 +23,18 @@ query challengeProfile($id: String!) {
       }
       opportunities {
         id
-        name
+        displayName
         lifecycle {
           state
         }
-        textID
+        nameID
         context {
           ...ContextDetails
         }
         projects {
           id
-          textID
-          name
+          nameID
+          displayName
           description
           lifecycle {
             state
@@ -43,7 +43,7 @@ query challengeProfile($id: String!) {
       }
       leadOrganisations {
         id
-        name
+        displayName
         profile {
           id
           avatar

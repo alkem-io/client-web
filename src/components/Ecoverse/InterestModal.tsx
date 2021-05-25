@@ -39,9 +39,9 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
     createRelation({
       variables: {
         input: {
-          parentID: Number(opportunityId),
+          parentID: opportunityId,
           type: 'incoming',
-          actorName: userData?.me.name || '',
+          actorName: userData?.me.displayName || '',
           actorType: 'user',
           actorRole: customRole || role,
           description: description,

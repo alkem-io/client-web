@@ -3,8 +3,8 @@ query projects {
     id
     projects {
       id
-      textID
-      name
+      nameID
+      displayName
       description
       lifecycle {
         state

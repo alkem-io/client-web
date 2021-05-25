@@ -89,19 +89,22 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const isLoading = loading1 || loading2 || loading3 || loading4;
   const profile = challengeProfile?.ecoverse?.challenge || opportunityProfile?.ecoverse?.opportunity;
   const profileTopLvlInfo = {
-    name: profile?.name,
-    textID: profile?.textID,
+    name: profile?.displayName,
+    nameID: profile?.nameID,
   };
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
   };
 
-  const currentPaths = useMemo(() => [...paths, { name: profile?.name || 'new', real: false }], [paths, profile]);
+  const currentPaths = useMemo(() => [...paths, { name: profile?.displayName || 'new', real: false }], [
+    paths,
+    profile,
+  ]);
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, textID, ...context } = values;
+    const { name, nameID, ...context } = values;
     const contextId = profile?.context?.id || '';
 
     const initialReferences = profile?.context?.references || [];
@@ -117,7 +120,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         await addReference({
           variables: {
             input: {
-              parentID: Number(contextId),
+              parentID: contextId,
               name: ref.name,
               description: ref.description,
               uri: ref.uri,
@@ -135,7 +138,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
 
     const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
 
-    const data = { name, textID, context };
+    const data = { name, nameID, context };
     const updateData = { name, context: contextWithUpdatedRefs };
 
     if (ProfileSubmitMode) {
