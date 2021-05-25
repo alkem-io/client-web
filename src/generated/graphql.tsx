@@ -1060,6 +1060,52 @@ export type DeleteOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOpportunityMutation,
   SchemaTypes.DeleteOpportunityMutationVariables
 >;
+export const DeleteOrganizationDocument = gql`
+  mutation deleteOrganization($input: DeleteOrganisationInput!) {
+    deleteOrganisation(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeleteOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteOrganizationMutation,
+  SchemaTypes.DeleteOrganizationMutationVariables
+>;
+
+/**
+ * __useDeleteOrganizationMutation__
+ *
+ * To run a mutation, you first call `useDeleteOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOrganizationMutation, { data, loading, error }] = useDeleteOrganizationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteOrganizationMutation,
+    SchemaTypes.DeleteOrganizationMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.DeleteOrganizationMutation, SchemaTypes.DeleteOrganizationMutationVariables>(
+    DeleteOrganizationDocument,
+    baseOptions
+  );
+}
+export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
+export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
+export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteOrganizationMutation,
+  SchemaTypes.DeleteOrganizationMutationVariables
+>;
 export const DeleteReferenceDocument = gql`
   mutation deleteReference($input: DeleteReferenceInput!) {
     deleteReference(deleteData: $input) {
