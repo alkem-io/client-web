@@ -5,12 +5,9 @@ import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
+import OrganizationList from '../../components/Admin/Organization/OrganizationList';
 import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
-import {
-  useOrganizationGroupsQuery,
-  useOrganizationProfileInfoQuery,
-  useOrganizationsListQuery,
-} from '../../generated/graphql';
+import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { Organisation } from '../../types/graphql-schema';
@@ -20,28 +17,13 @@ import { GroupRoute } from './group';
 
 export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
-  const { data: organizationsListQuery } = useOrganizationsListQuery();
 
-  const organizationsList = organizationsListQuery?.organisations?.map(c => ({
-    id: c.id,
-    value: c.name,
-    url: `${url}/${c.id}`,
-  }));
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [
-    paths,
-    organizationsListQuery?.organisations,
-  ]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage
-          paths={currentPaths}
-          data={organizationsList || []}
-          newLink={`${url}/new`}
-          title={'Organizations list'}
-        />
+        <OrganizationList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />

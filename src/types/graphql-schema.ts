@@ -944,6 +944,8 @@ export type Nvp = {
 
 export type Opportunity = {
   __typename?: 'Opportunity';
+  /** The activity within this Opportunity. */
+  activity?: Maybe<Array<Nvp>>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
@@ -1597,6 +1599,14 @@ export type DeleteOpportunityMutationVariables = Exact<{
 
 export type DeleteOpportunityMutation = { __typename?: 'Mutation' } & {
   deleteOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'>;
+};
+
+export type DeleteOrganizationMutationVariables = Exact<{
+  input: DeleteOrganisationInput;
+}>;
+
+export type DeleteOrganizationMutation = { __typename?: 'Mutation' } & {
+  deleteOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'>;
 };
 
 export type DeleteReferenceMutationVariables = Exact<{
