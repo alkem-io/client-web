@@ -33,7 +33,10 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const [addReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
-  const currentPaths = useMemo(() => [...paths, { name: user && user.name ? user.name : 'new', real: false }], [paths]);
+  const currentPaths = useMemo(
+    () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
+    [paths]
+  );
 
   useUpdateNavigation({ currentPaths });
 
@@ -99,6 +102,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     if (mode === EditMode.new) {
       const userInput: CreateUserInput = {
         ...rest,
+        nameID: `${rest.firstName}-${rest.lastName}`,
         profileData: {
           avatar: profile.avatar,
           description: profile.description,
@@ -128,7 +132,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         await addReference({
           variables: {
             input: {
-              parentID: Number(profileId),
+              parentID: profileId,
               name: ref.name,
               description: ref.description,
               uri: ref.uri,
@@ -174,7 +178,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveUser}
-        name={user?.name}
+        name={user?.displayName}
         loading={userRemoveLoading}
       />
     </div>

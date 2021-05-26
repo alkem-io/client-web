@@ -2,12 +2,12 @@ query projectsChainHistory {
   ecoverse {
     id
     challenges {
-      name
-      textID
+      displayName
+      nameID
       opportunities {
-        textID
+        nameID
         projects {
-          textID
+          nameID
         }
       }
     }

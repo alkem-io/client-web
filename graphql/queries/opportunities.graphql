@@ -1,10 +1,10 @@
-query opportunities($id: String!) {
+query opportunities($id: UUID_NAMEID!) {
   ecoverse {
     id
     challenge(ID: $id) {
       opportunities {
         id
-        name
+        displayName
       }
     }
   }

@@ -28,7 +28,7 @@ const userCardStyles = createStyles(theme => ({
   },
 }));
 
-const UserCardInner: FC<UserCardProps> = ({ name, terms, id }) => {
+const UserCardInner: FC<UserCardProps> = ({ displayName: name, terms, id }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
 

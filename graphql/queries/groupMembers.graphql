@@ -1,12 +1,12 @@
-query groupMembers($id: String!) {
-    ecoverse {
+query groupMembers($id: UUID!) {
+  ecoverse {
+    id
+    group(ID: $id) {
       id
-      group(ID: $id) {
-        id
-        name
-        members {
-          ...GroupMembers
-        }
+      name
+      members {
+        ...GroupMembers
       }
     }
   }
+}

@@ -5,5 +5,5 @@ export interface Role {
   type: AuthorizationCredential;
   name: string;
   order: number;
-  resourceId: number;
+  resourceId: string;
 }

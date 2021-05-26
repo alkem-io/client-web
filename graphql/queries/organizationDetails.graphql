@@ -1,7 +1,7 @@
-query organizationDetails($id: String!) {
+query organizationDetails($id: UUID_NAMEID!) {
   organisation(ID: $id) {
     id
-    name
+    displayName
     profile {
       id
       avatar
@@ -21,7 +21,7 @@ query organizationDetails($id: String!) {
       name
       members {
         id
-        name
+        displayName
       }
     }
   }

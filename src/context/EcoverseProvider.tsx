@@ -5,7 +5,7 @@ import { EcoverseInfoQuery } from '../types/graphql-schema';
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoQuery;
   loading: boolean;
-  toEcoverseId: (textId: string) => string;
+  toEcoverseId: (nameID: string) => string;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({

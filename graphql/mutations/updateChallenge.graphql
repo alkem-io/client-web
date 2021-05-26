@@ -1,7 +1,7 @@
 mutation updateChallenge($input: UpdateChallengeInput!) {
   updateChallenge(challengeData: $input) {
     id
-    textID
-    name
+    nameID
+    displayName
   }
 }

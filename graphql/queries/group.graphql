@@ -1,4 +1,4 @@
-query group($id: String!) {
+query group($id: UUID!) {
   ecoverse {
     id
     group(ID: $id) {

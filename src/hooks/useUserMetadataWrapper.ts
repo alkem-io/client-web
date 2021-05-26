@@ -5,7 +5,7 @@ import { useCredentialsResolver } from './useCredentialsResolver';
 
 export interface UserMetadata {
   user: User;
-  hasCredentials: (credential: AuthorizationCredential, resourceId?: number) => boolean;
+  hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
   isAdmin: boolean;
   roles: Role[];
@@ -17,6 +17,7 @@ export interface UserMetadata {
 }
 
 const getName = (i: { name?: string }) => i.name || ';';
+const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
 
 export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
@@ -27,10 +28,10 @@ export const useUserMetadataWrapper = () => {
         return;
       }
       const ecoverses = membershipData?.ecoverses.map(getName) || [];
-      const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getName)) || [];
+      const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = [];
-      const organizations = membershipData?.organisations.map(getName) || [];
-      const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getName)) || [];
+      const organizations = membershipData?.organisations.map(getDisplayName) || [];
+      const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
 
       const roles =
         user?.agent?.credentials
@@ -47,7 +48,7 @@ export const useUserMetadataWrapper = () => {
           .sort((a, b) => a.order - b.order) || [];
       const metadata = {
         user,
-        hasCredentials: (credential: AuthorizationCredential, resourceId = -1) => {
+        hasCredentials: (credential: AuthorizationCredential, resourceId = '') => {
           return Boolean(
             user?.agent?.credentials?.findIndex(
               c => resolver.toAuthenticationCredentials(c.type) === credential && c.resourceID === resourceId
@@ -59,7 +60,7 @@ export const useUserMetadataWrapper = () => {
             user?.agent?.credentials?.findIndex(
               c =>
                 resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.CommunityMember &&
-                c.resourceID === Number(id)
+                c.resourceID === id
             ) !== -1
           ),
         isAdmin: false,

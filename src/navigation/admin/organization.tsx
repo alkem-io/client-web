@@ -44,10 +44,10 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
 
   const { data } = useOrganizationProfileInfoQuery({ variables: { id: organizationId } });
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
-    paths,
-    data?.organisation?.name,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: data?.organisation?.displayName || '', real: true }],
+    [paths, data?.organisation?.displayName]
+  );
 
   useUpdateNavigation({ currentPaths });
 

@@ -6,7 +6,7 @@ const piiEnabled = env && env.REACT_APP_SENTRY_PII_ENABLED;
 
 export const setUserScope = (user: User | undefined) => {
   if (user && piiEnabled) {
-    Sentry.setUser({ id: user.id, username: user.name, email: user.email });
+    Sentry.setUser({ id: user.id, username: user.displayName, email: user.email });
   } else {
     Sentry.configureScope(scope => scope.setUser(null));
   }

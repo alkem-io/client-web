@@ -9,18 +9,25 @@ import { CreateUserInput } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { Loading } from '../core/Loading';
 import { UserForm } from './UserForm';
+import { v4 } from 'uuid';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useDispatch } from 'react-redux';
+import { updateStatus } from '../../reducers/auth/actions';
 
 interface CreateUserProfileProps {}
 
 export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   const { resetStore } = useAuthenticate();
+  const dispatch = useDispatch();
   const history = useHistory();
   const notify = useNotification();
+  const handleError = useApolloErrorHandler();
   const [createUser, { loading }] = useCreateUserMutation({
-    onError: error => console.log(error),
+    onError: handleError,
     onCompleted: () => {
       notify('User profile created successfully', 'success');
       resetStore().then(() => {
+        dispatch(updateStatus('done'));
         history.push(WELCOME_PAGE);
       });
     },
@@ -31,6 +38,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
 
     const userInput: CreateUserInput = {
       ...rest,
+      nameID: `${rest.firstName}-${rest.lastName}-${v4()} `.slice(0, 25),
       profileData: {
         avatar: profile.avatar,
         description: profile.description,

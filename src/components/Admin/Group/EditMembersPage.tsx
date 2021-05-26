@@ -30,7 +30,7 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers
     <Container>
       <EditCredentials
         credential={AuthorizationCredentialBackEnd.UserGroupMember}
-        resourceId={Number(groupId)}
+        resourceId={groupId}
         parentMembers={parentMembers}
       />
     </Container>

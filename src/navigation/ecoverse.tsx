@@ -44,7 +44,7 @@ export const Ecoverses: FC = () => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <Redirect to={`${url}${ecoverse?.ecoverse.textID}`} />
+        <Redirect to={`${url}${ecoverse?.ecoverse.nameID}`} />
       </Route>
       <Route path={`${path}:ecoverseId`} name={'Ecoverse'}>
         <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
@@ -58,7 +58,7 @@ export const Ecoverses: FC = () => {
 
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  // const { ecoverseId: textId } = useParams<{ ecoverseId: string }>();
+  // const { ecoverseId: nameID } = useParams<{ ecoverseId: string }>();
   // at some point the ecoverse needs to be queried
 
   const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
@@ -69,7 +69,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
 
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
   const currentPaths = useMemo(
-    () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.name, real: true }] : paths),
+    () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.displayName, real: true }] : paths),
     [paths, ecoverseInfo]
   );
 
@@ -115,7 +115,7 @@ interface ChallengeRootProps extends PageProps {
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = challenges?.ecoverse.challenges?.find(x => x.textID === id)?.id || '';
+  const target = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: { id: target },
@@ -128,7 +128,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const challenge = query?.ecoverse.challenge;
 
   const currentPaths = useMemo(
-    () => (challenge ? [...paths, { value: url, name: challenge.name, real: true }] : paths),
+    () => (challenge ? [...paths, { value: url, name: challenge.displayName, real: true }] : paths),
     [paths, id, challenge]
   );
 
@@ -164,7 +164,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 };
 
 interface OpportunityRootProps extends PageProps {
-  opportunities: Pick<OpportunityType, 'id' | 'textID'>[] | undefined;
+  opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
 }
 
 const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
@@ -172,7 +172,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { user } = useUserContext();
-  const target = opportunities.find(x => x.textID === id)?.id || '';
+  const target = opportunities.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
     variables: { id: target },
@@ -190,7 +190,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const users = useMemo(() => members || [], [members]);
 
   const currentPaths = useMemo(
-    () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),
+    () => (opportunity ? [...paths, { value: url, name: opportunity.displayName, real: true }] : paths),
     [paths, id, opportunity]
   );
 
@@ -212,7 +212,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
           users={users as User[] | undefined}
           paths={currentPaths}
           onProjectTransition={project => {
-            history.push(`${url}/projects/${project ? project.textID : 'new'}`);
+            history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
           }}
           permissions={{
             projectWrite: user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || false,
@@ -220,7 +220,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
         />
       </Route>
       <Route path={`${path}/projects`}>
-        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={Number(opportunity.id)} />
+        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
       </Route>
       <Route path="*">
         <FourOuFour />

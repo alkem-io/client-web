@@ -34,7 +34,7 @@ export const LoginRoute: FC = () => {
     <LoginPage
       providers={authentication.providers}
       logo={logo}
-      ecoverseName={ecoverse.ecoverse?.ecoverse.name}
+      ecoverseName={ecoverse.ecoverse?.ecoverse.displayName}
       redirect={redirect ?? undefined}
     />
   );

@@ -1,7 +1,7 @@
-query userAvatars($ids: [String!]!) {
+query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
   usersById(IDs: $ids) {
     id
-    name
+    displayName
     profile {
       id
       avatar

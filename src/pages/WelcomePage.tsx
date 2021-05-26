@@ -16,7 +16,7 @@ export const WelcomePage: FC<WelcomePageProps> = () => {
   useUpdateNavigation({ currentPaths });
 
   const ecoverseLogo = ecoverse?.ecoverse.context?.references?.find(ref => ref.name === LOGO_REFERNCE_NAME)?.uri;
-  const name = ecoverse?.ecoverse.name;
+  const name = ecoverse?.ecoverse.displayName;
   const tagline = ecoverse?.ecoverse.context?.tagline;
   return (
     <Container>

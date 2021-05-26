@@ -66,7 +66,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide, terms = [] }) => {
           <div className={'d-flex align-items-center mb-3'}>
             <Avatar src={user?.profile?.avatar} size={'lg'} />
             <div className={'ml-3'}>
-              <Typography variant={'h3'}>{user?.name}</Typography>
+              <Typography variant={'h3'}>{user?.displayName}</Typography>
               <Tags tags={terms} />
             </div>
           </div>

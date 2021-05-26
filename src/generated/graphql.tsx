@@ -5,7 +5,7 @@ import * as Apollo from '@apollo/client';
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
-    name
+    displayName
     firstName
     lastName
     email
@@ -14,7 +14,7 @@ export const GroupMembersFragmentDoc = gql`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
-    name
+    displayName
     applications {
       id
     }
@@ -56,22 +56,22 @@ export const GroupDetailsFragmentDoc = gql`
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
-    textID
-    name
+    nameID
+    displayName
   }
 `;
 export const NewOpportunityFragmentDoc = gql`
   fragment NewOpportunity on Opportunity {
     id
-    textID
-    name
+    nameID
+    displayName
   }
 `;
 export const ProjectDetailsFragmentDoc = gql`
   fragment ProjectDetails on Project {
     id
-    textID
-    name
+    nameID
+    displayName
     description
     lifecycle {
       state
@@ -103,7 +103,7 @@ export const UserAgentFragmentDoc = gql`
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
-    name
+    displayName
     firstName
     lastName
     email
@@ -132,14 +132,14 @@ export const UserDetailsFragmentDoc = gql`
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
-    name
+    displayName
   }
 `;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
     assignUserToCommunity(membershipData: $membershipData) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -326,6 +326,7 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
 export const CreateAspectDocument = gql`
   mutation createAspect($input: CreateAspectInput!) {
     createAspect(aspectData: $input) {
+      id
       title
     }
   }
@@ -558,8 +559,8 @@ export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganisationInput!) {
     createOrganisation(organisationData: $input) {
       id
-      textID
-      name
+      nameID
+      displayName
     }
   }
 `;
@@ -1246,7 +1247,7 @@ export const GrantCredentialsDocument = gql`
   mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
     grantCredentialToUser(grantCredentialData: $input) {
       id
-      name
+      displayName
       ...UserAgent
     }
   }
@@ -1343,10 +1344,10 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutationVariables
 >;
 export const RevokeCredentialsDocument = gql`
-  mutation revokeCredentials($input: RemoveAuthorizationCredentialInput!) {
+  mutation revokeCredentials($input: RevokeAuthorizationCredentialInput!) {
     revokeCredentialFromUser(revokeCredentialData: $input) {
       id
-      name
+      displayName
       ...UserAgent
     }
   }
@@ -1483,8 +1484,8 @@ export const UpdateChallengeDocument = gql`
   mutation updateChallenge($input: UpdateChallengeInput!) {
     updateChallenge(challengeData: $input) {
       id
-      textID
-      name
+      nameID
+      displayName
     }
   }
 `;
@@ -1589,7 +1590,7 @@ export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $opportunityData) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -1636,7 +1637,7 @@ export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($input: UpdateOrganisationInput!) {
     updateOrganisation(organisationData: $input) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -1834,7 +1835,7 @@ export const AllOpportunitiesDocument = gql`
       id
       opportunities {
         id
-        textID
+        nameID
       }
     }
   }
@@ -1972,12 +1973,12 @@ export type AuthenticationConfigurationQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthenticationConfigurationQueryVariables
 >;
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($id: String!) {
+  query challengeCommunity($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
         id
-        name
+        displayName
         community {
           ...CommunityDetails
         }
@@ -2032,7 +2033,7 @@ export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQueryVariables
 >;
 export const ChallengeGroupsDocument = gql`
-  query challengeGroups($id: String!) {
+  query challengeGroups($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
@@ -2086,14 +2087,14 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeGroupsQueryVariables
 >;
 export const ChallengeMembersDocument = gql`
-  query challengeMembers($challengeID: String!) {
+  query challengeMembers($challengeID: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $challengeID) {
         community {
           members {
             id
-            name
+            displayName
             firstName
             lastName
             email
@@ -2146,15 +2147,15 @@ export type ChallengeMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeMembersQueryVariables
 >;
 export const ChallengeNameDocument = gql`
-  query challengeName($id: String!) {
+  query challengeName($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
         id
-        name
+        displayName
         community {
           id
-          name
+          displayName
         }
       }
     }
@@ -2200,13 +2201,13 @@ export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
-  query challengeProfile($id: String!) {
+  query challengeProfile($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
         }
@@ -2215,7 +2216,7 @@ export const ChallengeProfileDocument = gql`
         }
         community {
           members {
-            name
+            displayName
           }
         }
         tagset {
@@ -2224,18 +2225,18 @@ export const ChallengeProfileDocument = gql`
         }
         opportunities {
           id
-          name
+          displayName
           lifecycle {
             state
           }
-          textID
+          nameID
           context {
             ...ContextDetails
           }
           projects {
             id
-            textID
-            name
+            nameID
+            displayName
             description
             lifecycle {
               state
@@ -2244,7 +2245,7 @@ export const ChallengeProfileDocument = gql`
         }
         leadOrganisations {
           id
-          name
+          displayName
           profile {
             id
             avatar
@@ -2298,13 +2299,13 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileQueryVariables
 >;
 export const ChallengeProfileInfoDocument = gql`
-  query challengeProfileInfo($id: String!) {
+  query challengeProfileInfo($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
         }
@@ -2362,7 +2363,7 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQueryVariables
 >;
 export const ChallengeUserIdsDocument = gql`
-  query challengeUserIds($id: String!) {
+  query challengeUserIds($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
@@ -2423,8 +2424,8 @@ export const ChallengesDocument = gql`
       id
       challenges {
         id
-        name
-        textID
+        displayName
+        nameID
         context {
           tagline
           references {
@@ -2480,10 +2481,10 @@ export const ChallengesWithCommunityDocument = gql`
       id
       challenges {
         id
-        name
+        displayName
         community {
           id
-          name
+          displayName
         }
       }
     }
@@ -2704,8 +2705,8 @@ export const EcoverseInfoDocument = gql`
   query ecoverseInfo {
     ecoverse {
       id
-      textID
-      name
+      nameID
+      displayName
       context {
         tagline
         vision
@@ -2718,7 +2719,7 @@ export const EcoverseInfoDocument = gql`
       }
       community {
         id
-        name
+        displayName
       }
     }
   }
@@ -2807,7 +2808,7 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
 export const GroupDocument = gql`
-  query group($id: String!) {
+  query group($id: UUID!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -2864,7 +2865,7 @@ export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
 export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
 export type GroupQueryResult = Apollo.QueryResult<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>;
 export const GroupCardDocument = gql`
-  query groupCard($id: String!) {
+  query groupCard($id: UUID!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -2873,15 +2874,15 @@ export const GroupCardDocument = gql`
         parent {
           __typename
           ... on Community {
-            name
+            displayName
           }
           ... on Organisation {
-            name
+            displayName
           }
         }
         members {
           id
-          name
+          displayName
         }
         profile {
           id
@@ -2937,7 +2938,7 @@ export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>;
 export const GroupMembersDocument = gql`
-  query groupMembers($id: String!) {
+  query groupMembers($id: UUID!) {
     ecoverse {
       id
       group(ID: $id) {
@@ -3035,16 +3036,24 @@ export const MembershipDocument = gql`
         name
         challenges {
           id
-          name
+          nameID
+          displayName
+        }
+        opportunities {
+          id
+          nameID
+          displayName
         }
         userGroups {
           id
-          name
+          nameID
+          displayName
         }
       }
       organisations {
         id
-        name
+        nameID
+        displayName
       }
     }
   }
@@ -3089,13 +3098,13 @@ export type MembershipQueryResult = Apollo.QueryResult<
   SchemaTypes.MembershipQueryVariables
 >;
 export const OpportunitiesDocument = gql`
-  query opportunities($id: String!) {
+  query opportunities($id: UUID_NAMEID!) {
     ecoverse {
       id
       challenge(ID: $id) {
         opportunities {
           id
-          name
+          displayName
         }
       }
     }
@@ -3141,7 +3150,7 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQueryVariables
 >;
 export const OpportunityActorGroupsDocument = gql`
-  query opportunityActorGroups($id: String!) {
+  query opportunityActorGroups($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -3212,7 +3221,7 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActorGroupsQueryVariables
 >;
 export const OpportunityAspectsDocument = gql`
-  query opportunityAspects($id: String!) {
+  query opportunityAspects($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -3273,12 +3282,12 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectsQueryVariables
 >;
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($id: String!) {
+  query opportunityCommunity($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
         id
-        name
+        displayName
         community {
           ...CommunityDetails
         }
@@ -3333,7 +3342,7 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQueryVariables
 >;
 export const OpportunityGroupsDocument = gql`
-  query opportunityGroups($id: String!) {
+  query opportunityGroups($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -3390,12 +3399,12 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityGroupsQueryVariables
 >;
 export const OpportunityNameDocument = gql`
-  query opportunityName($id: String!) {
+  query opportunityName($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
         id
-        name
+        displayName
       }
     }
   }
@@ -3440,13 +3449,13 @@ export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQueryVariables
 >;
 export const OpportunityProfileDocument = gql`
-  query opportunityProfile($id: String!) {
+  query opportunityProfile($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
         }
@@ -3487,7 +3496,7 @@ export const OpportunityProfileDocument = gql`
         }
         community {
           members {
-            name
+            displayName
           }
         }
         tagset {
@@ -3504,6 +3513,10 @@ export const OpportunityProfileDocument = gql`
           actorName
           actorType
           description
+        }
+        activity {
+          name
+          value
         }
       }
     }
@@ -3556,13 +3569,13 @@ export type OpportunityProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileQueryVariables
 >;
 export const OpportunityProfileInfoDocument = gql`
-  query opportunityProfileInfo($id: String!) {
+  query opportunityProfileInfo($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
         id
-        textID
-        name
+        nameID
+        displayName
         context {
           ...ContextDetails
         }
@@ -3617,7 +3630,7 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
 export const OpportunityRelationsDocument = gql`
-  query opportunityRelations($id: String!) {
+  query opportunityRelations($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -3734,7 +3747,7 @@ export type OpportunityTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityTemplateQueryVariables
 >;
 export const OpportunityUserIdsDocument = gql`
-  query opportunityUserIds($id: String!) {
+  query opportunityUserIds($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -3793,10 +3806,10 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityUserIdsQueryVariables
 >;
 export const OrganizationCardDocument = gql`
-  query organizationCard($id: String!) {
+  query organizationCard($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      name
+      displayName
       groups {
         name
       }
@@ -3854,10 +3867,10 @@ export type OrganizationCardQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationCardQueryVariables
 >;
 export const OrganizationDetailsDocument = gql`
-  query organizationDetails($id: String!) {
+  query organizationDetails($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      name
+      displayName
       profile {
         id
         avatar
@@ -3877,7 +3890,7 @@ export const OrganizationDetailsDocument = gql`
         name
         members {
           id
-          name
+          displayName
         }
       }
     }
@@ -3929,7 +3942,7 @@ export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationDetailsQueryVariables
 >;
 export const OrganizationGroupsDocument = gql`
-  query organizationGroups($id: String!) {
+  query organizationGroups($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       groups {
         id
@@ -3984,9 +3997,9 @@ export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupsQueryVariables
 >;
 export const OrganizationNameDocument = gql`
-  query organizationName($id: String!) {
+  query organizationName($id: UUID_NAMEID!) {
     organisation(ID: $id) {
-      name
+      displayName
     }
   }
 `;
@@ -4033,11 +4046,11 @@ export type OrganizationNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationNameQueryVariables
 >;
 export const OrganizationProfileInfoDocument = gql`
-  query organizationProfileInfo($id: String!) {
+  query organizationProfileInfo($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      textID
-      name
+      nameID
+      displayName
       profile {
         id
         avatar
@@ -4105,7 +4118,7 @@ export const OrganizationsListDocument = gql`
   query organizationsList {
     organisations {
       id
-      name
+      displayName
     }
   }
 `;
@@ -4151,7 +4164,7 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationsListQueryVariables
 >;
 export const ProjectProfileDocument = gql`
-  query projectProfile($id: String!) {
+  query projectProfile($id: UUID_NAMEID!) {
     ecoverse {
       id
       project(ID: $id) {
@@ -4206,8 +4219,8 @@ export const ProjectsDocument = gql`
       id
       projects {
         id
-        textID
-        name
+        nameID
+        displayName
         description
         lifecycle {
           state
@@ -4253,12 +4266,12 @@ export const ProjectsChainHistoryDocument = gql`
     ecoverse {
       id
       challenges {
-        name
-        textID
+        displayName
+        nameID
         opportunities {
-          textID
+          nameID
           projects {
-            textID
+            nameID
           }
         }
       }
@@ -4310,7 +4323,7 @@ export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectsChainHistoryQueryVariables
 >;
 export const RelationsDocument = gql`
-  query relations($id: String!) {
+  query relations($id: UUID_NAMEID!) {
     ecoverse {
       id
       opportunity(ID: $id) {
@@ -4369,7 +4382,7 @@ export const SearchDocument = gql`
       terms
       result {
         ... on User {
-          name
+          displayName
           id
         }
         ... on UserGroup {
@@ -4377,7 +4390,7 @@ export const SearchDocument = gql`
           id
         }
         ... on Organisation {
-          name
+          displayName
           id
         }
       }
@@ -4515,7 +4528,7 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.TagsetsTemplateQueryVariables
 >;
 export const UserDocument = gql`
-  query user($id: String!) {
+  query user($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
       ...UserDetails
       ...UserAgent
@@ -4555,10 +4568,10 @@ export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
 export const UserAvatarsDocument = gql`
-  query userAvatars($ids: [String!]!) {
+  query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       id
-      name
+      displayName
       profile {
         id
         avatar
@@ -4606,7 +4619,7 @@ export type UserAvatarsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAvatarsQueryVariables
 >;
 export const UserCardDataDocument = gql`
-  query userCardData($ids: [String!]!) {
+  query userCardData($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       __typename
       ...UserDetails
@@ -4696,7 +4709,7 @@ export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
       id
-      name
+      displayName
       firstName
       lastName
       email

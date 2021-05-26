@@ -5,16 +5,24 @@ query membership($input: MembershipInput!) {
       name
       challenges {
         id
-        name
+        nameID
+        displayName
+      }
+      opportunities {
+        id
+        nameID
+        displayName
       }
       userGroups {
         id
-        name
+        nameID
+        displayName
       }
     }
     organisations {
       id
-      name
+      nameID
+      displayName
     }
   }
 }

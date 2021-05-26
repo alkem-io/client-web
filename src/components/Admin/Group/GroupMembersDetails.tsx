@@ -23,7 +23,13 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             <>
               <AvatarContainer className="d-flex" title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} userId={u.id} name={u.name} />
+                  <Avatar
+                    className={'d-inline-flex'}
+                    key={i}
+                    src={u.profile?.avatar}
+                    userId={u.id}
+                    name={u.displayName}
+                  />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />

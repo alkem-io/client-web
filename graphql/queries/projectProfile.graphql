@@ -1,4 +1,4 @@
-query projectProfile($id: String!) {
+query projectProfile($id: UUID_NAMEID!) {
   ecoverse {
     id
     project(ID: $id) {

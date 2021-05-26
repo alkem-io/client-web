@@ -22,7 +22,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 
   const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
     id: c.id,
-    value: c.name,
+    value: c.displayName,
     url: `${url}/${c.id}`,
     communityId: c.community?.id,
   }));
@@ -61,8 +61,8 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   const { data: ecoverseCommunity } = useEcoverseCommunityQuery();
 
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: data?.ecoverse?.challenge?.name || '', real: true }],
-    [paths, data?.ecoverse?.challenge?.name]
+    () => [...paths, { value: url, name: data?.ecoverse?.challenge?.displayName || '', real: true }],
+    [paths, data?.ecoverse?.challenge?.displayName]
   );
 
   const community = data?.ecoverse?.challenge?.community;
@@ -95,7 +95,7 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
 
   const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
     id: o.id,
-    value: o.name,
+    value: o.displayName,
     url: `${url}/${o.id}`,
   }));
   // TODO: [ATS] Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved

@@ -73,11 +73,11 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
   const onSubmit = (values: Actor) => {
     const { id: actorId, __typename, ...rest } = values;
-    if (!actorId) {
+    if (!actorId && actorGroupId) {
       createActor({
         variables: {
           input: {
-            parentID: Number(actorGroupId),
+            actorGroupID: actorGroupId,
             ...rest,
           },
         },

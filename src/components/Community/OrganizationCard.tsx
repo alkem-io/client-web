@@ -57,7 +57,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
         },
       }}
       primaryTextProps={{
-        text: org?.name || '',
+        text: org?.displayName || '',
         classes: {
           lineHeight: '36px',
           color: theme => theme.palette.background,

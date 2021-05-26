@@ -51,7 +51,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
       createGroup({
         variables: {
           input: {
-            parentID: Number(organizationId),
+            parentID: organizationId,
             name,
           },
         },

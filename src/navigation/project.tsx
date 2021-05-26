@@ -9,8 +9,8 @@ import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
-  opportunityId: number;
-  projects: Pick<ProjectType, 'id' | 'textID' | 'name'>[] | undefined;
+  opportunityId: string;
+  projects: Pick<ProjectType, 'id' | 'nameID' | 'displayName'>[] | undefined;
 }
 
 export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
@@ -37,7 +37,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: project }) => {
-      history.push(`${paths[paths.length - 1].value}/projects/${project.textID}`);
+      history.push(`${paths[paths.length - 1].value}/projects/${project.nameID}`);
     },
     onError: ({ message }) => {
       pushError(new Error(message));
@@ -46,20 +46,20 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
     awaitRefetchQueries: true,
   });
 
-  // need to add validation for project name & textID
+  // need to add validation for project name & nameID
   return (
     <ProjectNewPage
       paths={currentPaths}
       users={[]}
       loading={projectCreationLoading}
-      onCreate={({ name, textID, description }) =>
+      onCreate={({ displayName, nameID, description }) =>
         createProject({
           variables: {
             input: {
               opportunityID: opportunityId,
-              name,
+              displayName,
               description,
-              textID,
+              nameID,
             },
           },
         })
@@ -71,7 +71,7 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const { url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = projects?.find(x => x.textID === id);
+  const target = projects?.find(x => x.nameID === id);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
     variables: { id: target?.id || '' },
@@ -79,11 +79,10 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
 
   const project = query?.ecoverse.project;
 
-  const currentPaths = useMemo(() => (project ? [...paths, { value: url, name: project.name, real: true }] : paths), [
-    paths,
-    id,
-    project,
-  ]);
+  const currentPaths = useMemo(
+    () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),
+    [paths, id, project]
+  );
 
   if (projectLoading) {
     return <Loading text={'Loading project ...'} />;

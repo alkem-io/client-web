@@ -92,7 +92,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   useUpdateNavigation({ currentPaths: paths });
 
   const { user } = useUserContext();
-  const userName = user?.user.name;
+  const userName = user?.user.displayName;
   const { isAuthenticated } = useAuthenticate();
   const isAdmin =
     user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
@@ -102,7 +102,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, projects = [], relations = [], context, community, id } = opportunity;
+  const { displayName: name, projects = [], relations = [], context, community, id } = opportunity;
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
 
@@ -148,7 +148,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const opportunityProjects = useMemo(() => {
     const projectList = [
       ...projects.map(p => ({
-        title: p.name,
+        title: p.displayName,
         description: p.description,
         // tag: { status: 'positive', text: p.state || 'archive' },
         type: 'display',

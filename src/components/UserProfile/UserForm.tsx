@@ -49,7 +49,7 @@ export const UserForm: FC<UserProps> = ({
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
-    name,
+    displayName,
     firstName,
     lastName,
     email,
@@ -76,7 +76,7 @@ export const UserForm: FC<UserProps> = ({
   }, [currentUser, tagsetsTemplate]);
 
   const initialValues: UserFromGenerated = {
-    name: name || '',
+    displayName: displayName || '',
     firstName: firstName || '',
     lastName: lastName || '',
     email: email || '',
@@ -92,7 +92,7 @@ export const UserForm: FC<UserProps> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('forms.validations.required')),
+    displayName: yup.string().required(t('forms.validations.required')),
     firstName: yup.string().required(t('forms.validations.required')),
     lastName: yup.string().required(t('forms.validations.required')),
     email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
@@ -150,7 +150,20 @@ export const UserForm: FC<UserProps> = ({
       onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
     >
       {({
-        values: { name, firstName, lastName, email, city, phone, country, references, tagsets, avatar, gender, bio },
+        values: {
+          displayName,
+          firstName,
+          lastName,
+          email,
+          city,
+          phone,
+          country,
+          references,
+          tagsets,
+          avatar,
+          gender,
+          bio,
+        },
         setFieldValue,
         handleChange,
         handleSubmit,
@@ -173,9 +186,9 @@ export const UserForm: FC<UserProps> = ({
               <Form.Row>
                 <Form.Group as={Col}>
                   <InputField
-                    name={'name'}
+                    name={'displayName'}
                     title={'Full Name'}
-                    value={name}
+                    value={displayName}
                     required={true && !isReadOnlyMode}
                     readOnly={isReadOnlyMode}
                     placeholder={'Full Name'}

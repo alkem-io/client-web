@@ -43,7 +43,7 @@ export const CommunityGroupsRoute: FC<CommunityRouteProps> = ({ paths, community
         <ListPage
           data={groupsList || []}
           paths={currentPaths}
-          title={community ? `${community?.name} Groups` : 'Groups'}
+          title={community ? `${community?.displayName} Groups` : 'Groups'}
           newLink={`${url}/new`}
           onDelete={handleDelete}
         />

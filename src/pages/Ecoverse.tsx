@@ -75,7 +75,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {} } = ecoverse.ecoverse;
+  const { displayName: name, context = {} } = ecoverse.ecoverse;
   const { tagline, impact, vision, background, references } = context;
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
@@ -88,13 +88,13 @@ const EcoversePage: FC<EcoversePageProps> = ({
       projectsNestHistory
         ?.flatMap(c =>
           c?.opportunities?.map(x => ({
-            challenge: c.name,
-            url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
+            challenge: c.displayName,
+            url: `${paths[paths.length - 1].value}/challenges/${c.nameID}/opportunities/${x.nameID}`,
             ...x,
           }))
         )
         .flatMap(o =>
-          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.textID}`, ...p }))
+          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.nameID}`, ...p }))
         ),
     [_projectsNestHistory]
   );
@@ -105,10 +105,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const ecoverseProjects = useMemo(
     () => [
       ...projects.map(p => {
-        const parentsData = projectsWithParentData?.find(ph => ph?.textID === p.textID);
+        const parentsData = projectsWithParentData?.find(ph => ph?.nameID === p.nameID);
 
         return {
-          title: p?.name || '',
+          title: p?.displayName || '',
           description: p?.description,
           caption: parentsData?.caption,
           tag: { status: 'positive', text: p?.lifecycle?.state || '' },
@@ -195,7 +195,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
                   ? t('pages.ecoverse.cards.tags.you-are-in')
                   : (challenge.context as Record<string, any>)['tag'],
               }}
-              url={`${url}/challenges/${challenge.textID}`}
+              url={`${url}/challenges/${challenge.nameID}`}
             />
           ))}
         </CardContainer>

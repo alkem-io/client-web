@@ -34,7 +34,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                     <tbody>
                       {filteredMembers.map(m => (
                         <tr key={m.email}>
-                          <td>{m.name}</td>
+                          <td>{m.displayName}</td>
                           <td>{m.firstName}</td>
                           <td>{m.lastName}</td>
                           <td>{m.email}</td>
@@ -78,7 +78,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                               </Button>
                             )}
                           </td>
-                          <td>{m.name}</td>
+                          <td>{m.displayName}</td>
                         </tr>
                       ))}
                     </tbody>

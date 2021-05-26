@@ -50,7 +50,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     variables: {
       input: {
         type: AuthorizationCredential.UserGroupMember,
-        resourceID: Number(groupId),
+        resourceID: groupId,
       },
     },
   });
@@ -88,7 +88,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
       await createReference({
         variables: {
           input: {
-            parentID: Number(profileId),
+            parentID: profileId,
             name: ref.name,
             description: ref.description,
             uri: ref.uri,
@@ -103,7 +103,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
           input: {
             name: tagset.name,
             tags: [...tagset.tags],
-            parentID: Number(profileId),
+            parentID: profileId,
           },
         },
       });

@@ -21,7 +21,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const loading = profileLoading;
   if (loading) return <Loading text={'Loading user'} />;
   return (
-    <MembershipWrapper userId={me?.id || ''}>
+    <MembershipWrapper userId={me?.id || 'not-existing-ID'}>
       {membership => (
         <UserContext.Provider
           value={{
@@ -42,7 +42,10 @@ const MembershipWrapper: FC<{ userId: string; children: (membership?: Membership
 }) => {
   const { data: membershipData, loading: loadingMembership } = useMembershipQuery({
     variables: { input: { userID: userId } },
-    errorPolicy: 'ignore',
+    errorPolicy: 'all',
+    onError: () => {
+      //No Op
+    },
   });
   if (loadingMembership) return <Loading text={'Loading membership'} />;
   return <>{children(membershipData?.membership)}</>;

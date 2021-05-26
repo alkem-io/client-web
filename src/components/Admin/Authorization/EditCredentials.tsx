@@ -13,7 +13,7 @@ import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {
   credential: string;
-  resourceId?: number;
+  resourceId?: string;
   parentMembers: Member[];
 }
 
@@ -44,7 +44,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     grant({
       variables: {
         input: {
-          userID: Number(_member.id),
+          userID: _member.id,
           type: toAuthenticationCredentials(credential),
           resourceID: resourceId,
         },
@@ -63,7 +63,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     revoke({
       variables: {
         input: {
-          userID: Number(_member.id),
+          userID: _member.id,
           type: toAuthenticationCredentials(credential),
           resourceID: resourceId,
         },

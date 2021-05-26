@@ -14,7 +14,7 @@ interface UserListProps extends PageProps {
 export const UserList: FC<UserListProps> = ({ users, paths }) => {
   const { url } = useRouteMatch();
 
-  const data = users.map(u => ({ id: u.id, value: `${u.name} (${u.email})`, url: `${url}/${u.id}/edit` }));
+  const data = users.map(u => ({ id: u.id, value: `${u.displayName} (${u.email})`, url: `${url}/${u.id}/edit` }));
   const handleError = useApolloErrorHandler();
 
   const [deleteUser] = useDeleteUserMutation({

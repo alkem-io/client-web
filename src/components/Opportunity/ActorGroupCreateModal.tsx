@@ -26,7 +26,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
   const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({ variables: { id: opportunityId } });
-  const ecossystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
+  const ecosystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
   const isFormValid = name && description && description.length >= 2 && description.length <= 380;
 
   const onDescriptionInput = ({ target: { value } }) => {
@@ -36,11 +36,11 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   };
 
   const onSubmit = () => {
-    if (ecossystemModelId)
+    if (ecosystemModelId)
       createActorGroup({
         variables: {
           input: {
-            parentID: Number(ecossystemModelId),
+            ecosystemModelID: ecosystemModelId,
             name,
             description,
           },

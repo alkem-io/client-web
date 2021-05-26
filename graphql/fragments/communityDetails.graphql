@@ -1,6 +1,6 @@
 fragment CommunityDetails on Community {
   id
-  name
+  displayName
   applications {
     id
   }

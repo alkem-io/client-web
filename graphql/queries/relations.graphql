@@ -1,4 +1,4 @@
-query relations($id: String!) {
+query relations($id: UUID_NAMEID!) {
   ecoverse {
     id
     opportunity(ID: $id) {

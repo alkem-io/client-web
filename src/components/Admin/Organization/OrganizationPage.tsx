@@ -27,7 +27,9 @@ interface Props extends PageProps {
 }
 
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
-  const currentPaths = useMemo(() => [...paths, { name: organization?.name ? 'edit' : 'new', real: false }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }], [
+    paths,
+  ]);
   const notify = useNotification();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
@@ -56,12 +58,12 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   });
 
   const handleSubmit = async (editedOrganization: Organisation) => {
-    const { id: orgID, textID, profile, ...rest } = editedOrganization;
+    const { id: orgID, nameID, profile, ...rest } = editedOrganization;
 
     if (mode === EditMode.new) {
       const organisationInput: CreateOrganisationInput = {
         ...rest,
-        textID,
+        nameID,
         profileData: {
           avatar: profile.avatar,
           description: profile.description || '',
@@ -93,7 +95,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
         await createReference({
           variables: {
             input: {
-              parentID: Number(profileId),
+              parentID: profileId,
               name: ref.name,
               description: ref.description,
               uri: ref.uri,
@@ -108,7 +110,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
             input: {
               name: tagset.name,
               tags: [...tagset.tags],
-              parentID: Number(profileId),
+              parentID: profileId,
             },
           },
         });
