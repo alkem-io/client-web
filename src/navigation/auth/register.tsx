@@ -1,8 +1,8 @@
 import { Configuration, PublicApi, RegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import KratosUI from '../components/Authentication/KratosUI';
-import { useQueryParams } from '../hooks/useQueryParams';
+import KratosUI from '../../components/Authentication/KratosUI';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 export const RegisterRoute: FC = () => {
   const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();

@@ -8,16 +8,7 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
-  app.use(
-    '/auth',
-    createProxyMiddleware({
-      target: 'http://loki:4433',
-      changeOrigin: true,
-      pathRewrite: {
-        '^/auth/': '/',
-      },
-    })
-  );
+
   app.use(
     '/users',
     createProxyMiddleware({
