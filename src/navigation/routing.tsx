@@ -35,7 +35,7 @@ export const Routing: FC = () => {
       <Route exact path="/welcome">
         <WelcomeRoute />
       </Route>
-      <Route exact path="/register">
+      <Route exact path="/registration">
         <RegisterRoute />
       </Route>
       <RestrictedRoute path="/community">

@@ -11,8 +11,11 @@ module.exports = function (app) {
   app.use(
     '/auth',
     createProxyMiddleware({
-      target: 'http://localhost:3002',
+      target: 'http://loki:4433',
       changeOrigin: true,
+      pathRewrite: {
+        '^/auth/': '/',
+      },
     })
   );
   app.use(

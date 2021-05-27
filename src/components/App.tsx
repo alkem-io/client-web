@@ -1,7 +1,6 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { useServerMetadataQuery } from '../generated/graphql';
 import { useAuthenticate } from '../hooks/useAuthenticate';
@@ -46,8 +45,6 @@ const App = ({ children }): React.ReactElement => {
   const isUserSegmentVisible = useTypedSelector<boolean>(state => state.ui.userSegment.visible);
   useUserScope(user);
 
-  const history = useHistory();
-
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
       console.table({
@@ -87,21 +84,20 @@ const App = ({ children }): React.ReactElement => {
               <>
                 {!isAuthenticated && (
                   <Button
+                    as={'a'}
+                    href={'http://localhost:4433/self-service/login/browser'}
                     text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
-                    onClick={() => {
-                      history.push('/login');
-                    }}
                     small
                   />
                 )}
                 {!isAuthenticated && registrationEnabled && (
                   <Button
+                    as={'a'}
+                    href={'http://localhost:4433/self-service/registration/browser'}
                     text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
-                    onClick={() => history.push('/register')}
                     small
-                    variant={'default'}
                   />
                 )}
               </>
