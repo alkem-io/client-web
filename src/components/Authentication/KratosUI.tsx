@@ -9,11 +9,14 @@ import {
   UiNodeInputAttributes,
   UiText,
 } from '@ory/kratos-client';
+import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Alert, Form } from 'react-bootstrap';
+import InputField from '../Admin/Common/InputField';
 import Button from '../core/Button';
 import { getNodeName, getNodeTitle, getNodeValue } from './Kratos/helpers';
 
+type FormType = SubmitSelfServiceSettingsFlow | SubmitSelfServiceLoginFlow | SubmitSelfServiceRegistrationFlow;
 interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow;
 }
@@ -29,6 +32,7 @@ const toAlertVariant = (type: string) => {
 
 interface KratosProps {
   node: UiNode;
+  value?: string;
 }
 
 const KratosHidden: FC<KratosProps> = ({ node }) => {
@@ -40,7 +44,7 @@ const KratosButton: FC<KratosProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   return (
     <Button
-      name={attributes.name}
+      name={`['${getNodeName(node)}']`}
       variant="primary"
       type={attributes.type}
       disabled={attributes.disabled}
@@ -53,19 +57,17 @@ const KratosButton: FC<KratosProps> = ({ node }) => {
   );
 };
 
-const KratosInput: FC<KratosProps> = ({ node }) => {
+const KratosInput: FC<KratosProps> = ({ node, value }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   return (
     <Form.Group controlId={node.group}>
-      <Form.Label>
-        {getNodeTitle(node)}
-        {attributes.required && <span style={{ color: '#d93636' }}>{' *'}</span>}
-      </Form.Label>
-      <Form.Control
+      <InputField
+        name={`'${getNodeName(node)}'`}
         type={attributes.type}
-        value={attributes.value as string}
-        name={attributes.name}
+        title={getNodeTitle(node)}
+        value={value || ''}
         required={attributes.required}
+        readOnly={attributes.disabled}
         disabled={attributes.disabled}
       />
       <KratosMessages messages={node?.messages} />
@@ -73,14 +75,14 @@ const KratosInput: FC<KratosProps> = ({ node }) => {
   );
 };
 
-const KratosCheckbox: FC<KratosProps> = ({ node }) => {
+const KratosCheckbox: FC<KratosProps> = ({ node, value }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   return (
     <Form.Group controlId={node.group}>
       <Form.Check
         type={'checkbox'}
         label={getNodeTitle(node)}
-        value={attributes.value as string}
+        value={value}
         required={attributes.required}
         disabled={attributes.disabled}
       />
@@ -101,26 +103,27 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
   );
 };
 
-const toUiControl = (node: UiNode, key: number) => {
+const toUiControl = (node: UiNode, key: number, values: Partial<FormType>) => {
+  const name = getNodeName(node);
+  const value = values[name as keyof FormType];
   switch (node.type) {
     case 'input':
       const attributes = node.attributes as UiNodeInputAttributes;
+
       switch (attributes.type) {
         case 'hidden':
-          return <KratosHidden key={key} node={node} />;
+          return <KratosHidden key={key} node={node} value={value} />;
         case 'submit':
-          return <KratosButton key={key} node={node} />;
+          return <KratosButton key={key} node={node} value={value} />;
         case 'checkbox':
-          return <KratosCheckbox key={key} node={node} />;
+          return <KratosCheckbox key={key} node={node} value={value} />;
         default:
-          return <KratosInput key={key} node={node} />;
+          return <KratosInput key={key} node={node} value={value} />;
       }
     default:
-      return <KratosInput key={key} node={node} />;
+      return <KratosInput key={key} node={node} value={value} />;
   }
 };
-
-type FormType = SubmitSelfServiceSettingsFlow | SubmitSelfServiceLoginFlow | SubmitSelfServiceRegistrationFlow;
 
 export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
   const nodes = flow?.ui.nodes || [];
@@ -134,21 +137,23 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
     initialState[key] = value || ('' as any);
   });
 
+  console.log(initialState);
+
   if (!flow) return null;
   const ui = flow.ui;
 
   return (
     <>
       <KratosMessages messages={ui.messages} />
-      {/* <Formik initialValues={initialState} enableReinitialize onSubmit={values => console.log(values)}>
+      <Formik initialValues={initialState} enableReinitialize onSubmit={values => console.log(values)}>
         {({ values }) => {
-          return ( */}
-      <Form action={ui.action} method={ui.method}>
-        {ui.nodes.map(toUiControl)}
-      </Form>
-      {/* ); */}
-      {/* }}
-      </Formik> */}
+          return (
+            <Form action={ui.action} method={ui.method}>
+              {ui.nodes.map((n, i) => toUiControl(n, i, values))}
+            </Form>
+          );
+        }}
+      </Formik>
     </>
   );
 };
