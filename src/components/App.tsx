@@ -85,7 +85,7 @@ const App = ({ children }): React.ReactElement => {
                 {!isAuthenticated && (
                   <Button
                     as={'a'}
-                    href={'http://localhost:4433/self-service/login/browser'}
+                    href={'/self-service/login/browser'}
                     text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
                     small
@@ -94,7 +94,7 @@ const App = ({ children }): React.ReactElement => {
                 {!isAuthenticated && registrationEnabled && (
                   <Button
                     as={'a'}
-                    href={'http://localhost:4433/self-service/registration/browser'}
+                    href={'/self-service/registration/browser'}
                     text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
                     small

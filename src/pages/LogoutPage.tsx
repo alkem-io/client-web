@@ -15,7 +15,7 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
   const history = useHistory();
   useEffect(() => {
     safeUnauthenticate().then(() => {
-      history.push('/');
+      history.replace('/self-service/browser/flows/logout');
     });
 
     return () => {};
