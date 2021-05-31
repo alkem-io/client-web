@@ -1,8 +1,9 @@
-import { Configuration, LoginFlow, PublicApi } from '@ory/kratos-client';
+import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import KratosUI from '../components/Authentication/KratosUI';
 import Loading from '../components/core/Loading';
+import { useKratosClient } from '../hooks/useKratosClient';
 
 interface LoginPageProps {
   flow: string;
@@ -11,10 +12,10 @@ interface LoginPageProps {
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   const [loginFlow, setLoginFlow] = useState<LoginFlow>();
+  const kratos = useKratosClient();
 
   useEffect(() => {
-    if (flow) {
-      const kratos = new PublicApi(new Configuration({ basePath: 'http://localhost:4433/' }));
+    if (flow && kratos) {
       kratos.getSelfServiceLoginFlow(flow).then(({ status, data: flow, ..._response }) => {
         if (status !== 200) {
           console.error(flow);
@@ -23,7 +24,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
         console.log(flow);
       });
     }
-  }, [flow]);
+  }, [flow, kratos]);
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 

@@ -1,9 +1,10 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { useServerMetadataQuery } from '../generated/graphql';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useConfig } from '../hooks/useConfig';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
@@ -36,9 +37,10 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  // const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticationContext();
+
   const { user, loading } = useUserContext();
-  const { authentication, loading: configLoading } = useConfig();
+  const { loading: configLoading } = useConfig();
   const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
@@ -60,11 +62,6 @@ const App = ({ children }): React.ReactElement => {
     },
   });
 
-  const registrationEnabled = useMemo(
-    () => authentication.providers.find(x => x.config.__typename === 'DemoAuthProviderConfig')?.enabled || false,
-    [authentication]
-  );
-
   if (loading || configLoading) {
     return <Loading text={'Loading Application ...'} />;
   }
@@ -82,7 +79,7 @@ const App = ({ children }): React.ReactElement => {
             <Navigation maximize={isVisible} userMetadata={user} />
             {loginVisible && (
               <>
-                {!user && (
+                {!isAuthenticated && (
                   <Button
                     as={Link}
                     to={'/auth/login'}
@@ -91,7 +88,7 @@ const App = ({ children }): React.ReactElement => {
                     small
                   />
                 )}
-                {!user && registrationEnabled && (
+                {!isAuthenticated && (
                   <Button
                     as={Link}
                     to={'/auth/registration'}

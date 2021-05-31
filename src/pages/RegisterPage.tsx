@@ -1,7 +1,8 @@
-import { Configuration, PublicApi, RegistrationFlow } from '@ory/kratos-client';
+import { RegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import KratosUI from '../components/Authentication/KratosUI';
+import { useKratosClient } from '../hooks/useKratosClient';
 
 interface RegisterPageProps {
   flow: string;
@@ -17,16 +18,15 @@ interface RegisterPageProps {
 
 export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
   const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();
+  const kratos = useKratosClient();
 
   useEffect(() => {
-    if (flow) {
-      const kratos = new PublicApi(new Configuration({ basePath: 'http://localhost:4433/' }));
+    if (flow && kratos) {
       kratos.getSelfServiceRegistrationFlow(flow).then(({ status, data: flow, ..._response }) => {
         if (status !== 200) {
           console.error(flow);
         }
         setregistrationFlow(flow);
-        console.log(flow);
       });
     }
   }, [flow]);

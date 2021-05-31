@@ -23,20 +23,6 @@ export type Scalars = {
   Upload: File;
 };
 
-export type AadAuthProviderConfig = {
-  __typename?: 'AadAuthProviderConfig';
-  /** Config for accessing the Cherrytwist API. */
-  apiConfig: ApiConfig;
-  /** Scopes required for the user login. For OpenID Connect login flows, these are openid and profile + optionally offline_access if refresh tokens are utilized. */
-  loginRequest: Scope;
-  /** Config for MSAL authentication library on Cherrytwist Web Client. */
-  msalConfig: MsalConfig;
-  /** Scopes for silent token acquisition. Cherrytwist API scope + OpenID mandatory scopes. */
-  silentRequest: Scope;
-  /** Scopes for requesting a token. This is the Cherrytwist API app registration URI + ./default. */
-  tokenRequest: Scope;
-};
-
 export type Actor = {
   __typename?: 'Actor';
   /** A description of this actor */
@@ -145,7 +131,7 @@ export type AuthenticationProviderConfig = {
   name: Scalars['String'];
 };
 
-export type AuthenticationProviderConfigUnion = AadAuthProviderConfig | DemoAuthProviderConfig;
+export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthorizationCredential {
   CommunityMember = 'CommunityMember',
@@ -442,14 +428,6 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID'];
-};
-
-export type DemoAuthProviderConfig = {
-  __typename?: 'DemoAuthProviderConfig';
-  /** Demo authentication provider issuer endpoint. */
-  issuer: Scalars['String'];
-  /** Demo authentication provider token endpoint. Use json payload in the form of username + password to login and obtain valid jwt token. */
-  tokenEndpoint: Scalars['String'];
 };
 
 export type EcosystemModel = {
@@ -1025,6 +1003,14 @@ export type Organisation = Groupable &
     /** The profile for this organisation. */
     profile: Profile;
   };
+
+export type OryConfig = {
+  __typename?: 'OryConfig';
+  /** Ory Issuer. */
+  issuer: Scalars['String'];
+  /** Ory Kratos Public Base URL. Used by all Kratos Public Clients. */
+  kratosPublicBaseURL: Scalars['String'];
+};
 
 export type Profile = {
   __typename?: 'Profile';
@@ -1825,20 +1811,7 @@ export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
           { __typename?: 'AuthenticationProviderConfig' } & Pick<
             AuthenticationProviderConfig,
             'name' | 'label' | 'icon' | 'enabled'
-          > & {
-              config:
-                | ({ __typename: 'AadAuthProviderConfig' } & {
-                    msalConfig: { __typename?: 'MsalConfig' } & {
-                      auth: { __typename?: 'MsalAuth' } & Pick<MsalAuth, 'authority' | 'clientId' | 'redirectUri'>;
-                      cache: { __typename?: 'MsalCache' } & Pick<MsalCache, 'cacheLocation' | 'storeAuthStateInCookie'>;
-                    };
-                    apiConfig: { __typename?: 'ApiConfig' } & Pick<ApiConfig, 'resourceScope'>;
-                    loginRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                    tokenRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                    silentRequest: { __typename?: 'Scope' } & Pick<Scope, 'scopes'>;
-                  })
-                | ({ __typename: 'DemoAuthProviderConfig' } & Pick<DemoAuthProviderConfig, 'issuer' | 'tokenEndpoint'>);
-            }
+          > & { config: { __typename: 'OryConfig' } & Pick<OryConfig, 'kratosPublicBaseURL' | 'issuer'> }
         >;
       };
   };

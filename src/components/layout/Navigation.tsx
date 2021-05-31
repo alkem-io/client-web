@@ -7,9 +7,10 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
-import React, { FC, useMemo, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { Overlay, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
+import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { createStyles } from '../../hooks/useTheme';
 import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
 import Button from '../core/Button';
@@ -47,7 +48,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
   const popoverAnchorMdUp = useRef(null);
   const popoverAnchorMdDown = useRef(null);
   const history = useHistory();
-  const isAuthenticated = useMemo(() => !!userMetadata?.user, [userMetadata]);
+  const { isAuthenticated } = useAuthenticationContext();
 
   return (
     <>
