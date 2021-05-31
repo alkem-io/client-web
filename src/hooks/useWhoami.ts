@@ -2,13 +2,13 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 interface Result {
-  identity: {
-    traits: {
-      name: {
-        last: string;
-        first: string;
+  identity?: {
+    traits?: {
+      name?: {
+        last?: string;
+        first?: string;
       };
-      email: string;
+      email?: string;
     };
   };
 }

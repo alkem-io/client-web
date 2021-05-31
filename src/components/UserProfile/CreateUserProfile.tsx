@@ -62,10 +62,10 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
       title={'To continue please create a profile!'}
       user={{
         ...defaultUser,
-        firstName: iam?.identity.traits.name.first || '',
-        lastName: iam?.identity.traits.name.last || '',
-        displayName: `${iam?.identity.traits.name.first} ${iam?.identity.traits.name.last}`,
-        email: iam?.identity.traits.email || '',
+        firstName: iam?.identity?.traits?.name?.first || '',
+        lastName: iam?.identity?.traits?.name?.last || '',
+        displayName: `${iam?.identity?.traits?.name?.first || ''} ${iam?.identity?.traits?.name?.last || ''}`,
+        email: iam?.identity?.traits?.email || '',
       }}
       editMode={EditMode.edit}
       onSave={handleSave}

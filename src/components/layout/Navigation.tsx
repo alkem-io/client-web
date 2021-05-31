@@ -1,22 +1,21 @@
 import { ReactComponent as ChatFillIcon } from 'bootstrap-icons/icons/chat-fill.svg';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
-import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as GlobeIcon } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-fill.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { Overlay, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
+import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
 import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
-import { useAuthenticate } from '../../hooks/useAuthenticate';
-import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 interface NavigationProps {
   maximize: boolean;
@@ -44,11 +43,11 @@ const useNavigationStyles = createStyles(theme => ({
 
 const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
   const styles = useNavigationStyles();
-  const { isAuthenticated } = useAuthenticate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);
   const popoverAnchorMdDown = useRef(null);
   const history = useHistory();
+  const isAuthenticated = useMemo(() => !!userMetadata?.user, [userMetadata]);
 
   return (
     <>
@@ -143,7 +142,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                     <Button
                       text="Sign out"
                       as={Link}
-                      to="/logout"
+                      to={'/auth/logout'}
                       inset
                       className={styles.menuItem}
                       onClick={() => setDropdownOpen(false)}

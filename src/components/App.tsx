@@ -1,9 +1,9 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { FC, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { useServerMetadataQuery } from '../generated/graphql';
-import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useConfig } from '../hooks/useConfig';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
@@ -36,7 +36,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthenticate();
+  // const { isAuthenticated } = useAuthenticate();
   const { user, loading } = useUserContext();
   const { authentication, loading: configLoading } = useConfig();
   const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
@@ -82,19 +82,19 @@ const App = ({ children }): React.ReactElement => {
             <Navigation maximize={isVisible} userMetadata={user} />
             {loginVisible && (
               <>
-                {!isAuthenticated && (
+                {!user && (
                   <Button
-                    as={'a'}
-                    href={'/self-service/login/browser'}
+                    as={Link}
+                    to={'/auth/login'}
                     text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
                     small
                   />
                 )}
-                {!isAuthenticated && registrationEnabled && (
+                {!user && registrationEnabled && (
                   <Button
-                    as={'a'}
-                    href={'/self-service/registration/browser'}
+                    as={Link}
+                    to={'/auth/registration'}
                     text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
                     small

@@ -10,7 +10,7 @@ import {
   UiText,
 } from '@ory/kratos-client';
 import React, { FC, useState } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Alert, Col, Form, Row } from 'react-bootstrap';
 import Button from '../core/Button';
 import { getNodeName, getNodeTitle, getNodeValue } from './Kratos/helpers';
 
@@ -59,7 +59,7 @@ const KratosInput: FC<KratosProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   const [state, setState] = useState(getNodeValue(node));
   return (
-    <Form.Group controlId={node.group}>
+    <Form.Group>
       <Form.Label>
         {getNodeTitle(node)}
         {attributes.required && <span style={{ color: '#d93636' }}>{' *'}</span>}
@@ -108,7 +108,6 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
 };
 
 const toUiControl = (node: UiNode, key: number) => {
-  // const value = values[name as keyof FormType];
   switch (node.type) {
     case 'input':
       const attributes = node.attributes as UiNodeInputAttributes;
@@ -145,18 +144,14 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
   const ui = flow.ui;
 
   return (
-    <>
-      <KratosMessages messages={ui.messages} />
-      {/* <Formik initialValues={initialState} enableReinitialize onSubmit={values => console.log(values)}>
-        {({ values }) => {
-          return ( */}
-      <Form action={ui.action} method={ui.method}>
-        {ui.nodes.map((n, i) => toUiControl(n, i))}
-      </Form>
-      {/* );
-        }}
-      </Formik> */}
-    </>
+    <Row className={'d-flex justify-content-center'}>
+      <Col sm={4}>
+        <KratosMessages messages={ui.messages} />
+        <Form action={ui.action} method={ui.method} noValidate>
+          {ui.nodes.map((n, i) => toUiControl(n, i))}
+        </Form>
+      </Col>
+    </Row>
   );
 };
 export default KratosUI;
