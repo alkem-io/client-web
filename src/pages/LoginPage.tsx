@@ -16,13 +16,18 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   useEffect(() => {
     if (flow && kratos) {
-      kratos.getSelfServiceLoginFlow(flow).then(({ status, data: flow, ..._response }) => {
-        if (status !== 200) {
-          console.error(flow);
-        }
-        setLoginFlow(flow);
-        console.log(flow);
-      });
+      kratos
+        .getSelfServiceLoginFlow(flow)
+        .then(({ status, data: flow, ..._response }) => {
+          if (status !== 200) {
+            console.error(flow);
+          }
+          setLoginFlow(flow);
+        })
+        .catch(e => {
+          debugger;
+          console.log(e);
+        });
     }
   }, [flow, kratos]);
 
