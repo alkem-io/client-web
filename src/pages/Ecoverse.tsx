@@ -23,6 +23,7 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
 } from '../generated/graphql';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
@@ -58,7 +59,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
-  const { user, isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
 
   const { data: _opportunities } = useAllOpportunitiesQuery();
   const { data: _projects } = useProjectsQuery();

@@ -16,61 +16,6 @@ const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const history = useHistory();
   const dispatch = useDispatch();
-  // const { context } = useAuthenticationContext();
-
-  // const pendingRequests = useRef<((token?: string) => void)[]>([]);
-  // const isRefreshing = useRef(false);
-
-  // const resolvePendingRequests = (token?: string) => {
-  //   pendingRequests.current.map(resolve => resolve(token));
-  //   pendingRequests.current = [];
-  // };
-
-  // const refresh = async () => {
-  //   dispatch(updateStatus('refreshing'));
-  //   return context
-  //     .refreshToken()
-  //     .then(result => {
-  //       if (result) {
-  //         dispatch(updateStatus('done'));
-  //       } else {
-  //         dispatch(updateStatus('unauthenticated'));
-  //       }
-  //       dispatch(updateToken(result?.accessToken));
-  //       return result?.accessToken;
-  //     })
-  //     .catch(e => {
-  //       console.error(e);
-  //       dispatch(updateToken());
-  //       dispatch(updateStatus('unauthenticated'));
-  //       return undefined;
-  //     });
-  // };
-
-  // const refreshToken = async () => {
-  //   let forwardPromise: Promise<string | undefined>;
-  //   if (isRefreshing.current) {
-  //     forwardPromise = new Promise(resolve => {
-  //       pendingRequests.current.push(token => resolve(token));
-  //     });
-  //   } else {
-  //     isRefreshing.current = true;
-  //     forwardPromise = refresh()
-  //       .then(result => {
-  //         resolvePendingRequests(result);
-  //         return result;
-  //       })
-  //       .catch(() => {
-  //         pendingRequests.current = [];
-  //         return undefined;
-  //       })
-  //       .finally(() => {
-  //         isRefreshing.current = false;
-  //       });
-  //   }
-
-  //   return forwardPromise;
-  // };
 
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
@@ -98,24 +43,8 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    // errors.forEach(e => dispatch(pushNotification(e.message, Severity.Error)));
     errors.forEach(e => console.error(e));
   });
-
-  // const authLink = setContext(async (_, { headers }) => {
-  //   let internalToken = localStorage.getItem(TOKEN_KEY) || '';
-
-  //   if (!internalToken) {
-  //     return headers;
-  //   }
-
-  //   return {
-  //     headers: {
-  //       ...headers,
-  //       authorization: internalToken ? `Bearer ${internalToken}` : '',
-  //     },
-  //   };
-  // });
 
   const consoleLink = new ApolloLink((operation, forward) => {
     if (enableQueryDebug) {

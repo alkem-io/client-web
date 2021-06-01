@@ -26,6 +26,7 @@ import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateMod
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import { useOpportunityTemplateQuery } from '../generated/graphql';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
@@ -90,7 +91,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { user, isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
   const userName = user?.user.displayName;
 
   const isAdmin =

@@ -24,13 +24,4 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
-
-  app.use(
-    '/users',
-    createProxyMiddleware({
-      target: 'http://localhost:3002',
-      changeOrigin: true,
-      logLevel: 'debug',
-    })
-  );
 };

@@ -7,14 +7,6 @@ import { useKratosClient } from '../hooks/useKratosClient';
 interface RegisterPageProps {
   flow: string;
 }
-// interface FormValues {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-//   acceptTerms: boolean;
-// }
 
 export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
   const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();
