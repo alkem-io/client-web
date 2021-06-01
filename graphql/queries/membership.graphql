@@ -2,7 +2,8 @@ query membership($input: MembershipInput!) {
   membership(membershipData: $input) {
     ecoverses {
       id
-      name
+      nameID
+      displayName
       challenges {
         id
         nameID
@@ -23,6 +24,11 @@ query membership($input: MembershipInput!) {
       id
       nameID
       displayName
+      userGroups {
+        id
+        nameID
+        displayName
+      }
     }
   }
 }

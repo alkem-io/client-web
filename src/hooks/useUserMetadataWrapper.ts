@@ -16,7 +16,6 @@ export interface UserMetadata {
   ecoverses: string[];
 }
 
-const getName = (i: { name?: string }) => i.name || ';';
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
 
 export const useUserMetadataWrapper = () => {
@@ -27,7 +26,7 @@ export const useUserMetadataWrapper = () => {
       if (!user) {
         return;
       }
-      const ecoverses = membershipData?.ecoverses.map(getName) || [];
+      const ecoverses = membershipData?.ecoverses.map(getDisplayName) || [];
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = [];
       const organizations = membershipData?.organisations.map(getDisplayName) || [];
@@ -36,7 +35,6 @@ export const useUserMetadataWrapper = () => {
       const roles =
         user?.agent?.credentials
           ?.map(c => {
-            // const resource = resourceResolver(resolver.toAuthenticationCredentials(c.type), c.resourceID.toString());
             return {
               code: c.type,
               type: resolver.toAuthenticationCredentials(c.type),

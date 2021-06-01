@@ -21,7 +21,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
@@ -123,10 +123,10 @@ const useChallengeStyles = createStyles(theme => ({
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { isAuthenticated } = useAuthenticate();
   const history = useHistory();
   const styles = useChallengeStyles();
-  const user = useUserContext();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
 
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
@@ -216,7 +216,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
               className="flex-grow-1"
               classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
             />
-            {user.user?.isAdmin && (
+            {user?.isAdmin && (
               <>
                 <OverlayTrigger
                   placement={'bottom'}

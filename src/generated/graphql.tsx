@@ -1893,34 +1893,9 @@ export const AuthenticationConfigurationDocument = gql`
           enabled
           config {
             __typename
-            ... on AadAuthProviderConfig {
-              msalConfig {
-                auth {
-                  authority
-                  clientId
-                  redirectUri
-                }
-                cache {
-                  cacheLocation
-                  storeAuthStateInCookie
-                }
-              }
-              apiConfig {
-                resourceScope
-              }
-              loginRequest {
-                scopes
-              }
-              tokenRequest {
-                scopes
-              }
-              silentRequest {
-                scopes
-              }
-            }
-            ... on DemoAuthProviderConfig {
+            ... on OryConfig {
+              kratosPublicBaseURL
               issuer
-              tokenEndpoint
             }
           }
         }
@@ -3033,7 +3008,8 @@ export const MembershipDocument = gql`
     membership(membershipData: $input) {
       ecoverses {
         id
-        name
+        nameID
+        displayName
         challenges {
           id
           nameID
@@ -3054,6 +3030,11 @@ export const MembershipDocument = gql`
         id
         nameID
         displayName
+        userGroups {
+          id
+          nameID
+          displayName
+        }
       }
     }
   }

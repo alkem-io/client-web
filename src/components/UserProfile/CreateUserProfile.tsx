@@ -1,23 +1,25 @@
 import React, { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { v4 } from 'uuid';
 import { useCreateUserMutation } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useNotification } from '../../hooks/useNotification';
-import { AUTH_USER_KEY, WELCOME_PAGE } from '../../models/Constants';
+import { useWhoami } from '../../hooks/useWhoami';
+import { WELCOME_PAGE } from '../../models/Constants';
 import { defaultUser, UserModel } from '../../models/User';
+import { updateStatus } from '../../reducers/auth/actions';
 import { CreateUserInput } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { Loading } from '../core/Loading';
 import { UserForm } from './UserForm';
-import { v4 } from 'uuid';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useDispatch } from 'react-redux';
-import { updateStatus } from '../../reducers/auth/actions';
 
 interface CreateUserProfileProps {}
 
 export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   const { resetStore } = useAuthenticate();
+  const { data: iam } = useWhoami();
   const dispatch = useDispatch();
   const history = useHistory();
   const notify = useNotification();
@@ -58,7 +60,13 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   return (
     <UserForm
       title={'To continue please create a profile!'}
-      user={{ ...defaultUser, email: localStorage.getItem(AUTH_USER_KEY) || '' }}
+      user={{
+        ...defaultUser,
+        firstName: iam?.identity?.traits?.name?.first || '',
+        lastName: iam?.identity?.traits?.name?.last || '',
+        displayName: `${iam?.identity?.traits?.name?.first || ''} ${iam?.identity?.traits?.name?.last || ''}`,
+        email: iam?.identity?.traits?.email || '',
+      }}
       editMode={EditMode.edit}
       onSave={handleSave}
     />

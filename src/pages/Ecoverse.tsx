@@ -23,7 +23,7 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
 } from '../generated/graphql';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
@@ -59,8 +59,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
-  const user = useUserContext();
-  const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
 
   const { data: _opportunities } = useAllOpportunitiesQuery();
   const { data: _projects } = useProjectsQuery();
@@ -191,7 +191,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               {...(challenge as any)}
               context={{
                 ...challenge.context,
-                tag: user.user?.ofChallenge(challenge.id)
+                tag: user?.ofChallenge(challenge.id)
                   ? t('pages.ecoverse.cards.tags.you-are-in')
                   : (challenge.context as Record<string, any>)['tag'],
               }}

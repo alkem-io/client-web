@@ -19,6 +19,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
 
   const loading = profileLoading;
+
   if (loading) return <Loading text={'Loading user'} />;
   return (
     <MembershipWrapper userId={me?.id || 'not-existing-ID'}>

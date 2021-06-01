@@ -34,8 +34,7 @@ export default function configureStore(): Store<RootState, StoreActions> {
   store.subscribe(() => {
     const auth = store.getState().auth;
     try {
-      if (auth.accessToken) localStorage.setItem(TOKEN_KEY, auth.accessToken);
-      else localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
 
       if (auth.status) localStorage.setItem(AUTH_STATUS_KEY, auth.status);
       else localStorage.removeItem(AUTH_STATUS_KEY);
