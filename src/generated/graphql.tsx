@@ -3008,7 +3008,8 @@ export const MembershipDocument = gql`
     membership(membershipData: $input) {
       ecoverses {
         id
-        name
+        nameID
+        displayName
         challenges {
           id
           nameID
@@ -3029,6 +3030,11 @@ export const MembershipDocument = gql`
         id
         nameID
         displayName
+        userGroups {
+          id
+          nameID
+          displayName
+        }
       }
     }
   }

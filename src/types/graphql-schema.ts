@@ -57,12 +57,6 @@ export type Agent = {
   id: Scalars['UUID'];
 };
 
-export type ApiConfig = {
-  __typename?: 'ApiConfig';
-  /** Configuration payload for the Cherrytwist API. */
-  resourceScope: Scalars['String'];
-};
-
 export type Application = {
   __typename?: 'Application';
   /** The ID of the entity */
@@ -541,24 +535,10 @@ export type Lifecycle = {
 
 export type Membership = {
   __typename?: 'Membership';
-  /** Ecoverses the user is a member of, with child memberships */
-  ecoverses: Array<MembershipEcoverseResultEntry>;
-  /** Names and IDs of  the Organisations the user is a member of */
-  organisations: Array<MembershipResultEntry>;
-};
-
-export type MembershipEcoverseResultEntry = {
-  __typename?: 'MembershipEcoverseResultEntry';
-  /** Names and IDs of the Challenges the user is a member of */
-  challenges: Array<MembershipResultEntry>;
-  /** The ID of the Ecoverse */
-  id?: Maybe<Scalars['UUID']>;
-  /** The name of the Ecoverse. */
-  name?: Maybe<Scalars['String']>;
-  /** Names and IDs of the Opportunities the user is a member of */
-  opportunities: Array<MembershipResultEntry>;
-  /** Names and IDs of  the UserGroups the user is a member of */
-  userGroups: Array<MembershipResultEntry>;
+  /** Details of Ecoverses the user is a member of, with child memberships */
+  ecoverses: Array<MembershipResultEntryEcoverse>;
+  /** Details of the Organisations the user is a member of, with child memberships. */
+  organisations: Array<MembershipResultEntryOrganisation>;
 };
 
 export type MembershipInput = {
@@ -576,36 +556,38 @@ export type MembershipResultEntry = {
   nameID: Scalars['NameID'];
 };
 
+export type MembershipResultEntryEcoverse = {
+  __typename?: 'MembershipResultEntryEcoverse';
+  /** Details of the Challenges the user is a member of */
+  challenges: Array<MembershipResultEntry>;
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** The ID of the entry the user is a member of. */
+  id: Scalars['UUID'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+  /** Details of the Opportunities the user is a member of */
+  opportunities: Array<MembershipResultEntry>;
+  /** Details of the UserGroups the user is a member of */
+  userGroups: Array<MembershipResultEntry>;
+};
+
+export type MembershipResultEntryOrganisation = {
+  __typename?: 'MembershipResultEntryOrganisation';
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** The ID of the entry the user is a member of. */
+  id: Scalars['UUID'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+  /** Details of the UserGroups the user is a member of */
+  userGroups: Array<MembershipResultEntry>;
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Cherrytwist services. */
   services: Array<ServiceMetadata>;
-};
-
-export type MsalAuth = {
-  __typename?: 'MsalAuth';
-  /** Azure Active Directory OpenID Connect Authority. */
-  authority: Scalars['String'];
-  /** Cherrytwist Web Client App Registration Client Id. */
-  clientId: Scalars['String'];
-  /** Cherrytwist Web Client Login Redirect Uri. */
-  redirectUri: Scalars['String'];
-};
-
-export type MsalCache = {
-  __typename?: 'MsalCache';
-  /** Cache location, e.g. localStorage.  */
-  cacheLocation?: Maybe<Scalars['String']>;
-  /** Is the authentication information stored in a cookie? */
-  storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
-};
-
-export type MsalConfig = {
-  __typename?: 'MsalConfig';
-  /** Azure Active Directory OpenID Connect endpoint configuration. */
-  auth: MsalAuth;
-  /** Token cache configuration.  */
-  cache: MsalCache;
 };
 
 export type Mutation = {
@@ -1165,12 +1147,6 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type Scope = {
-  __typename?: 'Scope';
-  /** OpenID Scopes. */
-  scopes: Array<Scalars['String']>;
 };
 
 export type SearchInput = {
@@ -2088,7 +2064,10 @@ export type MembershipQueryVariables = Exact<{
 export type MembershipQuery = { __typename?: 'Query' } & {
   membership: { __typename?: 'Membership' } & {
     ecoverses: Array<
-      { __typename?: 'MembershipEcoverseResultEntry' } & Pick<MembershipEcoverseResultEntry, 'id' | 'name'> & {
+      { __typename?: 'MembershipResultEntryEcoverse' } & Pick<
+        MembershipResultEntryEcoverse,
+        'id' | 'nameID' | 'displayName'
+      > & {
           challenges: Array<
             { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
           >;
@@ -2101,7 +2080,14 @@ export type MembershipQuery = { __typename?: 'Query' } & {
         }
     >;
     organisations: Array<
-      { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+      { __typename?: 'MembershipResultEntryOrganisation' } & Pick<
+        MembershipResultEntryOrganisation,
+        'id' | 'nameID' | 'displayName'
+      > & {
+          userGroups: Array<
+            { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+          >;
+        }
     >;
   };
 };
