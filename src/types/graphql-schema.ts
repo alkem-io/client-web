@@ -25,6 +25,8 @@ export type Scalars = {
 
 export type Actor = {
   __typename?: 'Actor';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** A description of this actor */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -40,6 +42,8 @@ export type ActorGroup = {
   __typename?: 'ActorGroup';
   /** The set of actors in this actor group */
   actors?: Maybe<Array<Actor>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** A description of this group of actors */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -57,8 +61,16 @@ export type Agent = {
   id: Scalars['UUID'];
 };
 
+export type ApiConfig = {
+  __typename?: 'ApiConfig';
+  /** Configuration payload for the Cherrytwist API. */
+  resourceScope: Scalars['String'];
+};
+
 export type Application = {
   __typename?: 'Application';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
@@ -67,7 +79,7 @@ export type Application = {
 };
 
 export type ApplicationEventInput = {
-  ID: Scalars['UUID'];
+  applicationID: Scalars['UUID'];
   eventName: Scalars['String'];
 };
 
@@ -81,6 +93,8 @@ export type ApplicationTemplate = {
 
 export type Aspect = {
   __typename?: 'Aspect';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   explanation: Scalars['String'];
   framing: Scalars['String'];
   /** The ID of the entity */
@@ -127,20 +141,34 @@ export type AuthenticationProviderConfig = {
 
 export type AuthenticationProviderConfigUnion = OryConfig;
 
+export type Authorization = {
+  __typename?: 'Authorization';
+  anonymousReadAccess: Scalars['Boolean'];
+  credentialRules: Scalars['String'];
+};
+
 export enum AuthorizationCredential {
-  CommunityMember = 'CommunityMember',
+  ChallengeAdmin = 'ChallengeAdmin',
+  ChallengeMember = 'ChallengeMember',
+  EcoverseAdmin = 'EcoverseAdmin',
+  EcoverseMember = 'EcoverseMember',
   GlobalAdmin = 'GlobalAdmin',
   GlobalAdminChallenges = 'GlobalAdminChallenges',
   GlobalAdminCommunity = 'GlobalAdminCommunity',
   GlobalRegistered = 'GlobalRegistered',
+  OpportunityMember = 'OpportunityMember',
+  OrganisationAdmin = 'OrganisationAdmin',
   OrganisationMember = 'OrganisationMember',
   UserGroupMember = 'UserGroupMember',
+  UserSelfManagement = 'UserSelfManagement',
 }
 
 export type Challenge = {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
   activity?: Maybe<Array<Nvp>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** The set of child Challenges within this challenge. */
   challenges?: Maybe<Array<Challenge>>;
   /** The community for the challenge. */
@@ -180,6 +208,8 @@ export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
   applications: Array<Application>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -202,6 +232,8 @@ export type Context = {
   __typename?: 'Context';
   /** The Aspects for this Context. */
   aspects?: Maybe<Array<Aspect>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** A detailed description of the current situation */
   background?: Maybe<Scalars['String']>;
   /** The EcosystemModel for this Context. */
@@ -237,7 +269,7 @@ export type CreateActorInput = {
 export type CreateApplicationInput = {
   parentID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
-  userID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type CreateAspectInput = {
@@ -323,7 +355,20 @@ export type CreateProjectInput = {
 export type CreateReferenceInput = {
   description?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  parentID?: Maybe<Scalars['UUID']>;
+  uri?: Maybe<Scalars['String']>;
+};
+
+export type CreateReferenceOnContextInput = {
+  contextID: Scalars['UUID'];
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  uri?: Maybe<Scalars['String']>;
+};
+
+export type CreateReferenceOnProfileInput = {
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  profileID: Scalars['UUID'];
   uri?: Maybe<Scalars['String']>;
 };
 
@@ -338,7 +383,12 @@ export type CreateRelationInput = {
 
 export type CreateTagsetInput = {
   name: Scalars['String'];
-  parentID?: Maybe<Scalars['UUID']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type CreateTagsetOnProfileInput = {
+  name: Scalars['String'];
+  profileID?: Maybe<Scalars['UUID']>;
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -393,7 +443,7 @@ export type DeleteChallengeInput = {
 };
 
 export type DeleteEcoverseInput = {
-  ID: Scalars['UUID'];
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -428,6 +478,8 @@ export type EcosystemModel = {
   __typename?: 'EcosystemModel';
   /** A list of ActorGroups */
   actorGroups?: Maybe<Array<ActorGroup>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -440,6 +492,8 @@ export type Ecoverse = {
   activity?: Maybe<Array<Nvp>>;
   /** All applications to join */
   application: Application;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** A particular Challenge, either by its ID or nameID */
   challenge: Challenge;
   /** The challenges for the ecoverse. */
@@ -588,6 +642,32 @@ export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Cherrytwist services. */
   services: Array<ServiceMetadata>;
+};
+
+export type MsalAuth = {
+  __typename?: 'MsalAuth';
+  /** Azure Active Directory OpenID Connect Authority. */
+  authority: Scalars['String'];
+  /** Cherrytwist Web Client App Registration Client Id. */
+  clientId: Scalars['String'];
+  /** Cherrytwist Web Client Login Redirect Uri. */
+  redirectUri: Scalars['String'];
+};
+
+export type MsalCache = {
+  __typename?: 'MsalCache';
+  /** Cache location, e.g. localStorage.  */
+  cacheLocation?: Maybe<Scalars['String']>;
+  /** Is the authentication information stored in a cookie? */
+  storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
+};
+
+export type MsalConfig = {
+  __typename?: 'MsalConfig';
+  /** Azure Active Directory OpenID Connect endpoint configuration. */
+  auth: MsalAuth;
+  /** Token cache configuration.  */
+  cache: MsalCache;
 };
 
 export type Mutation = {
@@ -767,11 +847,11 @@ export type MutationCreateProjectArgs = {
 };
 
 export type MutationCreateReferenceOnContextArgs = {
-  referenceInput: CreateReferenceInput;
+  referenceInput: CreateReferenceOnContextInput;
 };
 
 export type MutationCreateReferenceOnProfileArgs = {
-  referenceInput: CreateReferenceInput;
+  referenceInput: CreateReferenceOnProfileInput;
 };
 
 export type MutationCreateRelationArgs = {
@@ -779,7 +859,7 @@ export type MutationCreateRelationArgs = {
 };
 
 export type MutationCreateTagsetOnProfileArgs = {
-  tagsetData: CreateTagsetInput;
+  tagsetData: CreateTagsetOnProfileInput;
 };
 
 export type MutationCreateUserArgs = {
@@ -931,6 +1011,8 @@ export type Opportunity = {
   __typename?: 'Opportunity';
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
@@ -973,6 +1055,8 @@ export type OpportunityTemplate = {
 export type Organisation = Groupable &
   Searchable & {
     __typename?: 'Organisation';
+    /** The authorization rules for the entity */
+    authorization: Authorization;
     /** The display name. */
     displayName: Scalars['String'];
     /** Groups defined on this organisation. */
@@ -996,6 +1080,8 @@ export type OryConfig = {
 
 export type Profile = {
   __typename?: 'Profile';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
@@ -1012,6 +1098,8 @@ export type Project = {
   __typename?: 'Project';
   /** The set of aspects for this Project. Note: likley to change. */
   aspects?: Maybe<Array<Aspect>>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   description?: Maybe<Scalars['String']>;
   /** The display name. */
   displayName: Scalars['String'];
@@ -1063,7 +1151,7 @@ export type Query = {
 };
 
 export type QueryEcoverseArgs = {
-  ID?: Maybe<Scalars['UUID_NAMEID']>;
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type QueryMembershipArgs = {
@@ -1108,6 +1196,8 @@ export type QuestionTemplate = {
 
 export type Reference = {
   __typename?: 'Reference';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -1120,6 +1210,8 @@ export type Relation = {
   actorName: Scalars['String'];
   actorRole: Scalars['String'];
   actorType: Scalars['String'];
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -1147,6 +1239,12 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type Scope = {
+  __typename?: 'Scope';
+  /** OpenID Scopes. */
+  scopes: Array<Scalars['String']>;
 };
 
 export type SearchInput = {
@@ -1184,6 +1282,8 @@ export type ServiceMetadata = {
 
 export type Tagset = {
   __typename?: 'Tagset';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   /** The ID of the entity */
   id: Scalars['UUID'];
   name: Scalars['String'];
@@ -1328,8 +1428,7 @@ export type UpdateUserGroupInput = {
 };
 
 export type UpdateUserInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID_NAMEID_EMAIL'];
   accountUpn?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
@@ -1355,6 +1454,8 @@ export type User = Searchable & {
   accountUpn: Scalars['String'];
   /** The agent for this User */
   agent?: Maybe<Agent>;
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   city: Scalars['String'];
   country: Scalars['String'];
   /** The display name. */
@@ -1373,6 +1474,8 @@ export type User = Searchable & {
 
 export type UserGroup = Searchable & {
   __typename?: 'UserGroup';
+  /** The authorization rules for the entity */
+  authorization: Authorization;
   id: Scalars['UUID'];
   /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
@@ -1551,7 +1654,7 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
 };
 
 export type CreateReferenceOnContextMutationVariables = Exact<{
-  input: CreateReferenceInput;
+  input: CreateReferenceOnContextInput;
 }>;
 
 export type CreateReferenceOnContextMutation = { __typename?: 'Mutation' } & {
@@ -1559,7 +1662,7 @@ export type CreateReferenceOnContextMutation = { __typename?: 'Mutation' } & {
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{
-  input: CreateReferenceInput;
+  input: CreateReferenceOnProfileInput;
 }>;
 
 export type CreateReferenceOnProfileMutation = { __typename?: 'Mutation' } & {
@@ -1575,7 +1678,7 @@ export type CreateRelationMutation = { __typename?: 'Mutation' } & {
 };
 
 export type CreateTagsetOnProfileMutationVariables = Exact<{
-  input: CreateTagsetInput;
+  input: CreateTagsetOnProfileInput;
 }>;
 
 export type CreateTagsetOnProfileMutation = { __typename?: 'Mutation' } & {
@@ -1752,7 +1855,9 @@ export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
   uploadAvatar: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
 };
 
-export type AllCommunitiesQueryVariables = Exact<{ [key: string]: never }>;
+export type AllCommunitiesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type AllCommunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & {
@@ -1770,7 +1875,9 @@ export type AllCommunitiesQuery = { __typename?: 'Query' } & {
 
 export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>;
 
-export type AllOpportunitiesQueryVariables = Exact<{ [key: string]: never }>;
+export type AllOpportunitiesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1794,7 +1901,8 @@ export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeCommunityQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
@@ -1806,7 +1914,8 @@ export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
@@ -1822,6 +1931,7 @@ export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeMembersQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   challengeID: Scalars['UUID_NAMEID'];
 }>;
 
@@ -1840,7 +1950,8 @@ export type ChallengeMembersQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeNameQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeNameQuery = { __typename?: 'Query' } & {
@@ -1852,6 +1963,7 @@ export type ChallengeNameQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeProfileQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   id: Scalars['UUID_NAMEID'];
 }>;
 
@@ -1891,7 +2003,8 @@ export type ChallengeProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
@@ -1904,7 +2017,8 @@ export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
 };
 
 export type ChallengeUserIdsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
@@ -1917,7 +2031,9 @@ export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type ChallengesQueryVariables = Exact<{ [key: string]: never }>;
+export type ChallengesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type ChallengesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1935,7 +2051,9 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type ChallengesWithCommunityQueryVariables = Exact<{ [key: string]: never }>;
+export type ChallengesWithCommunityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1949,7 +2067,9 @@ export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type EcoverseCommunityQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseCommunityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1957,7 +2077,9 @@ export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type EcoverseGroupsListQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseGroupsListQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1965,7 +2087,9 @@ export type EcoverseGroupsListQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type EcoverseHostReferencesQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseHostReferencesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -1979,7 +2103,9 @@ export type EcoverseHostReferencesQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type EcoverseInfoQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseInfoQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
@@ -1999,7 +2125,8 @@ export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
 };
 
 export type GroupQueryVariables = Exact<{
-  id: Scalars['UUID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
 }>;
 
 export type GroupQuery = { __typename?: 'Query' } & {
@@ -2018,7 +2145,8 @@ export type GroupQuery = { __typename?: 'Query' } & {
 };
 
 export type GroupCardQueryVariables = Exact<{
-  id: Scalars['UUID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
 }>;
 
 export type GroupCardQuery = { __typename?: 'Query' } & {
@@ -2040,7 +2168,8 @@ export type GroupCardQuery = { __typename?: 'Query' } & {
 };
 
 export type GroupMembersQueryVariables = Exact<{
-  id: Scalars['UUID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
 }>;
 
 export type GroupMembersQuery = { __typename?: 'Query' } & {
@@ -2093,7 +2222,8 @@ export type MembershipQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunitiesQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunitiesQuery = { __typename?: 'Query' } & {
@@ -2105,7 +2235,8 @@ export type OpportunitiesQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityActorGroupsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
@@ -2135,7 +2266,8 @@ export type OpportunityActorGroupsQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityAspectsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
@@ -2151,7 +2283,8 @@ export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityCommunityQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
@@ -2163,7 +2296,8 @@ export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityGroupsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
@@ -2179,7 +2313,8 @@ export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityNameQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityNameQuery = { __typename?: 'Query' } & {
@@ -2189,7 +2324,8 @@ export type OpportunityNameQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityProfileQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityProfileQuery = { __typename?: 'Query' } & {
@@ -2248,7 +2384,8 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityProfileInfoQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
@@ -2260,7 +2397,8 @@ export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityRelationsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityRelationsQuery = { __typename?: 'Query' } & {
@@ -2291,7 +2429,8 @@ export type OpportunityTemplateQuery = { __typename?: 'Query' } & {
 };
 
 export type OpportunityUserIdsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
@@ -2374,7 +2513,8 @@ export type OrganizationsListQuery = { __typename?: 'Query' } & {
 };
 
 export type ProjectProfileQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  projectId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ProjectProfileQuery = { __typename?: 'Query' } & {
@@ -2383,7 +2523,9 @@ export type ProjectProfileQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
+export type ProjectsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type ProjectsQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -2395,7 +2537,9 @@ export type ProjectsQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type ProjectsChainHistoryQueryVariables = Exact<{ [key: string]: never }>;
+export type ProjectsChainHistoryQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type ProjectsChainHistoryQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
@@ -2416,7 +2560,8 @@ export type ProjectsChainHistoryQuery = { __typename?: 'Query' } & {
 };
 
 export type RelationsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
 export type RelationsQuery = { __typename?: 'Query' } & {

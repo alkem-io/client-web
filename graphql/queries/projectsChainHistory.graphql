@@ -1,5 +1,5 @@
-query projectsChainHistory {
-  ecoverse {
+query projectsChainHistory($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     challenges {
       displayName

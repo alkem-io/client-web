@@ -1,7 +1,7 @@
-query projectProfile($id: UUID_NAMEID!) {
-  ecoverse {
+query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    project(ID: $id) {
+    project(ID: $projectId) {
       ...ProjectDetails
     }
   }

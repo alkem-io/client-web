@@ -651,7 +651,7 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateProjectMutationVariables
 >;
 export const CreateReferenceOnContextDocument = gql`
-  mutation createReferenceOnContext($input: CreateReferenceInput!) {
+  mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
     createReferenceOnContext(referenceInput: $input) {
       id
       name
@@ -700,7 +700,7 @@ export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.CreateReferenceOnContextMutationVariables
 >;
 export const CreateReferenceOnProfileDocument = gql`
-  mutation createReferenceOnProfile($input: CreateReferenceInput!) {
+  mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {
       id
       name
@@ -795,7 +795,7 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutationVariables
 >;
 export const CreateTagsetOnProfileDocument = gql`
-  mutation createTagsetOnProfile($input: CreateTagsetInput!) {
+  mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
       id
       name
@@ -1770,13 +1770,11 @@ export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadAvatarMutationVariables
 >;
 export const AllCommunitiesDocument = gql`
-  query allCommunities {
-    ecoverse {
+  query allCommunities($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       community {
         ...AllCommunityDetails
       }
-    }
-    ecoverse {
       challenges {
         community {
           ...AllCommunityDetails
@@ -1804,11 +1802,12 @@ export const AllCommunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useAllCommunitiesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useAllCommunitiesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
     AllCommunitiesDocument,
@@ -1830,8 +1829,8 @@ export type AllCommunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.AllCommunitiesQueryVariables
 >;
 export const AllOpportunitiesDocument = gql`
-  query allOpportunities {
-    ecoverse {
+  query allOpportunities($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       opportunities {
         id
@@ -1853,11 +1852,12 @@ export const AllOpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useAllOpportunitiesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useAllOpportunitiesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>(
     AllOpportunitiesDocument,
@@ -1948,10 +1948,10 @@ export type AuthenticationConfigurationQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthenticationConfigurationQueryVariables
 >;
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeCommunity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
         displayName
         community {
@@ -1975,7 +1975,8 @@ export const ChallengeCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCommunityQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2008,10 +2009,10 @@ export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQueryVariables
 >;
 export const ChallengeGroupsDocument = gql`
-  query challengeGroups($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeGroups($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         community {
           groups {
             id
@@ -2035,7 +2036,8 @@ export const ChallengeGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2062,8 +2064,8 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeGroupsQueryVariables
 >;
 export const ChallengeMembersDocument = gql`
-  query challengeMembers($challengeID: UUID_NAMEID!) {
-    ecoverse {
+  query challengeMembers($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeID) {
         community {
@@ -2092,6 +2094,7 @@ export const ChallengeMembersDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeMembersQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      challengeID: // value for 'challengeID'
  *   },
  * });
@@ -2122,10 +2125,10 @@ export type ChallengeMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeMembersQueryVariables
 >;
 export const ChallengeNameDocument = gql`
-  query challengeName($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeName($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
         displayName
         community {
@@ -2149,7 +2152,8 @@ export const ChallengeNameDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeNameQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2176,8 +2180,8 @@ export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
-  query challengeProfile($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeProfile($ecoverseId: UUID_NAMEID!, $id: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $id) {
         id
@@ -2244,6 +2248,7 @@ export const ChallengeProfileDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeProfileQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      id: // value for 'id'
  *   },
  * });
@@ -2274,10 +2279,10 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileQueryVariables
 >;
 export const ChallengeProfileInfoDocument = gql`
-  query challengeProfileInfo($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
         nameID
         displayName
@@ -2305,7 +2310,8 @@ export const ChallengeProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeProfileInfoQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2338,10 +2344,10 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQueryVariables
 >;
 export const ChallengeUserIdsDocument = gql`
-  query challengeUserIds($id: UUID_NAMEID!) {
-    ecoverse {
+  query challengeUserIds($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         community {
           members {
             id
@@ -2364,7 +2370,8 @@ export const ChallengeUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeUserIdsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2394,8 +2401,8 @@ export type ChallengeUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeUserIdsQueryVariables
 >;
 export const ChallengesDocument = gql`
-  query challenges {
-    ecoverse {
+  query challenges($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
         id
@@ -2425,11 +2432,12 @@ export const ChallengesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useChallengesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>(
     ChallengesDocument,
@@ -2451,8 +2459,8 @@ export type ChallengesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesQueryVariables
 >;
 export const ChallengesWithCommunityDocument = gql`
-  query challengesWithCommunity {
-    ecoverse {
+  query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
         id
@@ -2478,11 +2486,12 @@ export const ChallengesWithCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesWithCommunityQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useChallengesWithCommunityQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ChallengesWithCommunityQuery,
     SchemaTypes.ChallengesWithCommunityQueryVariables
   >
@@ -2510,8 +2519,8 @@ export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesWithCommunityQueryVariables
 >;
 export const EcoverseCommunityDocument = gql`
-  query ecoverseCommunity {
-    ecoverse {
+  query ecoverseCommunity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       community {
         ...CommunityDetails
@@ -2533,11 +2542,12 @@ export const EcoverseCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCommunityQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseCommunityQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
     EcoverseCommunityDocument,
@@ -2562,8 +2572,8 @@ export type EcoverseCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCommunityQueryVariables
 >;
 export const EcoverseGroupsListDocument = gql`
-  query ecoverseGroupsList {
-    ecoverse {
+  query ecoverseGroupsList($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       groups {
         id
@@ -2585,11 +2595,12 @@ export const EcoverseGroupsListDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseGroupsListQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseGroupsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.EcoverseGroupsListQuery,
     SchemaTypes.EcoverseGroupsListQueryVariables
   >
@@ -2617,8 +2628,8 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseGroupsListQueryVariables
 >;
 export const EcoverseHostReferencesDocument = gql`
-  query ecoverseHostReferences {
-    ecoverse {
+  query ecoverseHostReferences($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       host {
         profile {
@@ -2645,11 +2656,12 @@ export const EcoverseHostReferencesDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseHostReferencesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseHostReferencesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.EcoverseHostReferencesQuery,
     SchemaTypes.EcoverseHostReferencesQueryVariables
   >
@@ -2677,8 +2689,8 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseHostReferencesQueryVariables
 >;
 export const EcoverseInfoDocument = gql`
-  query ecoverseInfo {
-    ecoverse {
+  query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       nameID
       displayName
@@ -2712,11 +2724,12 @@ export const EcoverseInfoDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseInfoQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseInfoQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
     EcoverseInfoDocument,
@@ -2783,10 +2796,10 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
 export const GroupDocument = gql`
-  query group($id: UUID!) {
-    ecoverse {
+  query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      group(ID: $id) {
+      group(ID: $groupId) {
         id
         name
         profile {
@@ -2822,7 +2835,8 @@ export const GroupDocument = gql`
  * @example
  * const { data, loading, error } = useGroupQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
  *   },
  * });
  */
@@ -2840,10 +2854,10 @@ export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
 export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
 export type GroupQueryResult = Apollo.QueryResult<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>;
 export const GroupCardDocument = gql`
-  query groupCard($id: UUID!) {
-    ecoverse {
+  query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      group(ID: $id) {
+      group(ID: $groupId) {
         __typename
         name
         parent {
@@ -2889,7 +2903,8 @@ export const GroupCardDocument = gql`
  * @example
  * const { data, loading, error } = useGroupCardQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
  *   },
  * });
  */
@@ -2913,10 +2928,10 @@ export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>;
 export const GroupMembersDocument = gql`
-  query groupMembers($id: UUID!) {
-    ecoverse {
+  query groupMembers($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      group(ID: $id) {
+      group(ID: $groupId) {
         id
         name
         members {
@@ -2940,7 +2955,8 @@ export const GroupMembersDocument = gql`
  * @example
  * const { data, loading, error } = useGroupMembersQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
  *   },
  * });
  */
@@ -3079,10 +3095,10 @@ export type MembershipQueryResult = Apollo.QueryResult<
   SchemaTypes.MembershipQueryVariables
 >;
 export const OpportunitiesDocument = gql`
-  query opportunities($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunities($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         opportunities {
           id
           displayName
@@ -3104,7 +3120,8 @@ export const OpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunitiesQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -3131,10 +3148,10 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQueryVariables
 >;
 export const OpportunityActorGroupsDocument = gql`
-  query opportunityActorGroups($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         context {
           ecosystemModel {
             id
@@ -3169,7 +3186,8 @@ export const OpportunityActorGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityActorGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3202,10 +3220,10 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActorGroupsQueryVariables
 >;
 export const OpportunityAspectsDocument = gql`
-  query opportunityAspects($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         context {
           aspects {
             title
@@ -3230,7 +3248,8 @@ export const OpportunityAspectsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityAspectsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3263,10 +3282,10 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectsQueryVariables
 >;
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityCommunity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
         displayName
         community {
@@ -3290,7 +3309,8 @@ export const OpportunityCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCommunityQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3323,10 +3343,10 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQueryVariables
 >;
 export const OpportunityGroupsDocument = gql`
-  query opportunityGroups($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         community {
           groups {
             id
@@ -3350,7 +3370,8 @@ export const OpportunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3380,10 +3401,10 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityGroupsQueryVariables
 >;
 export const OpportunityNameDocument = gql`
-  query opportunityName($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityName($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
         displayName
       }
@@ -3403,7 +3424,8 @@ export const OpportunityNameDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityNameQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3430,10 +3452,10 @@ export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQueryVariables
 >;
 export const OpportunityProfileDocument = gql`
-  query opportunityProfile($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityProfile($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
         nameID
         displayName
@@ -3517,7 +3539,8 @@ export const OpportunityProfileDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProfileQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3550,10 +3573,10 @@ export type OpportunityProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileQueryVariables
 >;
 export const OpportunityProfileInfoDocument = gql`
-  query opportunityProfileInfo($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityProfileInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
         nameID
         displayName
@@ -3578,7 +3601,8 @@ export const OpportunityProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProfileInfoQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3611,10 +3635,10 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
 export const OpportunityRelationsDocument = gql`
-  query opportunityRelations($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityRelations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         relations {
           actorRole
           actorName
@@ -3639,7 +3663,8 @@ export const OpportunityRelationsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityRelationsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3728,10 +3753,10 @@ export type OpportunityTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityTemplateQueryVariables
 >;
 export const OpportunityUserIdsDocument = gql`
-  query opportunityUserIds($id: UUID_NAMEID!) {
-    ecoverse {
+  query opportunityUserIds($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         community {
           members {
             id
@@ -3754,7 +3779,8 @@ export const OpportunityUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityUserIdsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -4145,10 +4171,10 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationsListQueryVariables
 >;
 export const ProjectProfileDocument = gql`
-  query projectProfile($id: UUID_NAMEID!) {
-    ecoverse {
+  query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      project(ID: $id) {
+      project(ID: $projectId) {
         ...ProjectDetails
       }
     }
@@ -4168,7 +4194,8 @@ export const ProjectProfileDocument = gql`
  * @example
  * const { data, loading, error } = useProjectProfileQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      projectId: // value for 'projectId'
  *   },
  * });
  */
@@ -4195,8 +4222,8 @@ export type ProjectProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectProfileQueryVariables
 >;
 export const ProjectsDocument = gql`
-  query projects {
-    ecoverse {
+  query projects($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       projects {
         id
@@ -4223,11 +4250,12 @@ export const ProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useProjectsQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(ProjectsDocument, baseOptions);
 }
@@ -4243,8 +4271,8 @@ export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>;
 export const ProjectsChainHistoryDocument = gql`
-  query projectsChainHistory {
-    ecoverse {
+  query projectsChainHistory($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
         displayName
@@ -4272,11 +4300,12 @@ export const ProjectsChainHistoryDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsChainHistoryQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useProjectsChainHistoryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ProjectsChainHistoryQuery,
     SchemaTypes.ProjectsChainHistoryQueryVariables
   >
@@ -4304,10 +4333,10 @@ export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectsChainHistoryQueryVariables
 >;
 export const RelationsDocument = gql`
-  query relations($id: UUID_NAMEID!) {
-    ecoverse {
+  query relations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         relations {
           id
           type
@@ -4333,7 +4362,8 @@ export const RelationsDocument = gql`
  * @example
  * const { data, loading, error } = useRelationsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */

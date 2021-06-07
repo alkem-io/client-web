@@ -1,7 +1,7 @@
-query groupCard($id: UUID!) {
-  ecoverse {
+query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    group(ID: $id) {
+    group(ID: $groupId) {
       __typename
       name
       parent {
