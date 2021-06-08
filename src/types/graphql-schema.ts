@@ -26,7 +26,7 @@ export type Scalars = {
 export type Actor = {
   __typename?: 'Actor';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** A description of this actor */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -43,7 +43,7 @@ export type ActorGroup = {
   /** The set of actors in this actor group */
   actors?: Maybe<Array<Actor>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** A description of this group of actors */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -61,16 +61,10 @@ export type Agent = {
   id: Scalars['UUID'];
 };
 
-export type ApiConfig = {
-  __typename?: 'ApiConfig';
-  /** Configuration payload for the Cherrytwist API. */
-  resourceScope: Scalars['String'];
-};
-
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
@@ -94,7 +88,7 @@ export type ApplicationTemplate = {
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   explanation: Scalars['String'];
   framing: Scalars['String'];
   /** The ID of the entity */
@@ -168,7 +162,7 @@ export type Challenge = {
   /** The activity within this Challenge. */
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The set of child Challenges within this challenge. */
   challenges?: Maybe<Array<Challenge>>;
   /** The community for the challenge. */
@@ -209,7 +203,7 @@ export type Community = Groupable & {
   /** Application available for this community. */
   applications: Array<Application>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -233,7 +227,7 @@ export type Context = {
   /** The Aspects for this Context. */
   aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** A detailed description of the current situation */
   background?: Maybe<Scalars['String']>;
   /** The EcosystemModel for this Context. */
@@ -479,7 +473,7 @@ export type EcosystemModel = {
   /** A list of ActorGroups */
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -493,7 +487,7 @@ export type Ecoverse = {
   /** All applications to join */
   application: Application;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** A particular Challenge, either by its ID or nameID */
   challenge: Challenge;
   /** The challenges for the ecoverse. */
@@ -642,32 +636,6 @@ export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Cherrytwist services. */
   services: Array<ServiceMetadata>;
-};
-
-export type MsalAuth = {
-  __typename?: 'MsalAuth';
-  /** Azure Active Directory OpenID Connect Authority. */
-  authority: Scalars['String'];
-  /** Cherrytwist Web Client App Registration Client Id. */
-  clientId: Scalars['String'];
-  /** Cherrytwist Web Client Login Redirect Uri. */
-  redirectUri: Scalars['String'];
-};
-
-export type MsalCache = {
-  __typename?: 'MsalCache';
-  /** Cache location, e.g. localStorage.  */
-  cacheLocation?: Maybe<Scalars['String']>;
-  /** Is the authentication information stored in a cookie? */
-  storeAuthStateInCookie?: Maybe<Scalars['Boolean']>;
-};
-
-export type MsalConfig = {
-  __typename?: 'MsalConfig';
-  /** Azure Active Directory OpenID Connect endpoint configuration. */
-  auth: MsalAuth;
-  /** Token cache configuration.  */
-  cache: MsalCache;
 };
 
 export type Mutation = {
@@ -1012,7 +980,7 @@ export type Opportunity = {
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
@@ -1056,7 +1024,7 @@ export type Organisation = Groupable &
   Searchable & {
     __typename?: 'Organisation';
     /** The authorization rules for the entity */
-    authorization: Authorization;
+    authorization?: Maybe<Authorization>;
     /** The display name. */
     displayName: Scalars['String'];
     /** Groups defined on this organisation. */
@@ -1081,7 +1049,7 @@ export type OryConfig = {
 export type Profile = {
   __typename?: 'Profile';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
   avatar?: Maybe<Scalars['String']>;
   /** A short description of the entity associated with this profile. */
@@ -1099,7 +1067,7 @@ export type Project = {
   /** The set of aspects for this Project. Note: likley to change. */
   aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   description?: Maybe<Scalars['String']>;
   /** The display name. */
   displayName: Scalars['String'];
@@ -1197,7 +1165,7 @@ export type QuestionTemplate = {
 export type Reference = {
   __typename?: 'Reference';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -1211,7 +1179,7 @@ export type Relation = {
   actorRole: Scalars['String'];
   actorType: Scalars['String'];
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -1239,12 +1207,6 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type Scope = {
-  __typename?: 'Scope';
-  /** OpenID Scopes. */
-  scopes: Array<Scalars['String']>;
 };
 
 export type SearchInput = {
@@ -1283,7 +1245,7 @@ export type ServiceMetadata = {
 export type Tagset = {
   __typename?: 'Tagset';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   name: Scalars['String'];
@@ -1455,7 +1417,7 @@ export type User = Searchable & {
   /** The agent for this User */
   agent?: Maybe<Agent>;
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   city: Scalars['String'];
   country: Scalars['String'];
   /** The display name. */
@@ -1475,7 +1437,7 @@ export type User = Searchable & {
 export type UserGroup = Searchable & {
   __typename?: 'UserGroup';
   /** The authorization rules for the entity */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   id: Scalars['UUID'];
   /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
@@ -1964,7 +1926,7 @@ export type ChallengeNameQuery = { __typename?: 'Query' } & {
 
 export type ChallengeProfileQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
-  id: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeProfileQuery = { __typename?: 'Query' } & {
@@ -2123,6 +2085,14 @@ export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
   users: Array<{ __typename?: 'User' } & Pick<User, 'id'>>;
 };
+
+export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoversesQuery = { __typename?: 'Query' } & {
+  ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
+};
+
+export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'>;
 
 export type GroupQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];

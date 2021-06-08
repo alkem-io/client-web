@@ -45,9 +45,12 @@ export const Routing: FC = () => {
       <Route exact path="/restricted">
         <Restricted />
       </Route>
-      <AuthenticatedRoute path="/">
+      <AuthenticatedRoute path="/ecoverse">
         <Ecoverses />
       </AuthenticatedRoute>
+      <Route exact path="/">
+        <Redirect to="/ecoverse" />
+      </Route>
       <Route path="*">
         <FourOuFour />
       </Route>

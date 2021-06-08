@@ -128,17 +128,19 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         if (ref.id) await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
-      for (const ref of toAdd) {
-        await addReference({
-          variables: {
-            input: {
-              parentID: profileId,
-              name: ref.name,
-              description: ref.description,
-              uri: ref.uri,
+      if (profileId) {
+        for (const ref of toAdd) {
+          await addReference({
+            variables: {
+              input: {
+                profileID: profileId,
+                name: ref.name,
+                description: ref.description,
+                uri: ref.uri,
+              },
             },
-          },
-        });
+          });
+        }
       }
       updateUser({
         variables: {

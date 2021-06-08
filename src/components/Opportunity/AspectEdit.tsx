@@ -9,6 +9,7 @@ import {
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
 import { Aspect } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
@@ -46,10 +47,11 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const { data: config } = useOpportunityTemplateQuery();
   const { data: opportunity, loading: loadingOpportunity } = useOpportunityProfileQuery({
-    variables: { id: opportunityId },
+    variables: { ecoverseId, opportunityId },
   });
   const contextId = opportunity?.ecoverse?.opportunity?.context?.id;
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;

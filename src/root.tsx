@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
-import { EcoverseProvider } from './context/EcoverseProvider';
+import { EcoversesProvider } from './context/EcoversesProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
@@ -79,13 +79,13 @@ const ReduxRoot: FC = () => {
           <CTApolloProvider>
             <ThemeProvider>
               <NavigationProvider>
-                <UserProvider>
-                  <EcoverseProvider>
+                <EcoversesProvider>
+                  <UserProvider>
                     <App>
                       <Routing />
                     </App>
-                  </EcoverseProvider>
-                </UserProvider>
+                  </UserProvider>
+                </EcoversesProvider>
               </NavigationProvider>
             </ThemeProvider>
           </CTApolloProvider>

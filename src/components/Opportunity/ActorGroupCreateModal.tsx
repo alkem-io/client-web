@@ -9,6 +9,7 @@ import {
 } from '../../generated/graphql';
 import Loading from '../core/Loading';
 import { replaceAll } from '../../utils/replaceAll';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface P {
   onHide: () => void;
@@ -23,9 +24,12 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
+  const { ecoverseId } = useEcoverse();
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
-  const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({ variables: { id: opportunityId } });
+  const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({
+    variables: { ecoverseId, opportunityId },
+  });
   const ecosystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
   const isFormValid = name && description && description.length >= 2 && description.length <= 380;
 

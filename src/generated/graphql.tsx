@@ -135,6 +135,13 @@ export const AllCommunityDetailsFragmentDoc = gql`
     displayName
   }
 `;
+export const EcoverseDetailsFragmentDoc = gql`
+  fragment EcoverseDetails on Ecoverse {
+    id
+    nameID
+    displayName
+  }
+`;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
     assignUserToCommunity(membershipData: $membershipData) {
@@ -2180,10 +2187,10 @@ export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
-  query challengeProfile($ecoverseId: UUID_NAMEID!, $id: UUID_NAMEID!) {
+  query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
         nameID
         displayName
@@ -2249,7 +2256,7 @@ export const ChallengeProfileDocument = gql`
  * const { data, loading, error } = useChallengeProfileQuery({
  *   variables: {
  *      ecoverseId: // value for 'ecoverseId'
- *      id: // value for 'id'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2795,6 +2802,49 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQuery,
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
+export const EcoversesDocument = gql`
+  query ecoverses {
+    ecoverses {
+      ...EcoverseDetails
+    }
+  }
+  ${EcoverseDetailsFragmentDoc}
+`;
+
+/**
+ * __useEcoversesQuery__
+ *
+ * To run a query within a React component, call `useEcoversesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoversesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
+    EcoversesDocument,
+    baseOptions
+  );
+}
+export function useEcoversesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
+    EcoversesDocument,
+    baseOptions
+  );
+}
+export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
+export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
+export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
 export const GroupDocument = gql`
   query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
     ecoverse(ID: $ecoverseId) {

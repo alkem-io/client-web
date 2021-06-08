@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { useEcoverse } from '../hooks/useEcoverse';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { pushError } from '../reducers/error/actions';
 import { Project as ProjectType } from '../types/graphql-schema';
@@ -71,10 +72,11 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const { url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
+  const { ecoverseId } = useEcoverse();
   const target = projects?.find(x => x.nameID === id);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { id: target?.id || '' },
+    variables: { ecoverseId, projectId: target?.id || '' },
   });
 
   const project = query?.ecoverse.project;

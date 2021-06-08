@@ -1,18 +1,24 @@
 import { useTranslation } from 'react-i18next';
 import { AuthorizationCredential } from '../types/graphql-schema';
 
+// When the enum is updated on the server this one must be udpated too!
+// The reason is that the graphql enum does not expose internal values,
+// because of inconsistence in the API how data is returned and
+// and what input data is expected
 export enum AuthorizationCredentialBackEnd {
   GlobalAdmin = 'global-admin', // able to do everything, god mode
   GlobalAdminChallenges = 'global-admin-challenges', // able to create challenges / ecoverses / opportunities
   GlobalAdminCommunity = 'global-admin-community', // able to manage the top level community, including assigning credentials
   GlobalRegistered = 'global-registered', // credential issued to all registered users
-  CommunityMember = 'community-member', // Able to be a part of a community
+  EcoverseAdmin = 'ecoverse-admin',
+  EcoverseMember = 'ecoverse-member',
+  ChallengeAdmin = 'challenge-admin',
+  ChallengeMember = 'challenge-member',
+  OpportunityMember = 'opportunity-member',
+  OrganisationAdmin = 'organisation-admin', // Able to administer an organisation
   OrganisationMember = 'organisation-member', // Able to be a part of an organisation
   UserGroupMember = 'user-group-member', // Able to be a part of an user group
-  UserUpdate = 'user-update', // able to update a user
-  // ChallengeAdmin = 'challenge-admin', // able to manage all aspects of a particular Ecoverse
-  // ChallengeCommunityAdmin = 'challenge-community-admin', // Able to manage membership of a particular community
-  // ChallengeContextAdmin = 'challenge-context-admin', // Able to update the context information for a Challenge
+  UserSelfManagement = 'user-self', // able to update a user
 }
 
 export interface CredentialResolver {
@@ -31,15 +37,19 @@ export const useCredentialsResolver = (): CredentialResolver => {
   };
 
   const toRoleName = (value: AuthorizationCredential) => {
-    const enumValue = AuthorizationCredentialBackEnd[value];
-
-    return t(`common.enums.authorization-credentials.${enumValue}.name` as const);
+    // In case of an typescript error:
+    // Most common case is inconsistency between the backend and the forntened.
+    // check if the `AuthorizationCredential` was updated and add/remove missing items
+    // in the translation file.
+    return t(`common.enums.authorization-credentials.${value}.name` as const);
   };
 
   const toRoleOrder = (value: AuthorizationCredential) => {
-    const enumValue = AuthorizationCredentialBackEnd[value];
-
-    return t(`common.enums.authorization-credentials.${enumValue}.order` as const);
+    // In case of an typescript error:
+    // Most common case is inconsistency between the backend and the forntened.
+    // check if the `AuthorizationCredential` was updated and add/remove missing items
+    // in the translation file.
+    return t(`common.enums.authorization-credentials.${value}.order` as const);
   };
 
   return { toAuthenticationCredentials, toRoleName, toRoleOrder };

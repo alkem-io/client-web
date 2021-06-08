@@ -61,11 +61,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
+  const { displayName: name, context = {}, nameID: ecoverseId } = ecoverse.ecoverse;
 
-  const { data: _opportunities } = useAllOpportunitiesQuery();
-  const { data: _projects } = useProjectsQuery();
-  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
-  const { data: hostData } = useEcoverseHostReferencesQuery();
+  const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
+  const { data: hostData } = useEcoverseHostReferencesQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
@@ -75,7 +76,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { displayName: name, context = {} } = ecoverse.ecoverse;
   const { tagline, impact, vision, background, references } = context;
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
