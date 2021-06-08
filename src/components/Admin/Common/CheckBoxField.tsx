@@ -1,6 +1,7 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
 import { Form, Col } from 'react-bootstrap';
+import { Required } from '../../Required';
 
 interface CheckBoxFieldProps {
   value?: string | ReadonlyArray<string> | number;
@@ -36,7 +37,7 @@ export const CheckBoxField: FC<CheckBoxFieldProps> = ({
         />
         <Form.Check.Label>
           {children}
-          {required && <span style={{ color: '#d93636' }}>{' *'}</span>}
+          {required && <Required />}
         </Form.Check.Label>
         <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
       </Form.Check>

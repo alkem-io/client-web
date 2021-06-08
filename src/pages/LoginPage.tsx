@@ -1,9 +1,15 @@
 import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 import KratosUI from '../components/Authentication/KratosUI';
 import Loading from '../components/core/Loading';
 import { useKratosClient } from '../hooks/useKratosClient';
+import Typography from '../components/core/Typography';
+import Delimiter from '../components/core/Delimiter';
+import Button from '../components/core/Button';
+import { AUTH_REGISTER_PATH } from '../models/Constants';
 
 interface LoginPageProps {
   flow: string;
@@ -13,6 +19,8 @@ interface LoginPageProps {
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   const [loginFlow, setLoginFlow] = useState<LoginFlow>();
   const kratos = useKratosClient();
+  const history = useHistory();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flow && kratos) {
@@ -25,7 +33,6 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           setLoginFlow(flow);
         })
         .catch(e => {
-          debugger;
           console.log(e);
         });
     }
@@ -35,7 +42,28 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   return (
     <Container fluid={'sm'}>
-      <KratosUI flow={loginFlow} />
+      <Row className={'d-flex justify-content-center'}>
+        <Col sm={4}>
+          <Typography variant={'h3'} className={'mt-4 mb-4'}>
+            {t('pages.login.title')}
+          </Typography>
+          <KratosUI flow={loginFlow} />
+          <Delimiter />
+          <Typography variant={'h5'} className={'mb-2'}>
+            {t('pages.login.demo-provider.question')}
+          </Typography>
+          <Button
+            variant="primary"
+            type={'submit'}
+            small
+            block
+            onClick={() => history.push(AUTH_REGISTER_PATH)}
+            /*TODO disabled={disabled}*/
+          >
+            {t('authentication.sign-up')}
+          </Button>
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -1,8 +1,10 @@
 import { RegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
-import KratosUI from '../components/Authentication/KratosUI';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useKratosClient } from '../hooks/useKratosClient';
+import KratosUI from '../components/Authentication/KratosUI';
+import Typography from '../components/core/Typography';
 
 interface RegisterPageProps {
   flow: string;
@@ -11,6 +13,8 @@ interface RegisterPageProps {
 export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
   const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();
   const kratos = useKratosClient();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flow && kratos) {
@@ -25,7 +29,14 @@ export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <Container fluid={'sm'}>
-      <KratosUI flow={registrationFlow} />
+      <Row className={'d-flex justify-content-center'}>
+        <Col sm={4}>
+          <Typography variant={'h3'} className={'mt-4 mb-4'}>
+            {t('pages.register.header')}
+          </Typography>
+          <KratosUI flow={registrationFlow} />
+        </Col>
+      </Row>
     </Container>
   );
 };

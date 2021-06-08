@@ -53,3 +53,26 @@ export const getNodeTitle = ({ attributes, meta }: UiNode): string => {
 
   return '';
 };
+
+export const guessVariant = ({ attributes }: UiNode) => {
+  if (!isUiNodeInputAttributes(attributes)) {
+    return 'text';
+  }
+
+  if (attributes.name === 'identifier') {
+    return 'username';
+  }
+
+  switch (attributes.type) {
+    case 'hidden':
+      return null;
+    case 'email':
+      return 'email';
+    case 'submit':
+      return null;
+    case 'password':
+      return 'password';
+    default:
+      return 'text';
+  }
+};
