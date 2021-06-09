@@ -11,6 +11,7 @@ import { useUserScope } from '../hooks/useSentry';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useUserContext } from '../hooks/useUserContext';
 import { UserMetadata } from '../hooks/useUserMetadataWrapper';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../models/Constants';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
 import Icon from './core/Icon';
@@ -82,7 +83,7 @@ const App = ({ children }): React.ReactElement => {
                 {!isAuthenticated && (
                   <Button
                     as={Link}
-                    to={'/auth/login'}
+                    to={AUTH_LOGIN_PATH}
                     text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
                     small
@@ -91,7 +92,7 @@ const App = ({ children }): React.ReactElement => {
                 {!isAuthenticated && (
                   <Button
                     as={Link}
-                    to={'/auth/registration'}
+                    to={AUTH_REGISTER_PATH}
                     text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
                     small

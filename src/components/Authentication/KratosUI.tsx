@@ -1,37 +1,50 @@
-import {
-  LoginFlow,
-  RegistrationFlow,
-  SettingsFlow,
-  SubmitSelfServiceLoginFlow,
-  SubmitSelfServiceRegistrationFlow,
-  SubmitSelfServiceSettingsFlow,
-  UiNode,
-  UiNodeInputAttributes,
-  UiText,
-} from '@ory/kratos-client';
-import React, { FC, useState } from 'react';
-import { Alert, Col, Form, Row } from 'react-bootstrap';
+import { LoginFlow, RegistrationFlow, SettingsFlow, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
+import React, { FC, useMemo, useState } from 'react';
+import { Alert, Form, InputGroup } from 'react-bootstrap';
+import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
+import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
+import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
 import Button from '../core/Button';
-import { getNodeName, getNodeTitle, getNodeValue } from './Kratos/helpers';
+import Delimiter from '../core/Delimiter';
+import { Required } from '../Required';
+import Icon from '../core/Icon';
+import IconButton from '../core/IconButton';
 
-type FormType = SubmitSelfServiceSettingsFlow | SubmitSelfServiceLoginFlow | SubmitSelfServiceRegistrationFlow;
 interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow;
 }
 
+interface KratosProps {
+  node: UiNode;
+}
+
+interface KratosInputExtraProps {
+  autoComplete?: string;
+  autoCapitalize?: string;
+  autoCorrect?: string;
+}
+
 const toAlertVariant = (type: string) => {
-  switch (type) {
-    case 'error':
-      return 'danger';
-    default:
-      return 'primary';
+  if (type === 'error') {
+    return 'danger';
+  } else {
+    return 'primary';
   }
 };
 
-interface KratosProps {
-  node: UiNode;
-  // value?: string;
-}
+const isInvalid = (node: UiNode) =>
+  !!(node && Array.isArray(node.messages) && node.messages.find(x => x.type === 'error'));
+
+const getFeedbackElements = (node: UiNode) =>
+  isInvalid(node)
+    ? node.messages.map((x, key) => (
+        <Form.Control.Feedback type="invalid" key={key}>
+          {x.text}
+        </Form.Control.Feedback>
+      ))
+    : null;
+
+type KratosInputProps = KratosProps & KratosInputExtraProps;
 
 const KratosHidden: FC<KratosProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
@@ -55,42 +68,75 @@ const KratosButton: FC<KratosProps> = ({ node }) => {
   );
 };
 
-const KratosInput: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  const [state, setState] = useState(getNodeValue(node));
+const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
+  const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
+  const [value, setValue] = useState(getNodeValue(node));
+  const [inputType, setInputType] = useState(attributes.type);
+  const isPassword = useMemo(() => attributes.type === 'password', [attributes]);
+
+  const invalid = isInvalid(node);
+  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
+
   return (
     <Form.Group>
       <Form.Label>
         {getNodeTitle(node)}
-        {attributes.required && <span style={{ color: '#d93636' }}>{' *'}</span>}
+        {attributes.required && <Required />}
       </Form.Label>
-      <Form.Control
-        type={attributes.type}
-        value={state ? String(state) : ''}
-        name={getNodeName(node)}
-        onChange={e => setState(e.target.value)}
-        required={attributes.required}
-        disabled={attributes.disabled}
-      />
-      <KratosMessages messages={node?.messages} />
+      <InputGroup>
+        <Form.Control
+          type={inputType}
+          value={value ? String(value) : ''}
+          name={getNodeName(node)}
+          onChange={e => setValue(e.target.value)}
+          required={attributes.required}
+          disabled={attributes.disabled}
+          isInvalid={invalid}
+          autoComplete={autoComplete}
+          autoCorrect={autoCorrect}
+          autoCapitalize={autoCapitalize}
+          /*aria-labelledby={} TODO */
+        />
+        {isPassword && (
+          <InputGroup.Append>
+            <InputGroup.Text>
+              <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
+                <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
+              </IconButton>
+            </InputGroup.Text>
+          </InputGroup.Append>
+        )}
+        {feedbackElements}
+      </InputGroup>
     </Form.Group>
   );
 };
 
 const KratosCheckbox: FC<KratosProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
-  const [state, setState] = useState(getNodeValue(node));
+  const [state, setState] = useState(Boolean(getNodeValue(node)));
+
+  const invalid = isInvalid(node);
+
+  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
+
   return (
     <Form.Group controlId={node.group}>
-      <Form.Check
-        type={'checkbox'}
-        label={getNodeTitle(node)}
-        value={state ? String(state) : ''}
-        onChange={e => setState(e.target.value)}
-        required={attributes.required}
-        disabled={attributes.disabled}
-      />
-      <KratosMessages messages={node?.messages} />
+      <Form.Check name={getNodeName(node)} type="checkbox">
+        <Form.Check.Input
+          type="checkbox"
+          name={getNodeName(node)}
+          checked={state}
+          onChange={() => setState(oldState => !oldState)}
+          isInvalid={invalid}
+          value={String(state)}
+        />
+        <Form.Check.Label>
+          {getNodeTitle(node)}
+          {attributes.required && <Required />}
+        </Form.Check.Label>
+        {feedbackElements}
+      </Form.Check>
     </Form.Group>
   );
 };
@@ -108,50 +154,78 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
 };
 
 const toUiControl = (node: UiNode, key: number) => {
-  switch (node.type) {
-    case 'input':
-      const attributes = node.attributes as UiNodeInputAttributes;
-      switch (attributes.type) {
-        case 'hidden':
-          return <KratosHidden key={key} node={node} />; // value={value} />;
-        case 'submit':
-          return <KratosButton key={key} node={node} />; //value={value} />;
-        case 'checkbox':
-          return <KratosCheckbox key={key} node={node} />; //value={value} />;
-        default:
-          return <KratosInput key={key} node={node} />; //value={value} />;
-      }
-    default:
-      return <KratosInput key={key} node={node} />; //value={value} />;
+  const attributes = node.attributes;
+  if (isUiNodeInputAttributes(attributes)) {
+    const variant = guessVariant(node);
+
+    const extraProps: KratosInputExtraProps = {
+      autoCapitalize: 'off',
+      autoCorrect: 'off',
+    };
+
+    switch (variant) {
+      case 'email':
+      case 'username':
+        extraProps.autoComplete = 'username';
+        break;
+      case 'password':
+        extraProps.autoComplete = 'password';
+        break;
+    }
+
+    switch (attributes.type) {
+      case 'hidden':
+        return <KratosHidden key={key} node={node} />;
+      case 'submit':
+        return <KratosButton key={key} node={node} />;
+      case 'checkbox':
+        return <KratosCheckbox key={key} node={node} />;
+      default:
+        return <KratosInput key={key} node={node} {...extraProps} />;
+    }
+  } else {
+    return <KratosInput key={key} node={node} />;
   }
 };
 
 export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
-  const nodes = flow?.ui.nodes || [];
-  const initialState: Partial<FormType> = {};
+  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[] };
 
-  nodes.forEach((node: UiNode) => {
-    const name = getNodeName(node);
-    const value = getNodeValue(node);
+  const nodesByGroup = useMemo(() => {
+    if (!flow) return;
 
-    const key = name as keyof FormType;
-    initialState[key] = value || ('' as any);
-  });
+    return flow.ui.nodes.reduce(
+      (acc, node) => {
+        switch (node.group) {
+          case 'default':
+            return { ...acc, default: [...acc.default, node] };
+          case 'oidc':
+            return { ...acc, oidc: [...acc.oidc, node] };
+          case 'password':
+            return { ...acc, password: [...acc.password, node] };
+          default:
+            console.warn(`Unknown node group ${node.group}`);
+            return acc;
+        }
+      },
+      { default: [], oidc: [], password: [] } as NodeGroups
+    );
+  }, [flow]);
 
-  console.log(initialState);
+  if (!nodesByGroup || !flow) return null;
 
-  if (!flow) return null;
   const ui = flow.ui;
 
   return (
-    <Row className={'d-flex justify-content-center'}>
-      <Col sm={4}>
-        <KratosMessages messages={ui.messages} />
-        <Form action={ui.action} method={ui.method} noValidate>
-          {ui.nodes.map((n, i) => toUiControl(n, i))}
-        </Form>
-      </Col>
-    </Row>
+    <div>
+      <KratosMessages messages={ui.messages} />
+      <Form action={ui.action} method={ui.method} noValidate>
+        {nodesByGroup.default.map(toUiControl)}
+        {nodesByGroup.oidc.map(toUiControl)}
+        <Delimiter>or</Delimiter>
+        {nodesByGroup.password.map(toUiControl)}
+      </Form>
+    </div>
   );
 };
 export default KratosUI;
