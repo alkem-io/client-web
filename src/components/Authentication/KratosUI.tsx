@@ -35,6 +35,15 @@ const toAlertVariant = (type: string) => {
 const isInvalid = (node: UiNode) =>
   !!(node && Array.isArray(node.messages) && node.messages.find(x => x.type === 'error'));
 
+const getFeedbackElements = (node: UiNode) =>
+  isInvalid(node)
+    ? node.messages.map((x, key) => (
+        <Form.Control.Feedback type="invalid" key={key}>
+          {x.text}
+        </Form.Control.Feedback>
+      ))
+    : null;
+
 type KratosInputProps = KratosProps & KratosInputExtraProps;
 
 const KratosHidden: FC<KratosProps> = ({ node }) => {
@@ -66,17 +75,7 @@ const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, 
   const isPassword = useMemo(() => attributes.type === 'password', [attributes]);
 
   const invalid = isInvalid(node);
-  const feedbackElements = useMemo(
-    () =>
-      invalid
-        ? node.messages.map((x, key) => (
-            <Form.Control.Feedback type="invalid" key={key}>
-              {x.text}
-            </Form.Control.Feedback>
-          ))
-        : null,
-    [node]
-  );
+  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
 
   return (
     <Form.Group>
@@ -119,17 +118,7 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
 
   const invalid = isInvalid(node);
 
-  const feedbackElements = useMemo(
-    () =>
-      invalid
-        ? node.messages.map((x, key) => (
-            <Form.Control.Feedback type="invalid" key={key}>
-              {x.text}
-            </Form.Control.Feedback>
-          ))
-        : null,
-    [node]
-  );
+  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
 
   return (
     <Form.Group controlId={node.group}>
