@@ -140,6 +140,7 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
           checked={state}
           onChange={() => setState(oldState => !oldState)}
           isInvalid={invalid}
+          value={String(state)}
         />
         <Form.Check.Label>
           {getNodeTitle(node)}
