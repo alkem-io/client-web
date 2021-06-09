@@ -52,14 +52,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.login.demo-provider.question')}
           </Typography>
-          <Button
-            variant="primary"
-            type={'submit'}
-            small
-            block
-            onClick={() => history.push(AUTH_REGISTER_PATH)}
-            /*TODO disabled={disabled}*/
-          >
+          <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_REGISTER_PATH)}>
             {t('authentication.sign-up')}
           </Button>
         </Col>
