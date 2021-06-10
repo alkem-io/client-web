@@ -63,9 +63,10 @@ export const Ecoverses: FC = () => {
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
 
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+    variables: { ecoverseId },
     errorPolicy: 'all',
   });
 
