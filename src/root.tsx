@@ -19,9 +19,7 @@ import { Error as ErrorPage } from './pages/Error';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
 
-const graphQLEndpoint =
-  (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
-  (process.env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
+const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
 sentryBootstrap();
 
