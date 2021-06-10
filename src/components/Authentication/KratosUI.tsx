@@ -222,7 +222,7 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
       <Form action={ui.action} method={ui.method} noValidate>
         {nodesByGroup.default.map(toUiControl)}
         {nodesByGroup.oidc.map(toUiControl)}
-        <Delimiter>or</Delimiter>
+        {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
         {nodesByGroup.password.map(toUiControl)}
       </Form>
     </div>
