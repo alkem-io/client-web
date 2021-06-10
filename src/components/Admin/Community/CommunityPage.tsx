@@ -20,7 +20,7 @@ export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [
   return (
     <Container>
       <EditCredentials
-        credential={AuthorizationCredentialBackEnd.CommunityMember}
+        credential={AuthorizationCredentialBackEnd.UserGroupMember}
         resourceId={community?.id}
         parentMembers={parentMembers}
       />

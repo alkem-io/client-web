@@ -1,5 +1,5 @@
-query ecoverseInfo {
-  ecoverse {
+query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     nameID
     displayName

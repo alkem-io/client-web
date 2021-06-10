@@ -32,27 +32,59 @@
           "name": "Global Admin",
           "order": 0
         },
-        "global-admin-community": {
+        "GlobalAdmin": {
           "name": "Global Community Admin",
           "order": 1
         },
-        "global-admin-challenges": {
+        "GlobalAdminChallenges": {
           "name": "Global Challenges Admin",
           "order": 2
         },
-        "global-registered": {
+        "GlobalAdminCommunity": {
+          "name": "Global Admin Community",
+          "order": -1
+        },
+        "GlobalRegistered": {
           "name": "Registered",
+          "order": 999
+        },
+        "EcoverseAdmin": {
+          "name": "Ecoverse Admin",
+          "order": 999
+        },
+        "EcoverseMember": {
+          "name": "Ecoverse Member",
+          "order": 999
+        },
+        "ChallengeAdmin": {
+          "name": "Challenge Admin",
+          "order": 999
+        },
+        "ChallengeMember": {
+          "name": "Challenge Member",
+          "order": 999
+        },
+        "OpportunityMember": {
+          "name": "Opportunity Member",
+          "order": 999
+        },
+        "OrganisationAdmin": {
+          "name": "Organisation Admin",
+          "order": 999
+        },
+        "OrganisationMember": {
+          "name": "Organisation Member",
+          "order": 5
+        },
+        "UserSelfManagement": {
+          "name": "User Sel fManagement",
           "order": 999
         },
         "community-member": {
           "name": "Community Member",
           "order": 4
         },
-        "organisation-member": {
-          "name": "Organisation Member",
-          "order": 5
-        },
-        "user-group-member": {
+        "UserGroupMember": {
           "name": "User Group Member",
           "order": 6
         }

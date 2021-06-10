@@ -45,7 +45,12 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const history = useHistory();
-  const { data, loading } = useGroupQuery({ variables: { id: groupId } });
+  const { data, loading } = useGroupQuery({
+    variables: {
+      ecoverseId: '1',
+      groupId: groupId,
+    },
+  });
   const { data: membersData } = useUsersWithCredentialsQuery({
     variables: {
       input: {
@@ -88,7 +93,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
       await createReference({
         variables: {
           input: {
-            parentID: profileId,
+            profileID: profileId,
             name: ref.name,
             description: ref.description,
             uri: ref.uri,
@@ -103,7 +108,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
           input: {
             name: tagset.name,
             tags: [...tagset.tags],
-            parentID: profileId,
+            profileID: profileId,
           },
         },
       });

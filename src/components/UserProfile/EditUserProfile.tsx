@@ -68,17 +68,19 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
       await deleteReference({ variables: { input: { ID: ref.id } } });
     }
 
-    for (const ref of toAdd) {
-      await createReference({
-        variables: {
-          input: {
-            parentID: profileId,
-            name: ref.name,
-            description: ref.description,
-            uri: ref.uri,
+    if (profileId) {
+      for (const ref of toAdd) {
+        await createReference({
+          variables: {
+            input: {
+              profileID: profileId,
+              name: ref.name,
+              description: ref.description,
+              uri: ref.uri,
+            },
           },
-        },
-      });
+        });
+      }
     }
 
     for (const tagset of tagsetsToAdd) {
@@ -87,7 +89,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
           input: {
             name: tagset.name,
             tags: [...tagset.tags],
-            parentID: profileId,
+            profileID: profileId,
           },
         },
       });

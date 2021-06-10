@@ -10,6 +10,7 @@ import {
   useEcoverseCommunityQuery,
   useOpportunitiesQuery,
 } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
@@ -18,7 +19,8 @@ import { OpportunitiesRoutes } from './opportunity';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { data: challengesListQuery } = useChallengesWithCommunityQuery();
+  const { ecoverseId } = useEcoverse();
+  const { data: challengesListQuery } = useChallengesWithCommunityQuery({ variables: { ecoverseId } });
 
   const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
     id: c.id,
@@ -56,9 +58,10 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
+  const { ecoverseId } = useEcoverse();
 
-  const { data } = useChallengeCommunityQuery({ variables: { id: challengeId } });
-  const { data: ecoverseCommunity } = useEcoverseCommunityQuery();
+  const { data } = useChallengeCommunityQuery({ variables: { ecoverseId, challengeId } });
+  const { data: ecoverseCommunity } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: data?.ecoverse?.challenge?.displayName || '', real: true }],
@@ -90,8 +93,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
+  const { ecoverseId } = useEcoverse();
 
-  const { data } = useOpportunitiesQuery({ variables: { id: challengeId } });
+  const { data } = useOpportunitiesQuery({ variables: { ecoverseId, challengeId } });
 
   const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
     id: o.id,

@@ -57,7 +57,7 @@ export const useUserMetadataWrapper = () => {
           Boolean(
             user?.agent?.credentials?.findIndex(
               c =>
-                resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.CommunityMember &&
+                resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.UserGroupMember &&
                 c.resourceID === id
             ) !== -1
           ),

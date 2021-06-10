@@ -16,7 +16,8 @@ interface GroupRouteParams {
 export const GroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
   const { groupId } = useParams<GroupRouteParams>();
-  const { data, loading } = useGroupQuery({ variables: { id: groupId } });
+  const { ecoverseId } = useEcoverse();
+  const { data, loading } = useGroupQuery({ variables: { ecoverseId, groupId } });
   const groupName = data?.ecoverse.group.name || '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, data]);
 
@@ -36,3 +37,6 @@ export const GroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
     </Switch>
   );
 };
+function useEcoverse(): { ecoverseId: any } {
+  throw new Error('Function not implemented.');
+}

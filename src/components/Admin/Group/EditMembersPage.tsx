@@ -20,7 +20,7 @@ interface EditMembersPageProps extends PageProps, WithCommunity {
 
 export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers = [] }) => {
   const { groupId } = useParams<Parameters>();
-  const { data, loading } = useGroupQuery({ variables: { id: groupId } });
+  const { data, loading } = useGroupQuery({ variables: { ecoverseId: '1', groupId: groupId } });
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'members', real: false }], [paths, data]);
   useUpdateNavigation({ currentPaths });
 

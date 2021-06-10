@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
+import { EcoverseProvider } from '../context/EcoverseProvider';
 import {
   useChallengeProfileQuery,
   useChallengesQuery,
@@ -10,6 +11,7 @@ import {
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
+import { useEcoversesContext } from '../hooks/useEcoversesContext';
 import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
@@ -34,7 +36,7 @@ const adminGroups = ['admin'];
 
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
-  const { ecoverse, loading } = useEcoverse();
+  const { ecoverses, loading } = useEcoversesContext();
   const { path, url } = useRouteMatch();
 
   if (loading) {
@@ -44,10 +46,12 @@ export const Ecoverses: FC = () => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <Redirect to={`${url}${ecoverse?.ecoverse.nameID}`} />
+        <Redirect to={`${url}/${ecoverses && ecoverses[0].nameID}`} />
       </Route>
-      <Route path={`${path}:ecoverseId`} name={'Ecoverse'}>
-        <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+      <Route path={`${path}/:ecoverseId`} name={'Ecoverse'}>
+        <EcoverseProvider>
+          <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+        </EcoverseProvider>
       </Route>
       <Route path="*" name={'404'}>
         <FourOuFour />
@@ -58,12 +62,11 @@ export const Ecoverses: FC = () => {
 
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  // const { ecoverseId: nameID } = useParams<{ ecoverseId: string }>();
-  // at some point the ecoverse needs to be queried
 
-  const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
 
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+    variables: { ecoverseId },
     errorPolicy: 'all',
   });
 
@@ -113,16 +116,23 @@ interface ChallengeRootProps extends PageProps {
 }
 
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
+  const { ecoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
+  const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
-    variables: { id: target },
+    variables: {
+      ecoverseId,
+      challengeId,
+    },
     errorPolicy: 'all',
   });
   const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
-    variables: { id: target },
+    variables: {
+      ecoverseId,
+      challengeId,
+    },
     errorPolicy: 'all',
   });
   const challenge = query?.ecoverse.challenge;
@@ -172,15 +182,16 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { user } = useUserContext();
-  const target = opportunities.find(x => x.nameID === id)?.id || '';
+  const { ecoverseId } = useEcoverse();
+  const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
-    variables: { id: target },
+    variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
-    variables: { id: target },
+    variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',
   });
 

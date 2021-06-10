@@ -5,6 +5,7 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import Loading from '../../components/core/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
 import { ChallengeOpportunities } from './challenge';
@@ -36,10 +37,13 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
 export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { opportunityId, challengeId } = useParams<AdminParameters>();
+  const { ecoverseId } = useEcoverse();
 
-  const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({ variables: { id: opportunityId } });
+  const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({
+    variables: { ecoverseId, opportunityId },
+  });
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
-    variables: { id: challengeId },
+    variables: { ecoverseId, challengeId },
   });
 
   const currentPaths = useMemo(

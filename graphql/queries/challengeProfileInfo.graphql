@@ -1,7 +1,7 @@
-query challengeProfileInfo($id: UUID_NAMEID!) {
-  ecoverse {
+query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    challenge(ID: $id) {
+    challenge(ID: $challengeId) {
       id
       nameID
       displayName

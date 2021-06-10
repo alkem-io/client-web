@@ -80,8 +80,15 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   });
 
   useEffect(() => {
-    if (mode === ProfileSubmitMode.updateChallenge) getChallengeProfileInfo({ variables: { id: challengeId } });
-    if (mode === ProfileSubmitMode.updateOpportunity) getOpportunityProfileInfo({ variables: { id: opportunityId } });
+    if (mode === ProfileSubmitMode.updateChallenge)
+      getChallengeProfileInfo({
+        variables: {
+          ecoverseId,
+          challengeId,
+        },
+      });
+    if (mode === ProfileSubmitMode.updateOpportunity)
+      getOpportunityProfileInfo({ variables: { ecoverseId, opportunityId } });
   }, []);
 
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
@@ -120,7 +127,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         await addReference({
           variables: {
             input: {
-              parentID: contextId,
+              contextID: contextId,
               name: ref.name,
               description: ref.description,
               uri: ref.uri,
