@@ -11,7 +11,7 @@ export const useUserMetadata = (id: string) => {
     variables: { input: { userID: id } },
     errorPolicy: 'all',
     onError: () => {
-      //No Op
+      // because reset store can crash - error needs to be consumed
     },
   });
   const loading = loadingData || loadingMembership;

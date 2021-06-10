@@ -10,6 +10,7 @@ import {
   useUpdateAspectMutation,
 } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { Aspect } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
@@ -47,6 +48,7 @@ const useContextEditStyles = createStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
   const styles = useContextEditStyles();
+  const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
   const { data: opportunity, loading: loadingOpportunity } = useOpportunityProfileQuery({
     variables: { id: opportunityId },
@@ -74,14 +76,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
 
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });

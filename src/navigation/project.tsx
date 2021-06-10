@@ -3,8 +3,8 @@ import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-route
 import Loading from '../components/core/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
-import { pushError } from '../reducers/error/actions';
 import { Project as ProjectType } from '../types/graphql-schema';
+import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 
@@ -33,15 +33,14 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
 const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const { url } = useRouteMatch();
   const history = useHistory();
+  const handleError = useApolloErrorHandler();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: project }) => {
       history.push(`${paths[paths.length - 1].value}/projects/${project.nameID}`);
     },
-    onError: ({ message }) => {
-      pushError(new Error(message));
-    },
+    onError: handleError,
     refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
     awaitRefetchQueries: true,
   });

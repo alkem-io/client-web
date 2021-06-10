@@ -60,7 +60,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
 
   useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({
-    onError: useApolloErrorHandler(),
+    onError: handleError,
     onCompleted: data => notify(`Group ${data.updateUserGroup.name} has been update!`, 'success'),
   });
 

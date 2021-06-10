@@ -3,8 +3,9 @@ import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
-import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
 import Loading from '../core/Loading';
+import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 
 interface P {
   onHide: () => void;
@@ -15,9 +16,10 @@ interface P {
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
+  const handleError = useApolloErrorHandler();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
-    onError: error => console.log(error),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
