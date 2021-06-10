@@ -19,12 +19,12 @@ interface P {
 }
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
+  const { ecoverseId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { ecoverseId, id: opportunityId } }],
     awaitRefetchQueries: true,
   });
-  const { ecoverseId } = useEcoverse();
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
   const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({

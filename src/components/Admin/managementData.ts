@@ -1,6 +1,13 @@
 export const managementData = {
   adminLvl: [
     {
+      name: 'Ecoverses',
+      buttons: [
+        { description: 'Manage', url: '/ecoverses' },
+        { description: 'New', url: '/ecoverses/new' },
+      ],
+    },
+    {
       name: 'Authorization',
       buttons: [
         { description: 'Global admins', url: '/authorization/global-admin' },
@@ -12,12 +19,17 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/users' }],
     },
     {
-      name: 'Ecoverse community',
+      name: 'Organizations',
       buttons: [
-        { description: 'Members', url: '/community/members' },
-        { description: 'Groups', url: '/community/groups' },
-        { description: 'Applications', url: '/community/applications' },
+        { description: 'Manage', url: '/organizations' },
+        { description: 'New', url: '/organizations/new' },
       ],
+    },
+  ],
+  ecoverseLvl: [
+    {
+      name: 'Ecoverse info',
+      buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
       name: 'Challenges',
@@ -27,10 +39,11 @@ export const managementData = {
       ],
     },
     {
-      name: 'Organizations',
+      name: 'Community',
       buttons: [
-        { description: 'Manage', url: '/organizations' },
-        { description: 'New', url: '/organizations/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+        { description: 'Applications', url: '/community/applications' },
       ],
     },
   ],

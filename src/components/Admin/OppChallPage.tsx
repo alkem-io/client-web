@@ -55,13 +55,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
 
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
-    refetchQueries: [{ query: ChallengesWithCommunityDocument }],
+    refetchQueries: [{ query: ChallengesWithCommunityDocument, variables: { ecoverseId } }],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
-    refetchQueries: [{ query: OpportunitiesDocument, variables: { id: challengeId } }],
+    refetchQueries: [{ query: OpportunitiesDocument, variables: { ecoverseId, challengeId } }],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
@@ -69,13 +69,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { id: challengeId } }],
+    refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { ecoverseId, challengeId } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { ecoverseId, opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -145,8 +145,8 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
 
     const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
 
-    const data = { name, nameID, context };
-    const updateData = { name, context: contextWithUpdatedRefs };
+    // const data = { displayName: name, nameID, context };
+    // const updateData = { displayName: name, context: contextWithUpdatedRefs };
 
     if (ProfileSubmitMode) {
       switch (mode) {
@@ -154,8 +154,10 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
           createChallenge({
             variables: {
               input: {
-                ...data,
-                parentID: toEcoverseId(ecoverseId), // TODO [ATS] Where is this coming from?
+                nameID,
+                context,
+                displayName: name,
+                parentID: toEcoverseId(ecoverseId),
               },
             },
           });
@@ -163,27 +165,21 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         case ProfileSubmitMode.updateChallenge:
           updateChallenge({
             variables: {
-              input: { ...updateData, ID: challengeId },
+              input: { nameID, context: contextWithUpdatedRefs, displayName: name, ID: challengeId },
             },
           });
           break;
         case ProfileSubmitMode.createOpportunity:
           createOpportunity({
             variables: {
-              input: {
-                ...data,
-                challengeID: challengeId,
-              },
+              input: { nameID, context, displayName: name, challengeID: challengeId },
             },
           });
           break;
         case ProfileSubmitMode.updateOpportunity:
           updateOpportunity({
             variables: {
-              opportunityData: {
-                ...updateData,
-                ID: opportunityId,
-              },
+              input: { nameID, context: contextWithUpdatedRefs, displayName: name, ID: opportunityId },
             },
           });
           break;

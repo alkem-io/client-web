@@ -12,6 +12,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface Props {
   show: boolean;
@@ -42,6 +43,7 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
 
@@ -63,7 +65,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { ecoverseId, id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 

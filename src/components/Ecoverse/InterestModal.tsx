@@ -6,6 +6,7 @@ import Typography from '../core/Typography';
 import Loading from '../core/Loading';
 import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface P {
   onHide: () => void;
@@ -14,13 +15,14 @@ interface P {
 }
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
   const handleError = useApolloErrorHandler();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: handleError,
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { ecoverseId, id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

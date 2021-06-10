@@ -17,9 +17,11 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation, response }) => {
+    console.log(response);
     let errors: Error[] = [];
     if (graphQLErrors) {
+      debugger;
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:
@@ -37,6 +39,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     }
 
     if (networkError) {
+      debugger;
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
       console.error(newMessage);
@@ -105,7 +108,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     console.log('Create apollo client!');
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
     });
   }, [dispatch]);

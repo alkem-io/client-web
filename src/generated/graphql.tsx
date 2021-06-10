@@ -1594,8 +1594,8 @@ export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateGroupMutationVariables
 >;
 export const UpdateOpportunityDocument = gql`
-  mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
-    updateOpportunity(opportunityData: $opportunityData) {
+  mutation updateOpportunity($input: UpdateOpportunityInput!) {
+    updateOpportunity(opportunityData: $input) {
       id
       displayName
     }
@@ -1619,7 +1619,7 @@ export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateOpportunityMutation, { data, loading, error }] = useUpdateOpportunityMutation({
  *   variables: {
- *      opportunityData: // value for 'opportunityData'
+ *      input: // value for 'input'
  *   },
  * });
  */

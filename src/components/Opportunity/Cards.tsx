@@ -28,6 +28,7 @@ import AspectEdit from './AspectEdit';
 import { replaceAll } from '../../utils/replaceAll';
 import { Spacer } from '../shared/Spacer';
 import { AuthorizationCredential } from '../../types/graphql-schema';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -68,6 +69,7 @@ interface RelationCardProps {
 }
 
 export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityID }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [showRemove, setShowRemove] = useState<boolean>(false);
@@ -82,7 +84,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
     },
     onCompleted: () => setShowRemove(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityID } }],
+    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { ecoverseId, id: opportunityID } }],
     awaitRefetchQueries: true,
   });
 
@@ -134,6 +136,7 @@ interface ActorCardProps {
 }
 
 export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
@@ -146,7 +149,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { ecoverseId, id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
@@ -268,6 +271,7 @@ interface AspectCardProps {
 }
 
 export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const handleError = useApolloErrorHandler();
@@ -275,7 +279,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { ecoverseId, id: opportunityId } }],
     awaitRefetchQueries: true,
   });
   const onRemove = () => removeAspect({ variables: { input: { ID: id } } });
