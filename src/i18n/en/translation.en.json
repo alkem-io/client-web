@@ -313,7 +313,7 @@
           "terms": "The terms of use and the privacy policy must be accepted."
         }
       },
-      "header": "Create an account on the <strong>{{ecoverseName}}</strong> ecoverse",
+      "header": "Create an account to start using Cherrytwist",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"

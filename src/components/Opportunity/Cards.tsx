@@ -14,6 +14,7 @@ import Icon from '../core/Icon';
 import Typography from '../core/Typography';
 import ActorEdit from './ActorEdit';
 import { useUserContext } from '../../hooks/useUserContext';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import RemoveModal from '../core/RemoveModal';
 import {
   OpportunityActorGroupsDocument,
@@ -68,6 +69,7 @@ interface RelationCardProps {
 
 export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityID }) => {
   const styles = useCardStyles();
+  const handleError = useApolloErrorHandler();
   const [showRemove, setShowRemove] = useState<boolean>(false);
   const { user } = useUserContext();
   const isAdmin =
@@ -79,7 +81,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
       input: { ID: id },
     },
     onCompleted: () => setShowRemove(false),
-    onError: e => console.error(e), // eslint-disable-line no-console
+    onError: handleError,
     refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityID } }],
     awaitRefetchQueries: true,
   });
@@ -133,6 +135,7 @@ interface ActorCardProps {
 
 export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
   const styles = useCardStyles();
+  const handleError = useApolloErrorHandler();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const { user } = useUserContext();
@@ -142,7 +145,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
 
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
-    onError: e => console.error(e), // eslint-disable-line no-console
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
@@ -267,10 +270,11 @@ interface AspectCardProps {
 export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId }) => {
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
+  const handleError = useApolloErrorHandler();
 
   const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });

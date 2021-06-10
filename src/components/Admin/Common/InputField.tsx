@@ -1,6 +1,7 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
 import { Form } from 'react-bootstrap';
+import { Required } from '../../Required';
 
 interface InputFieldProps {
   title: string;
@@ -33,7 +34,7 @@ export const InputField: FC<InputFieldProps> = ({
     <>
       <Form.Label>
         {title}
-        {required && <span style={{ color: '#d93636' }}>{' *'}</span>}
+        {required && <Required />}
       </Form.Label>
       <Form.Control
         name={name}

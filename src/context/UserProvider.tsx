@@ -45,7 +45,7 @@ const MembershipWrapper: FC<{ userId: string; children: (membership?: Membership
     variables: { input: { userID: userId } },
     errorPolicy: 'all',
     onError: () => {
-      //No Op
+      // because reset store can crash - error needs to be consumed
     },
   });
   if (loadingMembership) return <Loading text={'Loading membership'} />;

@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { Col } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 
-interface DelimeterProps {}
+interface DelimiterProps {}
 
-const useDelimeterStyle = createStyles(theme => ({
+const useDelimiterStyle = createStyles(theme => ({
   line: {
     borderTop: '1px solid',
     borderColor: '#d9dadc',
@@ -23,8 +23,8 @@ const useDelimeterStyle = createStyles(theme => ({
   },
 }));
 
-export const Delimeter: FC<DelimeterProps> = ({ children }) => {
-  const style = useDelimeterStyle();
+export const Delimiter: FC<DelimiterProps> = ({ children }) => {
+  const style = useDelimiterStyle();
 
   return (
     <Col className={'p-0'}>
@@ -32,4 +32,4 @@ export const Delimeter: FC<DelimeterProps> = ({ children }) => {
     </Col>
   );
 };
-export default Delimeter;
+export default Delimiter;
