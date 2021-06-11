@@ -3,10 +3,10 @@ import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
 import {
-  ChallengeProfileInfoDocument,
-  ChallengesWithCommunityDocument,
-  OpportunitiesDocument,
-  OpportunityProfileInfoDocument,
+  refetchChallengeProfileInfoQuery,
+  refetchChallengesWithCommunityQuery,
+  refetchOpportunitiesQuery,
+  refetchOpportunityProfileInfoQuery,
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
@@ -55,13 +55,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
 
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
-    refetchQueries: [{ query: ChallengesWithCommunityDocument, variables: { ecoverseId } }],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
-    refetchQueries: [{ query: OpportunitiesDocument, variables: { ecoverseId, challengeId } }],
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId })],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
@@ -69,13 +69,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [{ query: ChallengeProfileInfoDocument, variables: { ecoverseId, challengeId } }],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId })],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityProfileInfoDocument, variables: { ecoverseId, opportunityId } }],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

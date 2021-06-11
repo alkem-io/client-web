@@ -1504,6 +1504,16 @@ export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<
   'id' | 'nameID' | 'displayName'
 >;
 
+export type OrganizationProfileInfoFragment = { __typename?: 'Organisation' } & Pick<
+  Organisation,
+  'id' | 'nameID' | 'displayName'
+> & {
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+      };
+  };
+
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
   'id' | 'nameID' | 'displayName' | 'description'
@@ -1813,7 +1823,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
-  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
+  updateOrganisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type UpdateUserMutationVariables = Exact<{
@@ -2484,12 +2494,7 @@ export type OrganizationProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OrganizationProfileInfoQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'nameID' | 'displayName'> & {
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
-        };
-    };
+  organisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;

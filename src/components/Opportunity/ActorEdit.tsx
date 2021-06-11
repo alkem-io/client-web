@@ -3,24 +3,24 @@ import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import * as yup from 'yup';
 import {
-  OpportunityActorGroupsDocument,
+  refetchOpportunityActorGroupsQuery,
   useCreateActorMutation,
   useUpdateActorMutation,
 } from '../../generated/graphql';
-import { Actor } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useEcoverse } from '../../hooks/useEcoverse';
+import { createStyles } from '../../hooks/useTheme';
+import { Actor } from '../../types/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
-import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface Props {
   show: boolean;
   onHide: () => void;
   data?: Actor;
   id?: string;
-  opportunityId?: string | undefined;
-  actorGroupId?: string | undefined;
+  opportunityId: string;
+  actorGroupId?: string;
   isCreate?: boolean;
 }
 
@@ -65,7 +65,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { ecoverseId, id: opportunityId } }],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

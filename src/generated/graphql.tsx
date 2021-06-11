@@ -67,6 +67,28 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
+export const OrganizationProfileInfoFragmentDoc = gql`
+  fragment OrganizationProfileInfo on Organisation {
+    id
+    nameID
+    displayName
+    profile {
+      id
+      avatar
+      description
+      references {
+        id
+        name
+        uri
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+`;
 export const ProjectDetailsFragmentDoc = gql`
   fragment ProjectDetails on Project {
     id
@@ -1690,10 +1712,10 @@ export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($input: UpdateOrganisationInput!) {
     updateOrganisation(organisationData: $input) {
-      id
-      displayName
+      ...OrganizationProfileInfo
     }
   }
+  ${OrganizationProfileInfoFragmentDoc}
 `;
 export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOrganizationMutation,
@@ -4268,26 +4290,10 @@ export function refetchOrganizationNameQuery(variables?: SchemaTypes.Organizatio
 export const OrganizationProfileInfoDocument = gql`
   query organizationProfileInfo($id: UUID_NAMEID!) {
     organisation(ID: $id) {
-      id
-      nameID
-      displayName
-      profile {
-        id
-        avatar
-        description
-        references {
-          id
-          name
-          uri
-        }
-        tagsets {
-          id
-          name
-          tags
-        }
-      }
+      ...OrganizationProfileInfo
     }
   }
+  ${OrganizationProfileInfoFragmentDoc}
 `;
 
 /**

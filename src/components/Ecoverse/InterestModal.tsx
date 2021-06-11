@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react';
 import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
-import Button from '../core/Button';
-import TextInput, { TextArea } from '../core/TextInput';
-import Typography from '../core/Typography';
-import Loading from '../core/Loading';
-import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
+import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
+import Button from '../core/Button';
+import Loading from '../core/Loading';
+import TextInput, { TextArea } from '../core/TextInput';
+import Typography from '../core/Typography';
 
 interface P {
   onHide: () => void;
@@ -22,7 +22,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: handleError,
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { ecoverseId, id: opportunityId } }],
+    refetchQueries: [refetchOpportunityRelationsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import {
-  OrganizationProfileInfoDocument,
   useCreateOrganizationMutation,
   useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
@@ -53,8 +52,6 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     onCompleted: () => {
       notify('Organization updated successfully', 'success');
     },
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: OrganizationProfileInfoDocument, variables: { id: organization?.id } }],
   });
 
   const handleSubmit = async (editedOrganization: Organisation) => {

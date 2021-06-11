@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import {
-  ChallengeProfileDocument,
-  OpportunityProfileDocument,
+  refetchChallengeProfileQuery,
+  refetchOpportunityProfileQuery,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
@@ -36,13 +36,13 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: ChallengeProfileDocument, variables: { ecoverseId, challengeId: id } }],
+    refetchQueries: [refetchChallengeProfileQuery({ ecoverseId, challengeId: id })],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityProfileDocument, variables: { ecoverseId, opportunityId: id } }],
+    refetchQueries: [refetchOpportunityProfileQuery({ ecoverseId, opportunityId: id })],
     awaitRefetchQueries: true,
   });
 

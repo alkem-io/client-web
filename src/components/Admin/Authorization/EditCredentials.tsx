@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import {
+  refetchUsersWithCredentialsQuery,
   useGrantCredentialsMutation,
   useRevokeCredentialsMutation,
-  UsersWithCredentialsDocument,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
@@ -50,10 +50,9 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
         },
       },
       refetchQueries: [
-        {
-          query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
-        },
+        refetchUsersWithCredentialsQuery({
+          input: { type: toAuthenticationCredentials(credential), resourceID: resourceId },
+        }),
       ],
       awaitRefetchQueries: true,
     });
@@ -69,10 +68,9 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
         },
       },
       refetchQueries: [
-        {
-          query: UsersWithCredentialsDocument,
-          variables: { input: { type: toAuthenticationCredentials(credential), resourceID: resourceId } },
-        },
+        refetchUsersWithCredentialsQuery({
+          input: { type: toAuthenticationCredentials(credential), resourceID: resourceId },
+        }),
       ],
       awaitRefetchQueries: true,
     });
