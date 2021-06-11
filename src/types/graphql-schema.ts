@@ -161,6 +161,8 @@ export type Challenge = {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
   activity?: Maybe<Array<Nvp>>;
+  /** The Agent representing this Challenge. */
+  agent?: Maybe<Agent>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of child Challenges within this challenge. */
@@ -484,6 +486,8 @@ export type Ecoverse = {
   __typename?: 'Ecoverse';
   /** The activity within this Ecoverse. */
   activity?: Maybe<Array<Nvp>>;
+  /** The Agent representing this Ecoverse. */
+  agent?: Maybe<Agent>;
   /** All applications to join */
   application: Application;
   /** The authorization rules for the entity */
@@ -634,6 +638,8 @@ export type MembershipResultEntryOrganisation = {
 
 export type Metadata = {
   __typename?: 'Metadata';
+  /** Metrics about the activity on the platform */
+  activity: Array<Nvp>;
   /** Collection of metadata about Cherrytwist services. */
   services: Array<ServiceMetadata>;
 };
@@ -1023,6 +1029,8 @@ export type OpportunityTemplate = {
 export type Organisation = Groupable &
   Searchable & {
     __typename?: 'Organisation';
+    /** The Agent representing this User. */
+    agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
     authorization?: Maybe<Authorization>;
     /** The display name. */
@@ -2092,7 +2100,13 @@ export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
 
-export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'>;
+export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    context?: Maybe<
+      { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
+        }
+    >;
+  };
 
 export type GroupQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
