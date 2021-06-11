@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import {
@@ -11,7 +11,6 @@ import {
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
-import { useEcoversesContext } from '../hooks/useEcoversesContext';
 import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
@@ -36,21 +35,13 @@ const adminGroups = ['admin'];
 
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
-  const { ecoverses, loading } = useEcoversesContext();
-  const { path, url } = useRouteMatch();
-
-  if (loading) {
-    return <Loading text={'Loading ecoverses'} />;
-  }
+  const { path } = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={`${path}`}>
-        <Redirect to={`${url}/${ecoverses && ecoverses[0].nameID}`} />
-      </Route>
       <Route path={`${path}/:ecoverseId`} name={'Ecoverse'}>
         <EcoverseProvider>
-          <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+          <Ecoverse paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>
       </Route>
       <Route path="*" name={'404'}>
