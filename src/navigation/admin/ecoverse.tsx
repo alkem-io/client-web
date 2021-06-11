@@ -1,12 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ListPage } from '../../components/Admin';
+import EcoverseList from '../../components/Admin/Ecoverse/EcoverseList';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { searchableListItemMapper } from '../../components/Admin/SearchableList';
 import Loading from '../../components/core/Loading';
 import { EcoverseProvider } from '../../context/EcoverseProvider';
-import { useEcoverseCommunityQuery, useEcoversesQuery, useUsersQuery } from '../../generated/graphql';
+import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour, PageProps } from '../../pages';
@@ -24,15 +23,11 @@ export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'ecoverses', real: true }], []);
-  const { data, loading } = useEcoversesQuery();
-  const ecoverseList = useMemo(() => data?.ecoverses.map(searchableListItemMapper(url)), [data]);
-
-  if (loading) return <Loading text={'Loading ecoverses'} />;
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage paths={currentPaths} data={ecoverseList || []} newLink={`${url}/new`} />
+        <EcoverseList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
         <div> new ecoverse</div>

@@ -1679,6 +1679,14 @@ export type DeleteAspectMutation = { __typename?: 'Mutation' } & {
   deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
 };
 
+export type DeleteEcoverseMutationVariables = Exact<{
+  input: DeleteEcoverseInput;
+}>;
+
+export type DeleteEcoverseMutation = { __typename?: 'Mutation' } & {
+  deleteEcoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID'>;
+};
+
 export type DeleteGroupMutationVariables = Exact<{
   input: DeleteUserGroupInput;
 }>;

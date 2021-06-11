@@ -14,14 +14,14 @@ interface SearchableListProps {
   onDelete?: (item: SearchableListItem) => void;
 }
 
-export const searchableListItemMapper = (url: string) => (item: {
+export const searchableListItemMapper = (url: string, editSuffix?: string) => (item: {
   id: string;
   displayName: string;
   nameID?: string;
 }): SearchableListItem => ({
   id: item.id,
   value: item.displayName,
-  url: `${url}/${item.nameID ?? item.id}`,
+  url: `${url}/${item.nameID ?? item.id}${editSuffix ?? ''}`,
 });
 
 export interface SearchableListItem {

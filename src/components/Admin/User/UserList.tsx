@@ -20,7 +20,6 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
   const [deleteUser] = useDeleteUserMutation({
     refetchQueries: ['users'],
     awaitRefetchQueries: true,
-
     onError: handleError,
   });
 

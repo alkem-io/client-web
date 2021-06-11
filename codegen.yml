@@ -19,6 +19,7 @@ generates:
         UUID: string
         UUID_NAMEID: string
         UUID_NAMEID_EMAIL: string
+      strictScalars: true
   src/generated/graphql.tsx:
     preset: import-types
     presetConfig:
@@ -27,8 +28,5 @@ generates:
     plugins:
       - "typescript-react-apollo"
     config:
-      scalars:
-        Upload: File
-        TextID: string
       withHooks: true
-      maybeValue: T | undefined
+      withRefetchFn: true
