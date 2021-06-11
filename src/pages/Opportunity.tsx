@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ActivityCard from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
@@ -25,7 +25,7 @@ import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import { useOpportunityTemplateQuery } from '../generated/graphql';
+import { useOpportunityLifecycleQuery, useOpportunityTemplateQuery } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -67,6 +67,11 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
+interface Params {
+  opportunityId?: string;
+  ecoverseId?: string;
+}
+
 interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
@@ -103,6 +108,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
+  const { ecoverseId = '' } = useParams<Params>();
+
   const { displayName: name, projects = [], relations = [], context, community, id } = opportunity;
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
@@ -123,6 +130,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
+
+  const { data: opportunityLifecycleQuery } = useOpportunityLifecycleQuery({
+    variables: { ecoverseId, opportunityId: id },
+  });
 
   const projectRef = useRef<HTMLDivElement>(null);
 
@@ -187,6 +198,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         details={
           <ActivityCard
             title={'opportunity activity'}
+            lifecycle={opportunityLifecycleQuery?.ecoverse.opportunity.lifecycle}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             items={activitySummary as any}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}

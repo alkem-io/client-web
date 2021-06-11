@@ -9,10 +9,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A decentralized identifier (DID) as per the W3C standard. */
-  DID: string;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
@@ -57,16 +53,12 @@ export type ActorGroup = {
 
 export type Agent = {
   __typename?: 'Agent';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
   /** The Credentials held by this Agent. */
   credentials?: Maybe<Array<Credential>>;
   /** The Decentralized Identifier (DID) for this Agent. */
-  did?: Maybe<Scalars['DID']>;
+  did?: Maybe<Scalars['String']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The Verfied Credentials for this Agent. */
-  verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
 
 export type Application = {
@@ -149,7 +141,6 @@ export type Authorization = {
   credentialRules: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  verifiedCredentialRules: Scalars['String'];
 };
 
 export enum AuthorizationCredential {
@@ -263,8 +254,6 @@ export type Context = {
   tagline?: Maybe<Scalars['String']>;
   /** The goal that is being pursued */
   vision?: Maybe<Scalars['String']>;
-  /** The Visual assets for this Context. */
-  visual?: Maybe<Visual>;
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['String']>;
 };
@@ -314,8 +303,6 @@ export type CreateContextInput = {
   references?: Maybe<Array<CreateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
-  /** The Visual assets for the new Context. */
-  visual?: Maybe<CreateVisualInput>;
   who?: Maybe<Scalars['String']>;
 };
 
@@ -324,7 +311,7 @@ export type CreateEcoverseInput = {
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
   /** The host Organisation for the ecoverse */
-  hostID: Scalars['UUID_NAMEID'];
+  hostID?: Maybe<Scalars['UUID_NAMEID']>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -412,7 +399,6 @@ export type CreateTagsetOnProfileInput = {
 };
 
 export type CreateUserGroupInput = {
-  /** The name of the UserGroup. Minimum length 2. */
   name: Scalars['String'];
   parentID: Scalars['UUID'];
   profileData?: Maybe<CreateProfileInput>;
@@ -432,12 +418,6 @@ export type CreateUserInput = {
   nameID: Scalars['NameID'];
   phone?: Maybe<Scalars['String']>;
   profileData?: Maybe<CreateProfileInput>;
-};
-
-export type CreateVisualInput = {
-  avatar: Scalars['String'];
-  background?: Maybe<Scalars['String']>;
-  banner?: Maybe<Scalars['String']>;
 };
 
 export type Credential = {
@@ -592,13 +572,6 @@ export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
   resourceID?: Maybe<Scalars['UUID']>;
   type: AuthorizationCredential;
-  /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type GrantStateModificationVcInput = {
-  /** The challenge whose state can be udpated. */
-  challengeID: Scalars['UUID'];
   /** The user to whom the credential is being granted. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -761,8 +734,6 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Assigns the StateModification credential to a particular user for a particular challenge */
-  grantStateModificationVC: User;
   /** Remove an organisation as a lead for the Challenge. */
   removeChallengeLead: Challenge;
   /** Removes a User as a member of the specified Community. */
@@ -949,10 +920,6 @@ export type MutationEventOnProjectArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
-};
-
-export type MutationGrantStateModificationVcArgs = {
-  grantStateModificationVC: GrantStateModificationVcInput;
 };
 
 export type MutationRemoveChallengeLeadArgs = {
@@ -1371,8 +1338,6 @@ export type UpdateContextInput = {
   references?: Maybe<Array<UpdateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
-  /** Update the Visual assets for the new Context. */
-  visual?: Maybe<UpdateVisualInput>;
   who?: Maybe<Scalars['String']>;
 };
 
@@ -1467,12 +1432,6 @@ export type UpdateUserInput = {
   profileData?: Maybe<UpdateProfileInput>;
 };
 
-export type UpdateVisualInput = {
-  avatar?: Maybe<Scalars['String']>;
-  background?: Maybe<Scalars['String']>;
-  banner?: Maybe<Scalars['String']>;
-};
-
 export type UploadProfileAvatarInput = {
   file: Scalars['String'];
   profileID: Scalars['String'];
@@ -1536,30 +1495,6 @@ export type UsersWithAuthorizationCredentialInput = {
   resourceID?: Maybe<Scalars['UUID']>;
   /** The type of credential. */
   type: AuthorizationCredential;
-};
-
-export type VerifiedCredential = {
-  __typename?: 'VerifiedCredential';
-  /** JSON for the claim in the credential */
-  claim: Scalars['JSON'];
-  /** The time at which the credential was issued */
-  issued: Scalars['DateTime'];
-  /** The challenge issuing the VC */
-  issuer: Scalars['String'];
-  /** The type of VC */
-  type: Scalars['String'];
-};
-
-export type Visual = {
-  __typename?: 'Visual';
-  /** The avatar (logo) to be used. */
-  avatar: Scalars['String'];
-  /** The background image to be used, for example when displaying previews. */
-  background: Scalars['String'];
-  /** The banner to be shown at the top of the page. */
-  banner: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
 };
 
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'> & {
@@ -2030,6 +1965,19 @@ export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeLifecycleQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeLifecycleQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
+      };
+    };
+};
+
 export type ChallengeMembersQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeID: Scalars['UUID_NAMEID'];
@@ -2415,6 +2363,19 @@ export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
             groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
           }
         >;
+      };
+    };
+};
+
+export type OpportunityLifecycleQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityLifecycleQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & {
+        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
       };
     };
 };
