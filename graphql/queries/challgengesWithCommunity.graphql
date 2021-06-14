@@ -1,12 +1,12 @@
-query challengesWithCommunity {
-  ecoverse {
+query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     challenges {
       id
-      name
+      displayName
       community {
         id
-        name
+        displayName
       }
     }
   }

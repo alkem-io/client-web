@@ -1,42 +1,24 @@
-import React, { FC } from 'react';
-import { useAuthentication, UseAuthenticationResult } from '../hooks';
+import React, { FC, useMemo } from 'react';
+import { useWhoami } from '../hooks/useWhoami';
 
-export interface AuthContext extends UseAuthenticationResult {
+export interface AuthContext {
   loading: boolean;
+  isAuthenticated: boolean;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
   loading: true,
-  signIn: () => Promise.resolve(undefined),
-  signOut: () => Promise.resolve(undefined),
-  acquireToken: () => Promise.resolve(undefined),
-  refreshToken: () => Promise.resolve(undefined),
-  getAccounts: () => {
-    console.error('Context not initialized');
-    return [];
-  },
+  isAuthenticated: false,
 });
 
 const AuthenticationProvider: FC = ({ children }) => {
-  const {
-    signIn,
-    signOut,
-    acquireToken,
-    refreshToken,
-    getAccounts,
-    loading: authenticationLoading,
-  } = useAuthentication();
-
-  const loading = authenticationLoading;
+  const { data, loading } = useWhoami();
+  const isAuthenticated = useMemo(() => !!data?.identity?.traits?.email, [data]);
 
   return (
     <AuthenticationContext.Provider
       value={{
-        signIn,
-        signOut,
-        acquireToken,
-        refreshToken,
-        getAccounts,
+        isAuthenticated,
         loading,
       }}
     >

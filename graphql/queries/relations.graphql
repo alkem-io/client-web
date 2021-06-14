@@ -1,7 +1,7 @@
-query relations($id: String!) {
-  ecoverse {
+query relations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
+    opportunity(ID: $opportunityId) {
       relations {
         id
         type

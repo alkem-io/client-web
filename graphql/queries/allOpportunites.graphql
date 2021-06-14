@@ -1,9 +1,9 @@
-query allOpportunities {
-  ecoverse {
+query allOpportunities($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     opportunities {
       id
-      textID
+      nameID
     }
   }
 }

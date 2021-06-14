@@ -33,7 +33,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, description, lifecycle, aspects } = project;
+  const { displayName: name, description, lifecycle, aspects } = project;
 
   return (
     <>

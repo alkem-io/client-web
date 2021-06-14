@@ -1,18 +1,12 @@
-query opportunityProfile($id: String!) {
-  ecoverse {
+query opportunityProfile($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
+    opportunity(ID: $opportunityId) {
       id
-      textID
-      name
+      nameID
+      displayName
       lifecycle {
         state
-      }
-      aspects {
-        id
-        title
-        framing
-        explanation
       }
       context {
         id
@@ -25,44 +19,54 @@ query opportunityProfile($id: String!) {
           id
           name
           uri
+          description
         }
-      }
-      community {
-        groups {
-          name
-          members {
+        aspects {
+          id
+          title
+          framing
+          explanation
+        }
+        ecosystemModel {
+          id
+          actorGroups {
+            id
             name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
           }
         }
       }
+      community {
+        members {
+          displayName
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+      projects {
+        ...ProjectDetails
+      }
       relations {
         id
+        type
         actorRole
         actorName
         actorType
         description
-        type
       }
-      actorGroups {
-        id
+
+      activity {
         name
-        description
-        actors {
-          id
-          name
-          description
-          value
-          impact
-        }
-      }
-      projects {
-        id
-        textID
-        name
-        description
-        lifecycle {
-          state
-        }
+        value
       }
     }
   }

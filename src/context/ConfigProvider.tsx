@@ -36,6 +36,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
         },
         {
           responseType: 'json',
+          withCredentials: true,
         }
       );
       if (result) {

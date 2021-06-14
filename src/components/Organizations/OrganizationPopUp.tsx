@@ -83,7 +83,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
 
   const { data, loading } = useOrganizationDetailsQuery({ variables: { id } });
   const profile = data?.organisation?.profile;
-  const name = data?.organisation?.name;
+  const name = data?.organisation?.displayName;
   const groups = data?.organisation?.groups;
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
 
@@ -168,7 +168,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                   {populated => (
                     <AvatarContainer className="d-flex" title={g.name}>
                       {shuffleCollection(populated).map((u, i) => (
-                        <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.name} />
+                        <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.displayName} />
                       ))}
                       {g.members && g.members?.length === 0 && (
                         <Typography className={styles.italic}>No members yet</Typography>

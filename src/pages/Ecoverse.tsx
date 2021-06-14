@@ -23,7 +23,7 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
 } from '../generated/graphql';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
@@ -59,13 +59,14 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
-  const user = useUserContext();
-  const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
+  const { displayName: name, context = {}, nameID: ecoverseId } = ecoverse.ecoverse;
 
-  const { data: _opportunities } = useAllOpportunitiesQuery();
-  const { data: _projects } = useProjectsQuery();
-  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery();
-  const { data: hostData } = useEcoverseHostReferencesQuery();
+  const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
+  const { data: hostData } = useEcoverseHostReferencesQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
@@ -75,7 +76,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { name, context = {} } = ecoverse.ecoverse;
   const { tagline, impact, vision, background, references } = context;
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
@@ -88,13 +88,13 @@ const EcoversePage: FC<EcoversePageProps> = ({
       projectsNestHistory
         ?.flatMap(c =>
           c?.opportunities?.map(x => ({
-            challenge: c.name,
-            url: `${paths[paths.length - 1].value}/challenges/${c.textID}/opportunities/${x.textID}`,
+            challenge: c.displayName,
+            url: `${paths[paths.length - 1].value}/challenges/${c.nameID}/opportunities/${x.nameID}`,
             ...x,
           }))
         )
         .flatMap(o =>
-          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.textID}`, ...p }))
+          o?.projects?.flatMap(p => ({ caption: o?.challenge, url: `${o?.url}/projects/${p.nameID}`, ...p }))
         ),
     [_projectsNestHistory]
   );
@@ -105,10 +105,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const ecoverseProjects = useMemo(
     () => [
       ...projects.map(p => {
-        const parentsData = projectsWithParentData?.find(ph => ph?.textID === p.textID);
+        const parentsData = projectsWithParentData?.find(ph => ph?.nameID === p.nameID);
 
         return {
-          title: p?.name || '',
+          title: p?.displayName || '',
           description: p?.description,
           caption: parentsData?.caption,
           tag: { status: 'positive', text: p?.lifecycle?.state || '' },
@@ -191,11 +191,11 @@ const EcoversePage: FC<EcoversePageProps> = ({
               {...(challenge as any)}
               context={{
                 ...challenge.context,
-                tag: user.user?.ofChallenge(challenge.id)
+                tag: user?.ofChallenge(challenge.id)
                   ? t('pages.ecoverse.cards.tags.you-are-in')
                   : (challenge.context as Record<string, any>)['tag'],
               }}
-              url={`${url}/challenges/${challenge.textID}`}
+              url={`${url}/challenges/${challenge.nameID}`}
             />
           ))}
         </CardContainer>

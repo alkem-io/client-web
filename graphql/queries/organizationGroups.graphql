@@ -1,8 +1,8 @@
-query organizationGroups($id: String!) {
-    organisation(ID: $id) {
-      groups {
-        id
-        name
-      }
+query organizationGroups($id: UUID_NAMEID!) {
+  organisation(ID: $id) {
+    groups {
+      id
+      name
     }
   }
+}

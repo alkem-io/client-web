@@ -1,8 +1,8 @@
 query serverMetadata {
-    metadata {
-      services {
-        name
-        version
-      }
+  metadata {
+    services {
+      name
+      version
     }
   }
+}

@@ -1,6 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { EcoverseContext } from '../context/EcoverseProvider';
 
 export const useEcoverse = () => {
-  return useContext(EcoverseContext);
+  const context = useContext(EcoverseContext);
+  return useMemo(
+    () => ({
+      ...context,
+    }),
+    [context]
+  );
 };

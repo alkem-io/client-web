@@ -1,7 +1,7 @@
 fragment ProjectDetails on Project {
   id
-  textID
-  name
+  nameID
+  displayName
   description
   lifecycle {
     state

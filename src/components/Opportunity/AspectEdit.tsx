@@ -5,13 +5,17 @@ import * as yup from 'yup';
 import {
   OpportunityActorGroupsDocument,
   useCreateAspectMutation,
+  useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { Aspect } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
+import Loading from '../core/Loading';
 import { TextArea } from '../core/TextInput';
 
 interface Props {
@@ -19,7 +23,7 @@ interface Props {
   onHide: () => void;
   data?: Aspect;
   id?: string;
-  opportunityId?: string | undefined;
+  opportunityId: string;
   actorGroupId?: string;
   isCreate?: boolean;
   existingAspectNames?: string[];
@@ -44,8 +48,14 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
+  const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
+  const { data: opportunity, loading: loadingOpportunity } = useOpportunityProfileQuery({
+    variables: { ecoverseId, opportunityId },
+  });
+  const contextId = opportunity?.ecoverse?.opportunity?.context?.id;
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const isCreate = !id;
 
@@ -68,25 +78,25 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
 
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = async (values: Aspect) => {
     const { id: apectId, ...rest } = values;
-    if (!apectId) {
+    if (!apectId && contextId) {
       await createAspect({
         variables: {
           input: {
-            parentID: Number(opportunityId),
+            parentID: contextId,
             ...rest,
           },
         },
@@ -106,6 +116,8 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   };
 
   let submitWired;
+
+  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
     <Modal show={show} onHide={onHide} centered size={'xl'}>

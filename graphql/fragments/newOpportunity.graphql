@@ -1,5 +1,5 @@
 fragment NewOpportunity on Opportunity {
   id
-  textID
-  name
+  nameID
+  displayName
 }

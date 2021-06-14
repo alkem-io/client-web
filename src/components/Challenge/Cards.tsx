@@ -10,7 +10,7 @@ interface OpportunityCardProps extends Opportunity {
   url: string;
 }
 
-export const OpportunityCard: FC<OpportunityCardProps> = ({ name, context, url, lifecycle }) => {
+export const OpportunityCard: FC<OpportunityCardProps> = ({ displayName: name, context, url, lifecycle }) => {
   const { references } = context || {};
   const visual = references?.find(x => x.name === 'poster');
 

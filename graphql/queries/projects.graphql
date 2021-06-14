@@ -1,10 +1,10 @@
-query projects {
-  ecoverse {
+query projects($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     projects {
       id
-      textID
-      name
+      nameID
+      displayName
       description
       lifecycle {
         state

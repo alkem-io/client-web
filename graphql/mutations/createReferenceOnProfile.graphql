@@ -1,4 +1,4 @@
-mutation createReferenceOnProfile($input: CreateReferenceInput!) {
+mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
   createReferenceOnProfile(referenceInput: $input) {
     id
     name

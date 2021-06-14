@@ -1,5 +1,5 @@
-query ecoverseHostReferences {
-  ecoverse {
+query ecoverseHostReferences($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     host {
       profile {

@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
+import { EcoverseProvider } from '../context/EcoverseProvider';
 import {
   useChallengeProfileQuery,
   useChallengesQuery,
@@ -10,6 +11,7 @@ import {
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
+import { useEcoversesContext } from '../hooks/useEcoversesContext';
 import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
@@ -20,6 +22,7 @@ import {
   PageProps,
 } from '../pages';
 import {
+  AuthorizationCredential,
   Challenge as ChallengeType,
   ChallengesQuery,
   Opportunity as OpportunityType,
@@ -33,7 +36,7 @@ const adminGroups = ['admin'];
 
 export const Ecoverses: FC = () => {
   useTransactionScope({ type: 'domain' });
-  const { ecoverse, loading } = useEcoverse();
+  const { ecoverses, loading } = useEcoversesContext();
   const { path, url } = useRouteMatch();
 
   if (loading) {
@@ -43,10 +46,12 @@ export const Ecoverses: FC = () => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <Redirect to={`${url}${ecoverse?.ecoverse.textID}`} />
+        <Redirect to={`${url}/${ecoverses && ecoverses[0].nameID}`} />
       </Route>
-      <Route path={`${path}:ecoverseId`} name={'Ecoverse'}>
-        <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+      <Route path={`${path}/:ecoverseId`} name={'Ecoverse'}>
+        <EcoverseProvider>
+          <Ecoverse paths={[{ value: url, name: 'ecoverses', real: false }]} />
+        </EcoverseProvider>
       </Route>
       <Route path="*" name={'404'}>
         <FourOuFour />
@@ -57,18 +62,17 @@ export const Ecoverses: FC = () => {
 
 const Ecoverse: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  // const { ecoverseId: textId } = useParams<{ ecoverseId: string }>();
-  // at some point the ecoverse needs to be queried
 
-  const { ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
 
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+    variables: { ecoverseId },
     errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
   const currentPaths = useMemo(
-    () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.name, real: true }] : paths),
+    () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.displayName, real: true }] : paths),
     [paths, ecoverseInfo]
   );
 
@@ -112,22 +116,29 @@ interface ChallengeRootProps extends PageProps {
 }
 
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
+  const { ecoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = challenges?.ecoverse.challenges?.find(x => x.textID === id)?.id || '';
+  const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
-    variables: { id: target },
+    variables: {
+      ecoverseId,
+      challengeId,
+    },
     errorPolicy: 'all',
   });
   const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
-    variables: { id: target },
+    variables: {
+      ecoverseId,
+      challengeId,
+    },
     errorPolicy: 'all',
   });
   const challenge = query?.ecoverse.challenge;
 
   const currentPaths = useMemo(
-    () => (challenge ? [...paths, { value: url, name: challenge.name, real: true }] : paths),
+    () => (challenge ? [...paths, { value: url, name: challenge.displayName, real: true }] : paths),
     [paths, id, challenge]
   );
 
@@ -163,7 +174,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 };
 
 interface OpportunityRootProps extends PageProps {
-  opportunities: Pick<OpportunityType, 'id' | 'textID'>[] | undefined;
+  opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
 }
 
 const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
@@ -171,15 +182,16 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { user } = useUserContext();
-  const target = opportunities.find(x => x.textID === id)?.id || '';
+  const { ecoverseId } = useEcoverse();
+  const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
-    variables: { id: target },
+    variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
-    variables: { id: target },
+    variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',
   });
 
@@ -189,7 +201,7 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
   const users = useMemo(() => members || [], [members]);
 
   const currentPaths = useMemo(
-    () => (opportunity ? [...paths, { value: url, name: opportunity.name, real: true }] : paths),
+    () => (opportunity ? [...paths, { value: url, name: opportunity.displayName, real: true }] : paths),
     [paths, id, opportunity]
   );
 
@@ -211,15 +223,15 @@ const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => 
           users={users as User[] | undefined}
           paths={currentPaths}
           onProjectTransition={project => {
-            history.push(`${url}/projects/${project ? project.textID : 'new'}`);
+            history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
           }}
           permissions={{
-            projectWrite: user?.ofGroup('admin', false) || false,
+            projectWrite: user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || false,
           }}
         />
       </Route>
       <Route path={`${path}/projects`}>
-        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={Number(opportunity.id)} />
+        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
       </Route>
       <Route path="*">
         <FourOuFour />

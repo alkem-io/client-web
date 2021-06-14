@@ -1,7 +1,7 @@
-query organizationCard($id: String!) {
+query organizationCard($id: UUID_NAMEID!) {
   organisation(ID: $id) {
     id
-    name
+    displayName
     groups {
       name
     }

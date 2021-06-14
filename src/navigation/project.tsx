@@ -2,15 +2,16 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { useEcoverse } from '../hooks/useEcoverse';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
-import { pushError } from '../reducers/error/actions';
 import { Project as ProjectType } from '../types/graphql-schema';
+import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
-  opportunityId: number;
-  projects: Pick<ProjectType, 'id' | 'textID' | 'name'>[] | undefined;
+  opportunityId: string;
+  projects: Pick<ProjectType, 'id' | 'nameID' | 'displayName'>[] | undefined;
 }
 
 export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
@@ -33,33 +34,32 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
 const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const { url } = useRouteMatch();
   const history = useHistory();
+  const handleError = useApolloErrorHandler();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: project }) => {
-      history.push(`${paths[paths.length - 1].value}/projects/${project.textID}`);
+      history.push(`${paths[paths.length - 1].value}/projects/${project.nameID}`);
     },
-    onError: ({ message }) => {
-      pushError(new Error(message));
-    },
+    onError: handleError,
     refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
     awaitRefetchQueries: true,
   });
 
-  // need to add validation for project name & textID
+  // need to add validation for project name & nameID
   return (
     <ProjectNewPage
       paths={currentPaths}
       users={[]}
       loading={projectCreationLoading}
-      onCreate={({ name, textID, description }) =>
+      onCreate={({ displayName, nameID, description }) =>
         createProject({
           variables: {
             input: {
-              parentID: opportunityId,
-              name,
+              opportunityID: opportunityId,
+              displayName,
               description,
-              textID,
+              nameID,
             },
           },
         })
@@ -71,19 +71,19 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const { url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const target = projects?.find(x => x.textID === id);
+  const { ecoverseId } = useEcoverse();
+  const target = projects?.find(x => x.nameID === id);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { id: target?.id || '' },
+    variables: { ecoverseId, projectId: target?.id || '' },
   });
 
   const project = query?.ecoverse.project;
 
-  const currentPaths = useMemo(() => (project ? [...paths, { value: url, name: project.name, real: true }] : paths), [
-    paths,
-    id,
-    project,
-  ]);
+  const currentPaths = useMemo(
+    () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),
+    [paths, id, project]
+  );
 
   if (projectLoading) {
     return <Loading text={'Loading project ...'} />;

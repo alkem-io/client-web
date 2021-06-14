@@ -1,0 +1,25 @@
+query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    group(ID: $groupId) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          id
+          uri
+          name
+          description
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+}

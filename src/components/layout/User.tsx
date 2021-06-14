@@ -1,10 +1,9 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
-import Typography from '../core/Typography';
-import Avatar from '../core/Avatar';
 import { Link } from 'react-router-dom';
-import { UserRoles } from '../UserProfile';
+import { createStyles } from '../../hooks/useTheme';
+import Avatar from '../core/Avatar';
+import Typography from '../core/Typography';
 
 const useUserStyles = createStyles(theme => ({
   flex: {
@@ -64,7 +63,7 @@ const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src }) => 
           {title}
         </Typography>
       </div>
-      <UserRoles />
+      {/* <UserRoles /> */}
     </Link>
   );
 };

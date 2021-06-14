@@ -1,17 +1,22 @@
-query opportunityActorGroups($id: String!) {
-  ecoverse {
+query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
-      actorGroups {
-        id
-        name
-        description
-        actors {
+    opportunity(ID: $opportunityId) {
+      context {
+        ecosystemModel {
           id
-          name
-          description
-          value
-          impact
+          actorGroups {
+            id
+            name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
+          }
         }
       }
     }

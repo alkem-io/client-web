@@ -1,0 +1,11 @@
+fragment UserAgent on User {
+  agent {
+    id
+    did
+    credentials {
+      id
+      resourceID
+      type
+    }
+  }
+}

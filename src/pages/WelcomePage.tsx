@@ -5,7 +5,7 @@ import Section, { Header, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { useUpdateNavigation } from '../hooks/useNavigation';
-import { LOGO_REFERNCE_NAME } from '../models/Constants';
+import { LOGO_REFERENCE_NAME } from '../models/Constants';
 
 interface WelcomePageProps {}
 
@@ -15,8 +15,8 @@ export const WelcomePage: FC<WelcomePageProps> = () => {
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
 
-  const ecoverseLogo = ecoverse?.ecoverse.context?.references?.find(ref => ref.name === LOGO_REFERNCE_NAME)?.uri;
-  const name = ecoverse?.ecoverse.name;
+  const ecoverseLogo = ecoverse?.ecoverse.context?.references?.find(ref => ref.name === LOGO_REFERENCE_NAME)?.uri;
+  const name = ecoverse?.ecoverse.displayName;
   const tagline = ecoverse?.ecoverse.context?.tagline;
   return (
     <Container>

@@ -51,7 +51,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const {
     name,
-    textID,
+    nameID,
     profile: { id: profileId, description, references, avatar },
   } = currentOrganization;
 
@@ -77,7 +77,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const initialValues = {
     name: name || '',
-    textID: textID || '',
+    nameID: nameID || '',
     description: description || '',
     avatar: avatar || '',
     tagsets: tagsets || [],
@@ -86,7 +86,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('forms.validations.required')),
-    textID: yup.string().required(t('forms.validations.required')),
+    nameID: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
     tagsets: tagsetSchemaFragment,
@@ -140,7 +140,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values: { name, textID, references, tagsets, avatar, description }, handleSubmit }) => {
+          {({ values: { name, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
                 <Section
@@ -161,9 +161,9 @@ export const OrganizationForm: FC<Props> = ({
 
                   <Form.Row>
                     <InputField
-                      name={'textID'}
+                      name={'nameID'}
                       title={'Text ID'}
-                      value={textID}
+                      value={nameID}
                       required={true}
                       readOnly={isReadOnlyMode || isEditMode}
                     />

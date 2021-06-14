@@ -1,13 +1,13 @@
-query projectsChainHistory {
-  ecoverse {
+query projectsChainHistory($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
     challenges {
-      name
-      textID
+      displayName
+      nameID
       opportunities {
-        textID
+        nameID
         projects {
-          textID
+          nameID
         }
       }
     }

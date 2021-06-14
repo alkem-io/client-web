@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -8,6 +7,7 @@ import {
   useMeQuery,
   useUpdateUserMutation,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
@@ -17,8 +17,9 @@ import { UserForm } from './UserForm';
 
 interface EditUserProfileProps {}
 
+// TODO [ATS] Need optimization this code is copy paste a few times.
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
-  const { id: userID, email, memberof, profile, ...rest } = user;
+  const { id: userID, email, memberof, profile, agent, ...rest } = user;
 
   return {
     ...rest,
@@ -27,8 +28,8 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
       ID: user.profile.id || '',
       avatar: profile.avatar,
       description: profile.description,
-      references: profile.references.filter(r => r.id).map(t => ({ ID: Number(t.id), name: t.name, uri: t.uri })),
-      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })),
+      references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
+      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
     },
   };
 };
@@ -40,17 +41,14 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const [createTagset] = useCreateTagsetOnProfileMutation();
+  const handleError = useApolloErrorHandler();
 
   const [updateUser] = useUpdateUserMutation({
-    onError: error => handleError(error),
+    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
   });
-
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
 
   const handleCancel = () => history.goBack();
 
@@ -67,20 +65,22 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
 
     for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+      await deleteReference({ variables: { input: { ID: ref.id } } });
     }
 
-    for (const ref of toAdd) {
-      await createReference({
-        variables: {
-          input: {
-            parentID: Number(profileId),
-            name: ref.name,
-            description: ref.description,
-            uri: ref.uri,
+    if (profileId) {
+      for (const ref of toAdd) {
+        await createReference({
+          variables: {
+            input: {
+              profileID: profileId,
+              name: ref.name,
+              description: ref.description,
+              uri: ref.uri,
+            },
           },
-        },
-      });
+        });
+      }
     }
 
     for (const tagset of tagsetsToAdd) {
@@ -89,7 +89,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
           input: {
             name: tagset.name,
             tags: [...tagset.tags],
-            parentID: Number(profileId),
+            profileID: profileId,
           },
         },
       });

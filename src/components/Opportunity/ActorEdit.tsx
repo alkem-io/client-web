@@ -9,6 +9,7 @@ import {
 } from '../../generated/graphql';
 import { Actor } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
 
@@ -42,6 +43,7 @@ const useContextEditStyles = createStyles(theme => ({
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
   const styles = useContextEditStyles();
+  const handleError = useApolloErrorHandler();
 
   const initialValues: Actor = {
     id: id || '',
@@ -60,24 +62,24 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
 
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
 
   const [updateActor] = useUpdateActorMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     awaitRefetchQueries: true,
   });
 
   const onSubmit = (values: Actor) => {
     const { id: actorId, __typename, ...rest } = values;
-    if (!actorId) {
+    if (!actorId && actorGroupId) {
       createActor({
         variables: {
           input: {
-            parentID: Number(actorGroupId),
+            actorGroupID: actorGroupId,
             ...rest,
           },
         },

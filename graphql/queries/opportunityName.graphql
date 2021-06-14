@@ -1,9 +1,9 @@
-query opportunityName($id: String!) {
-  ecoverse {
+query opportunityName($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
+    opportunity(ID: $opportunityId) {
       id
-      name
+      displayName
     }
   }
 }

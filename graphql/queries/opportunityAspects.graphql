@@ -1,11 +1,13 @@
-query opportunityAspects($id: String!) {
-  ecoverse {
+query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
-      aspects {
-        title
-        framing
-        explanation
+    opportunity(ID: $opportunityId) {
+      context {
+        aspects {
+          title
+          framing
+          explanation
+        }
       }
     }
   }

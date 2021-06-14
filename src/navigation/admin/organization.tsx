@@ -1,47 +1,29 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
-import { GroupPage } from '../../components/Admin/Group/GroupPage';
 import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
+import OrganizationList from '../../components/Admin/Organization/OrganizationList';
 import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
-import {
-  useOrganizationGroupsQuery,
-  useOrganizationProfileInfoQuery,
-  useOrganizationsListQuery,
-} from '../../generated/graphql';
+import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { Organisation } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { AdminParameters } from './admin';
+import { GroupRoute } from './group';
 
 export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
-  const { data: organizationsListQuery } = useOrganizationsListQuery();
 
-  const organizationsList = organizationsListQuery?.organisations?.map(c => ({
-    id: c.id,
-    value: c.name,
-    url: `${url}/${c.id}`,
-  }));
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [
-    paths,
-    organizationsListQuery?.organisations,
-  ]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage
-          paths={currentPaths}
-          data={organizationsList || []}
-          newLink={`${url}/new`}
-          title={'Organizations list'}
-        />
+        <OrganizationList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
@@ -62,10 +44,10 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
 
   const { data } = useOrganizationProfileInfoQuery({ variables: { id: organizationId } });
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: data?.organisation?.name || '', real: true }], [
-    paths,
-    data?.organisation?.name,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: data?.organisation?.displayName || '', real: true }],
+    [paths, data?.organisation?.displayName]
+  );
 
   useUpdateNavigation({ currentPaths });
 
@@ -102,7 +84,7 @@ const OrganizationGroupRoutes: FC<WithParentMembersProps> = ({ paths, parentMemb
         <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/:groupId`}>
-        <GroupPage paths={currentPaths} parentMembers={parentMembers} />
+        <GroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
     </Switch>
   );

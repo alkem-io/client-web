@@ -1,7 +1,7 @@
-query opportunityGroups($id: String!) {
-  ecoverse {
+query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    opportunity(ID: $id) {
+    opportunity(ID: $opportunityId) {
       community {
         groups {
           id

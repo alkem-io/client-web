@@ -1,5 +1,5 @@
-export const challengesMapper = (url: string) => (challenge: { textID: string; name: string }) => ({
-  id: challenge.textID,
+export const challengesMapper = (url: string) => (challenge: { nameID: string; name: string }) => ({
+  id: challenge.nameID,
   value: challenge.name,
-  url: `${url}/${challenge.textID}`,
+  url: `${url}/${challenge.nameID}`,
 });

@@ -8,6 +8,7 @@ import {
 } from '../../generated/graphql';
 import { Context } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import Button from '../core/Button';
 import ProfileForm from '../ProfileForm/ProfileForm';
 
@@ -28,16 +29,17 @@ const useContextEditStyles = createStyles(() => ({
 
 const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const styles = useContextEditStyles();
+  const handleError = useApolloErrorHandler();
 
   const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: ChallengeProfileDocument, variables: { id } }],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
-    onError: e => console.error(e),
+    onError: handleError,
     refetchQueries: [{ query: OpportunityProfileDocument, variables: { id } }],
     awaitRefetchQueries: true,
   });
@@ -45,7 +47,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   let submitWired;
 
   const onSubmit = async values => {
-    const { name, textID, state, ...context } = values;
+    const { name, nameID, state, ...context } = values;
 
     const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name }));
     const contextWithUpdatedRefs = { ...context };

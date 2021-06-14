@@ -21,7 +21,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
@@ -73,11 +73,11 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           return (
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.name}</Tooltip>}
+              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.displayName}</Tooltip>}
               key={index}
             >
               <div className={styles.imgContainer} onClick={() => setModalId(org.id)}>
-                <img src={org.profile?.avatar} alt={org.name} className={styles.img} />
+                <img src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
               </div>
             </OverlayTrigger>
           );
@@ -89,7 +89,7 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
       {organizations.length > 4 && (
         <OverlayTrigger
           placement="bottom"
-          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.name).join(', ')}</Tooltip>}
+          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.displayName).join(', ')}</Tooltip>}
         >
           <div className={'d-flex'}>
             <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
@@ -123,16 +123,16 @@ const useChallengeStyles = createStyles(theme => ({
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { isAuthenticated } = useAuthenticate();
   const history = useHistory();
   const styles = useChallengeStyles();
-  const user = useUserContext();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
 
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { name, context, opportunities, leadOrganisations, id, community } = challenge;
+  const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
   const { references, background, tagline, who } = context || {};
   const visual = references?.find(x => x.name === 'visual');
   const video = references?.find(x => x.name === 'video');
@@ -142,8 +142,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
     () =>
       opportunities?.flatMap(o =>
         o?.projects?.flatMap(p => ({
-          caption: o.name,
-          url: `${url}/opportunities/${o.textID}/projects/${p.textID}`,
+          caption: o.displayName,
+          url: `${url}/opportunities/${o.nameID}/projects/${p.nameID}`,
           ...p,
         }))
       ),
@@ -153,7 +153,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const challengeProjects = useMemo(
     () => [
       ...(projects || []).map(p => ({
-        title: p?.name || '',
+        title: p?.displayName || '',
         description: p?.description,
         caption: p?.caption,
         tag: { status: 'positive', text: p?.lifecycle?.state || '' },
@@ -216,7 +216,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
               className="flex-grow-1"
               classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
             />
-            {user.user?.isAdmin && (
+            {user?.isAdmin && (
               <>
                 <OverlayTrigger
                   placement={'bottom'}
@@ -297,7 +297,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       {opportunities && (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
           {opportunities?.map((props, i) => (
-            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.textID}`} />
+            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.nameID}`} />
           ))}
         </CardContainer>
       )}

@@ -1,21 +1,21 @@
-query groupCard($id: String!) {
-  ecoverse {
+query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    group(ID: $id) {
+    group(ID: $groupId) {
       __typename
       name
       parent {
         __typename
         ... on Community {
-          name
+          displayName
         }
         ... on Organisation {
-          name
+          displayName
         }
       }
       members {
         id
-        name
+        displayName
       }
       profile {
         id

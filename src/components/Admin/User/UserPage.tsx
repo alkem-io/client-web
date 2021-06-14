@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -9,6 +8,7 @@ import {
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { UserModel } from '../../../models/User';
@@ -33,16 +33,17 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const [addReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
-  const currentPaths = useMemo(() => [...paths, { name: user && user.name ? user.name : 'new', real: false }], [paths]);
+  const currentPaths = useMemo(
+    () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
+    [paths]
+  );
 
   useUpdateNavigation({ currentPaths });
 
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
+  const handleError = useApolloErrorHandler();
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: error => console.log(error),
+    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
@@ -62,9 +63,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     onCompleted: () => {
       history.push('/admin/users');
     },
-    onError: e => {
-      handleError(e);
-    },
+    onError: handleError,
   });
 
   const isEditMode = mode === EditMode.edit;
@@ -103,6 +102,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     if (mode === EditMode.new) {
       const userInput: CreateUserInput = {
         ...rest,
+        nameID: `${rest.firstName}-${rest.lastName}`,
         profileData: {
           avatar: profile.avatar,
           description: profile.description,
@@ -125,20 +125,22 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
       const toAdd = references.filter(x => !x.id);
 
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        if (ref.id) await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
-      for (const ref of toAdd) {
-        await addReference({
-          variables: {
-            input: {
-              parentID: Number(profileId),
-              name: ref.name,
-              description: ref.description,
-              uri: ref.uri,
+      if (profileId) {
+        for (const ref of toAdd) {
+          await addReference({
+            variables: {
+              input: {
+                profileID: profileId,
+                name: ref.name,
+                description: ref.description,
+                uri: ref.uri,
+              },
             },
-          },
-        });
+          });
+        }
       }
       updateUser({
         variables: {
@@ -149,13 +151,14 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   };
 
   const handleRemoveUser = () => {
-    remove({
-      variables: {
-        input: {
-          ID: Number(user?.id),
+    if (user)
+      remove({
+        variables: {
+          input: {
+            ID: user?.id,
+          },
         },
-      },
-    }).finally(() => setModalOpened(false));
+      }).finally(() => setModalOpened(false));
   };
 
   const closeModal = (): void => {
@@ -177,7 +180,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveUser}
-        name={user?.name}
+        name={user?.displayName}
         loading={userRemoveLoading}
       />
     </div>

@@ -2,29 +2,30 @@ import React, { FC } from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks/useUserContext';
+import { AuthorizationCredential } from '../types/graphql-schema';
 
 interface RestrictedRoutePros extends Record<string, unknown> {
-  allowedGroups?: string[];
-  strict?: boolean;
+  requiredCredentials?: AuthorizationCredential[];
 }
 
 interface AuthenticatedRoutePros extends Record<string, unknown> {}
 
-const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, allowedGroups = [], strict = false, ...rest }) => {
+const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
   const { pathname } = useLocation();
   const { user, loading: userLoading } = useUserContext();
-  const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated, loading: loadingAuthContext } = useAuthenticationContext();
 
-  if (userLoading) {
+  if (userLoading || loadingAuthContext) {
     return <Loading text="Loading user configuration" />;
   }
 
   if (!isAuthenticated) {
-    return <Redirect to={`/login?redirect=${encodeURI(pathname)}`} />;
+    return <Redirect to={`/auth/login?redirect=${encodeURI(pathname)}`} />;
   }
 
-  if (allowedGroups.every(x => !user || !user.ofGroup(x, strict)) && allowedGroups.length !== 0) {
+  if (requiredCredentials.every(x => !user || !user.hasCredentials(x)) && requiredCredentials.length !== 0) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 

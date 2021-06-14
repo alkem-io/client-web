@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import {
   OrganizationProfileInfoDocument,
@@ -8,6 +7,7 @@ import {
   useDeleteReferenceMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
@@ -27,7 +27,9 @@ interface Props extends PageProps {
 }
 
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
-  const currentPaths = useMemo(() => [...paths, { name: organization?.name ? 'edit' : 'new', real: false }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }], [
+    paths,
+  ]);
   const notify = useNotification();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
@@ -35,21 +37,19 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
   useUpdateNavigation({ currentPaths });
 
-  const handleError = (error: ApolloError) => {
-    notify(error.message, 'error');
-  };
+  const handleError = useApolloErrorHandler();
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: () => {
       notify('Organization created successfully', 'success');
     },
-    onError: error => handleError(error),
+    onError: handleError,
     awaitRefetchQueries: true,
     refetchQueries: ['organizationsList'],
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
-    onError: error => handleError(error),
+    onError: handleError,
     onCompleted: () => {
       notify('Organization updated successfully', 'success');
     },
@@ -58,12 +58,12 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   });
 
   const handleSubmit = async (editedOrganization: Organisation) => {
-    const { id: orgID, textID, profile, ...rest } = editedOrganization;
+    const { id: orgID, nameID, profile, ...rest } = editedOrganization;
 
     if (mode === EditMode.new) {
       const organisationInput: CreateOrganisationInput = {
         ...rest,
-        textID,
+        nameID,
         profileData: {
           avatar: profile.avatar,
           description: profile.description || '',
@@ -88,20 +88,22 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
 
       for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: Number(ref.id) } } });
+        await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
-      for (const ref of toAdd) {
-        await createReference({
-          variables: {
-            input: {
-              parentID: Number(profileId),
-              name: ref.name,
-              description: ref.description,
-              uri: ref.uri,
+      if (profileId) {
+        for (const ref of toAdd) {
+          await createReference({
+            variables: {
+              input: {
+                profileID: profileId,
+                name: ref.name,
+                description: ref.description,
+                uri: ref.uri,
+              },
             },
-          },
-        });
+          });
+        }
       }
 
       for (const tagset of tagsetsToAdd) {
@@ -110,7 +112,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
             input: {
               name: tagset.name,
               tags: [...tagset.tags],
-              parentID: Number(profileId),
+              profileID: profileId,
             },
           },
         });
@@ -123,8 +125,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
-          tagsets:
-            profile?.tagsets?.filter(t => t.id).map(t => ({ ID: Number(t.id), name: t.name, tags: [...t.tags] })) || [],
+          tagsets: profile?.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })) || [],
         },
       };
 

@@ -1,6 +1,7 @@
 import React, { FC, memo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { useGroupCardQuery } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
 import { UserGroup } from '../../types/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -29,18 +30,20 @@ const groupCardStyles = createStyles(theme => ({
 
 const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
+  const { ecoverseId } = useEcoverse();
 
   const styles = groupCardStyles();
   const { data, loading } = useGroupCardQuery({
     variables: {
-      id,
+      ecoverseId,
+      groupId: id,
     },
   });
 
   const group = data?.ecoverse?.group as UserGroup;
   const avatar = group?.profile?.avatar;
-  const level = group?.parent?.__typename || '';
-  const parentName = group?.parent?.name || '';
+  const level = data?.ecoverse?.group?.parent?.__typename || '';
+  const parentName = data?.ecoverse?.group?.parent?.displayName || '';
 
   const defaultTags = group?.profile?.tagsets?.find(ts => ts.name === 'default')?.tags;
 

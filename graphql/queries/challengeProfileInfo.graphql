@@ -1,10 +1,10 @@
-query challengeProfileInfo($id: String!) {
-  ecoverse {
+query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    challenge(ID: $id) {
+    challenge(ID: $challengeId) {
       id
-      textID
-      name
+      nameID
+      displayName
       lifecycle {
         state
       }

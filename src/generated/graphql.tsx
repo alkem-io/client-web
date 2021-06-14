@@ -2,26 +2,34 @@ import * as SchemaTypes from '../types/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+export const GroupMembersFragmentDoc = gql`
+  fragment GroupMembers on User {
+    id
+    displayName
+    firstName
+    lastName
+    email
+  }
+`;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
-    name
-    type
+    displayName
     applications {
       id
+    }
+    members {
+      ...GroupMembers
     }
     groups {
       id
       name
       members {
-        id
-        name
-        firstName
-        lastName
-        email
+        ...GroupMembers
       }
     }
   }
+  ${GroupMembersFragmentDoc}
 `;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
@@ -45,34 +53,25 @@ export const GroupDetailsFragmentDoc = gql`
     name
   }
 `;
-export const GroupMembersFragmentDoc = gql`
-  fragment GroupMembers on User {
-    id
-    name
-    firstName
-    lastName
-    email
-  }
-`;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
-    textID
-    name
+    nameID
+    displayName
   }
 `;
 export const NewOpportunityFragmentDoc = gql`
   fragment NewOpportunity on Opportunity {
     id
-    textID
-    name
+    nameID
+    displayName
   }
 `;
 export const ProjectDetailsFragmentDoc = gql`
   fragment ProjectDetails on Project {
     id
-    textID
-    name
+    nameID
+    displayName
     description
     lifecycle {
       state
@@ -88,10 +87,23 @@ export const ProjectDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserAgentFragmentDoc = gql`
+  fragment UserAgent on User {
+    agent {
+      id
+      did
+      credentials {
+        id
+        resourceID
+        type
+      }
+    }
+  }
+`;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
-    name
+    displayName
     firstName
     lastName
     email
@@ -117,29 +129,24 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
-export const UserMembersFragmentDoc = gql`
-  fragment UserMembers on User {
-    memberof {
-      communities {
-        id
-        name
-        type
-        groups {
-          name
-        }
-      }
-      organisations {
-        id
-        name
-      }
-    }
+export const AllCommunityDetailsFragmentDoc = gql`
+  fragment AllCommunityDetails on Community {
+    id
+    displayName
+  }
+`;
+export const EcoverseDetailsFragmentDoc = gql`
+  fragment EcoverseDetails on Ecoverse {
+    id
+    nameID
+    displayName
   }
 `;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
     assignUserToCommunity(membershipData: $membershipData) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -326,6 +333,7 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
 export const CreateAspectDocument = gql`
   mutation createAspect($input: CreateAspectInput!) {
     createAspect(aspectData: $input) {
+      id
       title
     }
   }
@@ -558,8 +566,8 @@ export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganisationInput!) {
     createOrganisation(organisationData: $input) {
       id
-      textID
-      name
+      nameID
+      displayName
     }
   }
 `;
@@ -650,7 +658,7 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateProjectMutationVariables
 >;
 export const CreateReferenceOnContextDocument = gql`
-  mutation createReferenceOnContext($input: CreateReferenceInput!) {
+  mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
     createReferenceOnContext(referenceInput: $input) {
       id
       name
@@ -699,7 +707,7 @@ export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.CreateReferenceOnContextMutationVariables
 >;
 export const CreateReferenceOnProfileDocument = gql`
-  mutation createReferenceOnProfile($input: CreateReferenceInput!) {
+  mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {
       id
       name
@@ -794,7 +802,7 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutationVariables
 >;
 export const CreateTagsetOnProfileDocument = gql`
-  mutation createTagsetOnProfile($input: CreateTagsetInput!) {
+  mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
       id
       name
@@ -1060,6 +1068,52 @@ export type DeleteOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOpportunityMutation,
   SchemaTypes.DeleteOpportunityMutationVariables
 >;
+export const DeleteOrganizationDocument = gql`
+  mutation deleteOrganization($input: DeleteOrganisationInput!) {
+    deleteOrganisation(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeleteOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteOrganizationMutation,
+  SchemaTypes.DeleteOrganizationMutationVariables
+>;
+
+/**
+ * __useDeleteOrganizationMutation__
+ *
+ * To run a mutation, you first call `useDeleteOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOrganizationMutation, { data, loading, error }] = useDeleteOrganizationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteOrganizationMutation,
+    SchemaTypes.DeleteOrganizationMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.DeleteOrganizationMutation, SchemaTypes.DeleteOrganizationMutationVariables>(
+    DeleteOrganizationDocument,
+    baseOptions
+  );
+}
+export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
+export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
+export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteOrganizationMutation,
+  SchemaTypes.DeleteOrganizationMutationVariables
+>;
 export const DeleteReferenceDocument = gql`
   mutation deleteReference($input: DeleteReferenceInput!) {
     deleteReference(deleteData: $input) {
@@ -1196,6 +1250,55 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
+export const GrantCredentialsDocument = gql`
+  mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
+    grantCredentialToUser(grantCredentialData: $input) {
+      id
+      displayName
+      ...UserAgent
+    }
+  }
+  ${UserAgentFragmentDoc}
+`;
+export type GrantCredentialsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.GrantCredentialsMutation,
+  SchemaTypes.GrantCredentialsMutationVariables
+>;
+
+/**
+ * __useGrantCredentialsMutation__
+ *
+ * To run a mutation, you first call `useGrantCredentialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGrantCredentialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [grantCredentialsMutation, { data, loading, error }] = useGrantCredentialsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGrantCredentialsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.GrantCredentialsMutation,
+    SchemaTypes.GrantCredentialsMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.GrantCredentialsMutation, SchemaTypes.GrantCredentialsMutationVariables>(
+    GrantCredentialsDocument,
+    baseOptions
+  );
+}
+export type GrantCredentialsMutationHookResult = ReturnType<typeof useGrantCredentialsMutation>;
+export type GrantCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.GrantCredentialsMutation>;
+export type GrantCredentialsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.GrantCredentialsMutation,
+  SchemaTypes.GrantCredentialsMutationVariables
+>;
 export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
@@ -1246,6 +1349,55 @@ export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaType
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
+>;
+export const RevokeCredentialsDocument = gql`
+  mutation revokeCredentials($input: RevokeAuthorizationCredentialInput!) {
+    revokeCredentialFromUser(revokeCredentialData: $input) {
+      id
+      displayName
+      ...UserAgent
+    }
+  }
+  ${UserAgentFragmentDoc}
+`;
+export type RevokeCredentialsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeCredentialsMutation,
+  SchemaTypes.RevokeCredentialsMutationVariables
+>;
+
+/**
+ * __useRevokeCredentialsMutation__
+ *
+ * To run a mutation, you first call `useRevokeCredentialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeCredentialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [revokeCredentialsMutation, { data, loading, error }] = useRevokeCredentialsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRevokeCredentialsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RevokeCredentialsMutation,
+    SchemaTypes.RevokeCredentialsMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.RevokeCredentialsMutation, SchemaTypes.RevokeCredentialsMutationVariables>(
+    RevokeCredentialsDocument,
+    baseOptions
+  );
+}
+export type RevokeCredentialsMutationHookResult = ReturnType<typeof useRevokeCredentialsMutation>;
+export type RevokeCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.RevokeCredentialsMutation>;
+export type RevokeCredentialsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeCredentialsMutation,
+  SchemaTypes.RevokeCredentialsMutationVariables
 >;
 export const UpdateActorDocument = gql`
   mutation updateActor($input: UpdateActorInput!) {
@@ -1339,8 +1491,8 @@ export const UpdateChallengeDocument = gql`
   mutation updateChallenge($input: UpdateChallengeInput!) {
     updateChallenge(challengeData: $input) {
       id
-      textID
-      name
+      nameID
+      displayName
     }
   }
 `;
@@ -1383,11 +1535,69 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
 >;
+export const UpdateGroupDocument = gql`
+  mutation updateGroup($input: UpdateUserGroupInput!) {
+    updateUserGroup(userGroupData: $input) {
+      id
+      name
+      profile {
+        id
+        avatar
+        description
+        references {
+          uri
+          name
+          description
+        }
+        tagsets {
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+export type UpdateGroupMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateGroupMutation,
+  SchemaTypes.UpdateGroupMutationVariables
+>;
+
+/**
+ * __useUpdateGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>
+) {
+  return Apollo.useMutation<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>(
+    UpdateGroupDocument,
+    baseOptions
+  );
+}
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
+export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
+export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateGroupMutation,
+  SchemaTypes.UpdateGroupMutationVariables
+>;
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($opportunityData: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $opportunityData) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -1434,7 +1644,7 @@ export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($input: UpdateOrganisationInput!) {
     updateOrganisation(organisationData: $input) {
       id
-      name
+      displayName
     }
   }
 `;
@@ -1566,13 +1776,72 @@ export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadAvatarMutation,
   SchemaTypes.UploadAvatarMutationVariables
 >;
+export const AllCommunitiesDocument = gql`
+  query allCommunities($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      community {
+        ...AllCommunityDetails
+      }
+      challenges {
+        community {
+          ...AllCommunityDetails
+        }
+      }
+      opportunities {
+        community {
+          ...AllCommunityDetails
+        }
+      }
+    }
+  }
+  ${AllCommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useAllCommunitiesQuery__
+ *
+ * To run a query within a React component, call `useAllCommunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllCommunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllCommunitiesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useAllCommunitiesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
+    AllCommunitiesDocument,
+    baseOptions
+  );
+}
+export function useAllCommunitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
+    AllCommunitiesDocument,
+    baseOptions
+  );
+}
+export type AllCommunitiesQueryHookResult = ReturnType<typeof useAllCommunitiesQuery>;
+export type AllCommunitiesLazyQueryHookResult = ReturnType<typeof useAllCommunitiesLazyQuery>;
+export type AllCommunitiesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AllCommunitiesQuery,
+  SchemaTypes.AllCommunitiesQueryVariables
+>;
 export const AllOpportunitiesDocument = gql`
-  query allOpportunities {
-    ecoverse {
+  query allOpportunities($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       opportunities {
         id
-        textID
+        nameID
       }
     }
   }
@@ -1590,11 +1859,12 @@ export const AllOpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useAllOpportunitiesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useAllOpportunitiesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>(
     AllOpportunitiesDocument,
@@ -1630,34 +1900,9 @@ export const AuthenticationConfigurationDocument = gql`
           enabled
           config {
             __typename
-            ... on AadAuthProviderConfig {
-              msalConfig {
-                auth {
-                  authority
-                  clientId
-                  redirectUri
-                }
-                cache {
-                  cacheLocation
-                  storeAuthStateInCookie
-                }
-              }
-              apiConfig {
-                resourceScope
-              }
-              loginRequest {
-                scopes
-              }
-              tokenRequest {
-                scopes
-              }
-              silentRequest {
-                scopes
-              }
-            }
-            ... on DemoAuthProviderConfig {
+            ... on OryConfig {
+              kratosPublicBaseURL
               issuer
-              tokenEndpoint
             }
           }
         }
@@ -1710,12 +1955,12 @@ export type AuthenticationConfigurationQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthenticationConfigurationQueryVariables
 >;
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($id: String!) {
-    ecoverse {
+  query challengeCommunity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
-        name
+        displayName
         community {
           ...CommunityDetails
         }
@@ -1737,7 +1982,8 @@ export const ChallengeCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCommunityQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -1770,10 +2016,10 @@ export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQueryVariables
 >;
 export const ChallengeGroupsDocument = gql`
-  query challengeGroups($id: String!) {
-    ecoverse {
+  query challengeGroups($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         community {
           groups {
             id
@@ -1797,7 +2043,8 @@ export const ChallengeGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -1824,14 +2071,14 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeGroupsQueryVariables
 >;
 export const ChallengeMembersDocument = gql`
-  query challengeMembers($challengeID: String!) {
-    ecoverse {
+  query challengeMembers($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeID) {
         community {
           members {
             id
-            name
+            displayName
             firstName
             lastName
             email
@@ -1854,6 +2101,7 @@ export const ChallengeMembersDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeMembersQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      challengeID: // value for 'challengeID'
  *   },
  * });
@@ -1884,15 +2132,15 @@ export type ChallengeMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeMembersQueryVariables
 >;
 export const ChallengeNameDocument = gql`
-  query challengeName($id: String!) {
-    ecoverse {
+  query challengeName($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
-        name
+        displayName
         community {
           id
-          name
+          displayName
         }
       }
     }
@@ -1911,7 +2159,8 @@ export const ChallengeNameDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeNameQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -1938,13 +2187,13 @@ export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQueryVariables
 >;
 export const ChallengeProfileDocument = gql`
-  query challengeProfile($id: String!) {
-    ecoverse {
+  query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
         }
@@ -1953,7 +2202,7 @@ export const ChallengeProfileDocument = gql`
         }
         community {
           members {
-            name
+            displayName
           }
         }
         tagset {
@@ -1962,18 +2211,18 @@ export const ChallengeProfileDocument = gql`
         }
         opportunities {
           id
-          name
+          displayName
           lifecycle {
             state
           }
-          textID
+          nameID
           context {
             ...ContextDetails
           }
           projects {
             id
-            textID
-            name
+            nameID
+            displayName
             description
             lifecycle {
               state
@@ -1982,7 +2231,7 @@ export const ChallengeProfileDocument = gql`
         }
         leadOrganisations {
           id
-          name
+          displayName
           profile {
             id
             avatar
@@ -2006,7 +2255,8 @@ export const ChallengeProfileDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeProfileQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2036,13 +2286,13 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileQueryVariables
 >;
 export const ChallengeProfileInfoDocument = gql`
-  query challengeProfileInfo($id: String!) {
-    ecoverse {
+  query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
         }
@@ -2067,7 +2317,8 @@ export const ChallengeProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeProfileInfoQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2100,10 +2351,10 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQueryVariables
 >;
 export const ChallengeUserIdsDocument = gql`
-  query challengeUserIds($id: String!) {
-    ecoverse {
+  query challengeUserIds($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $id) {
+      challenge(ID: $challengeId) {
         community {
           members {
             id
@@ -2126,7 +2377,8 @@ export const ChallengeUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeUserIdsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2156,13 +2408,13 @@ export type ChallengeUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeUserIdsQueryVariables
 >;
 export const ChallengesDocument = gql`
-  query challenges {
-    ecoverse {
+  query challenges($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
         id
-        name
-        textID
+        displayName
+        nameID
         context {
           tagline
           references {
@@ -2187,11 +2439,12 @@ export const ChallengesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useChallengesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>(
     ChallengesDocument,
@@ -2213,15 +2466,15 @@ export type ChallengesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesQueryVariables
 >;
 export const ChallengesWithCommunityDocument = gql`
-  query challengesWithCommunity {
-    ecoverse {
+  query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
         id
-        name
+        displayName
         community {
           id
-          name
+          displayName
         }
       }
     }
@@ -2240,11 +2493,12 @@ export const ChallengesWithCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesWithCommunityQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useChallengesWithCommunityQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ChallengesWithCommunityQuery,
     SchemaTypes.ChallengesWithCommunityQueryVariables
   >
@@ -2272,8 +2526,8 @@ export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesWithCommunityQueryVariables
 >;
 export const EcoverseCommunityDocument = gql`
-  query ecoverseCommunity {
-    ecoverse {
+  query ecoverseCommunity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       community {
         ...CommunityDetails
@@ -2295,11 +2549,12 @@ export const EcoverseCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCommunityQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseCommunityQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
     EcoverseCommunityDocument,
@@ -2324,8 +2579,8 @@ export type EcoverseCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCommunityQueryVariables
 >;
 export const EcoverseGroupsListDocument = gql`
-  query ecoverseGroupsList {
-    ecoverse {
+  query ecoverseGroupsList($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       groups {
         id
@@ -2347,11 +2602,12 @@ export const EcoverseGroupsListDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseGroupsListQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseGroupsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.EcoverseGroupsListQuery,
     SchemaTypes.EcoverseGroupsListQueryVariables
   >
@@ -2379,8 +2635,8 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseGroupsListQueryVariables
 >;
 export const EcoverseHostReferencesDocument = gql`
-  query ecoverseHostReferences {
-    ecoverse {
+  query ecoverseHostReferences($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       host {
         profile {
@@ -2407,11 +2663,12 @@ export const EcoverseHostReferencesDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseHostReferencesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseHostReferencesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.EcoverseHostReferencesQuery,
     SchemaTypes.EcoverseHostReferencesQueryVariables
   >
@@ -2439,11 +2696,11 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseHostReferencesQueryVariables
 >;
 export const EcoverseInfoDocument = gql`
-  query ecoverseInfo {
-    ecoverse {
+  query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      textID
-      name
+      nameID
+      displayName
       context {
         tagline
         vision
@@ -2456,7 +2713,7 @@ export const EcoverseInfoDocument = gql`
       }
       community {
         id
-        name
+        displayName
       }
     }
   }
@@ -2474,11 +2731,12 @@ export const EcoverseInfoDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseInfoQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseInfoQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
     EcoverseInfoDocument,
@@ -2544,25 +2802,126 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQuery,
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
-export const GroupCardDocument = gql`
-  query groupCard($id: String!) {
-    ecoverse {
+export const EcoversesDocument = gql`
+  query ecoverses {
+    ecoverses {
+      ...EcoverseDetails
+    }
+  }
+  ${EcoverseDetailsFragmentDoc}
+`;
+
+/**
+ * __useEcoversesQuery__
+ *
+ * To run a query within a React component, call `useEcoversesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoversesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
+    EcoversesDocument,
+    baseOptions
+  );
+}
+export function useEcoversesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
+    EcoversesDocument,
+    baseOptions
+  );
+}
+export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
+export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
+export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
+export const GroupDocument = gql`
+  query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      group(ID: $id) {
+      group(ID: $groupId) {
+        id
+        name
+        profile {
+          id
+          avatar
+          description
+          references {
+            id
+            uri
+            name
+            description
+          }
+          tagsets {
+            id
+            name
+            tags
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGroupQuery__
+ *
+ * To run a query within a React component, call `useGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGroupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
+}
+export function useGroupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
+}
+export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
+export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
+export type GroupQueryResult = Apollo.QueryResult<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>;
+export const GroupCardDocument = gql`
+  query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      group(ID: $groupId) {
         __typename
         name
         parent {
           __typename
           ... on Community {
-            name
+            displayName
           }
           ... on Organisation {
-            name
+            displayName
           }
         }
         members {
           id
-          name
+          displayName
         }
         profile {
           id
@@ -2594,7 +2953,8 @@ export const GroupCardDocument = gql`
  * @example
  * const { data, loading, error } = useGroupCardQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
  *   },
  * });
  */
@@ -2618,10 +2978,10 @@ export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
 export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
 export type GroupCardQueryResult = Apollo.QueryResult<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>;
 export const GroupMembersDocument = gql`
-  query groupMembers($id: String!) {
-    ecoverse {
+  query groupMembers($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      group(ID: $id) {
+      group(ID: $groupId) {
         id
         name
         members {
@@ -2645,7 +3005,8 @@ export const GroupMembersDocument = gql`
  * @example
  * const { data, loading, error } = useGroupMembersQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
  *   },
  * });
  */
@@ -2675,11 +3036,11 @@ export const MeDocument = gql`
   query me {
     me {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -2708,14 +3069,89 @@ export function useMeLazyQuery(
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
-export const OpportunitiesDocument = gql`
-  query opportunities($id: String!) {
-    ecoverse {
-      id
-      challenge(ID: $id) {
+export const MembershipDocument = gql`
+  query membership($input: MembershipInput!) {
+    membership(membershipData: $input) {
+      ecoverses {
+        id
+        nameID
+        displayName
+        challenges {
+          id
+          nameID
+          displayName
+        }
         opportunities {
           id
-          name
+          nameID
+          displayName
+        }
+        userGroups {
+          id
+          nameID
+          displayName
+        }
+      }
+      organisations {
+        id
+        nameID
+        displayName
+        userGroups {
+          id
+          nameID
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useMembershipQuery__
+ *
+ * To run a query within a React component, call `useMembershipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembershipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembershipQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMembershipQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>(
+    MembershipDocument,
+    baseOptions
+  );
+}
+export function useMembershipLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.MembershipQuery, SchemaTypes.MembershipQueryVariables>(
+    MembershipDocument,
+    baseOptions
+  );
+}
+export type MembershipQueryHookResult = ReturnType<typeof useMembershipQuery>;
+export type MembershipLazyQueryHookResult = ReturnType<typeof useMembershipLazyQuery>;
+export type MembershipQueryResult = Apollo.QueryResult<
+  SchemaTypes.MembershipQuery,
+  SchemaTypes.MembershipQueryVariables
+>;
+export const OpportunitiesDocument = gql`
+  query opportunities($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        opportunities {
+          id
+          displayName
         }
       }
     }
@@ -2734,7 +3170,8 @@ export const OpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunitiesQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
@@ -2761,20 +3198,25 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQueryVariables
 >;
 export const OpportunityActorGroupsDocument = gql`
-  query opportunityActorGroups($id: String!) {
-    ecoverse {
+  query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
-        actorGroups {
-          id
-          name
-          description
-          actors {
+      opportunity(ID: $opportunityId) {
+        context {
+          ecosystemModel {
             id
-            name
-            description
-            value
-            impact
+            actorGroups {
+              id
+              name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
+            }
           }
         }
       }
@@ -2794,7 +3236,8 @@ export const OpportunityActorGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityActorGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -2827,14 +3270,16 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActorGroupsQueryVariables
 >;
 export const OpportunityAspectsDocument = gql`
-  query opportunityAspects($id: String!) {
-    ecoverse {
+  query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
-        aspects {
-          title
-          framing
-          explanation
+      opportunity(ID: $opportunityId) {
+        context {
+          aspects {
+            title
+            framing
+            explanation
+          }
         }
       }
     }
@@ -2853,7 +3298,8 @@ export const OpportunityAspectsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityAspectsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -2886,12 +3332,12 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectsQueryVariables
 >;
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($id: String!) {
-    ecoverse {
+  query opportunityCommunity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
-        name
+        displayName
         community {
           ...CommunityDetails
         }
@@ -2913,7 +3359,8 @@ export const OpportunityCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCommunityQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -2946,10 +3393,10 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQueryVariables
 >;
 export const OpportunityGroupsDocument = gql`
-  query opportunityGroups($id: String!) {
-    ecoverse {
+  query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         community {
           groups {
             id
@@ -2973,7 +3420,8 @@ export const OpportunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityGroupsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3003,12 +3451,12 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityGroupsQueryVariables
 >;
 export const OpportunityNameDocument = gql`
-  query opportunityName($id: String!) {
-    ecoverse {
+  query opportunityName($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
-        name
+        displayName
       }
     }
   }
@@ -3026,7 +3474,8 @@ export const OpportunityNameDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityNameQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3053,21 +3502,15 @@ export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQueryVariables
 >;
 export const OpportunityProfileDocument = gql`
-  query opportunityProfile($id: String!) {
-    ecoverse {
+  query opportunityProfile($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
-        textID
-        name
+        nameID
+        displayName
         lifecycle {
           state
-        }
-        aspects {
-          id
-          title
-          framing
-          explanation
         }
         context {
           id
@@ -3080,48 +3523,58 @@ export const OpportunityProfileDocument = gql`
             id
             name
             uri
+            description
           }
-        }
-        community {
-          groups {
-            name
-            members {
+          aspects {
+            id
+            title
+            framing
+            explanation
+          }
+          ecosystemModel {
+            id
+            actorGroups {
+              id
               name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
             }
           }
         }
+        community {
+          members {
+            displayName
+          }
+        }
+        tagset {
+          name
+          tags
+        }
+        projects {
+          ...ProjectDetails
+        }
         relations {
           id
+          type
           actorRole
           actorName
           actorType
           description
-          type
         }
-        actorGroups {
-          id
+        activity {
           name
-          description
-          actors {
-            id
-            name
-            description
-            value
-            impact
-          }
-        }
-        projects {
-          id
-          textID
-          name
-          description
-          lifecycle {
-            state
-          }
+          value
         }
       }
     }
   }
+  ${ProjectDetailsFragmentDoc}
 `;
 
 /**
@@ -3136,7 +3589,8 @@ export const OpportunityProfileDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProfileQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3169,13 +3623,13 @@ export type OpportunityProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileQueryVariables
 >;
 export const OpportunityProfileInfoDocument = gql`
-  query opportunityProfileInfo($id: String!) {
-    ecoverse {
+  query opportunityProfileInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         id
-        textID
-        name
+        nameID
+        displayName
         context {
           ...ContextDetails
         }
@@ -3197,7 +3651,8 @@ export const OpportunityProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProfileInfoQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3230,10 +3685,10 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
 export const OpportunityRelationsDocument = gql`
-  query opportunityRelations($id: String!) {
-    ecoverse {
+  query opportunityRelations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         relations {
           actorRole
           actorName
@@ -3258,7 +3713,8 @@ export const OpportunityRelationsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityRelationsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3347,10 +3803,10 @@ export type OpportunityTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityTemplateQueryVariables
 >;
 export const OpportunityUserIdsDocument = gql`
-  query opportunityUserIds($id: String!) {
-    ecoverse {
+  query opportunityUserIds($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         community {
           members {
             id
@@ -3373,7 +3829,8 @@ export const OpportunityUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityUserIdsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3406,10 +3863,10 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityUserIdsQueryVariables
 >;
 export const OrganizationCardDocument = gql`
-  query organizationCard($id: String!) {
+  query organizationCard($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      name
+      displayName
       groups {
         name
       }
@@ -3467,10 +3924,10 @@ export type OrganizationCardQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationCardQueryVariables
 >;
 export const OrganizationDetailsDocument = gql`
-  query organizationDetails($id: String!) {
+  query organizationDetails($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      name
+      displayName
       profile {
         id
         avatar
@@ -3490,7 +3947,7 @@ export const OrganizationDetailsDocument = gql`
         name
         members {
           id
-          name
+          displayName
         }
       }
     }
@@ -3542,7 +3999,7 @@ export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationDetailsQueryVariables
 >;
 export const OrganizationGroupsDocument = gql`
-  query organizationGroups($id: String!) {
+  query organizationGroups($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       groups {
         id
@@ -3597,9 +4054,9 @@ export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupsQueryVariables
 >;
 export const OrganizationNameDocument = gql`
-  query organizationName($id: String!) {
+  query organizationName($id: UUID_NAMEID!) {
     organisation(ID: $id) {
-      name
+      displayName
     }
   }
 `;
@@ -3646,11 +4103,11 @@ export type OrganizationNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationNameQueryVariables
 >;
 export const OrganizationProfileInfoDocument = gql`
-  query organizationProfileInfo($id: String!) {
+  query organizationProfileInfo($id: UUID_NAMEID!) {
     organisation(ID: $id) {
       id
-      textID
-      name
+      nameID
+      displayName
       profile {
         id
         avatar
@@ -3718,7 +4175,7 @@ export const OrganizationsListDocument = gql`
   query organizationsList {
     organisations {
       id
-      name
+      displayName
     }
   }
 `;
@@ -3764,10 +4221,10 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationsListQueryVariables
 >;
 export const ProjectProfileDocument = gql`
-  query projectProfile($id: String!) {
-    ecoverse {
+  query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      project(ID: $id) {
+      project(ID: $projectId) {
         ...ProjectDetails
       }
     }
@@ -3787,7 +4244,8 @@ export const ProjectProfileDocument = gql`
  * @example
  * const { data, loading, error } = useProjectProfileQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      projectId: // value for 'projectId'
  *   },
  * });
  */
@@ -3814,13 +4272,13 @@ export type ProjectProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectProfileQueryVariables
 >;
 export const ProjectsDocument = gql`
-  query projects {
-    ecoverse {
+  query projects($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       projects {
         id
-        textID
-        name
+        nameID
+        displayName
         description
         lifecycle {
           state
@@ -3842,11 +4300,12 @@ export const ProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useProjectsQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(ProjectsDocument, baseOptions);
 }
@@ -3862,16 +4321,16 @@ export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>;
 export const ProjectsChainHistoryDocument = gql`
-  query projectsChainHistory {
-    ecoverse {
+  query projectsChainHistory($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
       challenges {
-        name
-        textID
+        displayName
+        nameID
         opportunities {
-          textID
+          nameID
           projects {
-            textID
+            nameID
           }
         }
       }
@@ -3891,11 +4350,12 @@ export const ProjectsChainHistoryDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsChainHistoryQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useProjectsChainHistoryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ProjectsChainHistoryQuery,
     SchemaTypes.ProjectsChainHistoryQueryVariables
   >
@@ -3923,10 +4383,10 @@ export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectsChainHistoryQueryVariables
 >;
 export const RelationsDocument = gql`
-  query relations($id: String!) {
-    ecoverse {
+  query relations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      opportunity(ID: $id) {
+      opportunity(ID: $opportunityId) {
         relations {
           id
           type
@@ -3952,7 +4412,8 @@ export const RelationsDocument = gql`
  * @example
  * const { data, loading, error } = useRelationsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
@@ -3982,7 +4443,7 @@ export const SearchDocument = gql`
       terms
       result {
         ... on User {
-          name
+          displayName
           id
         }
         ... on UserGroup {
@@ -3990,7 +4451,7 @@ export const SearchDocument = gql`
           id
         }
         ... on Organisation {
-          name
+          displayName
           id
         }
       }
@@ -4128,14 +4589,14 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.TagsetsTemplateQueryVariables
 >;
 export const UserDocument = gql`
-  query user($id: String!) {
+  query user($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
       ...UserDetails
-      ...UserMembers
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserMembersFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4168,10 +4629,10 @@ export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
 export const UserAvatarsDocument = gql`
-  query userAvatars($ids: [String!]!) {
+  query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       id
-      name
+      displayName
       profile {
         id
         avatar
@@ -4219,21 +4680,15 @@ export type UserAvatarsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAvatarsQueryVariables
 >;
 export const UserCardDataDocument = gql`
-  query userCardData($ids: [String!]!) {
+  query userCardData($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       __typename
-      memberof {
-        communities {
-          name
-        }
-        organisations {
-          name
-        }
-      }
       ...UserDetails
+      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
+  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -4311,3 +4766,59 @@ export function useUsersLazyQuery(
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>;
+export const UsersWithCredentialsDocument = gql`
+  query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
+    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
+      id
+      displayName
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUsersWithCredentialsQuery__
+ *
+ * To run a query within a React component, call `useUsersWithCredentialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersWithCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersWithCredentialsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersWithCredentialsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export function useUsersWithCredentialsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    baseOptions
+  );
+}
+export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
+export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
+export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersWithCredentialsQuery,
+  SchemaTypes.UsersWithCredentialsQueryVariables
+>;

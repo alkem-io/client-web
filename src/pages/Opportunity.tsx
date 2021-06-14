@@ -26,11 +26,17 @@ import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateMod
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
 import { useOpportunityTemplateQuery } from '../generated/graphql';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { Context, Opportunity as OpportunityType, Project, User } from '../types/graphql-schema';
+import {
+  AuthorizationCredential,
+  Context,
+  Opportunity as OpportunityType,
+  Project,
+  User,
+} from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
@@ -85,17 +91,23 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
+  const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const userName = user?.user.name;
-  const { isAuthenticated } = useAuthenticate();
-  const isAdmin = user?.ofGroup('ecoverse-admins', true) || user?.ofGroup('global-admins', true);
+  const userName = user?.user.displayName;
+
+  const isAdmin =
+    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { name, aspects, projects = [], relations = [], actorGroups, context, community, id } = opportunity;
-  const { references, background, tagline, who, impact, vision } = context || {};
+  const { displayName: name, projects = [], relations = [], context, community, id } = opportunity;
+
+  const actorGroups = context?.ecosystemModel?.actorGroups || [];
+
+  const { references, background, tagline, who, impact, vision, aspects = [] } = context || {};
   const visual = references?.find(x => x.name === 'poster');
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
@@ -137,7 +149,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const opportunityProjects = useMemo(() => {
     const projectList = [
       ...projects.map(p => ({
-        title: p.name,
+        title: p.displayName,
         description: p.description,
         // tag: { status: 'positive', text: p.state || 'archive' },
         type: 'display',

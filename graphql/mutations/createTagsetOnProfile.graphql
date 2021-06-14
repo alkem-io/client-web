@@ -1,4 +1,4 @@
-mutation createTagsetOnProfile($input: CreateTagsetInput!) {
+mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
   createTagsetOnProfile(tagsetData: $input) {
     id
     name

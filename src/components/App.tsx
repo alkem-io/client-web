@@ -1,11 +1,17 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
-import { UserMetadata } from '../context/UserProvider';
-import { useAuthenticate } from '../hooks/useAuthenticate';
+import { useServerMetadataQuery } from '../generated/graphql';
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
+import { useConfig } from '../hooks/useConfig';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useUserContext } from '../hooks/useUserContext';
+import { UserMetadata } from '../hooks/useUserMetadataWrapper';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../models/Constants';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
 import Icon from './core/Icon';
@@ -18,11 +24,6 @@ import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import User from './layout/User';
 import NavRings from './NavRings';
-import { useServerMetadataQuery } from '../generated/graphql';
-import { useHistory } from 'react-router-dom';
-import { useConfig } from '../hooks/useConfig';
-import { useTypedSelector } from '../hooks/useTypedSelector';
-import { useTranslation } from 'react-i18next';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -31,30 +32,21 @@ interface UserSegmentProps {
 
 const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
   const { user, roles } = userMetadata;
-  return (
-    user && (
-      <User
-        name={user.name}
-        title={roles[roles.length - 1] || 'Registered'}
-        orientation={orientation}
-        src={user.profile?.avatar}
-      />
-    )
-  );
+  const role = roles[0]?.name || 'Registered';
+  return user && <User name={user.displayName} title={role} orientation={orientation} src={user.profile?.avatar} />;
 };
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticationContext();
+
   const { user, loading } = useUserContext();
-  const { authentication, loading: configLoading } = useConfig();
+  const { loading: configLoading } = useConfig();
   const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   const isUserSegmentVisible = useTypedSelector<boolean>(state => state.ui.userSegment.visible);
   useUserScope(user);
-
-  const history = useHistory();
 
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
@@ -70,11 +62,6 @@ const App = ({ children }): React.ReactElement => {
       });
     },
   });
-
-  const registrationEnabled = useMemo(
-    () => authentication.providers.find(x => x.config.__typename === 'DemoAuthProviderConfig')?.enabled || false,
-    [authentication]
-  );
 
   if (loading || configLoading) {
     return <Loading text={'Loading Application ...'} />;
@@ -95,21 +82,20 @@ const App = ({ children }): React.ReactElement => {
               <>
                 {!isAuthenticated && (
                   <Button
+                    as={Link}
+                    to={AUTH_LOGIN_PATH}
                     text={t('authentication.sign-in')}
                     style={{ marginLeft: 20 }}
-                    onClick={() => {
-                      history.push('/login');
-                    }}
                     small
                   />
                 )}
-                {!isAuthenticated && registrationEnabled && (
+                {!isAuthenticated && (
                   <Button
+                    as={Link}
+                    to={AUTH_REGISTER_PATH}
                     text={t('authentication.sign-up')}
                     style={{ marginLeft: 20 }}
-                    onClick={() => history.push('/register')}
                     small
-                    variant={'default'}
                   />
                 )}
               </>

@@ -25,6 +25,70 @@
       "notSpecified": "not specified",
       "male": "male",
       "female": "female"
+    },
+    "enums": {
+      "authorization-credentials": {
+        "global-admin": {
+          "name": "Global Admin",
+          "order": 0
+        },
+        "GlobalAdmin": {
+          "name": "Global Community Admin",
+          "order": 1
+        },
+        "GlobalAdminChallenges": {
+          "name": "Global Challenges Admin",
+          "order": 2
+        },
+        "GlobalAdminCommunity": {
+          "name": "Global Admin Community",
+          "order": -1
+        },
+        "GlobalRegistered": {
+          "name": "Registered",
+          "order": 999
+        },
+        "EcoverseAdmin": {
+          "name": "Ecoverse Admin",
+          "order": 999
+        },
+        "EcoverseMember": {
+          "name": "Ecoverse Member",
+          "order": 999
+        },
+        "ChallengeAdmin": {
+          "name": "Challenge Admin",
+          "order": 999
+        },
+        "ChallengeMember": {
+          "name": "Challenge Member",
+          "order": 999
+        },
+        "OpportunityMember": {
+          "name": "Opportunity Member",
+          "order": 999
+        },
+        "OrganisationAdmin": {
+          "name": "Organisation Admin",
+          "order": 999
+        },
+        "OrganisationMember": {
+          "name": "Organisation Member",
+          "order": 5
+        },
+        "UserSelfManagement": {
+          "name": "User Sel fManagement",
+          "order": 999
+        },
+        "community-member": {
+          "name": "Community Member",
+          "order": 4
+        },
+        "UserGroupMember": {
+          "name": "User Group Member",
+          "order": 6
+        }
+      }
     }
   },
   "forms": {
@@ -152,7 +216,7 @@
           "header": "Impact"
         },
         "adoption-ecosystem": {
-          "header": "Adoption cosystem",
+          "header": "Adoption ecosystem",
           "subheader": "Stakeholders & Key users",
           "buttons": {
             "add-actor-group": {
@@ -249,7 +313,7 @@
           "terms": "The terms of use and the privacy policy must be accepted."
         }
       },
-      "header": "Create an account on the <strong>{{ecoverseName}}</strong> ecoverse",
+      "header": "Create an account to start using Cherrytwist",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"

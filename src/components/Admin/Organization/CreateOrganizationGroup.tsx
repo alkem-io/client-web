@@ -5,6 +5,7 @@ import {
   useCreateGroupOnOrganizationMutation,
   useOrganizationNameQuery,
 } from '../../../generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -13,7 +14,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
   const { organizationId } = useParams<{ organizationId: string }>();
-  const handleError = e => console.log(e);
+  const handleError = useApolloErrorHandler();
 
   const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });
   const organization = organizationQuery?.organisation;
@@ -50,7 +51,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
       createGroup({
         variables: {
           input: {
-            parentID: Number(organizationId),
+            parentID: organizationId,
             name,
           },
         },

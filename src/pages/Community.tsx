@@ -107,7 +107,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
         });
       setCommunity(updatedCommunity);
     },
-    onError: error => console.log('searched error ---> ', error),
   });
 
   const handleSearch = () => {

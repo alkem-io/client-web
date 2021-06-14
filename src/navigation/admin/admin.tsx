@@ -4,8 +4,10 @@ import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import Loading from '../../components/core/Loading';
 import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour } from '../../pages';
+import AuthorizationRoute from './authorization';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import { OrganizationsRoute } from './organization';
@@ -19,9 +21,10 @@ export interface AdminParameters {
 }
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
+  const { ecoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
-  const { data, loading: loadingEcoverse } = useEcoverseCommunityQuery();
+  const { data, loading: loadingEcoverse } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
 
   const community = data?.ecoverse.community;
@@ -35,6 +38,9 @@ export const Admin: FC = () => {
       </Route>
       <Route path={`${path}/users`}>
         <UsersRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <AuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />

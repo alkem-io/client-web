@@ -2,9 +2,14 @@ import React, { FC, useState } from 'react';
 import { Col, Form, Modal } from 'react-bootstrap';
 import Button from '../core/Button';
 import { TextArea } from '../core/TextInput';
-import { OpportunityActorGroupsDocument, useCreateActorGroupMutation } from '../../generated/graphql';
+import {
+  OpportunityActorGroupsDocument,
+  useCreateActorGroupMutation,
+  useOpportunityProfileQuery,
+} from '../../generated/graphql';
 import Loading from '../core/Loading';
 import { replaceAll } from '../../utils/replaceAll';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface P {
   onHide: () => void;
@@ -19,9 +24,13 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
     refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
     awaitRefetchQueries: true,
   });
+  const { ecoverseId } = useEcoverse();
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
-
+  const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({
+    variables: { ecoverseId, opportunityId },
+  });
+  const ecosystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
   const isFormValid = name && description && description.length >= 2 && description.length <= 380;
 
   const onDescriptionInput = ({ target: { value } }) => {
@@ -31,19 +40,22 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   };
 
   const onSubmit = () => {
-    createActorGroup({
-      variables: {
-        input: {
-          parentID: Number(opportunityId),
-          name,
-          description,
+    if (ecosystemModelId)
+      createActorGroup({
+        variables: {
+          input: {
+            ecosystemModelID: ecosystemModelId,
+            name,
+            description,
+          },
         },
-      },
-    }).then(() => {
-      setName('');
-      setDescription('');
-    });
+      }).then(() => {
+        setName('');
+        setDescription('');
+      });
   };
+
+  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
     <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
