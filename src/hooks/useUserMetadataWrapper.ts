@@ -55,8 +55,8 @@ export const useUserMetadataWrapper = () => {
       const metadata = {
         user,
         hasCredentials,
-        ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.UserGroupMember, id),
-        ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.UserGroupMember, id),
+        ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
+        ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
         isAdmin: false,
         roles,
         groups,
