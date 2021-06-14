@@ -6,11 +6,12 @@ import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '..';
 import Loading from '../../components/core/Loading';
 import EditCredentials from '../../components/Admin/Authorization/EditCredentials';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 
 interface AuthorizationPageProps extends PageProps {}
 
 interface Params {
-  globalRole: string;
+  globalRole: AuthorizationCredential;
 }
 
 export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {

@@ -104,6 +104,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "missing-refreneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"

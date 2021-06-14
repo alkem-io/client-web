@@ -36,10 +36,9 @@ export const useUserMetadataWrapper = () => {
         user?.agent?.credentials
           ?.map(c => {
             return {
-              code: c.type,
-              type: resolver.toAuthenticationCredentials(c.type),
-              name: resolver.toRoleName(resolver.toAuthenticationCredentials(c.type)),
-              order: resolver.toRoleOrder(resolver.toAuthenticationCredentials(c.type)),
+              type: c.type,
+              name: resolver.toRoleName(c.type),
+              order: resolver.toRoleOrder(c.type),
               resourceId: c.resourceID,
             } as Role;
           })
@@ -48,17 +47,13 @@ export const useUserMetadataWrapper = () => {
         user,
         hasCredentials: (credential: AuthorizationCredential, resourceId = '') => {
           return Boolean(
-            user?.agent?.credentials?.findIndex(
-              c => resolver.toAuthenticationCredentials(c.type) === credential && c.resourceID === resourceId
-            ) !== -1
+            user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1
           );
         },
         ofChallenge: (id: string) =>
           Boolean(
             user?.agent?.credentials?.findIndex(
-              c =>
-                resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.UserGroupMember &&
-                c.resourceID === id
+              c => c.type === AuthorizationCredential.UserGroupMember && c.resourceID === id
             ) !== -1
           ),
         isAdmin: false,
