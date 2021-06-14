@@ -1,0 +1,8 @@
+fragment EcoverseDetails on Ecoverse {
+  id
+  nameID
+  displayName
+  context {
+    ...ContextDetails
+  }
+}

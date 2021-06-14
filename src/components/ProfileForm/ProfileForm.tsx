@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { createStyles } from '../../hooks/useTheme';
 import { Context, Reference } from '../../types/graphql-schema';
@@ -48,6 +49,7 @@ const useProfileStyles = createStyles(theme => ({
 }));
 
 const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit, contextOnly = false }) => {
+  const { t } = useTranslation();
   const styles = useProfileStyles();
 
   const initialValues: ProfileFormValuesType = {
@@ -68,10 +70,9 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
       : yup
           .string()
           .required()
-          .min(3, 'nameID should be at least 3 symbols long')
+          .min(3, 'TextID should be at least 3 symbols long')
           .max(20, 'Exceeded the limit of 20 characters')
           .matches(/^\S*$/, 'nameID cannot contain spaces'),
-    // state: contextOnly ? yup.string() : yup.string().required(),
     background: yup.string().required(),
     impact: yup.string().required(),
     tagline: yup.string().required(),
@@ -79,8 +80,8 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
     who: yup.string().required(),
     references: yup.array().of(
       yup.object().shape({
-        name: yup.string().required(),
-        uri: yup.string().required(),
+        name: yup.string().required(t('forms.validations.required')),
+        uri: yup.string().required(t('forms.validations.required')),
       })
     ),
   });

@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useUsersQuery } from '../../../generated/graphql';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { PageProps } from '../../../pages';
-import Loading from '../../core/Loading';
-import EditCredentials from './EditCredentials';
+import { useUsersQuery } from '../../generated/graphql';
+import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { PageProps } from '..';
+import Loading from '../../components/core/Loading';
+import EditCredentials from '../../components/Admin/Authorization/EditCredentials';
 
 interface AuthorizationPageProps extends PageProps {}
 

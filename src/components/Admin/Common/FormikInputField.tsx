@@ -16,7 +16,7 @@ interface InputFieldProps {
   as?: React.ElementType;
 }
 
-export const InputField: FC<InputFieldProps> = ({
+export const FormikInputField: FC<InputFieldProps> = ({
   title,
   value,
   name,
@@ -55,4 +55,4 @@ export const InputField: FC<InputFieldProps> = ({
     </>
   );
 };
-export default InputField;
+export default FormikInputField;

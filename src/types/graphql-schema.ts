@@ -415,7 +415,7 @@ export type Credential = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   resourceID: Scalars['String'];
-  type: Scalars['String'];
+  type: AuthorizationCredential;
 };
 
 export type DeleteActorGroupInput = {
@@ -1490,6 +1490,10 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
     references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>>;
   };
 
+export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+  };
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
@@ -1591,6 +1595,14 @@ export type CreateChallengeMutationVariables = Exact<{
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
+};
+
+export type CreateEcoverseMutationVariables = Exact<{
+  input: CreateEcoverseInput;
+}>;
+
+export type CreateEcoverseMutation = { __typename?: 'Mutation' } & {
+  createEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
 };
 
 export type CreateGroupOnCommunityMutationVariables = Exact<{
@@ -1793,6 +1805,14 @@ export type UpdateChallengeMutationVariables = Exact<{
 
 export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'>;
+};
+
+export type UpdateEcoverseMutationVariables = Exact<{
+  input: UpdateEcoverseInput;
+}>;
+
+export type UpdateEcoverseMutation = { __typename?: 'Mutation' } & {
+  updateEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
 };
 
 export type UpdateGroupMutationVariables = Exact<{
@@ -2096,14 +2116,9 @@ export type EcoverseInfoQueryVariables = Exact<{
 }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          }
-      >;
-      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
+  } & EcoverseDetailsFragment;
 };
 
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2117,8 +2132,6 @@ export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
 export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
-
-export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'>;
 
 export type GroupQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];

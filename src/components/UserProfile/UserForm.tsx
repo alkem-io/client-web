@@ -14,7 +14,7 @@ import Loading from '../core/Loading';
 import SearchDropdown from '../core/SearchDropdown';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';
-import { InputField } from '../Admin/Common/InputField';
+import { FormikInputField } from '../Admin/Common/FormikInputField';
 import { ReferenceSegment } from '../Admin/Common/ReferenceSegment';
 import TagsetSegment from '../Admin/Common/TagsetSegment';
 
@@ -185,7 +185,7 @@ export const UserForm: FC<UserProps> = ({
               <Header text={title} />
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'displayName'}
                     title={'Full Name'}
                     value={displayName}
@@ -198,7 +198,7 @@ export const UserForm: FC<UserProps> = ({
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'firstName'}
                     title={'First Name'}
                     value={firstName}
@@ -209,7 +209,7 @@ export const UserForm: FC<UserProps> = ({
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'lastName'}
                     title={'Last name'}
                     value={lastName}
@@ -222,7 +222,7 @@ export const UserForm: FC<UserProps> = ({
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'email'}
                     type={'email'}
                     title={'Email'}
@@ -262,7 +262,7 @@ export const UserForm: FC<UserProps> = ({
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'city'}
                     title={'City'}
                     value={city}
@@ -274,7 +274,7 @@ export const UserForm: FC<UserProps> = ({
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'phone'}
                     title={'Phone'}
                     value={phone}
@@ -286,7 +286,7 @@ export const UserForm: FC<UserProps> = ({
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'bio'}
                     title={'Bio'}
                     value={bio}

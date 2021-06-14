@@ -47,6 +47,17 @@ export const ContextDetailsFragmentDoc = gql`
     }
   }
 `;
+export const EcoverseDetailsFragmentDoc = gql`
+  fragment EcoverseDetails on Ecoverse {
+    id
+    nameID
+    displayName
+    context {
+      ...ContextDetails
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+`;
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
@@ -154,13 +165,6 @@ export const UserDetailsFragmentDoc = gql`
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
-    displayName
-  }
-`;
-export const EcoverseDetailsFragmentDoc = gql`
-  fragment EcoverseDetails on Ecoverse {
-    id
-    nameID
     displayName
   }
 `;
@@ -442,6 +446,53 @@ export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.Cr
 export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
+>;
+export const CreateEcoverseDocument = gql`
+  mutation createEcoverse($input: CreateEcoverseInput!) {
+    createEcoverse(ecoverseData: $input) {
+      ...EcoverseDetails
+    }
+  }
+  ${EcoverseDetailsFragmentDoc}
+`;
+export type CreateEcoverseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateEcoverseMutation,
+  SchemaTypes.CreateEcoverseMutationVariables
+>;
+
+/**
+ * __useCreateEcoverseMutation__
+ *
+ * To run a mutation, you first call `useCreateEcoverseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEcoverseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEcoverseMutation, { data, loading, error }] = useCreateEcoverseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateEcoverseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateEcoverseMutation,
+    SchemaTypes.CreateEcoverseMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.CreateEcoverseMutation, SchemaTypes.CreateEcoverseMutationVariables>(
+    CreateEcoverseDocument,
+    baseOptions
+  );
+}
+export type CreateEcoverseMutationHookResult = ReturnType<typeof useCreateEcoverseMutation>;
+export type CreateEcoverseMutationResult = Apollo.MutationResult<SchemaTypes.CreateEcoverseMutation>;
+export type CreateEcoverseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateEcoverseMutation,
+  SchemaTypes.CreateEcoverseMutationVariables
 >;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
@@ -1603,6 +1654,53 @@ export type UpdateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.Up
 export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
+>;
+export const UpdateEcoverseDocument = gql`
+  mutation updateEcoverse($input: UpdateEcoverseInput!) {
+    updateEcoverse(ecoverseData: $input) {
+      ...EcoverseDetails
+    }
+  }
+  ${EcoverseDetailsFragmentDoc}
+`;
+export type UpdateEcoverseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateEcoverseMutation,
+  SchemaTypes.UpdateEcoverseMutationVariables
+>;
+
+/**
+ * __useUpdateEcoverseMutation__
+ *
+ * To run a mutation, you first call `useUpdateEcoverseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEcoverseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEcoverseMutation, { data, loading, error }] = useUpdateEcoverseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateEcoverseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateEcoverseMutation,
+    SchemaTypes.UpdateEcoverseMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.UpdateEcoverseMutation, SchemaTypes.UpdateEcoverseMutationVariables>(
+    UpdateEcoverseDocument,
+    baseOptions
+  );
+}
+export type UpdateEcoverseMutationHookResult = ReturnType<typeof useUpdateEcoverseMutation>;
+export type UpdateEcoverseMutationResult = Apollo.MutationResult<SchemaTypes.UpdateEcoverseMutation>;
+export type UpdateEcoverseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateEcoverseMutation,
+  SchemaTypes.UpdateEcoverseMutationVariables
 >;
 export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
@@ -2814,25 +2912,14 @@ export function refetchEcoverseHostReferencesQuery(variables?: SchemaTypes.Ecove
 export const EcoverseInfoDocument = gql`
   query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
-      id
-      nameID
-      displayName
-      context {
-        tagline
-        vision
-        impact
-        background
-        references {
-          name
-          uri
-        }
-      }
+      ...EcoverseDetails
       community {
         id
         displayName
       }
     }
   }
+  ${EcoverseDetailsFragmentDoc}
 `;
 
 /**

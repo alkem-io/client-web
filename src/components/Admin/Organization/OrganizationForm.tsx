@@ -11,7 +11,7 @@ import { Organisation, TagsetTemplate } from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
-import InputField from '../Common/InputField';
+import FormikInputField from '../Common/FormikInputField';
 import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSegment';
 import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
 
@@ -150,7 +150,7 @@ export const OrganizationForm: FC<Props> = ({
                 >
                   <Header text={title} />
                   <Form.Row>
-                    <InputField
+                    <FormikInputField
                       name={'name'}
                       title={'Full Name'}
                       value={name}
@@ -160,7 +160,7 @@ export const OrganizationForm: FC<Props> = ({
                   </Form.Row>
 
                   <Form.Row>
-                    <InputField
+                    <FormikInputField
                       name={'nameID'}
                       title={'Text ID'}
                       value={nameID}
@@ -172,7 +172,7 @@ export const OrganizationForm: FC<Props> = ({
                   {!isCreateMode && (
                     <>
                       <Form.Row>
-                        <InputField
+                        <FormikInputField
                           name={'description'}
                           title={'Description'}
                           value={description}

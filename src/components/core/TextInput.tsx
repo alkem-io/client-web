@@ -108,12 +108,10 @@ const TextInput: FC<TextInputProps> = ({
   small = false,
   error = false,
   disabled = false,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   ...rest
 }) => {
   const styles = useButtonStyles(classes);
 
-  // can always use the bootstrap button internally
   return (
     <div className={clsx(styles.inputContainer, styles[variant], error && styles.error)}>
       {label && (
@@ -155,7 +153,6 @@ const TextArea: FC<TextAreaProps> = ({
 }) => {
   const styles = useButtonStyles(classes);
 
-  // can always use the bootstrap button internally
   return (
     <div className={clsx(styles.inputContainer, styles[variant], error && styles.error)}>
       {label && (

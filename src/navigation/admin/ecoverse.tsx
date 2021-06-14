@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import EcoverseList from '../../components/Admin/Ecoverse/EcoverseList';
+import EcoverseList from '../../pages/Admin/Ecoverse/EcoverseList';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import Loading from '../../components/core/Loading';
@@ -11,6 +11,8 @@ import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour, PageProps } from '../../pages';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
+import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
+import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
 
 export interface AdminParameters {
   challengeId: string;
@@ -30,7 +32,7 @@ export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
         <EcoverseList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
-        <div> new ecoverse</div>
+        <NewEcoverse paths={currentPaths} />
       </Route>
       <Route path={`${path}/:ecoverseId`}>
         <EcoverseProvider>
@@ -68,7 +70,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.ecoverseLvl} paths={currentPaths} />
       </Route>
       <Route path={`${path}/edit`}>
-        <div>Edit ecoverse! Comming soon</div>
+        <EditEcoverse paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
