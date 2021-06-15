@@ -140,6 +140,15 @@ export const EcoverseDetailsFragmentDoc = gql`
     id
     nameID
     displayName
+    context {
+      id
+      tagline
+      references {
+        id
+        name
+        uri
+      }
+    }
   }
 `;
 export const AssignUserToCommunityDocument = gql`

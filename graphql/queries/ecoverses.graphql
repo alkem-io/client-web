@@ -8,4 +8,13 @@ fragment EcoverseDetails on Ecoverse {
   id
   nameID
   displayName
+  context {
+    id
+    tagline
+    references {
+      id
+      name
+      uri
+    }
+  }
 }
