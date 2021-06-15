@@ -1,15 +1,13 @@
-import { ReactComponent as ChatFillIcon } from 'bootstrap-icons/icons/chat-fill.svg';
+import React, { FC, useRef, useState } from 'react';
+import { Overlay, Popover } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import { ReactComponent as GlobeIcon } from 'bootstrap-icons/icons/globe2.svg';
-import { ReactComponent as PeopleFillIcon } from 'bootstrap-icons/icons/people-fill.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
-import React, { FC, useRef, useState } from 'react';
-import { Overlay, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { createStyles } from '../../hooks/useTheme';
 import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
@@ -54,7 +52,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
     <>
       <Hidden mdDown>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <OverlayTrigger
+          {/*<OverlayTrigger
             offset={[100, 100]}
             placement="bottom"
             overlay={<Tooltip id="ecoverse-tooltip">{'Ecoverse'}</Tooltip>}
@@ -62,8 +60,8 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
             <IconButton className={styles.navLinkOffset} as={Link} to="/">
               <Icon component={GlobeIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
             </IconButton>
-          </OverlayTrigger>
-          <OverlayTrigger
+          </OverlayTrigger>*/}
+          {/*<OverlayTrigger
             offset={[100, 100]}
             placement="bottom"
             overlay={<Tooltip id="community-tooltip">{'Community'}</Tooltip>}
@@ -78,8 +76,8 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                 <Icon component={PeopleIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
               </IconButton>
             </span>
-          </OverlayTrigger>
-          <OverlayTrigger
+          </OverlayTrigger>*/}
+          {/*<OverlayTrigger
             offset={[100, 100]}
             placement="bottom"
             overlay={<Tooltip id="messages-tooltip">{'Messages'}</Tooltip>}
@@ -94,7 +92,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                 <Icon component={ChatIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
               </IconButton>
             </span>
-          </OverlayTrigger>
+          </OverlayTrigger>*/}
           <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
             {isAuthenticated && (
               <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>

@@ -15,11 +15,11 @@ const useHeaderStyles = createStyles(theme => ({
   earlyAccessAlert: {
     width: 'calc(100% + 30px)',
     marginLeft: -15,
-    height: 40,
+    height: theme.earlyAccessAlert.height,
     background: theme.palette.primary,
   },
   alertText: {
-    padding: '0 40px',
+    padding: `0 ${theme.earlyAccessAlert.height}px`,
   },
   absolute: {
     position: 'absolute',

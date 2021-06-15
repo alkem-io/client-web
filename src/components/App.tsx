@@ -22,8 +22,9 @@ import Footer from './layout/Footer';
 import Header from './layout/Header';
 import Main from './layout/Main';
 import Navigation from './layout/Navigation';
+import Sidebar from './layout/Sidebar/Sidebar';
 import User from './layout/User';
-import NavRings from './NavRings';
+import { useEcoversesContext } from '../hooks/useEcoversesContext';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -39,6 +40,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
+  const { ecoverses } = useEcoversesContext();
 
   const { user, loading } = useUserContext();
   const { loading: configLoading } = useConfig();
@@ -69,7 +71,6 @@ const App = ({ children }): React.ReactElement => {
 
   return (
     <div id="app">
-      <NavRings paths={paths} />
       <Header innerRef={headerRef}>
         {isVisible => (
           <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -103,18 +104,21 @@ const App = ({ children }): React.ReactElement => {
           </div>
         )}
       </Header>
-      <Main>
-        <Section
-          hideDetails
-          gutters={{ content: false, details: false, root: true }}
-          classes={{
-            padding: '0',
-          }}
-        >
-          <Breadcrumbs paths={paths} />
-        </Section>
-        {children}
-      </Main>
+      <Sidebar userMetadata={user} ecoverses={ecoverses} />
+      <div id="main">
+        <Main>
+          <Section
+            hideDetails
+            gutters={{ content: false, details: false, root: true }}
+            classes={{
+              padding: '0',
+            }}
+          >
+            <Breadcrumbs paths={paths} />
+          </Section>
+          {children}
+        </Main>
+      </div>
       <Footer>
         <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
           <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
