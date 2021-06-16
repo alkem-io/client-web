@@ -31,15 +31,22 @@ const useStyles = createStyles(theme => ({
     border: `1px solid ${theme.palette.neutralMedium}`,
   },
   sidebarStatic: {
-    flexShrink: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.shape.spacing(2),
+    marginTop: theme.shape.spacing(1),
+    marginBottom: theme.shape.spacing(1),
   },
   sidebarDynamic: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    gap: theme.shape.spacing(2),
     flexGrow: 1,
     overflowY: 'auto',
+    marginTop: theme.shape.spacing(1),
+    marginBottom: theme.shape.spacing(1),
   },
 }));
 

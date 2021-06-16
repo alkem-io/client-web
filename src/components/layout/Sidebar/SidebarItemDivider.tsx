@@ -16,6 +16,6 @@ const useStyles = createStyles(theme => ({
 
 const SidebarItemDivider = () => {
   const styles = useStyles();
-  return <hr className={styles.line} />;
+  return <hr id="sidebarItemDivider" className={styles.line} />;
 };
 export default SidebarItemDivider;
