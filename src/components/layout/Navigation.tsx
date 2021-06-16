@@ -38,6 +38,10 @@ const useNavigationStyles = createStyles(theme => ({
       marginLeft: theme.shape.spacing(2),
     },
   },
+  flexCenterItems: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 }));
 
 const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
@@ -51,8 +55,8 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
   return (
     <>
       <Hidden mdDown>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
+        <div className={styles.flexCenterItems}>
+          <div className={styles.flexCenterItems} ref={popoverAnchorMdDown}>
             {isAuthenticated && (
               <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
                 <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
@@ -115,7 +119,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
         </div>
       </Hidden>
       <Hidden mdUp>
-        <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdUp}>
+        <div className={styles.flexCenterItems} ref={popoverAnchorMdUp}>
           <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
             <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
           </IconButton>
