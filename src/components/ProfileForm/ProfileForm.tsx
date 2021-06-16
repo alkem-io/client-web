@@ -150,7 +150,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
                 {getTextArea({ name: 'name', label: 'Name' })}
                 {getTextArea({
                   name: 'nameID',
-                  label: 'Text ID',
+                  label: 'Name ID',
                   rows: 1,
                   placeholder:
                     'Unique textual identifier, used for URL paths. Note: cannot be modified after creation.',

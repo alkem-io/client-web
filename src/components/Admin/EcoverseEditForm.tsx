@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Form } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { createStyles } from '../../hooks/useTheme';
@@ -121,30 +121,32 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
           required?: boolean;
         }) => {
           return (
-            <Form.Group controlId={name}>
-              {rows && rows > 1 ? (
-                <FormikTextAreaField
-                  name={name}
-                  value={values[name] as string}
-                  title={label}
-                  placeholder={placeholder || label}
-                  className={styles.field}
-                  disabled={disabled}
-                  rows={rows}
-                  required={required}
-                />
-              ) : (
-                <FormikInputField
-                  name={name}
-                  value={values[name] as string}
-                  title={label}
-                  placeholder={placeholder || label}
-                  className={styles.field}
-                  disabled={disabled}
-                  required={required}
-                />
-              )}
-            </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col} controlId={name}>
+                {rows && rows > 1 ? (
+                  <FormikTextAreaField
+                    name={name}
+                    value={values[name] as string}
+                    title={label}
+                    placeholder={placeholder || label}
+                    className={styles.field}
+                    disabled={disabled}
+                    rows={rows}
+                    required={required}
+                  />
+                ) : (
+                  <FormikInputField
+                    name={name}
+                    value={values[name] as string}
+                    title={label}
+                    placeholder={placeholder || label}
+                    className={styles.field}
+                    disabled={disabled}
+                    required={required}
+                  />
+                )}
+              </Form.Group>
+            </Form.Row>
           );
         };
 
