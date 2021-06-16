@@ -52,47 +52,6 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
     <>
       <Hidden mdDown>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          {/*<OverlayTrigger
-            offset={[100, 100]}
-            placement="bottom"
-            overlay={<Tooltip id="ecoverse-tooltip">{'Ecoverse'}</Tooltip>}
-          >
-            <IconButton className={styles.navLinkOffset} as={Link} to="/">
-              <Icon component={GlobeIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-            </IconButton>
-          </OverlayTrigger>*/}
-          {/*<OverlayTrigger
-            offset={[100, 100]}
-            placement="bottom"
-            overlay={<Tooltip id="community-tooltip">{'Community'}</Tooltip>}
-          >
-            <span className={styles.navLinkOffset}>
-              <IconButton
-                disabled={!Boolean(userMetadata)}
-                as={Link}
-                to="/community"
-                hoverIcon={<Icon component={PeopleFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
-              >
-                <Icon component={PeopleIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-              </IconButton>
-            </span>
-          </OverlayTrigger>*/}
-          {/*<OverlayTrigger
-            offset={[100, 100]}
-            placement="bottom"
-            overlay={<Tooltip id="messages-tooltip">{'Messages'}</Tooltip>}
-          >
-            <span className={styles.navLinkOffset}>
-              <IconButton
-                disabled={!Boolean(userMetadata)}
-                as={Link}
-                to="/messages"
-                hoverIcon={<Icon component={ChatFillIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />}
-              >
-                <Icon component={ChatIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-              </IconButton>
-            </span>
-          </OverlayTrigger>*/}
           <div style={{ display: 'flex', alignItems: 'center' }} ref={popoverAnchorMdDown}>
             {isAuthenticated && (
               <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
