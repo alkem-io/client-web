@@ -49,12 +49,14 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
             </Form.Group>
           </Form.Row>
           {references?.length === 0 ? (
-            <Form.Control
-              type={'text'}
-              placeholder={t('components.referenceSegment.missing-refreneces')}
-              readOnly={true}
-              disabled={true}
-            />
+            <Form.Row className={'mb-2'}>
+              <Form.Control
+                type={'text'}
+                placeholder={t('components.referenceSegment.missing-refreneces')}
+                readOnly={true}
+                disabled={true}
+              />
+            </Form.Row>
           ) : (
             references?.map((ref, index) => (
               <Form.Row key={index} className={'align-items-sm-end'}>

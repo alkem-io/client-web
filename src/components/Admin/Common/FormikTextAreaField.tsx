@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { Form, FormControlProps } from 'react-bootstrap';
 import { Required } from '../../Required';
 
-interface InputFieldProps extends FormControlProps {
+interface TextAreaFieldProps extends FormControlProps {
   title: string;
   value: string;
   name: string;
@@ -12,9 +12,10 @@ interface InputFieldProps extends FormControlProps {
   disabled?: boolean;
   placeholder?: string;
   autoComplete?: string;
+  rows?: number;
 }
 
-export const FormikInputField: FC<InputFieldProps> = ({
+export const FormikTextAreaField: FC<TextAreaFieldProps> = ({
   title,
   value,
   name,
@@ -24,7 +25,6 @@ export const FormikInputField: FC<InputFieldProps> = ({
   type,
   placeholder,
   autoComplete,
-  as,
   ...rest
 }) => {
   const [field, meta] = useField(name);
@@ -37,7 +37,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
       </Form.Label>
       <Form.Control
         name={name}
-        as={as ? as : 'input'}
+        as={'textarea'}
         type={type || 'text'}
         placeholder={placeholder || title}
         value={value}
@@ -55,4 +55,4 @@ export const FormikInputField: FC<InputFieldProps> = ({
     </>
   );
 };
-export default FormikInputField;
+export default FormikTextAreaField;

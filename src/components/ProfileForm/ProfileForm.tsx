@@ -70,14 +70,14 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
       : yup
           .string()
           .required()
-          .min(3, 'TextID should be at least 3 symbols long')
+          .min(3, 'NameID should be at least 3 symbols long')
           .max(20, 'Exceeded the limit of 20 characters')
           .matches(/^\S*$/, 'nameID cannot contain spaces'),
-    background: yup.string().required(),
-    impact: yup.string().required(),
-    tagline: yup.string().required(),
-    vision: yup.string().required(),
-    who: yup.string().required(),
+    background: yup.string().required(t('forms.validations.required')),
+    impact: yup.string().required(t('forms.validations.required')),
+    tagline: yup.string().required(t('forms.validations.required')),
+    vision: yup.string().required(t('forms.validations.required')),
+    who: yup.string().required(t('forms.validations.required')),
     references: yup.array().of(
       yup.object().shape({
         name: yup.string().required(t('forms.validations.required')),

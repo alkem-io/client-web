@@ -1,13 +1,15 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
+import EcoverseEditForm from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
+import { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
 import {
   refetchEcoversesQuery,
   useCreateReferenceOnContextMutation,
   useDeleteReferenceMutation,
+  useOrganizationsListQuery,
   useUpdateEcoverseMutation,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
@@ -23,6 +25,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'edit', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
   const { ecoverseId, ecoverse } = useEcoverse();
+  const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const [addReference] = useCreateReferenceOnContextMutation();
@@ -35,7 +38,12 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
     onError: handleError,
   });
 
-  const isLoading = loading1;
+  const organizations = useMemo(
+    () => organizationList?.organisations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    [organizationList]
+  );
+
+  const isLoading = loading1 || loadingOrganizations;
   const profile = ecoverse?.ecoverse;
   const profileTopLvlInfo = {
     name: profile?.displayName,
@@ -47,6 +55,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: ProfileFormValuesType) => {
+    debugger;
     const { name, nameID, ...context } = values;
     const contextId = profile?.context?.id || '';
 
@@ -93,10 +102,11 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {'Edit Ecoverse'}
       </Typography>
-      <ProfileForm
+      <EcoverseEditForm
         isEdit={true}
         profile={profileTopLvlInfo || {}}
         context={profile?.context}
+        organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
