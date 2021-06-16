@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
-import HomePage from '../pages/Home';
+import HomePage from '../pages/home/Home';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
 import { Community } from './community';
