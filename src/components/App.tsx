@@ -104,7 +104,7 @@ const App = ({ children }): React.ReactElement => {
           </div>
         )}
       </Header>
-      <Sidebar userMetadata={user} ecoverses={ecoverses} />
+      <Sidebar isUserAuth={Boolean(user)} ecoverses={ecoverses} />
       <div id="main">
         <Main>
           <Section

@@ -13,7 +13,7 @@ interface SidebarItemProps {
 
 const SidebarItem: FC<SidebarItemProps> = ({ icon, to, tooltip, disabled }) => {
   return (
-    <div id="sidebarItem">
+    <div id="sidebar-item">
       <OverlayTrigger
         offset={[100, 100]}
         placement="right"
