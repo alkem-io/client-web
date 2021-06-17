@@ -139,6 +139,8 @@ export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
   credentialRules: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
 };
 
 export enum AuthorizationCredential {
@@ -155,6 +157,14 @@ export enum AuthorizationCredential {
   OrganisationMember = 'OrganisationMember',
   UserGroupMember = 'UserGroupMember',
   UserSelfManagement = 'UserSelfManagement',
+}
+
+export enum AuthorizationPrivilege {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Grant = 'GRANT',
+  Read = 'READ',
+  Update = 'UPDATE',
 }
 
 export type Challenge = {
@@ -1118,6 +1128,8 @@ export type Query = {
   search: Array<SearchResultEntry>;
   /** A particular user, identified by the ID or by email */
   user: User;
+  /** Privileges assigned to a User (based on held credentials) given an Authorization defnition. */
+  userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
   /** The users filtered by list of IDs. */
@@ -1144,6 +1156,10 @@ export type QuerySearchArgs = {
 
 export type QueryUserArgs = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type QueryUserAuthorizationPrivilegesArgs = {
+  userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
 };
 
 export type QueryUsersByIdArgs = {
@@ -1299,9 +1315,12 @@ export type UpdateAspectInput = {
   title?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAuthorizationDefinitionInput = {
+  anonymousReadAccess: Scalars['Boolean'];
+};
+
 export type UpdateChallengeInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1323,8 +1342,10 @@ export type UpdateContextInput = {
 };
 
 export type UpdateEcoverseInput = {
-  /** The ID of the entity to be updated. */
+  /** The ID or NameID of the Ecoverse. */
   ID: Scalars['UUID_NAMEID'];
+  /** Update anonymous visibility for the Ecoverse. */
+  authorizationDefinition?: Maybe<UpdateAuthorizationDefinitionInput>;
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1338,8 +1359,7 @@ export type UpdateEcoverseInput = {
 };
 
 export type UpdateOpportunityInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1351,7 +1371,7 @@ export type UpdateOpportunityInput = {
 };
 
 export type UpdateOrganisationInput = {
-  /** The ID of the entity to be updated. */
+  /** The ID or NameID of the Organisation to update. */
   ID: Scalars['UUID_NAMEID'];
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -1369,8 +1389,7 @@ export type UpdateProfileInput = {
 };
 
 export type UpdateProjectInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   description?: Maybe<Scalars['String']>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -1440,6 +1459,13 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The profile for this User */
   profile?: Maybe<Profile>;
+};
+
+export type UserAuthorizationPrivilegesInput = {
+  /** The authorization definition to evaluate the user credentials against. */
+  authorizationID: Scalars['UUID'];
+  /** The user to evaluate privileges granted based on held credentials. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type UserGroup = Searchable & {

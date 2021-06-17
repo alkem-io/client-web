@@ -1,5 +1,4 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
-import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-octagon.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
@@ -10,10 +9,10 @@ import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
+import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Typography from '../components/core/Typography';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
@@ -36,18 +35,6 @@ interface EcoversePageProps extends PageProps {
 
   users: User[] | undefined;
 }
-
-const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
-  const { t } = useTranslation();
-  return (
-    <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
-      <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
-      <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
-        {t('pages.ecoverse.errorblock.message', { blockName: blockName.toLocaleLowerCase() })}
-      </Typography>
-    </div>
-  );
-};
 
 const EcoversePage: FC<EcoversePageProps> = ({
   paths,
@@ -190,9 +177,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               {...(challenge as any)}
               context={{
                 ...challenge.context,
-                tag: user?.ofChallenge(challenge.id)
-                  ? t('pages.ecoverse.cards.tags.you-are-in')
-                  : (challenge.context as Record<string, any>)['tag'],
+                tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
               }}
               url={`${url}/challenges/${challenge.nameID}`}
             />
