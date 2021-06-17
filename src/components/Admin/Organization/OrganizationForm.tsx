@@ -162,7 +162,7 @@ export const OrganizationForm: FC<Props> = ({
                   <Form.Row>
                     <FormikInputField
                       name={'nameID'}
-                      title={'Text ID'}
+                      title={'Name ID'}
                       value={nameID}
                       required={true}
                       readOnly={isReadOnlyMode || isEditMode}

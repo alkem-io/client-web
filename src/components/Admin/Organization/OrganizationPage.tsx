@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
+  refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
   useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
@@ -51,7 +52,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     },
     onError: handleError,
     awaitRefetchQueries: true,
-    refetchQueries: ['organizationsList'],
+    refetchQueries: [refetchOrganizationsListQuery()],
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
