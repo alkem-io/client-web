@@ -1,15 +1,15 @@
 import React, { FC, useState } from 'react';
 import { Col, Form, Modal } from 'react-bootstrap';
-import Button from '../core/Button';
-import { TextArea } from '../core/TextInput';
 import {
-  OpportunityActorGroupsDocument,
+  refetchOpportunityActorGroupsQuery,
   useCreateActorGroupMutation,
   useOpportunityProfileQuery,
 } from '../../generated/graphql';
-import Loading from '../core/Loading';
-import { replaceAll } from '../../utils/replaceAll';
 import { useEcoverse } from '../../hooks/useEcoverse';
+import { replaceAll } from '../../utils/replaceAll';
+import Button from '../core/Button';
+import Loading from '../core/Loading';
+import { TextArea } from '../core/TextInput';
 
 interface P {
   onHide: () => void;
@@ -19,12 +19,12 @@ interface P {
 }
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
+  const { ecoverseId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
-  const { ecoverseId } = useEcoverse();
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
   const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({

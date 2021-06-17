@@ -3,15 +3,15 @@ import React, { FC } from 'react';
 import { Form, Modal } from 'react-bootstrap';
 import * as yup from 'yup';
 import {
-  OpportunityActorGroupsDocument,
+  refetchOpportunityActorGroupsQuery,
   useCreateAspectMutation,
   useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { Aspect } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
@@ -79,14 +79,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

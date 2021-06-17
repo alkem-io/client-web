@@ -388,7 +388,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {incoming?.map((props, i) => (
-                <RelationCard key={i} opportunityID={id} {...props} />
+                <RelationCard key={i} opportunityId={id} {...props} />
               ))}
             </CardContainer>
           )}
@@ -401,7 +401,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {outgoing?.map((props, i) => (
-                <RelationCard key={i} opportunityID={id} {...props} />
+                <RelationCard key={i} opportunityId={id} {...props} />
               ))}
             </CardContainer>
           )}
