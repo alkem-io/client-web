@@ -123,6 +123,18 @@
   "pages": {
     "home": {
       "sections": {
+        "welcome": {
+          "header": "insert header here",
+          "subheader": "insert subheader here",
+          "body": "insert body here",
+          "activity": {
+            "title": "insert title here",
+            "ecoverses": "Ecoverses",
+            "challenges": "Challenges",
+            "users": "Users",
+            "organisations": "Organisations"
+          }
+        },
         "ecoverse": {
           "header": "Cherrytwist: Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",

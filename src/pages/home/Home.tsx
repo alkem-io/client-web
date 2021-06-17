@@ -4,7 +4,9 @@ import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Icon from '../../components/core/Icon';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
+import Divider from '../../components/core/Divider';
 import EcoversesSection from './EcoversesSection';
+import WelcomeSection from './WelcomeSection';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -14,6 +16,8 @@ const HomePage = () => {
 
   return (
     <React.Fragment>
+      <WelcomeSection />
+      <Divider />
       <Section avatar={<Icon component={Globe} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.home.sections.ecoverse.header')} />
         <SubHeader text={t('pages.home.sections.ecoverse.subheader')} />

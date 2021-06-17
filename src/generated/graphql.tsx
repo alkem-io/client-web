@@ -2854,6 +2854,54 @@ export function useEcoversesLazyQuery(
 export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
 export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
 export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
+export const GlobalActivityDocument = gql`
+  query globalActivity {
+    metadata {
+      activity {
+        name
+        value
+      }
+    }
+  }
+`;
+
+/**
+ * __useGlobalActivityQuery__
+ *
+ * To run a query within a React component, call `useGlobalActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalActivityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalActivityQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
+    GlobalActivityDocument,
+    baseOptions
+  );
+}
+export function useGlobalActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
+    GlobalActivityDocument,
+    baseOptions
+  );
+}
+export type GlobalActivityQueryHookResult = ReturnType<typeof useGlobalActivityQuery>;
+export type GlobalActivityLazyQueryHookResult = ReturnType<typeof useGlobalActivityLazyQuery>;
+export type GlobalActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.GlobalActivityQuery,
+  SchemaTypes.GlobalActivityQueryVariables
+>;
 export const GroupDocument = gql`
   query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
     ecoverse(ID: $ecoverseId) {
