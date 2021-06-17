@@ -1,0 +1,20 @@
+fragment OrganizationProfileInfo on Organisation {
+  id
+  nameID
+  displayName
+  profile {
+    id
+    avatar
+    description
+    references {
+      id
+      name
+      uri
+    }
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}

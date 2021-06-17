@@ -1,0 +1,5 @@
+mutation updateEcoverse($input: UpdateEcoverseInput!) {
+  updateEcoverse(ecoverseData: $input) {
+    ...EcoverseDetails
+  }
+}

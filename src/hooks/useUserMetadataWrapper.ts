@@ -37,23 +37,19 @@ export const useUserMetadataWrapper = () => {
         user?.agent?.credentials
           ?.map(c => {
             return {
-              code: c.type,
-              type: resolver.toAuthenticationCredentials(c.type),
-              name: resolver.toRoleName(resolver.toAuthenticationCredentials(c.type)),
-              order: resolver.toRoleOrder(resolver.toAuthenticationCredentials(c.type)),
+              type: c.type,
+              name: resolver.toRoleName(c.type),
+              order: resolver.toRoleOrder(c.type),
               resourceId: c.resourceID,
             } as Role;
           })
           .sort((a, b) => a.order - b.order) || [];
 
       const hasCredentials = (credential: AuthorizationCredential, resourceId = '') =>
-        Boolean(
-          user?.agent?.credentials?.findIndex(
-            c => resolver.toAuthenticationCredentials(c.type) === credential && c.resourceID === resourceId
-          ) !== -1
-        );
+        Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1);
       const metadata = {
         user,
+
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
         ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),

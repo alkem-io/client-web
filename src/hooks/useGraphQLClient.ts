@@ -17,7 +17,8 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation, response }) => {
+    console.log(response);
     let errors: Error[] = [];
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
@@ -105,7 +106,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     console.log('Create apollo client!');
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
     });
   }, [dispatch]);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
@@ -25,7 +24,7 @@ import {
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
-import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
+import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -48,7 +47,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { displayName: name, context = {}, nameID: ecoverseId } = ecoverse.ecoverse;
+  const { displayName: name, context, nameID: ecoverseId } = ecoverse.ecoverse;
 
   const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
@@ -63,7 +62,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { tagline, impact, vision, background, references } = context;
+  const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
 

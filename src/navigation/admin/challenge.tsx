@@ -102,26 +102,9 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     value: o.displayName,
     url: `${url}/${o.id}`,
   }));
-  // TODO: [ATS] Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved
-  // const [remove] = useRemoveOpportunityMutation({
-  //   refetchQueries: ['challengeOpportunities'],
-  //   awaitRefetchQueries: true,
-
-  //   onError: e => console.error('Opportunity remove error---> ', e),
-  // });
-
-  // const handleDelete = (item: SearchableListItem) => {
-  //   remove({
-  //     variables: {
-  //       ID: Number(item.id),
-  //     },
-  //   });
-  // };
 
   return (
     <>
-      {/* Hide delete button until https://github.com/cherrytwist/Server/issues/712 if resolved */}
-      {/* <ListPage paths={paths} data={opportunities || []} onDelete={handleDelete} /> */}
       <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />
     </>
   );

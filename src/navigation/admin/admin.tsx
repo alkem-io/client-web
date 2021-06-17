@@ -3,13 +3,11 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import Loading from '../../components/core/Loading';
-import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
+import { useUsersQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour } from '../../pages';
 import AuthorizationRoute from './authorization';
-import { ChallengesRoute } from './challenge';
-import { CommunityRoute } from './community';
+import { EcoverseListAdminRoute } from './ecoverse';
 import { OrganizationsRoute } from './organization';
 import { UsersRoute } from './user';
 
@@ -21,15 +19,12 @@ export interface AdminParameters {
 }
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { ecoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
-  const { data, loading: loadingEcoverse } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
-
-  const community = data?.ecoverse.community;
   const parentMembers = usersInfo?.users || [];
-  if (loadingEcoverse || loadingUsers) return <Loading text={'Loading'} />;
+
+  if (loadingUsers) return <Loading text={'Loading'} />;
 
   return (
     <Switch>
@@ -42,11 +37,8 @@ export const Admin: FC = () => {
       <Route path={`${path}/authorization`}>
         <AuthorizationRoute paths={currentPaths} />
       </Route>
-      <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
-      </Route>
-      <Route path={`${path}/challenges`}>
-        <ChallengesRoute paths={currentPaths} />
+      <Route path={`${path}/ecoverses`}>
+        <EcoverseListAdminRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/organizations`}>
         <OrganizationsRoute paths={currentPaths} parentMembers={parentMembers} />
