@@ -5,7 +5,6 @@ import { useNotification } from './useNotification';
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const notify = useNotification();
   return (error: ApolloError) => {
-    debugger;
     notify(error.message, severity);
   };
 };

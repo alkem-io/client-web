@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   useCreateOrganizationMutation,
   useCreateReferenceOnProfileMutation,
@@ -33,14 +34,20 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const [createTagset] = useCreateTagsetOnProfileMutation();
-
+  const history = useHistory();
+  const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
 
   const [createOrganization] = useCreateOrganizationMutation({
-    onCompleted: () => {
-      notify('Organization created successfully', 'success');
+    onCompleted: data => {
+      const organizationId = data.createOrganisation.nameID;
+      if (organizationId) {
+        notify('Organization created successfully', 'success');
+        const newEcoverseUrl = url.replace('/new', `/${organizationId}/edit`);
+        history.replace(newEcoverseUrl);
+      }
     },
     onError: handleError,
     awaitRefetchQueries: true,

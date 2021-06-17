@@ -21,7 +21,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     console.log(response);
     let errors: Error[] = [];
     if (graphQLErrors) {
-      debugger;
       for (let err of graphQLErrors) {
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:

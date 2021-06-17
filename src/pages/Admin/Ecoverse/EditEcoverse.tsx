@@ -55,7 +55,6 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    debugger;
     const { name, nameID, ...context } = values;
     const contextId = profile?.context?.id || '';
 

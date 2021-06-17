@@ -16,7 +16,7 @@ import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSe
 import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
 
 const emptyOrganization = {
-  name: '',
+  displayName: '',
   profile: {
     description: '',
     avatar: '',
@@ -50,7 +50,7 @@ export const OrganizationForm: FC<Props> = ({
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
-    name,
+    displayName,
     nameID,
     profile: { id: profileId, description, references, avatar },
   } = currentOrganization;
@@ -76,7 +76,7 @@ export const OrganizationForm: FC<Props> = ({
   }, [currentOrganization, tagsetsTemplate]);
 
   const initialValues = {
-    name: name || '',
+    displayName: displayName || '',
     nameID: nameID || '',
     description: description || '',
     avatar: avatar || '',
@@ -85,7 +85,7 @@ export const OrganizationForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('forms.validations.required')),
+    displayName: yup.string().required(t('forms.validations.required')),
     nameID: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
@@ -140,7 +140,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values: { name, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
+          {({ values: { displayName, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate>
                 <Section
@@ -151,9 +151,9 @@ export const OrganizationForm: FC<Props> = ({
                   <Header text={title} />
                   <Form.Row>
                     <FormikInputField
-                      name={'name'}
-                      title={'Full Name'}
-                      value={name}
+                      name={'displayName'}
+                      title={'Display Name'}
+                      value={displayName}
                       required={true}
                       readOnly={isReadOnlyMode}
                     />
