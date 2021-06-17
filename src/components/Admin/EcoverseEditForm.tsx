@@ -83,7 +83,7 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     impact: yup.string(), // .required(t('forms.validations.required')),
     tagline: yup.string(), // .required(t('forms.validations.required')),
     vision: yup.string(), // .required(t('forms.validations.required')),
-    who: yup.string().required(t('forms.validations.required')),
+    who: yup.string(), // .required(t('forms.validations.required')),
 
     references: yup.array().of(
       yup.object().shape({

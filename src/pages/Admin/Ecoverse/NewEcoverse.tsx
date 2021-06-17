@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import EcoverseEditForm from '../../../components/Admin/EcoverseEditForm';
+import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import { Loading } from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-import { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
+
 import {
   refetchEcoversesQuery,
   useCreateEcoverseMutation,
@@ -48,11 +48,11 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
 
   const isLoading = loading1 || loadingOrganizations;
 
-  const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, ...context } = values;
+  const onSubmit = async (values: EcoverseEditFormValuesType) => {
+    const { name, nameID, host, ...context } = values;
     await createEcoverse({
       variables: {
-        input: { nameID, context, displayName: name },
+        input: { nameID, hostID: host, context, displayName: name },
       },
     });
   };

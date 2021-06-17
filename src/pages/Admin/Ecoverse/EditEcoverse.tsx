@@ -1,10 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import EcoverseEditForm from '../../../components/Admin/EcoverseEditForm';
+import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-import { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
 import {
   refetchEcoversesQuery,
   useCreateReferenceOnContextMutation,
@@ -48,14 +47,15 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const profileTopLvlInfo = {
     name: profile?.displayName,
     nameID: profile?.nameID,
+    hostID: profile?.host?.id,
   };
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
   };
 
-  const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, ...context } = values;
+  const onSubmit = async (values: EcoverseEditFormValuesType) => {
+    const { name, nameID, host, ...context } = values;
     const contextId = profile?.context?.id || '';
 
     const initialReferences = profile?.context?.references || [];
@@ -88,9 +88,10 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
     const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
 
+    debugger;
     updateEcoverse({
       variables: {
-        input: { context: contextWithUpdatedRefs, displayName: name, ID: ecoverseId },
+        input: { context: contextWithUpdatedRefs, displayName: name, ID: ecoverseId, hostID: host },
       },
     });
   };

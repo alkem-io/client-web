@@ -2,6 +2,10 @@ fragment EcoverseDetails on Ecoverse {
   id
   nameID
   displayName
+  host {
+    id
+    displayName
+  }
   context {
     ...ContextDetails
   }

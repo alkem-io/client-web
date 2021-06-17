@@ -52,6 +52,10 @@ export const EcoverseDetailsFragmentDoc = gql`
     id
     nameID
     displayName
+    host {
+      id
+      displayName
+    }
     context {
       ...ContextDetails
     }
