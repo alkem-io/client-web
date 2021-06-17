@@ -14,7 +14,7 @@ import FormikTextAreaField from './Common/FormikTextAreaField';
 interface EcoverseProfile {
   name?: string;
   nameID?: string;
-  host?: string;
+  hostID?: string;
 }
 
 interface Props {
@@ -67,7 +67,7 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
-    host: profile?.host || '',
+    host: profile?.hostID || '',
   };
 
   const validationSchema = yup.object().shape({
