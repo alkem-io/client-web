@@ -9,7 +9,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { useEcoversesContext } from '../../hooks/useEcoversesContext';
 
-const EcoverseOverview = () => {
+const EcoversesSection = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const { ecoverses, loading, error } = useEcoversesContext();
@@ -46,4 +46,4 @@ const EcoverseOverview = () => {
   );
 };
 
-export default EcoverseOverview;
+export default EcoversesSection;
