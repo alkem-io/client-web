@@ -28,7 +28,6 @@ const useStyles = createStyles(theme => ({
     marginLeft: theme.shape.spacing(2),
     backgroundColor: theme.palette.neutralLight,
     overflowX: 'hidden',
-    border: `1px solid ${theme.palette.neutralMedium}`,
   },
   sidebarStatic: {
     display: 'flex',
