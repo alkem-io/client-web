@@ -33,6 +33,14 @@ export interface Shape {
   spacing: (x: number) => number;
 }
 
+export interface Sidebar {
+  width: number;
+}
+
+export interface EarlyAccessAlert {
+  height: number;
+}
+
 export interface Breakpoints {
   xs: number;
   sm: number;
@@ -52,6 +60,8 @@ export interface Theme {
   typography: Typography;
   shape: Shape;
   media: Media;
+  sidebar: Sidebar;
+  earlyAccessAlert: EarlyAccessAlert;
 }
 
 const defaultPalette: Palette = {
@@ -104,11 +114,21 @@ const defaultMedia: Media = {
   },
 };
 
+const defaultSidebar: Sidebar = {
+  width: 65,
+};
+
+const defaultEarlyAccessAlert: EarlyAccessAlert = {
+  height: 40,
+};
+
 const defaultTheme: Theme = {
   palette: defaultPalette,
   typography: defaultTypography,
   shape: defaultShape,
   media: defaultMedia,
+  sidebar: defaultSidebar,
+  earlyAccessAlert: defaultEarlyAccessAlert,
 };
 
 const ThemeContext = React.createContext<Theme>(defaultTheme);
