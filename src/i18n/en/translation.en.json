@@ -124,11 +124,11 @@
     "home": {
       "sections": {
         "welcome": {
-          "header": "insert header here",
-          "subheader": "insert subheader here",
-          "body": "insert body here",
+          "header": "Welcome header here",
+          "subheader": "Welcome subheader here",
+          "body": "Welcome body here",
           "activity": {
-            "title": "insert title here",
+            "title": "Stats title here",
             "ecoverses": "Ecoverses",
             "challenges": "Challenges",
             "users": "Users",

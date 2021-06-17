@@ -8,6 +8,7 @@ import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
 import { createStyles } from '../../hooks/useTheme';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { useGlobalActivityQuery } from '../../generated/graphql';
+import Loading from '../../components/core/Loading';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -41,7 +42,7 @@ const WelcomeSection = () => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
-  const { data: activity } = useGlobalActivityQuery();
+  const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
   const globalActivity = activity?.metadata?.activity || [];
   const [ecoverseCount, challengeCount, userCount, orgCount] = [
     getActivityCount(globalActivity, 'ecoverses'),
@@ -49,7 +50,6 @@ const WelcomeSection = () => {
     getActivityCount(globalActivity, 'users'),
     getActivityCount(globalActivity, 'organisations'),
   ];
-
   const summary: ActivityCardItem[] = useMemo(
     () => [
       { name: t('pages.home.sections.welcome.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
@@ -69,12 +69,20 @@ const WelcomeSection = () => {
         color: 'positive',
       },
     ],
-    []
+    [globalActivity]
   );
 
   return (
     <React.Fragment>
-      <Section details={<ActivityCard title={t('pages.home.sections.welcome.activity.title')} items={summary} />}>
+      <Section
+        details={
+          isActivityLoading ? (
+            <Loading text={'Loading statistics ...'} />
+          ) : (
+            <ActivityCard title={t('pages.home.sections.welcome.activity.title')} items={summary} />
+          )
+        }
+      >
         <SectionHeader text={t('pages.home.sections.welcome.header')} />
         <SubHeader text={t('pages.home.sections.welcome.subheader')} />
         <Body text={t('pages.home.sections.welcome.body')}>
