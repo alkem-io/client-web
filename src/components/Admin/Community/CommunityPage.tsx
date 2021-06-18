@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
-import { AuthorizationCredentialBackEnd } from '../../../hooks/useCredentialsResolver';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
 import EditCredentials from '../Authorization/EditCredentials';
 import { WithCommunity } from './CommunityTypes';
 
@@ -20,7 +20,7 @@ export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [
   return (
     <Container>
       <EditCredentials
-        credential={AuthorizationCredentialBackEnd.UserGroupMember}
+        credential={AuthorizationCredential.UserGroupMember}
         resourceId={community?.id}
         parentMembers={parentMembers}
       />

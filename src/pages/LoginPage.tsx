@@ -1,5 +1,5 @@
 import { LoginFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
@@ -10,6 +10,7 @@ import Typography from '../components/core/Typography';
 import Delimiter from '../components/core/Delimiter';
 import Button from '../components/core/Button';
 import { AUTH_REGISTER_PATH } from '../models/Constants';
+import { useUpdateNavigation } from '../hooks/useNavigation';
 
 interface LoginPageProps {
   flow: string;
@@ -21,6 +22,9 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   const kratos = useKratosClient();
   const history = useHistory();
   const { t } = useTranslation();
+
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
 
   useEffect(() => {
     if (flow && kratos) {

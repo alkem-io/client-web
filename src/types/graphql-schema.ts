@@ -10,9 +10,9 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** A decentralized identifier (DID) as per the W3C standard. */
-  DID: any;
+  DID: string;
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: any;
+  DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
@@ -1581,6 +1581,11 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
     references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>>;
   };
 
+export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    host?: Maybe<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
+    context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+  };
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
@@ -1594,6 +1599,16 @@ export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<
   Opportunity,
   'id' | 'nameID' | 'displayName'
 >;
+
+export type OrganizationProfileInfoFragment = { __typename?: 'Organisation' } & Pick<
+  Organisation,
+  'id' | 'nameID' | 'displayName'
+> & {
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+      };
+  };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -1672,6 +1687,14 @@ export type CreateChallengeMutationVariables = Exact<{
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
+};
+
+export type CreateEcoverseMutationVariables = Exact<{
+  input: CreateEcoverseInput;
+}>;
+
+export type CreateEcoverseMutation = { __typename?: 'Mutation' } & {
+  createEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
 };
 
 export type CreateGroupOnCommunityMutationVariables = Exact<{
@@ -1768,6 +1791,14 @@ export type DeleteAspectMutationVariables = Exact<{
 
 export type DeleteAspectMutation = { __typename?: 'Mutation' } & {
   deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
+};
+
+export type DeleteEcoverseMutationVariables = Exact<{
+  input: DeleteEcoverseInput;
+}>;
+
+export type DeleteEcoverseMutation = { __typename?: 'Mutation' } & {
+  deleteEcoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID'>;
 };
 
 export type DeleteGroupMutationVariables = Exact<{
@@ -1868,6 +1899,14 @@ export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'>;
 };
 
+export type UpdateEcoverseMutationVariables = Exact<{
+  input: UpdateEcoverseInput;
+}>;
+
+export type UpdateEcoverseMutation = { __typename?: 'Mutation' } & {
+  updateEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
+};
+
 export type UpdateGroupMutationVariables = Exact<{
   input: UpdateUserGroupInput;
 }>;
@@ -1884,7 +1923,7 @@ export type UpdateGroupMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
-  opportunityData: UpdateOpportunityInput;
+  input: UpdateOpportunityInput;
 }>;
 
 export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
@@ -1896,7 +1935,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
-  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
+  updateOrganisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type UpdateUserMutationVariables = Exact<{
@@ -2169,14 +2208,9 @@ export type EcoverseInfoQueryVariables = Exact<{
 }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          }
-      >;
-      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
+  } & EcoverseDetailsFragment;
 };
 
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2190,14 +2224,6 @@ export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
 export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
-
-export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
-    context?: Maybe<
-      { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-        }
-    >;
-  };
 
 export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -2579,12 +2605,7 @@ export type OrganizationProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OrganizationProfileInfoQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'nameID' | 'displayName'> & {
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
-        };
-    };
+  organisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;

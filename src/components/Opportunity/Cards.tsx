@@ -2,32 +2,32 @@ import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.
 import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
-
+import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks/useTheme';
-import Card from '../core/Card';
-import Icon from '../core/Icon';
-import Typography from '../core/Typography';
-import ActorEdit from './ActorEdit';
-import { useUserContext } from '../../hooks/useUserContext';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import RemoveModal from '../core/RemoveModal';
 import {
-  OpportunityActorGroupsDocument,
-  OpportunityAspectsDocument,
-  OpportunityRelationsDocument,
+  refetchOpportunityActorGroupsQuery,
+  refetchOpportunityAspectsQuery,
+  refetchOpportunityRelationsQuery,
   useDeleteActorMutation,
   useDeleteAspectMutation,
   useDeleteRelationMutation,
 } from '../../generated/graphql';
-import AspectEdit from './AspectEdit';
-import { replaceAll } from '../../utils/replaceAll';
-import { Spacer } from '../shared/Spacer';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useEcoverse } from '../../hooks/useEcoverse';
+import { createStyles } from '../../hooks/useTheme';
+import { useUserContext } from '../../hooks/useUserContext';
 import { AuthorizationCredential } from '../../types/graphql-schema';
+import { replaceAll } from '../../utils/replaceAll';
+import Card from '../core/Card';
+import Icon from '../core/Icon';
+import RemoveModal from '../core/RemoveModal';
+import Typography from '../core/Typography';
+import { Spacer } from '../shared/Spacer';
+import ActorEdit from './ActorEdit';
+import AspectEdit from './AspectEdit';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -64,10 +64,11 @@ interface RelationCardProps {
   description?: string;
   type: string;
   id: string;
-  opportunityID: string;
+  opportunityId: string;
 }
 
-export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityID }) => {
+export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [showRemove, setShowRemove] = useState<boolean>(false);
@@ -82,7 +83,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
     },
     onCompleted: () => setShowRemove(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityID } }],
+    refetchQueries: [refetchOpportunityRelationsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
@@ -134,6 +135,7 @@ interface ActorCardProps {
 }
 
 export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
@@ -146,7 +148,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityActorGroupsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
@@ -268,6 +270,7 @@ interface AspectCardProps {
 }
 
 export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const handleError = useApolloErrorHandler();
@@ -275,7 +278,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: handleError,
-    refetchQueries: [{ query: OpportunityAspectsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const onRemove = () => removeAspect({ variables: { input: { ID: id } } });

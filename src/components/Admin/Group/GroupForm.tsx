@@ -11,7 +11,7 @@ import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../typ
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
-import { InputField } from '../Common/InputField';
+import { FormikInputField } from '../Common/FormikInputField';
 import ReferenceSegment from '../Common/ReferenceSegment';
 import TagsetSegment from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
@@ -115,7 +115,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title = 'Edit Group', group, mem
               <Header text={title} />
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'name'}
                     title={'Name'}
                     value={name}
@@ -128,7 +128,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title = 'Edit Group', group, mem
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={'description'}
                     title={'Description'}
                     value={description}

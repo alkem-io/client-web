@@ -28,11 +28,11 @@
     },
     "enums": {
       "authorization-credentials": {
-        "global-admin": {
+        "GlobalAdmin": {
           "name": "Global Admin",
           "order": 0
         },
-        "GlobalAdmin": {
+        "GlobalAdminCommunity": {
           "name": "Global Community Admin",
           "order": 1
         },
@@ -40,53 +40,49 @@
           "name": "Global Challenges Admin",
           "order": 2
         },
-        "GlobalAdminCommunity": {
-          "name": "Global Admin Community",
-          "order": -1
-        },
         "GlobalRegistered": {
           "name": "Registered",
           "order": 999
         },
         "EcoverseAdmin": {
           "name": "Ecoverse Admin",
-          "order": 999
+          "order": 3
         },
         "EcoverseMember": {
           "name": "Ecoverse Member",
-          "order": 999
+          "order": 4
         },
         "ChallengeAdmin": {
           "name": "Challenge Admin",
-          "order": 999
+          "order": 5
         },
         "ChallengeMember": {
           "name": "Challenge Member",
-          "order": 999
+          "order": 6
         },
         "OpportunityMember": {
           "name": "Opportunity Member",
-          "order": 999
+          "order": 7
         },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 999
+          "order": 8
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 5
+          "order": 9
         },
         "UserSelfManagement": {
           "name": "User Sel fManagement",
-          "order": 999
+          "order": 10
         },
         "community-member": {
           "name": "Community Member",
-          "order": 4
+          "order": 11
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 6
+          "order": 12
         }
       }
     }
@@ -108,6 +104,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "missing-refreneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"

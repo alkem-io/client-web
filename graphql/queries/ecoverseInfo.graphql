@@ -1,18 +1,6 @@
 query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
-    id
-    nameID
-    displayName
-    context {
-      tagline
-      vision
-      impact
-      background
-      references {
-        name
-        uri
-      }
-    }
+    ...EcoverseDetails
     community {
       id
       displayName

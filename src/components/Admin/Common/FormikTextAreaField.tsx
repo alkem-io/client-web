@@ -1,22 +1,21 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, FormControlProps } from 'react-bootstrap';
 import { Required } from '../../Required';
 
-interface InputFieldProps {
+interface TextAreaFieldProps extends FormControlProps {
   title: string;
   value: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
   disabled?: boolean;
-  type?: string;
   placeholder?: string;
   autoComplete?: string;
-  as?: React.ElementType;
+  rows?: number;
 }
 
-export const InputField: FC<InputFieldProps> = ({
+export const FormikTextAreaField: FC<TextAreaFieldProps> = ({
   title,
   value,
   name,
@@ -25,8 +24,8 @@ export const InputField: FC<InputFieldProps> = ({
   disabled = false,
   type,
   placeholder,
-  as,
   autoComplete,
+  ...rest
 }) => {
   const [field, meta] = useField(name);
 
@@ -38,7 +37,7 @@ export const InputField: FC<InputFieldProps> = ({
       </Form.Label>
       <Form.Control
         name={name}
-        as={as ? as : 'input'}
+        as={'textarea'}
         type={type || 'text'}
         placeholder={placeholder || title}
         value={value}
@@ -50,9 +49,10 @@ export const InputField: FC<InputFieldProps> = ({
         isInvalid={Boolean(!!meta.error) && meta.touched}
         autoComplete={autoComplete}
         onBlur={field.onBlur}
+        {...rest}
       />
       <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
     </>
   );
 };
-export default InputField;
+export default FormikTextAreaField;
