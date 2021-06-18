@@ -22,7 +22,7 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse }) => {
   const ecoverseLogo = ecoverse.context?.references?.find(ref => ref.name === LOGO_REFERENCE_NAME)?.uri;
 
   return (
-    <div id="sidebar-item-ecoverse">
+    <div>
       <Link to={`/ecoverses/${ecoverse.nameID}`} className={styles.textDecorationNone}>
         <OverlayTrigger
           offset={[100, 100]}

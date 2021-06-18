@@ -53,13 +53,13 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses }) => {
   const styles = useStyles();
 
   return (
-    <div id="sidebar-container" className={styles.sidebarContainer}>
-      <div id="sidebar-static-top" className={styles.sidebarStatic}>
+    <div className={styles.sidebarContainer}>
+      <div className={styles.sidebarStatic}>
         <SidebarItem icon={HouseIcon} tooltip="Home" to="/" />
       </div>
-      <div id="sidebar-dynamic" className={styles.sidebarDynamic}>
+      <div className={styles.sidebarDynamic}>
         {ecoverses.map(x => (
-          <SidebarItemEcoverse ecoverse={x} />
+          <SidebarItemEcoverse key={x.nameID} ecoverse={x} />
         ))}
         <SidebarItem icon={PeopleIcon} tooltip="Community" to="/community" disabled={!isUserAuth} />
         <SidebarItem icon={ChatIcon} tooltip="Messages" to="/messages" disabled={!isUserAuth} />

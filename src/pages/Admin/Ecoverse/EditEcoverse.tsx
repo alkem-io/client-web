@@ -88,7 +88,6 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
     const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
 
-    debugger;
     updateEcoverse({
       variables: {
         input: { context: contextWithUpdatedRefs, displayName: name, ID: ecoverseId, hostID: host },
