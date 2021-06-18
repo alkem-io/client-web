@@ -17,8 +17,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation, response }) => {
-    console.log(response);
+  const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
