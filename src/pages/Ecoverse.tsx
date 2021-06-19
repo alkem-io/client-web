@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
@@ -113,7 +113,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
-    const initial = [
+    const initial: ActivityCardItem[] = [
       { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
       {
         name: t('pages.ecoverse.cards.activity.opportunities'),
@@ -126,7 +126,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
         color: 'positive',
       },
     ];
-    const withMembers = [
+    const withMembers: ActivityCardItem[] = [
       ...initial,
       {
         name: t('pages.ecoverse.cards.activity.members'),
@@ -151,7 +151,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <div />
           )
         }
-        details={<ActivityCard title={'ecoverse activity'} items={activitySummary as any} />}
+        details={<ActivityCard title={'ecoverse activity'} items={activitySummary} />}
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />

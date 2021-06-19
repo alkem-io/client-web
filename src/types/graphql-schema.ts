@@ -2225,6 +2225,12 @@ export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
 
+export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GlobalActivityQuery = { __typename?: 'Query' } & {
+  metadata: { __typename?: 'Metadata' } & { activity: Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>> };
+};
+
 export type GroupQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
