@@ -2,10 +2,10 @@ import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useGroupQuery } from '../../../generated/graphql';
-import { AuthorizationCredentialBackEnd } from '../../../hooks/useCredentialsResolver';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
 import Loading from '../../core/Loading';
 import EditCredentials from '../Authorization/EditCredentials';
 import { WithCommunity } from '../Community/CommunityTypes';
@@ -29,7 +29,7 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers
   return (
     <Container>
       <EditCredentials
-        credential={AuthorizationCredentialBackEnd.UserGroupMember}
+        credential={AuthorizationCredential.UserGroupMember}
         resourceId={groupId}
         parentMembers={parentMembers}
       />

@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Container, Form } from 'react-bootstrap';
 import Typography from '../../core/Typography';
-import InputField from './InputField';
+import FormikInputField from './FormikInputField';
 import * as yup from 'yup';
 import Button from '../../core/Button';
 import { useTranslation } from 'react-i18next';
@@ -41,7 +41,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Row>
-                <InputField
+                <FormikInputField
                   name={'name'}
                   title={'Name'}
                   value={values.name}

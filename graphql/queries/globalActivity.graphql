@@ -1,0 +1,8 @@
+query globalActivity {
+    metadata {
+        activity {
+            name
+            value
+        }
+    }
+}

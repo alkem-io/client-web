@@ -7,6 +7,7 @@ export interface UserMetadata {
   user: User;
   hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
+  ofEcoverse: (id: string) => boolean;
   isAdmin: boolean;
   roles: Role[];
   groups: string[];
@@ -36,31 +37,22 @@ export const useUserMetadataWrapper = () => {
         user?.agent?.credentials
           ?.map(c => {
             return {
-              code: c.type,
-              type: resolver.toAuthenticationCredentials(c.type),
-              name: resolver.toRoleName(resolver.toAuthenticationCredentials(c.type)),
-              order: resolver.toRoleOrder(resolver.toAuthenticationCredentials(c.type)),
+              type: c.type,
+              name: resolver.toRoleName(c.type),
+              order: resolver.toRoleOrder(c.type),
               resourceId: c.resourceID,
             } as Role;
           })
           .sort((a, b) => a.order - b.order) || [];
+
+      const hasCredentials = (credential: AuthorizationCredential, resourceId = '') =>
+        Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1);
       const metadata = {
         user,
-        hasCredentials: (credential: AuthorizationCredential, resourceId = '') => {
-          return Boolean(
-            user?.agent?.credentials?.findIndex(
-              c => resolver.toAuthenticationCredentials(c.type) === credential && c.resourceID === resourceId
-            ) !== -1
-          );
-        },
-        ofChallenge: (id: string) =>
-          Boolean(
-            user?.agent?.credentials?.findIndex(
-              c =>
-                resolver.toAuthenticationCredentials(c.type) === AuthorizationCredential.UserGroupMember &&
-                c.resourceID === id
-            ) !== -1
-          ),
+
+        hasCredentials,
+        ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
+        ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
         isAdmin: false,
         roles,
         groups,

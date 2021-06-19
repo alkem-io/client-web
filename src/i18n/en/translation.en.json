@@ -28,11 +28,11 @@
     },
     "enums": {
       "authorization-credentials": {
-        "global-admin": {
+        "GlobalAdmin": {
           "name": "Global Admin",
           "order": 0
         },
-        "GlobalAdmin": {
+        "GlobalAdminCommunity": {
           "name": "Global Community Admin",
           "order": 1
         },
@@ -40,53 +40,49 @@
           "name": "Global Challenges Admin",
           "order": 2
         },
-        "GlobalAdminCommunity": {
-          "name": "Global Admin Community",
-          "order": -1
-        },
         "GlobalRegistered": {
           "name": "Registered",
           "order": 999
         },
         "EcoverseAdmin": {
           "name": "Ecoverse Admin",
-          "order": 999
+          "order": 3
         },
         "EcoverseMember": {
           "name": "Ecoverse Member",
-          "order": 999
+          "order": 4
         },
         "ChallengeAdmin": {
           "name": "Challenge Admin",
-          "order": 999
+          "order": 5
         },
         "ChallengeMember": {
           "name": "Challenge Member",
-          "order": 999
+          "order": 6
         },
         "OpportunityMember": {
           "name": "Opportunity Member",
-          "order": 999
+          "order": 7
         },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 999
+          "order": 8
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 5
+          "order": 9
         },
         "UserSelfManagement": {
           "name": "User Sel fManagement",
-          "order": 999
+          "order": 10
         },
         "community-member": {
           "name": "Community Member",
-          "order": 4
+          "order": 11
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 6
+          "order": 12
         }
       }
     }
@@ -108,13 +104,41 @@
     },
     "referenceSegment": {
       "title": "References",
+      "missing-refreneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
       }
+    },
+    "card": {
+      "you-are-in": "You are in"
+    },
+    "errorblock": {
+      "message": "Sorry, an error occurred while loading {{blockName}}."
     }
   },
   "pages": {
+    "home": {
+      "sections": {
+        "welcome": {
+          "header": "Where Open Innovation Happens",
+          "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
+          "body": "Unleashing societies potential. Building a better future, together.",
+          "activity": {
+            "title": "Activity",
+            "ecoverses": "Ecoverses",
+            "challenges": "Challenges",
+            "users": "Users",
+            "organisations": "Organisations"
+          }
+        },
+        "ecoverse": {
+          "header": "Explore the hosted Ecoverses!",
+          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organisation.<br>",
+          "body": "Share context, build community, coordinate and collaborate. Connect."
+        }
+      }
+    },
     "ecoverse": {
       "cards": {
         "activity": {
@@ -123,9 +147,6 @@
           "opportunities": "Opportunities",
           "projects": "Projects",
           "members": "Members"
-        },
-        "tags": {
-          "you-are-in": "You are in"
         }
       },
       "sections": {
@@ -144,9 +165,6 @@
           "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
           "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
         }
-      },
-      "errorblock": {
-        "message": "Sorry, an error occurred while loading {{blockName}}."
       }
     },
     "challenge": {

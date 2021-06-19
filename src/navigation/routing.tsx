@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
+import HomePage from '../pages/home/Home';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
 import { Community } from './community';
@@ -45,11 +46,11 @@ export const Routing: FC = () => {
       <Route exact path="/restricted">
         <Restricted />
       </Route>
-      <AuthenticatedRoute path="/ecoverse">
+      <AuthenticatedRoute path="/ecoverses">
         <Ecoverses />
       </AuthenticatedRoute>
       <Route exact path="/">
-        <Redirect to="/ecoverse" />
+        <HomePage />
       </Route>
       <Route path="*">
         <FourOuFour />

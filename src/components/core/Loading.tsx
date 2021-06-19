@@ -15,16 +15,17 @@ const useStyles = createStyles(theme => ({
   text: {
     marginLeft: theme.shape.spacing(2),
   },
+  itemsContentCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }));
 
 export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
   const styles = useStyles();
 
   return (
-    <div
-      style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}
-      className={clsx('d-flex', 'flex-grow-1')}
-    >
+    <div className={clsx('d-flex', 'flex-grow-1', styles.itemsContentCenter)}>
       <Spinner animation="grow" className={styles.spinner} />
       <Typography variant="caption" color="primary" className={styles.text}>
         {text}

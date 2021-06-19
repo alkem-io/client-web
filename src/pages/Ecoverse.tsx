@@ -1,20 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
-import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-octagon.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
+import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Typography from '../components/core/Typography';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
@@ -26,7 +24,7 @@ import {
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
-import { ChallengesQuery, EcoverseInfoQuery, User } from '../types/graphql-schema';
+import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -37,18 +35,6 @@ interface EcoversePageProps extends PageProps {
 
   users: User[] | undefined;
 }
-
-const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
-  const { t } = useTranslation();
-  return (
-    <div className={'d-flex align-items-lg-center justify-content-lg-center'}>
-      <Icon component={ErrorIcon} size={'xl'} color={'neutralMedium'} />
-      <Typography variant={'h5'} color={'neutralMedium'} className={'ml-3'}>
-        {t('pages.ecoverse.errorblock.message', { blockName: blockName.toLocaleLowerCase() })}
-      </Typography>
-    </div>
-  );
-};
 
 const EcoversePage: FC<EcoversePageProps> = ({
   paths,
@@ -61,7 +47,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { displayName: name, context = {}, nameID: ecoverseId } = ecoverse.ecoverse;
+  const { displayName: name, context, nameID: ecoverseId } = ecoverse.ecoverse;
 
   const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
@@ -76,7 +62,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   useUpdateNavigation({ currentPaths: paths });
 
-  const { tagline, impact, vision, background, references } = context;
+  const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
   const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
   // need to create utils for these bits...
 
@@ -127,7 +113,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const more = references?.find(x => x.name === 'website');
 
   const activitySummary = useMemo(() => {
-    const initial = [
+    const initial: ActivityCardItem[] = [
       { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
       {
         name: t('pages.ecoverse.cards.activity.opportunities'),
@@ -140,7 +126,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
         color: 'positive',
       },
     ];
-    const withMembers = [
+    const withMembers: ActivityCardItem[] = [
       ...initial,
       {
         name: t('pages.ecoverse.cards.activity.members'),
@@ -165,7 +151,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <div />
           )
         }
-        details={<ActivityCard title={'ecoverse activity'} items={activitySummary as any} />}
+        details={<ActivityCard title={'ecoverse activity'} items={activitySummary} />}
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
@@ -191,9 +177,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               {...(challenge as any)}
               context={{
                 ...challenge.context,
-                tag: user?.ofChallenge(challenge.id)
-                  ? t('pages.ecoverse.cards.tags.you-are-in')
-                  : (challenge.context as Record<string, any>)['tag'],
+                tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
               }}
               url={`${url}/challenges/${challenge.nameID}`}
             />

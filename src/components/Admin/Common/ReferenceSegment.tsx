@@ -2,7 +2,7 @@ import { FieldArray } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Reference } from '../../../models/Profile';
-import InputField from './InputField';
+import FormikInputField from './FormikInputField';
 import * as yup from 'yup';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
@@ -49,12 +49,19 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
             </Form.Group>
           </Form.Row>
           {references?.length === 0 ? (
-            <Form.Control type={'text'} placeholder={'No references yet'} readOnly={true} disabled={true} />
+            <Form.Row className={'mb-2'}>
+              <Form.Control
+                type={'text'}
+                placeholder={t('components.referenceSegment.missing-refreneces')}
+                readOnly={true}
+                disabled={true}
+              />
+            </Form.Row>
           ) : (
             references?.map((ref, index) => (
               <Form.Row key={index} className={'align-items-sm-end'}>
                 <Form.Group as={Col} xs={4}>
-                  <InputField
+                  <FormikInputField
                     name={`references.${index}.name`}
                     title={'Name'}
                     value={references[index].name}
@@ -63,7 +70,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
-                  <InputField
+                  <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
                     value={references[index].uri}

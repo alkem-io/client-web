@@ -1,11 +1,12 @@
 import React, { FC, useState } from 'react';
 import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
+import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useEcoverse } from '../../hooks/useEcoverse';
 import Button from '../core/Button';
+import Loading from '../core/Loading';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
-import Loading from '../core/Loading';
-import { OpportunityRelationsDocument, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 
 interface P {
   onHide: () => void;
@@ -14,13 +15,14 @@ interface P {
 }
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
+  const { ecoverseId } = useEcoverse();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
   const handleError = useApolloErrorHandler();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: handleError,
-    refetchQueries: [{ query: OpportunityRelationsDocument, variables: { id: opportunityId } }],
+    refetchQueries: [refetchOpportunityRelationsQuery({ ecoverseId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

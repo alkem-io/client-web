@@ -9,6 +9,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A decentralized identifier (DID) as per the W3C standard. */
+  DID: string;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
@@ -53,12 +57,16 @@ export type ActorGroup = {
 
 export type Agent = {
   __typename?: 'Agent';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The Credentials held by this Agent. */
   credentials?: Maybe<Array<Credential>>;
   /** The Decentralized Identifier (DID) for this Agent. */
-  did?: Maybe<Scalars['String']>;
+  did?: Maybe<Scalars['DID']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The Verfied Credentials for this Agent. */
+  verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
 
 export type Application = {
@@ -139,6 +147,9 @@ export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
   credentialRules: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  verifiedCredentialRules: Scalars['String'];
 };
 
 export enum AuthorizationCredential {
@@ -157,10 +168,20 @@ export enum AuthorizationCredential {
   UserSelfManagement = 'UserSelfManagement',
 }
 
+export enum AuthorizationPrivilege {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Grant = 'GRANT',
+  Read = 'READ',
+  Update = 'UPDATE',
+}
+
 export type Challenge = {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
   activity?: Maybe<Array<Nvp>>;
+  /** The Agent representing this Challenge. */
+  agent?: Maybe<Agent>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of child Challenges within this challenge. */
@@ -242,6 +263,8 @@ export type Context = {
   tagline?: Maybe<Scalars['String']>;
   /** The goal that is being pursued */
   vision?: Maybe<Scalars['String']>;
+  /** The Visual assets for this Context. */
+  visual?: Maybe<Visual>;
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['String']>;
 };
@@ -291,6 +314,8 @@ export type CreateContextInput = {
   references?: Maybe<Array<CreateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
+  /** The Visual assets for the new Context. */
+  visual?: Maybe<CreateVisualInput>;
   who?: Maybe<Scalars['String']>;
 };
 
@@ -299,7 +324,7 @@ export type CreateEcoverseInput = {
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
   /** The host Organisation for the ecoverse */
-  hostID?: Maybe<Scalars['UUID_NAMEID']>;
+  hostID: Scalars['UUID_NAMEID'];
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -387,6 +412,7 @@ export type CreateTagsetOnProfileInput = {
 };
 
 export type CreateUserGroupInput = {
+  /** The name of the UserGroup. Minimum length 2. */
   name: Scalars['String'];
   parentID: Scalars['UUID'];
   profileData?: Maybe<CreateProfileInput>;
@@ -408,12 +434,18 @@ export type CreateUserInput = {
   profileData?: Maybe<CreateProfileInput>;
 };
 
+export type CreateVisualInput = {
+  avatar: Scalars['String'];
+  background?: Maybe<Scalars['String']>;
+  banner?: Maybe<Scalars['String']>;
+};
+
 export type Credential = {
   __typename?: 'Credential';
   /** The ID of the entity */
   id: Scalars['UUID'];
   resourceID: Scalars['String'];
-  type: Scalars['String'];
+  type: AuthorizationCredential;
 };
 
 export type DeleteActorGroupInput = {
@@ -484,6 +516,8 @@ export type Ecoverse = {
   __typename?: 'Ecoverse';
   /** The activity within this Ecoverse. */
   activity?: Maybe<Array<Nvp>>;
+  /** The Agent representing this Ecoverse. */
+  agent?: Maybe<Agent>;
   /** All applications to join */
   application: Application;
   /** The authorization rules for the entity */
@@ -562,6 +596,13 @@ export type GrantAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type GrantStateModificationVcInput = {
+  /** The challenge whose state can be udpated. */
+  challengeID: Scalars['UUID'];
+  /** The user to whom the credential is being granted. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type Groupable = {
   /** The groups contained by this entity. */
   groups?: Maybe<Array<UserGroup>>;
@@ -634,6 +675,8 @@ export type MembershipResultEntryOrganisation = {
 
 export type Metadata = {
   __typename?: 'Metadata';
+  /** Metrics about the activity on the platform */
+  activity: Array<Nvp>;
   /** Collection of metadata about Cherrytwist services. */
   services: Array<ServiceMetadata>;
 };
@@ -718,6 +761,8 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Assigns the StateModification credential to a particular user for a particular challenge */
+  grantStateModificationVC: User;
   /** Remove an organisation as a lead for the Challenge. */
   removeChallengeLead: Challenge;
   /** Removes a User as a member of the specified Community. */
@@ -906,6 +951,10 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
+export type MutationGrantStateModificationVcArgs = {
+  grantStateModificationVC: GrantStateModificationVcInput;
+};
+
 export type MutationRemoveChallengeLeadArgs = {
   removeData: RemoveChallengeLeadInput;
 };
@@ -1023,6 +1072,8 @@ export type OpportunityTemplate = {
 export type Organisation = Groupable &
   Searchable & {
     __typename?: 'Organisation';
+    /** The Agent representing this User. */
+    agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
     authorization?: Maybe<Authorization>;
     /** The display name. */
@@ -1110,6 +1161,8 @@ export type Query = {
   search: Array<SearchResultEntry>;
   /** A particular user, identified by the ID or by email */
   user: User;
+  /** Privileges assigned to a User (based on held credentials) given an Authorization defnition. */
+  userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
   /** The users filtered by list of IDs. */
@@ -1136,6 +1189,10 @@ export type QuerySearchArgs = {
 
 export type QueryUserArgs = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type QueryUserAuthorizationPrivilegesArgs = {
+  userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
 };
 
 export type QueryUsersByIdArgs = {
@@ -1291,9 +1348,12 @@ export type UpdateAspectInput = {
   title?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAuthorizationDefinitionInput = {
+  anonymousReadAccess: Scalars['Boolean'];
+};
+
 export type UpdateChallengeInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1311,12 +1371,16 @@ export type UpdateContextInput = {
   references?: Maybe<Array<UpdateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
   vision?: Maybe<Scalars['String']>;
+  /** Update the Visual assets for the new Context. */
+  visual?: Maybe<UpdateVisualInput>;
   who?: Maybe<Scalars['String']>;
 };
 
 export type UpdateEcoverseInput = {
-  /** The ID of the entity to be updated. */
+  /** The ID or NameID of the Ecoverse. */
   ID: Scalars['UUID_NAMEID'];
+  /** Update anonymous visibility for the Ecoverse. */
+  authorizationDefinition?: Maybe<UpdateAuthorizationDefinitionInput>;
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1330,8 +1394,7 @@ export type UpdateEcoverseInput = {
 };
 
 export type UpdateOpportunityInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1343,7 +1406,7 @@ export type UpdateOpportunityInput = {
 };
 
 export type UpdateOrganisationInput = {
-  /** The ID of the entity to be updated. */
+  /** The ID or NameID of the Organisation to update. */
   ID: Scalars['UUID_NAMEID'];
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -1361,8 +1424,7 @@ export type UpdateProfileInput = {
 };
 
 export type UpdateProjectInput = {
-  /** The ID of the entity to be updated. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   description?: Maybe<Scalars['String']>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -1405,6 +1467,12 @@ export type UpdateUserInput = {
   profileData?: Maybe<UpdateProfileInput>;
 };
 
+export type UpdateVisualInput = {
+  avatar?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['String']>;
+  banner?: Maybe<Scalars['String']>;
+};
+
 export type UploadProfileAvatarInput = {
   file: Scalars['String'];
   profileID: Scalars['String'];
@@ -1432,6 +1500,13 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The profile for this User */
   profile?: Maybe<Profile>;
+};
+
+export type UserAuthorizationPrivilegesInput = {
+  /** The authorization definition to evaluate the user credentials against. */
+  authorizationID: Scalars['UUID'];
+  /** The user to evaluate privileges granted based on held credentials. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type UserGroup = Searchable & {
@@ -1463,6 +1538,30 @@ export type UsersWithAuthorizationCredentialInput = {
   type: AuthorizationCredential;
 };
 
+export type VerifiedCredential = {
+  __typename?: 'VerifiedCredential';
+  /** JSON for the claim in the credential */
+  claim: Scalars['JSON'];
+  /** The time at which the credential was issued */
+  issued: Scalars['DateTime'];
+  /** The challenge issuing the VC */
+  issuer: Scalars['String'];
+  /** The type of VC */
+  type: Scalars['String'];
+};
+
+export type Visual = {
+  __typename?: 'Visual';
+  /** The avatar (logo) to be used. */
+  avatar: Scalars['String'];
+  /** The background image to be used, for example when displaying previews. */
+  background: Scalars['String'];
+  /** The banner to be shown at the top of the page. */
+  banner: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
     members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
@@ -1482,6 +1581,11 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
     references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>>;
   };
 
+export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    host?: Maybe<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
+    context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+  };
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
@@ -1495,6 +1599,16 @@ export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<
   Opportunity,
   'id' | 'nameID' | 'displayName'
 >;
+
+export type OrganizationProfileInfoFragment = { __typename?: 'Organisation' } & Pick<
+  Organisation,
+  'id' | 'nameID' | 'displayName'
+> & {
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+        references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+      };
+  };
 
 export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
   Project,
@@ -1573,6 +1687,14 @@ export type CreateChallengeMutationVariables = Exact<{
 
 export type CreateChallengeMutation = { __typename?: 'Mutation' } & {
   createChallenge: { __typename?: 'Challenge' } & NewChallengeFragment;
+};
+
+export type CreateEcoverseMutationVariables = Exact<{
+  input: CreateEcoverseInput;
+}>;
+
+export type CreateEcoverseMutation = { __typename?: 'Mutation' } & {
+  createEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
 };
 
 export type CreateGroupOnCommunityMutationVariables = Exact<{
@@ -1669,6 +1791,14 @@ export type DeleteAspectMutationVariables = Exact<{
 
 export type DeleteAspectMutation = { __typename?: 'Mutation' } & {
   deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
+};
+
+export type DeleteEcoverseMutationVariables = Exact<{
+  input: DeleteEcoverseInput;
+}>;
+
+export type DeleteEcoverseMutation = { __typename?: 'Mutation' } & {
+  deleteEcoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID'>;
 };
 
 export type DeleteGroupMutationVariables = Exact<{
@@ -1769,6 +1899,14 @@ export type UpdateChallengeMutation = { __typename?: 'Mutation' } & {
   updateChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'>;
 };
 
+export type UpdateEcoverseMutationVariables = Exact<{
+  input: UpdateEcoverseInput;
+}>;
+
+export type UpdateEcoverseMutation = { __typename?: 'Mutation' } & {
+  updateEcoverse: { __typename?: 'Ecoverse' } & EcoverseDetailsFragment;
+};
+
 export type UpdateGroupMutationVariables = Exact<{
   input: UpdateUserGroupInput;
 }>;
@@ -1785,7 +1923,7 @@ export type UpdateGroupMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateOpportunityMutationVariables = Exact<{
-  opportunityData: UpdateOpportunityInput;
+  input: UpdateOpportunityInput;
 }>;
 
 export type UpdateOpportunityMutation = { __typename?: 'Mutation' } & {
@@ -1797,7 +1935,7 @@ export type UpdateOrganizationMutationVariables = Exact<{
 }>;
 
 export type UpdateOrganizationMutation = { __typename?: 'Mutation' } & {
-  updateOrganisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
+  updateOrganisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type UpdateUserMutationVariables = Exact<{
@@ -2070,14 +2208,9 @@ export type EcoverseInfoQueryVariables = Exact<{
 }>;
 
 export type EcoverseInfoQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
-      context?: Maybe<
-        { __typename?: 'Context' } & Pick<Context, 'tagline' | 'vision' | 'impact' | 'background'> & {
-            references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
-          }
-      >;
-      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
-    };
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
+  } & EcoverseDetailsFragment;
 };
 
 export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2092,7 +2225,11 @@ export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
 
-export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'>;
+export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GlobalActivityQuery = { __typename?: 'Query' } & {
+  metadata: { __typename?: 'Metadata' } & { activity: Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>> };
+};
 
 export type GroupQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
@@ -2468,12 +2605,7 @@ export type OrganizationProfileInfoQueryVariables = Exact<{
 }>;
 
 export type OrganizationProfileInfoQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'nameID' | 'displayName'> & {
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
-        };
-    };
+  organisation: { __typename?: 'Organisation' } & OrganizationProfileInfoFragment;
 };
 
 export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;

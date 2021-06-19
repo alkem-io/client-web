@@ -56,8 +56,8 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false, di
     return (
       <div ref={ref} style={style} className={clsx(styles.menu, className)} aria-labelledby={labeledBy}>
         <FormControl
-          autoFocus
-          className={clsx('mx-3', 'my-2', 'w-100', styles.search)}
+          autoFocus={true}
+          className={clsx('mx-3', 'my-2', 'w-95', styles.search)}
           placeholder="Type to filter.."
           onChange={e => setValue(e.target.value)}
           value={value}
