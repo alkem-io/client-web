@@ -121,11 +121,11 @@
     "home": {
       "sections": {
         "welcome": {
-          "header": "Welcome header here",
-          "subheader": "Welcome subheader here",
-          "body": "Welcome body here",
+          "header": "Where Open Innovation Happens",
+          "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
+          "body": "Unleashing societies potential. Building a better future, together.",
           "activity": {
-            "title": "Stats title here",
+            "title": "Activity",
             "ecoverses": "Ecoverses",
             "challenges": "Challenges",
             "users": "Users",
@@ -133,9 +133,9 @@
           }
         },
         "ecoverse": {
-          "header": "Cherrytwist: Where Open Innovation Happens",
-          "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Unleashing societies potential. Building a better future, together."
+          "header": "Explore the hosted Ecoverses!",
+          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organisation.<br>",
+          "body": "Share context, build community, coordinate and collaborate. Connect."
         }
       }
     },

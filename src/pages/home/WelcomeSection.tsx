@@ -73,7 +73,7 @@ const WelcomeSection = () => {
   );
 
   return (
-    <React.Fragment>
+    <>
       <Section
         details={
           isActivityLoading ? (
@@ -87,9 +87,6 @@ const WelcomeSection = () => {
         <SubHeader text={t('pages.home.sections.welcome.subheader')} />
         <Body text={t('pages.home.sections.welcome.body')}>
           <div className={clsx(styles.flexCol, styles.flexGap)}>
-            <span>
-              <Button text={t('buttons.learn-more')} as={'a'} href={'/'} target="_blank" />
-            </span>
             {!isAuthenticated && (
               <div className={clsx(styles.flexGap, styles.flexAlignCenter)}>
                 <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} target="_blank" />
@@ -100,7 +97,7 @@ const WelcomeSection = () => {
           </div>
         </Body>
       </Section>
-    </React.Fragment>
+    </>
   );
 };
 export default WelcomeSection;
