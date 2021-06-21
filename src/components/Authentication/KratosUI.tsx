@@ -221,9 +221,9 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
       <KratosMessages messages={ui.messages} />
       <Form action={ui.action} method={ui.method} noValidate>
         {nodesByGroup.default.map(toUiControl)}
-        {nodesByGroup.oidc.map(toUiControl)}
-        {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
         {nodesByGroup.password.map(toUiControl)}
+        {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
+        {nodesByGroup.oidc.map(toUiControl)}
       </Form>
     </div>
   );
