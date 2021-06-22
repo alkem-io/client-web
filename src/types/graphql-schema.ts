@@ -2205,23 +2205,6 @@ export type ChallengeUserIdsQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type ChallengeVisualQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeVisualQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'id'> & {
-                visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
-              }
-          >;
-        };
-    };
-};
-
 export type ChallengesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2544,36 +2527,29 @@ export type OpportunityProfileQuery = { __typename?: 'Query' } & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID' | 'displayName'> & {
           lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<
-            { __typename?: 'Context' } & Pick<
-              Context,
-              'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
-            > & {
-                visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri' | 'description'>>
-                >;
-                aspects?: Maybe<
-                  Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>
-                >;
-                ecosystemModel?: Maybe<
-                  { __typename?: 'EcosystemModel' } & Pick<EcosystemModel, 'id'> & {
-                      actorGroups?: Maybe<
-                        Array<
-                          { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
-                              actors?: Maybe<
-                                Array<
-                                  { __typename?: 'Actor' } & Pick<
-                                    Actor,
-                                    'id' | 'name' | 'description' | 'value' | 'impact'
-                                  >
+            { __typename?: 'Context' } & {
+              aspects?: Maybe<
+                Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'id' | 'title' | 'framing' | 'explanation'>>
+              >;
+              ecosystemModel?: Maybe<
+                { __typename?: 'EcosystemModel' } & Pick<EcosystemModel, 'id'> & {
+                    actorGroups?: Maybe<
+                      Array<
+                        { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name' | 'description'> & {
+                            actors?: Maybe<
+                              Array<
+                                { __typename?: 'Actor' } & Pick<
+                                  Actor,
+                                  'id' | 'name' | 'description' | 'value' | 'impact'
                                 >
-                              >;
-                            }
-                        >
-                      >;
-                    }
-                >;
-              }
+                              >
+                            >;
+                          }
+                      >
+                    >;
+                  }
+              >;
+            } & ContextDetailsFragment
           >;
           community?: Maybe<
             { __typename?: 'Community' } & {
@@ -2652,23 +2628,6 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
           { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
         >;
       };
-    };
-};
-
-export type OpportunityVisualQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityVisualQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'> & {
-          context?: Maybe<
-            { __typename?: 'Context' } & Pick<Context, 'id'> & {
-                visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
-              }
-          >;
-        };
     };
 };
 

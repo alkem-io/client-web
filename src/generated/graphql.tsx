@@ -2622,66 +2622,6 @@ export type ChallengeUserIdsQueryResult = Apollo.QueryResult<
 export function refetchChallengeUserIdsQuery(variables?: SchemaTypes.ChallengeUserIdsQueryVariables) {
   return { query: ChallengeUserIdsDocument, variables: variables };
 }
-export const ChallengeVisualDocument = gql`
-  query challengeVisual($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      opportunity(ID: $challengeId) {
-        id
-        context {
-          id
-          visual {
-            ...ContextVisual
-          }
-        }
-      }
-    }
-  }
-  ${ContextVisualFragmentDoc}
-`;
-
-/**
- * __useChallengeVisualQuery__
- *
- * To run a query within a React component, call `useChallengeVisualQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeVisualQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeVisualQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeVisualQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeVisualQuery, SchemaTypes.ChallengeVisualQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.ChallengeVisualQuery, SchemaTypes.ChallengeVisualQueryVariables>(
-    ChallengeVisualDocument,
-    baseOptions
-  );
-}
-export function useChallengeVisualLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeVisualQuery, SchemaTypes.ChallengeVisualQueryVariables>
-) {
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeVisualQuery, SchemaTypes.ChallengeVisualQueryVariables>(
-    ChallengeVisualDocument,
-    baseOptions
-  );
-}
-export type ChallengeVisualQueryHookResult = ReturnType<typeof useChallengeVisualQuery>;
-export type ChallengeVisualLazyQueryHookResult = ReturnType<typeof useChallengeVisualLazyQuery>;
-export type ChallengeVisualQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeVisualQuery,
-  SchemaTypes.ChallengeVisualQueryVariables
->;
-export function refetchChallengeVisualQuery(variables?: SchemaTypes.ChallengeVisualQueryVariables) {
-  return { query: ChallengeVisualDocument, variables: variables };
-}
 export const ChallengesDocument = gql`
   query challenges($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -3944,21 +3884,7 @@ export const OpportunityProfileDocument = gql`
           state
         }
         context {
-          id
-          tagline
-          background
-          vision
-          impact
-          who
-          visual {
-            ...ContextVisual
-          }
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
           aspects {
             id
             title
@@ -4008,7 +3934,7 @@ export const OpportunityProfileDocument = gql`
       }
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${ContextDetailsFragmentDoc}
   ${ProjectDetailsFragmentDoc}
 `;
 
@@ -4311,69 +4237,6 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityUserIdsQuery(variables?: SchemaTypes.OpportunityUserIdsQueryVariables) {
   return { query: OpportunityUserIdsDocument, variables: variables };
-}
-export const OpportunityVisualDocument = gql`
-  query opportunityVisual($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      opportunity(ID: $opportunityId) {
-        id
-        context {
-          id
-          visual {
-            ...ContextVisual
-          }
-        }
-      }
-    }
-  }
-  ${ContextVisualFragmentDoc}
-`;
-
-/**
- * __useOpportunityVisualQuery__
- *
- * To run a query within a React component, call `useOpportunityVisualQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityVisualQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityVisualQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityVisualQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityVisualQuery, SchemaTypes.OpportunityVisualQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.OpportunityVisualQuery, SchemaTypes.OpportunityVisualQueryVariables>(
-    OpportunityVisualDocument,
-    baseOptions
-  );
-}
-export function useOpportunityVisualLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityVisualQuery,
-    SchemaTypes.OpportunityVisualQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityVisualQuery, SchemaTypes.OpportunityVisualQueryVariables>(
-    OpportunityVisualDocument,
-    baseOptions
-  );
-}
-export type OpportunityVisualQueryHookResult = ReturnType<typeof useOpportunityVisualQuery>;
-export type OpportunityVisualLazyQueryHookResult = ReturnType<typeof useOpportunityVisualLazyQuery>;
-export type OpportunityVisualQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityVisualQuery,
-  SchemaTypes.OpportunityVisualQueryVariables
->;
-export function refetchOpportunityVisualQuery(variables?: SchemaTypes.OpportunityVisualQueryVariables) {
-  return { query: OpportunityVisualDocument, variables: variables };
 }
 export const OrganizationCardDocument = gql`
   query organizationCard($id: UUID_NAMEID!) {
