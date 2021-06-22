@@ -15,7 +15,7 @@ const HomePage = () => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <React.Fragment>
+    <>
       <WelcomeSection />
       <Divider />
       <Section avatar={<Icon component={Globe} color="primary" size="xl" />}>
@@ -24,7 +24,7 @@ const HomePage = () => {
         <Body text={t('pages.home.sections.ecoverse.body')} />
       </Section>
       <EcoversesSection />
-    </React.Fragment>
+    </>
   );
 };
 

@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
-import { LOGO_REFERENCE_NAME } from '../../../models/Constants';
 import { createStyles } from '../../../hooks/useTheme';
 import Avatar from '../../core/Avatar';
 
@@ -19,7 +18,7 @@ const useStyles = createStyles(() => ({
 const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse }) => {
   const styles = useStyles();
   const tooltip = ecoverse.displayName;
-  const ecoverseLogo = ecoverse.context?.references?.find(ref => ref.name === LOGO_REFERENCE_NAME)?.uri;
+  const ecoverseLogo = ecoverse?.context?.visual?.avatar;
 
   return (
     <div>

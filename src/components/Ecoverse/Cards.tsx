@@ -39,6 +39,9 @@ interface ChallengeCardProps {
     tag: string;
     tagline: string;
     references?: { name: string; uri: string }[];
+    visual?: {
+      background: string;
+    };
   };
   url: string;
 }
@@ -46,19 +49,19 @@ interface ChallengeCardProps {
 export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
-  const { tag, tagline, references } = context;
+  const { tag, tagline, visual } = context;
   const tagProps = tag
     ? {
         text: tag || '',
       }
     : undefined;
-  const visual = references?.find(x => x.name === 'visual');
+  const backgroundImg = visual?.background;
 
   return (
     <Card
       classes={{
         background: (theme: Theme) =>
-          visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+          backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
       }}
       bodyProps={{
         classes: {
