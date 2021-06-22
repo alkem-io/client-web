@@ -12,12 +12,14 @@ import { Link } from 'react-router-dom';
 interface EcoverseCardProps {
   id: string | number;
   name?: string;
-  context?: {
+  url: string;
+  context: {
     tag: string;
     tagline: string;
-    references?: { name: string; uri: string }[];
+    visual: {
+      background: string;
+    };
   };
-  url: string;
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -41,11 +43,10 @@ const useCardStyles = createStyles(theme => ({
 }));
 
 // todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context = {}, url }) => {
+export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
-  const { tag, tagline, references } = context;
-  const visual = references?.find(x => x.name === 'visual');
+  const { tag, tagline, visual } = context;
   const tagProps = tag
     ? {
         text: tag || '',
@@ -56,7 +57,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context = {}, url })
     <Card
       classes={{
         background: (theme: Theme) =>
-          visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+          visual.background ? `url("${visual.background}") no-repeat center center / cover` : theme.palette.neutral,
       }}
       bodyProps={{
         classes: {

@@ -17,7 +17,7 @@ import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
   useAllOpportunitiesQuery,
-  useEcoverseHostReferencesQuery,
+  useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
 } from '../generated/graphql';
@@ -52,18 +52,19 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
-  const { data: hostData } = useEcoverseHostReferencesQuery({ variables: { ecoverseId } });
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
   const projects = _projects?.ecoverse?.projects || [];
   const opportunities = _opportunities?.ecoverse?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
+  const visual = _visual?.ecoverse?.context?.visual;
 
   useUpdateNavigation({ currentPaths: paths });
 
   const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
-  const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
+  const ecoverseBanner = visual?.banner;
   // need to create utils for these bits...
 
   /**
@@ -141,9 +142,9 @@ const EcoversePage: FC<EcoversePageProps> = ({
     <>
       <Section
         avatar={
-          ecoverseLogo ? (
+          ecoverseBanner ? (
             <Image
-              src={ecoverseLogo}
+              src={ecoverseBanner}
               alt={`${name} logo`}
               style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
             />
@@ -176,8 +177,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
               key={i}
               {...(challenge as any)}
               context={{
-                ...challenge.context,
+                tagline: challenge?.context?.tagline,
+                references: challenge?.context?.references,
                 tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
+                visual: { background: challenge?.context?.visual?.background },
               }}
               url={`${url}/challenges/${challenge.nameID}`}
             />
