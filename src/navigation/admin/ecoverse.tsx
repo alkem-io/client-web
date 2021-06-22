@@ -13,6 +13,7 @@ import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
+import AuthorizationRoute from './authorization';
 
 export interface AdminParameters {
   challengeId: string;
@@ -77,6 +78,9 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges`}>
         <ChallengesRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <AuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
