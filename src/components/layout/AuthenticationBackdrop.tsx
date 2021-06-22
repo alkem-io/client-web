@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
+import { AUTH_LOGIN_PATH } from '../../models/Constants';
 import Backdrop from '../core/Backdrop';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
@@ -46,7 +47,7 @@ const AuthenticationBackdrop: FC<Props> = ({ children, blockName, open = false }
           {t('components.authentication-backdrop.message', { blockName: blockName.toLocaleLowerCase() })}
         </Typography>
         <div>
-          <Button onClick={() => history.push('/login')} text={t('authentication.sign-in')} />
+          <Button onClick={() => history.push(AUTH_LOGIN_PATH)} text={t('authentication.sign-in')} />
         </div>
       </div>
     </div>
