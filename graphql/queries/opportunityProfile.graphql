@@ -9,18 +9,7 @@ query opportunityProfile($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!
         state
       }
       context {
-        id
-        tagline
-        background
-        vision
-        impact
-        who
-        references {
-          id
-          name
-          uri
-          description
-        }
+        ...ContextDetails
         aspects {
           id
           title
