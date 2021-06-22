@@ -133,8 +133,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
-  const { references, background, tagline, who } = context || {};
-  const visual = references?.find(x => x.name === 'visual');
+  const { references, background, tagline, who, visual } = context || {};
+  const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
   const membersCount = (community && community.members?.length) || 0;
 
@@ -200,7 +200,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         }
         classes={{
           background: (theme: Theme) =>
-            visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
           coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
         }}
         gutters={{
@@ -297,7 +297,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       {opportunities && (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
           {opportunities?.map((props, i) => (
-            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.nameID}`} />
+            <OpportunityCard
+              key={i}
+              displayName={props.displayName}
+              url={`${url}/opportunities/${props.nameID}`}
+              lifecycle={{ state: props?.lifecycle?.state || '' }}
+              context={{
+                visual: { background: props?.context?.visual?.background || '' },
+              }}
+            />
           ))}
         </CardContainer>
       )}

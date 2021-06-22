@@ -155,7 +155,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
         )}
       </Route>
       <Route path={`${path}/opportunities/:id`}>
-        <Opportnity opportunities={challenge.opportunities} paths={currentPaths} />
+        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -168,7 +168,7 @@ interface OpportunityRootProps extends PageProps {
   opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
 }
 
-const Opportnity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
+const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();

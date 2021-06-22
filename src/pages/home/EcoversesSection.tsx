@@ -18,12 +18,12 @@ const EcoversesSection = () => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <React.Fragment>
+    <>
       {loading ? (
         <Loading text={'Loading ecoverses'} />
       ) : error ? (
         <Col xs={12}>
-          <ErrorBlock blockName={t('pages.home.sections.ecoverse.header')} />
+          <ErrorBlock blockName="Ecoverses" />
         </Col>
       ) : (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
@@ -35,14 +35,16 @@ const EcoversesSection = () => {
               context={{
                 tag: user?.ofEcoverse(ecoverse.id) ? t('components.card.you-are-in') : '',
                 tagline: ecoverse?.context?.tagline || '',
-                references: ecoverse?.context?.references,
+                visual: {
+                  background: ecoverse?.context?.visual?.background || '',
+                },
               }}
               url={`/ecoverses/${ecoverse.nameID}`}
             />
           ))}
         </CardContainer>
       )}
-    </React.Fragment>
+    </>
   );
 };
 
