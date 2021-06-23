@@ -62,6 +62,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   const community = data?.ecoverse.community;
   const parentMembers = usersInfo?.users || [];
+  const ecoverseUUID = ecoverse?.ecoverse.id;
 
   if (loadingEcoverse || loadingUsers) return <Loading text={'Loading'} />;
 
@@ -80,7 +81,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <ChallengesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} />
+        <AuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />
       </Route>
       <Route path="*">
         <FourOuFour />

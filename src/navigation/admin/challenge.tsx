@@ -74,6 +74,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 
   const community = data?.ecoverse?.challenge?.community;
   const parentMembers = ecoverseCommunity?.ecoverse?.community?.members || [];
+  const challengeUUID = data?.ecoverse.challenge.id || '';
 
   useUpdateNavigation({ currentPaths });
 
@@ -89,7 +90,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunitiesRoutes paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} />
+        <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
       </Route>
       <Route path="*">
         <FourOuFour />
