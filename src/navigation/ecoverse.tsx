@@ -58,7 +58,7 @@ const Ecoverse: FC<PageProps> = ({ paths }) => {
 
   const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
     variables: { ecoverseId },
-    errorPolicy: 'all',
+    errorPolicy: 'ignore' /*todo do not ignore errors*/,
   });
 
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });

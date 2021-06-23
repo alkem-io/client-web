@@ -93,8 +93,9 @@
     }
   },
   "components": {
-    "authentication-backdrop": {
-      "message": "Please sign in to check out the {{blockName}}."
+    "backdrop": {
+      "private": "{{blockName}} are only visible for members.",
+      "authentication": "Please sign in to check out the {{blockName}}."
     },
     "notifications": {
       "error": "Error",
@@ -156,8 +157,8 @@
           "body": ""
         },
         "community": {
-          "title": "Community",
-          "subtitle": "The heroes working on this challenge",
+          "header": "Community",
+          "subheader": "The heroes working on this challenge",
           "body": ""
         },
         "projects": {
