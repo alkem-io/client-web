@@ -19,20 +19,13 @@ exports[`Loading component render correctly Typography component 1`] = `
 
 exports[`Loading component render correctly loading component 1`] = `
 <div
-  className="d-flex flex-grow-1"
-  style={
-    Object {
-      "alignItems": "center",
-      "height": "100%",
-      "justifyContent": "center",
-    }
-  }
+  className="d-flex flex-grow-1 itemsContentCenter-0-2-20"
 >
   <div
     className="spinner-0-2-18 spinner-grow"
   />
   <div
-    className="caption-0-2-25 primary-0-2-28 text-0-2-19"
+    className="caption-0-2-26 primary-0-2-29 text-0-2-19"
     style={
       Object {
         "fontWeight": 500,

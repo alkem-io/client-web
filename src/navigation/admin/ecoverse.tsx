@@ -13,6 +13,7 @@ import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
 import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
+import AuthorizationRoute from './authorization';
 
 export interface AdminParameters {
   challengeId: string;
@@ -61,6 +62,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   const community = data?.ecoverse.community;
   const parentMembers = usersInfo?.users || [];
+  const ecoverseUUID = ecoverse?.ecoverse.id;
 
   if (loadingEcoverse || loadingUsers) return <Loading text={'Loading'} />;
 
@@ -77,6 +79,9 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges`}>
         <ChallengesRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <AuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />
       </Route>
       <Route path="*">
         <FourOuFour />

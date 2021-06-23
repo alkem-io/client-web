@@ -31,6 +31,14 @@ export const CommunityDetailsFragmentDoc = gql`
   }
   ${GroupMembersFragmentDoc}
 `;
+export const ContextVisualFragmentDoc = gql`
+  fragment ContextVisual on Visual {
+    id
+    avatar
+    background
+    banner
+  }
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -45,13 +53,21 @@ export const ContextDetailsFragmentDoc = gql`
       uri
       description
     }
+    visual {
+      ...ContextVisual
+    }
   }
+  ${ContextVisualFragmentDoc}
 `;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+    }
     host {
       id
       displayName
@@ -116,11 +132,6 @@ export const ProjectDetailsFragmentDoc = gql`
     tagset {
       name
       tags
-    }
-    aspects {
-      title
-      framing
-      explanation
     }
   }
 `;
@@ -2624,10 +2635,14 @@ export const ChallengesDocument = gql`
             name
             uri
           }
+          visual {
+            ...ContextVisual
+          }
         }
       }
     }
   }
+  ${ContextVisualFragmentDoc}
 `;
 
 /**
@@ -3015,6 +3030,61 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
 export function refetchEcoverseUserIdsQuery(variables?: SchemaTypes.EcoverseUserIdsQueryVariables) {
   return { query: EcoverseUserIdsDocument, variables: variables };
 }
+export const EcoverseVisualDocument = gql`
+  query ecoverseVisual($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      context {
+        visual {
+          ...ContextVisual
+        }
+      }
+    }
+  }
+  ${ContextVisualFragmentDoc}
+`;
+
+/**
+ * __useEcoverseVisualQuery__
+ *
+ * To run a query within a React component, call `useEcoverseVisualQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseVisualQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseVisualQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoverseVisualQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
+    EcoverseVisualDocument,
+    baseOptions
+  );
+}
+export function useEcoverseVisualLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
+    EcoverseVisualDocument,
+    baseOptions
+  );
+}
+export type EcoverseVisualQueryHookResult = ReturnType<typeof useEcoverseVisualQuery>;
+export type EcoverseVisualLazyQueryHookResult = ReturnType<typeof useEcoverseVisualLazyQuery>;
+export type EcoverseVisualQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseVisualQuery,
+  SchemaTypes.EcoverseVisualQueryVariables
+>;
+export function refetchEcoverseVisualQuery(variables?: SchemaTypes.EcoverseVisualQueryVariables) {
+  return { query: EcoverseVisualDocument, variables: variables };
+}
 export const EcoversesDocument = gql`
   query ecoverses {
     ecoverses {
@@ -3058,6 +3128,9 @@ export function useEcoversesLazyQuery(
 export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
 export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
 export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
+export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
+  return { query: EcoversesDocument, variables: variables };
+}
 export const GlobalActivityDocument = gql`
   query globalActivity {
     metadata {
@@ -3106,8 +3179,8 @@ export type GlobalActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.GlobalActivityQuery,
   SchemaTypes.GlobalActivityQueryVariables
 >;
-export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
-  return { query: EcoversesDocument, variables: variables };
+export function refetchGlobalActivityQuery(variables?: SchemaTypes.GlobalActivityQueryVariables) {
+  return { query: GlobalActivityDocument, variables: variables };
 }
 export const GroupDocument = gql`
   query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
@@ -3810,18 +3883,7 @@ export const OpportunityProfileDocument = gql`
           state
         }
         context {
-          id
-          tagline
-          background
-          vision
-          impact
-          who
-          references {
-            id
-            name
-            uri
-            description
-          }
+          ...ContextDetails
           aspects {
             id
             title
@@ -3871,6 +3933,7 @@ export const OpportunityProfileDocument = gql`
       }
     }
   }
+  ${ContextDetailsFragmentDoc}
   ${ProjectDetailsFragmentDoc}
 `;
 

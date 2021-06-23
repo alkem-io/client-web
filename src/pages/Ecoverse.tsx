@@ -14,10 +14,9 @@ import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
-import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import {
   useAllOpportunitiesQuery,
-  useEcoverseHostReferencesQuery,
+  useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
 } from '../generated/graphql';
@@ -26,6 +25,9 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
 import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
+import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
+import MembershipBackdrop from '../components/layout/MembershipBackdrop';
+
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
   challenges: {
@@ -52,18 +54,19 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
-  const { data: hostData } = useEcoverseHostReferencesQuery({ variables: { ecoverseId } });
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
   const projects = _projects?.ecoverse?.projects || [];
   const opportunities = _opportunities?.ecoverse?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
+  const visual = _visual?.ecoverse?.context?.visual;
 
   useUpdateNavigation({ currentPaths: paths });
 
   const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
-  const ecoverseLogo = hostData?.ecoverse?.host?.profile?.references?.find(ref => ref.name === 'logo')?.uri;
+  const ecoverseBanner = visual?.banner;
   // need to create utils for these bits...
 
   /**
@@ -141,9 +144,9 @@ const EcoversePage: FC<EcoversePageProps> = ({
     <>
       <Section
         avatar={
-          ecoverseLogo ? (
+          ecoverseBanner ? (
             <Image
-              src={ecoverseLogo}
+              src={ecoverseBanner}
               alt={`${name} logo`}
               style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
             />
@@ -160,36 +163,41 @@ const EcoversePage: FC<EcoversePageProps> = ({
         </Body>
       </Section>
       <Divider />
-      <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
-        <SubHeader text={background} />
-        <Body text={impact} />
-      </Section>
-      {challengesError ? (
-        <Col xs={12}>
-          <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
-        </Col>
-      ) : (
-        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-          {challenges.map((challenge, i) => (
-            <ChallengeCard
-              key={i}
-              {...(challenge as any)}
-              context={{
-                ...challenge.context,
-                tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
-              }}
-              url={`${url}/challenges/${challenge.nameID}`}
-            />
-          ))}
-        </CardContainer>
-      )}
+      <MembershipBackdrop show={challenges.length > 0} blockName={t('pages.ecoverse.sections.challenges.header')}>
+        <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
+          <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
+          <SubHeader text={background} />
+          <Body text={impact} />
+        </Section>
+
+        {challengesError ? (
+          <Col xs={12}>
+            <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
+          </Col>
+        ) : (
+          <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+            {challenges.map((challenge, i) => (
+              <ChallengeCard
+                key={i}
+                {...(challenge as any)}
+                context={{
+                  tagline: challenge?.context?.tagline,
+                  references: challenge?.context?.references,
+                  tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
+                  visual: { background: challenge?.context?.visual?.background },
+                }}
+                url={`${url}/challenges/${challenge.nameID}`}
+              />
+            ))}
+          </CardContainer>
+        )}
+      </MembershipBackdrop>
 
       <Divider />
-      <AuthenticationBackdrop blockName={'community'}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!!user}>
         <CommunitySection
-          title={t('pages.ecoverse.sections.community.title')}
-          subTitle={t('pages.ecoverse.sections.community.subtitle')}
+          title={t('pages.ecoverse.sections.community.header')}
+          subTitle={t('pages.ecoverse.sections.community.subheader')}
           users={users}
           body={t('pages.ecoverse.sections.community.body')}
           shuffle={true}
@@ -197,7 +205,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
         />
       </AuthenticationBackdrop>
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')} show={!!user}>
         {ecoverseProjects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>

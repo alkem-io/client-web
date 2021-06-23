@@ -11,6 +11,9 @@ query challenges($ecoverseId: UUID_NAMEID!) {
           name
           uri
         }
+        visual {
+          ...ContextVisual
+        }
       }
     }
   }

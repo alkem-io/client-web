@@ -18,7 +18,6 @@ import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
@@ -28,6 +27,7 @@ import { useUserContext } from '../hooks/useUserContext';
 import { Challenge as ChallengeType, Context, Organisation, User } from '../types/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
+import BackdropWithMessage from '../components/layout/BackdropWithMessage';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -133,8 +133,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
-  const { references, background, tagline, who } = context || {};
-  const visual = references?.find(x => x.name === 'visual');
+  const { references, background, tagline, who, visual } = context || {};
+  const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
   const membersCount = (community && community.members?.length) || 0;
 
@@ -200,7 +200,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         }
         classes={{
           background: (theme: Theme) =>
-            visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
           coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
         }}
         gutters={{
@@ -277,7 +277,12 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         <Body text={background}>{video && <Button text="See more" as={'a'} href={video.uri} target="_blank" />}</Body>
       </Section>
       <Divider />
-      <AuthenticationBackdrop blockName={'community'}>
+      <BackdropWithMessage
+        message={t('components.backdrop.authentication', {
+          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
+        })}
+        show={!!user}
+      >
         <CommunitySection
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}
@@ -285,7 +290,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           users={users}
           onExplore={() => history.push('/community')}
         />
-      </AuthenticationBackdrop>
+      </BackdropWithMessage>
       <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
@@ -297,12 +302,23 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       {opportunities && (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
           {opportunities?.map((props, i) => (
-            <OpportunityCard key={i} {...props} url={`${url}/opportunities/${props.nameID}`} />
+            <OpportunityCard
+              key={i}
+              displayName={props.displayName}
+              url={`${url}/opportunities/${props.nameID}`}
+              lifecycle={{ state: props?.lifecycle?.state || '' }}
+              context={{
+                visual: { background: props?.context?.visual?.background || '' },
+              }}
+            />
           ))}
         </CardContainer>
       )}
       <Divider />
-      <AuthenticationBackdrop blockName={'projects'}>
+      <BackdropWithMessage
+        message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}
+        show={!!user}
+      >
         <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
           <SectionHeader
             text={t('pages.challenge.sections.projects.header.text')}
@@ -319,7 +335,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
             })}
           </CardContainer>
         )}
-      </AuthenticationBackdrop>
+      </BackdropWithMessage>
       <Divider />
     </>
   );
