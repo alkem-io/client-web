@@ -111,6 +111,25 @@
         "remove-reference": "Remove the reference"
       }
     },
+    "editEcoverseForm": {
+      "name": "Name",
+      "nameID": "NameID",
+      "background": "Background",
+      "impact": "Impact",
+      "tagline": "Tagline",
+      "vision": "Vision",
+      "who": "Who",
+      "host": {
+        "title": "Host",
+        "select": "Select a host"
+      },
+      "visual": {
+        "title": "Visual",
+        "avatar": "Avatar",
+        "banner": "Banner",
+        "background": "Background"
+      }
+    },
     "card": {
       "you-are-in": "You are in"
     },
