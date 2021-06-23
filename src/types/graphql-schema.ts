@@ -1650,6 +1650,7 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
 export type ContextVisualFragment = { __typename?: 'Visual' } & Pick<Visual, 'id' | 'avatar' | 'background' | 'banner'>;
 
 export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    authorization?: Maybe<{ __typename?: 'Authorization' } & Pick<Authorization, 'id' | 'anonymousReadAccess'>>;
     host?: Maybe<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
     context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
   };
