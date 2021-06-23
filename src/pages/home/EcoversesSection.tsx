@@ -27,21 +27,27 @@ const EcoversesSection = () => {
         </Col>
       ) : (
         <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-          {ecoverses.map((ecoverse, i) => (
-            <EcoverseCard
-              key={i}
-              id={ecoverse.id}
-              name={ecoverse.displayName}
-              context={{
-                tag: user?.ofEcoverse(ecoverse.id) ? t('components.card.you-are-in') : '',
-                tagline: ecoverse?.context?.tagline || '',
-                visual: {
-                  background: ecoverse?.context?.visual?.background || '',
-                },
-              }}
-              url={`/ecoverses/${ecoverse.nameID}`}
-            />
-          ))}
+          {ecoverses.map((ecoverse, i) => {
+            const anonymousReadAccess = ecoverse?.authorization?.anonymousReadAccess;
+            return (
+              <EcoverseCard
+                key={i}
+                id={ecoverse.id}
+                name={ecoverse.displayName}
+                context={{
+                  tag: user?.ofEcoverse(ecoverse.id) ? t('components.card.you-are-in') : '',
+                  tagline: ecoverse?.context?.tagline || '',
+                  visual: {
+                    background: ecoverse?.context?.visual?.background || '',
+                  },
+                }}
+                authorization={{
+                  anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
+                }}
+                url={`/ecoverses/${ecoverse.nameID}`}
+              />
+            );
+          })}
         </CardContainer>
       )}
     </>

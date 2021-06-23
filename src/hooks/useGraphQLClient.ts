@@ -12,6 +12,7 @@ import { ErrorStatus } from '../models/Errors';
 import { updateStatus } from '../reducers/auth/actions';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
+const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const history = useHistory();
@@ -43,7 +44,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    errors.forEach(e => console.error(e));
+    errors.forEach(e => enableErrorLogging && console.error(e));
   });
 
   const consoleLink = new ApolloLink((operation, forward) => {

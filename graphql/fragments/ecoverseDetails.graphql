@@ -2,6 +2,10 @@ fragment EcoverseDetails on Ecoverse {
   id
   nameID
   displayName
+  authorization {
+    id
+    anonymousReadAccess
+  }
   host {
     id
     displayName
