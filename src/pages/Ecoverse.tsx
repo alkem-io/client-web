@@ -12,6 +12,7 @@ import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
+import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
@@ -156,7 +157,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
-        <Body text={`${vision}`}>
+        <Body>
+          <Markdown children={vision} />
           {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
         </Body>
       </Section>
@@ -164,7 +166,9 @@ const EcoversePage: FC<EcoversePageProps> = ({
       <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
         <SubHeader text={background} />
-        <Body text={impact} />
+        <Body>
+          <Markdown children={impact} />
+        </Body>
       </Section>
       {challengesError ? (
         <Col xs={12}>
