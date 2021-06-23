@@ -26,15 +26,15 @@ const useCardStyles = createStyles(theme => ({
 
     '& > span': {
       textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
+      maxHeight: '6em',
     },
   },
 }));
 
 interface ChallengeCardProps {
   id: string | number;
-  name?: string;
+  displayName?: string;
   context?: {
     tag: string;
     tagline: string;
@@ -46,7 +46,7 @@ interface ChallengeCardProps {
   url: string;
 }
 
-export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url }) => {
+export const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
   const { tag, tagline, visual } = context;
@@ -69,7 +69,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url 
         },
       }}
       primaryTextProps={{
-        text: name || '',
+        text: displayName || '',
         classes: {
           color: (theme: Theme) => theme.palette.neutralLight,
           lineHeight: '36px',
