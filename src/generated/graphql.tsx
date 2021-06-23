@@ -129,11 +129,6 @@ export const ProjectDetailsFragmentDoc = gql`
       name
       tags
     }
-    aspects {
-      title
-      framing
-      explanation
-    }
   }
 `;
 export const UserAgentFragmentDoc = gql`
