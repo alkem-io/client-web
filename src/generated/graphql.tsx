@@ -64,6 +64,10 @@ export const EcoverseDetailsFragmentDoc = gql`
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+    }
     host {
       id
       displayName
@@ -128,11 +132,6 @@ export const ProjectDetailsFragmentDoc = gql`
     tagset {
       name
       tags
-    }
-    aspects {
-      title
-      framing
-      explanation
     }
   }
 `;

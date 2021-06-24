@@ -10,9 +10,4 @@ fragment ProjectDetails on Project {
     name
     tags
   }
-  aspects {
-    title
-    framing
-    explanation
-  }
 }
