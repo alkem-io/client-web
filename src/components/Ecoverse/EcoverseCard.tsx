@@ -20,6 +20,9 @@ interface EcoverseCardProps {
       background: string;
     };
   };
+  authorization: {
+    anonymousReadAccess: boolean;
+  };
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -43,15 +46,12 @@ const useCardStyles = createStyles(theme => ({
 }));
 
 // todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url }) => {
+export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, authorization }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
-  const { tag, tagline, visual } = context;
-  const tagProps = tag
-    ? {
-        text: tag || '',
-      }
-    : undefined;
+  const { tagline, visual } = context;
+  const { anonymousReadAccess } = authorization;
+  const tagProps = !anonymousReadAccess ? { text: 'Private' } : undefined;
 
   return (
     <Card

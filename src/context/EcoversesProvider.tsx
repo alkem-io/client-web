@@ -20,7 +20,7 @@ const EcoversesContext = React.createContext<EcoversesContextProps>({
 });
 
 const EcoversesProvider: FC<{}> = ({ children }) => {
-  const { data, loading: ecoverseLoading, error } = useEcoversesQuery();
+  const { data, loading: ecoverseLoading, error } = useEcoversesQuery({ errorPolicy: 'all' });
   const loading = ecoverseLoading;
 
   const ecoverses = data?.ecoverses || [];
@@ -33,7 +33,7 @@ const EcoversesProvider: FC<{}> = ({ children }) => {
       value={{
         ecoverses,
         loading,
-        error,
+        error: data ? undefined : error,
         toEcoversesId,
       }}
     >

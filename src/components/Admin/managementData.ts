@@ -1,3 +1,5 @@
+import { AuthorizationCredential } from '../../types/graphql-schema';
+
 export const managementData = {
   adminLvl: [
     {
@@ -21,8 +23,11 @@ export const managementData = {
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Global admins', url: '/authorization/GlobalAdmin' },
-        { description: 'Global community admins', url: '/authorization/GlobalAdminCommunity' },
+        { description: 'Global admins', url: `/authorization/${AuthorizationCredential.GlobalAdmin}` },
+        {
+          description: 'Global community admins',
+          url: `/authorization/${AuthorizationCredential.GlobalAdminCommunity}`,
+        },
       ],
     },
   ],
@@ -46,6 +51,10 @@ export const managementData = {
         { description: 'New', url: '/challenges/new' },
       ],
     },
+    {
+      name: 'Authorization',
+      buttons: [{ description: 'Ecoverse admins', url: `/authorization/${AuthorizationCredential.EcoverseAdmin}` }],
+    },
   ],
   challengeLvl: [
     {
@@ -66,6 +75,10 @@ export const managementData = {
         { description: 'Manage', url: '/opportunities' },
         { description: 'New', url: '/opportunities/new' },
       ],
+    },
+    {
+      name: 'Authorization',
+      buttons: [{ description: 'Challenge admins', url: `/authorization/${AuthorizationCredential.ChallengeAdmin}` }],
     },
   ],
   opportunityLvl: [
