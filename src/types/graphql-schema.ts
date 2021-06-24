@@ -15,6 +15,8 @@ export type Scalars = {
   DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** A decentralized identifier (DID) as per the W3C standard. */
+  Markdown: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
   /** A uuid identifier. Length 36 charachters. */
@@ -102,11 +104,6 @@ export type Aspect = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   title: Scalars['String'];
-};
-
-export type AssignChallengeLeadInput = {
-  challengeID: Scalars['UUID'];
-  organisationID: Scalars['UUID_NAMEID'];
 };
 
 export type AssignCommunityMemberInput = {
@@ -299,13 +296,13 @@ export type Context = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** What is the potential impact? */
-  impact?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['Markdown']>;
   /** A list of URLs to relevant information. */
   references?: Maybe<Array<Reference>>;
   /** A one line description */
   tagline?: Maybe<Scalars['String']>;
   /** The goal that is being pursued */
-  vision?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['Markdown']>;
   /** The Visual assets for this Context. */
   visual?: Maybe<Visual>;
   /** Who should get involved in this challenge */
@@ -343,6 +340,8 @@ export type CreateChallengeInput = {
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
+  /** Set lead Organisations for the Challenge. */
+  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -352,11 +351,11 @@ export type CreateChallengeInput = {
 
 export type CreateContextInput = {
   background?: Maybe<Scalars['String']>;
-  impact?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['Markdown']>;
   /** Set of References for the new Context. */
   references?: Maybe<Array<CreateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
-  vision?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['Markdown']>;
   /** The Visual assets for the new Context. */
   visual?: Maybe<CreateVisualInput>;
   who?: Maybe<Scalars['String']>;
@@ -735,8 +734,6 @@ export type Metadata = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Assigns an organisation as a lead for the Challenge. */
-  assignChallengeLead: Challenge;
   /** Assigns a User as a member of the specified Community. */
   assignUserToCommunity: Community;
   /** Assigns a User as a member of the specified User Group. */
@@ -815,8 +812,6 @@ export type Mutation = {
   grantStateModificationVC: User;
   /** Sends a message on the specified User`s behalf and returns the room id */
   message: Scalars['String'];
-  /** Remove an organisation as a lead for the Challenge. */
-  removeChallengeLead: Challenge;
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
@@ -845,10 +840,6 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
-};
-
-export type MutationAssignChallengeLeadArgs = {
-  assignInput: AssignChallengeLeadInput;
 };
 
 export type MutationAssignUserToCommunityArgs = {
@@ -1005,10 +996,6 @@ export type MutationGrantStateModificationVcArgs = {
 
 export type MutationMessageArgs = {
   msgData: CommunicationSendMessageInput;
-};
-
-export type MutationRemoveChallengeLeadArgs = {
-  removeData: RemoveChallengeLeadInput;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
@@ -1294,11 +1281,6 @@ export type Relation = {
   type: Scalars['String'];
 };
 
-export type RemoveChallengeLeadInput = {
-  challengeID: Scalars['UUID'];
-  organisationID: Scalars['UUID_NAMEID'];
-};
-
 export type RemoveCommunityMemberInput = {
   communityID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -1415,6 +1397,8 @@ export type UpdateChallengeInput = {
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
+  /** Update the lead Organisations for the Challenge. */
+  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: Maybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
@@ -1423,11 +1407,11 @@ export type UpdateChallengeInput = {
 
 export type UpdateContextInput = {
   background?: Maybe<Scalars['String']>;
-  impact?: Maybe<Scalars['String']>;
+  impact?: Maybe<Scalars['Markdown']>;
   /** Update the set of References for the Context. */
   references?: Maybe<Array<UpdateReferenceInput>>;
   tagline?: Maybe<Scalars['String']>;
-  vision?: Maybe<Scalars['String']>;
+  vision?: Maybe<Scalars['Markdown']>;
   /** Update the Visual assets for the new Context. */
   visual?: Maybe<UpdateVisualInput>;
   who?: Maybe<Scalars['String']>;
