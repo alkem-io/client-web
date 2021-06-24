@@ -14,7 +14,7 @@ export type Scalars = {
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: any;
+  JSON: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
   /** A uuid identifier. Length 36 charachters. */
@@ -154,8 +154,10 @@ export type Authorization = {
 
 export enum AuthorizationCredential {
   ChallengeAdmin = 'ChallengeAdmin',
+  ChallengeLead = 'ChallengeLead',
   ChallengeMember = 'ChallengeMember',
   EcoverseAdmin = 'EcoverseAdmin',
+  EcoverseHost = 'EcoverseHost',
   EcoverseMember = 'EcoverseMember',
   GlobalAdmin = 'GlobalAdmin',
   GlobalAdminChallenges = 'GlobalAdminChallenges',
@@ -341,6 +343,8 @@ export type CreateChallengeInput = {
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
+  /** Set lead Organisations for the Challenge. */
+  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -518,7 +522,7 @@ export type DeleteOpportunityInput = {
 };
 
 export type DeleteOrganisationInput = {
-  ID: Scalars['UUID'];
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type DeleteProjectInput = {
@@ -538,7 +542,7 @@ export type DeleteUserGroupInput = {
 };
 
 export type DeleteUserInput = {
-  ID: Scalars['UUID'];
+  ID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type EcosystemModel = {
@@ -579,7 +583,7 @@ export type Ecoverse = {
   groups: Array<UserGroup>;
   /** All groups on this Ecoverse that have the provided tag */
   groupsWithTag: Array<UserGroup>;
-  /** The organisation that hosts this Ecoverse instance */
+  /** The Ecoverse host. */
   host?: Maybe<Organisation>;
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -747,8 +751,6 @@ export type Mutation = {
   createApplication: Application;
   /** Create a new Aspect on the Opportunity. */
   createAspect: Aspect;
-  /** Create a new Aspect on the Project. */
-  createAspectOnProject: Aspect;
   /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -872,10 +874,6 @@ export type MutationCreateApplicationArgs = {
 };
 
 export type MutationCreateAspectArgs = {
-  aspectData: CreateAspectInput;
-};
-
-export type MutationCreateAspectOnProjectArgs = {
   aspectData: CreateAspectInput;
 };
 
@@ -1171,8 +1169,6 @@ export type Profile = {
 
 export type Project = {
   __typename?: 'Project';
-  /** The set of aspects for this Project. Note: likley to change. */
-  aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   description?: Maybe<Scalars['String']>;
@@ -1421,6 +1417,8 @@ export type UpdateChallengeInput = {
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
+  /** Update the lead Organisations for the Challenge. */
+  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: Maybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
@@ -1656,6 +1654,7 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
 export type ContextVisualFragment = { __typename?: 'Visual' } & Pick<Visual, 'id' | 'avatar' | 'background' | 'banner'>;
 
 export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
     authorization?: Maybe<{ __typename?: 'Authorization' } & Pick<Authorization, 'id' | 'anonymousReadAccess'>>;
     host?: Maybe<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
     context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
@@ -1691,7 +1690,6 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
 > & {
     lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
     tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
-    aspects?: Maybe<Array<{ __typename?: 'Aspect' } & Pick<Aspect, 'title' | 'framing' | 'explanation'>>>;
   };
 
 export type UserAgentFragment = { __typename?: 'User' } & {

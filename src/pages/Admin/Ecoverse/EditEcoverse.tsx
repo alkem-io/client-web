@@ -48,6 +48,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
     name: profile?.displayName,
     nameID: profile?.nameID,
     hostID: profile?.host?.id,
+    tagset: profile?.tagset,
   };
 
   const onSuccess = (message: string) => {
@@ -55,14 +56,14 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const { name, nameID, host, ...context } = values;
+    const { name, host, background, impact, tagline, vision, who, references, visual, tagsets } = values;
     const contextId = profile?.context?.id || '';
 
     const initialReferences = profile?.context?.references || [];
     // TODO [ATS] Extract outside. Already used at leat twice.
-    const toUpdate = context.references.filter(x => x.id);
-    const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
-    const toAdd = context.references.filter(x => !x.id);
+    const toUpdate = references.filter(x => x.id);
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+    const toAdd = references.filter(x => !x.id);
     for (const ref of toRemove) {
       await deleteReference({ variables: { input: { ID: ref.id } } });
     }
@@ -86,11 +87,25 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       uri: r.uri,
     }));
 
-    const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
+    const contextWithUpdatedRefs: UpdateContextInput = {
+      background: background,
+      impact: impact,
+      references: updatedRefs,
+      tagline: tagline,
+      vision: vision,
+      visual: visual,
+      who: who,
+    };
 
     updateEcoverse({
       variables: {
-        input: { context: contextWithUpdatedRefs, displayName: name, ID: ecoverseId, hostID: host },
+        input: {
+          context: contextWithUpdatedRefs,
+          displayName: name,
+          ID: ecoverseId,
+          hostID: host,
+          tags: tagsets.map(x => x.tags.join()),
+        },
       },
     });
   };

@@ -9,9 +9,9 @@ import {
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
-import { Context } from '../../types/graphql-schema';
+import { Context, UpdateChallengeInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
 import Button from '../core/Button';
-import ProfileForm from '../ProfileForm/ProfileForm';
+import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 
 interface Props {
   variant: 'challenge' | 'opportunity';
@@ -48,18 +48,24 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
 
   let submitWired;
 
-  const onSubmit = async values => {
-    const { name, nameID, state, ...context } = values;
+  const onSubmit = async (values: ProfileFormValuesType) => {
+    const { name, nameID, ...context } = values;
 
-    const updatedRefs = context.references.map(ref => ({ uri: ref.uri, name: ref.name }));
-    const contextWithUpdatedRefs = { ...context };
-    const challengeUpdateData = { name, state: '', context: contextWithUpdatedRefs };
-    contextWithUpdatedRefs.references = updatedRefs;
+    const { references, ...restContext } = context;
+    const updatedRefs = context.references.map<UpdateReferenceInput>(ref => ({
+      ID: ref.id,
+      uri: ref.uri,
+      name: ref.name,
+      description: ref.description,
+    }));
+
+    const contextWithUpdatedRefs: UpdateContextInput = { ...restContext, references: updatedRefs };
+    const challengeUpdateData: UpdateChallengeInput = { ID: id, context: contextWithUpdatedRefs };
 
     if (variant === 'challenge') {
       await updateChallenge({
         variables: {
-          input: { ID: id, ...challengeUpdateData },
+          input: challengeUpdateData,
         },
       });
     } else if (variant === 'opportunity') {

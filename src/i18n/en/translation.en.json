@@ -48,41 +48,49 @@
           "name": "Ecoverse Admin",
           "order": 3
         },
+        "EcoverseHost": {
+          "name": "Ecoverse Host",
+          "order": 4
+        },
         "EcoverseMember": {
           "name": "Ecoverse Member",
-          "order": 4
+          "order": 5
         },
         "ChallengeAdmin": {
           "name": "Challenge Admin",
-          "order": 5
+          "order": 6
+        },
+        "ChallengeLead": {
+          "name": "Challenge Lead",
+          "order": 7
         },
         "ChallengeMember": {
           "name": "Challenge Member",
-          "order": 6
+          "order": 8
         },
         "OpportunityMember": {
           "name": "Opportunity Member",
-          "order": 7
+          "order": 9
         },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 8
+          "order": 10
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 9
+          "order": 11
         },
         "UserSelfManagement": {
           "name": "User Sel fManagement",
-          "order": 10
+          "order": 12
         },
-        "community-member": {
+        "CommunityMember": {
           "name": "Community Member",
-          "order": 11
+          "order": 13
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 12
+          "order": 14
         }
       }
     }
@@ -112,23 +120,33 @@
       }
     },
     "editEcoverseForm": {
+      "host": {
+        "title": "Host",
+        "select": "Select a host"
+      }
+    },
+    "profileSegment": {
       "name": "Name",
-      "nameID": "NameID",
+      "nameID": {
+        "title": "NameID",
+        "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
+      }
+    },
+    "contextSegment": {
       "background": "Background",
       "impact": "Impact",
       "tagline": "Tagline",
       "vision": "Vision",
-      "who": "Who",
-      "host": {
-        "title": "Host",
-        "select": "Select a host"
-      },
-      "visual": {
-        "title": "Visual",
-        "avatar": "Avatar",
-        "banner": "Banner",
-        "background": "Background"
-      }
+      "who": "Who"
+    },
+    "visualSegment": {
+      "title": "Visual",
+      "avatar": "Avatar",
+      "banner": "Banner",
+      "background": "Background"
+    },
+    "tagsSegment": {
+      "title": "Tags"
     },
     "card": {
       "you-are-in": "You are in"

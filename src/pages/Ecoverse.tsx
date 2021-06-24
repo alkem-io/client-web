@@ -179,12 +179,13 @@ const EcoversePage: FC<EcoversePageProps> = ({
             {challenges.map((challenge, i) => (
               <ChallengeCard
                 key={i}
-                {...(challenge as any)}
+                id={challenge.id}
+                displayName={challenge.displayName}
                 context={{
-                  tagline: challenge?.context?.tagline,
+                  tagline: challenge?.context?.tagline || '',
                   references: challenge?.context?.references,
                   tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
-                  visual: { background: challenge?.context?.visual?.background },
+                  visual: { background: challenge?.context?.visual?.background || '' },
                 }}
                 url={`${url}/challenges/${challenge.nameID}`}
               />
