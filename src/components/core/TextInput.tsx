@@ -148,7 +148,6 @@ const TextArea: FC<TextAreaProps> = ({
   error = false,
   disabled = false,
   rows = 4,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   ...rest
 }) => {
   const styles = useButtonStyles(classes);

@@ -5,7 +5,6 @@ import { Required } from '../../Required';
 
 interface TextAreaFieldProps extends FormControlProps {
   title: string;
-  value: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;

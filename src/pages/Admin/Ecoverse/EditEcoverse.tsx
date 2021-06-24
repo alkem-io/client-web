@@ -48,6 +48,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
     name: profile?.displayName,
     nameID: profile?.nameID,
     hostID: profile?.host?.id,
+    tagset: profile?.tagset,
   };
 
   const onSuccess = (message: string) => {

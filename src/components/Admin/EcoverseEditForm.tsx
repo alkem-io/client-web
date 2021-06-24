@@ -1,20 +1,23 @@
 import { Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { createStyles } from '../../hooks/useTheme';
-import { Context, Reference } from '../../types/graphql-schema';
+import { Context, Reference, Tagset } from '../../types/graphql-schema';
 import { ReferenceSegment } from '../Admin/Common/ReferenceSegment';
 import Divider from '../core/Divider';
 import { Required } from '../Required';
 import FormikInputField from './Common/FormikInputField';
 import FormikTextAreaField from './Common/FormikTextAreaField';
+import TagsetSegment from './Common/TagsetSegment';
+import ContextSegment from './User/ContextSegment';
 
 interface EcoverseProfile {
   name?: string;
   nameID?: string;
   hostID?: string;
+  tagset?: Tagset;
 }
 
 interface Props {
@@ -38,9 +41,10 @@ export interface EcoverseEditFormValuesType {
   who: string;
   organizations?: { id: string; name: string }[];
   references: Reference[];
+  tagsets: Tagset[];
 }
 
-const useProfileStyles = createStyles(theme => ({
+export const useProfileStyles = createStyles(theme => ({
   field: {
     marginBottom: theme.shape.spacing(2),
   },
@@ -58,6 +62,17 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
   const { t } = useTranslation();
   const styles = useProfileStyles();
 
+  const tagsets = useMemo(() => {
+    if (profile?.tagset) return [profile.tagset];
+    return [
+      {
+        id: '',
+        name: 'default',
+        tags: [],
+      },
+    ] as Tagset[];
+  }, [profile]);
+
   const initialValues: EcoverseEditFormValuesType = {
     name: profile?.name || '',
     nameID: profile?.nameID || '',
@@ -67,11 +82,11 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
+    tagsets,
     host: profile?.hostID || '',
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(),
     nameID: yup
       .string()
       .required()
@@ -93,12 +108,16 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     ),
   });
 
+  const newSchema = validationSchema.shape({
+    name: yup.string().required(),
+  });
+
   let isSubmitWired = false;
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={newSchema}
       enableReinitialize
       onSubmit={async values => {
         onSubmit(values);
@@ -186,12 +205,9 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
               </Form.Control>
               <Form.Control.Feedback type="invalid">{errors['host']}</Form.Control.Feedback>
             </Form.Group>
-            {getInput({ name: 'tagline', label: 'Tagline' })}
-            {getInput({ name: 'background', label: 'Background', rows: 3 })}
-            {getInput({ name: 'impact', label: 'Impact', rows: 3 })}
-            {getInput({ name: 'vision', label: 'Vision', rows: 3 })}
-            {getInput({ name: 'who', label: 'Who', rows: 3 })}
+            <ContextSegment />
             <ReferenceSegment references={references || []} />
+            <TagsetSegment tagsets={tagsets} />
             <Divider />
           </>
         );

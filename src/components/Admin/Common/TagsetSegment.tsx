@@ -9,7 +9,7 @@ import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 interface TagsSegmentProps {
   tagsets: Tagset[];
   template?: TagsetTemplate[];
-  readOnly: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
 }
 
@@ -21,7 +21,7 @@ export const tagsetSchemaFragment = yup.array().of(
   })
 );
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, template, disabled }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false, template, disabled }) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
       if (!template) return DEFAULT_PLACEHOLDER;
@@ -37,7 +37,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, templat
           <TagsetField
             key={index}
             name={`tagsets[${index}].tags`}
-            value={tagSet.tags}
             title={toFirstCaptitalLetter(tagSet.name)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
@@ -51,7 +50,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, templat
 
 interface TagsetFieldProps {
   title: string;
-  value: string[];
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -64,13 +62,12 @@ interface TagsetFieldProps {
 export const TagsetField: FC<TagsetFieldProps> = ({
   title,
   name,
-  value,
   required = false,
   readOnly = false,
   disabled = false,
   placeholder,
 }) => {
-  const helper = useField(name)[2];
+  const [field, , helper] = useField(name);
   return (
     <Form.Row>
       <Form.Group as={Col}>
@@ -79,7 +76,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
           name={name}
           type={'text'}
           placeholder={placeholder}
-          value={value?.join(',')}
+          value={field.value?.join(',')}
           readOnly={readOnly}
           required={required}
           disabled={disabled}

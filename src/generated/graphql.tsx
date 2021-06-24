@@ -64,6 +64,11 @@ export const EcoverseDetailsFragmentDoc = gql`
     id
     nameID
     displayName
+    tagset {
+      id
+      name
+      tags
+    }
     authorization {
       id
       anonymousReadAccess
