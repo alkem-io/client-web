@@ -54,12 +54,10 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   let submitWired;
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, references, background, impact, tagline, vision, who, visual } = values;
+    const { references, background, impact, tagline, vision, who, visual } = values;
 
     const updateInput: UpdateOpportunityInput | UpdateChallengeInput = {
       ID: id,
-      nameID: nameID,
-      displayName: name,
       context: {
         background: background,
         impact: impact,

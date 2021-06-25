@@ -80,8 +80,8 @@ const ProfileForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: profileSegmentSchema.fields?.name || yup.string(),
-    nameID: profileSegmentSchema.fields?.nameID || yup.string(),
+    name: contextOnly ? yup.string() : profileSegmentSchema.fields?.name || yup.string(),
+    nameID: contextOnly ? yup.string() : profileSegmentSchema.fields?.nameID || yup.string(),
     background: contextFragmentSchema.fields?.background || yup.string(),
     impact: contextFragmentSchema.fields?.impact || yup.string(),
     tagline: contextFragmentSchema.fields?.tagline || yup.string(),
