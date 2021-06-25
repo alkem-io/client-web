@@ -114,8 +114,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
 
-  const { references, background, tagline, who, impact, vision, aspects = [] } = context || {};
-  const visual = references?.find(x => x.name === 'poster');
+  const { references, background, tagline, who, impact, vision, aspects = [], visual } = context || {};
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
@@ -187,8 +186,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section
         classes={{
           background: (theme: Theme) =>
-            visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.primary,
-          coverBackground: (theme: Theme) => theme.palette.primary, // in case need to turn back to the monocolored opportunity header
+            visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral,
+          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
         }}
         gutters={{
           root: true,

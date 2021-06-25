@@ -11,4 +11,7 @@ fragment ContextDetails on Context {
     uri
     description
   }
+  visual {
+    ...ContextVisual
+  }
 }

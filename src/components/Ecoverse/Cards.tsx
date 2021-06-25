@@ -26,39 +26,42 @@ const useCardStyles = createStyles(theme => ({
 
     '& > span': {
       textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
+      maxHeight: '6em',
     },
   },
 }));
 
 interface ChallengeCardProps {
   id: string | number;
-  name?: string;
+  displayName?: string;
   context?: {
     tag: string;
     tagline: string;
     references?: { name: string; uri: string }[];
+    visual?: {
+      background: string;
+    };
   };
   url: string;
 }
 
-export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url }) => {
+export const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
-  const { tag, tagline, references } = context;
+  const { tag, tagline, visual } = context;
   const tagProps = tag
     ? {
         text: tag || '',
       }
     : undefined;
-  const visual = references?.find(x => x.name === 'visual');
+  const backgroundImg = visual?.background;
 
   return (
     <Card
       classes={{
         background: (theme: Theme) =>
-          visual ? `url("${visual.uri}") no-repeat center center / cover` : theme.palette.neutral,
+          backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
       }}
       bodyProps={{
         classes: {
@@ -66,7 +69,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url 
         },
       }}
       primaryTextProps={{
-        text: name || '',
+        text: displayName || '',
         classes: {
           color: (theme: Theme) => theme.palette.neutralLight,
           lineHeight: '36px',

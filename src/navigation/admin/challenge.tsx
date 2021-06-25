@@ -4,6 +4,7 @@ import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
+import Loading from '../../components/core/Loading';
 import {
   useChallengeCommunityQuery,
   useChallengesWithCommunityQuery,
@@ -14,13 +15,14 @@ import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import { AdminParameters } from './admin';
+import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
 import { OpportunitiesRoutes } from './opportunity';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { ecoverseId } = useEcoverse();
-  const { data: challengesListQuery } = useChallengesWithCommunityQuery({ variables: { ecoverseId } });
+  const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({ variables: { ecoverseId } });
 
   const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
     id: c.id,
@@ -33,6 +35,8 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
     paths,
     challengesListQuery?.ecoverse?.challenges,
   ]);
+
+  if (loading) return <Loading text={'Loading challenges'} />;
 
   return (
     <Switch>
@@ -70,6 +74,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 
   const community = data?.ecoverse?.challenge?.community;
   const parentMembers = ecoverseCommunity?.ecoverse?.community?.members || [];
+  const challengeUUID = data?.ecoverse.challenge.id || '';
 
   useUpdateNavigation({ currentPaths });
 
@@ -83,6 +88,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/opportunities`}>
         <OpportunitiesRoutes paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
       </Route>
       <Route path="*">
         <FourOuFour />

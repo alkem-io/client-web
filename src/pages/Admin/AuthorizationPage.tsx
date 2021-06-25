@@ -8,13 +8,15 @@ import Loading from '../../components/core/Loading';
 import EditCredentials from '../../components/Admin/Authorization/EditCredentials';
 import { AuthorizationCredential } from '../../types/graphql-schema';
 
-interface AuthorizationPageProps extends PageProps {}
+interface AuthorizationPageProps extends PageProps {
+  resourceId?: string;
+}
 
 interface Params {
   globalRole: AuthorizationCredential;
 }
 
-export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
+export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId }) => {
   const { url } = useRouteMatch();
   const { globalRole: role } = useParams<Params>();
   const currentPaths = useMemo(() => [...paths, { value: url, name: role, real: true }], [paths]);
@@ -30,7 +32,7 @@ export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
 
   return (
     <Container>
-      <EditCredentials credential={role} parentMembers={parentMembers} />;
+      <EditCredentials credential={role} parentMembers={parentMembers} resourceId={resourceId} />;
     </Container>
   );
 };
