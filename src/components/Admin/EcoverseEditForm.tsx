@@ -256,16 +256,23 @@ const EcoverseEditForm: FC<Props> = ({
 
             <ReferenceSegment references={references || []} />
 
-            <Form.Row>
-              <Form.Group as={Col} xs={11} className={'d-flex mt-4 align-items-center'}>
-                <Typography variant={'h4'} color={'primary'}>
-                  {t('components.editEcoverseForm.read-access-title')}
-                </Typography>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
-            </Form.Row>
+            {isEdit && (
+              <>
+                <Form.Row>
+                  <Form.Group as={Col} xs={11} className={'d-flex mt-4 align-items-center'}>
+                    <Typography variant={'h4'} color={'primary'}>
+                      {t('components.editEcoverseForm.read-access-title')}
+                    </Typography>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <FormikCheckboxField
+                    name="anonymousReadAccess"
+                    title={t('components.editEcoverseForm.read-access')}
+                  />
+                </Form.Row>
+              </>
+            )}
 
             <Divider />
           </>

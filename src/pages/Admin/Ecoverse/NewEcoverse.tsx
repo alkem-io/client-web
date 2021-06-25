@@ -5,15 +5,15 @@ import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../component
 import Button from '../../../components/core/Button';
 import { Loading } from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-
 import {
-  refetchEcoversesQuery,
+  EcoverseDetailsFragmentDoc,
   useCreateEcoverseMutation,
   useOrganizationsListQuery,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
+import { CreateContextInput } from '../../../types/graphql-schema';
 import { PageProps } from '../../common';
 
 interface NewEcoverseProps extends PageProps {}
@@ -28,14 +28,32 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
 
   const [createEcoverse, { loading: loading1 }] = useCreateEcoverseMutation({
-    refetchQueries: [refetchEcoversesQuery()],
-    awaitRefetchQueries: true,
+    // refetchQueries: [refetchEcoversesQuery()],
+    // awaitRefetchQueries: true,
     onCompleted: data => {
       const ecoverseId = data.createEcoverse.nameID;
       if (ecoverseId) {
         notify('Ecoverse created successfuly!', 'success');
         const newEcoverseUrl = url.replace('/new', `/${ecoverseId}/edit`);
         history.replace(newEcoverseUrl);
+      }
+    },
+    update: (cache, { data }) => {
+      if (data) {
+        const { createEcoverse } = data;
+
+        cache.modify({
+          fields: {
+            ecoverses(existingEcoverses = []) {
+              const newEcoverseRef = cache.writeFragment({
+                data: createEcoverse,
+                fragment: EcoverseDetailsFragmentDoc,
+                fragmentName: 'EcoverseDetails',
+              });
+              return [...existingEcoverses, newEcoverseRef];
+            },
+          },
+        });
       }
     },
     onError: handleError,
@@ -49,10 +67,27 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   const isLoading = loading1 || loadingOrganizations;
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const { name, nameID, host, ...context } = values;
+    const { name, nameID, host, background, impact, tagline, vision, who, references, visual, tagsets } = values;
+
+    const context: CreateContextInput = {
+      background: background,
+      tagline: tagline,
+      impact: impact,
+      vision: vision,
+      visual: visual,
+      who: who,
+      references: references,
+    };
+
     await createEcoverse({
       variables: {
-        input: { nameID, hostID: host, context, displayName: name },
+        input: {
+          nameID,
+          hostID: host,
+          context,
+          displayName: name,
+          tags: tagsets.map(x => x.tags.join()),
+        },
       },
     });
   };
