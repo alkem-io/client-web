@@ -98,6 +98,7 @@
     "@graphql-codegen/typescript-operations": "^1.17.13",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
     "@testing-library/react-hooks": "^5.1.0",
+    "@types/apollo-upload-client": "^14.1.0",
     "@types/enzyme": "^3.10.8",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-redux": "^7.1.15",
