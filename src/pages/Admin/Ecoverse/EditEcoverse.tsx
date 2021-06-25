@@ -50,7 +50,19 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const { name, host, background, impact, tagline, vision, who, references, visual, tagsets } = values;
+    const {
+      name,
+      host,
+      background,
+      impact,
+      tagline,
+      vision,
+      who,
+      references,
+      visual,
+      tagsets,
+      anonymousReadAccess,
+    } = values;
     const contextId = profile?.context?.id || '';
 
     const initialReferences = profile?.context?.references || [];
@@ -99,6 +111,9 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
           ID: ecoverseId,
           hostID: host,
           tags: tagsets.map(x => x.tags.join()),
+          authorizationDefinition: {
+            anonymousReadAccess: anonymousReadAccess,
+          },
         },
       },
     });
@@ -117,6 +132,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
         hostID={profile?.host?.id}
         tagset={profile?.tagset}
         context={profile?.context}
+        anonymousReadAccess={profile?.authorization?.anonymousReadAccess}
         organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

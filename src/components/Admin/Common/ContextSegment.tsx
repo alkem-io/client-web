@@ -4,11 +4,11 @@ import { useInputField } from './useInputField';
 import * as yup from 'yup';
 
 export const contextFragmentSchema = yup.object().shape({
-  background: yup.string(), // .required(t('forms.validations.required')),
-  impact: yup.string(), // .required(t('forms.validations.required')),
-  tagline: yup.string(), // .required(t('forms.validations.required')),
-  vision: yup.string(), // .required(t('forms.validations.required')),
-  who: yup.string(), // .required(t('forms.validations.required')),
+  background: yup.string(),
+  impact: yup.string(),
+  tagline: yup.string(),
+  vision: yup.string(),
+  who: yup.string(),
 });
 
 interface ContextSegmentProps {}

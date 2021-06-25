@@ -15,7 +15,6 @@ interface InputFieldProps extends FormControlProps {
 
 export const FormikInputField: FC<InputFieldProps> = ({
   title,
-  value,
   name,
   required = false,
   readOnly = false,

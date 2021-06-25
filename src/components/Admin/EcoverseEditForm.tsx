@@ -5,14 +5,15 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Visual, Tagset } from '../../types/graphql-schema';
 import Divider from '../core/Divider';
-import { Required } from '../Required';
 import Typography from '../core/Typography';
+import { Required } from '../Required';
 import { ReferenceSegment, referenceSegmentSchema } from './Common/ReferenceSegment';
 import { contextFragmentSchema, ContextSegment } from './Common/ContextSegment';
 import { VisualSegment, visualFragmentSchema } from './Common/VisualSegment';
 import { TagsetSegment, tagsetFragmentSchema } from './Common/TagsetSegment';
 import useProfileStyles from './Common/useProfileStyles';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
+import FormikCheckboxField from './Common/FormikCheckboxField';
 
 interface Props {
   context?: Context;
@@ -21,6 +22,7 @@ interface Props {
   hostID?: string;
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
+  anonymousReadAccess?: boolean;
   onSubmit: (formData: EcoverseEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
@@ -38,6 +40,7 @@ export interface EcoverseEditFormValuesType {
   who: string;
   references: Reference[];
   visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
+  anonymousReadAccess: boolean;
   tagsets: Tagset[];
 }
 
@@ -50,6 +53,7 @@ const EcoverseEditForm: FC<Props> = ({
   onSubmit,
   wireSubmit,
   isEdit,
+  anonymousReadAccess,
   organizations = [],
 }) => {
   const { t } = useTranslation();
@@ -82,6 +86,7 @@ const EcoverseEditForm: FC<Props> = ({
       background: context?.visual?.background || '',
       banner: context?.visual?.banner || '',
     },
+    anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
   };
 
   const validationSchema = yup.object().shape({
@@ -96,6 +101,7 @@ const EcoverseEditForm: FC<Props> = ({
     references: referenceSegmentSchema,
     visual: visualFragmentSchema,
     tagsets: tagsetFragmentSchema,
+    anonymousReadAccess: yup.boolean(),
   });
 
   let isSubmitWired = false;
@@ -162,6 +168,9 @@ const EcoverseEditForm: FC<Props> = ({
             <VisualSegment />
 
             <ReferenceSegment references={references || []} />
+
+            <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+
             <Divider />
           </>
         );
