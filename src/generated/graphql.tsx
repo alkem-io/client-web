@@ -2506,6 +2506,11 @@ export const ChallengeProfileInfoDocument = gql`
         id
         nameID
         displayName
+        tagset {
+          id
+          name
+          tags
+        }
         lifecycle {
           state
         }
@@ -3998,6 +4003,11 @@ export const OpportunityProfileInfoDocument = gql`
         id
         nameID
         displayName
+        tagset {
+          id
+          name
+          tags
+        }
         context {
           ...ContextDetails
         }

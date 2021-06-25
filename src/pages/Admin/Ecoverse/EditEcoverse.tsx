@@ -44,12 +44,6 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   const isLoading = loading1 || loadingOrganizations;
   const profile = ecoverse?.ecoverse;
-  const profileTopLvlInfo = {
-    name: profile?.displayName,
-    nameID: profile?.nameID,
-    hostID: profile?.host?.id,
-    tagset: profile?.tagset,
-  };
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
@@ -118,7 +112,10 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       </Typography>
       <EcoverseEditForm
         isEdit={true}
-        profile={profileTopLvlInfo || {}}
+        name={profile?.displayName}
+        nameID={profile?.nameID}
+        hostID={profile?.host?.id}
+        tagset={profile?.tagset}
         context={profile?.context}
         organizations={organizations}
         onSubmit={onSubmit}

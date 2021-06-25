@@ -5,6 +5,11 @@ query opportunityProfileInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAM
       id
       nameID
       displayName
+      tagset {
+        id
+        name
+        tags
+      }
       context {
         ...ContextDetails
       }

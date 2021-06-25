@@ -343,8 +343,6 @@ export type CreateChallengeInput = {
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
-  /** Set lead Organisations for the Challenge. */
-  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -1417,8 +1415,6 @@ export type UpdateChallengeInput = {
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
-  /** Update the lead Organisations for the Challenge. */
-  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: Maybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
@@ -2183,6 +2179,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'> & {
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
           lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
@@ -2578,6 +2575,7 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID' | 'displayName'> & {
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
     };

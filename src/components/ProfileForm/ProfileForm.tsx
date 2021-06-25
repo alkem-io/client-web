@@ -1,27 +1,18 @@
-import { Formik } from 'formik';
-import React, { FC } from 'react';
+import { Field, Formik } from 'formik';
+import React, { FC, useMemo } from 'react';
 import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { createStyles } from '../../hooks/useTheme';
-import { Context, Reference } from '../../types/graphql-schema';
-import { ReferenceSegment } from '../Admin/Common/ReferenceSegment';
+import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
+import { ReferenceSegment, referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import Divider from '../core/Divider';
 import { TextArea } from '../core/TextInput';
-
-interface Profile {
-  name?: string;
-  nameID?: string;
-}
-
-interface Props {
-  context?: Context;
-  profile?: Profile;
-  onSubmit: (formData: ProfileFormValuesType) => void;
-  wireSubmit: (setter: () => void) => void;
-  contextOnly?: boolean;
-  isEdit: boolean;
-}
+import { profileSegmentSchema } from '../Admin/Common/ProfileSegment';
+import { contextFragmentSchema } from '../Admin/Common/ContextSegment';
+import { visualFragmentSchema } from '../Admin/Common/VisualSegment';
+import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
+import useProfileStyles from '../Admin/Common/useProfileStyles';
+import Typography from '../core/Typography';
 
 export interface ProfileFormValuesType {
   name: string;
@@ -32,58 +23,73 @@ export interface ProfileFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
+  visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
+  tagsets: Tagset[];
 }
 
-const useProfileStyles = createStyles(theme => ({
-  field: {
-    marginBottom: theme.shape.spacing(2),
-  },
-  row: {
-    display: 'flex',
-    gap: 20,
-    alignItems: 'center',
-    '& > div': {
-      flexGrow: 1,
-    },
-  },
-}));
+interface Props {
+  context?: Context;
+  name?: string;
+  nameID?: string;
+  tagset?: Tagset;
+  onSubmit: (formData: ProfileFormValuesType) => void;
+  wireSubmit: (setter: () => void) => void;
+  contextOnly?: boolean;
+  isEdit: boolean;
+}
 
-const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit, contextOnly = false }) => {
+const ProfileForm: FC<Props> = ({
+  context,
+  name,
+  nameID,
+  tagset,
+  onSubmit,
+  wireSubmit,
+  isEdit,
+  contextOnly = false,
+}) => {
   const { t } = useTranslation();
   const styles = useProfileStyles();
 
+  const tagsets = useMemo(() => {
+    if (tagset) return [tagset];
+    return [
+      {
+        id: '',
+        name: 'default',
+        tags: [],
+      },
+    ] as Tagset[];
+  }, [tagset]);
+
   const initialValues: ProfileFormValuesType = {
-    name: profile?.name || '',
-    nameID: profile?.nameID || '',
+    name: name || '',
+    nameID: nameID || '',
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
+    visual: {
+      avatar: context?.visual?.avatar || '',
+      background: context?.visual?.background || '',
+      banner: context?.visual?.banner || '',
+    },
+    tagsets: tagsets,
   };
 
   const validationSchema = yup.object().shape({
-    name: contextOnly ? yup.string() : yup.string().required(),
-    nameID: contextOnly
-      ? yup.string()
-      : yup
-          .string()
-          .required()
-          .min(3, 'NameID should be at least 3 symbols long')
-          .max(20, 'Exceeded the limit of 20 characters')
-          .matches(/^\S*$/, 'nameID cannot contain spaces'),
-    background: yup.string().required(t('forms.validations.required')),
-    impact: yup.string().required(t('forms.validations.required')),
-    tagline: yup.string().required(t('forms.validations.required')),
-    vision: yup.string().required(t('forms.validations.required')),
-    who: yup.string().required(t('forms.validations.required')),
-    references: yup.array().of(
-      yup.object().shape({
-        name: yup.string().required(t('forms.validations.required')),
-        uri: yup.string().required(t('forms.validations.required')),
-      })
-    ),
+    name: profileSegmentSchema.fields?.name || yup.string(),
+    nameID: profileSegmentSchema.fields?.nameID || yup.string(),
+    background: contextFragmentSchema.fields?.background || yup.string(),
+    impact: contextFragmentSchema.fields?.impact || yup.string(),
+    tagline: contextFragmentSchema.fields?.tagline || yup.string(),
+    vision: contextFragmentSchema.fields?.vision || yup.string(),
+    who: contextFragmentSchema.fields?.who || yup.string(),
+    references: referenceSegmentSchema,
+    visual: visualFragmentSchema,
+    tagsets: tagsetFragmentSchema,
   });
 
   let isSubmitWired = false;
@@ -98,7 +104,7 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
         onSubmit(values);
       }}
     >
-      {({ values: { references }, values, handleChange, handleBlur, errors, touched, handleSubmit }) => {
+      {({ values: { references }, handleChange, handleBlur, handleSubmit }) => {
         const getTextArea = ({
           name,
           label,
@@ -112,28 +118,34 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
           rows?: number;
           disabled?: boolean;
         }) => {
-          const fieldProps = {
-            ...(contextOnly
-              ? { error: !!errors[name] && touched[name] }
-              : { isInvalid: !!errors[name] && touched[name] }),
-          };
           return (
             <Form.Group controlId={name}>
               {!contextOnly && <Form.Label>{label}</Form.Label>}
-              <ConditionalTextArea
-                onChange={handleChange}
-                onBlur={handleBlur}
-                name={name}
-                value={values[name] as string}
-                label={label}
-                className={styles.field}
-                placeholder={placeholder || label}
-                rows={rows || contextOnly ? 2 : 3}
-                as={'textarea'}
-                disabled={disabled}
-                {...fieldProps}
-              />
-              {errors[name] && <Form.Control.Feedback type="invalid">{errors[name]}</Form.Control.Feedback>}
+              <Field name={name}>
+                {({ field, form: { touched }, meta }) => {
+                  const fieldProps = {
+                    ...(contextOnly ? { error: !!meta.error && touched } : { isInvalid: !!meta.error && touched }),
+                  };
+                  return (
+                    <>
+                      <ConditionalTextArea
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name={name}
+                        value={field.value}
+                        label={label}
+                        className={styles.field}
+                        placeholder={placeholder || label}
+                        rows={rows || contextOnly ? 2 : 3}
+                        as={'textarea'}
+                        disabled={disabled}
+                        {...fieldProps}
+                      />
+                      <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
+                    </>
+                  );
+                }}
+              </Field>
             </Form.Group>
           );
         };
@@ -147,22 +159,41 @@ const ProfileForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit
           <>
             {!contextOnly && (
               <>
-                {getTextArea({ name: 'name', label: 'Name' })}
+                {getTextArea({ name: 'name', label: t('components.profileSegment.name') })}
                 {getTextArea({
                   name: 'nameID',
-                  label: 'Name ID',
-                  rows: 1,
-                  placeholder:
-                    'Unique textual identifier, used for URL paths. Note: cannot be modified after creation.',
+                  label: t('components.profileSegment.nameID.title'),
+                  placeholder: t('components.profileSegment.nameID.placeholder'),
                   disabled: isEdit,
+                  rows: 1,
                 })}
               </>
             )}
-            {getTextArea({ name: 'tagline', label: 'Tagline' })}
-            {getTextArea({ name: 'background', label: 'Background' })}
-            {getTextArea({ name: 'impact', label: 'Impact' })}
-            {getTextArea({ name: 'vision', label: 'Vision' })}
-            {getTextArea({ name: 'who', label: 'Who' })}
+            {getTextArea({ name: 'tagline', label: t('components.contextSegment.tagline') })}
+            {getTextArea({ name: 'background', label: t('components.contextSegment.background') })}
+            {getTextArea({ name: 'impact', label: t('components.contextSegment.impact') })}
+            {getTextArea({ name: 'vision', label: t('components.contextSegment.vision') })}
+            {getTextArea({ name: 'who', label: t('components.contextSegment.who') })}
+
+            {!contextOnly && (
+              <>
+                <Form.Group>
+                  <Typography variant={'h4'} color={'primary'}>
+                    {t('components.tagsSegment.title')}
+                  </Typography>
+                </Form.Group>
+                <TagsetSegment tagsets={tagsets} />
+              </>
+            )}
+
+            <Form.Group>
+              <Typography variant={'h4'} color={'primary'}>
+                {t('components.visualSegment.title')}
+              </Typography>
+            </Form.Group>
+            {getTextArea({ name: 'visual.avatar', label: t('components.visualSegment.avatar') })}
+            {getTextArea({ name: 'visual.background', label: t('components.visualSegment.background') })}
+            {getTextArea({ name: 'visual.banner', label: t('components.visualSegment.banner') })}
 
             <ReferenceSegment references={references || []} />
             <Divider />

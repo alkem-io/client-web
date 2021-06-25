@@ -14,16 +14,12 @@ import { TagsetSegment, tagsetFragmentSchema } from './Common/TagsetSegment';
 import useProfileStyles from './Common/useProfileStyles';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 
-interface EcoverseProfile {
+interface Props {
+  context?: Context;
   name?: string;
   nameID?: string;
   hostID?: string;
   tagset?: Tagset;
-}
-
-interface Props {
-  context?: Context;
-  profile?: EcoverseProfile;
   organizations?: { id: string; name: string }[];
   onSubmit: (formData: EcoverseEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
@@ -45,12 +41,22 @@ export interface EcoverseEditFormValuesType {
   tagsets: Tagset[];
 }
 
-const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, isEdit, organizations = [] }) => {
+const EcoverseEditForm: FC<Props> = ({
+  context,
+  name,
+  nameID,
+  hostID,
+  tagset,
+  onSubmit,
+  wireSubmit,
+  isEdit,
+  organizations = [],
+}) => {
   const { t } = useTranslation();
   const styles = useProfileStyles();
 
   const tagsets = useMemo(() => {
-    if (profile?.tagset) return [profile.tagset];
+    if (tagset) return [tagset];
     return [
       {
         id: '',
@@ -58,11 +64,11 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
         tags: [],
       },
     ] as Tagset[];
-  }, [profile]);
+  }, [tagset]);
 
   const initialValues: EcoverseEditFormValuesType = {
-    name: profile?.name || '',
-    nameID: profile?.nameID || '',
+    name: name || '',
+    nameID: nameID || '',
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
@@ -70,7 +76,7 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     who: context?.who || '',
     references: context?.references || [],
     tagsets: tagsets,
-    host: profile?.hostID || '',
+    host: hostID || '',
     visual: {
       avatar: context?.visual?.avatar || '',
       background: context?.visual?.background || '',
@@ -82,11 +88,11 @@ const EcoverseEditForm: FC<Props> = ({ context, profile, onSubmit, wireSubmit, i
     name: profileSegmentSchema.fields?.name || yup.string(),
     nameID: profileSegmentSchema.fields?.nameID || yup.string(),
     host: yup.string().required(t('forms.validations.required')),
-    background: contextFragmentSchema.fields?.background || yup.string(), // .required(t('forms.validations.required')),
-    impact: contextFragmentSchema.fields?.impact || yup.string(), // .required(t('forms.validations.required')),
-    tagline: contextFragmentSchema.fields?.tagline || yup.string(), // .required(t('forms.validations.required')),
-    vision: contextFragmentSchema.fields?.vision || yup.string(), // .required(t('forms.validations.required')),
-    who: contextFragmentSchema.fields?.who || yup.string(), // .required(t('forms.validations.required')),
+    background: contextFragmentSchema.fields?.background || yup.string(),
+    impact: contextFragmentSchema.fields?.impact || yup.string(),
+    tagline: contextFragmentSchema.fields?.tagline || yup.string(),
+    vision: contextFragmentSchema.fields?.vision || yup.string(),
+    who: contextFragmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
     visual: visualFragmentSchema,
     tagsets: tagsetFragmentSchema,
