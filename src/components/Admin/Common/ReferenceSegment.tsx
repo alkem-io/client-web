@@ -1,12 +1,13 @@
 import { FieldArray } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Reference } from '../../../models/Profile';
-import FormikInputField from './FormikInputField';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+// import { useCreateReferenceOnContextMutation, useDeleteReferenceMutation } from '../../../generated/graphql';
+import { Reference } from '../../../models/Profile';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
-import { useTranslation } from 'react-i18next';
+import FormikInputField from './FormikInputField';
 
 interface ReferenceSegmentProps {
   references: Reference[];
@@ -23,10 +24,52 @@ export const referenceSchemaFragment = yup.array().of(
 
 export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOnly = false, disabled = false }) => {
   const { t } = useTranslation();
+  // const [addReference] = useCreateReferenceOnContextMutation({
+  //   update: (cache, { data }) => {
+  //     if (data && community) {
+  //       const { createGroupOnCommunity: newGroup } = data;
+  //       cache.modify({
+  //         id: cache.identify(community),
+  //         fields: {
+  //           groups(existingGroups = []) {
+  //             const newGroupRef = cache.writeFragment({
+  //               data: newGroup,
+  //               fragment: GroupDetailsFragmentDoc,
+  //             });
+  //             return [...existingGroups, newGroupRef];
+  //           },
+  //         },
+  //       });
+  //     }
+  //   },
+  // });
+
+  // const [deleteReference] = useDeleteReferenceMutation();
+  const handleAdd = () => {
+    // addReference({
+    //   variables: {
+    //     input: {
+    //       contextID: '', // TOOD
+    //       name: 'New reference',
+    //       description: '',
+    //       uri: '',
+    //     },
+    //   },
+    //   optimisticResponse: {
+    //     createReferenceOnContext: {
+    //       __typename: 'Reference',
+    //       id: '00000000-0000-0000-0000-000000000000',
+    //       name: 'New reference',
+    //       description: '',
+    //       uri: '',
+    //     },
+    //   },
+    // });
+  };
 
   return (
     <FieldArray name={'references'}>
-      {({ push, remove }) => (
+      {({ push: _push, remove }) => (
         <>
           <Form.Row>
             <Form.Group as={Col} xs={11} className={'d-flex mb-4 align-items-center'}>
@@ -42,7 +85,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   </Tooltip>
                 }
               >
-                <Button onClick={() => push({ name: '', uri: '' })} disabled={disabled}>
+                <Button onClick={handleAdd} disabled={disabled}>
                   +
                 </Button>
               </OverlayTrigger>
