@@ -21,6 +21,8 @@ generates:
         UUID_NAMEID_EMAIL: string
         DID: string
         DateTime: Date
+        JSON: string
+        Markdown: string
       strictScalars: true
   src/generated/graphql.tsx:
     preset: import-types

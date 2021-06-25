@@ -64,6 +64,11 @@ export const EcoverseDetailsFragmentDoc = gql`
     id
     nameID
     displayName
+    tagset {
+      id
+      name
+      tags
+    }
     authorization {
       id
       anonymousReadAccess
@@ -2269,6 +2274,69 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
 export function refetchChallengeGroupsQuery(variables?: SchemaTypes.ChallengeGroupsQueryVariables) {
   return { query: ChallengeGroupsDocument, variables: variables };
 }
+export const ChallengeLifecycleDocument = gql`
+  query challengeLifecycle($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        lifecycle {
+          id
+          machineDef
+          state
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeLifecycleQuery__
+ *
+ * To run a query within a React component, call `useChallengeLifecycleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeLifecycleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeLifecycleQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeLifecycleQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeLifecycleQuery,
+    SchemaTypes.ChallengeLifecycleQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
+    ChallengeLifecycleDocument,
+    baseOptions
+  );
+}
+export function useChallengeLifecycleLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeLifecycleQuery,
+    SchemaTypes.ChallengeLifecycleQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
+    ChallengeLifecycleDocument,
+    baseOptions
+  );
+}
+export type ChallengeLifecycleQueryHookResult = ReturnType<typeof useChallengeLifecycleQuery>;
+export type ChallengeLifecycleLazyQueryHookResult = ReturnType<typeof useChallengeLifecycleLazyQuery>;
+export type ChallengeLifecycleQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeLifecycleQuery,
+  SchemaTypes.ChallengeLifecycleQueryVariables
+>;
+export function refetchChallengeLifecycleQuery(variables?: SchemaTypes.ChallengeLifecycleQueryVariables) {
+  return { query: ChallengeLifecycleDocument, variables: variables };
+}
 export const ChallengeMembersDocument = gql`
   query challengeMembers($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -2501,6 +2569,11 @@ export const ChallengeProfileInfoDocument = gql`
         id
         nameID
         displayName
+        tagset {
+          id
+          name
+          tags
+        }
         lifecycle {
           state
         }
@@ -3817,6 +3890,69 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityGroupsQuery(variables?: SchemaTypes.OpportunityGroupsQueryVariables) {
   return { query: OpportunityGroupsDocument, variables: variables };
 }
+export const OpportunityLifecycleDocument = gql`
+  query opportunityLifecycle($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        lifecycle {
+          id
+          machineDef
+          state
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityLifecycleQuery__
+ *
+ * To run a query within a React component, call `useOpportunityLifecycleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityLifecycleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityLifecycleQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityLifecycleQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityLifecycleQuery,
+    SchemaTypes.OpportunityLifecycleQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
+    OpportunityLifecycleDocument,
+    baseOptions
+  );
+}
+export function useOpportunityLifecycleLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityLifecycleQuery,
+    SchemaTypes.OpportunityLifecycleQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
+    OpportunityLifecycleDocument,
+    baseOptions
+  );
+}
+export type OpportunityLifecycleQueryHookResult = ReturnType<typeof useOpportunityLifecycleQuery>;
+export type OpportunityLifecycleLazyQueryHookResult = ReturnType<typeof useOpportunityLifecycleLazyQuery>;
+export type OpportunityLifecycleQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityLifecycleQuery,
+  SchemaTypes.OpportunityLifecycleQueryVariables
+>;
+export function refetchOpportunityLifecycleQuery(variables?: SchemaTypes.OpportunityLifecycleQueryVariables) {
+  return { query: OpportunityLifecycleDocument, variables: variables };
+}
 export const OpportunityNameDocument = gql`
   query opportunityName($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -3993,6 +4129,11 @@ export const OpportunityProfileInfoDocument = gql`
         id
         nameID
         displayName
+        tagset {
+          id
+          name
+          tags
+        }
         context {
           ...ContextDetails
         }

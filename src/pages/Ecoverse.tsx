@@ -12,6 +12,7 @@ import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
+import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import {
@@ -158,7 +159,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />
-        <Body text={`${vision}`}>
+        <Body>
+          <Markdown children={vision} />
           {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
         </Body>
       </Section>
@@ -167,9 +169,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader text={background} />
-          <Body text={impact} />
+          <Body>
+            <Markdown children={impact} />
+          </Body>
         </Section>
-
         {challengesError ? (
           <Col xs={12}>
             <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
@@ -179,13 +182,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
             {challenges.map((challenge, i) => (
               <ChallengeCard
                 key={i}
-                id={challenge.id}
-                displayName={challenge.displayName}
+                {...(challenge as any)}
                 context={{
-                  tagline: challenge?.context?.tagline || '',
+                  tagline: challenge?.context?.tagline,
                   references: challenge?.context?.references,
                   tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
-                  visual: { background: challenge?.context?.visual?.background || '' },
+                  visual: { background: challenge?.context?.visual?.background },
                 }}
                 url={`${url}/challenges/${challenge.nameID}`}
               />

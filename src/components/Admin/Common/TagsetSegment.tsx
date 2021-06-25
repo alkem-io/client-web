@@ -5,23 +5,24 @@ import * as yup from 'yup';
 import { Tagset } from '../../../models/Profile';
 import { TagsetTemplate } from '../../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
+import useProfileStyles from './useProfileStyles';
 
 interface TagsSegmentProps {
   tagsets: Tagset[];
   template?: TagsetTemplate[];
-  readOnly: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
-export const tagsetSchemaFragment = yup.array().of(
+export const tagsetFragmentSchema = yup.array().of(
   yup.object().shape({
     name: yup.string(),
     tags: yup.array().of(yup.string()),
   })
 );
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, template, disabled }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false, template, disabled }) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
       if (!template) return DEFAULT_PLACEHOLDER;
@@ -37,7 +38,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, templat
           <TagsetField
             key={index}
             name={`tagsets[${index}].tags`}
-            value={tagSet.tags}
             title={toFirstCaptitalLetter(tagSet.name)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
@@ -51,7 +51,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly, templat
 
 interface TagsetFieldProps {
   title: string;
-  value: string[];
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -64,13 +63,13 @@ interface TagsetFieldProps {
 export const TagsetField: FC<TagsetFieldProps> = ({
   title,
   name,
-  value,
   required = false,
   readOnly = false,
   disabled = false,
   placeholder,
 }) => {
-  const helper = useField(name)[2];
+  const styles = useProfileStyles();
+  const [field, , helper] = useField(name);
   return (
     <Form.Row>
       <Form.Group as={Col}>
@@ -79,7 +78,8 @@ export const TagsetField: FC<TagsetFieldProps> = ({
           name={name}
           type={'text'}
           placeholder={placeholder}
-          value={value?.join(',')}
+          value={field.value?.join(',')}
+          className={styles.field}
           readOnly={readOnly}
           required={required}
           disabled={disabled}
@@ -101,4 +101,3 @@ export const TagsetField: FC<TagsetFieldProps> = ({
     </Form.Row>
   );
 };
-export default TagsetSegment;

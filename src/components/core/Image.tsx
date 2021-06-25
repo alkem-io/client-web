@@ -16,9 +16,8 @@ export const Image: FC<ImageProps> = ({ src, alt, ...props }) => {
     <>
       {!isLoaded && <Spinner animation="grow" className={styles.spinner} />}
       <BootstrapImage
-        onLoad={() => {
-          setIsLoaded(true);
-        }}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(true)}
         className="image full"
         style={{ opacity: isLoaded ? 1 : 0 }}
         alt={alt}
