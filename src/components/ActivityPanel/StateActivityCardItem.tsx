@@ -1,8 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Maybe, Lifecycle } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles, useTheme } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
+import Button from '../core/Button';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 
@@ -27,19 +28,13 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-const useUserPopUpStyles = createStyles(_theme => ({
+const useUserPopUpStyles = createStyles(theme => ({
   body: {
     maxHeight: 600,
     overflow: 'auto',
   },
-  centeredText: {
-    textAlign: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modal: {
-    dialogClassName: 'modal-90w',
+  activeState: {
+    color: theme.palette.neutralLight,
   },
 }));
 
@@ -51,6 +46,7 @@ export interface LifecycleModalProps {
 
 const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
   const styles = useUserPopUpStyles();
+  const theme = useTheme().theme;
 
   const divRef = useCallback(
     svgRef => {
@@ -141,8 +137,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           .data(nodes)
           .enter()
           .append('rect')
-          // TODO: Get color in proper spot
-          .attr('stroke', d => (d.group === 1 ? '#000' : '#00BCD4'))
+          .attr('stroke', d => (d.group === 1 ? '#000' : theme.palette.primary))
           .attr('width', boxWidth)
           .attr('height', boxHeight)
           .attr('fill', '#fff');
@@ -158,10 +153,10 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           .attr('y', boxHeight)
           .attr('dx', boxWidth / 2)
           .attr('dy', boxHeight / 2)
-          // TODO: Get color in proper spot
-          .attr('stroke', d => (d.group === 1 ? '#000' : '#00BCD4'))
+          .attr('fill', d => (d.group === 1 ? '#000' : theme.palette.primary))
           .attr('font-weight', 400)
-          .attr('font-family', 'sans-serif')
+          .attr('font', theme.typography.button.font)
+          .attr('font-size', theme.typography.button.size)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'central')
           .text(d => d.id.split('.').pop());
@@ -245,9 +240,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
     <div>
       <div className={styles.item}>
         <Typography as={'p'}>Status:</Typography>
-        <Button variant="outline-primary" onClick={() => setModalVisible(true)}>
-          {lifecycle?.state}
-        </Button>
+        <Button onClick={() => setModalVisible(true)}>{lifecycle?.state}</Button>
       </div>
       <LifecycleModal
         lifecycle={lifecycle}
