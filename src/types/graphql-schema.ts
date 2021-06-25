@@ -2082,6 +2082,19 @@ export type ChallengeGroupsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeLifecycleQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeLifecycleQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
+      };
+    };
+};
+
 export type ChallengeMembersQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeID: Scalars['UUID_NAMEID'];
@@ -2480,6 +2493,19 @@ export type OpportunityGroupsQuery = { __typename?: 'Query' } & {
             groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
           }
         >;
+      };
+    };
+};
+
+export type OpportunityLifecycleQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityLifecycleQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & {
+        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
       };
     };
 };
