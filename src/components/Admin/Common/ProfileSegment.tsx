@@ -9,7 +9,7 @@ export const profileSegmentSchema = yup.object().shape({
     .string()
     .required()
     .min(3, 'NameID should be at least 3 symbols long')
-    .max(20, 'Exceeded the limit of 20 characters')
+    .max(25, 'Exceeded the limit of 25 characters')
     .matches(/^\S*$/, 'nameID cannot contain spaces'),
 });
 
