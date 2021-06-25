@@ -5,6 +5,11 @@ query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!
       id
       nameID
       displayName
+      tagset {
+        id
+        name
+        tags
+      }
       lifecycle {
         state
       }

@@ -12,8 +12,8 @@ import { EditMode } from '../../../utils/editMode';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
 import FormikInputField from '../Common/FormikInputField';
-import { referenceSchemaFragment, ReferenceSegment } from '../Common/ReferenceSegment';
-import TagsetSegment, { tagsetSchemaFragment } from '../Common/TagsetSegment';
+import { ReferenceSegment, referenceSegmentSchema } from '../Common/ReferenceSegment';
+import { TagsetSegment, tagsetFragmentSchema } from '../Common/TagsetSegment';
 
 const emptyOrganization = {
   displayName: '',
@@ -89,8 +89,8 @@ export const OrganizationForm: FC<Props> = ({
     nameID: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
-    tagsets: tagsetSchemaFragment,
-    references: referenceSchemaFragment,
+    tagsets: tagsetFragmentSchema,
+    references: referenceSegmentSchema,
   });
 
   /**

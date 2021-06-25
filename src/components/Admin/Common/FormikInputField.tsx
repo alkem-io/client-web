@@ -5,7 +5,6 @@ import { Required } from '../../Required';
 
 interface InputFieldProps extends FormControlProps {
   title: string;
-  value: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -16,7 +15,6 @@ interface InputFieldProps extends FormControlProps {
 
 export const FormikInputField: FC<InputFieldProps> = ({
   title,
-  value,
   name,
   required = false,
   readOnly = false,
@@ -40,7 +38,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
         as={as ? as : 'input'}
         type={type || 'text'}
         placeholder={placeholder || title}
-        value={value}
+        value={field.value}
         onChange={field.onChange}
         required={required}
         readOnly={readOnly}

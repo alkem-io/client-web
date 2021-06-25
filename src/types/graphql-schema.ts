@@ -14,7 +14,7 @@ export type Scalars = {
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: Date;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: any;
+  JSON: string;
   /** A decentralized identifier (DID) as per the W3C standard. */
   Markdown: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
@@ -1634,6 +1634,7 @@ export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
 export type ContextVisualFragment = { __typename?: 'Visual' } & Pick<Visual, 'id' | 'avatar' | 'background' | 'banner'>;
 
 export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID' | 'displayName'> & {
+    tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
     authorization?: Maybe<{ __typename?: 'Authorization' } & Pick<Authorization, 'id' | 'anonymousReadAccess'>>;
     host?: Maybe<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
     context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
@@ -2175,6 +2176,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 export type ChallengeProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'> & {
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
           lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'state'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
@@ -2583,6 +2585,7 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 export type OpportunityProfileInfoQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID' | 'displayName'> & {
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>;
           context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
         };
     };
