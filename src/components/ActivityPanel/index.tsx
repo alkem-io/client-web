@@ -7,6 +7,8 @@ import CircleTag from '../core/CircleTag';
 import { createStyles } from '../../hooks/useTheme';
 import { Theme } from '../../context/ThemeProvider';
 import activitiesMock from './tempMockActivities';
+import StateActivityCardItem from './StateActivityCardItem';
+import { Maybe, Lifecycle } from '../../types/graphql-schema';
 
 export interface ActivityCardItem {
   name: string;
@@ -17,6 +19,7 @@ export interface ActivityCardItem {
 interface ActivityCardProps extends CardProps {
   title: string;
   items: Array<ActivityCardItem>;
+  lifecycle?: Maybe<Lifecycle>;
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -34,7 +37,12 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items = activitiesMock, classes }) => {
+const ActivityCard: FC<ActivityCardProps> = ({
+  title = 'Activity Panel',
+  items = activitiesMock,
+  lifecycle = null,
+  classes,
+}) => {
   const styles = useCardStyles();
 
   return (
@@ -56,6 +64,7 @@ const ActivityCard: FC<ActivityCardProps> = ({ title = 'Activity Panel', items =
           <CircleTag text={`${digit}`} color={color || 'neutral'} />
         </div>
       ))}
+      <StateActivityCardItem lifecycle={lifecycle || undefined}></StateActivityCardItem>
     </Card>
   );
 };

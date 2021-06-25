@@ -22,6 +22,7 @@ generates:
         DID: string
         DateTime: Date
         JSON: string
+        Markdown: string
       strictScalars: true
   src/generated/graphql.tsx:
     preset: import-types

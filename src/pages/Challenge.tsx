@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { OpportunityCard } from '../components/Challenge/Cards';
 import CommunitySection from '../components/Community/CommunitySection';
@@ -20,6 +20,7 @@ import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
+import { useChallengeLifecycleQuery } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -120,6 +121,12 @@ const useChallengeStyles = createStyles(theme => ({
   },
 }));
 
+interface Params {
+  challengeId?: string;
+  opportunityId?: string;
+  ecoverseId?: string;
+}
+
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -127,12 +134,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const styles = useChallengeStyles();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
+  const { ecoverseId = '' } = useParams<Params>();
 
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
+  const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
   const { references, background, tagline, who, visual } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
@@ -195,6 +204,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           <ActivityCard
             title={t('pages.challenge.sections.activity.title')}
             items={activitySummary}
+            lifecycle={challengeLifecycleQuery?.ecoverse.challenge.lifecycle}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
           />
         }
