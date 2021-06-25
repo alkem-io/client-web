@@ -124,7 +124,8 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-ecoverse members to challenges"
+      "read-access": "Allow read access for non-ecoverse members to challenges",
+      "read-access-title": "Visibility"
     },
     "profileSegment": {
       "name": "Name",
