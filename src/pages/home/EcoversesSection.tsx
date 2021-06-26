@@ -44,7 +44,7 @@ const EcoversesSection = () => {
                 authorization={{
                   anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
                 }}
-                url={`/ecoverses/${ecoverse.nameID}`}
+                url={`/${ecoverse.nameID}`}
               />
             );
           })}

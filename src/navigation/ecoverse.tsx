@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { EcoverseProvider } from '../context/EcoverseProvider';
 import {
   useChallengeProfileQuery,
   useChallengesQuery,
@@ -11,7 +10,6 @@ import {
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
 import { useEcoverse } from '../hooks/useEcoverse';
-import { useTransactionScope } from '../hooks/useSentry';
 import { useUserContext } from '../hooks/useUserContext';
 import {
   Challenge as ChallengePage,
@@ -33,25 +31,7 @@ import RestrictedRoute from './route.extensions';
 
 const adminGroups = ['admin'];
 
-export const Ecoverses: FC = () => {
-  useTransactionScope({ type: 'domain' });
-  const { path } = useRouteMatch();
-
-  return (
-    <Switch>
-      <Route path={`${path}/:ecoverseId`} name={'Ecoverse'}>
-        <EcoverseProvider>
-          <Ecoverse paths={[{ value: '/', name: 'ecoverses', real: true }]} />
-        </EcoverseProvider>
-      </Route>
-      <Route path="*" name={'404'}>
-        <FourOuFour />
-      </Route>
-    </Switch>
-  );
-};
-
-const Ecoverse: FC<PageProps> = ({ paths }) => {
+export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
   const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
