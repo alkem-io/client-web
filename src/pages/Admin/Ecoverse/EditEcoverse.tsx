@@ -5,7 +5,6 @@ import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
 import {
-  refetchEcoversesQuery,
   useCreateReferenceOnContextMutation,
   useDeleteReferenceMutation,
   useOrganizationsListQuery,
@@ -31,9 +30,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const [deleteReference] = useDeleteReferenceMutation();
 
   const [updateEcoverse, { loading: loading1 }] = useUpdateEcoverseMutation({
-    refetchQueries: [refetchEcoversesQuery()],
-    awaitRefetchQueries: true,
-    onCompleted: () => onSuccess('Successfully created'),
+    onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
   });
 
