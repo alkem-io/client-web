@@ -22,7 +22,7 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse }) => {
 
   return (
     <div>
-      <Link to={`/ecoverses/${ecoverse.nameID}`} className={styles.textDecorationNone}>
+      <Link to={`/${ecoverse.nameID}`} className={styles.textDecorationNone}>
         <OverlayTrigger
           offset={[100, 100]}
           placement="right"
