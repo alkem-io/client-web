@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useCreateReferenceOnContextMutation, useDeleteReferenceMutation } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { Reference } from '../../../models/Profile';
+import { newReferenceName } from '../../../utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
@@ -25,7 +26,7 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ cont
           variables: {
             input: {
               contextID: contextId,
-              name: rest.references.length === 0 ? 'New reference' : `New reference (${rest.references.length + 1})`,
+              name: newReferenceName(rest.references.length),
               description: '',
               uri: '',
             },
