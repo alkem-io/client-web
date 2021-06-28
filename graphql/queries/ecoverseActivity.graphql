@@ -1,0 +1,9 @@
+query ecoverseActivity($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    activity {
+      name
+      value
+    }
+  }
+}
