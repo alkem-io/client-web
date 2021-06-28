@@ -9,6 +9,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { useGlobalActivityQuery } from '../../generated/graphql';
 import Loading from '../../components/core/Loading';
+import getActivityCount from '../../utils/get-activity-count';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -24,19 +25,6 @@ const useStyles = createStyles(theme => ({
     flexDirection: 'column',
   },
 }));
-
-const getActivityCount = (activityArray: { name: string; value: string }[], name: string): number => {
-  if (!Array.isArray(activityArray)) {
-    return 0;
-  }
-  const activity = activityArray.find(x => x.name === name);
-
-  if (!activity) {
-    return 0;
-  }
-
-  return activity.value != null ? +activity.value : 0;
-};
 
 const WelcomeSection = () => {
   const styles = useStyles();
