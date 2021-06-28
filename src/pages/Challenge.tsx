@@ -20,7 +20,7 @@ import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { useChallengeLifecycleQuery } from '../generated/graphql';
+import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -29,6 +29,7 @@ import { Challenge as ChallengeType, Context, Organisation, User } from '../type
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import BackdropWithMessage from '../components/layout/BackdropWithMessage';
+import getActivityCount from '../utils/get-activity-count';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -140,12 +141,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
+  const { displayName: name, context, opportunities, leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
   const { references, background, tagline, who, visual } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
-  const membersCount = (community && community.members?.length) || 0;
+
+  const { data: _activity } = useChallengeActivityQuery({ variables: { ecoverseId, challengeId: id } });
+  const activity = _activity?.ecoverse?.challenge?.activity || [];
 
   const projects = useMemo(
     () =>
@@ -179,15 +182,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const activitySummary = useMemo(() => {
     return [
-      { name: 'Opportunities', digit: opportunities?.length || 0, color: 'primary' },
+      { name: 'Opportunities', digit: getActivityCount(activity, 'opportunities'), color: 'primary' },
       {
         name: 'Projects',
-        digit: projects?.length || 0,
+        digit: getActivityCount(activity, 'projects'),
         color: 'positive',
       },
       {
         name: 'Members',
-        digit: membersCount,
+        digit: getActivityCount(activity, 'members'),
         color: 'neutralMedium',
       },
     ] as ActivityCardItem[];

@@ -16,7 +16,7 @@ import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import {
-  useAllOpportunitiesQuery,
+  useEcoverseActivityQuery,
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
@@ -28,6 +28,7 @@ import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/grap
 import { PageProps } from './common';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/layout/MembershipBackdrop';
+import getActivityCount from '../utils/get-activity-count';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -52,17 +53,20 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { user } = useUserContext();
   const { displayName: name, context, nameID: ecoverseId } = ecoverse.ecoverse;
 
-  const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
-  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
-  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
+
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const projects = _projects?.ecoverse?.projects || [];
-  const opportunities = _opportunities?.ecoverse?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
+
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
   const visual = _visual?.ecoverse?.context?.visual;
+
+  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId } });
+  const activity = _activity?.ecoverse?.activity || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -118,15 +122,19 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const activitySummary = useMemo(() => {
     const initial: ActivityCardItem[] = [
-      { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
+      {
+        name: t('pages.ecoverse.cards.activity.challenges'),
+        digit: getActivityCount(activity, 'challenges'),
+        color: 'neutral',
+      },
       {
         name: t('pages.ecoverse.cards.activity.opportunities'),
-        digit: opportunities.length,
+        digit: getActivityCount(activity, 'opportunities'),
         color: 'primary',
       },
       {
         name: t('pages.ecoverse.cards.activity.projects'),
-        digit: projects.length,
+        digit: getActivityCount(activity, 'projects'),
         color: 'positive',
       },
     ];
@@ -134,7 +142,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
       ...initial,
       {
         name: t('pages.ecoverse.cards.activity.members'),
-        digit: users.length,
+        digit: getActivityCount(activity, 'members'),
         color: 'neutralMedium',
       },
     ];
