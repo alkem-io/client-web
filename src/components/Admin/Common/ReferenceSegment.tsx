@@ -15,7 +15,7 @@ interface ReferenceSegmentProps {
   disabled?: boolean;
 }
 
-export const referenceSchemaFragment = yup.array().of(
+export const referenceSegmentSchema = yup.array().of(
   yup.object().shape({
     name: yup.string(),
     uri: yup.string(),

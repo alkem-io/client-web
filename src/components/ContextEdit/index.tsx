@@ -9,7 +9,12 @@ import {
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
-import { Context, UpdateChallengeInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
+import {
+  Context,
+  UpdateChallengeInput,
+  UpdateOpportunityInput,
+  UpdateReferenceInput,
+} from '../../types/graphql-schema';
 import Button from '../core/Button';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 
@@ -49,38 +54,40 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   let submitWired;
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, ...context } = values;
+    const { references, background, impact, tagline, vision, who, visual } = values;
 
-    const { references, ...restContext } = context;
-    const updatedRefs = context.references.map<UpdateReferenceInput>(ref => ({
-      ID: ref.id,
-      uri: ref.uri,
-      name: ref.name,
-      description: ref.description,
-    }));
-
-    const contextWithUpdatedRefs: UpdateContextInput = { ...restContext, references: updatedRefs };
-    const challengeUpdateData: UpdateChallengeInput = { ID: id, context: contextWithUpdatedRefs };
+    const updateInput: UpdateOpportunityInput | UpdateChallengeInput = {
+      ID: id,
+      context: {
+        background: background,
+        impact: impact,
+        tagline: tagline,
+        vision: vision,
+        who: who,
+        visual: visual,
+        references: references.map<UpdateReferenceInput>(ref => ({
+          ID: ref.id,
+          uri: ref.uri,
+          name: ref.name,
+          description: ref.description,
+        })),
+      },
+    };
 
     if (variant === 'challenge') {
       await updateChallenge({
         variables: {
-          input: challengeUpdateData,
+          input: updateInput,
         },
       });
     } else if (variant === 'opportunity') {
       await updateOpportunity({
         variables: {
-          input: {
-            ID: id,
-            context: {
-              ...contextWithUpdatedRefs,
-            },
-          },
+          input: updateInput,
         },
       });
     } else {
-      console.log('no handler found');
+      console.error('no handler found');
     }
   };
 

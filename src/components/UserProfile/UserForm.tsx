@@ -15,8 +15,8 @@ import SearchDropdown from '../core/SearchDropdown';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
-import { ReferenceSegment } from '../Admin/Common/ReferenceSegment';
-import TagsetSegment from '../Admin/Common/TagsetSegment';
+import { referenceSegmentSchema, ReferenceSegment } from '../Admin/Common/ReferenceSegment';
+import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 
 interface UserProps {
   user?: UserModel;
@@ -103,18 +103,8 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    tagsets: yup.array().of(
-      yup.object().shape({
-        name: yup.string(),
-        tags: yup.array().of(yup.string()),
-      })
-    ),
-    references: yup.array().of(
-      yup.object().shape({
-        name: yup.string(),
-        uri: yup.string(),
-      })
-    ),
+    tagsets: tagsetFragmentSchema,
+    references: referenceSegmentSchema,
     bio: yup.string().max(400),
   });
 

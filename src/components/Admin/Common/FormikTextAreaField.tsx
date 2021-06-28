@@ -5,7 +5,6 @@ import { Required } from '../../Required';
 
 interface TextAreaFieldProps extends FormControlProps {
   title: string;
-  value: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -17,7 +16,6 @@ interface TextAreaFieldProps extends FormControlProps {
 
 export const FormikTextAreaField: FC<TextAreaFieldProps> = ({
   title,
-  value,
   name,
   required = false,
   readOnly = false,
@@ -40,7 +38,7 @@ export const FormikTextAreaField: FC<TextAreaFieldProps> = ({
         as={'textarea'}
         type={type || 'text'}
         placeholder={placeholder || title}
-        value={value}
+        value={field.value}
         onChange={field.onChange}
         required={required}
         readOnly={readOnly}

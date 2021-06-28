@@ -5,7 +5,6 @@ import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
 import {
-  refetchEcoversesQuery,
   useCreateReferenceOnContextMutation,
   useDeleteReferenceMutation,
   useOrganizationsListQuery,
@@ -31,9 +30,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const [deleteReference] = useDeleteReferenceMutation();
 
   const [updateEcoverse, { loading: loading1 }] = useUpdateEcoverseMutation({
-    refetchQueries: [refetchEcoversesQuery()],
-    awaitRefetchQueries: true,
-    onCompleted: () => onSuccess('Successfully created'),
+    onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
   });
 
@@ -44,25 +41,32 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   const isLoading = loading1 || loadingOrganizations;
   const profile = ecoverse?.ecoverse;
-  const profileTopLvlInfo = {
-    name: profile?.displayName,
-    nameID: profile?.nameID,
-    hostID: profile?.host?.id,
-  };
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
   };
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const { name, nameID, host, ...context } = values;
+    const {
+      name,
+      host,
+      background,
+      impact,
+      tagline,
+      vision,
+      who,
+      references,
+      visual,
+      tagsets,
+      anonymousReadAccess,
+    } = values;
     const contextId = profile?.context?.id || '';
 
     const initialReferences = profile?.context?.references || [];
     // TODO [ATS] Extract outside. Already used at leat twice.
-    const toUpdate = context.references.filter(x => x.id);
-    const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
-    const toAdd = context.references.filter(x => !x.id);
+    const toUpdate = references.filter(x => x.id);
+    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+    const toAdd = references.filter(x => !x.id);
     for (const ref of toRemove) {
       await deleteReference({ variables: { input: { ID: ref.id } } });
     }
@@ -86,11 +90,28 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       uri: r.uri,
     }));
 
-    const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
+    const contextWithUpdatedRefs: UpdateContextInput = {
+      background: background,
+      impact: impact,
+      references: updatedRefs,
+      tagline: tagline,
+      vision: vision,
+      visual: visual,
+      who: who,
+    };
 
     updateEcoverse({
       variables: {
-        input: { context: contextWithUpdatedRefs, displayName: name, ID: ecoverseId, hostID: host },
+        input: {
+          context: contextWithUpdatedRefs,
+          displayName: name,
+          ID: ecoverseId,
+          hostID: host,
+          tags: tagsets.map(x => x.tags.join()),
+          authorizationDefinition: {
+            anonymousReadAccess: anonymousReadAccess,
+          },
+        },
       },
     });
   };
@@ -103,8 +124,12 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       </Typography>
       <EcoverseEditForm
         isEdit={true}
-        profile={profileTopLvlInfo || {}}
+        name={profile?.displayName}
+        nameID={profile?.nameID}
+        hostID={profile?.host?.id}
+        tagset={profile?.tagset}
         context={profile?.context}
+        anonymousReadAccess={profile?.authorization?.anonymousReadAccess}
         organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

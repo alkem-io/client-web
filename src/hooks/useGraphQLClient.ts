@@ -64,6 +64,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   const httpLink = createUploadLink({
     uri: graphQLEndpoint,
+    credentials: 'include',
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

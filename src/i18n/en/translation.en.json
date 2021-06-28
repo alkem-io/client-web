@@ -81,7 +81,7 @@
           "order": 11
         },
         "UserSelfManagement": {
-          "name": "User Sel fManagement",
+          "name": "User Self Management",
           "order": 12
         },
         "CommunityMember": {
@@ -118,6 +118,37 @@
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
       }
+    },
+    "editEcoverseForm": {
+      "host": {
+        "title": "Host",
+        "select": "Select a host"
+      },
+      "read-access": "Allow read access for non-ecoverse members to challenges",
+      "read-access-title": "Visibility"
+    },
+    "profileSegment": {
+      "name": "Name",
+      "nameID": {
+        "title": "NameID",
+        "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
+      }
+    },
+    "contextSegment": {
+      "background": "Background",
+      "impact": "Impact",
+      "tagline": "Tagline",
+      "vision": "Vision",
+      "who": "Who"
+    },
+    "visualSegment": {
+      "title": "Visual",
+      "avatar": "Avatar",
+      "banner": "Banner",
+      "background": "Background"
+    },
+    "tagsSegment": {
+      "title": "Tags"
     },
     "card": {
       "you-are-in": "You are in"

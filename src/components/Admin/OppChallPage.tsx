@@ -20,7 +20,7 @@ import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { useNotification } from '../../hooks/useNotification';
-import { UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
+import { CreateContextInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import Typography from '../core/Typography';
@@ -94,32 +94,25 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
 
   const isLoading = loading1 || loading2 || loading3 || loading4;
-  const profile = challengeProfile?.ecoverse?.challenge || opportunityProfile?.ecoverse?.opportunity;
-  const profileTopLvlInfo = {
-    name: profile?.displayName,
-    nameID: profile?.nameID,
-  };
+  const entity = challengeProfile?.ecoverse?.challenge || opportunityProfile?.ecoverse?.opportunity;
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
   };
 
-  const currentPaths = useMemo(() => [...paths, { name: profile?.displayName || 'new', real: false }], [
-    paths,
-    profile,
-  ]);
+  const currentPaths = useMemo(() => [...paths, { name: entity?.displayName || 'new', real: false }], [paths, entity]);
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, ...context } = values;
-    const contextId = profile?.context?.id || '';
+    const { name, nameID, background, impact, tagline, vision, who, references, visual, tagsets } = values;
+    const contextId = entity?.context?.id || '';
 
-    const initialReferences = profile?.context?.references || [];
-    const toUpdate = context.references.filter(x => x.id);
+    const initialReferences = entity?.context?.references || [];
+    const toUpdate = references.filter(x => x.id);
 
     if (mode === ProfileSubmitMode.updateChallenge || mode === ProfileSubmitMode.updateOpportunity) {
-      const toRemove = initialReferences.filter(x => x.id && !context.references.some(r => r.id && r.id === x.id));
-      const toAdd = context.references.filter(x => !x.id);
+      const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+      const toAdd = references.filter(x => !x.id);
       for (const ref of toRemove) {
         await deleteReference({ variables: { input: { ID: ref.id } } });
       }
@@ -143,10 +136,24 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       uri: r.uri,
     }));
 
-    const contextWithUpdatedRefs: UpdateContextInput = { ...context, references: updatedRefs };
-
-    // const data = { displayName: name, nameID, context };
-    // const updateData = { displayName: name, context: contextWithUpdatedRefs };
+    const updateContext: UpdateContextInput = {
+      background: background,
+      impact: impact,
+      references: updatedRefs,
+      tagline: tagline,
+      vision: vision,
+      visual: visual,
+      who: who,
+    };
+    const createContext: CreateContextInput = {
+      background: background,
+      impact: impact,
+      references: references,
+      tagline: tagline,
+      vision: vision,
+      visual: visual,
+      who: who,
+    };
 
     if (ProfileSubmitMode) {
       switch (mode) {
@@ -154,10 +161,11 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
           createChallenge({
             variables: {
               input: {
-                nameID,
-                context,
+                nameID: nameID,
                 displayName: name,
                 parentID: toEcoverseId(ecoverseId),
+                context: createContext,
+                tags: tagsets.map(x => x.tags.join()),
               },
             },
           });
@@ -165,21 +173,39 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
         case ProfileSubmitMode.updateChallenge:
           updateChallenge({
             variables: {
-              input: { nameID, context: contextWithUpdatedRefs, displayName: name, ID: challengeId },
+              input: {
+                ID: challengeId,
+                nameID: nameID,
+                displayName: name,
+                context: updateContext,
+                tags: tagsets.map(x => x.tags.join()),
+              },
             },
           });
           break;
         case ProfileSubmitMode.createOpportunity:
           createOpportunity({
             variables: {
-              input: { nameID, context, displayName: name, challengeID: challengeId },
+              input: {
+                nameID: nameID,
+                context: createContext,
+                displayName: name,
+                challengeID: challengeId,
+                tags: tagsets.map(x => x.tags.join()),
+              },
             },
           });
           break;
         case ProfileSubmitMode.updateOpportunity:
           updateOpportunity({
             variables: {
-              input: { nameID, context: contextWithUpdatedRefs, displayName: name, ID: opportunityId },
+              input: {
+                nameID: nameID,
+                context: updateContext,
+                displayName: name,
+                ID: opportunityId,
+                tags: tagsets.map(x => x.tags.join()),
+              },
             },
           });
           break;
@@ -197,8 +223,10 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       </Typography>
       <ProfileForm
         isEdit={isEdit}
-        profile={profileTopLvlInfo || {}}
-        context={profile?.context}
+        name={entity?.displayName}
+        nameID={entity?.nameID}
+        tagset={entity?.tagset}
+        context={entity?.context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
