@@ -18,7 +18,10 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
   const { path } = useRouteMatch();
   return (
     <Switch>
-      <RestrictedRoute exact path={`${path}/new`} allowedGroups={['admin']} strict={false}>
+      {
+        // TODO: set correct credentials
+      }
+      <RestrictedRoute exact path={`${path}/new`} requiredCredentials={[]} strict={false}>
         <ProjectNew paths={paths} projects={projects} opportunityId={opportunityId} />
       </RestrictedRoute>
       <RestrictedRoute exact path={`${path}/:id`}>
