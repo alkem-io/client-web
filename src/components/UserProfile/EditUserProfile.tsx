@@ -1,12 +1,6 @@
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  useCreateReferenceOnProfileMutation,
-  useCreateTagsetOnProfileMutation,
-  useDeleteReferenceMutation,
-  useMeQuery,
-  useUpdateUserMutation,
-} from '../../generated/graphql';
+import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useNotification } from '../../hooks/useNotification';
 import { UserModel } from '../../models/User';
@@ -38,8 +32,6 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useMeQuery();
   const notify = useNotification();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
   const [createTagset] = useCreateTagsetOnProfileMutation();
   const handleError = useApolloErrorHandler();
 
@@ -58,30 +50,7 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
 
   const handleSave = async (userToUpdate: UserModel) => {
     const profileId = userToUpdate.profile.id;
-    const initialReferences = user?.profile?.references || [];
-    const references = userToUpdate.profile.references;
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-    const toAdd = references.filter(x => !x.id);
     const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
-
-    for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: ref.id } } });
-    }
-
-    if (profileId) {
-      for (const ref of toAdd) {
-        await createReference({
-          variables: {
-            input: {
-              profileID: profileId,
-              name: ref.name,
-              description: ref.description,
-              uri: ref.uri,
-            },
-          },
-        });
-      }
-    }
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({

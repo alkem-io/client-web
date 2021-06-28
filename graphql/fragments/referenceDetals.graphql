@@ -1,0 +1,6 @@
+fragment ReferenceDetails on Reference {
+  id
+  name
+  uri
+  description
+}

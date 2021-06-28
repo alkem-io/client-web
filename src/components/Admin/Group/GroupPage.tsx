@@ -1,9 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
-  useDeleteReferenceMutation,
   useGroupQuery,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
@@ -69,8 +67,6 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     onCompleted: data => notify(`Group ${data.updateUserGroup.name} has been update!`, 'success'),
   });
 
-  const [createReference] = useCreateReferenceOnProfileMutation({ onError: handleError });
-  const [deleteReference] = useDeleteReferenceMutation({ onError: handleError });
   const [createTagset] = useCreateTagsetOnProfileMutation({ onError: handleError });
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
@@ -79,28 +75,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
 
   const handleSave = async (group: UserGroup) => {
     const profileId = group.profile?.id || '';
-    const initialReferences = data?.ecoverse.group.profile?.references || [];
-    const references = group.profile?.references || [];
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-    const toAdd = references.filter(x => !x.id);
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
-
-    for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: ref.id } } });
-    }
-
-    for (const ref of toAdd) {
-      await createReference({
-        variables: {
-          input: {
-            profileID: profileId,
-            name: ref.name,
-            description: ref.description,
-            uri: ref.uri,
-          },
-        },
-      });
-    }
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({

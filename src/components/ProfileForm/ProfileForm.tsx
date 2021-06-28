@@ -4,14 +4,15 @@ import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
-import { ReferenceSegment, referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
-import Divider from '../core/Divider';
-import { TextArea } from '../core/TextInput';
-import { profileSegmentSchema } from '../Admin/Common/ProfileSegment';
+import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
 import { contextFragmentSchema } from '../Admin/Common/ContextSegment';
-import { visualFragmentSchema } from '../Admin/Common/VisualSegment';
+import { profileSegmentSchema } from '../Admin/Common/ProfileSegment';
+import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 import useProfileStyles from '../Admin/Common/useProfileStyles';
+import { visualFragmentSchema } from '../Admin/Common/VisualSegment';
+import Divider from '../core/Divider';
+import { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 
 export interface ProfileFormValuesType {
@@ -195,7 +196,7 @@ const ProfileForm: FC<Props> = ({
             {getTextArea({ name: 'visual.background', label: t('components.visualSegment.background') })}
             {getTextArea({ name: 'visual.banner', label: t('components.visualSegment.banner') })}
 
-            <ReferenceSegment references={references || []} />
+            <ContextReferenceSegment references={references || []} contextId={context?.id} />
             <Divider />
           </>
         );

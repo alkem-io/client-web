@@ -3,20 +3,21 @@ import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Visual, Tagset } from '../../types/graphql-schema';
+import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import { Required } from '../Required';
-import { ReferenceSegment, referenceSegmentSchema } from './Common/ReferenceSegment';
+import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextFragmentSchema, ContextSegment } from './Common/ContextSegment';
-import { VisualSegment, visualFragmentSchema } from './Common/VisualSegment';
-import { TagsetSegment, tagsetFragmentSchema } from './Common/TagsetSegment';
-import useProfileStyles from './Common/useProfileStyles';
-import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
 import FormikInputField from './Common/FormikInputField';
 import FormikMarkdownField from './Common/FormikMarkdownField';
 import FormikTextAreaField from './Common/FormikTextAreaField';
+import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
+import { referenceSegmentSchema } from './Common/ReferenceSegment';
+import { tagsetFragmentSchema, TagsetSegment } from './Common/TagsetSegment';
+import useProfileStyles from './Common/useProfileStyles';
+import { visualFragmentSchema, VisualSegment } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -72,6 +73,8 @@ const EcoverseEditForm: FC<Props> = ({
       },
     ] as Tagset[];
   }, [tagset]);
+
+  const contextId = context?.id;
 
   const initialValues: EcoverseEditFormValuesType = {
     name: name || '',
@@ -254,7 +257,7 @@ const EcoverseEditForm: FC<Props> = ({
             {getMarkdownInput({ name: 'vision', label: 'Vision', rows: 10 })}
             {getInput({ name: 'who', label: 'Who', rows: 3 })}
 
-            <ReferenceSegment references={references || []} />
+            <ContextReferenceSegment references={references || []} contextId={contextId} />
 
             {isEdit && (
               <>

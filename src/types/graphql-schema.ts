@@ -277,8 +277,10 @@ export type Community = Groupable & {
 
 export type Config = {
   __typename?: 'Config';
-  /** Cherrytwist authentication configuration. */
+  /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Platform related resources. */
+  platform: Platform;
   /** Cherrytwist template configuration. */
   template: Template;
 };
@@ -627,6 +629,14 @@ export type EcoverseTemplate = {
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
   /** Ecoverse template name. */
+  name: Scalars['String'];
+};
+
+export type FeatureFlag = {
+  __typename?: 'FeatureFlag';
+  /** Whether the feature flag is enabled / disabled. */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
   name: Scalars['String'];
 };
 
@@ -1134,6 +1144,24 @@ export type OryConfig = {
   issuer: Scalars['String'];
   /** Ory Kratos Public Base URL. Used by all Kratos Public Clients. */
   kratosPublicBaseURL: Scalars['String'];
+};
+
+export type Platform = {
+  __typename?: 'Platform';
+  /** URL to a page about the platform */
+  about: Scalars['String'];
+  /** The feature flags for the platform */
+  featureFlags: Array<FeatureFlag>;
+  /** URL to a form for providing feedback */
+  feedback: Scalars['String'];
+  /** URL to the privacy policy for the platform */
+  privacy: Scalars['String'];
+  /** URL to the security policy for the platform */
+  security: Scalars['String'];
+  /** URL where users can get support for the platform */
+  support: Scalars['String'];
+  /** URL to the terms of usage for the platform */
+  terms: Scalars['String'];
 };
 
 export type Profile = {
@@ -1672,6 +1700,11 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
     tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
   };
 
+export type ReferenceDetailsFragment = { __typename?: 'Reference' } & Pick<
+  Reference,
+  'id' | 'name' | 'uri' | 'description'
+>;
+
 export type UserAgentFragment = { __typename?: 'User' } & {
   agent?: Maybe<
     { __typename?: 'Agent' } & Pick<Agent, 'id' | 'did'> & {
@@ -1795,7 +1828,7 @@ export type CreateReferenceOnContextMutationVariables = Exact<{
 }>;
 
 export type CreateReferenceOnContextMutation = { __typename?: 'Mutation' } & {
-  createReferenceOnContext: { __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'description' | 'uri'>;
+  createReferenceOnContext: { __typename?: 'Reference' } & ReferenceDetailsFragment;
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{

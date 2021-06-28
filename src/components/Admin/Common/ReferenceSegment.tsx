@@ -1,18 +1,19 @@
 import { FieldArray } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-// import { useCreateReferenceOnContextMutation, useDeleteReferenceMutation } from '../../../generated/graphql';
 import { Reference } from '../../../models/Profile';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
 import FormikInputField from './FormikInputField';
 
-interface ReferenceSegmentProps {
+export interface ReferenceSegmentProps {
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
+  onAdd?: (push: (obj: any) => void) => void;
+  onRemove?: (ref: Reference, remove: () => void) => void;
 }
 
 export const referenceSegmentSchema = yup.array().of(
@@ -22,54 +23,31 @@ export const referenceSegmentSchema = yup.array().of(
   })
 );
 
-export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOnly = false, disabled = false }) => {
+export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
+  references,
+  readOnly = false,
+  disabled = false,
+  onAdd,
+  onRemove,
+}) => {
   const { t } = useTranslation();
-  // const [addReference] = useCreateReferenceOnContextMutation({
-  //   update: (cache, { data }) => {
-  //     if (data && community) {
-  //       const { createGroupOnCommunity: newGroup } = data;
-  //       cache.modify({
-  //         id: cache.identify(community),
-  //         fields: {
-  //           groups(existingGroups = []) {
-  //             const newGroupRef = cache.writeFragment({
-  //               data: newGroup,
-  //               fragment: GroupDetailsFragmentDoc,
-  //             });
-  //             return [...existingGroups, newGroupRef];
-  //           },
-  //         },
-  //       });
-  //     }
-  //   },
-  // });
+  const [removing, setRemoving] = useState<number | undefined>();
+  const [adding, setAdding] = useState(false);
 
-  // const [deleteReference] = useDeleteReferenceMutation();
-  const handleAdd = () => {
-    // addReference({
-    //   variables: {
-    //     input: {
-    //       contextID: '', // TOOD
-    //       name: 'New reference',
-    //       description: '',
-    //       uri: '',
-    //     },
-    //   },
-    //   optimisticResponse: {
-    //     createReferenceOnContext: {
-    //       __typename: 'Reference',
-    //       id: '00000000-0000-0000-0000-000000000000',
-    //       name: 'New reference',
-    //       description: '',
-    //       uri: '',
-    //     },
-    //   },
-    // });
+  const handleAdd = (push: (obj: any) => void) => {
+    if (onAdd) {
+      setAdding(true);
+      return onAdd((obj?: any) => {
+        if (obj) push(obj);
+        setAdding(false);
+      });
+    }
+    push({ name: '', uri: '' });
   };
 
   return (
     <FieldArray name={'references'}>
-      {({ push: _push, remove }) => (
+      {({ push, remove }) => (
         <>
           <Form.Row>
             <Form.Group as={Col} xs={11} className={'d-flex mb-4 align-items-center'}>
@@ -85,7 +63,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   </Tooltip>
                 }
               >
-                <Button onClick={handleAdd} disabled={disabled}>
+                <Button onClick={() => handleAdd(push)} disabled={disabled || adding}>
                   +
                 </Button>
               </OverlayTrigger>
@@ -107,18 +85,16 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   <FormikInputField
                     name={`references.${index}.name`}
                     title={'Name'}
-                    value={references[index].name}
                     readOnly={readOnly}
-                    disabled={disabled}
+                    disabled={disabled || index === removing}
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
                   <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
-                    value={references[index].uri}
                     readOnly={readOnly}
-                    disabled={disabled}
+                    disabled={disabled || index === removing}
                   />
                 </Form.Group>
                 {!readOnly && (
@@ -132,10 +108,18 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                     >
                       <Button
                         onClick={() => {
-                          remove(index);
+                          if (onRemove) {
+                            setRemoving(index);
+                            onRemove(ref, () => {
+                              remove(index);
+                              setRemoving(undefined);
+                            });
+                          } else {
+                            remove(index);
+                          }
                         }}
                         variant={'negative'}
-                        disabled={disabled}
+                        disabled={disabled || index === removing}
                       >
                         -
                       </Button>

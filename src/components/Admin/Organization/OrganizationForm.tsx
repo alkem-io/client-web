@@ -12,8 +12,9 @@ import { EditMode } from '../../../utils/editMode';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
 import FormikInputField from '../Common/FormikInputField';
-import { ReferenceSegment, referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { TagsetSegment, tagsetFragmentSchema } from '../Common/TagsetSegment';
+import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '../Common/ReferenceSegment';
+import { tagsetFragmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 
 const emptyOrganization = {
   displayName: '',
@@ -183,7 +184,13 @@ export const OrganizationForm: FC<Props> = ({
                       </Form.Row>
 
                       <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                      <ReferenceSegment references={references} readOnly={isReadOnlyMode} />
+                      {isEditMode && (
+                        <ProfileReferenceSegment
+                          references={references}
+                          readOnly={isReadOnlyMode}
+                          profileId={profileId}
+                        />
+                      )}
                     </>
                   )}
                   {!isReadOnlyMode && (
