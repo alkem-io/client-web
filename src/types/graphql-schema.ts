@@ -1700,6 +1700,11 @@ export type ProjectDetailsFragment = { __typename?: 'Project' } & Pick<
     tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
   };
 
+export type ReferenceDetailsFragment = { __typename?: 'Reference' } & Pick<
+  Reference,
+  'id' | 'name' | 'uri' | 'description'
+>;
+
 export type UserAgentFragment = { __typename?: 'User' } & {
   agent?: Maybe<
     { __typename?: 'Agent' } & Pick<Agent, 'id' | 'did'> & {
@@ -1823,7 +1828,7 @@ export type CreateReferenceOnContextMutationVariables = Exact<{
 }>;
 
 export type CreateReferenceOnContextMutation = { __typename?: 'Mutation' } & {
-  createReferenceOnContext: { __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'description' | 'uri'>;
+  createReferenceOnContext: { __typename?: 'Reference' } & ReferenceDetailsFragment;
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{

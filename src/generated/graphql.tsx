@@ -140,6 +140,14 @@ export const ProjectDetailsFragmentDoc = gql`
     }
   }
 `;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const UserAgentFragmentDoc = gql`
   fragment UserAgent on User {
     agent {
@@ -753,12 +761,10 @@ export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
 export const CreateReferenceOnContextDocument = gql`
   mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
     createReferenceOnContext(referenceInput: $input) {
-      id
-      name
-      description
-      uri
+      ...ReferenceDetails
     }
   }
+  ${ReferenceDetailsFragmentDoc}
 `;
 export type CreateReferenceOnContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateReferenceOnContextMutation,

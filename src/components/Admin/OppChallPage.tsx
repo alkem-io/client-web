@@ -10,8 +10,6 @@ import {
   useChallengeProfileInfoLazyQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
-  useCreateReferenceOnContextMutation,
-  useDeleteReferenceMutation,
   useOpportunityProfileInfoLazyQuery,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
@@ -47,8 +45,6 @@ interface Params {
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
-  const [addReference] = useCreateReferenceOnContextMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
   const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
@@ -105,31 +101,8 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
 
   const onSubmit = async (values: ProfileFormValuesType) => {
     const { name, nameID, background, impact, tagline, vision, who, references, visual, tagsets } = values;
-    const contextId = entity?.context?.id || '';
 
-    const initialReferences = entity?.context?.references || [];
-    const toUpdate = references.filter(x => x.id);
-
-    if (mode === ProfileSubmitMode.updateChallenge || mode === ProfileSubmitMode.updateOpportunity) {
-      const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-      const toAdd = references.filter(x => !x.id);
-      for (const ref of toRemove) {
-        await deleteReference({ variables: { input: { ID: ref.id } } });
-      }
-      for (const ref of toAdd) {
-        await addReference({
-          variables: {
-            input: {
-              contextID: contextId,
-              name: ref.name,
-              description: ref.description,
-              uri: ref.uri,
-            },
-          },
-        });
-      }
-    }
-    const updatedRefs: UpdateReferenceInput[] = toUpdate.map<UpdateReferenceInput>(r => ({
+    const updatedRefs: UpdateReferenceInput[] = references.map<UpdateReferenceInput>(r => ({
       ID: r.id,
       description: r.description,
       name: r.name,

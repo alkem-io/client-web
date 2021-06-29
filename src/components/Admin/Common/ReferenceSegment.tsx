@@ -1,17 +1,20 @@
 import { FieldArray } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Reference } from '../../../models/Profile';
-import FormikInputField from './FormikInputField';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { PushFunc, RemoveFunc } from '../../../hooks/useEditReference';
+import { Reference } from '../../../models/Profile';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
-import { useTranslation } from 'react-i18next';
+import FormikInputField from './FormikInputField';
 
-interface ReferenceSegmentProps {
+export interface ReferenceSegmentProps {
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
+  onAdd?: (push: PushFunc) => void;
+  onRemove?: (ref: Reference, remove: RemoveFunc) => void;
 }
 
 export const referenceSegmentSchema = yup.array().of(
@@ -21,8 +24,27 @@ export const referenceSegmentSchema = yup.array().of(
   })
 );
 
-export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOnly = false, disabled = false }) => {
+export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
+  references,
+  readOnly = false,
+  disabled = false,
+  onAdd,
+  onRemove,
+}) => {
   const { t } = useTranslation();
+  const [removing, setRemoving] = useState<number | undefined>();
+  const [adding, setAdding] = useState(false);
+
+  const handleAdd = (push: (obj: any) => void) => {
+    if (onAdd) {
+      setAdding(true);
+      return onAdd((obj?: any) => {
+        if (obj) push(obj);
+        setAdding(false);
+      });
+    }
+    push({ name: '', uri: '' });
+  };
 
   return (
     <FieldArray name={'references'}>
@@ -42,7 +64,14 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   </Tooltip>
                 }
               >
-                <Button onClick={() => push({ name: '', uri: '' })} disabled={disabled}>
+                <Button
+                  type={'button'}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleAdd(push);
+                  }}
+                  disabled={disabled || adding}
+                >
                   +
                 </Button>
               </OverlayTrigger>
@@ -64,18 +93,16 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                   <FormikInputField
                     name={`references.${index}.name`}
                     title={'Name'}
-                    value={references[index].name}
                     readOnly={readOnly}
-                    disabled={disabled}
+                    disabled={disabled || index === removing}
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
                   <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
-                    value={references[index].uri}
                     readOnly={readOnly}
-                    disabled={disabled}
+                    disabled={disabled || index === removing}
                   />
                 </Form.Group>
                 {!readOnly && (
@@ -88,11 +115,21 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({ references, readOn
                       }
                     >
                       <Button
-                        onClick={() => {
-                          remove(index);
+                        type={'button'}
+                        onClick={e => {
+                          e.preventDefault();
+                          if (onRemove) {
+                            setRemoving(index);
+                            onRemove(ref, (success: boolean) => {
+                              if (success) remove(index);
+                              setRemoving(undefined);
+                            });
+                          } else {
+                            remove(index);
+                          }
                         }}
                         variant={'negative'}
-                        disabled={disabled}
+                        disabled={disabled || index === removing}
                       >
                         -
                       </Button>
