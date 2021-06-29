@@ -158,19 +158,23 @@
     }
   },
   "pages": {
+    "activity": {
+      "title": "{{blockName}} activity",
+      "ecoverses": "Ecoverses",
+      "challenges": "Challenges",
+      "opportunities": "Opportunities",
+      "projects": "Projects",
+      "members": "Members",
+      "interests": "Interests",
+      "users": "Users",
+      "organisations": "Organisations"
+    },
     "home": {
       "sections": {
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Unleashing societies potential. Building a better future, together.",
-          "activity": {
-            "title": "Activity",
-            "ecoverses": "Ecoverses",
-            "challenges": "Challenges",
-            "users": "Users",
-            "organisations": "Organisations"
-          }
+          "body": "Unleashing societies potential. Building a better future, together."
         },
         "ecoverse": {
           "header": "Explore the hosted Ecoverses!",
@@ -180,15 +184,7 @@
       }
     },
     "ecoverse": {
-      "cards": {
-        "activity": {
-          "title": "ecoverse activity",
-          "challenges": "Challenges",
-          "opportunities": "Opportunities",
-          "projects": "Projects",
-          "members": "Members"
-        }
-      },
+      "title": "Ecoverse",
       "sections": {
         "challenges": {
           "header": "Challenges",
@@ -208,16 +204,11 @@
       }
     },
     "challenge": {
+      "title": "Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
       "sections": {
-        "activity": {
-          "title": "challenge activity",
-          "opportunities": "Opportunities",
-          "projects": "Projects",
-          "members": "Members"
-        },
         "header": {
           "buttons": {
             "edit": {
@@ -250,6 +241,7 @@
       }
     },
     "opportunity": {
+      "title": "Opportunity",
       "sections": {
         "header": {
           "buttons": {

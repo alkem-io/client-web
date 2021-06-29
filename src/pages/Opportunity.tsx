@@ -9,8 +9,8 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useParams } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import { useHistory } from 'react-router-dom';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
@@ -25,7 +25,11 @@ import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { Theme } from '../context/ThemeProvider';
-import { useOpportunityLifecycleQuery, useOpportunityTemplateQuery } from '../generated/graphql';
+import {
+  useOpportunityActivityQuery,
+  useOpportunityLifecycleQuery,
+  useOpportunityTemplateQuery,
+} from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -40,6 +44,8 @@ import {
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
+import getActivityCount from '../utils/get-activity-count';
+import { useEcoverse } from '../hooks/useEcoverse';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -66,11 +72,6 @@ const useStyles = createStyles(theme => ({
     },
   },
 }));
-
-interface Params {
-  opportunityId?: string;
-  ecoverseId?: string;
-}
 
 interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
@@ -108,9 +109,14 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
-  const { ecoverseId = '' } = useParams<Params>();
+  const { ecoverseId } = useEcoverse();
 
-  const { displayName: name, projects = [], relations = [], context, community, id } = opportunity;
+  const { data: _activity } = useOpportunityActivityQuery({
+    variables: { ecoverseId, opportunityId: opportunity?.id },
+  });
+  const activity = _activity?.ecoverse?.opportunity?.activity || [];
+
+  const { displayName: name, projects = [], relations = [], context, id } = opportunity;
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
 
@@ -118,12 +124,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
-  const membersCount = (community && community.members?.length) || 0;
 
   const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
-  const interestsCount = (incoming?.length || 0) + (outgoing?.length || 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
   const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
@@ -136,25 +140,25 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const projectRef = useRef<HTMLDivElement>(null);
 
-  const activitySummary = useMemo(() => {
+  const activitySummary: ActivityCardItem[] = useMemo(() => {
     return [
       {
-        name: 'Projects',
-        digit: projects.length,
+        name: t('pages.activity.projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: 'Interests',
-        digit: interestsCount,
+        name: t('pages.activity.interests'),
+        digit: getActivityCount(activity, 'relations') || 0,
         color: 'primary',
       },
       {
-        name: 'Members',
-        digit: membersCount,
+        name: t('pages.activity.members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];
-  }, [projects, users]);
+  }, [activity]);
 
   const opportunityProjects = useMemo(() => {
     const projectList = [
@@ -196,10 +200,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
         }}
         details={
           <ActivityCard
-            title={'opportunity activity'}
+            title={t('pages.activity.title', { blockName: t('pages.opportunity.title') })}
             lifecycle={opportunityLifecycleQuery?.ecoverse.opportunity.lifecycle}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            items={activitySummary as any}
+            items={activitySummary}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
           />
         }
