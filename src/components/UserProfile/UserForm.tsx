@@ -9,14 +9,15 @@ import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import { TagsetTemplate } from '../../types/graphql-schema';
 import countriesList from '../../utils/countriesList.json';
 import { EditMode } from '../../utils/editMode';
+import { FormikInputField } from '../Admin/Common/FormikInputField';
+import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
+import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import SearchDropdown from '../core/SearchDropdown';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';
-import { FormikInputField } from '../Admin/Common/FormikInputField';
-import { referenceSegmentSchema, ReferenceSegment } from '../Admin/Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 
 interface UserProps {
   user?: UserModel;
@@ -294,7 +295,14 @@ export const UserForm: FC<UserProps> = ({
                 readOnly={isReadOnlyMode}
                 disabled={isSubmitting}
               />
-              <ReferenceSegment references={references} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+              {isEditMode && (
+                <ProfileReferenceSegment
+                  references={references}
+                  readOnly={isReadOnlyMode}
+                  disabled={isSubmitting}
+                  profileId={profileId}
+                />
+              )}
 
               {isEditMode && (
                 <div className={'d-flex mt-4'}>

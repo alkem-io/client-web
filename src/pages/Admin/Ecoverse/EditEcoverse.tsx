@@ -4,12 +4,7 @@ import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../component
 import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-import {
-  useCreateReferenceOnContextMutation,
-  useDeleteReferenceMutation,
-  useOrganizationsListQuery,
-  useUpdateEcoverseMutation,
-} from '../../../generated/graphql';
+import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
@@ -26,8 +21,6 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
-  const [addReference] = useCreateReferenceOnContextMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
 
   const [updateEcoverse, { loading: loading1 }] = useUpdateEcoverseMutation({
     onCompleted: () => onSuccess('Successfully updated'),
@@ -60,30 +53,8 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       tagsets,
       anonymousReadAccess,
     } = values;
-    const contextId = profile?.context?.id || '';
 
-    const initialReferences = profile?.context?.references || [];
-    // TODO [ATS] Extract outside. Already used at leat twice.
-    const toUpdate = references.filter(x => x.id);
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-    const toAdd = references.filter(x => !x.id);
-    for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: ref.id } } });
-    }
-    for (const ref of toAdd) {
-      await addReference({
-        variables: {
-          input: {
-            contextID: contextId,
-            name: ref.name,
-            description: ref.description,
-            uri: ref.uri,
-          },
-        },
-      });
-    }
-
-    const updatedRefs = toUpdate.map<UpdateReferenceInput>(r => ({
+    const updatedRefs = references.map<UpdateReferenceInput>(r => ({
       ID: r.id,
       description: r.description,
       name: r.name,
