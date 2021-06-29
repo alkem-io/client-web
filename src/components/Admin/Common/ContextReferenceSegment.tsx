@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-import { useCreateReferenceOnContextMutation, useDeleteReferenceMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../hooks/useEditReference';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
@@ -10,55 +9,37 @@ interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
 }
 
 export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ contextId, readOnly, ...rest }) => {
-  const handleError = useApolloErrorHandler();
-  const [addReference] = useCreateReferenceOnContextMutation({
-    onError: handleError,
-  });
+  const { addReferenceOnContext: addReference, deleteReference, setPush, setRemove } = useEditReference();
 
-  const [deleteReference] = useDeleteReferenceMutation({
-    onError: handleError,
-  });
-
-  const handleAdd = async (push: (obj?: any) => void) => {
+  const handleAdd = async (push: PushFunc) => {
+    setPush(push);
     if (contextId) {
-      try {
-        const result = await addReference({
-          variables: {
-            input: {
-              contextID: contextId,
-              name: newReferenceName(rest.references.length),
-              description: '',
-              uri: '',
-            },
+      addReference({
+        variables: {
+          input: {
+            contextID: contextId,
+            name: newReferenceName(rest.references.length),
+            description: '',
+            uri: '',
           },
-        });
-        push({
-          id: result.data?.createReferenceOnContext.id,
-          name: result.data?.createReferenceOnContext.name,
-          uri: result.data?.createReferenceOnContext.uri,
-        });
-      } catch {
-        push();
-      }
-    }
-  };
-  const handleRemove = async (ref: Reference, remove: (success: boolean) => void) => {
-    if (ref.id) {
-      try {
-        const result = await deleteReference({
-          variables: {
-            input: {
-              ID: ref.id,
-            },
-          },
-        });
-        remove(!!result);
-      } catch {
-        remove(false);
-      }
+        },
+      });
     }
   };
 
-  return <ReferenceSegment {...rest} onAdd={handleAdd} onRemove={handleRemove} readOnly={!contextId || readOnly} />;
+  const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
+    setRemove(removeFn);
+    if (ref.id) {
+      deleteReference({
+        variables: {
+          input: {
+            ID: ref.id,
+          },
+        },
+      });
+    }
+  };
+
+  return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!contextId || readOnly} {...rest} />;
 };
 export default ContextReferenceSegment;

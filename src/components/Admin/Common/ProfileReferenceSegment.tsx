@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-import { useCreateReferenceOnProfileMutation, useDeleteReferenceMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../hooks/useEditReference';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
@@ -10,56 +9,37 @@ interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
 }
 
 export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
-  const handleError = useApolloErrorHandler();
-  const [addReference] = useCreateReferenceOnProfileMutation({
-    onError: handleError,
-  });
+  const { addReferenceOnProfile: addReference, deleteReference, setPush, setRemove } = useEditReference();
 
-  const [deleteReference] = useDeleteReferenceMutation({
-    onError: handleError,
-  });
-
-  const handleAdd = async (push: (obj?: any) => void) => {
+  const handleAdd = async (push: PushFunc) => {
+    setPush(push);
     if (profileId) {
-      try {
-        const result = await addReference({
-          variables: {
-            input: {
-              profileID: profileId,
-              name: newReferenceName(rest.references.length),
-              description: '',
-              uri: '',
-            },
+      addReference({
+        variables: {
+          input: {
+            profileID: profileId,
+            name: newReferenceName(rest.references.length),
+            description: '',
+            uri: '',
           },
-        });
-        push({
-          id: result.data?.createReferenceOnProfile.id,
-          name: result.data?.createReferenceOnProfile.name,
-          uri: result.data?.createReferenceOnProfile.uri,
-        });
-      } catch {
-        push();
-      }
+        },
+      });
     }
   };
 
-  const handleRemove = async (ref: Reference, remove: (success: boolean) => void) => {
+  const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
+    setRemove(removeFn);
     if (ref.id) {
-      try {
-        const result = await deleteReference({
-          variables: {
-            input: {
-              ID: ref.id,
-            },
+      deleteReference({
+        variables: {
+          input: {
+            ID: ref.id,
           },
-        });
-        remove(!!result);
-      } catch {
-        remove(false);
-      }
+        },
+      });
     }
   };
 
-  return <ReferenceSegment {...rest} onAdd={handleAdd} onRemove={handleRemove} readOnly={!profileId || readOnly} />;
+  return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!profileId || readOnly} {...rest} />;
 };
 export default ProfileReferenceSegment;
