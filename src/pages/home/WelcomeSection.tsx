@@ -9,6 +9,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { useGlobalActivityQuery } from '../../generated/graphql';
 import Loading from '../../components/core/Loading';
+import getActivityCount from '../../utils/get-activity-count';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -25,19 +26,6 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-const getActivityCount = (activityArray: { name: string; value: string }[], name: string): number => {
-  if (!Array.isArray(activityArray)) {
-    return 0;
-  }
-  const activity = activityArray.find(x => x.name === name);
-
-  if (!activity) {
-    return 0;
-  }
-
-  return activity.value != null ? +activity.value : 0;
-};
-
 const WelcomeSection = () => {
   const styles = useStyles();
   const { t } = useTranslation();
@@ -45,26 +33,26 @@ const WelcomeSection = () => {
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
   const globalActivity = activity?.metadata?.activity || [];
   const [ecoverseCount, challengeCount, userCount, orgCount] = [
-    getActivityCount(globalActivity, 'ecoverses'),
-    getActivityCount(globalActivity, 'challenges'),
-    getActivityCount(globalActivity, 'users'),
-    getActivityCount(globalActivity, 'organisations'),
+    getActivityCount(globalActivity, 'ecoverses') || 0,
+    getActivityCount(globalActivity, 'challenges') || 0,
+    getActivityCount(globalActivity, 'users') || 0,
+    getActivityCount(globalActivity, 'organisations') || 0,
   ];
   const summary: ActivityCardItem[] = useMemo(
     () => [
-      { name: t('pages.home.sections.welcome.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
+      { name: t('pages.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
       {
-        name: t('pages.home.sections.welcome.activity.challenges'),
+        name: t('pages.activity.challenges'),
         digit: challengeCount,
         color: 'primary',
       },
       {
-        name: t('pages.home.sections.welcome.activity.users'),
+        name: t('pages.activity.users'),
         digit: userCount,
         color: 'positive',
       },
       {
-        name: t('pages.home.sections.welcome.activity.organisations'),
+        name: t('pages.activity.organisations'),
         digit: orgCount,
         color: 'positive',
       },
@@ -79,7 +67,7 @@ const WelcomeSection = () => {
           isActivityLoading ? (
             <Loading text={'Loading statistics ...'} />
           ) : (
-            <ActivityCard title={t('pages.home.sections.welcome.activity.title')} items={summary} />
+            <ActivityCard title={t('pages.activity.title', { blockName: 'all' })} items={summary} />
           )
         }
       >

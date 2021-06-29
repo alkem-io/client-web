@@ -16,7 +16,7 @@ import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
 import {
-  useAllOpportunitiesQuery,
+  useEcoverseActivityQuery,
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
@@ -28,6 +28,7 @@ import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/grap
 import { PageProps } from './common';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/layout/MembershipBackdrop';
+import getActivityCount from '../utils/get-activity-count';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -52,17 +53,20 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const { user } = useUserContext();
   const { displayName: name, context, nameID: ecoverseId } = ecoverse.ecoverse;
 
-  const { data: _opportunities } = useAllOpportunitiesQuery({ variables: { ecoverseId } });
-  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
-  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
 
   const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
   const challengesError = challengesQuery?.error;
+
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const projects = _projects?.ecoverse?.projects || [];
-  const opportunities = _opportunities?.ecoverse?.opportunities || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
+
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
   const visual = _visual?.ecoverse?.context?.visual;
+
+  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId } });
+  const activity = _activity?.ecoverse?.activity || [];
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -116,30 +120,31 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const more = references?.find(x => x.name === 'website');
 
-  const activitySummary = useMemo(() => {
-    const initial: ActivityCardItem[] = [
-      { name: t('pages.ecoverse.cards.activity.challenges'), digit: challenges.length, color: 'neutral' },
+  const activitySummary: ActivityCardItem[] = useMemo(
+    () => [
       {
-        name: t('pages.ecoverse.cards.activity.opportunities'),
-        digit: opportunities.length,
+        name: t('pages.activity.challenges'),
+        digit: getActivityCount(activity, 'challenges') || 0,
+        color: 'neutral',
+      },
+      {
+        name: t('pages.activity.opportunities'),
+        digit: getActivityCount(activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.ecoverse.cards.activity.projects'),
-        digit: projects.length,
+        name: t('pages.activity.projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
-    ];
-    const withMembers: ActivityCardItem[] = [
-      ...initial,
       {
-        name: t('pages.ecoverse.cards.activity.members'),
-        digit: users.length,
+        name: t('pages.activity.members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
-    ];
-    return isAuthenticated ? withMembers : initial;
-  }, [ecoverse, projects, isAuthenticated]);
+    ],
+    [activity]
+  );
 
   return (
     <>
@@ -155,7 +160,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <div />
           )
         }
-        details={<ActivityCard title={'ecoverse activity'} items={activitySummary} />}
+        details={
+          <ActivityCard
+            title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })}
+            items={activitySummary}
+          />
+        }
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />

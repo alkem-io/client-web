@@ -277,8 +277,10 @@ export type Community = Groupable & {
 
 export type Config = {
   __typename?: 'Config';
-  /** Cherrytwist authentication configuration. */
+  /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Platform related resources. */
+  platform: Platform;
   /** Cherrytwist template configuration. */
   template: Template;
 };
@@ -627,6 +629,14 @@ export type EcoverseTemplate = {
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
   /** Ecoverse template name. */
+  name: Scalars['String'];
+};
+
+export type FeatureFlag = {
+  __typename?: 'FeatureFlag';
+  /** Whether the feature flag is enabled / disabled. */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
   name: Scalars['String'];
 };
 
@@ -1134,6 +1144,24 @@ export type OryConfig = {
   issuer: Scalars['String'];
   /** Ory Kratos Public Base URL. Used by all Kratos Public Clients. */
   kratosPublicBaseURL: Scalars['String'];
+};
+
+export type Platform = {
+  __typename?: 'Platform';
+  /** URL to a page about the platform */
+  about: Scalars['String'];
+  /** The feature flags for the platform */
+  featureFlags: Array<FeatureFlag>;
+  /** URL to a form for providing feedback */
+  feedback: Scalars['String'];
+  /** URL to the privacy policy for the platform */
+  privacy: Scalars['String'];
+  /** URL to the security policy for the platform */
+  security: Scalars['String'];
+  /** URL where users can get support for the platform */
+  support: Scalars['String'];
+  /** URL to the terms of usage for the platform */
+  terms: Scalars['String'];
 };
 
 export type Profile = {
@@ -2053,6 +2081,19 @@ export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type ChallengeActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        };
+    };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -2232,6 +2273,16 @@ export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
             }
         >
       >;
+    };
+};
+
+export type EcoverseActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
     };
 };
 
@@ -2418,6 +2469,19 @@ export type OpportunitiesQuery = { __typename?: 'Query' } & {
       challenge: { __typename?: 'Challenge' } & {
         opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName'>>>;
       };
+    };
+};
+
+export type OpportunityActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'> & {
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        };
     };
 };
 

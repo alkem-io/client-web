@@ -20,7 +20,7 @@ import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { useChallengeLifecycleQuery } from '../generated/graphql';
+import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
@@ -29,6 +29,7 @@ import { Challenge as ChallengeType, Context, Organisation, User } from '../type
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import BackdropWithMessage from '../components/layout/BackdropWithMessage';
+import getActivityCount from '../utils/get-activity-count';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -140,12 +141,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities, leadOrganisations, id, community } = challenge;
+  const { displayName: name, context, opportunities, leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
   const { references, background, tagline, who, visual } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
-  const membersCount = (community && community.members?.length) || 0;
+
+  const { data: _activity } = useChallengeActivityQuery({ variables: { ecoverseId, challengeId: id } });
+  const activity = _activity?.ecoverse?.challenge?.activity || [];
 
   const projects = useMemo(
     () =>
@@ -177,21 +180,25 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
     [projects]
   );
 
-  const activitySummary = useMemo(() => {
+  const activitySummary: ActivityCardItem[] = useMemo(() => {
     return [
-      { name: 'Opportunities', digit: opportunities?.length || 0, color: 'primary' },
       {
-        name: 'Projects',
-        digit: projects?.length || 0,
+        name: t('pages.activity.opportunities'),
+        digit: getActivityCount(activity, 'opportunities') || 0,
+        color: 'primary',
+      },
+      {
+        name: t('pages.activity.projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: 'Members',
-        digit: membersCount,
+        name: t('pages.activity.members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
-    ] as ActivityCardItem[];
-  }, [opportunities, projects, users]);
+    ];
+  }, [activity]);
 
   const challengeRefs = challenge?.context?.references
     ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')
@@ -202,7 +209,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Section
         details={
           <ActivityCard
-            title={t('pages.challenge.sections.activity.title')}
+            title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activitySummary}
             lifecycle={challengeLifecycleQuery?.ecoverse.challenge.lifecycle}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
