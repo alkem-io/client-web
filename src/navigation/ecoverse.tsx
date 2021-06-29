@@ -25,11 +25,7 @@ import {
   Opportunity as OpportunityType,
   User,
 } from '../types/graphql-schema';
-import { Admin } from './admin/admin';
 import { Project } from './project';
-import RestrictedRoute from './route.extensions';
-
-const adminGroups = ['admin'];
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -72,9 +68,6 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} challenges={challenges} />
       </Route>
-      <RestrictedRoute path={`${path}/admin`} allowedGroups={adminGroups} strict={false}>
-        <Admin />
-      </RestrictedRoute>
       <Route path="*">
         <FourOuFour />
       </Route>
