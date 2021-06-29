@@ -1,0 +1,12 @@
+query opportunityActivity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      activity {
+        name
+        value
+      }
+    }
+  }
+}
