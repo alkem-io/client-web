@@ -42,16 +42,20 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ cont
       }
     }
   };
-  const handleRemove = async (ref: Reference, remove: () => void) => {
+  const handleRemove = async (ref: Reference, remove: (success: boolean) => void) => {
     if (ref.id) {
-      await deleteReference({
-        variables: {
-          input: {
-            ID: ref.id,
+      try {
+        const result = await deleteReference({
+          variables: {
+            input: {
+              ID: ref.id,
+            },
           },
-        },
-      });
-      remove();
+        });
+        remove(!!result);
+      } catch {
+        remove(false);
+      }
     }
   };
 

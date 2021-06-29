@@ -143,7 +143,7 @@ export const OrganizationForm: FC<Props> = ({
         >
           {({ values: { displayName, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
-              <Form noValidate>
+              <Form noValidate onSubmit={handleSubmit}>
                 <Section
                   avatar={
                     <EditableAvatar src={avatar} size={'xl'} className={'mb-2'} name={'Avatar'} profileId={profileId} />
@@ -197,7 +197,7 @@ export const OrganizationForm: FC<Props> = ({
                     <div className={'d-flex mt-4'}>
                       <div className={'flex-grow-1'} />
                       {backButton}
-                      <Button variant="primary" onClick={() => handleSubmit()} className={'ml-3'}>
+                      <Button variant="primary" type={'submit'} className={'ml-3'}>
                         Save
                       </Button>
                     </div>

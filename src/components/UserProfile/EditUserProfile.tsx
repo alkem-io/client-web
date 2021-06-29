@@ -30,7 +30,7 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 
 export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
-  const { data, loading } = useMeQuery();
+  const { data, loading } = useMeQuery({ fetchPolicy: 'network-only' });
   const notify = useNotification();
   const [createTagset] = useCreateTagsetOnProfileMutation();
   const handleError = useApolloErrorHandler();

@@ -13,7 +13,7 @@ export interface ReferenceSegmentProps {
   readOnly?: boolean;
   disabled?: boolean;
   onAdd?: (push: (obj: any) => void) => void;
-  onRemove?: (ref: Reference, remove: () => void) => void;
+  onRemove?: (ref: Reference, remove: (success: boolean) => void) => void;
 }
 
 export const referenceSegmentSchema = yup.array().of(
@@ -63,7 +63,14 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                   </Tooltip>
                 }
               >
-                <Button onClick={() => handleAdd(push)} disabled={disabled || adding}>
+                <Button
+                  type={'button'}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleAdd(push);
+                  }}
+                  disabled={disabled || adding}
+                >
                   +
                 </Button>
               </OverlayTrigger>
@@ -107,11 +114,13 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       }
                     >
                       <Button
-                        onClick={() => {
+                        type={'button'}
+                        onClick={e => {
+                          e.preventDefault();
                           if (onRemove) {
                             setRemoving(index);
-                            onRemove(ref, () => {
-                              remove(index);
+                            onRemove(ref, (success: boolean) => {
+                              if (success) remove(index);
                               setRemoving(undefined);
                             });
                           } else {
