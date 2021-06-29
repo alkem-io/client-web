@@ -22,8 +22,8 @@ export const ContextSegment: FC<ContextSegmentProps> = () => {
     <>
       {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
       {getInputField({ name: 'background', label: t('components.contextSegment.background'), rows: 3 })}
-      {getMarkdownInput({ name: 'impact', label: 'Impact', rows: 10 })}
-      {getMarkdownInput({ name: 'vision', label: 'Vision', rows: 10 })}
+      {getMarkdownInput({ name: 'impact', label: t('components.contextSegment.impact'), rows: 10 })}
+      {getMarkdownInput({ name: 'vision', label: t('components.contextSegment.vision'), rows: 10 })}
       {getInputField({ name: 'who', label: t('components.contextSegment.who'), rows: 3 })}
     </>
   );
