@@ -1,8 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   useCreateTagsetOnProfileMutation,
-  useGroupQuery,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
@@ -18,13 +17,12 @@ import {
   User,
   UserGroup,
 } from '../../../types/graphql-schema';
-import Loading from '../../core/Loading';
 import GroupForm from './GroupForm';
-interface Parameters {
-  groupId: string;
-}
+import { useTranslation } from 'react-i18next';
 
-interface GroupPageProps extends PageProps {}
+interface GroupPageProps extends PageProps {
+  group?: UserGroup;
+}
 
 export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInput> => {
   if (!profile) return;
@@ -38,28 +36,22 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
   };
 };
 
-export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
-  const { groupId } = useParams<Parameters>();
+export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const history = useHistory();
-  const { data, loading } = useGroupQuery({
-    variables: {
-      ecoverseId: '1',
-      groupId: groupId,
-    },
-  });
   const { data: membersData } = useUsersWithCredentialsQuery({
     variables: {
       input: {
         type: AuthorizationCredential.UserGroupMember,
-        resourceID: groupId,
+        resourceID: group?.id,
       },
     },
   });
 
-  const groupName = data?.ecoverse.group.name || '';
-  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, data]);
+  const groupName = group?.name || '';
+  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, group]);
 
   useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({
@@ -100,15 +92,10 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading'} />;
   return (
     <GroupForm
-      group={
-        data?.ecoverse.group || {
-          id: groupId,
-          name: '',
-        }
-      }
+      title={t('components.groupForm.title')}
+      group={group || { id: '-1', name: '' }}
       members={members}
       onSave={handleSave}
       onCancel={handleCancel}

@@ -155,6 +155,9 @@
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
+    },
+    "groupForm": {
+      "title": "Edit group"
     }
   },
   "pages": {
