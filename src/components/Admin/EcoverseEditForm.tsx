@@ -11,7 +11,6 @@ import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextFragmentSchema, ContextSegment } from './Common/ContextSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
 import FormikInputField from './Common/FormikInputField';
-import FormikMarkdownField from './Common/FormikMarkdownField';
 import FormikTextAreaField from './Common/FormikTextAreaField';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
@@ -167,39 +166,6 @@ const EcoverseEditForm: FC<Props> = ({
           );
         };
 
-        const getMarkdownInput = ({
-          name,
-          label,
-          placeholder,
-          rows,
-          disabled = false,
-          required,
-        }: {
-          name: string;
-          label: string;
-          placeholder?: string;
-          rows?: number;
-          disabled?: boolean;
-          required?: boolean;
-        }) => {
-          return (
-            <Form.Row>
-              <Form.Group as={Col} controlId={name}>
-                <FormikMarkdownField
-                  name={name}
-                  value={values[name] as string}
-                  title={label}
-                  placeholder={placeholder || label}
-                  className={styles.field}
-                  disabled={disabled}
-                  rows={rows}
-                  required={required}
-                />
-              </Form.Group>
-            </Form.Row>
-          );
-        };
-
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -253,8 +219,6 @@ const EcoverseEditForm: FC<Props> = ({
 
             {getInput({ name: 'tagline', label: 'Tagline' })}
             {getInput({ name: 'background', label: 'Background', rows: 3 })}
-            {getMarkdownInput({ name: 'impact', label: 'Impact', rows: 10 })}
-            {getMarkdownInput({ name: 'vision', label: 'Vision', rows: 10 })}
             {getInput({ name: 'who', label: 'Who', rows: 3 })}
 
             <ContextReferenceSegment references={references || []} contextId={contextId} />
