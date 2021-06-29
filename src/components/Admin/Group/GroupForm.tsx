@@ -26,7 +26,7 @@ interface GroupFormProps {
   onDelete?: (groupId: string) => void;
 }
 
-export const GroupForm: FC<GroupFormProps> = ({ title = 'Edit Group', group, members, onSave, onCancel, onDelete }) => {
+export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
   const { url } = useRouteMatch();
   const isReadOnlyMode = false;
   const isEditMode = true;

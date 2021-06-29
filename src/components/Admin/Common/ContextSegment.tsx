@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInputField } from './useInputField';
 import * as yup from 'yup';
+import { useMarkdownInputField } from './useMarkdownInputField';
 
 export const contextFragmentSchema = yup.object().shape({
   background: yup.string(),
@@ -16,12 +17,13 @@ interface ContextSegmentProps {}
 export const ContextSegment: FC<ContextSegmentProps> = () => {
   const { t } = useTranslation();
   const getInputField = useInputField();
+  const getMarkdownInput = useMarkdownInputField();
   return (
     <>
-      {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline') })}
+      {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
       {getInputField({ name: 'background', label: t('components.contextSegment.background'), rows: 3 })}
-      {getInputField({ name: 'impact', label: t('components.contextSegment.impact'), rows: 3 })}
-      {getInputField({ name: 'vision', label: t('components.contextSegment.vision'), rows: 3 })}
+      {getMarkdownInput({ name: 'impact', label: t('components.contextSegment.impact'), rows: 10 })}
+      {getMarkdownInput({ name: 'vision', label: t('components.contextSegment.vision'), rows: 10 })}
       {getInputField({ name: 'who', label: t('components.contextSegment.who'), rows: 3 })}
     </>
   );
