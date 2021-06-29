@@ -180,21 +180,25 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
     [projects]
   );
 
-  const activitySummary = useMemo(() => {
+  const activitySummary: ActivityCardItem[] = useMemo(() => {
     return [
-      { name: 'Opportunities', digit: getActivityCount(activity, 'opportunities'), color: 'primary' },
+      {
+        name: 'Opportunities',
+        digit: getActivityCount(activity, 'opportunities') || 0,
+        color: 'primary',
+      },
       {
         name: 'Projects',
-        digit: getActivityCount(activity, 'projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
         name: 'Members',
-        digit: getActivityCount(activity, 'members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
-    ] as ActivityCardItem[];
-  }, [opportunities, projects, users]);
+    ];
+  }, [activity]);
 
   const challengeRefs = challenge?.context?.references
     ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')

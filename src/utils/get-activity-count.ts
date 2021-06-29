@@ -1,18 +1,21 @@
+import { Nvp } from '../types/graphql-schema';
+
 /***
- * Return a value by activity's name or -1 otherwise
+ * Return a value by activity's name or <i>null</i> otherwise
  * @param activityArray
  * @param name
  */
-const getActivityCount = (activityArray: { name: string; value: string }[], name: string): number => {
+const getActivityCount = (activityArray: Pick<Nvp, 'name' | 'value'>[], name: string): number | null => {
   if (!Array.isArray(activityArray)) {
-    return -1;
+    return null;
   }
+
   const activity = activityArray.find(x => x.name === name);
 
   if (!activity) {
-    return -1;
+    return null;
   }
 
-  return activity.value != null ? +activity.value : 0;
+  return activity.value != null ? +activity.value : null;
 };
 export default getActivityCount;

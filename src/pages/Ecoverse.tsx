@@ -124,17 +124,17 @@ const EcoversePage: FC<EcoversePageProps> = ({
     const initial: ActivityCardItem[] = [
       {
         name: t('pages.ecoverse.cards.activity.challenges'),
-        digit: getActivityCount(activity, 'challenges'),
+        digit: getActivityCount(activity, 'challenges') || 0,
         color: 'neutral',
       },
       {
         name: t('pages.ecoverse.cards.activity.opportunities'),
-        digit: getActivityCount(activity, 'opportunities'),
+        digit: getActivityCount(activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
         name: t('pages.ecoverse.cards.activity.projects'),
-        digit: getActivityCount(activity, 'projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
     ];
@@ -142,12 +142,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
       ...initial,
       {
         name: t('pages.ecoverse.cards.activity.members'),
-        digit: getActivityCount(activity, 'members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];
     return isAuthenticated ? withMembers : initial;
-  }, [ecoverse, projects, isAuthenticated]);
+  }, [activity, isAuthenticated]);
 
   return (
     <>

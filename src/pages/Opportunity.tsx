@@ -144,21 +144,21 @@ const Opportunity: FC<OpportunityPageProps> = ({
     return [
       {
         name: 'Projects',
-        digit: getActivityCount(activity, 'projects'),
+        digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
         name: 'Interests',
-        digit: getActivityCount(activity, 'interests'),
+        digit: getActivityCount(activity, 'interests') || 0,
         color: 'primary',
       },
       {
         name: 'Members',
-        digit: getActivityCount(activity, 'members'),
+        digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];
-  }, [projects, users]);
+  }, [activity]);
 
   const opportunityProjects = useMemo(() => {
     const projectList = [

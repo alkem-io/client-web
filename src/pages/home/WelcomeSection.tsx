@@ -33,10 +33,10 @@ const WelcomeSection = () => {
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
   const globalActivity = activity?.metadata?.activity || [];
   const [ecoverseCount, challengeCount, userCount, orgCount] = [
-    getActivityCount(globalActivity, 'ecoverses'),
-    getActivityCount(globalActivity, 'challenges'),
-    getActivityCount(globalActivity, 'users'),
-    getActivityCount(globalActivity, 'organisations'),
+    getActivityCount(globalActivity, 'ecoverses') || 0,
+    getActivityCount(globalActivity, 'challenges') || 0,
+    getActivityCount(globalActivity, 'users') || 0,
+    getActivityCount(globalActivity, 'organisations') || 0,
   ];
   const summary: ActivityCardItem[] = useMemo(
     () => [
