@@ -4,6 +4,7 @@ import { EcoverseProvider } from '../context/EcoverseProvider';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
+import { AuthorizationCredential } from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
 import { Community } from './community';
@@ -13,9 +14,6 @@ import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
 import WelcomeRoute from './welcome';
-/*local files imports end*/
-
-const adminGroups = ['admin'];
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -23,7 +21,15 @@ export const Routing: FC = () => {
   return (
     <Switch>
       <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
-      <RestrictedRoute path="/admin" allowedGroups={adminGroups} strict={false}>
+      <RestrictedRoute
+        path="/admin"
+        requiredCredentials={[
+          AuthorizationCredential.GlobalAdmin,
+          AuthorizationCredential.EcoverseAdmin,
+          AuthorizationCredential.OrganisationAdmin,
+        ]}
+        strict={false}
+      >
         <Admin />
       </RestrictedRoute>
       <Route path="/auth">
