@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { PushFunc, RemoveFunc } from '../../../hooks/useEditReference';
 import { Reference } from '../../../models/Profile';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
@@ -12,8 +13,8 @@ export interface ReferenceSegmentProps {
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
-  onAdd?: (push: (obj: any) => void) => void;
-  onRemove?: (ref: Reference, remove: (success: boolean) => void) => void;
+  onAdd?: (push: PushFunc) => void;
+  onRemove?: (ref: Reference, remove: RemoveFunc) => void;
 }
 
 export const referenceSegmentSchema = yup.array().of(

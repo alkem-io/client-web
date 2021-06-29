@@ -9,6 +9,13 @@ import { useApolloErrorHandler } from './useApolloErrorHandler';
 
 export type PushFunc = (success: boolean) => void;
 export type RemoveFunc = (obj?: any) => void;
+export type AddReferenceFunc = (reference: {
+  contextId?: string;
+  profileId?: string;
+  name: string;
+  uri?: string;
+  description?: string;
+}) => void;
 
 export const useEditReference = () => {
   const remove = useRef<PushFunc | undefined>();
@@ -46,7 +53,7 @@ export const useEditReference = () => {
     },
   });
 
-  const [deleteReference] = useDeleteReferenceMutation({
+  const [deleteReferenceInt] = useDeleteReferenceMutation({
     onError: err => {
       remove.current && remove.current(false);
       handleError(err);
@@ -62,9 +69,46 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
+  const addReference: AddReferenceFunc = ({ contextId, profileId, name, uri = '', description = '' }) => {
+    if (contextId) {
+      addReferenceOnContext({
+        variables: {
+          input: {
+            contextID: contextId,
+            name: name,
+            description: description,
+            uri: uri,
+          },
+        },
+      });
+    }
+
+    if (profileId) {
+      addReferenceOnProfile({
+        variables: {
+          input: {
+            profileID: profileId,
+            name: name,
+            description: description,
+            uri: uri,
+          },
+        },
+      });
+    }
+  };
+
+  const deleteReference = (id: string) => {
+    deleteReferenceInt({
+      variables: {
+        input: {
+          ID: id,
+        },
+      },
+    });
+  };
+
   return {
-    addReferenceOnContext,
-    addReferenceOnProfile,
+    addReference,
     deleteReference,
     setPush,
     setRemove,

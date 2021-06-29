@@ -9,20 +9,16 @@ interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
 }
 
 export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ contextId, readOnly, ...rest }) => {
-  const { addReferenceOnContext: addReference, deleteReference, setPush, setRemove } = useEditReference();
+  const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   const handleAdd = async (push: PushFunc) => {
     setPush(push);
     if (contextId) {
       addReference({
-        variables: {
-          input: {
-            contextID: contextId,
-            name: newReferenceName(rest.references.length),
-            description: '',
-            uri: '',
-          },
-        },
+        contextId,
+        name: newReferenceName(rest.references.length),
+        description: '',
+        uri: '',
       });
     }
   };
@@ -30,13 +26,7 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ cont
   const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {
-      deleteReference({
-        variables: {
-          input: {
-            ID: ref.id,
-          },
-        },
-      });
+      deleteReference(ref.id);
     }
   };
 

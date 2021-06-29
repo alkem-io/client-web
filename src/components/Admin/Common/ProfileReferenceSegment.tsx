@@ -9,20 +9,16 @@ interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
 }
 
 export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
-  const { addReferenceOnProfile: addReference, deleteReference, setPush, setRemove } = useEditReference();
+  const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   const handleAdd = async (push: PushFunc) => {
     setPush(push);
     if (profileId) {
       addReference({
-        variables: {
-          input: {
-            profileID: profileId,
-            name: newReferenceName(rest.references.length),
-            description: '',
-            uri: '',
-          },
-        },
+        profileId,
+        name: newReferenceName(rest.references.length),
+        description: '',
+        uri: '',
       });
     }
   };
@@ -30,13 +26,7 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
   const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {
-      deleteReference({
-        variables: {
-          input: {
-            ID: ref.id,
-          },
-        },
-      });
+      deleteReference(ref.id);
     }
   };
 
