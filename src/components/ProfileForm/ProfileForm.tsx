@@ -101,6 +101,7 @@ const ProfileForm: FC<Props> = ({
       }}
     >
       {({ values: { references }, handleSubmit }) => {
+        // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
