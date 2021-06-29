@@ -12,7 +12,8 @@ import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
 import { FormikInputField } from '../Common/FormikInputField';
-import ReferenceSegment, { referenceSegmentSchema } from '../Common/ReferenceSegment';
+import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { tagsetFragmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
 
@@ -25,7 +26,7 @@ interface GroupFormProps {
   onDelete?: (groupId: string) => void;
 }
 
-export const GroupForm: FC<GroupFormProps> = ({ title = 'Edit Group', group, members, onSave, onCancel, onDelete }) => {
+export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
   const { url } = useRouteMatch();
   const isReadOnlyMode = false;
   const isEditMode = true;
@@ -136,7 +137,14 @@ export const GroupForm: FC<GroupFormProps> = ({ title = 'Edit Group', group, mem
                 readOnly={isReadOnlyMode}
                 disabled={isSubmitting}
               />
-              <ReferenceSegment references={references} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+              {isEditMode && (
+                <ProfileReferenceSegment
+                  references={references}
+                  readOnly={isReadOnlyMode}
+                  disabled={isSubmitting}
+                  profileId={profileId}
+                />
+              )}
 
               {isEditMode && (
                 <div className={'d-flex mt-4'}>

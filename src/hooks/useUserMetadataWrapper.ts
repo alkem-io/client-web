@@ -62,7 +62,7 @@ export const useUserMetadataWrapper = () => {
         ecoverses,
       };
 
-      metadata.isAdmin = metadata.roles.findIndex(c => c.type === AuthorizationCredential.GlobalAdmin) !== -1;
+      metadata.isAdmin = hasAdminRole(metadata.roles);
 
       return metadata;
     },
@@ -70,3 +70,18 @@ export const useUserMetadataWrapper = () => {
   );
   return toUserMetadata;
 };
+
+export const hasAdminRole = (roles: Role[]) => {
+  for (const role of roles) {
+    if (AdminRoles.includes(role.type)) return true;
+  }
+  return false;
+};
+
+export const AdminRoles = [
+  AuthorizationCredential.GlobalAdmin,
+  AuthorizationCredential.GlobalAdminCommunity,
+  AuthorizationCredential.ChallengeAdmin,
+  AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.GlobalAdminChallenges,
+];

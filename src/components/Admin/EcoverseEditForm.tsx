@@ -3,20 +3,18 @@ import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Visual, Tagset } from '../../types/graphql-schema';
+import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import { Required } from '../Required';
-import { ReferenceSegment, referenceSegmentSchema } from './Common/ReferenceSegment';
+import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextFragmentSchema, ContextSegment } from './Common/ContextSegment';
-import { VisualSegment, visualFragmentSchema } from './Common/VisualSegment';
-import { TagsetSegment, tagsetFragmentSchema } from './Common/TagsetSegment';
-import useProfileStyles from './Common/useProfileStyles';
-import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
-import FormikInputField from './Common/FormikInputField';
-import FormikMarkdownField from './Common/FormikMarkdownField';
-import FormikTextAreaField from './Common/FormikTextAreaField';
+import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
+import { referenceSegmentSchema } from './Common/ReferenceSegment';
+import { tagsetFragmentSchema, TagsetSegment } from './Common/TagsetSegment';
+import useProfileStyles from './Common/useProfileStyles';
+import { visualFragmentSchema, VisualSegment } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -73,6 +71,8 @@ const EcoverseEditForm: FC<Props> = ({
     ] as Tagset[];
   }, [tagset]);
 
+  const contextId = context?.id;
+
   const initialValues: EcoverseEditFormValuesType = {
     name: name || '',
     nameID: nameID || '',
@@ -119,84 +119,6 @@ const EcoverseEditForm: FC<Props> = ({
       }}
     >
       {({ values: { references }, values, handleSubmit, handleChange, handleBlur, errors }) => {
-        const getInput = ({
-          name,
-          label,
-          placeholder,
-          rows,
-          disabled = false,
-          required,
-        }: {
-          name: string;
-          label: string;
-          placeholder?: string;
-          rows?: number;
-          disabled?: boolean;
-          required?: boolean;
-        }) => {
-          return (
-            <Form.Row>
-              <Form.Group as={Col} controlId={name}>
-                {rows && rows > 1 ? (
-                  <FormikTextAreaField
-                    name={name}
-                    value={values[name] as string}
-                    title={label}
-                    placeholder={placeholder || label}
-                    className={styles.field}
-                    disabled={disabled}
-                    rows={rows}
-                    required={required}
-                  />
-                ) : (
-                  <FormikInputField
-                    name={name}
-                    value={values[name] as string}
-                    title={label}
-                    placeholder={placeholder || label}
-                    className={styles.field}
-                    disabled={disabled}
-                    required={required}
-                  />
-                )}
-              </Form.Group>
-            </Form.Row>
-          );
-        };
-
-        const getMarkdownInput = ({
-          name,
-          label,
-          placeholder,
-          rows,
-          disabled = false,
-          required,
-        }: {
-          name: string;
-          label: string;
-          placeholder?: string;
-          rows?: number;
-          disabled?: boolean;
-          required?: boolean;
-        }) => {
-          return (
-            <Form.Row>
-              <Form.Group as={Col} controlId={name}>
-                <FormikMarkdownField
-                  name={name}
-                  value={values[name] as string}
-                  title={label}
-                  placeholder={placeholder || label}
-                  className={styles.field}
-                  disabled={disabled}
-                  rows={rows}
-                  required={required}
-                />
-              </Form.Group>
-            </Form.Row>
-          );
-        };
-
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -248,13 +170,7 @@ const EcoverseEditForm: FC<Props> = ({
             </Form.Group>
             <VisualSegment />
 
-            {getInput({ name: 'tagline', label: 'Tagline' })}
-            {getInput({ name: 'background', label: 'Background', rows: 3 })}
-            {getMarkdownInput({ name: 'impact', label: 'Impact', rows: 10 })}
-            {getMarkdownInput({ name: 'vision', label: 'Vision', rows: 10 })}
-            {getInput({ name: 'who', label: 'Who', rows: 3 })}
-
-            <ReferenceSegment references={references || []} />
+            <ContextReferenceSegment references={references || []} contextId={contextId} />
 
             {isEdit && (
               <>

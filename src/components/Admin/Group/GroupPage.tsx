@@ -1,10 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
-  useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
-  useDeleteReferenceMutation,
-  useGroupQuery,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
@@ -20,13 +17,12 @@ import {
   User,
   UserGroup,
 } from '../../../types/graphql-schema';
-import Loading from '../../core/Loading';
 import GroupForm from './GroupForm';
-interface Parameters {
-  groupId: string;
-}
+import { useTranslation } from 'react-i18next';
 
-interface GroupPageProps extends PageProps {}
+interface GroupPageProps extends PageProps {
+  group?: UserGroup;
+}
 
 export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInput> => {
   if (!profile) return;
@@ -40,28 +36,22 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
   };
 };
 
-export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
-  const { groupId } = useParams<Parameters>();
+export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const history = useHistory();
-  const { data, loading } = useGroupQuery({
-    variables: {
-      ecoverseId: '1',
-      groupId: groupId,
-    },
-  });
   const { data: membersData } = useUsersWithCredentialsQuery({
     variables: {
       input: {
         type: AuthorizationCredential.UserGroupMember,
-        resourceID: groupId,
+        resourceID: group?.id,
       },
     },
   });
 
-  const groupName = data?.ecoverse.group.name || '';
-  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, data]);
+  const groupName = group?.name || '';
+  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, group]);
 
   useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({
@@ -69,8 +59,6 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     onCompleted: data => notify(`Group ${data.updateUserGroup.name} has been update!`, 'success'),
   });
 
-  const [createReference] = useCreateReferenceOnProfileMutation({ onError: handleError });
-  const [deleteReference] = useDeleteReferenceMutation({ onError: handleError });
   const [createTagset] = useCreateTagsetOnProfileMutation({ onError: handleError });
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
@@ -79,28 +67,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
 
   const handleSave = async (group: UserGroup) => {
     const profileId = group.profile?.id || '';
-    const initialReferences = data?.ecoverse.group.profile?.references || [];
-    const references = group.profile?.references || [];
-    const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-    const toAdd = references.filter(x => !x.id);
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
-
-    for (const ref of toRemove) {
-      await deleteReference({ variables: { input: { ID: ref.id } } });
-    }
-
-    for (const ref of toAdd) {
-      await createReference({
-        variables: {
-          input: {
-            profileID: profileId,
-            name: ref.name,
-            description: ref.description,
-            uri: ref.uri,
-          },
-        },
-      });
-    }
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({
@@ -125,15 +92,10 @@ export const GroupPage: FC<GroupPageProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading'} />;
   return (
     <GroupForm
-      group={
-        data?.ecoverse.group || {
-          id: groupId,
-          name: '',
-        }
-      }
+      title={t('components.groupForm.title')}
+      group={group || { id: '-1', name: '' }}
       members={members}
       onSave={handleSave}
       onCancel={handleCancel}

@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
-import { Redirect, Route, useLocation } from 'react-router-dom';
+import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationCredential } from '../types/graphql-schema';
 
-interface RestrictedRoutePros extends Record<string, unknown> {
+interface RestrictedRoutePros extends RouteProps {
   requiredCredentials?: AuthorizationCredential[];
 }
 
-interface AuthenticatedRoutePros extends Record<string, unknown> {}
+interface AuthenticatedRoutePros extends RouteProps {}
 
 const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
   const { pathname } = useLocation();
