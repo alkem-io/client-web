@@ -6,6 +6,7 @@ import GroupPage from '../../components/Admin/Group/GroupPage';
 import Loading from '../../components/core/Loading';
 import { useGroupQuery } from '../../generated/graphql';
 import { FourOuFour } from '../../pages';
+import { useEcoverse } from '../../hooks/useEcoverse';
 
 interface GroupRouteProps extends WithParentMembersProps {}
 
@@ -37,6 +38,3 @@ export const GroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
     </Switch>
   );
 };
-function useEcoverse(): { ecoverseId: any } {
-  throw new Error('Function not implemented.');
-}
