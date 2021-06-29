@@ -8,7 +8,6 @@ import { Required } from '../../Required';
 
 interface MarkdownFieldProps extends FormControlProps {
   title: string;
-  value: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
