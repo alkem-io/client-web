@@ -39,8 +39,8 @@ const useCardStyles = createStyles(theme => ({
 
     '& > span': {
       textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
+      maxHeight: '6em',
     },
   },
 }));
