@@ -1,18 +1,16 @@
-import { Field, Formik } from 'formik';
+import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
 import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
-import { contextFragmentSchema } from '../Admin/Common/ContextSegment';
-import { profileSegmentSchema } from '../Admin/Common/ProfileSegment';
+import { contextFragmentSchema, ContextSegment } from '../Admin/Common/ContextSegment';
+import { ProfileSegment, profileSegmentSchema } from '../Admin/Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
-import useProfileStyles from '../Admin/Common/useProfileStyles';
-import { visualFragmentSchema } from '../Admin/Common/VisualSegment';
+import { visualFragmentSchema, VisualSegment } from '../Admin/Common/VisualSegment';
 import Divider from '../core/Divider';
-import { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 
 export interface ProfileFormValuesType {
@@ -50,8 +48,6 @@ const ProfileForm: FC<Props> = ({
   contextOnly = false,
 }) => {
   const { t } = useTranslation();
-  const styles = useProfileStyles();
-
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];
     return [
@@ -94,7 +90,6 @@ const ProfileForm: FC<Props> = ({
   });
 
   let isSubmitWired = false;
-  const ConditionalTextArea = contextOnly ? TextArea : Form.Control;
 
   return (
     <Formik
@@ -105,52 +100,8 @@ const ProfileForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleChange, handleBlur, handleSubmit }) => {
-        const getTextArea = ({
-          name,
-          label,
-          placeholder,
-          rows,
-          disabled = false,
-        }: {
-          name: string;
-          label: string;
-          placeholder?: string;
-          rows?: number;
-          disabled?: boolean;
-        }) => {
-          return (
-            <Form.Group controlId={name}>
-              {!contextOnly && <Form.Label>{label}</Form.Label>}
-              <Field name={name}>
-                {({ field, form: { touched }, meta }) => {
-                  const fieldProps = {
-                    ...(contextOnly ? { error: !!meta.error && touched } : { isInvalid: !!meta.error && touched }),
-                  };
-                  return (
-                    <>
-                      <ConditionalTextArea
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        name={name}
-                        value={field.value}
-                        label={label}
-                        className={styles.field}
-                        placeholder={placeholder || label}
-                        rows={rows || contextOnly ? 2 : 3}
-                        as={'textarea'}
-                        disabled={disabled}
-                        {...fieldProps}
-                      />
-                      <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-                    </>
-                  );
-                }}
-              </Field>
-            </Form.Group>
-          );
-        };
-
+      {({ values: { references }, handleSubmit }) => {
+        // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -158,23 +109,8 @@ const ProfileForm: FC<Props> = ({
 
         return (
           <>
-            {!contextOnly && (
-              <>
-                {getTextArea({ name: 'name', label: t('components.profileSegment.name') })}
-                {getTextArea({
-                  name: 'nameID',
-                  label: t('components.profileSegment.nameID.title'),
-                  placeholder: t('components.profileSegment.nameID.placeholder'),
-                  disabled: isEdit,
-                  rows: 1,
-                })}
-              </>
-            )}
-            {getTextArea({ name: 'tagline', label: t('components.contextSegment.tagline') })}
-            {getTextArea({ name: 'background', label: t('components.contextSegment.background') })}
-            {getTextArea({ name: 'impact', label: t('components.contextSegment.impact') })}
-            {getTextArea({ name: 'vision', label: t('components.contextSegment.vision') })}
-            {getTextArea({ name: 'who', label: t('components.contextSegment.who') })}
+            {!contextOnly && <ProfileSegment disabled={isEdit} required={!isEdit} />}
+            <ContextSegment />
 
             {!contextOnly && (
               <>
@@ -192,9 +128,8 @@ const ProfileForm: FC<Props> = ({
                 {t('components.visualSegment.title')}
               </Typography>
             </Form.Group>
-            {getTextArea({ name: 'visual.avatar', label: t('components.visualSegment.avatar') })}
-            {getTextArea({ name: 'visual.background', label: t('components.visualSegment.background') })}
-            {getTextArea({ name: 'visual.banner', label: t('components.visualSegment.banner') })}
+
+            <VisualSegment />
 
             <ContextReferenceSegment references={references || []} contextId={context?.id} />
             <Divider />
