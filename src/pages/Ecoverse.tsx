@@ -120,34 +120,31 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const more = references?.find(x => x.name === 'website');
 
-  const activitySummary = useMemo(() => {
-    const initial: ActivityCardItem[] = [
+  const activitySummary: ActivityCardItem[] = useMemo(
+    () => [
       {
-        name: t('pages.ecoverse.cards.activity.challenges'),
+        name: t('pages.activity.challenges'),
         digit: getActivityCount(activity, 'challenges') || 0,
         color: 'neutral',
       },
       {
-        name: t('pages.ecoverse.cards.activity.opportunities'),
+        name: t('pages.activity.opportunities'),
         digit: getActivityCount(activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.ecoverse.cards.activity.projects'),
+        name: t('pages.activity.projects'),
         digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
-    ];
-    const withMembers: ActivityCardItem[] = [
-      ...initial,
       {
-        name: t('pages.ecoverse.cards.activity.members'),
+        name: t('pages.activity.members'),
         digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
-    ];
-    return isAuthenticated ? withMembers : initial;
-  }, [activity, isAuthenticated]);
+    ],
+    [activity]
+  );
 
   return (
     <>
@@ -163,7 +160,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <div />
           )
         }
-        details={<ActivityCard title={'ecoverse activity'} items={activitySummary} />}
+        details={
+          <ActivityCard
+            title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })}
+            items={activitySummary}
+          />
+        }
       >
         <SectionHeader text={name} />
         <SubHeader text={tagline} />

@@ -10,7 +10,7 @@ import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import ActivityCard from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
@@ -140,20 +140,20 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const projectRef = useRef<HTMLDivElement>(null);
 
-  const activitySummary = useMemo(() => {
+  const activitySummary: ActivityCardItem[] = useMemo(() => {
     return [
       {
-        name: 'Projects',
+        name: t('pages.activity.projects'),
         digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: 'Interests',
-        digit: getActivityCount(activity, 'interests') || 0,
+        name: t('pages.activity.interests'),
+        digit: getActivityCount(activity, 'relations') || 0,
         color: 'primary',
       },
       {
-        name: 'Members',
+        name: t('pages.activity.members'),
         digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
@@ -200,10 +200,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
         }}
         details={
           <ActivityCard
-            title={'opportunity activity'}
+            title={t('pages.activity.title', { blockName: t('pages.opportunity.title') })}
             lifecycle={opportunityLifecycleQuery?.ecoverse.opportunity.lifecycle}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            items={activitySummary as any}
+            items={activitySummary}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
           />
         }

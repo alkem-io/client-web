@@ -183,17 +183,17 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
   const activitySummary: ActivityCardItem[] = useMemo(() => {
     return [
       {
-        name: 'Opportunities',
+        name: t('pages.activity.opportunities'),
         digit: getActivityCount(activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: 'Projects',
+        name: t('pages.activity.projects'),
         digit: getActivityCount(activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: 'Members',
+        name: t('pages.activity.members'),
         digit: getActivityCount(activity, 'members') || 0,
         color: 'neutralMedium',
       },
@@ -209,7 +209,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       <Section
         details={
           <ActivityCard
-            title={t('pages.challenge.sections.activity.title')}
+            title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activitySummary}
             lifecycle={challengeLifecycleQuery?.ecoverse.challenge.lifecycle}
             classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}

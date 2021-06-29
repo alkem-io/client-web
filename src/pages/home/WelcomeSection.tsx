@@ -40,19 +40,19 @@ const WelcomeSection = () => {
   ];
   const summary: ActivityCardItem[] = useMemo(
     () => [
-      { name: t('pages.home.sections.welcome.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
+      { name: t('pages.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
       {
-        name: t('pages.home.sections.welcome.activity.challenges'),
+        name: t('pages.activity.challenges'),
         digit: challengeCount,
         color: 'primary',
       },
       {
-        name: t('pages.home.sections.welcome.activity.users'),
+        name: t('pages.activity.users'),
         digit: userCount,
         color: 'positive',
       },
       {
-        name: t('pages.home.sections.welcome.activity.organisations'),
+        name: t('pages.activity.organisations'),
         digit: orgCount,
         color: 'positive',
       },
@@ -67,7 +67,7 @@ const WelcomeSection = () => {
           isActivityLoading ? (
             <Loading text={'Loading statistics ...'} />
           ) : (
-            <ActivityCard title={t('pages.home.sections.welcome.activity.title')} items={summary} />
+            <ActivityCard title={t('pages.activity.title', { blockName: 'all' })} items={summary} />
           )
         }
       >
