@@ -20,7 +20,7 @@ export const ContextSegment: FC<ContextSegmentProps> = () => {
   const getMarkdownInput = useMarkdownInputField();
   return (
     <>
-      {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline') })}
+      {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
       {getInputField({ name: 'background', label: t('components.contextSegment.background'), rows: 3 })}
       {getMarkdownInput({ name: 'impact', label: 'Impact', rows: 10 })}
       {getMarkdownInput({ name: 'vision', label: 'Vision', rows: 10 })}
