@@ -18,8 +18,11 @@ export const GroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
   const { groupId } = useParams<GroupRouteParams>();
   const { ecoverseId } = useEcoverse();
+
   const { data, loading } = useGroupQuery({ variables: { ecoverseId, groupId } });
-  const groupName = data?.ecoverse.group.name || '';
+  const group = data?.ecoverse.group;
+
+  const groupName = group?.name || '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, data]);
 
   if (loading) return <Loading text={'Loading group'} />;
@@ -27,10 +30,10 @@ export const GroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <GroupPage paths={paths} />
+        <GroupPage paths={paths} group={group} />
       </Route>
       <Route exact path={`${path}/members`}>
-        <EditMembersPage paths={currentPaths} parentMembers={parentMembers} />
+        <EditMembersPage paths={currentPaths} parentMembers={parentMembers} groupId={groupId} />
       </Route>
       <Route path="*">
         <FourOuFour />
