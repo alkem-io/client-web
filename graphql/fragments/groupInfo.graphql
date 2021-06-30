@@ -1,0 +1,20 @@
+fragment GroupInfo on UserGroup {
+  id
+  name
+  profile {
+    id
+    avatar
+    description
+    references {
+      id
+      uri
+      name
+      description
+    }
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}
