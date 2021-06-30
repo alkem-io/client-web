@@ -4,7 +4,6 @@ import { createStyles } from '../../hooks/useTheme';
 
 const useToolbarStyles = createStyles(theme => ({
   toolbar: {
-    height: theme.shape.spacing(4),
     display: 'flex',
     flexDirection: 'row',
   },

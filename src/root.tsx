@@ -54,8 +54,10 @@ const useGlobalStyles = createStyles(theme => ({
     '#main': {
       display: 'flex',
       flexGrow: 1,
-      marginLeft: theme.sidebar.width + theme.shape.spacing(2),
+    },
+    '#content': {
       width: `calc(100vw - ${theme.sidebar.width}px - ${theme.shape.spacing(2)}px)`,
+      marginLeft: theme.sidebar.width + theme.shape.spacing(2),
     },
   },
 }));

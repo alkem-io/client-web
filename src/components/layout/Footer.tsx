@@ -1,39 +1,25 @@
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
+import { ReactComponent as ImageSvg } from 'bootstrap-icons/icons/image.svg';
 
 const useFooterStyles = createStyles(theme => ({
-  footerSpacing: {
-    display: 'flex',
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-  },
   footer: {
     position: 'relative',
     alignItems: 'center',
-    flexGrow: 1,
-    padding: theme.shape.spacing(4),
-  },
-  poweredBy: {
     display: 'flex',
-    alignItems: 'center',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translate3d(-50%, 0, 0)',
-    '&:hover': {
-      textDecoration: 'none',
+  },
+  column: {
+    [theme.media.up('xl')]: {
+      justifyContent: 'space-between',
     },
-  },
-  logo: {
-    height: theme.shape.spacing(8),
-  },
-  // should take this out to utils
-  spacer: {
-    flexGrow: 1,
-  },
-  versions: {
-    marginTop: 'auto',
+    [theme.media.down('xl')]: {
+      gap: theme.shape.spacing(1),
+      justifyContent: 'center',
+    },
   },
 }));
 
@@ -41,18 +27,44 @@ const Footer: FC = ({ children }) => {
   const styles = useFooterStyles();
 
   return (
-    <div className={styles.footerSpacing}>
-      <Toolbar paddingClass={styles.footer}>
-        <Link to={'/about'} href="https://alkem.io/about/" className={styles.poweredBy}>
+    <Toolbar classes={clsx(styles.footer, '')} dense={true}>
+      <div className="d-flex container-xl flex-lg-wrap justify-content-between">
+        <div className={clsx('d-flex col-xl-5 align-items-center', styles.column)}>
           <Typography variant="caption" color="neutralMedium" weight="boldLight">
-            Powered by
+            © 2021 Cherrytwist Foundation
           </Typography>
-          <img src="/logo.png" className={styles.logo} alt="Alkemio" />
-        </Link>
-        <div className={styles.spacer} />
-        {children}
-      </Toolbar>
-    </div>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Terms
+          </Link>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Privacy
+          </Link>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Security
+          </Link>
+        </div>
+
+        <div className="d-none d-xl-block mx-xl-4">
+          <ImageSvg />
+        </div>
+
+        <div className={clsx('d-flex col-xl-5', styles.column)}>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Public preview
+          </Link>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Feedback
+          </Link>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            Support
+          </Link>
+          <Link to={'/about'} href="https://alkem.io/about/">
+            About
+          </Link>
+        </div>
+      </div>
+      {children}
+    </Toolbar>
   );
 };
 
