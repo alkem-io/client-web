@@ -1,23 +1,23 @@
 <p align="center">
-  <a href="http://cherrytwist.org/" target="blank"><img src="https://cherrytwist.org/uploads/logos/CT-logo-teal-transparent.svg" width="400" alt="Cherrytwist Logo" /></a>
+  <a href="http://alkem.io/" target="blank"><img src="https://alkem.io/uploads/logos/alkemio-logo.svg" width="400" alt="Alkemio Logo" /></a>
 </p>
 <p align="center"><i>Enabling society to collaborate. Building a better future, together.</i></p>
 
-![AKS dev CI/CD pipeline](https://github.com/cherrytwist/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
-[![Coverage Status](https://coveralls.io/repos/github/cherrytwist/Client.Web/badge.svg?branch=develop)](https://coveralls.io/github/cherrytwist/Client.Web?branch=develop)
-[![BCH compliance](https://bettercodehub.com/edge/badge/cherrytwist/Client.Web?branch=develop)](https://bettercodehub.com/)
+![AKS dev CI/CD pipeline](https://github.com/alkem-io/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/alkemio/Client.Web/badge.svg?branch=develop)](https://coveralls.io/github/alkemio/Client.Web?branch=develop)
+[![BCH compliance](https://bettercodehub.com/edge/badge/alkemio/Client.Web?branch=develop)](https://bettercodehub.com/)
 
-# Cherrytwist Web Client
+# Alkemio Web Client
 
-Welcome to the Cherrytwist web client - allowing you to browse the contents of an Ecoverse. Please see the [Cherrytwist repository](../cherrytwist) for more details on the Cherrytwist platform.
+Welcome to the Alkemio web client - allowing you to browse the contents of an Ecoverse. Please see the [Alkemio repository](../alkemio) for more details on the Alkemio platform.
 
-This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Cherrytwist server](../server).
+This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](../server).
 
-While this client is a fully self-contained single page application, it also has a set of React components that can be used by other React applications for working with the Cherrytwist server.
+While this client is a fully self-contained single page application, it also has a set of React components that can be used by other React applications for working with the Alkemio server.
 
 ## Configuration
 
-The primary configuration needed is the location of the Cherrytwist server.
+The primary configuration needed is the location of the Alkemio server.
 
 The endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment variable. Add an .env.local file in project's root folder and set the variable to point to the graphql server.
 
@@ -57,10 +57,10 @@ In addition the client looks to support the primary web browsers active in the m
 
 The repo is also set up to generate a Docker image.
 
-- To create the docker image: `docker build -t cherrytwist/client-web:[tag]` where [tag] can be any value
+- To create the docker image: `docker build -t alkemio/client-web:[tag]` where [tag] can be any value
 - To add build arguments - docker build --build-arg [argument]=[value]
   - Argument can be the following: ARG_GRAPHQL_ENDPOINT
-- To run a container based on the image: `docker container run -p 80:80 cherrytwist/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
+- To run a container based on the image: `docker container run -p 80:80 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
 ## Pushing code the dockerhub
 

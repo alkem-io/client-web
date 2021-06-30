@@ -9,8 +9,8 @@ const PageObjectsAdmin = function () {
     console.log('Opens user profile.');
   };
 
-  const verifyUserName = element(by.cssContainingText('h2 span', 'admin cherrytwist'));
-  const verifyUserEmail = element(by.cssContainingText('.ct-card-body span', 'admin@cherrytwist.org'));
+  const verifyUserName = element(by.cssContainingText('h2 span', 'admin alkemio'));
+  const verifyUserEmail = element(by.cssContainingText('.ct-card-body span', 'admin@alkem.io'));
   this.verifyUserProfile = async function () {
     await browser.wait(EC.visibilityOf(verifyUserName), 60000);
     await browser.wait(EC.visibilityOf(verifyUserEmail), 60000);

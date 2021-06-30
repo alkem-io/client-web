@@ -24,7 +24,7 @@ const PageObjectsCommunity = function () {
     console.log('Search for keyword: admin.');
   };
 
-  const entityDetailsTitle = element(by.cssContainingText('.ct-card-body h4 span', 'admin cherrytwist'));
+  const entityDetailsTitle = element(by.cssContainingText('.ct-card-body h4 span', 'admin alkemio'));
   const entityDetailsMatchedTerm = element(by.cssContainingText('.ct-card-body div span', 'admin'));
   this.verifyEntityAvailability = async function () {
     await browser.wait(EC.visibilityOf(entityDetailsTitle), 60000);
@@ -37,8 +37,8 @@ const PageObjectsCommunity = function () {
     console.log('Verifies search result contains card with admin details.');
   };
 
-  const modalTitle = element(by.cssContainingText('.modal-content .ml-3 span', 'admin cherrytwist'));
-  const modalContactInfo = element(by.cssContainingText('.modal-content p span', 'admin@cherrytwist.org'));
+  const modalTitle = element(by.cssContainingText('.modal-content .ml-3 span', 'admin alkemio'));
+  const modalContactInfo = element(by.cssContainingText('.modal-content p span', 'admin@alkem.io'));
   this.verifyEntityAvailabilityOnOpenModal = async function () {
     await browser.wait(EC.visibilityOf(modalContactInfo), 60000);
     await browser.wait(EC.visibilityOf(modalTitle), 60000);
