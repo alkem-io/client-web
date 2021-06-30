@@ -18,7 +18,7 @@ const closure = (date, offset) => {
 
 const messages = [
   {
-    content: 'Hey! It is us! The cherrytwist developers!',
+    content: 'Hey! It is us! The alkemio developers!',
     left: false,
     delay: 1000,
     date: closure(date, 1000),
@@ -242,7 +242,7 @@ const DummyChatList: FC = () => {
     >
       <div className={clsx(styles.contact, styles.active)}>
         <Typography variant="h3" color="inherit" as="h3">
-          Cherrytwist
+          Alkemio
         </Typography>
         <Typography variant="caption" color="inherit" as="h1">
           new messages

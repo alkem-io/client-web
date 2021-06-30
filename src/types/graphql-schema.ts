@@ -120,7 +120,7 @@ export type AuthenticationConfig = {
   __typename?: 'AuthenticationConfig';
   /** Is authentication enabled? */
   enabled: Scalars['Boolean'];
-  /** Cherrytwist Authentication Providers Config. */
+  /** Alkemio Authentication Providers Config. */
   providers: Array<AuthenticationProviderConfig>;
 };
 
@@ -281,7 +281,7 @@ export type Config = {
   authentication: AuthenticationConfig;
   /** Platform related resources. */
   platform: Platform;
-  /** Cherrytwist template configuration. */
+  /** Alkemio template configuration. */
   template: Template;
 };
 
@@ -738,7 +738,7 @@ export type Metadata = {
   __typename?: 'Metadata';
   /** Metrics about the activity on the platform */
   activity: Array<Nvp>;
-  /** Collection of metadata about Cherrytwist services. */
+  /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
 
@@ -1212,7 +1212,7 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Cherrytwist configuration. Provides configuration to external services in the Cherrytwist ecosystem. */
+  /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
   ecoverse: Ecoverse;
@@ -1223,7 +1223,7 @@ export type Query = {
   /** Search the ecoverse for terms supplied */
   membership: Membership;
   messages: Array<Message>;
-  /** Cherrytwist Services Metadata */
+  /** Alkemio Services Metadata */
   metadata: Metadata;
   /** A particular Organisation */
   organisation: Organisation;

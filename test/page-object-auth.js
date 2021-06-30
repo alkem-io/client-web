@@ -10,7 +10,7 @@ const PageObjects = function () {
   const confirmPageStaySignedIn = element(by.cssContainingText('.text-title', 'Stay signed in?'));
   const nextButton = element(by.css('#idSIButton9'));
   const takeMeHomeButton = element(by.cssContainingText('div span', 'Take me home'));
-  const ecoverseTitle = element(by.cssContainingText('h2 span', 'Cherrytwist'));
+  const ecoverseTitle = element(by.cssContainingText('h2 span', 'Alkemio'));
 
   this.authenticate = async function () {
     await browser.get(browser.params.login.url);

@@ -1,11 +1,11 @@
 {
-  "name": "cherrytwist-web",
+  "name": "alkemio-web",
   "version": "0.8.1",
-  "description": "Cherrytwist client, responsible for managing the shared representation of the ecoverse",
+  "description": "Alkemio client, responsible for managing the shared representation of the ecoverse",
   "author": "Cherrytwist Foundation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cherrytwist/Client.Web.git"
+    "url": "https://github.com/alkem-io/Client.Web.git"
   },
   "private": false,
   "license": "EUPL-1.2",

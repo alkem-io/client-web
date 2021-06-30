@@ -3,7 +3,7 @@ const { browser, element, by } = require('protractor');
 const PageObjectsEcoverse = function () {
   var EC = protractor.ExpectedConditions;
 
-  const ecoverseTitle = element(by.cssContainingText('h2 span', 'Cherrytwist'));
+  const ecoverseTitle = element(by.cssContainingText('h2 span', 'Alkemio'));
   const ecoverseButton = element(by.css('[href="/"]'));
   this.clicksEcoverseButton = async function () {
     await ecoverseButton.click();

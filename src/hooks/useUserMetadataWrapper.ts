@@ -45,8 +45,12 @@ export const useUserMetadataWrapper = () => {
           })
           .sort((a, b) => a.order - b.order) || [];
 
-      const hasCredentials = (credential: AuthorizationCredential, resourceId = '') =>
-        Boolean(user?.agent?.credentials?.findIndex(c => c.type === credential && c.resourceID === resourceId) !== -1);
+      const hasCredentials = (credential: AuthorizationCredential, resourceId?: string) =>
+        Boolean(
+          user?.agent?.credentials?.findIndex(
+            c => c.type === credential && (!resourceId || c.resourceID === resourceId)
+          ) !== -1
+        );
       const metadata = {
         user,
 
