@@ -61,7 +61,7 @@ const AboutPage = () => {
         <Col xs={12} lg={6}>
           <div className={styles.content}>
             <div className={styles.version}>
-              <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
+              <img src="/logo.png" className={styles.logo} alt="Alkemio" />
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
             {data && (
@@ -77,7 +77,7 @@ const AboutPage = () => {
               {t('pages.about.title')}
             </Typography>
             <Typography className={'mb-4'}>{t('pages.about.description')}</Typography>
-            <a href="https://cherrytwist.org/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
+            <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
               <Button>{t('buttons.learn-more')}</Button>
             </a>
           </div>

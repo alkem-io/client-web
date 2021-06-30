@@ -43,11 +43,11 @@ const Footer: FC = ({ children }) => {
   return (
     <div className={styles.footerSpacing}>
       <Toolbar paddingClass={styles.footer}>
-        <Link to={'/about'} href="https://cherrytwist.org/about/" className={styles.poweredBy}>
+        <Link to={'/about'} href="https://alkem.io/about/" className={styles.poweredBy}>
           <Typography variant="caption" color="neutralMedium" weight="boldLight">
             Powered by
           </Typography>
-          <img src="/logo.png" className={styles.logo} alt="Cherrytwist" />
+          <img src="/logo.png" className={styles.logo} alt="Alkemio" />
         </Link>
         <div className={styles.spacer} />
         {children}

@@ -82,9 +82,9 @@ const PageObjectsAdmin = function () {
     console.log('Press "Create" button - opportunity group.');
   };
 
-  const userInList = element(by.cssContainingText('.col-sm-4 .table-responsive-sm tbody tr td', 'admin cherrytwist'));
+  const userInList = element(by.cssContainingText('.col-sm-4 .table-responsive-sm tbody tr td', 'admin alkemio'));
   const verifyUserAvailability = element(
-    by.cssContainingText('.col .table-responsive-sm tbody tr td', 'admin cherrytwist')
+    by.cssContainingText('.col .table-responsive-sm tbody tr td', 'admin alkemio')
   );
   const removeButtonAdminUser = element(by.css('.col .table-responsive-sm tbody tr td button'));
   const addButtonAdminUser = element(by.css('.col-sm-4 .table-responsive-sm tbody tr td button'));
