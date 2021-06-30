@@ -83,7 +83,7 @@ const OrganizationGroupRoutes: FC<WithParentMembersProps> = ({ paths, parentMemb
       <Route exact path={`${path}/new`}>
         <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/:groupId`}>
+      <Route path={`${path}/:groupId`}>
         <OrganisationGroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">
