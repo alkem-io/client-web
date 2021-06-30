@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
 import { ReactComponent as ImageSvg } from 'bootstrap-icons/icons/image.svg';
+import { usePlatformConfigurationQuery } from '../../generated/graphql';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
@@ -25,6 +25,8 @@ const useFooterStyles = createStyles(theme => ({
 
 const Footer: FC = ({ children }) => {
   const styles = useFooterStyles();
+  const { data } = usePlatformConfigurationQuery();
+  const platform = data?.configuration.platform;
 
   return (
     <Toolbar classes={clsx(styles.footer, '')} dense={true}>
@@ -33,34 +35,33 @@ const Footer: FC = ({ children }) => {
           <Typography variant="caption" color="neutralMedium" weight="boldLight">
             © 2021 Cherrytwist Foundation
           </Typography>
-          <Link to={'/about'} href="https://alkem.io/about/">
+
+          <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
             Terms
-          </Link>
-          <Link to={'/about'} href="https://alkem.io/about/">
+          </a>
+          <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
             Privacy
-          </Link>
-          <Link to={'/about'} href="https://alkem.io/about/">
-            Security
-          </Link>
+          </a>
         </div>
 
-        <div className="d-none d-xl-block mx-xl-4">
+        <div className="d-none d-xl-block mx-xl-3">
           <ImageSvg />
+          Public preview
         </div>
 
         <div className={clsx('d-flex col-xl-5', styles.column)}>
-          <Link to={'/about'} href="https://alkem.io/about/">
-            Public preview
-          </Link>
-          <Link to={'/about'} href="https://alkem.io/about/">
+          <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
+            Security
+          </a>
+          <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
             Feedback
-          </Link>
-          <Link to={'/about'} href="https://alkem.io/about/">
+          </a>
+          <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
             Support
-          </Link>
-          <Link to={'/about'} href="https://alkem.io/about/">
+          </a>
+          <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
             About
-          </Link>
+          </a>
         </div>
       </div>
       {children}

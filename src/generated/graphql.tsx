@@ -4923,6 +4923,67 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
 export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
   return { query: OrganizationsListDocument, variables: variables };
 }
+export const PlatformConfigurationDocument = gql`
+  query platformConfiguration {
+    configuration {
+      platform {
+        about
+        feedback
+        privacy
+        security
+        support
+        terms
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformConfigurationQuery__
+ *
+ * To run a query within a React component, call `usePlatformConfigurationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformConfigurationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformConfigurationQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformConfigurationQuery,
+    SchemaTypes.PlatformConfigurationQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.PlatformConfigurationQuery, SchemaTypes.PlatformConfigurationQueryVariables>(
+    PlatformConfigurationDocument,
+    baseOptions
+  );
+}
+export function usePlatformConfigurationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformConfigurationQuery,
+    SchemaTypes.PlatformConfigurationQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.PlatformConfigurationQuery, SchemaTypes.PlatformConfigurationQueryVariables>(
+    PlatformConfigurationDocument,
+    baseOptions
+  );
+}
+export type PlatformConfigurationQueryHookResult = ReturnType<typeof usePlatformConfigurationQuery>;
+export type PlatformConfigurationLazyQueryHookResult = ReturnType<typeof usePlatformConfigurationLazyQuery>;
+export type PlatformConfigurationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformConfigurationQuery,
+  SchemaTypes.PlatformConfigurationQueryVariables
+>;
+export function refetchPlatformConfigurationQuery(variables?: SchemaTypes.PlatformConfigurationQueryVariables) {
+  return { query: PlatformConfigurationDocument, variables: variables };
+}
 export const ProjectProfileDocument = gql`
   query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {

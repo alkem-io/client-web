@@ -1127,6 +1127,8 @@ export type Organisation = Groupable &
     authorization?: Maybe<Authorization>;
     /** The display name. */
     displayName: Scalars['String'];
+    /** Group defined on this organisation. */
+    group?: Maybe<UserGroup>;
     /** Groups defined on this organisation. */
     groups?: Maybe<Array<UserGroup>>;
     id: Scalars['UUID'];
@@ -1137,6 +1139,10 @@ export type Organisation = Groupable &
     /** The profile for this organisation. */
     profile: Profile;
   };
+
+export type OrganisationGroupArgs = {
+  ID: Scalars['UUID'];
+};
 
 export type OryConfig = {
   __typename?: 'OryConfig';
@@ -2769,6 +2775,17 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = { __typename?: 'Query' } & {
   organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
+};
+
+export type PlatformConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformConfigurationQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    platform: { __typename?: 'Platform' } & Pick<
+      Platform,
+      'about' | 'feedback' | 'privacy' | 'security' | 'support' | 'terms'
+    >;
+  };
 };
 
 export type ProjectProfileQueryVariables = Exact<{
