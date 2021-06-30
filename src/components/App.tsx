@@ -58,7 +58,6 @@ const App = ({ children }): React.ReactElement => {
         clientVersion: process.env.REACT_APP_VERSION,
         serverName: data?.metadata.services[0].name,
         serverVersion: data?.metadata.services[0].version,
-        feedback: process.env.REACT_APP_FEEDBACK_URL,
         buildVersion: process.env.REACT_APP_BUILD_VERSION,
         buildDate: process.env.REACT_APP_BUILD_DATE,
         buildRevision: process.env.REACT_APP_BUILD_REVISION,

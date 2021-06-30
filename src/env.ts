@@ -7,7 +7,6 @@ declare global {
       REACT_APP_SENTRY_PII_ENABLED?: string;
       REACT_APP_NAME?: string;
       REACT_APP_VERSION?: string;
-      REACT_APP_FEEDBACK_URL?: string;
       REACT_APP_DEBUG_QUERY?: string;
       REACT_APP_LOG_ERRORS?: string;
     };
