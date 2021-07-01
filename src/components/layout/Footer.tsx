@@ -1,25 +1,33 @@
-import clsx from 'clsx';
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
-import { ReactComponent as ImageSvg } from 'bootstrap-icons/icons/image.svg';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
+import Image from '../core/Image';
+import { Link } from 'react-router-dom';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
     position: 'relative',
     alignItems: 'center',
     display: 'flex',
+    justifyContent: 'space-between',
   },
   column: {
-    [theme.media.up('xl')]: {
-      justifyContent: 'space-between',
-    },
+    display: 'flex',
+    gap: theme.shape.spacing(2),
+    marginLeft: theme.shape.spacing(2),
+    marginRight: theme.shape.spacing(2),
     [theme.media.down('xl')]: {
-      gap: theme.shape.spacing(1),
       justifyContent: 'center',
     },
+  },
+  logo: {
+    height: theme.shape.spacing(2),
+  },
+  copyright: {
+    display: 'flex',
+    justifyContent: 'start',
   },
 }));
 
@@ -29,30 +37,32 @@ const Footer: FC = ({ children }) => {
   const platform = data?.configuration.platform;
 
   return (
-    <Toolbar classes={clsx(styles.footer, '')} dense={true}>
-      <div className="d-flex container-xl flex-lg-wrap justify-content-between">
-        <div className={clsx('d-flex col-xl-5 align-items-center', styles.column)}>
-          <Typography variant="caption" color="neutralMedium" weight="boldLight">
-            © 2021 Cherrytwist Foundation
-          </Typography>
-
+    <Toolbar classes={styles.footer} dense={true}>
+      <div className={styles.copyright}>
+        <Typography variant="caption" color="neutralMedium" weight="boldLight">
+          © 2021 Cherrytwist Foundation
+        </Typography>
+      </div>
+      <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
+        <div className={styles.column}>
           <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
             Terms
           </a>
           <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
             Privacy
           </a>
-        </div>
-
-        <div className="d-none d-xl-block mx-xl-3">
-          <ImageSvg />
-          Public preview
-        </div>
-
-        <div className={clsx('d-flex col-xl-5', styles.column)}>
           <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
             Security
           </a>
+        </div>
+
+        <div className="d-none d-lg-block mx-xl-1">
+          <Link to={'/about'} href="https://alkem.io/about/">
+            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+          </Link>
+        </div>
+
+        <div className={styles.column}>
           <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
             Feedback
           </a>
@@ -64,7 +74,7 @@ const Footer: FC = ({ children }) => {
           </a>
         </div>
       </div>
-      {children}
+      <div className="d-flex justify-content-start">{children}</div>
     </Toolbar>
   );
 };

@@ -1,0 +1,8 @@
+query organisationGroup($organisationId: UUID_NAMEID!, $groupId: UUID!) {
+  organisation(ID: $organisationId) {
+    id
+    group(ID: $groupId) {
+      ...GroupInfo
+    }
+  }
+}
