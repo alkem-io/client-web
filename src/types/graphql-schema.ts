@@ -2796,7 +2796,7 @@ export type OrganizationNameQueryVariables = Exact<{
 }>;
 
 export type OrganizationNameQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'displayName'>;
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
 };
 
 export type OrganizationProfileInfoQueryVariables = Exact<{

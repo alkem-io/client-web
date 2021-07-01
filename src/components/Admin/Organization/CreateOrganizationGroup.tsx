@@ -29,6 +29,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
     onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
+        debugger;
         const { createGroupOnOrganisation: newGroup } = data;
         cache.modify({
           id: cache.identify(organization),

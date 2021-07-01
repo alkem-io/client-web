@@ -49,14 +49,12 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   const consoleLink = new ApolloLink((operation, forward) => {
     if (enableQueryDebug) {
+      // TODO [ATS]: Logger required
       console.log(`starting request for ${operation.operationName}`);
     }
     return forward(operation).map(data => {
       if (enableQueryDebug) {
         console.log(`ending request for ${operation.operationName}`);
-        if (enableQueryDebug && operation.operationName === 'userProfile') {
-          console.log(data);
-        }
       }
       return data;
     });
@@ -104,7 +102,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   });
 
   return useMemo(() => {
-    console.log('Create apollo client!');
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
       link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),

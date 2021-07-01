@@ -4890,6 +4890,7 @@ export function refetchOrganizationGroupsQuery(variables?: SchemaTypes.Organizat
 export const OrganizationNameDocument = gql`
   query organizationName($id: UUID_NAMEID!) {
     organisation(ID: $id) {
+      id
       displayName
     }
   }
