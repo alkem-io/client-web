@@ -17,6 +17,7 @@ export interface AdminParameters {
   organizationId: string;
   groupId: string;
 }
+
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();

@@ -4,16 +4,11 @@ import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import Loading from '../../components/core/Loading';
-import {
-  useChallengeCommunityQuery,
-  useChallengesWithCommunityQuery,
-  useEcoverseCommunityQuery,
-  useOpportunitiesQuery,
-} from '../../generated/graphql';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery, useOpportunitiesQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
+import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
 import { AdminParameters } from './admin';
 import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
@@ -21,27 +16,13 @@ import { OpportunitiesRoutes } from './opportunity';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { ecoverseId } = useEcoverse();
-  const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({ variables: { ecoverseId } });
 
-  const challengesList = challengesListQuery?.ecoverse?.challenges?.map(c => ({
-    id: c.id,
-    value: c.displayName,
-    url: `${url}/${c.id}`,
-    communityId: c.community?.id,
-  }));
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [
-    paths,
-    challengesListQuery?.ecoverse?.challenges,
-  ]);
-
-  if (loading) return <Loading text={'Loading challenges'} />;
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage paths={currentPaths} data={challengesList || []} newLink={`${url}/new`} />
+        <ChallengeList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
         <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
