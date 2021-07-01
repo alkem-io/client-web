@@ -7,7 +7,7 @@ import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Co
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { SearchableListItem } from '../../components/Admin/SearchableList';
 import { FourOuFour } from '../../pages';
-import { GroupRoute } from './group';
+import { EcoverseGroupRoute } from './EcoverseGroupRoute';
 
 interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {}
 
@@ -31,7 +31,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({ paths, community, pare
 
 export const CommunityGroupsRoute: FC<CommunityRouteProps> = ({ paths, community, parentMembers }) => {
   const { path, url } = useRouteMatch();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   const handleDelete = (item: SearchableListItem) => console.log(item);
 
@@ -52,7 +52,7 @@ export const CommunityGroupsRoute: FC<CommunityRouteProps> = ({ paths, community
         <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
       <Route path={`${path}/:groupId`}>
-        <GroupRoute paths={currentPaths} parentMembers={parentMembers} />
+        <EcoverseGroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">
         <FourOuFour />

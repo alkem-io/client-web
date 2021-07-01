@@ -89,6 +89,28 @@ export const GroupDetailsFragmentDoc = gql`
     name
   }
 `;
+export const GroupInfoFragmentDoc = gql`
+  fragment GroupInfo on UserGroup {
+    id
+    name
+    profile {
+      id
+      avatar
+      description
+      references {
+        id
+        uri
+        name
+        description
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+`;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
@@ -3000,6 +3022,60 @@ export type EcoverseCommunityQueryResult = Apollo.QueryResult<
 export function refetchEcoverseCommunityQuery(variables?: SchemaTypes.EcoverseCommunityQueryVariables) {
   return { query: EcoverseCommunityDocument, variables: variables };
 }
+export const EcoverseGroupDocument = gql`
+  query ecoverseGroup($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      group(ID: $groupId) {
+        ...GroupInfo
+      }
+    }
+  }
+  ${GroupInfoFragmentDoc}
+`;
+
+/**
+ * __useEcoverseGroupQuery__
+ *
+ * To run a query within a React component, call `useEcoverseGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseGroupQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useEcoverseGroupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
+    EcoverseGroupDocument,
+    baseOptions
+  );
+}
+export function useEcoverseGroupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
+    EcoverseGroupDocument,
+    baseOptions
+  );
+}
+export type EcoverseGroupQueryHookResult = ReturnType<typeof useEcoverseGroupQuery>;
+export type EcoverseGroupLazyQueryHookResult = ReturnType<typeof useEcoverseGroupLazyQuery>;
+export type EcoverseGroupQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseGroupQuery,
+  SchemaTypes.EcoverseGroupQueryVariables
+>;
+export function refetchEcoverseGroupQuery(variables?: SchemaTypes.EcoverseGroupQueryVariables) {
+  return { query: EcoverseGroupDocument, variables: variables };
+}
 export const EcoverseGroupsListDocument = gql`
   query ecoverseGroupsList($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -3376,67 +3452,6 @@ export type GlobalActivityQueryResult = Apollo.QueryResult<
 >;
 export function refetchGlobalActivityQuery(variables?: SchemaTypes.GlobalActivityQueryVariables) {
   return { query: GlobalActivityDocument, variables: variables };
-}
-export const GroupDocument = gql`
-  query group($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      group(ID: $groupId) {
-        id
-        name
-        profile {
-          id
-          avatar
-          description
-          references {
-            id
-            uri
-            name
-            description
-          }
-          tagsets {
-            id
-            name
-            tags
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGroupQuery__
- *
- * To run a query within a React component, call `useGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export function useGroupQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
-}
-export function useGroupLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>
-) {
-  return Apollo.useLazyQuery<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>(GroupDocument, baseOptions);
-}
-export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
-export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
-export type GroupQueryResult = Apollo.QueryResult<SchemaTypes.GroupQuery, SchemaTypes.GroupQueryVariables>;
-export function refetchGroupQuery(variables?: SchemaTypes.GroupQueryVariables) {
-  return { query: GroupDocument, variables: variables };
 }
 export const GroupCardDocument = gql`
   query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
@@ -4563,6 +4578,63 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityUserIdsQuery(variables?: SchemaTypes.OpportunityUserIdsQueryVariables) {
   return { query: OpportunityUserIdsDocument, variables: variables };
 }
+export const OrganisationGroupDocument = gql`
+  query organisationGroup($organisationId: UUID_NAMEID!, $groupId: UUID!) {
+    organisation(ID: $organisationId) {
+      id
+      group(ID: $groupId) {
+        ...GroupInfo
+      }
+    }
+  }
+  ${GroupInfoFragmentDoc}
+`;
+
+/**
+ * __useOrganisationGroupQuery__
+ *
+ * To run a query within a React component, call `useOrganisationGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganisationGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganisationGroupQuery({
+ *   variables: {
+ *      organisationId: // value for 'organisationId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useOrganisationGroupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>(
+    OrganisationGroupDocument,
+    baseOptions
+  );
+}
+export function useOrganisationGroupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganisationGroupQuery,
+    SchemaTypes.OrganisationGroupQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>(
+    OrganisationGroupDocument,
+    baseOptions
+  );
+}
+export type OrganisationGroupQueryHookResult = ReturnType<typeof useOrganisationGroupQuery>;
+export type OrganisationGroupLazyQueryHookResult = ReturnType<typeof useOrganisationGroupLazyQuery>;
+export type OrganisationGroupQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganisationGroupQuery,
+  SchemaTypes.OrganisationGroupQueryVariables
+>;
+export function refetchOrganisationGroupQuery(variables?: SchemaTypes.OrganisationGroupQueryVariables) {
+  return { query: OrganisationGroupDocument, variables: variables };
+}
 export const OrganizationCardDocument = gql`
   query organizationCard($id: UUID_NAMEID!) {
     organisation(ID: $id) {
@@ -4708,6 +4780,7 @@ export function refetchOrganizationDetailsQuery(variables?: SchemaTypes.Organiza
 export const OrganizationGroupsDocument = gql`
   query organizationGroups($id: UUID_NAMEID!) {
     organisation(ID: $id) {
+      id
       groups {
         id
         name
