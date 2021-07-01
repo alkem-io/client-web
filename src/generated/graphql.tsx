@@ -1078,6 +1078,53 @@ export type DeleteAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
 >;
+export const DeleteChallengeDocument = gql`
+  mutation deleteChallenge($input: DeleteChallengeInput!) {
+    deleteChallenge(deleteData: $input) {
+      id
+      nameID
+    }
+  }
+`;
+export type DeleteChallengeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteChallengeMutation,
+  SchemaTypes.DeleteChallengeMutationVariables
+>;
+
+/**
+ * __useDeleteChallengeMutation__
+ *
+ * To run a mutation, you first call `useDeleteChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChallengeMutation, { data, loading, error }] = useDeleteChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteChallengeMutation,
+    SchemaTypes.DeleteChallengeMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.DeleteChallengeMutation, SchemaTypes.DeleteChallengeMutationVariables>(
+    DeleteChallengeDocument,
+    baseOptions
+  );
+}
+export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
+export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.DeleteChallengeMutation>;
+export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteChallengeMutation,
+  SchemaTypes.DeleteChallengeMutationVariables
+>;
 export const DeleteEcoverseDocument = gql`
   mutation deleteEcoverse($input: DeleteEcoverseInput!) {
     deleteEcoverse(deleteData: $input) {
@@ -1172,6 +1219,7 @@ export const DeleteOpportunityDocument = gql`
   mutation deleteOpportunity($input: DeleteOpportunityInput!) {
     deleteOpportunity(deleteData: $input) {
       id
+      nameID
     }
   }
 `;
@@ -2831,6 +2879,7 @@ export const ChallengesWithCommunityDocument = gql`
       id
       challenges {
         id
+        nameID
         displayName
         community {
           id
@@ -3696,8 +3745,10 @@ export const OpportunitiesDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeId) {
+        id
         opportunities {
           id
+          nameID
           displayName
         }
       }
