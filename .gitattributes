@@ -1,4 +1,4 @@
 * text=auto eol=lf
 
-src/graphql/* linguist-generated=true
+src/graphql/** linguist-generated=true
 src/types/graphql-schema.ts linguist-generated=true
