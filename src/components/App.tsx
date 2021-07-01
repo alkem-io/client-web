@@ -25,7 +25,6 @@ import Navigation from './layout/Navigation';
 import Sidebar from './layout/Sidebar/Sidebar';
 import User from './layout/User';
 import { useEcoversesContext } from '../hooks/useEcoversesContext';
-import Delimiter from './core/Delimiter';
 
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
@@ -105,28 +104,25 @@ const App = ({ children }): React.ReactElement => {
         )}
       </Header>
       <Sidebar isUserAuth={Boolean(user)} ecoverses={ecoverses} />
-      <div id="content">
-        <div id="main">
-          <Main>
-            <Section
-              hideDetails
-              gutters={{ content: false, details: false, root: true }}
-              classes={{
-                padding: '0',
-              }}
-            >
-              <Breadcrumbs paths={paths} />
-            </Section>
-            {children}
-          </Main>
-        </div>
-        <Delimiter />
-        <Footer>
-          <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
-            <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
-          </IconButton>
-        </Footer>
+      <div id="main">
+        <Main>
+          <Section
+            hideDetails
+            gutters={{ content: false, details: false, root: true }}
+            classes={{
+              padding: '0',
+            }}
+          >
+            <Breadcrumbs paths={paths} />
+          </Section>
+          {children}
+        </Main>
       </div>
+      <Footer>
+        <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+          <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
+        </IconButton>
+      </Footer>
       <NotificationHandler />
     </div>
   );

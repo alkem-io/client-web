@@ -5,6 +5,7 @@ import Typography from '../core/Typography';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import Image from '../core/Image';
 import { Link } from 'react-router-dom';
+import Delimiter from '../core/Delimiter';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
@@ -28,6 +29,11 @@ const useFooterStyles = createStyles(theme => ({
   copyright: {
     display: 'flex',
     justifyContent: 'start',
+    position: 'relative',
+    left: theme.sidebar.width,
+  },
+  dividerLeft: {
+    marginLeft: theme.sidebar.width + theme.shape.spacing(2),
   },
 }));
 
@@ -37,45 +43,50 @@ const Footer: FC = ({ children }) => {
   const platform = data?.configuration.platform;
 
   return (
-    <Toolbar classes={styles.footer} dense={true}>
-      <div className={styles.copyright}>
-        <Typography variant="caption" color="neutralMedium" weight="boldLight">
-          © 2021 Cherrytwist Foundation
-        </Typography>
+    <>
+      <div className={styles.dividerLeft}>
+        <Delimiter />
       </div>
-      <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
-        <div className={styles.column}>
-          <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
-            Terms
-          </a>
-          <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
-            Privacy
-          </a>
-          <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
-            Security
-          </a>
+      <Toolbar classes={styles.footer} dense={true}>
+        <div className={styles.copyright}>
+          <Typography variant="caption" color="neutralMedium" weight="boldLight">
+            © 2021 Cherrytwist Foundation
+          </Typography>
         </div>
+        <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
+          <div className={styles.column}>
+            <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
+              Terms
+            </a>
+            <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
+              Privacy
+            </a>
+            <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
+              Security
+            </a>
+          </div>
 
-        <div className="d-none d-lg-block mx-xl-1">
-          <Link to={'/about'} href="https://alkem.io/about/">
-            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-          </Link>
-        </div>
+          <div className="d-none d-lg-block mx-xl-1">
+            <Link to={'/about'} href="https://alkem.io/about/">
+              <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+            </Link>
+          </div>
 
-        <div className={styles.column}>
-          <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
-            Feedback
-          </a>
-          <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
-            Support
-          </a>
-          <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
-            About
-          </a>
+          <div className={styles.column}>
+            <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
+              Feedback
+            </a>
+            <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
+              Support
+            </a>
+            <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
+              About
+            </a>
+          </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-start">{children}</div>
-    </Toolbar>
+        <div className="d-flex justify-content-start">{children}</div>
+      </Toolbar>
+    </>
   );
 };
 
