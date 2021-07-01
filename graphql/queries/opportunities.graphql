@@ -1,9 +1,11 @@
-query opportunities($ecoverseId: UUID_NAMEID!,$challengeId: UUID_NAMEID!) {
+query opportunities($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     challenge(ID: $challengeId) {
+      id
       opportunities {
         id
+        nameID
         displayName
       }
     }
