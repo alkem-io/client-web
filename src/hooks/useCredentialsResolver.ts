@@ -4,6 +4,7 @@ import { AuthorizationCredential } from '../types/graphql-schema';
 export interface CredentialResolver {
   toRoleName: (value: AuthorizationCredential) => string;
   toRoleOrder: (value: AuthorizationCredential) => number;
+  isHidden: (value: AuthorizationCredential) => boolean;
 }
 
 export const useCredentialsResolver = (): CredentialResolver => {
@@ -25,5 +26,9 @@ export const useCredentialsResolver = (): CredentialResolver => {
     return t(`common.enums.authorization-credentials.${value}.order` as const);
   };
 
-  return { toRoleName, toRoleOrder };
+  const isHidden = (value: AuthorizationCredential) => {
+    return t(`common.enums.authorization-credentials.${value}.hidden` as const);
+  };
+
+  return { toRoleName, toRoleOrder, isHidden };
 };
