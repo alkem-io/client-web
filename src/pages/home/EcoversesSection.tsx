@@ -7,12 +7,13 @@ import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { useEcoversesContext } from '../../hooks/useEcoversesContext';
+import { useEcoversesWithActivityQuery } from '../../generated/graphql';
 
 const EcoversesSection = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { ecoverses, loading, error } = useEcoversesContext();
+  const { data, loading, error } = useEcoversesWithActivityQuery();
+  const ecoverses = data?.ecoverses || [];
 
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
@@ -34,6 +35,7 @@ const EcoversesSection = () => {
                 key={i}
                 id={ecoverse.id}
                 name={ecoverse.displayName}
+                activity={ecoverse?.activity || []}
                 context={{
                   tag: user?.ofEcoverse(ecoverse.id) ? t('components.card.you-are-in') : '',
                   tagline: ecoverse?.context?.tagline || '',
@@ -44,6 +46,7 @@ const EcoversesSection = () => {
                 authorization={{
                   anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
                 }}
+                tags={ecoverse?.tagset?.tags || []}
                 url={`/${ecoverse.nameID}`}
               />
             );

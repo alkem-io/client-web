@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
@@ -10,13 +10,16 @@ import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import { Activities } from '../ActivityPanel';
 import TagContainer from '../core/TagContainer';
-import Tag, { TagProps } from '../core/Tag';
+import Tag from '../core/Tag';
 import ReactTooltip from 'react-tooltip';
+import getActivityCount from '../../utils/get-activity-count';
+import { Nvp } from '../../types/graphql-schema';
 
 interface EcoverseCardProps {
   id: string | number;
   name?: string;
   url: string;
+  activity: Pick<Nvp, 'name' | 'value'>[];
   context: {
     tag: string;
     tagline: string;
@@ -27,6 +30,7 @@ interface EcoverseCardProps {
   authorization: {
     anonymousReadAccess: boolean;
   };
+  tags: string[];
 }
 
 const useCardStyles = createStyles(theme => ({
@@ -78,32 +82,14 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-const tags: Array<TagProps> = [
-  {
-    text: 'Ecoverse',
-  },
-  {
-    text: 'Default',
-  },
-  {
-    text: 'Amazing',
-  },
-  {
-    text: 'Collaboration',
-  },
-  {
-    text: 'Whats Next',
-  },
-];
-
 // todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, authorization }) => {
+export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, authorization, activity, tags }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
   const { tagline, visual } = context;
   const { anonymousReadAccess } = authorization;
   const tagProps = !anonymousReadAccess ? { text: 'Private' } : undefined;
-  const truncatedTags = React.useMemo(() => tags.slice(0, 3), [tags]);
+  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   return (
     <div className={styles.relative}>
@@ -134,14 +120,13 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, author
               </Typography>
               <Activities
                 items={[
-                  { name: 'Challenges', digit: 5, color: 'primary' },
-                  { name: 'Members', digit: 100, color: 'positive' },
+                  { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
+                  { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
                 ]}
               />
-              <div style={{ flexGrow: 1 }}></div>
               <TagContainer>
                 {truncatedTags.map((t, i) => (
-                  <Tag key={i} {...t} color="neutralMedium" />
+                  <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
                   <span data-tip data-for="tagInfo">
@@ -167,14 +152,11 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, author
           <span>{tagline}</span>
         </Typography>
       </Card>
-      <ReactTooltip id="tagInfo" effect="solid" place="right" type="info">
-        <span>
-          {tags
-            .slice(3, tags.length)
-            .map(x => x.text)
-            .join(', ')}
-        </span>
-      </ReactTooltip>
+      {tags.length > 0 && (
+        <ReactTooltip id="tagInfo" effect="solid" place="right" type="info">
+          <span>{tags.slice(3).join(', ')}</span>
+        </ReactTooltip>
+      )}
     </div>
   );
 };
