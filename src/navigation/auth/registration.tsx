@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useQueryParams } from '../../hooks/useQueryParams';
-import RegisterPage from '../../pages/RegisterPage';
+import RegistrationPage from '../../pages/RegistrationPage';
 
-export const RegisterRoute: FC = () => {
+export const RegistrationRoute: FC = () => {
   const params = useQueryParams();
   const flow = params.get('flow');
 
@@ -11,6 +11,6 @@ export const RegisterRoute: FC = () => {
     return null;
   }
 
-  return <RegisterPage flow={flow} />;
+  return <RegistrationPage flow={flow} />;
 };
-export default RegisterRoute;
+export default RegistrationRoute;

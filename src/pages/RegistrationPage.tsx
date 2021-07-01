@@ -10,7 +10,7 @@ interface RegisterPageProps {
   flow: string;
 }
 
-export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
+export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();
   const kratos = useKratosClient();
 
@@ -40,4 +40,4 @@ export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
     </Container>
   );
 };
-export default RegisterPage;
+export default RegistrationPage;

@@ -20,6 +20,12 @@ export const AuthRoute: FC = () => {
       <Route exact path={`${path}/registration`}>
         <RegisterRoute />
       </Route>
+      <Route exact path={`${path}/verify`}>
+        <RegisterRoute />
+      </Route>
+      <Route exact path={`${path}/recovery`}>
+        <RegisterRoute />
+      </Route>
       <Route exact path={`${path}/error`}>
         <ErrorRoute />
       </Route>
