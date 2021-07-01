@@ -16,7 +16,7 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
   const ecoverseList = useMemo(() => data?.ecoverses.map(searchableListItemMapper(url)) || [], [data]);
 
   const [deleteEcoverse] = useDeleteEcoverseMutation({
-    refetchQueries: ['ecoverses'],
+    refetchQueries: [refetchEcoversesQuery()],
     awaitRefetchQueries: true,
     onError: handleError,
   });
@@ -28,7 +28,6 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
           ID: item.id,
         },
       },
-      refetchQueries: [refetchEcoversesQuery()],
     });
   };
 
