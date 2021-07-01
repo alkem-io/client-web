@@ -1,4 +1,13 @@
-import { LoginFlow, RegistrationFlow, SettingsFlow, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
+import {
+  LoginFlow,
+  RecoveryFlow,
+  RegistrationFlow,
+  SettingsFlow,
+  UiNode,
+  UiNodeInputAttributes,
+  UiText,
+  VerificationFlow,
+} from '@ory/kratos-client';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
 import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
@@ -11,7 +20,7 @@ import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 
 interface KratosUIProps {
-  flow?: LoginFlow | RegistrationFlow | SettingsFlow;
+  flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
 }
 
 interface KratosProps {
@@ -189,7 +198,7 @@ const toUiControl = (node: UiNode, key: number) => {
 };
 
 export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
-  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[] };
+  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
     if (!flow) return;
@@ -204,11 +213,10 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
           case 'password':
             return { ...acc, password: [...acc.password, node] };
           default:
-            console.warn(`Unknown node group ${node.group}`);
-            return acc;
+            return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      { default: [], oidc: [], password: [] } as NodeGroups
+      { default: [], oidc: [], password: [], rest: [] } as NodeGroups
     );
   }, [flow]);
 
@@ -224,6 +232,7 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
         {nodesByGroup.password.map(toUiControl)}
         {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
         {nodesByGroup.oidc.map(toUiControl)}
+        {nodesByGroup.rest.map(toUiControl)}
       </Form>
     </div>
   );

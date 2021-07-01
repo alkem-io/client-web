@@ -356,11 +356,11 @@
     "logout": {
       "loading": "Signing off ..."
     },
-    "register": {
+    "registration": {
       "form": {
         "validations": {
           "email": "Email is not valid",
-          "password": "Password ca not be empty",
+          "password": "Password can not be empty",
           "password-strength": "Password must be at least 8 symbols long",
           "confirm-password": "Passwords must match",
           "terms": "The terms of use and the privacy policy must be accepted."
@@ -370,6 +370,39 @@
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"
+      }
+    },
+    "recovery": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "Password Reset",
+      "buttons": {
+        "register": "Register"
+      }
+    },
+    "verification": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "Verify",
+      "buttons": {
+        "register": "Verify"
+      }
+    },
+    "settings": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "User Settings",
+      "buttons": {
+        "register": "Verify"
       }
     }
   }

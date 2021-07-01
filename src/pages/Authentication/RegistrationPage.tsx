@@ -2,9 +2,9 @@ import { RegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useKratosClient } from '../hooks/useKratosClient';
-import KratosUI from '../components/Authentication/KratosUI';
-import Typography from '../components/core/Typography';
+import { useKratosClient } from '../../hooks/useKratosClient';
+import KratosUI from '../../components/Authentication/KratosUI';
+import Typography from '../../components/core/Typography';
 
 interface RegisterPageProps {
   flow: string;
@@ -32,7 +32,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
       <Row className={'d-flex justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            {t('pages.register.header')}
+            {t('pages.registration.header')}
           </Typography>
           <KratosUI flow={registrationFlow} />
         </Col>

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useQueryParams } from '../../hooks/useQueryParams';
-import RegistrationPage from '../../pages/RegistrationPage';
+import RegistrationPage from '../../pages/Authentication/RegistrationPage';
 
 export const RegistrationRoute: FC = () => {
   const params = useQueryParams();
