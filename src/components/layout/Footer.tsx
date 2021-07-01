@@ -26,7 +26,7 @@ const useFooterStyles = createStyles(theme => ({
     },
   },
   logo: {
-    height: theme.shape.spacing(8),
+    height: theme.shape.spacing(4),
   },
   // should take this out to utils
   spacer: {

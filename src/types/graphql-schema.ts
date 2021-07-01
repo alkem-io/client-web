@@ -1689,6 +1689,17 @@ export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecovers
 
 export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
 
+export type GroupInfoFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+          references?: Maybe<
+            Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
+          >;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        }
+    >;
+  };
+
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
   User,
   'id' | 'displayName' | 'firstName' | 'lastName' | 'email'
@@ -2328,6 +2339,17 @@ export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type EcoverseGroupQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type EcoverseGroupQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      group: { __typename?: 'UserGroup' } & GroupInfoFragment;
+    };
+};
+
 export type EcoverseGroupsListQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2392,26 +2414,6 @@ export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GlobalActivityQuery = { __typename?: 'Query' } & {
   metadata: { __typename?: 'Metadata' } & { activity: Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>> };
-};
-
-export type GroupQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-          profile?: Maybe<
-            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
-                >;
-                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
-              }
-          >;
-        };
-    };
 };
 
 export type GroupCardQueryVariables = Exact<{
@@ -2736,6 +2738,17 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type OrganisationGroupQueryVariables = Exact<{
+  organisationId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type OrganisationGroupQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'> & {
+      group?: Maybe<{ __typename?: 'UserGroup' } & GroupInfoFragment>;
+    };
+};
+
 export type OrganizationCardQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID'];
 }>;
@@ -2773,9 +2786,9 @@ export type OrganizationGroupsQueryVariables = Exact<{
 }>;
 
 export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & {
-    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-  };
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'> & {
+      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+    };
 };
 
 export type OrganizationNameQueryVariables = Exact<{
