@@ -40,6 +40,7 @@ export const useUserMetadataWrapper = () => {
               type: c.type,
               name: resolver.toRoleName(c.type),
               order: resolver.toRoleOrder(c.type),
+              hidden: resolver.isHidden(c.type),
               resourceId: c.resourceID,
             } as Role;
           })
