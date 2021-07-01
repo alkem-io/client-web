@@ -1,0 +1,12 @@
+query platformConfiguration {
+  configuration {
+    platform {
+      about
+      feedback
+      privacy
+      security
+      support
+      terms
+    }
+  }
+}

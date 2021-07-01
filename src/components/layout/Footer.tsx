@@ -1,58 +1,83 @@
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
+import { usePlatformConfigurationQuery } from '../../generated/graphql';
+import Image from '../core/Image';
+import { Link } from 'react-router-dom';
 
 const useFooterStyles = createStyles(theme => ({
-  footerSpacing: {
-    display: 'flex',
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-  },
   footer: {
     position: 'relative',
     alignItems: 'center',
-    flexGrow: 1,
-    padding: theme.shape.spacing(4),
-  },
-  poweredBy: {
     display: 'flex',
-    alignItems: 'center',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translate3d(-50%, 0, 0)',
-    '&:hover': {
-      textDecoration: 'none',
+    justifyContent: 'space-between',
+  },
+  column: {
+    display: 'flex',
+    gap: theme.shape.spacing(2),
+    marginLeft: theme.shape.spacing(2),
+    marginRight: theme.shape.spacing(2),
+    [theme.media.down('xl')]: {
+      justifyContent: 'center',
     },
   },
   logo: {
-    height: theme.shape.spacing(4),
+    height: theme.shape.spacing(2),
   },
-  // should take this out to utils
-  spacer: {
-    flexGrow: 1,
-  },
-  versions: {
-    marginTop: 'auto',
+  copyright: {
+    display: 'flex',
+    justifyContent: 'start',
+    position: 'relative',
+    left: theme.sidebar.width,
   },
 }));
 
 const Footer: FC = ({ children }) => {
   const styles = useFooterStyles();
+  const { data } = usePlatformConfigurationQuery();
+  const platform = data?.configuration.platform;
 
   return (
-    <div className={styles.footerSpacing}>
-      <Toolbar paddingClass={styles.footer}>
-        <Link to={'/about'} href="https://alkem.io/about/" className={styles.poweredBy}>
-          <Typography variant="caption" color="neutralMedium" weight="boldLight">
-            Powered by
-          </Typography>
-          <img src="/logo.png" className={styles.logo} alt="Alkemio" />
-        </Link>
-        <div className={styles.spacer} />
-        {children}
-      </Toolbar>
-    </div>
+    <Toolbar classes={styles.footer} dense={true}>
+      <div className={styles.copyright}>
+        <Typography variant="caption" color="neutralMedium" weight="boldLight">
+          © 2021 Cherrytwist Foundation
+        </Typography>
+      </div>
+      <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
+        <div className={styles.column}>
+          <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
+            Terms
+          </a>
+          <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
+            Privacy
+          </a>
+          <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
+            Security
+          </a>
+        </div>
+
+        <div className="d-none d-lg-block mx-xl-1">
+          <Link to={'/about'} href="https://alkem.io/about/">
+            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+          </Link>
+        </div>
+
+        <div className={styles.column}>
+          <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
+            Feedback
+          </a>
+          <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
+            Support
+          </a>
+          <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
+            About
+          </a>
+        </div>
+      </div>
+      <div className="d-flex justify-content-start">{children}</div>
+    </Toolbar>
   );
 };
 

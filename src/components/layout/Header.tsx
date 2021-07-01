@@ -2,12 +2,10 @@ import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
-import { env } from '../../env';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRgba from '../../utils/hexToRGBA';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
-import Typography from '../core/Typography';
 
 const appBarZIndex = 100;
 
@@ -62,28 +60,7 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
       </ReactVisibilitySensor>
 
       <Container className={styles[headerInSight ? 'absolute' : 'fixed']}>
-        {headerInSight && (
-          <Row className={styles.earlyAccessAlert}>
-            <Col xs={false} lg={3} />
-            <Col xs={12} lg={8} className={'d-flex align-items-center'}>
-              <Typography variant={'caption'} weight={'boldLight'} color={'background'} className={styles.alertText}>
-                Early Access Partner Preview (read-only)
-              </Typography>
-              <div className={'flex-grow-1'} />
-              <Typography variant={'caption'} weight={'boldLight'} color={'background'}>
-                Please feel free to leave feedback{' '}
-                <a
-                  href={`${env?.REACT_APP_FEEDBACK_URL}`}
-                  target={'_blank'}
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Here
-                </a>
-              </Typography>
-            </Col>
-          </Row>
-        )}
+        <Row className={styles.earlyAccessAlert} />
         <Row>
           <Col xs={false} lg={3}></Col>
           <Col xs>

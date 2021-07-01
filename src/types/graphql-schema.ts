@@ -2813,6 +2813,17 @@ export type OrganizationsListQuery = { __typename?: 'Query' } & {
   organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
 };
 
+export type PlatformConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformConfigurationQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    platform: { __typename?: 'Platform' } & Pick<
+      Platform,
+      'about' | 'feedback' | 'privacy' | 'security' | 'support' | 'terms'
+    >;
+  };
+};
+
 export type ProjectProfileQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   projectId: Scalars['UUID_NAMEID'];
