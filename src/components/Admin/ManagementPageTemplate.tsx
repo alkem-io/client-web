@@ -42,8 +42,8 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
             }}
           >
             <div className={'d-flex wrap'}>
-              {x.buttons.map((b, j) => (
-                <Button key={j} as={Link} to={`${url}${b.url}`} text={b.description} className={'mr-2'} />
+              {x.buttons.map((btn, index) => (
+                <Button key={index} as={Link} to={`${url}${btn.url}`} text={btn.description} className={'mr-2'} />
               ))}
             </div>
           </Card>

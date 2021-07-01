@@ -1,16 +1,16 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { FC, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
 import { useServerMetadataQuery } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useConfig } from '../hooks/useConfig';
+import { useEcoversesContext } from '../hooks/useEcoversesContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { useUserScope } from '../hooks/useSentry';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useUserContext } from '../hooks/useUserContext';
-import { UserMetadata } from '../hooks/useUserMetadataWrapper';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../models/Constants';
 import Breadcrumbs from './core/Breadcrumbs';
 import Button from './core/Button';
@@ -23,19 +23,7 @@ import Header from './layout/Header';
 import Main from './layout/Main';
 import Navigation from './layout/Navigation';
 import Sidebar from './layout/Sidebar/Sidebar';
-import User from './layout/User';
-import { useEcoversesContext } from '../hooks/useEcoversesContext';
-
-interface UserSegmentProps {
-  orientation: 'vertical' | 'horizontal';
-  userMetadata: UserMetadata;
-}
-
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
-  const { user, roles } = userMetadata;
-  const role = roles[0]?.name || 'Registered';
-  return user && <User name={user.displayName} title={role} orientation={orientation} src={user.profile?.avatar} />;
-};
+import UserSegment from './User/UserSegment';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
@@ -57,7 +45,6 @@ const App = ({ children }): React.ReactElement => {
         clientVersion: process.env.REACT_APP_VERSION,
         serverName: data?.metadata.services[0].name,
         serverVersion: data?.metadata.services[0].version,
-        feedback: process.env.REACT_APP_FEEDBACK_URL,
         buildVersion: process.env.REACT_APP_BUILD_VERSION,
         buildDate: process.env.REACT_APP_BUILD_DATE,
         buildRevision: process.env.REACT_APP_BUILD_REVISION,
