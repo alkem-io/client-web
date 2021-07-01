@@ -9,7 +9,7 @@ import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
 
 interface HeaderProps {
-  text: string;
+  text: string | React.ReactNode;
   className?: string;
   children?: React.ReactNode;
   classes?: unknown;
@@ -246,12 +246,35 @@ export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   return <div className={clsx(styles.content, 'ct-card-body', className)}>{children}</div>;
 };
 
+interface SectionProps {
+  className?: string;
+  classes?: ClassProps;
+  children?: React.ReactNode;
+}
+
+export const Section: FC<SectionProps> = ({ children, className }) => {
+  return <div className={clsx('ct-card-section', className)}>{children}</div>;
+};
+
+interface FooterProps {
+  className?: string;
+  classes?: ClassProps;
+  children?: React.ReactNode;
+}
+
+export const Footer: FC<FooterProps> = ({ children, className }) => {
+  return <div className={clsx('ct-card-footer', className)}>{children}</div>;
+};
+
 export interface CardProps extends Record<string, unknown> {
   className?: string;
+  cardClassName?: string;
   headerProps?: HeaderProps;
   tagProps?: CardTagProps;
   matchedTerms?: MatchedTermsProps;
   bodyProps?: BodyProps;
+  sectionProps?: SectionProps;
+  footerProps?: FooterProps;
   primaryTextProps?: HeaderProps;
   classes?: ClassProps;
   bgText?: {
@@ -272,7 +295,6 @@ const useCardStyles = createStyles(theme => ({
     width: '100%',
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
-    position: 'relative',
   },
   clickable: {
     cursor: 'pointer',
@@ -296,6 +318,8 @@ const Card: FC<CardProps> = ({
   tagProps,
   matchedTerms,
   bodyProps,
+  sectionProps,
+  footerProps,
   primaryTextProps,
   classes = {},
   children,
@@ -307,6 +331,7 @@ const Card: FC<CardProps> = ({
 }) => {
   const styles = useCardStyles(classes);
 
+  //TODO this should not be here...
   const isEcoverseLevel = level?.level === 'Ecoverse';
 
   return (
@@ -334,6 +359,8 @@ const Card: FC<CardProps> = ({
         {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}
         {children}
       </Body>
+      {sectionProps && <Section {...sectionProps}></Section>}
+      {footerProps && <Footer {...footerProps}></Footer>}
     </div>
   );
 };

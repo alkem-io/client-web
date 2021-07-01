@@ -68,4 +68,20 @@ const ActivityCard: FC<ActivityCardProps> = ({
     </Card>
   );
 };
+
+export const Activities: FC<{ items: ActivityCardItem[] }> = ({ items }) => {
+  const styles = useCardStyles();
+
+  return (
+    <>
+      {items.map(({ name, digit, color }, i) => (
+        <div className={styles.item} key={i}>
+          <Typography as={'p'}>{name}:</Typography>
+          <CircleTag text={`${digit}`} color={color || 'neutral'} />
+        </div>
+      ))}
+    </>
+  );
+};
+
 export default ActivityCard;
