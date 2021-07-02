@@ -40,14 +40,7 @@ const useCardStyles = createStyles(theme => ({
     display: 'flex',
   },
   card: {
-    filter: 'drop-shadow(0px 0px 5px #3c3c3c)',
-    // transition: 'all 3s ease-in',
     marginTop: 0,
-    transition: 'margin 0.5s',
-    '&:hover': {
-      // backgroundSize: '150% 150%',
-      marginTop: -theme.shape.spacing(0.5),
-    },
     border: `1px solid ${theme.palette.neutralMedium}`,
     height: 400,
   },
