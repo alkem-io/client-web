@@ -11,9 +11,9 @@ import { Link } from 'react-router-dom';
 import { Activities } from '../ActivityPanel';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import ReactTooltip from 'react-tooltip';
 import getActivityCount from '../../utils/get-activity-count';
 import { Nvp } from '../../types/graphql-schema';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface EcoverseCardProps {
   id: string | number;
@@ -140,9 +140,14 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <span data-tip data-for="tagInfo">
-                    <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
-                  </span>
+                  <OverlayTrigger
+                    placement={'right'}
+                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
+                  >
+                    <span>
+                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
+                    </span>
+                  </OverlayTrigger>
                 )}
               </TagContainer>
             </div>
@@ -165,11 +170,6 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
           </Typography>
         )}
       </Card>
-      {tags.length > 0 && (
-        <ReactTooltip id="tagInfo" effect="solid" place="right" type="info">
-          <span>{tags.slice(3).join(', ')}</span>
-        </ReactTooltip>
-      )}
     </div>
   );
 };
