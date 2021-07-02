@@ -1,36 +1,28 @@
+import { Session } from '@ory/kratos-client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-interface Result {
-  identity?: {
-    traits?: {
-      name?: {
-        last?: string;
-        first?: string;
-      };
-      email?: string;
-    };
-  };
-}
 export const useWhoami = () => {
-  const [data, setData] = useState<Result>();
+  const [session, setSession] = useState<Session>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [isAuthenticated, setIsAuthenitcated] = useState<boolean>(false);
   const headers = {
     Accept: 'application/json',
-    // 'X-Session-Token': 'string',
   };
 
   useEffect(() => {
     axios
-      .get<Result>('/sessions/whoami', {
+      .get<Session>('/sessions/whoami', {
         headers,
         withCredentials: true,
       })
       .then(result => {
         if (result.status === 200) {
-          setData(result.data);
+          setSession(result.data);
+          setIsAuthenitcated(true);
+        } else if (result.status === 401) {
+          setIsAuthenitcated(false);
         }
       })
       .catch(err => {
@@ -39,5 +31,5 @@ export const useWhoami = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  return { data, loading, error };
+  return { session, loading, error, isAuthenticated };
 };

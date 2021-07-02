@@ -375,7 +375,7 @@
     },
     "registration-success": {
       "header": "You have been registered successfully!",
-      "subheader": "We've send a confirmation e-mail! Please confirm your e-mail and log in!"
+      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it."
     },
     "recovery": {
       "form": {
