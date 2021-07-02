@@ -40,7 +40,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     if (networkError) {
       // TODO [ATS] handle network errors better;
       const newMessage = `[Network error]: ${networkError}`;
-      console.error(newMessage);
       errors.push(new Error(newMessage));
     }
 
