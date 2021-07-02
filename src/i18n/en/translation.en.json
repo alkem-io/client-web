@@ -11,7 +11,8 @@
     "create": "Create",
     "save": "Save",
     "back": "Back",
-    "see-more": "See more"
+    "see-more": "See more",
+    "home": "Home"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -371,6 +372,10 @@
       "buttons": {
         "register": "Register"
       }
+    },
+    "registration-success": {
+      "header": "You have been registered successfully!",
+      "subheader": "We've send a confirmation e-mail! Please confirm your e-mail and log in!"
     },
     "recovery": {
       "form": {

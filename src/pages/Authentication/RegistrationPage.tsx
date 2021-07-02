@@ -7,7 +7,7 @@ import KratosUI from '../../components/Authentication/KratosUI';
 import Typography from '../../components/core/Typography';
 
 interface RegisterPageProps {
-  flow: string;
+  flow?: string;
 }
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
@@ -17,6 +17,9 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (!flow) {
+      window.location.replace('/self-service/registration/browser');
+    }
     if (flow && kratos) {
       kratos.getSelfServiceRegistrationFlow(flow).then(({ status, data: flow, ..._response }) => {
         if (status !== 200) {
