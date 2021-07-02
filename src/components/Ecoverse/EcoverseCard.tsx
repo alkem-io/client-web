@@ -55,8 +55,8 @@ const useCardStyles = createStyles(theme => ({
     height: 150,
   },
   content: {
+    height: '225px',
     background: theme.palette.background,
-    flexGrow: 6,
     padding: theme.shape.spacing(2),
   },
   footer: {
@@ -64,17 +64,19 @@ const useCardStyles = createStyles(theme => ({
     padding: theme.shape.spacing(2),
   },
   item: {
+    height: '95px',
     display: 'flex',
     flexGrow: 1,
     alignItems: 'center',
     paddingTop: theme.shape.spacing(2),
   },
-  description: {
+  tagline: {
     flexGrow: 1,
     display: 'flex',
     minWidth: 0,
 
     '& > span': {
+      whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       overflow: 'hidden',
       maxHeight: '6em',
@@ -115,9 +117,6 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, author
         sectionProps={{
           children: (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography variant="h5" color="neutral">
-                {'Description about the ecoverse truncated of course if its is too long...'}
-              </Typography>
               <Activities
                 items={[
                   { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
@@ -148,9 +147,11 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, author
         }}
         tagProps={tagProps}
       >
-        <Typography color="neutralLight" className={styles.description}>
-          <span>{tagline}</span>
-        </Typography>
+        {tagline && (
+          <Typography color="neutralLight" className={styles.tagline}>
+            <span>{tagline}</span>
+          </Typography>
+        )}
       </Card>
       {tags.length > 0 && (
         <ReactTooltip id="tagInfo" effect="solid" place="right" type="info">

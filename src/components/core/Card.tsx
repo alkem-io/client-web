@@ -203,11 +203,10 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
 };
 
 const useBodyStyles = createStyles(theme => ({
-  content: {
+  top: {
     display: 'flex',
     position: 'relative',
     width: '100%',
-    flexGrow: 1,
     flexDirection: 'column',
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
     padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, {}) || theme.shape.spacing(4),
@@ -243,7 +242,7 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.content, 'ct-card-body', className)}>{children}</div>;
+  return <div className={clsx(styles.top, 'ct-card-body', className)}>{children}</div>;
 };
 
 interface SectionProps {

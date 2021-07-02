@@ -27,7 +27,7 @@ const EcoversesSection = () => {
           <ErrorBlock blockName="Ecoverses" />
         </Col>
       ) : (
-        <CardContainer cardHeight={540} xs={12} md={6} lg={4} xl={3}>
+        <CardContainer cardHeight={470} xs={12} md={6} lg={4} xl={3}>
           {ecoverses.map((ecoverse, i) => {
             const anonymousReadAccess = ecoverse?.authorization?.anonymousReadAccess;
             return (

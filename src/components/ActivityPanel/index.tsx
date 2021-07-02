@@ -23,12 +23,16 @@ interface ActivityCardProps extends CardProps {
 }
 
 const useCardStyles = createStyles(theme => ({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.shape.spacing(2),
+  },
   item: {
     display: 'flex',
     justifyContent: 'space-between',
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
 
     '& > p': {
       marginBottom: 0,
@@ -73,14 +77,14 @@ export const Activities: FC<{ items: ActivityCardItem[] }> = ({ items }) => {
   const styles = useCardStyles();
 
   return (
-    <>
+    <div className={styles.wrapper}>
       {items.map(({ name, digit, color }, i) => (
         <div className={styles.item} key={i}>
           <Typography as={'p'}>{name}:</Typography>
           <CircleTag text={`${digit}`} color={color || 'neutral'} />
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
