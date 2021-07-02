@@ -3451,6 +3451,79 @@ export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery
 export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
   return { query: EcoversesDocument, variables: variables };
 }
+export const EcoversesWithActivityDocument = gql`
+  query ecoversesWithActivity {
+    ecoverses {
+      id
+      displayName
+      nameID
+      authorization {
+        anonymousReadAccess
+      }
+      activity {
+        name
+        value
+      }
+      context {
+        visual {
+          background
+        }
+        tagline
+      }
+      tagset {
+        name
+        tags
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoversesWithActivityQuery__
+ *
+ * To run a query within a React component, call `useEcoversesWithActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversesWithActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversesWithActivityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoversesWithActivityQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.EcoversesWithActivityQuery,
+    SchemaTypes.EcoversesWithActivityQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.EcoversesWithActivityQuery, SchemaTypes.EcoversesWithActivityQueryVariables>(
+    EcoversesWithActivityDocument,
+    baseOptions
+  );
+}
+export function useEcoversesWithActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.EcoversesWithActivityQuery,
+    SchemaTypes.EcoversesWithActivityQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoversesWithActivityQuery, SchemaTypes.EcoversesWithActivityQueryVariables>(
+    EcoversesWithActivityDocument,
+    baseOptions
+  );
+}
+export type EcoversesWithActivityQueryHookResult = ReturnType<typeof useEcoversesWithActivityQuery>;
+export type EcoversesWithActivityLazyQueryHookResult = ReturnType<typeof useEcoversesWithActivityLazyQuery>;
+export type EcoversesWithActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoversesWithActivityQuery,
+  SchemaTypes.EcoversesWithActivityQueryVariables
+>;
+export function refetchEcoversesWithActivityQuery(variables?: SchemaTypes.EcoversesWithActivityQueryVariables) {
+  return { query: EcoversesWithActivityDocument, variables: variables };
+}
 export const GlobalActivityDocument = gql`
   query globalActivity {
     metadata {

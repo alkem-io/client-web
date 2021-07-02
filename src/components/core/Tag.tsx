@@ -37,7 +37,7 @@ const useIconStyles = createStyles(theme => ({
 
 export interface TagProps extends React.SVGProps<SVGSVGElement> {
   color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative' | 'background'; //keyof Palette
-  text: string;
+  text: string | React.ReactNode;
   className?: string;
   actions?: number | undefined;
 }

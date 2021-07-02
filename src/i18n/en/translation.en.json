@@ -167,7 +167,8 @@
       "title": "Tags"
     },
     "card": {
-      "you-are-in": "You are in"
+      "member": "Member",
+      "private": "Private"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
