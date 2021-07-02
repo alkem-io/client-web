@@ -35,12 +35,18 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
     },
   });
 
+  const createNameID = (firstName: string, lastName: string) => {
+    const nameID = `${firstName}-${lastName}-${v4()}`.replaceAll(/\s/g, '').slice(0, 25);
+    const replaceSpecialCharacters = require('replace-special-characters');
+    return replaceSpecialCharacters(nameID);
+  };
+
   const handleSave = async (user: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = user;
 
     const userInput: CreateUserInput = {
       ...rest,
-      nameID: `${rest.firstName}-${rest.lastName}-${v4()} `.slice(0, 25),
+      nameID: createNameID(rest.firstName, rest.lastName),
       profileData: {
         avatar: profile.avatar,
         description: profile.description,

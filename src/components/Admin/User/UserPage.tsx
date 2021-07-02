@@ -96,13 +96,19 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const handleCancel = () => history.goBack();
 
+  const createNameID = (firstName: string, lastName: string) => {
+    const nameID = `${firstName}-${lastName}}`.replaceAll(/\s/g, '').slice(0, 25);
+    const replaceSpecialCharacters = require('replace-special-characters');
+    return replaceSpecialCharacters(nameID);
+  };
+
   const handleSave = async (editedUser: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = editedUser;
 
     if (mode === EditMode.new) {
       const userInput: CreateUserInput = {
         ...rest,
-        nameID: `${rest.firstName}-${rest.lastName}`,
+        nameID: createNameID(rest.firstName, rest.lastName),
         profileData: {
           avatar: profile.avatar,
           description: profile.description,
