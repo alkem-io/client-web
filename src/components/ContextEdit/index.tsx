@@ -87,6 +87,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
         },
       });
     } else {
+      // This should not happen. It is for development purposes
       console.error('no handler found');
     }
   };

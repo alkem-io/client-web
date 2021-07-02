@@ -204,7 +204,7 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
           case 'password':
             return { ...acc, password: [...acc.password, node] };
           default:
-            console.warn(`Unknown node group ${node.group}`);
+            console.warn(`Unknown node group ${node.group}`); // will be gone in future PR.
             return acc;
         }
       },

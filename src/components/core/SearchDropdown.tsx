@@ -81,7 +81,7 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false, di
         {value || NOT_SELECTED}
       </Dropdown.Toggle>
 
-      <Dropdown.Menu as={CustomMenu} onSelect={e => console.log(e)}>
+      <Dropdown.Menu as={CustomMenu}>
         {data.map((el, index) => (
           <Dropdown.Item key={index} eventKey={el}>
             {el}
