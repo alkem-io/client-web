@@ -196,7 +196,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
                 context={{
                   tagline: challenge?.context?.tagline,
                   references: challenge?.context?.references,
-                  tag: user?.ofChallenge(challenge.id) ? t('components.card.you-are-in') : '',
+                  tag: user?.ofChallenge(challenge.id) ? t('components.card.member') : '',
                   visual: { background: challenge?.context?.visual?.background },
                 }}
                 url={`${url}/challenges/${challenge.nameID}`}

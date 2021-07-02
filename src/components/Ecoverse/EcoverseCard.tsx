@@ -20,8 +20,8 @@ interface EcoverseCardProps {
   name?: string;
   url: string;
   activity: Pick<Nvp, 'name' | 'value'>[];
+  isMember: boolean;
   context: {
-    tag: string;
     tagline: string;
     visual: {
       background: string;
@@ -78,13 +78,32 @@ const useCardStyles = createStyles(theme => ({
 }));
 
 // todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, authorization, activity, tags }) => {
+export const EcoverseCard: FC<EcoverseCardProps> = ({
+  name,
+  context,
+  url,
+  authorization,
+  activity,
+  tags,
+  isMember,
+}) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
   const { tagline, visual } = context;
   const { anonymousReadAccess } = authorization;
-  const tagProps = !anonymousReadAccess ? { text: 'Private' } : undefined;
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
+
+  const getCardTags = (isMember: boolean, readAccess: boolean) => {
+    if (isMember) {
+      return { text: t('components.card.member') };
+    } else if (!readAccess) {
+      return { text: t('components.card.private') };
+    } else {
+      return undefined;
+    }
+  };
+
+  const cardTags = getCardTags(isMember, anonymousReadAccess);
 
   return (
     <div className={styles.relative}>
@@ -138,7 +157,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({ name, context, url, author
             </div>
           ),
         }}
-        tagProps={tagProps}
+        tagProps={cardTags}
       >
         {tagline && (
           <Typography color="neutralLight" className={styles.tagline}>

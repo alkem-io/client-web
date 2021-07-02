@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Col } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
 import { CardContainer } from '../../components/core/Container';
 import Loading from '../../components/core/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
@@ -10,7 +9,6 @@ import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { useEcoversesWithActivityQuery } from '../../generated/graphql';
 
 const EcoversesSection = () => {
-  const { t } = useTranslation();
   const { user } = useUserContext();
   const { data, loading, error } = useEcoversesWithActivityQuery();
   const ecoverses = data?.ecoverses || [];
@@ -37,7 +35,6 @@ const EcoversesSection = () => {
                 name={ecoverse.displayName}
                 activity={ecoverse?.activity || []}
                 context={{
-                  tag: user?.ofEcoverse(ecoverse.id) ? t('components.card.you-are-in') : '',
                   tagline: ecoverse?.context?.tagline || '',
                   visual: {
                     background: ecoverse?.context?.visual?.background || '',
@@ -46,6 +43,7 @@ const EcoversesSection = () => {
                 authorization={{
                   anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
                 }}
+                isMember={user?.ofEcoverse(ecoverse.id) || false}
                 tags={ecoverse?.tagset?.tags || []}
                 url={`/${ecoverse.nameID}`}
               />
