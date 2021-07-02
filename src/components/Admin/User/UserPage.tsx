@@ -14,6 +14,7 @@ import { useNotification } from '../../../hooks/useNotification';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import { CreateUserInput } from '../../../types/graphql-schema';
+import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
 import { Loading } from '../../core/Loading';
 import { getUpdateUserInput } from '../../UserProfile';
@@ -102,7 +103,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     if (mode === EditMode.new) {
       const userInput: CreateUserInput = {
         ...rest,
-        nameID: `${rest.firstName}-${rest.lastName}`,
+        nameID: createUserNameID(rest.firstName, rest.lastName),
         profileData: {
           avatar: profile.avatar,
           description: profile.description,
