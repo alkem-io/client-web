@@ -208,6 +208,7 @@ const useBodyStyles = createStyles(theme => ({
     position: 'relative',
     width: '100%',
     flexDirection: 'column',
+    flexGrow: 1,
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
     padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, {}) || theme.shape.spacing(4),
 
