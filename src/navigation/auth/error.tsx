@@ -18,7 +18,6 @@ export const ErrorRoute: FC = () => {
           console.error(errorContainer);
         }
         setErrorContainer(errorContainer);
-        console.log(errorContainer);
       });
     }
   }, [errorCode, kratos]);

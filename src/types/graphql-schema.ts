@@ -2410,6 +2410,23 @@ export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
 
+export type EcoversesWithActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoversesWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverses: Array<
+    { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName' | 'nameID'> & {
+        authorization?: Maybe<{ __typename?: 'Authorization' } & Pick<Authorization, 'anonymousReadAccess'>>;
+        activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+              visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+            }
+        >;
+        tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+      }
+  >;
+};
+
 export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GlobalActivityQuery = { __typename?: 'Query' } & {
@@ -2796,7 +2813,7 @@ export type OrganizationNameQueryVariables = Exact<{
 }>;
 
 export type OrganizationNameQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'displayName'>;
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
 };
 
 export type OrganizationProfileInfoQueryVariables = Exact<{

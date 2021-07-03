@@ -23,12 +23,16 @@ interface ActivityCardProps extends CardProps {
 }
 
 const useCardStyles = createStyles(theme => ({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.shape.spacing(2),
+  },
   item: {
     display: 'flex',
     justifyContent: 'space-between',
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
 
     '& > p': {
       marginBottom: 0,
@@ -58,14 +62,32 @@ const ActivityCard: FC<ActivityCardProps> = ({
       }}
       primaryTextProps={{ text: title }}
     >
+      <div className={styles.wrapper}>
+        {items.map(({ name, digit, color }, i) => (
+          <div className={styles.item} key={i}>
+            <Typography as={'p'}>{name}:</Typography>
+            <CircleTag text={`${digit}`} color={color || 'neutral'} />
+          </div>
+        ))}
+        <StateActivityCardItem lifecycle={lifecycle || undefined}></StateActivityCardItem>
+      </div>
+    </Card>
+  );
+};
+
+export const Activities: FC<{ items: ActivityCardItem[] }> = ({ items }) => {
+  const styles = useCardStyles();
+
+  return (
+    <div className={styles.wrapper}>
       {items.map(({ name, digit, color }, i) => (
         <div className={styles.item} key={i}>
           <Typography as={'p'}>{name}:</Typography>
           <CircleTag text={`${digit}`} color={color || 'neutral'} />
         </div>
       ))}
-      <StateActivityCardItem lifecycle={lifecycle || undefined}></StateActivityCardItem>
-    </Card>
+    </div>
   );
 };
+
 export default ActivityCard;

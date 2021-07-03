@@ -3,9 +3,9 @@
 </p>
 <p align="center"><i>Enabling society to collaborate. Building a better future, together.</i></p>
 
-![AKS dev CI/CD pipeline](https://github.com/alkem-io/Client.Web/workflows/AKS%20dev%20CI/CD%20pipeline/badge.svg?branch=develop)
-[![Coverage Status](https://coveralls.io/repos/github/alkemio/Client.Web/badge.svg?branch=develop)](https://coveralls.io/github/alkemio/Client.Web?branch=develop)
-[![BCH compliance](https://bettercodehub.com/edge/badge/alkemio/Client.Web?branch=develop)](https://bettercodehub.com/)
+[![Build & Deploy to Dev](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml/badge.svg)](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml)
+[![Coverage Status](https://coveralls.io/repos/github/alkem-io/client-web/badge.svg?branch=develop)](https://coveralls.io/github/alkem-io/client-web?branch=develop)
+[![BCH compliance](https://bettercodehub.com/edge/badge/alkem-io/client-web?branch=develop)](https://bettercodehub.com/)
 
 # Alkemio Web Client
 

@@ -37,7 +37,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           setLoginFlow(flow);
         })
         .catch(e => {
-          console.log(e);
+          console.error(e);
         });
     }
   }, [flow, kratos]);
