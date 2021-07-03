@@ -1,5 +1,6 @@
 mutation deleteOpportunity($input: DeleteOpportunityInput!) {
   deleteOpportunity(deleteData: $input) {
     id
+    nameID
   }
 }

@@ -250,15 +250,6 @@ export type CommunicationRoomResult = {
   receiverID?: Maybe<Scalars['String']>;
 };
 
-export type CommunicationSendMessageInput = {
-  /** The content of the message */
-  message: Scalars['String'];
-  /** The user ID of the receiver if attempting to direct message someone */
-  receiverID: Scalars['ID'];
-  /** The identifier of the room */
-  roomID?: Maybe<Scalars['String']>;
-};
-
 export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
@@ -273,6 +264,15 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
+  /** Room with messages for this community. */
+  room: CommunicationRoomDetailsResult;
+};
+
+export type CommunitySendMessageInput = {
+  /** The community the message is being sent to */
+  communityID: Scalars['String'];
+  /** The message being sent */
+  message: Scalars['String'];
 };
 
 export type Config = {
@@ -820,8 +820,10 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Assigns the StateModification credential to a particular user for a particular challenge */
   grantStateModificationVC: User;
+  /** Sends a message on the specified community */
+  messageCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
-  message: Scalars['String'];
+  messageUser: Scalars['String'];
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
@@ -1004,8 +1006,12 @@ export type MutationGrantStateModificationVcArgs = {
   grantStateModificationVC: GrantStateModificationVcInput;
 };
 
-export type MutationMessageArgs = {
-  msgData: CommunicationSendMessageInput;
+export type MutationMessageCommunityArgs = {
+  msgData: CommunitySendMessageInput;
+};
+
+export type MutationMessageUserArgs = {
+  msgData: UserSendMessageInput;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
@@ -1127,6 +1133,8 @@ export type Organisation = Groupable &
     authorization?: Maybe<Authorization>;
     /** The display name. */
     displayName: Scalars['String'];
+    /** Group defined on this organisation. */
+    group?: Maybe<UserGroup>;
     /** Groups defined on this organisation. */
     groups?: Maybe<Array<UserGroup>>;
     id: Scalars['UUID'];
@@ -1137,6 +1145,10 @@ export type Organisation = Groupable &
     /** The profile for this organisation. */
     profile: Profile;
   };
+
+export type OrganisationGroupArgs = {
+  ID: Scalars['UUID'];
+};
 
 export type OryConfig = {
   __typename?: 'OryConfig';
@@ -1600,6 +1612,13 @@ export type UserGroup = Searchable & {
   profile?: Maybe<Profile>;
 };
 
+export type UserSendMessageInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The user a message is being sent to */
+  receivingUserID: Scalars['String'];
+};
+
 export type UserTemplate = {
   __typename?: 'UserTemplate';
   /** User template name. */
@@ -1669,6 +1688,17 @@ export type EcoverseDetailsFragment = { __typename?: 'Ecoverse' } & Pick<Ecovers
   };
 
 export type GroupDetailsFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>;
+
+export type GroupInfoFragment = { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
+    profile?: Maybe<
+      { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+          references?: Maybe<
+            Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
+          >;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
+        }
+    >;
+  };
 
 export type GroupMembersFragment = { __typename?: 'User' } & Pick<
   User,
@@ -1879,6 +1909,14 @@ export type DeleteAspectMutation = { __typename?: 'Mutation' } & {
   deleteAspect: { __typename?: 'Aspect' } & Pick<Aspect, 'id'>;
 };
 
+export type DeleteChallengeMutationVariables = Exact<{
+  input: DeleteChallengeInput;
+}>;
+
+export type DeleteChallengeMutation = { __typename?: 'Mutation' } & {
+  deleteChallenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID'>;
+};
+
 export type DeleteEcoverseMutationVariables = Exact<{
   input: DeleteEcoverseInput;
 }>;
@@ -1900,7 +1938,7 @@ export type DeleteOpportunityMutationVariables = Exact<{
 }>;
 
 export type DeleteOpportunityMutation = { __typename?: 'Mutation' } & {
-  deleteOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id'>;
+  deleteOpportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID'>;
 };
 
 export type DeleteOrganizationMutationVariables = Exact<{
@@ -2273,7 +2311,7 @@ export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenges?: Maybe<
         Array<
-          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'nameID' | 'displayName'> & {
               community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
             }
         >
@@ -2298,6 +2336,17 @@ export type EcoverseCommunityQueryVariables = Exact<{
 export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+    };
+};
+
+export type EcoverseGroupQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type EcoverseGroupQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      group: { __typename?: 'UserGroup' } & GroupInfoFragment;
     };
 };
 
@@ -2361,30 +2410,27 @@ export type EcoversesQuery = { __typename?: 'Query' } & {
   ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
 };
 
+export type EcoversesWithActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoversesWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverses: Array<
+    { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName' | 'nameID'> & {
+        authorization?: Maybe<{ __typename?: 'Authorization' } & Pick<Authorization, 'anonymousReadAccess'>>;
+        activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        context?: Maybe<
+          { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+              visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+            }
+        >;
+        tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+      }
+  >;
+};
+
 export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GlobalActivityQuery = { __typename?: 'Query' } & {
   metadata: { __typename?: 'Metadata' } & { activity: Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>> };
-};
-
-export type GroupQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      group: { __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'> & {
-          profile?: Maybe<
-            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-                references?: Maybe<
-                  Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'uri' | 'name' | 'description'>>
-                >;
-                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'id' | 'name' | 'tags'>>>;
-              }
-          >;
-        };
-    };
 };
 
 export type GroupCardQueryVariables = Exact<{
@@ -2471,9 +2517,11 @@ export type OpportunitiesQueryVariables = Exact<{
 
 export type OpportunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & {
-        opportunities?: Maybe<Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName'>>>;
-      };
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
+          opportunities?: Maybe<
+            Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID' | 'displayName'>>
+          >;
+        };
     };
 };
 
@@ -2707,6 +2755,17 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type OrganisationGroupQueryVariables = Exact<{
+  organisationId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type OrganisationGroupQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'> & {
+      group?: Maybe<{ __typename?: 'UserGroup' } & GroupInfoFragment>;
+    };
+};
+
 export type OrganizationCardQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID'];
 }>;
@@ -2744,9 +2803,9 @@ export type OrganizationGroupsQueryVariables = Exact<{
 }>;
 
 export type OrganizationGroupsQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & {
-    groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
-  };
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'> & {
+      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'id' | 'name'>>>;
+    };
 };
 
 export type OrganizationNameQueryVariables = Exact<{
@@ -2754,7 +2813,7 @@ export type OrganizationNameQueryVariables = Exact<{
 }>;
 
 export type OrganizationNameQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'displayName'>;
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>;
 };
 
 export type OrganizationProfileInfoQueryVariables = Exact<{
@@ -2769,6 +2828,17 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = { __typename?: 'Query' } & {
   organisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'>>;
+};
+
+export type PlatformConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformConfigurationQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    platform: { __typename?: 'Platform' } & Pick<
+      Platform,
+      'about' | 'feedback' | 'privacy' | 'security' | 'support' | 'terms'
+    >;
+  };
 };
 
 export type ProjectProfileQueryVariables = Exact<{

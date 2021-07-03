@@ -7,8 +7,8 @@ import Loading from '../../components/core/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { FourOuFour, PageProps } from '../../pages';
+import OpportunityList from '../../pages/Admin/Opportunity/OpportunityList';
 import { AdminParameters } from './admin';
-import { ChallengeOpportunities } from './challenge';
 import { CommunityRoute } from './community';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
@@ -19,7 +19,7 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ChallengeOpportunities paths={currentPaths} />
+        <OpportunityList paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
         <OppChallPage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />

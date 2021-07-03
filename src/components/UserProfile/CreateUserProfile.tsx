@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { v4 } from 'uuid';
 import { useCreateUserMutation } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
@@ -11,6 +10,7 @@ import { WELCOME_PAGE } from '../../models/Constants';
 import { defaultUser, UserModel } from '../../models/User';
 import { updateStatus } from '../../reducers/auth/actions';
 import { CreateUserInput } from '../../types/graphql-schema';
+import { createUserNameID } from '../../utils/createUserNameId';
 import { EditMode } from '../../utils/editMode';
 import { Loading } from '../core/Loading';
 import { UserForm } from './UserForm';
@@ -40,7 +40,7 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
 
     const userInput: CreateUserInput = {
       ...rest,
-      nameID: `${rest.firstName}-${rest.lastName}-${v4()} `.slice(0, 25),
+      nameID: createUserNameID(rest.firstName, rest.lastName),
       profileData: {
         avatar: profile.avatar,
         description: profile.description,

@@ -3,6 +3,7 @@ query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
     id
     challenges {
       id
+      nameID
       displayName
       community {
         id

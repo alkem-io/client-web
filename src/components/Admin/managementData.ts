@@ -97,7 +97,7 @@ export const managementData = {
   ],
   organizationLvl: [
     {
-      name: 'OrganizationContext',
+      name: 'Organization Context',
       buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
