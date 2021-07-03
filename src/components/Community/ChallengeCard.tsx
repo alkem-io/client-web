@@ -6,9 +6,9 @@ import { Theme } from '../../context/ThemeProvider';
 import { Challenge } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
-import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import Loading from '../core/Loading';
 import { useChallengeCardQuery } from '../../generated/graphql';
+import ChallengePopUp from '../Challenge/ChallengePopUp';
 
 interface ChallengeCardStylesProps extends Challenge {
   terms?: Array<string>;
@@ -35,12 +35,17 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
     variables: { ecoverseId: ecoverseID, challengeId: id },
   });
 
+  const ecoverseName = data?.ecoverse?.nameID;
   const challenge = data?.ecoverse?.challenge;
   const avatar = challenge?.context?.visual?.avatar;
+  const activity = challenge?.activity;
 
-  const tag = (): string => {
-    // todo: get this from activity
-    return '7 members';
+  const memberseTag = (): string => {
+    const membersActivity = activity?.find(nvp => nvp.name === 'members');
+    if (membersActivity) {
+      return `${membersActivity.value} members`;
+    }
+    return '';
   };
 
   if (loading) return <Loading text={''} />;
@@ -61,9 +66,9 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
       }}
       className={styles.card}
       matchedTerms={{ terms, variant: 'light' }}
-      bgText={{ text: 'Org' }}
+      bgText={{ text: 'Cha' }}
       tagProps={{
-        text: tag(),
+        text: `${ecoverseName}, ${memberseTag()}`,
         color: 'background',
         className: styles.tag,
       }}
@@ -71,7 +76,9 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
         !isModalOpened && setIsModalOpened(true);
       }}
     >
-      {isModalOpened && challenge && <OrganizationPopUp id={challenge?.id} onHide={() => setIsModalOpened(false)} />}
+      {isModalOpened && challenge && (
+        <ChallengePopUp id={challenge?.id} ecoverseId={challenge?.ecoverseID} onHide={() => setIsModalOpened(false)} />
+      )}
       {avatar && <Avatar size="lg" src={avatar} />}
     </Card>
   );

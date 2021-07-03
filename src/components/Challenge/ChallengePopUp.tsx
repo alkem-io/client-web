@@ -48,6 +48,7 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
 
   const { data, loading } = useChallengeCardQuery({ variables: { ecoverseId: ecoverseId, challengeId: id } });
   const challenge = data?.ecoverse?.challenge;
+  const ecoverseName = data?.ecoverse?.nameID;
   const name = challenge?.displayName;
   const tags: string[] = challenge?.tagset?.tags || [];
   const avatar = challenge?.context?.visual?.avatar;
@@ -57,7 +58,7 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
     <>
       <Modal show={true} onHide={onHide} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Organization Details</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">Challenge Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {loading ? (
@@ -76,6 +77,17 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
 
               <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
                 {tagline}
+              </Typography>
+              <Divider noPadding />
+
+              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
+                Ecoverse: {ecoverseName}
+              </Typography>
+              <Divider noPadding />
+
+              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
+                Todo: ue the banner, label for the ecoverse displayName, more info button for the Challenge, link to the
+                ecoverse?
               </Typography>
               <Divider noPadding />
 

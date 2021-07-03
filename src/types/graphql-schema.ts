@@ -2155,8 +2155,8 @@ export type ChallengeCardQueryVariables = Exact<{
 }>;
 
 export type ChallengeCardQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName' | 'nameID'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'ecoverseID'> & {
           activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
           tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>;
           context?: Maybe<
