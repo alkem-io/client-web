@@ -1,0 +1,22 @@
+query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      displayName
+      activity {
+        name
+        value
+      }
+      tagset {
+        tags
+      }
+      context {
+        tagline
+        visual {
+          avatar
+        }
+      }
+    }
+  }
+}

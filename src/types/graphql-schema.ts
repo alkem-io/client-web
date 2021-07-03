@@ -157,7 +157,6 @@ export enum AuthorizationCredential {
   EcoverseHost = 'EcoverseHost',
   EcoverseMember = 'EcoverseMember',
   GlobalAdmin = 'GlobalAdmin',
-  GlobalAdminChallenges = 'GlobalAdminChallenges',
   GlobalAdminCommunity = 'GlobalAdminCommunity',
   GlobalRegistered = 'GlobalRegistered',
   OpportunityMember = 'OpportunityMember',
@@ -175,7 +174,7 @@ export enum AuthorizationPrivilege {
   Update = 'UPDATE',
 }
 
-export type Challenge = {
+export type Challenge = Searchable & {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
   activity?: Maybe<Array<Nvp>>;
@@ -191,7 +190,7 @@ export type Challenge = {
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
-  /** The ID of the entity */
+  ecoverseID: Scalars['String'];
   id: Scalars['UUID'];
   /** The Organisations that are leading this Challenge. */
   leadOrganisations: Array<Organisation>;
@@ -203,6 +202,13 @@ export type Challenge = {
   opportunities?: Maybe<Array<Opportunity>>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
+};
+
+export type ChallengeAuthorizeStateModificationInput = {
+  /** The challenge whose state can be udpated. */
+  challengeID: Scalars['UUID'];
+  /** The user who is being authorized to update the Challenge state. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type ChallengeEventInput = {
@@ -624,6 +630,11 @@ export type EcoverseProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type EcoverseAuthorizationResetInput = {
+  /** The identifier of the Ecoverse whose AuthorizationDefinition should be reset. */
+  ecoverseID: Scalars['UUID_NAMEID'];
+};
+
 export type EcoverseTemplate = {
   __typename?: 'EcoverseTemplate';
   /** Application templates. */
@@ -644,13 +655,6 @@ export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
   resourceID?: Maybe<Scalars['UUID']>;
   type: AuthorizationCredential;
-  /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type GrantStateModificationVcInput = {
-  /** The challenge whose state can be udpated. */
-  challengeID: Scalars['UUID'];
   /** The user to whom the credential is being granted. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -748,6 +752,10 @@ export type Mutation = {
   assignUserToCommunity: Community;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
+  /** Reset the AuthorizationDefinition on the specified Ecoverse. */
+  authorizationDefinitionResetOnEcoverse: Ecoverse;
+  /** Authorizes a User to be able to modify the state on the specified Challenge. */
+  authorizeStateModificationOnChallenge: User;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -818,8 +826,6 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Assigns the StateModification credential to a particular user for a particular challenge */
-  grantStateModificationVC: User;
   /** Sends a message on the specified community */
   messageCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -860,6 +866,14 @@ export type MutationAssignUserToCommunityArgs = {
 
 export type MutationAssignUserToGroupArgs = {
   membershipData: AssignUserGroupMemberInput;
+};
+
+export type MutationAuthorizationDefinitionResetOnEcoverseArgs = {
+  authorizationResetData: EcoverseAuthorizationResetInput;
+};
+
+export type MutationAuthorizeStateModificationOnChallengeArgs = {
+  grantStateModificationVC: ChallengeAuthorizeStateModificationInput;
 };
 
 export type MutationCreateActorArgs = {
@@ -1000,10 +1014,6 @@ export type MutationEventOnProjectArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
-};
-
-export type MutationGrantStateModificationVcArgs = {
-  grantStateModificationVC: GrantStateModificationVcInput;
 };
 
 export type MutationMessageCommunityArgs = {
@@ -1563,7 +1573,7 @@ export type User = Searchable & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
-  /** The agent for this User */
+  /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
@@ -1571,6 +1581,7 @@ export type User = Searchable & {
   country: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
+  /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
   gender: Scalars['String'];
@@ -1578,12 +1589,13 @@ export type User = Searchable & {
   lastName: Scalars['String'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The phone number for this User. */
   phone: Scalars['String'];
   /** The profile for this User */
   profile?: Maybe<Profile>;
   /** An overview of the rooms this user is a member of */
   room?: Maybe<CommunicationRoomDetailsResult>;
-  /** An overview of the rooms this user is a member of */
+  /** The rooms this user is a member of */
   rooms?: Maybe<Array<CommunicationRoomResult>>;
 };
 
@@ -2133,6 +2145,25 @@ export type ChallengeActivityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
           activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+        };
+    };
+};
+
+export type ChallengeCardQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCardQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>;
+          context?: Maybe<
+            { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
+              }
+          >;
         };
     };
 };
@@ -2916,6 +2947,13 @@ export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
     { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score' | 'terms'> & {
         result?: Maybe<
+          | ({ __typename?: 'Challenge' } & Pick<Challenge, 'displayName' | 'id' | 'ecoverseID'> & {
+                context?: Maybe<
+                  { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                      visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
+                    }
+                >;
+              })
           | ({ __typename?: 'Organisation' } & Pick<Organisation, 'displayName' | 'id'>)
           | ({ __typename?: 'User' } & Pick<User, 'displayName' | 'id'>)
           | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name' | 'id'>)
