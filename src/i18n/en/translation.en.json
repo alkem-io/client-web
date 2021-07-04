@@ -1,4 +1,7 @@
 {
+  "cookie": {
+    "consent": "This website uses cookies to enhance the user experience. Only necessary cookies are used, as per our privacy policy."
+  },
   "community": {
     "header": "Community",
     "subheader": "Building the future together",
