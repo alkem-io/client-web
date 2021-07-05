@@ -67,13 +67,6 @@ const useCardStyles = createStyles(theme => ({
     flexGrow: 1,
     display: 'flex',
     minWidth: 0,
-
-    '& > span': {
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      maxHeight: '6em',
-    },
   },
 }));
 
@@ -123,7 +116,6 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
           text: name || '',
           classes: {
             color: (theme: Theme) => theme.palette.neutralLight,
-            lineHeight: '36px',
           },
         }}
         sectionProps={{
@@ -165,7 +157,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline}>
+          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
             <span>{tagline}</span>
           </Typography>
         )}
