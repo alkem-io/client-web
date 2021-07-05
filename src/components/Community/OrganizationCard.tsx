@@ -1,9 +1,8 @@
 import React, { FC, memo, useState } from 'react';
-
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
-import { useOrganizationCardQuery } from '../../generated/graphql';
+import { useMembershipOrganisationQuery, useOrganizationCardQuery } from '../../generated/graphql';
 import { Organisation } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -37,17 +36,27 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
 
   const org = data?.organisation;
   const avatar = org?.profile?.avatar;
-  const members = org?.members;
+  const { data: membership, loading: loading2 } = useMembershipOrganisationQuery({
+    variables: {
+      input: {
+        organisationID: id,
+      },
+    },
+  });
 
-  const tag = (): string => {
-    if (!members || members.length === 0) return 'no members';
+  if (loading || loading2) return <Loading text={''} />;
 
-    if (members.length > 0) return `$members?.length} Member${members && members.length === 1 ? '' : 's'}`;
-
-    return '';
-  };
-
-  if (loading) return <Loading text={''} />;
+  const ecoversesHosting = membership?.membershipOrganisation.ecoversesHosting;
+  let ecoversesLabel = '';
+  if (ecoversesHosting) {
+    for (const ecoverseHostRole of ecoversesHosting) {
+      if (ecoversesLabel === '') {
+        ecoversesLabel = `Host of: ${ecoverseHostRole.displayName}`;
+      } else {
+        ecoversesLabel = `${ecoversesLabel}, ${ecoverseHostRole.displayName}`;
+      }
+    }
+  }
 
   return (
     <Card
@@ -67,7 +76,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
       matchedTerms={{ terms, variant: 'light' }}
       bgText={{ text: 'Org' }}
       tagProps={{
-        text: tag(),
+        text: ecoversesLabel,
         color: 'background',
         className: styles.tag,
       }}

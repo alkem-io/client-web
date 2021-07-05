@@ -2,16 +2,19 @@ query organizationCard($id: UUID_NAMEID!) {
   organisation(ID: $id) {
     id
     displayName
-    groups {
-      name
-    }
-    members {
-      id
-    }
+    nameID
     profile {
       id
       description
       avatar
+      tagsets {
+        name
+        tags
+      }
+      references {
+        name
+        uri
+      }
     }
   }
 }

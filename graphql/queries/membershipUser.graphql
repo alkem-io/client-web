@@ -1,5 +1,5 @@
-query membership($input: MembershipInput!) {
-  membership(membershipData: $input) {
+query membershipUser($input: MembershipUserInput!) {
+  membershipUser(membershipData: $input) {
     ecoverses {
       id
       nameID
