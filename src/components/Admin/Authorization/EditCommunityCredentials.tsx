@@ -46,7 +46,6 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, crede
   });
 
   const handleAdd = (_member: Member) => {
-    debugger;
     grant({
       variables: {
         input: {
