@@ -54,7 +54,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
 
   const community = data?.ecoverse?.opportunity?.community;
   const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
-
+  const opportunityUUID = data?.ecoverse.opportunity.id || '';
   if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;
 
   return (
@@ -71,6 +71,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
           community={community}
           parentMembers={parentMembers}
           credential={AuthorizationCredential.OpportunityMember}
+          resourceId={opportunityUUID}
         />
       </Route>
       <Route path="*">

@@ -13,6 +13,7 @@ import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {
   resourceId: string;
+  communityId: string;
   parentMembers: Member[];
   credential: CommunityCredentials;
 }
@@ -23,7 +24,7 @@ export type CommunityCredentials =
   | AuthorizationCredential.OrganisationMember
   | AuthorizationCredential.ChallengeMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, credential, resourceId }) => {
+export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, credential, resourceId, communityId }) => {
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
     variables: {
       input: {
@@ -45,10 +46,11 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, crede
   });
 
   const handleAdd = (_member: Member) => {
+    debugger;
     grant({
       variables: {
         input: {
-          communityID: resourceId,
+          communityID: communityId,
           userID: _member.id,
         },
       },

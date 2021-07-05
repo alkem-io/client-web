@@ -10,9 +10,16 @@ import { WithCommunity } from './CommunityTypes';
 interface CommunityPageProps extends PageProps, WithCommunity {
   parentMembers: Member[];
   credential: CommunityCredentials;
+  resourceId: string;
 }
 
-export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [], community, credential }) => {
+export const CommunityPage: FC<CommunityPageProps> = ({
+  paths,
+  parentMembers = [],
+  credential,
+  resourceId,
+  community,
+}) => {
   const { url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
@@ -21,8 +28,9 @@ export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [
     <Container>
       <EditCommunityCredentials
         credential={credential}
-        resourceId={community?.id || ''}
+        resourceId={resourceId}
         parentMembers={parentMembers}
+        communityId={community?.id || ''}
       />
     </Container>
   );

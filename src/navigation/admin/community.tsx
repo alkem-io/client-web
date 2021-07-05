@@ -11,15 +11,28 @@ import { EcoverseGroupRoute } from './EcoverseGroupRoute';
 
 interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
   credential: CommunityCredentials;
+  resourceId: string;
 }
 
-export const CommunityRoute: FC<CommunityRouteProps> = ({ paths, community, parentMembers, credential }) => {
+export const CommunityRoute: FC<CommunityRouteProps> = ({
+  paths,
+  community,
+  parentMembers,
+  credential,
+  resourceId,
+}) => {
   const { path } = useRouteMatch();
 
   return (
     <Switch>
       <Route exact path={`${path}/members`}>
-        <CommunityPage paths={paths} parentMembers={parentMembers} community={community} credential={credential} />
+        <CommunityPage
+          paths={paths}
+          parentMembers={parentMembers}
+          credential={credential}
+          resourceId={resourceId}
+          community={community}
+        />
       </Route>
       <Route path={`${path}/groups`}>
         <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />

@@ -71,6 +71,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           community={community}
           parentMembers={parentMembers}
           credential={AuthorizationCredential.ChallengeMember}
+          resourceId={challengeUUID}
         />
       </Route>
       <Route path={`${path}/opportunities`}>
@@ -98,9 +99,5 @@ export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
     url: `${url}/${o.id}`,
   }));
 
-  return (
-    <>
-      <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />
-    </>
-  );
+  return <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />;
 };
