@@ -32,7 +32,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
 
   const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
 
-  const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+  const { data: challenges, loading: challengesLoading } = useChallengesQuery({
     variables: { ecoverseId },
     errorPolicy: 'ignore' /*todo do not ignore errors*/,
   });
@@ -59,7 +59,6 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         {!loading && (
           <EcoversePage
             ecoverse={ecoverseInfo}
-            challenges={{ data: challenges, error: challengesError }}
             users={(usersQuery?.users || undefined) as User[] | undefined}
             paths={currentPaths}
           />

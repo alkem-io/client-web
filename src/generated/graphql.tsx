@@ -2895,6 +2895,81 @@ export type ChallengesQueryResult = Apollo.QueryResult<
 export function refetchChallengesQuery(variables?: SchemaTypes.ChallengesQueryVariables) {
   return { query: ChallengesDocument, variables: variables };
 }
+export const ChallengesWithActivityDocument = gql`
+  query challengesWithActivity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenges {
+        id
+        displayName
+        nameID
+        activity {
+          name
+          value
+        }
+        context {
+          id
+          tagline
+          visual {
+            background
+          }
+        }
+        tagset {
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengesWithActivityQuery__
+ *
+ * To run a query within a React component, call `useChallengesWithActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengesWithActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengesWithActivityQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useChallengesWithActivityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengesWithActivityQuery,
+    SchemaTypes.ChallengesWithActivityQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.ChallengesWithActivityQuery, SchemaTypes.ChallengesWithActivityQueryVariables>(
+    ChallengesWithActivityDocument,
+    baseOptions
+  );
+}
+export function useChallengesWithActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengesWithActivityQuery,
+    SchemaTypes.ChallengesWithActivityQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.ChallengesWithActivityQuery, SchemaTypes.ChallengesWithActivityQueryVariables>(
+    ChallengesWithActivityDocument,
+    baseOptions
+  );
+}
+export type ChallengesWithActivityQueryHookResult = ReturnType<typeof useChallengesWithActivityQuery>;
+export type ChallengesWithActivityLazyQueryHookResult = ReturnType<typeof useChallengesWithActivityLazyQuery>;
+export type ChallengesWithActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengesWithActivityQuery,
+  SchemaTypes.ChallengesWithActivityQueryVariables
+>;
+export function refetchChallengesWithActivityQuery(variables?: SchemaTypes.ChallengesWithActivityQueryVariables) {
+  return { query: ChallengesWithActivityDocument, variables: variables };
+}
 export const ChallengesWithCommunityDocument = gql`
   query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {

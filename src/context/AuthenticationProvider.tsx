@@ -1,9 +1,11 @@
-import React, { FC, useMemo } from 'react';
+import { Session } from '@ory/kratos-client';
+import React, { FC } from 'react';
 import { useWhoami } from '../hooks/useWhoami';
 
 export interface AuthContext {
   loading: boolean;
   isAuthenticated: boolean;
+  session?: Session;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
@@ -12,14 +14,14 @@ const AuthenticationContext = React.createContext<AuthContext>({
 });
 
 const AuthenticationProvider: FC = ({ children }) => {
-  const { data, loading } = useWhoami();
-  const isAuthenticated = useMemo(() => !!data?.identity?.traits?.email, [data]);
+  const { session, isAuthenticated, loading } = useWhoami();
 
   return (
     <AuthenticationContext.Provider
       value={{
         isAuthenticated,
         loading,
+        session,
       }}
     >
       {children}
