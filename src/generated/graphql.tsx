@@ -4777,6 +4777,80 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityUserIdsQuery(variables?: SchemaTypes.OpportunityUserIdsQueryVariables) {
   return { query: OpportunityUserIdsDocument, variables: variables };
 }
+export const OpportunityWithActivityDocument = gql`
+  query opportunityWithActivity($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunities {
+        id
+        displayName
+        nameID
+        activity {
+          name
+          value
+        }
+        context {
+          tagline
+          visual {
+            background
+          }
+        }
+        tagset {
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityWithActivityQuery__
+ *
+ * To run a query within a React component, call `useOpportunityWithActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityWithActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityWithActivityQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useOpportunityWithActivityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityWithActivityQuery,
+    SchemaTypes.OpportunityWithActivityQueryVariables
+  >
+) {
+  return Apollo.useQuery<SchemaTypes.OpportunityWithActivityQuery, SchemaTypes.OpportunityWithActivityQueryVariables>(
+    OpportunityWithActivityDocument,
+    baseOptions
+  );
+}
+export function useOpportunityWithActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityWithActivityQuery,
+    SchemaTypes.OpportunityWithActivityQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityWithActivityQuery,
+    SchemaTypes.OpportunityWithActivityQueryVariables
+  >(OpportunityWithActivityDocument, baseOptions);
+}
+export type OpportunityWithActivityQueryHookResult = ReturnType<typeof useOpportunityWithActivityQuery>;
+export type OpportunityWithActivityLazyQueryHookResult = ReturnType<typeof useOpportunityWithActivityLazyQuery>;
+export type OpportunityWithActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityWithActivityQuery,
+  SchemaTypes.OpportunityWithActivityQueryVariables
+>;
+export function refetchOpportunityWithActivityQuery(variables?: SchemaTypes.OpportunityWithActivityQueryVariables) {
+  return { query: OpportunityWithActivityDocument, variables: variables };
+}
 export const OrganisationGroupDocument = gql`
   query organisationGroup($organisationId: UUID_NAMEID!, $groupId: UUID!) {
     organisation(ID: $organisationId) {
