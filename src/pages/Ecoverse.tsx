@@ -170,7 +170,10 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
         </Body>
       </Section>
       <Divider />
-      <MembershipBackdrop show={challenges.length > 0} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop
+        show={!user?.ofEcoverse(ecoverseId) || false}
+        blockName={t('pages.ecoverse.sections.challenges.header')}
+      >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader text={background} />
