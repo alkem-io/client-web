@@ -14,8 +14,9 @@ import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
+import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import {
+  useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
@@ -24,28 +25,20 @@ import {
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
-import { ChallengesQuery, Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
+import { Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
 import { PageProps } from './common';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/layout/MembershipBackdrop';
 import getActivityCount from '../utils/get-activity-count';
+import ChallengeCard from '../components/Ecoverse/ChallengeCard';
+import Loading from '../components/core/Loading';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
-  challenges: {
-    data: ChallengesQuery | undefined;
-    error: any;
-  };
-
   users: User[] | undefined;
 }
 
-const EcoversePage: FC<EcoversePageProps> = ({
-  paths,
-  ecoverse,
-  challenges: challengesQuery,
-  users = [],
-}): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -55,8 +48,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
 
-  const challenges = challengesQuery?.data?.ecoverse?.challenges || [];
-  const challengesError = challengesQuery?.error;
+  const { data: _challenges, error: challengesError, loading: isChallengeLoading } = useChallengesWithActivityQuery({
+    variables: { ecoverseId },
+  });
+  const challenges = _challenges?.ecoverse?.challenges || [];
 
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const projects = _projects?.ecoverse?.projects || [];
@@ -175,7 +170,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
         </Body>
       </Section>
       <Divider />
-      <MembershipBackdrop show={challenges.length > 0} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop
+        show={!user?.ofEcoverse(ecoverseId) || false}
+        blockName={t('pages.ecoverse.sections.challenges.header')}
+      >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader text={background} />
@@ -183,22 +181,29 @@ const EcoversePage: FC<EcoversePageProps> = ({
             <Markdown children={impact} />
           </Body>
         </Section>
+        {isChallengeLoading && (
+          <Loading
+            text={t('components.loading.message', { blockName: t('pages.ecoverse.sections.challenges.header') })}
+          />
+        )}
         {challengesError ? (
           <Col xs={12}>
             <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
           </Col>
         ) : (
-          <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
+          <CardContainer>
             {challenges.map((challenge, i) => (
               <ChallengeCard
                 key={i}
-                {...(challenge as any)}
+                id={challenge.id}
+                displayName={challenge.displayName}
+                activity={challenge?.activity || []}
                 context={{
-                  tagline: challenge?.context?.tagline,
-                  references: challenge?.context?.references,
-                  tag: user?.ofChallenge(challenge.id) ? t('components.card.member') : '',
-                  visual: { background: challenge?.context?.visual?.background },
+                  tagline: challenge?.context?.tagline || '',
+                  visual: { background: challenge?.context?.visual?.background || '' },
                 }}
+                isMember={user?.ofChallenge(challenge.id) || false}
+                tags={challenge?.tagset?.tags || []}
                 url={`${url}/challenges/${challenge.nameID}`}
               />
             ))}

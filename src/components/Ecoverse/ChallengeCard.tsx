@@ -1,38 +1,18 @@
-import { FC, useMemo } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
-import * as React from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Typography from '../core/Typography';
-import Button from '../core/Button';
-import { Link } from 'react-router-dom';
 import { Activities } from '../ActivityPanel';
+import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import getActivityCount from '../../utils/get-activity-count';
-import { Nvp } from '../../types/graphql-schema';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
-// todo: unify in one card props
-interface EcoverseCardProps {
-  id: string | number;
-  displayName?: string;
-  url: string;
-  activity: Pick<Nvp, 'name' | 'value'>[];
-  isMember: boolean;
-  context: {
-    tagline: string;
-    visual: {
-      background: string;
-    };
-  };
-  authorization: {
-    anonymousReadAccess: boolean;
-  };
-  tags: string[];
-}
+import Button from '../core/Button';
+import { Link } from 'react-router-dom';
+import Typography from '../core/Typography';
+import { Nvp } from '../../types/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
 
 const useCardStyles = createStyles(theme => ({
   relative: {
@@ -64,33 +44,31 @@ const useCardStyles = createStyles(theme => ({
   },
 }));
 
-// todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({
-  displayName,
-  context,
-  url,
-  authorization,
-  activity,
-  tags,
-  isMember,
-}) => {
+// todo: unify in one card props
+interface ChallengeCardProps {
+  id: string | number;
+  displayName?: string;
+  context?: {
+    tagline: string;
+    visual?: {
+      background: string;
+    };
+  };
+  isMember: boolean;
+  activity: Pick<Nvp, 'name' | 'value'>[];
+  tags: string[];
+  url: string;
+}
+
+const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url, activity, tags, isMember }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
   const { tagline, visual } = context;
-  const { anonymousReadAccess } = authorization;
+
+  const cardTags = isMember ? { text: t('components.card.member') } : undefined;
+
+  const backgroundImg = visual?.background;
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
-
-  const getCardTags = (isMember: boolean, readAccess: boolean) => {
-    if (isMember) {
-      return { text: t('components.card.member') };
-    } else if (!readAccess) {
-      return { text: t('components.card.private') };
-    } else {
-      return undefined;
-    }
-  };
-
-  const cardTags = getCardTags(isMember, anonymousReadAccess);
 
   return (
     <div className={styles.relative}>
@@ -98,7 +76,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         className={styles.card}
         classes={{
           background: (theme: Theme) =>
-            visual.background ? `url("${visual.background}") no-repeat center center / cover` : theme.palette.neutral,
+            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
         }}
         bodyProps={{
           classes: {
@@ -117,7 +95,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Activities
                 items={[
-                  { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
+                  { name: 'Opportunities', digit: getActivityCount(activity, 'opportunities') || 0, color: 'primary' },
                   { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
                 ]}
               />
@@ -160,4 +138,4 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
   );
 };
 
-export default EcoverseCard;
+export default ChallengeCard;

@@ -7,13 +7,12 @@ import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
-import { Community } from './community';
+import { Search } from './search';
 import { EcoverseRoute } from './ecoverse';
 import { Messages } from './messages';
 import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
-import WelcomeRoute from './welcome';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -35,11 +34,8 @@ export const Routing: FC = () => {
       <Route path="/auth">
         <AuthRoute />
       </Route>
-      <Route exact path="/welcome">
-        <WelcomeRoute />
-      </Route>
-      <RestrictedRoute path="/community">
-        <Community />
+      <RestrictedRoute path="/search">
+        <Search />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
         <div>User Page: Comming Soon!</div>

@@ -143,10 +143,12 @@ export type AuthenticationProviderConfigUnion = OryConfig;
 export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
-  credentialRules: Scalars['String'];
+  /** The set of credential rules that are contained by this AuthorizationDefinition. */
+  credentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  verifiedCredentialRules: Scalars['String'];
+  /** The set of verified credential rules that are contained by this AuthorizationDefinition. */
+  verifiedCredentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
 };
 
 export enum AuthorizationCredential {
@@ -173,6 +175,13 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   Update = 'UPDATE',
 }
+
+export type AuthorizationRuleCredential = {
+  __typename?: 'AuthorizationRuleCredential';
+  grantedPrivileges: Array<Scalars['String']>;
+  resourceID: Scalars['String'];
+  type: Scalars['String'];
+};
 
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
@@ -234,28 +243,6 @@ export type CommunicationMessageResult = {
   timestamp: Scalars['Float'];
 };
 
-export type CommunicationRoomDetailsResult = {
-  __typename?: 'CommunicationRoomDetailsResult';
-  /** The identifier of the room */
-  id: Scalars['String'];
-  /** Indicates whether this is a DM room */
-  isDirect: Scalars['Boolean'];
-  /** The message being sent */
-  messages: Array<CommunicationMessageResult>;
-  /** The recepient userID */
-  receiverID?: Maybe<Scalars['String']>;
-};
-
-export type CommunicationRoomResult = {
-  __typename?: 'CommunicationRoomResult';
-  /** The identifier of the room */
-  id: Scalars['String'];
-  /** Indicates whether this is a DM room */
-  isDirect: Scalars['Boolean'];
-  /** The recepient userID */
-  receiverID?: Maybe<Scalars['String']>;
-};
-
 export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
@@ -271,7 +258,7 @@ export type Community = Groupable & {
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
   /** Room with messages for this community. */
-  room: CommunicationRoomDetailsResult;
+  room: Room;
 };
 
 export type CommunitySendMessageInput = {
@@ -1349,6 +1336,18 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type Room = {
+  __typename?: 'Room';
+  /** The identifier of the room */
+  id: Scalars['String'];
+  /** Whether the Room is for direct messages to another user. */
+  isDirect: Scalars['Boolean'];
+  /** The messages that have been sent to the Room. */
+  messages: Array<CommunicationMessageResult>;
+  /** The recepient userID */
+  receiverID?: Maybe<Scalars['String']>;
+};
+
 export type SearchInput = {
   /** Restrict the search to only the specified challenges. Default is all Challenges. */
   challengesFilter?: Maybe<Array<Scalars['Float']>>;
@@ -1594,9 +1593,9 @@ export type User = Searchable & {
   /** The profile for this User */
   profile?: Maybe<Profile>;
   /** An overview of the rooms this user is a member of */
-  room?: Maybe<CommunicationRoomDetailsResult>;
+  room?: Maybe<Room>;
   /** The rooms this user is a member of */
-  rooms?: Maybe<Array<CommunicationRoomResult>>;
+  rooms?: Maybe<Array<Room>>;
 };
 
 export type UserRoomArgs = {
@@ -2334,6 +2333,28 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengesWithActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengesWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenges?: Maybe<
+        Array<
+          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'nameID'> & {
+              activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+              context?: Maybe<
+                { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
+                    visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+                  }
+              >;
+              tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+            }
+        >
+      >;
+    };
+};
+
 export type ChallengesWithCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2783,6 +2804,26 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
           { __typename?: 'Community' } & { members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>> }
         >;
       };
+    };
+};
+
+export type OpportunityWithActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunities: Array<
+        { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName' | 'nameID'> & {
+            activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+            context?: Maybe<
+              { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                  visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+                }
+            >;
+            tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+          }
+      >;
     };
 };
 

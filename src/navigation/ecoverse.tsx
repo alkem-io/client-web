@@ -32,7 +32,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
 
   const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
 
-  const { data: challenges, loading: challengesLoading, error: challengesError } = useChallengesQuery({
+  const { data: challenges, loading: challengesLoading } = useChallengesQuery({
     variables: { ecoverseId },
     errorPolicy: 'ignore' /*todo do not ignore errors*/,
   });
@@ -59,7 +59,6 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         {!loading && (
           <EcoversePage
             ecoverse={ecoverseInfo}
-            challenges={{ data: challenges, error: challengesError }}
             users={(usersQuery?.users || undefined) as User[] | undefined}
             paths={currentPaths}
           />
@@ -85,6 +84,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { id } = useParams<{ id: string }>();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
+  // todo: you don't need opportunities selected here
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: {
       ecoverseId,
