@@ -84,6 +84,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { id } = useParams<{ id: string }>();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
+  // todo: you don't need opportunities selected here
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
     variables: {
       ecoverseId,

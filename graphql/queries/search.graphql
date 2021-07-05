@@ -15,6 +15,18 @@ query search($searchData: SearchInput!) {
         displayName
         id
       }
+
+      ... on Challenge {
+        displayName
+        id
+        ecoverseID
+        context {
+          tagline
+          visual {
+            avatar
+          }
+        }
+      }
     }
   }
 }

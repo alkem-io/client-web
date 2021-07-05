@@ -61,7 +61,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses }) => {
         {ecoverses.map(x => (
           <SidebarItemEcoverse key={x.nameID} ecoverse={x} />
         ))}
-        <SidebarItem icon={PeopleIcon} tooltip="Community" to="/community" disabled={!isUserAuth} />
+        <SidebarItem icon={PeopleIcon} tooltip="Search" to="/search" disabled={!isUserAuth} />
         <SidebarItem icon={ChatIcon} tooltip="Messages" to="/messages" disabled={!isUserAuth} />
       </div>
     </div>

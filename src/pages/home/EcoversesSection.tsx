@@ -32,7 +32,7 @@ const EcoversesSection = () => {
               <EcoverseCard
                 key={i}
                 id={ecoverse.id}
-                name={ecoverse.displayName}
+                displayName={ecoverse.displayName}
                 activity={ecoverse?.activity || []}
                 context={{
                   tagline: ecoverse?.context?.tagline || '',
