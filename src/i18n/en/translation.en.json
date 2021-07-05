@@ -345,14 +345,13 @@
     },
     "login": {
       "title": "Sign in",
-      "demo-provider": {
-        "question": "Don't have an account?"
-      },
       "validations": {
         "email": "Please enter your email address.",
         "password": "Please enter your password."
       },
-      "logo": "{{ecoverse}} ecoverse logo"
+      "logo": "{{ecoverse}} ecoverse logo",
+      "register": "Don't have an account?",
+      "recovery": "Forgot your password?"
     },
     "about": {
       "title": "Reimagining collaboration",

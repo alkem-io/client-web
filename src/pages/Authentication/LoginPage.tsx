@@ -54,7 +54,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <KratosUI flow={loginFlow} />
           <Delimiter />
           <Typography variant={'h5'} className={'mb-2'}>
-            {t('pages.login.demo-provider.question')}
+            {t('pages.login.register')}
           </Typography>
           <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_REGISTER_PATH)}>
             {t('authentication.sign-up')}
