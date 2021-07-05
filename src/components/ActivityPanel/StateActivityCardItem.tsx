@@ -204,10 +204,11 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           node.attr('x', d => d.x - boxWidth / 2).attr('y', d => d.y - boxHeight / 2);
           text.attr('x', d => d.x - boxWidth / 2).attr('y', d => d.y - boxHeight / 2);
         });
+        simulation.tick(1000);
         //simulation.stop();
         setTimeout(() => {
           simulation.stop();
-        }, 2000);
+        }, 1);
       }
     },
     [lifecycle]
