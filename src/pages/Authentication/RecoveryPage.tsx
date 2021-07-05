@@ -1,28 +1,28 @@
-import { RegistrationFlow } from '@ory/kratos-client';
+import { RecoveryFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useKratosClient } from '../hooks/useKratosClient';
-import KratosUI from '../components/Authentication/KratosUI';
-import Typography from '../components/core/Typography';
+import KratosUI from '../../components/Authentication/KratosUI';
+import Typography from '../../components/core/Typography';
+import { useKratosClient } from '../../hooks/useKratosClient';
 
 interface RegisterPageProps {
   flow: string;
 }
 
-export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [registrationFlow, setregistrationFlow] = useState<RegistrationFlow>();
+export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
+  const [recoveryFlow, setRecoveryFlow] = useState<RecoveryFlow>();
   const kratos = useKratosClient();
 
   const { t } = useTranslation();
 
   useEffect(() => {
     if (flow && kratos) {
-      kratos.getSelfServiceRegistrationFlow(flow).then(({ status, data: flow, ..._response }) => {
+      kratos.getSelfServiceRecoveryFlow(flow).then(({ status, data: flow, ..._response }) => {
         if (status !== 200) {
           console.error(flow);
         }
-        setregistrationFlow(flow);
+        setRecoveryFlow(flow);
       });
     }
   }, [flow]);
@@ -32,12 +32,12 @@ export const RegisterPage: FC<RegisterPageProps> = ({ flow }) => {
       <Row className={'d-flex justify-content-center'}>
         <Col sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
-            {t('pages.register.header')}
+            {t('pages.recovery.header')}
           </Typography>
-          <KratosUI flow={registrationFlow} />
+          <KratosUI flow={recoveryFlow} />
         </Col>
       </Row>
     </Container>
   );
 };
-export default RegisterPage;
+export default RecoveryPage;

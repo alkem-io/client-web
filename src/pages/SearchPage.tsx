@@ -17,7 +17,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { Organisation, User, UserGroup } from '../types/graphql-schema';
 import { PageProps } from './common';
 
-const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
+const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
 
   const filtersConfig = {
@@ -55,12 +55,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
     {
       name: 'AI',
-    },
-    {
-      name: 'front-end development',
-    },
-    {
-      name: 'back-end development',
     },
     {
       name: 'good',
@@ -125,8 +119,8 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('community.header')} />
-        <SubHeader text={t('community.alternativesubheader')} className={'mb-4'} />
+        <SectionHeader text={t('search.header')} />
+        <SubHeader text={t('search.alternativesubheader')} className={'mb-4'} />
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
@@ -175,4 +169,4 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
 };
 
-export { Community };
+export { SearchPage };
