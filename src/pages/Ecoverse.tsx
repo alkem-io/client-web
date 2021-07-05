@@ -14,7 +14,7 @@ import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import { ChallengeCard, SwitchCardComponent } from '../components/Ecoverse/Cards';
+import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import {
   useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
@@ -30,6 +30,8 @@ import { PageProps } from './common';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/layout/MembershipBackdrop';
 import getActivityCount from '../utils/get-activity-count';
+import ChallengeCard from '../components/Ecoverse/ChallengeCard';
+import Loading from '../components/core/Loading';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -46,7 +48,9 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
 
-  const { data: _challenges, error: challengesError } = useChallengesWithActivityQuery({ variables: { ecoverseId } });
+  const { data: _challenges, error: challengesError, loading: isChallengeLoading } = useChallengesWithActivityQuery({
+    variables: { ecoverseId },
+  });
   const challenges = _challenges?.ecoverse?.challenges || [];
 
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
@@ -166,7 +170,10 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
         </Body>
       </Section>
       <Divider />
-      <MembershipBackdrop show={challenges.length > 0} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop
+        show={!user?.ofEcoverse(ecoverseId) || false}
+        blockName={t('pages.ecoverse.sections.challenges.header')}
+      >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader text={background} />
@@ -174,6 +181,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
             <Markdown children={impact} />
           </Body>
         </Section>
+        {isChallengeLoading && (
+          <Loading
+            text={t('components.loading.message', { blockName: t('pages.ecoverse.sections.challenges.header') })}
+          />
+        )}
         {challengesError ? (
           <Col xs={12}>
             <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
@@ -184,7 +196,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
               <ChallengeCard
                 key={i}
                 id={challenge.id}
-                name={challenge.displayName}
+                displayName={challenge.displayName}
                 activity={challenge?.activity || []}
                 context={{
                   tagline: challenge?.context?.tagline || '',
