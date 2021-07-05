@@ -5,7 +5,7 @@ import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import { AuthorizationCredential } from '../../../types/graphql-schema';
-import EditCredentials from '../Authorization/EditCredentials';
+import EditGlobalCredentials from '../Authorization/EditGlobalCredentials';
 import { WithCommunity } from './CommunityTypes';
 
 interface CommunityPageProps extends PageProps, WithCommunity {
@@ -19,7 +19,7 @@ export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [
 
   return (
     <Container>
-      <EditCredentials
+      <EditGlobalCredentials
         credential={AuthorizationCredential.UserGroupMember}
         resourceId={community?.id}
         parentMembers={parentMembers}

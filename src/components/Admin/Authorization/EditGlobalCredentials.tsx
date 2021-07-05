@@ -11,13 +11,13 @@ import { AuthorizationCredential } from '../../../types/graphql-schema';
 import Loading from '../../core/Loading';
 import { EditMembers } from '../Community/EditMembers';
 
-interface EditCredentialsProps {
+interface EditGlobalCredentialsProps {
   credential: AuthorizationCredential;
   resourceId?: string;
   parentMembers: Member[];
 }
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
+export const EditGlobalCredentials: FC<EditGlobalCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
     variables: {
       input: {
@@ -86,4 +86,5 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     <EditMembers members={members} availableMembers={availableMembers} onAdd={handleAdd} onRemove={handleRemove} />
   );
 };
-export default EditCredentials;
+
+export default EditGlobalCredentials;
