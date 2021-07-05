@@ -1992,6 +1992,16 @@ export type GrantCredentialsMutation = { __typename?: 'Mutation' } & {
   grantCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'displayName'> & UserAgentFragment;
 };
 
+export type RemoveUserFromCommunityMutationVariables = Exact<{
+  input: RemoveCommunityMemberInput;
+}>;
+
+export type RemoveUserFromCommunityMutation = { __typename?: 'Mutation' } & {
+  removeUserFromCommunity: { __typename?: 'Community' } & Pick<Community, 'id'> & {
+      members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+    };
+};
+
 export type RemoveUserFromGroupMutationVariables = Exact<{
   input: RemoveUserGroupMemberInput;
 }>;
