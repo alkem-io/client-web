@@ -7,9 +7,9 @@ import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Typography from '../../components/core/Typography';
 
-interface RegistrationSuccessProps {}
+interface RegistrationSuccessPageProps {}
 
-export const RegistrationSuccess: FC<RegistrationSuccessProps> = () => {
+export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { t } = useTranslation();
 
   return (
@@ -31,4 +31,4 @@ export const RegistrationSuccess: FC<RegistrationSuccessProps> = () => {
     </Container>
   );
 };
-export default RegistrationSuccess;
+export default RegistrationSuccessPage;
