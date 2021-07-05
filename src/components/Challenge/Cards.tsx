@@ -4,6 +4,7 @@ import { Theme } from '../../context/ThemeProvider';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
+import { useTranslation } from 'react-i18next';
 
 interface OpportunityCardProps {
   displayName?: string;
@@ -20,6 +21,8 @@ interface OpportunityCardProps {
 }
 
 export const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, url, lifecycle }) => {
+  const { t } = useTranslation();
+
   const backgroundImg = context?.visual?.background;
   const statusTxt = lifecycle?.state ? `Status: ${lifecycle?.state}` : '';
 
@@ -44,10 +47,13 @@ export const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', co
         text: statusTxt,
         color: 'background',
       }}
-    >
-      <div>
-        <Button text="Details" as={Link} to={url} />
-      </div>
-    </Card>
+      footerProps={{
+        children: (
+          <div>
+            <Button text={t('buttons.explore')} as={Link} to={url} />
+          </div>
+        ),
+      }}
+    />
   );
 };

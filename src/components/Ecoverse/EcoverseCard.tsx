@@ -15,6 +15,7 @@ import getActivityCount from '../../utils/get-activity-count';
 import { Nvp } from '../../types/graphql-schema';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+// todo: unify in one card props
 interface EcoverseCardProps {
   id: string | number;
   name?: string;
@@ -55,13 +56,6 @@ const useCardStyles = createStyles(theme => ({
   footer: {
     background: theme.palette.neutralLight,
     padding: theme.shape.spacing(2),
-  },
-  item: {
-    height: '95px',
-    display: 'flex',
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
   },
   tagline: {
     flexGrow: 1,
