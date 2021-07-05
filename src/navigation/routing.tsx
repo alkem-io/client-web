@@ -1,6 +1,4 @@
 import React, { FC } from 'react';
-import { Container } from 'react-bootstrap';
-import CookieConsent from 'react-cookie-consent';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import { FourOuFour } from '../pages';
@@ -16,78 +14,62 @@ import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
 import WelcomeRoute from './welcome';
-import { useTranslation } from 'react-i18next';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
 
-  const { t } = useTranslation();
-  const cookieConsentText = t('cookie.consent');
-
   return (
-    <Container>
-      <CookieConsent
-        location="bottom"
-        buttonText="Ok"
-        cookieName="myAwesomeCookieName2"
-        style={{ background: '#09bcd4' }}
-        buttonStyle={{ width: '150px', background: '#2d546a', color: '#FFFFFF', fontSize: '16px' }}
-        expires={150}
+    <Switch>
+      <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
+      <RestrictedRoute
+        path="/admin"
+        requiredCredentials={[
+          AuthorizationCredential.GlobalAdmin,
+          AuthorizationCredential.EcoverseAdmin,
+          AuthorizationCredential.OrganisationAdmin,
+        ]}
+        strict={false}
       >
-        {cookieConsentText}
-      </CookieConsent>
-      <Switch>
-        <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
-        <RestrictedRoute
-          path="/admin"
-          requiredCredentials={[
-            AuthorizationCredential.GlobalAdmin,
-            AuthorizationCredential.EcoverseAdmin,
-            AuthorizationCredential.OrganisationAdmin,
-          ]}
-          strict={false}
-        >
-          <Admin />
-        </RestrictedRoute>
-        <Route path="/auth">
-          <AuthRoute />
-        </Route>
-        <Route exact path="/welcome">
-          <WelcomeRoute />
-        </Route>
-        <RestrictedRoute path="/community">
-          <Community />
-        </RestrictedRoute>
-        <RestrictedRoute path="/user">
-          <div>User Page: Comming Soon!</div>
-        </RestrictedRoute>
-        <RestrictedRoute path="/organisation">
-          <div>Organisation Page: Comming Soon!</div>
-        </RestrictedRoute>
-        <RestrictedRoute exact path="/messages">
-          <Messages />
-        </RestrictedRoute>
-        <RestrictedRoute path="/profile">
-          <ProfileRoute />
-        </RestrictedRoute>
-        <Route exact path="/about">
-          <AboutPage />
-        </Route>
-        <Route exact path="/restricted">
-          <Restricted />
-        </Route>
-        <Route exact path="/">
-          <HomePage />
-        </Route>
-        <AuthenticatedRoute path="/:ecoverseId">
-          <EcoverseProvider>
-            <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
-          </EcoverseProvider>
-        </AuthenticatedRoute>
-        <Route path="*">
-          <FourOuFour />
-        </Route>
-      </Switch>
-    </Container>
+        <Admin />
+      </RestrictedRoute>
+      <Route path="/auth">
+        <AuthRoute />
+      </Route>
+      <Route exact path="/welcome">
+        <WelcomeRoute />
+      </Route>
+      <RestrictedRoute path="/community">
+        <Community />
+      </RestrictedRoute>
+      <RestrictedRoute path="/user">
+        <div>User Page: Comming Soon!</div>
+      </RestrictedRoute>
+      <RestrictedRoute path="/organisation">
+        <div>Organisation Page: Comming Soon!</div>
+      </RestrictedRoute>
+      <RestrictedRoute exact path="/messages">
+        <Messages />
+      </RestrictedRoute>
+      <RestrictedRoute path="/profile">
+        <ProfileRoute />
+      </RestrictedRoute>
+      <Route exact path="/about">
+        <AboutPage />
+      </Route>
+      <Route exact path="/restricted">
+        <Restricted />
+      </Route>
+      <Route exact path="/">
+        <HomePage />
+      </Route>
+      <AuthenticatedRoute path="/:ecoverseId">
+        <EcoverseProvider>
+          <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
+        </EcoverseProvider>
+      </AuthenticatedRoute>
+      <Route path="*">
+        <FourOuFour />
+      </Route>
+    </Switch>
   );
 };

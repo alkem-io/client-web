@@ -1,5 +1,6 @@
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import React, { useRef } from 'react';
+import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../containers/NotificationHandler';
@@ -106,6 +107,16 @@ const App = ({ children }): React.ReactElement => {
           {children}
         </Main>
       </div>
+      <CookieConsent
+        location="bottom"
+        buttonText="Ok"
+        cookieName="cookie_consent"
+        style={{ background: '#09bcd4' }}
+        buttonStyle={{ width: '150px', background: '#2d546a', color: '#FFFFFF', fontSize: '16px' }}
+        expires={150}
+      >
+        {t('cookie.consent')}
+      </CookieConsent>
       <Footer>
         <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
           <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
