@@ -2,11 +2,8 @@ import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
-import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
@@ -30,73 +27,38 @@ const useCardStyles = createStyles(theme => ({
       maxHeight: '6em',
     },
   },
+  card: {
+    marginTop: 0,
+    border: `1px solid ${theme.palette.neutralMedium}`,
+    height: 400,
+  },
+  body: {
+    height: 150,
+  },
+  content: {
+    height: '225px',
+    background: theme.palette.background,
+    padding: theme.shape.spacing(2),
+  },
+  footer: {
+    background: theme.palette.neutralLight,
+    padding: theme.shape.spacing(2),
+  },
+  tagline: {
+    flexGrow: 1,
+    display: 'flex',
+    minWidth: 0,
+  },
 }));
-
-interface ChallengeCardProps {
-  id: string | number;
-  displayName?: string;
-  context?: {
-    tag: string;
-    tagline: string;
-    references?: { name: string; uri: string }[];
-    visual?: {
-      background: string;
-    };
-  };
-  url: string;
-}
-
-export const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url }) => {
-  const { t } = useTranslation();
-  const styles = useCardStyles();
-  const { tag, tagline, visual } = context;
-  const tagProps = tag
-    ? {
-        text: tag || '',
-      }
-    : undefined;
-  const backgroundImg = visual?.background;
-
-  return (
-    <Card
-      classes={{
-        background: (theme: Theme) =>
-          backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
-      }}
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
-        },
-      }}
-      primaryTextProps={{
-        text: displayName || '',
-        classes: {
-          color: (theme: Theme) => theme.palette.neutralLight,
-          lineHeight: '36px',
-        },
-      }}
-      tagProps={tagProps}
-    >
-      <Typography color="neutralLight" className={styles.description}>
-        <span>{tagline}</span>
-      </Typography>
-      <div>
-        <Button text={t('buttons.explore')} as={Link} to={url} />
-      </div>
-    </Card>
-  );
-};
-
-interface Tag {
-  status: string;
-  text: string;
-}
 
 interface ProjectCardProps extends Record<string, unknown> {
   caption?: string;
   title: string;
   description?: string;
-  tag?: Tag;
+  tag?: {
+    status: string;
+    text: string;
+  };
   blank?: boolean;
   onSelect?: () => void;
   children?: React.ReactNode;

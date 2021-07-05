@@ -29,7 +29,7 @@ export const GroupRoute: FC<Props> = ({ paths, path, url, group, loading, parent
         <GroupPage paths={paths} group={group} />
       </Route>
       <Route exact path={`${path}/members`}>
-        <EditMembersPage paths={currentPaths} parentMembers={parentMembers} groupId={group?.id} />
+        <EditMembersPage paths={currentPaths} parentMembers={parentMembers} groupId={group?.id || ''} />
       </Route>
       <Route path="*">
         <FourOuFour />

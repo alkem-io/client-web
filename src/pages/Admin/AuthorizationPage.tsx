@@ -5,7 +5,7 @@ import { useUsersQuery } from '../../generated/graphql';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { PageProps } from '..';
 import Loading from '../../components/core/Loading';
-import EditCredentials from '../../components/Admin/Authorization/EditCredentials';
+import EditGlobalCredentials from '../../components/Admin/Authorization/EditGlobalCredentials';
 import { AuthorizationCredential } from '../../types/graphql-schema';
 
 interface AuthorizationPageProps extends PageProps {
@@ -32,7 +32,7 @@ export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceI
 
   return (
     <Container>
-      <EditCredentials credential={role} parentMembers={parentMembers} resourceId={resourceId} />;
+      <EditGlobalCredentials credential={role} parentMembers={parentMembers} resourceId={resourceId} />;
     </Container>
   );
 };

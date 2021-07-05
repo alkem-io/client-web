@@ -5,6 +5,7 @@ import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { GroupCard } from '../components/Community/GroupCard';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
+import { ChallengeCard } from '../components/Community/ChallengeCard';
 import { UserCard } from '../components/Community/UserCard';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
@@ -14,10 +15,10 @@ import Section, { Header as SectionHeader, SubHeader } from '../components/core/
 import Typography from '../components/core/Typography';
 import { SearchDocument } from '../generated/graphql';
 import { useUpdateNavigation } from '../hooks/useNavigation';
-import { Organisation, User, UserGroup } from '../types/graphql-schema';
+import { Challenge, Organisation, User, UserGroup } from '../types/graphql-schema';
 import { PageProps } from './common';
 
-const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
+const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
 
   const filtersConfig = {
@@ -41,6 +42,11 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
       value: 'organisation',
       typename: 'Organisation',
     },
+    challenge: {
+      title: 'Challenges only',
+      value: 'challenge',
+      typename: 'Challenge',
+    },
   };
   // TODO [ATS]: Read most used tags from backend
   const _tags = [
@@ -55,12 +61,6 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
     {
       name: 'AI',
-    },
-    {
-      name: 'front-end development',
-    },
-    {
-      name: 'back-end development',
     },
     {
       name: 'good',
@@ -79,7 +79,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   ];
 
-  const [community, setCommunity] = useState<Array<User | UserGroup | Organisation>>([]);
+  const [community, setCommunity] = useState<Array<User | UserGroup | Organisation | Challenge>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
 
@@ -125,8 +125,8 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('community.header')} />
-        <SubHeader text={t('community.alternativesubheader')} className={'mb-4'} />
+        <SectionHeader text={t('search.header')} />
+        <SubHeader text={t('search.alternativesubheader')} className={'mb-4'} />
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
@@ -151,6 +151,9 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
               <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.organization)}>
                 {filtersConfig.organization.title}
               </Dropdown.Item>
+              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.challenge)}>
+                {filtersConfig.challenge.title}
+              </Dropdown.Item>
             </DropdownButton>
           </Col>
           <Col lg={9}>
@@ -167,6 +170,7 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
           if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;
           if (el.__typename === 'Organisation') return <OrganizationCard key={el.id} {...el} />;
+          if (el.__typename === 'Challenge') return <ChallengeCard key={(el.id, el.ecoverseID)} {...el} />;
           return null;
         })}
       </CardContainer>
@@ -175,4 +179,4 @@ const Community: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
 };
 
-export { Community };
+export { SearchPage };

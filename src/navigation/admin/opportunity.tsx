@@ -8,6 +8,7 @@ import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { FourOuFour, PageProps } from '../../pages';
 import OpportunityList from '../../pages/Admin/Opportunity/OpportunityList';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 import { AdminParameters } from './admin';
 import { CommunityRoute } from './community';
 
@@ -53,7 +54,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
 
   const community = data?.ecoverse?.opportunity?.community;
   const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
-
+  const opportunityUUID = data?.ecoverse.opportunity.id || '';
   if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;
 
   return (
@@ -65,7 +66,13 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+        <CommunityRoute
+          paths={currentPaths}
+          community={community}
+          parentMembers={parentMembers}
+          credential={AuthorizationCredential.OpportunityMember}
+          resourceId={opportunityUUID}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />

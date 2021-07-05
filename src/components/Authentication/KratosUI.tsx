@@ -1,17 +1,29 @@
-import { LoginFlow, RegistrationFlow, SettingsFlow, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
+import {
+  LoginFlow,
+  RecoveryFlow,
+  RegistrationFlow,
+  SettingsFlow,
+  UiNode,
+  UiNodeInputAttributes,
+  UiText,
+  VerificationFlow,
+} from '@ory/kratos-client';
+import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
+import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
-import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
-import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
-import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
 import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
-import { Required } from '../Required';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import { Required } from '../Required';
+import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
+import KratosTermsLabel from './KratosTermsLabel';
 
 interface KratosUIProps {
-  flow?: LoginFlow | RegistrationFlow | SettingsFlow;
+  flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
+  termsURL?: string;
+  privacyURL?: string;
 }
 
 interface KratosProps {
@@ -119,6 +131,7 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
   const invalid = isInvalid(node);
 
   const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
+  const updatedTitle = attributes.name === 'traits.accepted_terms' ? <KratosTermsLabel /> : getNodeTitle(node);
 
   return (
     <Form.Group controlId={node.group}>
@@ -132,7 +145,7 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
           value={String(state)}
         />
         <Form.Check.Label>
-          {getNodeTitle(node)}
+          {updatedTitle}
           {attributes.required && <Required />}
         </Form.Check.Label>
         {feedbackElements}
@@ -188,8 +201,8 @@ const toUiControl = (node: UiNode, key: number) => {
   }
 };
 
-export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
-  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[] };
+export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
+  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
     if (!flow) return;
@@ -204,11 +217,10 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
           case 'password':
             return { ...acc, password: [...acc.password, node] };
           default:
-            console.warn(`Unknown node group ${node.group}`); // will be gone in future PR.
-            return acc;
+            return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      { default: [], oidc: [], password: [] } as NodeGroups
+      { default: [], oidc: [], password: [], rest: [] } as NodeGroups
     );
   }, [flow]);
 
@@ -217,15 +229,43 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
   const ui = flow.ui;
 
   return (
-    <div>
-      <KratosMessages messages={ui.messages} />
-      <Form action={ui.action} method={ui.method} noValidate>
-        {nodesByGroup.default.map(toUiControl)}
-        {nodesByGroup.password.map(toUiControl)}
-        {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
-        {nodesByGroup.oidc.map(toUiControl)}
-      </Form>
-    </div>
+    <KratosUIProvider {...rest}>
+      <div>
+        <KratosMessages messages={ui.messages} />
+        <Form action={ui.action} method={ui.method} noValidate>
+          {nodesByGroup.default.map(toUiControl)}
+          {nodesByGroup.password.map(toUiControl)}
+          {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
+          {nodesByGroup.oidc.map(toUiControl)}
+          {nodesByGroup.rest.map(toUiControl)}
+        </Form>
+      </div>
+    </KratosUIProvider>
   );
 };
 export default KratosUI;
+
+interface KratosUIContextProps {
+  termsURL?: string;
+  privacyURL?: string;
+}
+
+export const KratosUIContext = React.createContext<KratosUIContextProps>({});
+
+interface KratosUIProviderProps {
+  termsURL?: string;
+  privacyURL?: string;
+}
+
+export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL, privacyURL }) => {
+  return (
+    <KratosUIContext.Provider
+      value={{
+        termsURL,
+        privacyURL,
+      }}
+    >
+      {children}
+    </KratosUIContext.Provider>
+  );
+};

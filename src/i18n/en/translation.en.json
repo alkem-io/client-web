@@ -1,8 +1,11 @@
 {
-  "community": {
-    "header": "Community",
-    "subheader": "Building the future together",
-    "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
+  "cookie": {
+    "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
+  },
+  "search": {
+    "header": "Search",
+    "subheader": "Find relevant users, organisations, groups and not least Challenges!",
+    "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
     "body": ""
   },
   "buttons": {
@@ -11,7 +14,8 @@
     "create": "Create",
     "save": "Save",
     "back": "Back",
-    "see-more": "See more"
+    "see-more": "See more",
+    "home": "Home"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -168,10 +172,14 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private"
+      "private": "Private",
+      "status": "Status: {{statusName}}"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
+    },
+    "loading": {
+      "message": "Loading {{blockName}}..."
     },
     "groupForm": {
       "title": "Edit group"
@@ -341,14 +349,13 @@
     },
     "login": {
       "title": "Sign in",
-      "demo-provider": {
-        "question": "Don't have an account?"
-      },
       "validations": {
         "email": "Please enter your email address.",
         "password": "Please enter your password."
       },
-      "logo": "{{ecoverse}} ecoverse logo"
+      "logo": "{{ecoverse}} ecoverse logo",
+      "register": "Don't have an account?",
+      "recovery": "Forgot your password?"
     },
     "about": {
       "title": "Reimagining collaboration",
@@ -373,11 +380,11 @@
     "logout": {
       "loading": "Signing off ..."
     },
-    "register": {
+    "registration": {
       "form": {
         "validations": {
           "email": "Email is not valid",
-          "password": "Password ca not be empty",
+          "password": "Password can not be empty",
           "password-strength": "Password must be at least 8 symbols long",
           "confirm-password": "Passwords must match",
           "terms": "The terms of use and the privacy policy must be accepted."
@@ -387,6 +394,49 @@
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"
+      }
+    },
+    "registration-success": {
+      "header": "You have been registered successfully!",
+      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it.",
+      "message": "some very nice markdown **to be tested**"
+    },
+    "verification-success": {
+      "header": "You have been ....verified!",
+      "subheader": "to be updated",
+      "message": "some very nice markdown **to be tested**"
+    },
+    "recovery": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "Password Reset",
+      "buttons": {
+        "register": "Register"
+      }
+    },
+    "verification": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "Verify",
+      "buttons": {
+        "register": "Verify"
+      }
+    },
+    "settings": {
+      "form": {
+        "validations": {
+          "email": "Email is not valid"
+        }
+      },
+      "header": "User Settings",
+      "buttons": {
+        "register": "Verify"
       }
     }
   }

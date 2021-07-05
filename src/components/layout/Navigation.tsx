@@ -15,6 +15,7 @@ import Button from '../core/Button';
 import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import { SEARCH_PAGE } from '../../models/Constants';
 
 interface NavigationProps {
   maximize: boolean;
@@ -141,7 +142,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                   disabled={!Boolean(userMetadata)}
                   text="Community"
                   as={Link}
-                  to="/community"
+                  to={SEARCH_PAGE}
                   inset
                   className={styles.menuItem}
                 >

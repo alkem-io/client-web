@@ -4,25 +4,33 @@ import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import { AuthorizationCredential } from '../../../types/graphql-schema';
-import EditCredentials from '../Authorization/EditCredentials';
+import EditCommunityCredentials, { CommunityCredentials } from '../Authorization/EditCommunityCredentials';
 import { WithCommunity } from './CommunityTypes';
 
 interface CommunityPageProps extends PageProps, WithCommunity {
   parentMembers: Member[];
+  credential: CommunityCredentials;
+  resourceId: string;
 }
 
-export const CommunityPage: FC<CommunityPageProps> = ({ paths, parentMembers = [], community }) => {
+export const CommunityPage: FC<CommunityPageProps> = ({
+  paths,
+  parentMembers = [],
+  credential,
+  resourceId,
+  community,
+}) => {
   const { url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
   return (
     <Container>
-      <EditCredentials
-        credential={AuthorizationCredential.UserGroupMember}
-        resourceId={community?.id}
+      <EditCommunityCredentials
+        credential={credential}
+        resourceId={resourceId}
         parentMembers={parentMembers}
+        communityId={community?.id || ''}
       />
     </Container>
   );

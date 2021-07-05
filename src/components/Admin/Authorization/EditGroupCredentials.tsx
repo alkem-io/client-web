@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import {
   refetchUsersWithCredentialsQuery,
-  useGrantCredentialsMutation,
+  useAssignUserToGroupMutation,
   useRevokeCredentialsMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
@@ -12,10 +12,12 @@ import Loading from '../../core/Loading';
 import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {
-  credential: AuthorizationCredential;
-  resourceId?: string;
+  credential: GroupCredentials;
+  resourceId: string;
   parentMembers: Member[];
 }
+
+export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
 export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
@@ -30,7 +32,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
   const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useGrantCredentialsMutation({
+  const [grant] = useAssignUserToGroupMutation({
     onError: handleError,
   });
 
@@ -43,8 +45,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
       variables: {
         input: {
           userID: _member.id,
-          type: credential,
-          resourceID: resourceId,
+          groupID: resourceId,
         },
       },
       refetchQueries: [
