@@ -11,6 +11,7 @@ import { FourOuFour, PageProps } from '../../pages';
 import EcoverseList from '../../pages/Admin/Ecoverse/EcoverseList';
 import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 import AuthorizationRoute from './authorization';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
@@ -44,9 +45,9 @@ interface EcoverseAdminRouteProps extends PageProps {}
 
 export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
-  const { ecoverseId, ecoverse } = useEcoverse();
+  const { ecoverseId, ecoverse, loading: loadingEcoverse } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { data, loading: loadingEcoverse } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
+  const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.ecoverse.displayName || '', real: true }],
@@ -55,9 +56,9 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   const community = data?.ecoverse.community;
   const parentMembers = usersInfo?.users || [];
-  const ecoverseUUID = ecoverse?.ecoverse.id;
+  const ecoverseUUID = ecoverse?.ecoverse.id || '';
 
-  if (loadingEcoverse || loadingUsers) return <Loading text={'Loading'} />;
+  if (loadingEcoverse || loadingUsers || loadingEcoverseCommunity) return <Loading text={'Loading'} />;
 
   return (
     <Switch>
@@ -68,7 +69,13 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <EditEcoverse paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+        <CommunityRoute
+          paths={currentPaths}
+          community={community}
+          parentMembers={parentMembers}
+          credential={AuthorizationCredential.EcoverseMember}
+          resourceId={ecoverseUUID}
+        />
       </Route>
       <Route path={`${path}/challenges`}>
         <ChallengesRoute paths={currentPaths} />

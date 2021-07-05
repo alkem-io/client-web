@@ -1767,7 +1767,7 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
-  membershipData: AssignCommunityMemberInput;
+  input: AssignCommunityMemberInput;
 }>;
 
 export type AssignUserToCommunityMutation = { __typename?: 'Mutation' } & {

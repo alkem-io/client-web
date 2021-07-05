@@ -219,8 +219,8 @@ export const AllCommunityDetailsFragmentDoc = gql`
   }
 `;
 export const AssignUserToCommunityDocument = gql`
-  mutation assignUserToCommunity($membershipData: AssignCommunityMemberInput!) {
-    assignUserToCommunity(membershipData: $membershipData) {
+  mutation assignUserToCommunity($input: AssignCommunityMemberInput!) {
+    assignUserToCommunity(membershipData: $input) {
       id
       displayName
     }
@@ -244,7 +244,7 @@ export type AssignUserToCommunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [assignUserToCommunityMutation, { data, loading, error }] = useAssignUserToCommunityMutation({
  *   variables: {
- *      membershipData: // value for 'membershipData'
+ *      input: // value for 'input'
  *   },
  * });
  */
