@@ -2148,6 +2148,25 @@ export type ChallengeActivityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeCardQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCardQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName' | 'nameID'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'ecoverseID'> & {
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+          tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>;
+          context?: Maybe<
+            { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
+              }
+          >;
+        };
+    };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -2788,6 +2807,26 @@ export type OpportunityUserIdsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type OpportunityWithActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunities: Array<
+        { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName' | 'nameID'> & {
+            activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+            context?: Maybe<
+              { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                  visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+                }
+            >;
+            tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
+          }
+      >;
+    };
+};
+
 export type OrganisationGroupQueryVariables = Exact<{
   organisationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -2949,7 +2988,13 @@ export type SearchQuery = { __typename?: 'Query' } & {
   search: Array<
     { __typename?: 'SearchResultEntry' } & Pick<SearchResultEntry, 'score' | 'terms'> & {
         result?: Maybe<
-          | { __typename?: 'Challenge' }
+          | ({ __typename?: 'Challenge' } & Pick<Challenge, 'displayName' | 'id' | 'ecoverseID'> & {
+                context?: Maybe<
+                  { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                      visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
+                    }
+                >;
+              })
           | ({ __typename?: 'Organisation' } & Pick<Organisation, 'displayName' | 'id'>)
           | ({ __typename?: 'User' } & Pick<User, 'displayName' | 'id'>)
           | ({ __typename?: 'UserGroup' } & Pick<UserGroup, 'name' | 'id'>)

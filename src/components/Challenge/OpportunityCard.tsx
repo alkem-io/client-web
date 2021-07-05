@@ -1,45 +1,20 @@
-import { FC, useMemo } from 'react';
-import { createStyles } from '../../hooks/useTheme';
-import { useTranslation } from 'react-i18next';
-import Card from '../core/Card';
-import * as React from 'react';
+import React, { FC, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Theme } from '../../context/ThemeProvider';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Typography from '../core/Typography';
 import Button from '../core/Button';
-import { Link } from 'react-router-dom';
+import Card from '../core/Card';
+import { useTranslation } from 'react-i18next';
+import { Nvp } from '../../types/graphql-schema';
 import { Activities } from '../ActivityPanel';
+import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import getActivityCount from '../../utils/get-activity-count';
-import { Nvp } from '../../types/graphql-schema';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
-// todo: unify in one card props
-interface EcoverseCardProps {
-  id: string | number;
-  displayName?: string;
-  url: string;
-  activity: Pick<Nvp, 'name' | 'value'>[];
-  isMember: boolean;
-  context: {
-    tagline: string;
-    visual: {
-      background: string;
-    };
-  };
-  authorization: {
-    anonymousReadAccess: boolean;
-  };
-  tags: string[];
-}
+import { createStyles } from '../../hooks/useTheme';
+import Typography from '../core/Typography';
 
 const useCardStyles = createStyles(theme => ({
-  relative: {
-    position: 'relative',
-    flexGrow: 1,
-    display: 'flex',
-  },
   card: {
     marginTop: 0,
     border: `1px solid ${theme.palette.neutralMedium}`,
@@ -62,35 +37,37 @@ const useCardStyles = createStyles(theme => ({
     display: 'flex',
     minWidth: 0,
   },
+  relative: {
+    position: 'relative',
+    flexGrow: 1,
+    display: 'flex',
+  },
 }));
 
-// todo: extract cards to a base component
-export const EcoverseCard: FC<EcoverseCardProps> = ({
-  displayName,
-  context,
-  url,
-  authorization,
-  activity,
-  tags,
-  isMember,
-}) => {
+interface OpportunityCardProps {
+  displayName?: string;
+  url: string;
+  activity: Pick<Nvp, 'name' | 'value'>[];
+  lifecycle: {
+    state: string;
+  };
+  context: {
+    tagline: string;
+    visual: {
+      background: string;
+    };
+  };
+  tags: string[];
+}
+
+const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, url, lifecycle, activity, tags }) => {
   const { t } = useTranslation();
   const styles = useCardStyles();
   const { tagline, visual } = context;
-  const { anonymousReadAccess } = authorization;
+
+  const backgroundImg = visual?.background;
+  const cardTags = lifecycle.state ? { text: t('components.card.status', { statusName: lifecycle.state }) } : undefined;
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
-
-  const getCardTags = (isMember: boolean, readAccess: boolean) => {
-    if (isMember) {
-      return { text: t('components.card.member') };
-    } else if (!readAccess) {
-      return { text: t('components.card.private') };
-    } else {
-      return undefined;
-    }
-  };
-
-  const cardTags = getCardTags(isMember, anonymousReadAccess);
 
   return (
     <div className={styles.relative}>
@@ -98,7 +75,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         className={styles.card}
         classes={{
           background: (theme: Theme) =>
-            visual.background ? `url("${visual.background}") no-repeat center center / cover` : theme.palette.neutral,
+            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.primary,
         }}
         bodyProps={{
           classes: {
@@ -107,7 +84,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
           className: styles.body,
         }}
         primaryTextProps={{
-          text: displayName || '',
+          text: displayName,
           classes: {
             color: (theme: Theme) => theme.palette.neutralLight,
           },
@@ -117,7 +94,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Activities
                 items={[
-                  { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
+                  { name: 'Projects', digit: getActivityCount(activity, 'projects') || 0, color: 'primary' },
                   { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
                 ]}
               />
@@ -151,7 +128,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
+          <Typography color="neutralLight" className={styles.tagline}>
             <span>{tagline}</span>
           </Typography>
         )}
@@ -159,5 +136,4 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
     </div>
   );
 };
-
-export default EcoverseCard;
+export default OpportunityCard;
