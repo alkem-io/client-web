@@ -1,43 +1,39 @@
-import axios from 'axios';
+import { Session } from '@ory/kratos-client';
 import { useEffect, useState } from 'react';
+import { useKratosClient } from './useKratosClient';
 
-interface Result {
-  identity?: {
-    traits?: {
-      name?: {
-        last?: string;
-        first?: string;
-      };
-      email?: string;
-    };
-  };
-}
 export const useWhoami = () => {
-  const [data, setData] = useState<Result>();
+  const [session, setSession] = useState<Session>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
-
-  const headers = {
-    Accept: 'application/json',
-    // 'X-Session-Token': 'string',
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const DEFAULT_ERROR_MESSAGE = "Can't get session information!";
+  const kratosClient = useKratosClient();
 
   useEffect(() => {
-    axios
-      .get<Result>('/sessions/whoami', {
-        headers,
-        withCredentials: true,
-      })
+    kratosClient
+      .toSession()
       .then(result => {
         if (result.status === 200) {
-          setData(result.data);
+          setSession(result.data);
+          setIsAuthenticated(true);
+        } else if (result.status === 401) {
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(false);
+          setError(`${result.status} - ${DEFAULT_ERROR_MESSAGE}`);
         }
       })
       .catch(err => {
-        setError(err);
+        setIsAuthenticated(false);
+        if (err.request && err.request.status === 401) {
+          setError(`${err.request.status} - Unauthenticated`);
+          return;
+        }
+        setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  return { data, loading, error };
+  return { session, loading, error, isAuthenticated };
 };

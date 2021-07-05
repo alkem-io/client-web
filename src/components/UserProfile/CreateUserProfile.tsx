@@ -19,7 +19,7 @@ interface CreateUserProfileProps {}
 
 export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   const { resetStore } = useAuthenticate();
-  const { data: iam } = useWhoami();
+  const { session: iam } = useWhoami();
   const dispatch = useDispatch();
   const history = useHistory();
   const notify = useNotification();

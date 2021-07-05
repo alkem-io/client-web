@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQueryParams } from '../../hooks/useQueryParams';
-import LoginPage from '../../pages/LoginPage';
+import LoginPage from '../../pages/Authentication/LoginPage';
 import { hideLoginNavigation, showLoginNavigation } from '../../reducers/ui/loginNavigation/actions';
 
 export const LoginRoute: FC = () => {
