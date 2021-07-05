@@ -10,6 +10,7 @@ export const PROVIDER_MSAL = 'msal';
 export const PROVIDER_DEMO = 'demo-auth';
 
 export const WELCOME_PAGE = '/welcome';
+export const SEARCH_PAGE = '/search';
 
 export const LOGO_REFERENCE_NAME = 'logo';
 

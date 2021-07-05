@@ -1,0 +1,25 @@
+query challengesWithActivity($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenges {
+      id
+      displayName
+      nameID
+      activity {
+        name
+        value
+      }
+      context {
+        id
+        tagline
+        visual {
+          background
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+    }
+  }
+}

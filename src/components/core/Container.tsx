@@ -40,6 +40,14 @@ interface CardContainerProps extends ContainerProps {
   lg?: number;
   xl?: number;
 }
+const defaultProps: Partial<CardContainerProps> = {
+  cardHeight: 470,
+  xl: 3,
+  lg: 4,
+  md: 6,
+  sm: 12,
+  xs: 12,
+};
 
 const useCardContainerStyles = createStyles(theme => ({
   root: {
@@ -92,5 +100,6 @@ const CardContainer: FC<CardContainerProps> = ({ children, fullHeight, cardHeigh
     </Container>
   );
 };
+CardContainer.defaultProps = defaultProps;
 
 export { CardContainer };

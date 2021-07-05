@@ -15,6 +15,7 @@ import getActivityCount from '../../utils/get-activity-count';
 import { Nvp } from '../../types/graphql-schema';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+// todo: unify in one card props
 interface EcoverseCardProps {
   id: string | number;
   name?: string;
@@ -56,24 +57,10 @@ const useCardStyles = createStyles(theme => ({
     background: theme.palette.neutralLight,
     padding: theme.shape.spacing(2),
   },
-  item: {
-    height: '95px',
-    display: 'flex',
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
-  },
   tagline: {
     flexGrow: 1,
     display: 'flex',
     minWidth: 0,
-
-    '& > span': {
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      maxHeight: '6em',
-    },
   },
 }));
 
@@ -123,7 +110,6 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
           text: name || '',
           classes: {
             color: (theme: Theme) => theme.palette.neutralLight,
-            lineHeight: '36px',
           },
         }}
         sectionProps={{
@@ -165,7 +151,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline}>
+          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
             <span>{tagline}</span>
           </Typography>
         )}
