@@ -4,12 +4,13 @@ import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import { AuthorizationCredential } from '../../../types/graphql-schema';
-import EditGlobalCredentials from '../Authorization/EditGlobalCredentials';
+import EditGroupCredentials from '../Authorization/EditGroupCredentials';
+
 import { WithCommunity } from '../Community/CommunityTypes';
 
 interface EditMembersPageProps extends PageProps, WithCommunity {
   parentMembers: Member[];
-  groupId?: string;
+  groupId: string;
 }
 
 export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers = [], groupId }) => {
@@ -18,9 +19,9 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers
 
   return (
     <Container>
-      <EditGlobalCredentials
+      <EditGroupCredentials
         credential={AuthorizationCredential.UserGroupMember}
-        resourceId={groupId}
+        resourceId={groupId || ''}
         parentMembers={parentMembers}
       />
     </Container>

@@ -11,6 +11,7 @@ import { FourOuFour, PageProps } from '../../pages';
 import EcoverseList from '../../pages/Admin/Ecoverse/EcoverseList';
 import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 import AuthorizationRoute from './authorization';
 import { ChallengesRoute } from './challenge';
 import { CommunityRoute } from './community';
@@ -68,7 +69,12 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <EditEcoverse paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+        <CommunityRoute
+          paths={currentPaths}
+          community={community}
+          parentMembers={parentMembers}
+          credential={AuthorizationCredential.EcoverseMember}
+        />
       </Route>
       <Route path={`${path}/challenges`}>
         <ChallengesRoute paths={currentPaths} />

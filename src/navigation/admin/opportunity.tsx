@@ -8,6 +8,7 @@ import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { FourOuFour, PageProps } from '../../pages';
 import OpportunityList from '../../pages/Admin/Opportunity/OpportunityList';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 import { AdminParameters } from './admin';
 import { CommunityRoute } from './community';
 
@@ -65,7 +66,12 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+        <CommunityRoute
+          paths={currentPaths}
+          community={community}
+          parentMembers={parentMembers}
+          credential={AuthorizationCredential.OpportunityMember}
+        />
       </Route>
       <Route path="*">
         <FourOuFour />

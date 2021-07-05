@@ -9,6 +9,7 @@ import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
+import { AuthorizationCredential } from '../../types/graphql-schema';
 import { AdminParameters } from './admin';
 import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
@@ -65,7 +66,12 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} community={community} parentMembers={parentMembers} />
+        <CommunityRoute
+          paths={currentPaths}
+          community={community}
+          parentMembers={parentMembers}
+          credential={AuthorizationCredential.ChallengeMember}
+        />
       </Route>
       <Route path={`${path}/opportunities`}>
         <OpportunitiesRoutes paths={currentPaths} />
