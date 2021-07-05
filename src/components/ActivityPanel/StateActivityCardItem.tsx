@@ -47,14 +47,19 @@ export interface LifecycleModalProps {
 const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
   const styles = useUserPopUpStyles();
   const theme = useTheme().theme;
+  const machine = createMachine(JSON.parse(lifecycle.machineDef));
+  const graph = toDirectedGraph(machine);
+
+  // First filter all nodes to find current state, then deduce nextStates from its edges
+  const nextStates = graph.children
+    .filter(child => lifecycle.state && child.id.endsWith(lifecycle.state))
+    .pop()
+    ?.edges.map(edge => edge.target.id.split('.').pop())
+    .join(', ');
 
   const divRef = useCallback(
     svgRef => {
       if (lifecycle) {
-        const machine = createMachine(JSON.parse(lifecycle.machineDef));
-
-        const graph = toDirectedGraph(machine);
-
         const width = 800;
         const height = 400;
 
@@ -238,7 +243,10 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
     <div>
       <Modal size="lg" show={show} onHide={onHide}>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Lifecycle</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Current state: {lifecycle.state}
+            {nextStates && <p>Next states: {nextStates}</p>}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body className={styles.body}>
           <svg id="graph-container" ref={divRef}></svg>
