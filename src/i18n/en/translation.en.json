@@ -398,7 +398,7 @@
     },
     "registration-success": {
       "header": "Thank you for signing up!",
-      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it.",
+      "subheader": "For security purposes we need to validate the provided email address. Please check your inbox and follow instructions there.",
       "message": "Suggested next steps:"
     },
     "verification-success": {
