@@ -45,10 +45,16 @@ interface Params {
 const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
-  const { challengeId = '', opportunityId = '', ecoverseId = '' } = useParams<Params>();
+  const {
+    challengeId: challengeNameId = '',
+    opportunityId: opportunityNameId = '',
+    ecoverseId = '',
+  } = useParams<Params>();
   const { toEcoverseId } = useEcoverse();
   const [getChallengeProfileInfo, { data: challengeProfile }] = useChallengeProfileInfoLazyQuery();
   const [getOpportunityProfileInfo, { data: opportunityProfile }] = useOpportunityProfileInfoLazyQuery();
+  const challengeId = useMemo(() => challengeProfile?.ecoverse.challenge.id || '', [challengeProfile]);
+  const opportunityId = useMemo(() => opportunityProfile?.ecoverse.opportunity.id || '', [opportunityProfile]);
 
   const [createChallenge, { loading: loading1 }] = useCreateChallengeMutation({
     refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
@@ -57,7 +63,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     onError: handleError,
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId })],
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: opportunityNameId })],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
@@ -65,13 +71,13 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
   const [updateChallenge, { loading: loading3 }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity, { loading: loading4 }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -80,11 +86,11 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
       getChallengeProfileInfo({
         variables: {
           ecoverseId,
-          challengeId,
+          challengeId: challengeNameId,
         },
       });
     if (mode === ProfileSubmitMode.updateOpportunity)
-      getOpportunityProfileInfo({ variables: { ecoverseId, opportunityId } });
+      getOpportunityProfileInfo({ variables: { ecoverseId, opportunityId: opportunityNameId } });
   }, []);
 
   const isEdit = mode === ProfileSubmitMode.updateOpportunity || mode === ProfileSubmitMode.updateChallenge;
