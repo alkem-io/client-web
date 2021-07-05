@@ -110,7 +110,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = ({ name, context = {}, url,
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Activities
               items={[
-                { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
+                { name: 'Opportunities', digit: getActivityCount(activity, 'opportunities') || 0, color: 'primary' },
                 { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
               ]}
             />
