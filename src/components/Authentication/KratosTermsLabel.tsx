@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Trans } from 'react-i18next';
+import { KratosUIContext } from './KratosUI';
 
-interface KratosTermsLabelProps {
-  termsURL: string;
-  privacyURL: string;
-}
+interface KratosTermsLabelProps {}
 
-const KratosTermsLabel: FC<KratosTermsLabelProps> = ({ termsURL, privacyURL }) => {
+const KratosTermsLabel: FC<KratosTermsLabelProps> = () => {
+  const { termsURL, privacyURL } = useContext(KratosUIContext);
+
   return (
     <Trans
       i18nKey={'pages.registration.terms'}
@@ -18,4 +18,5 @@ const KratosTermsLabel: FC<KratosTermsLabelProps> = ({ termsURL, privacyURL }) =
     />
   );
 };
+
 export default KratosTermsLabel;

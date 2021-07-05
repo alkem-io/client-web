@@ -8,16 +8,16 @@ import {
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
+import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
+import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
-import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
-import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
-import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
 import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
-import { Required } from '../Required';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import { Required } from '../Required';
+import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
 import KratosTermsLabel from './KratosTermsLabel';
 
 interface KratosUIProps {
@@ -28,8 +28,6 @@ interface KratosUIProps {
 
 interface KratosProps {
   node: UiNode;
-  termsURL?: string;
-  privacyURL?: string;
 }
 
 interface KratosInputExtraProps {
@@ -126,17 +124,15 @@ const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, 
   );
 };
 
-const KratosCheckbox: FC<KratosProps> = ({ node, termsURL = '', privacyURL = '' }) => {
+const KratosCheckbox: FC<KratosProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   const [state, setState] = useState(Boolean(getNodeValue(node)));
 
   const invalid = isInvalid(node);
 
   const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
+  const updatedTitle = attributes.name === 'traits.accepted_terms' ? <KratosTermsLabel /> : getNodeTitle(node);
 
-  const nodeTitle = getNodeTitle(node);
-  const updatedTitle =
-    nodeTitle === 'TERMS_MESSAGE' ? <KratosTermsLabel termsURL={termsURL} privacyURL={privacyURL} /> : nodeTitle;
   return (
     <Form.Group controlId={node.group}>
       <Form.Check name={getNodeName(node)} type="checkbox">
@@ -205,7 +201,7 @@ const toUiControl = (node: UiNode, key: number) => {
   }
 };
 
-export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
+export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
@@ -233,16 +229,43 @@ export const KratosUI: FC<KratosUIProps> = ({ flow }) => {
   const ui = flow.ui;
 
   return (
-    <div>
-      <KratosMessages messages={ui.messages} />
-      <Form action={ui.action} method={ui.method} noValidate>
-        {nodesByGroup.default.map(toUiControl)}
-        {nodesByGroup.password.map(toUiControl)}
-        {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
-        {nodesByGroup.oidc.map(toUiControl)}
-        {nodesByGroup.rest.map(toUiControl)}
-      </Form>
-    </div>
+    <KratosUIProvider {...rest}>
+      <div>
+        <KratosMessages messages={ui.messages} />
+        <Form action={ui.action} method={ui.method} noValidate>
+          {nodesByGroup.default.map(toUiControl)}
+          {nodesByGroup.password.map(toUiControl)}
+          {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
+          {nodesByGroup.oidc.map(toUiControl)}
+          {nodesByGroup.rest.map(toUiControl)}
+        </Form>
+      </div>
+    </KratosUIProvider>
   );
 };
 export default KratosUI;
+
+interface KratosUIContextProps {
+  termsURL?: string;
+  privacyURL?: string;
+}
+
+export const KratosUIContext = React.createContext<KratosUIContextProps>({});
+
+interface KratosUIProviderProps {
+  termsURL?: string;
+  privacyURL?: string;
+}
+
+export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL, privacyURL }) => {
+  return (
+    <KratosUIContext.Provider
+      value={{
+        termsURL,
+        privacyURL,
+      }}
+    >
+      {children}
+    </KratosUIContext.Provider>
+  );
+};
