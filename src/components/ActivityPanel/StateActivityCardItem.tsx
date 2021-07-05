@@ -60,6 +60,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
 
         const boxWidth = 120;
         const boxHeight = 30;
+        const cornerRound = 10;
 
         const initialState: string = machine.id + '.' + machine.initial?.toString();
 
@@ -118,6 +119,22 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           .append('svg:path')
           .attr('d', 'M0,-5L10,0L0,5');
 
+        const filter = defs
+          .append('filter')
+          .attr('id', 'drop-shadow')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', '200%')
+          .attr('height', '200%');
+
+        filter
+          .append('feDropShadow')
+          .attr('dx', 2)
+          .attr('dy', 2)
+          .attr('stdDeviation', 1)
+          .attr('flood-color', '#000')
+          .attr('flood-opacity', 1);
+
         svg.attr('viewBox', [0, 0, width, height]);
         const link = svg
           .append('g')
@@ -140,7 +157,10 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           .attr('stroke', d => (d.group === 1 ? '#000' : theme.palette.primary))
           .attr('width', boxWidth)
           .attr('height', boxHeight)
-          .attr('fill', '#fff');
+          .attr('rx', cornerRound)
+          .attr('ry', cornerRound)
+          .attr('fill', '#fff')
+          .style('filter', 'url(#drop-shadow)');
         const text = svg
           .append('g')
           .attr('class', 'text')
@@ -169,7 +189,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
               if (Math.abs(d.target.x - d.source.x) > boxWidth) {
                 // Boxes are far apart, draw from corner
                 const direction = Math.sign(d.target.x - d.source.x);
-                change = (direction * boxWidth) / 2;
+                change = (direction * (boxWidth - cornerRound / 2)) / 2;
               }
               return d.source.x + change;
             })
@@ -178,7 +198,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
               if (Math.abs(d.target.y - d.source.y) > boxHeight) {
                 // Boxes are far apart, draw from corner
                 const direction = Math.sign(d.target.y - d.source.y);
-                change = (direction * boxHeight) / 2;
+                change = (direction * (boxHeight - cornerRound / 2)) / 2;
               }
               return d.source.y + change;
             })
@@ -187,7 +207,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
               if (Math.abs(d.target.x - d.source.x) > boxWidth) {
                 // Boxes are far apart, draw from corner
                 const direction = -Math.sign(d.target.x - d.source.x);
-                change = (direction * boxWidth) / 2;
+                change = (direction * (boxWidth - cornerRound / 2)) / 2;
               }
               return d.target.x + change;
             })
@@ -196,7 +216,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
               if (Math.abs(d.target.y - d.source.y) > boxHeight) {
                 // Boxes are far apart, draw from corner
                 const direction = -Math.sign(d.target.y - d.source.y);
-                change = (direction * boxHeight) / 2;
+                change = (direction * (boxHeight - cornerRound / 2)) / 2;
               }
               return d.target.y + change;
             });
@@ -204,10 +224,11 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
           node.attr('x', d => d.x - boxWidth / 2).attr('y', d => d.y - boxHeight / 2);
           text.attr('x', d => d.x - boxWidth / 2).attr('y', d => d.y - boxHeight / 2);
         });
+        simulation.tick(1000);
         //simulation.stop();
         setTimeout(() => {
           simulation.stop();
-        }, 2000);
+        }, 1);
       }
     },
     [lifecycle]
