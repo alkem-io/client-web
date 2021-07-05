@@ -2,10 +2,10 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
-  "community": {
-    "header": "Community",
-    "subheader": "Building the future together",
-    "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
+  "search": {
+    "header": "Search",
+    "subheader": "Find relevant users, organisations, groups and not least Challenges!",
+    "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
     "body": ""
   },
   "buttons": {
@@ -395,7 +395,13 @@
     },
     "registration-success": {
       "header": "You have been registered successfully!",
-      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it."
+      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it.",
+      "message": "some very nice markdown **to be tested**"
+    },
+    "verification-success": {
+      "header": "You have been ....verified!",
+      "subheader": "to be updated",
+      "message": "some very nice markdown **to be tested**"
     },
     "recovery": {
       "form": {

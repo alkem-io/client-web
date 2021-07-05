@@ -23,7 +23,7 @@ export const AuthRoute: FC = () => {
       <Route path={`${path}/registration`}>
         <RegistrationRoute />
       </Route>
-      <Route exact path={`${path}/verify`}>
+      <Route path={`${path}/verify`}>
         <VerifyRoute />
       </Route>
       <Route exact path={`${path}/recovery`}>

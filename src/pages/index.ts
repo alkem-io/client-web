@@ -2,7 +2,7 @@ export * from './FourOuFour';
 export * from './Ecoverse';
 export * from './Challenge';
 export * from './Opportunity';
-export * from './Community';
+export * from './SearchPage';
 export * from './Messages';
 export * from './common';
 export * from './Project/Index';

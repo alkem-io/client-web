@@ -7,15 +7,13 @@ import Typography from '../../components/core/Typography';
 import { useKratosClient } from '../../hooks/useKratosClient';
 
 interface RegisterPageProps {
-  flow: string;
+  flow?: string;
 }
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const [verificationFlow, setVerificationFlow] = useState<VerificationFlow>();
   const kratos = useKratosClient();
-
   const { t } = useTranslation();
-
   useEffect(() => {
     if (flow && kratos) {
       kratos.getSelfServiceVerificationFlow(flow).then(({ status, data: flow, ..._response }) => {
@@ -27,6 +25,9 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     }
   }, [flow]);
 
+  if (!flow) {
+    window.location.replace('/'); // TODO [ATS]: Might redirect to invalid page ...
+  }
   return (
     <Container fluid={'sm'}>
       <Row className={'d-flex justify-content-center'}>

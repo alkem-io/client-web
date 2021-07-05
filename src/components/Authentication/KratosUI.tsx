@@ -18,13 +18,18 @@ import Delimiter from '../core/Delimiter';
 import { Required } from '../Required';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
+import KratosTermsLabel from './KratosTermsLabel';
 
 interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
+  termsURL?: string;
+  privacyURL?: string;
 }
 
 interface KratosProps {
   node: UiNode;
+  termsURL?: string;
+  privacyURL?: string;
 }
 
 interface KratosInputExtraProps {
@@ -121,7 +126,7 @@ const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, 
   );
 };
 
-const KratosCheckbox: FC<KratosProps> = ({ node }) => {
+const KratosCheckbox: FC<KratosProps> = ({ node, termsURL = '', privacyURL = '' }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   const [state, setState] = useState(Boolean(getNodeValue(node)));
 
@@ -129,6 +134,9 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
 
   const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
 
+  const nodeTitle = getNodeTitle(node);
+  const updatedTitle =
+    nodeTitle === 'TERMS_MESSAGE' ? <KratosTermsLabel termsURL={termsURL} privacyURL={privacyURL} /> : nodeTitle;
   return (
     <Form.Group controlId={node.group}>
       <Form.Check name={getNodeName(node)} type="checkbox">
@@ -141,7 +149,7 @@ const KratosCheckbox: FC<KratosProps> = ({ node }) => {
           value={String(state)}
         />
         <Form.Check.Label>
-          {getNodeTitle(node)}
+          {updatedTitle}
           {attributes.required && <Required />}
         </Form.Check.Label>
         {feedbackElements}
