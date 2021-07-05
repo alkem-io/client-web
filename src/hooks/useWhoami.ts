@@ -8,10 +8,10 @@ export const useWhoami = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const DEFAULT_ERROR_MESSAGE = "Can't get session information!";
-  const kratoClient = useKratosClient();
+  const kratosClient = useKratosClient();
 
   useEffect(() => {
-    kratoClient
+    kratosClient
       .toSession()
       .then(result => {
         if (result.status === 200) {
