@@ -250,6 +250,15 @@ export type CommunicationRoomResult = {
   receiverID?: Maybe<Scalars['String']>;
 };
 
+export type CommunicationSendMessageInput = {
+  /** The content of the message */
+  message: Scalars['String'];
+  /** The user ID of the receiver if attempting to direct message someone */
+  receiverID: Scalars['ID'];
+  /** The identifier of the room */
+  roomID?: Maybe<Scalars['String']>;
+};
+
 export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
@@ -264,15 +273,6 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
-  /** Room with messages for this community. */
-  room: CommunicationRoomDetailsResult;
-};
-
-export type CommunitySendMessageInput = {
-  /** The community the message is being sent to */
-  communityID: Scalars['String'];
-  /** The message being sent */
-  message: Scalars['String'];
 };
 
 export type Config = {
@@ -820,10 +820,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Assigns the StateModification credential to a particular user for a particular challenge */
   grantStateModificationVC: User;
-  /** Sends a message on the specified community */
-  messageCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String'];
+  message: Scalars['String'];
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
@@ -1006,12 +1004,8 @@ export type MutationGrantStateModificationVcArgs = {
   grantStateModificationVC: GrantStateModificationVcInput;
 };
 
-export type MutationMessageCommunityArgs = {
-  msgData: CommunitySendMessageInput;
-};
-
-export type MutationMessageUserArgs = {
-  msgData: UserSendMessageInput;
+export type MutationMessageArgs = {
+  msgData: CommunicationSendMessageInput;
 };
 
 export type MutationRemoveUserFromCommunityArgs = {
@@ -1610,13 +1604,6 @@ export type UserGroup = Searchable & {
   parent?: Maybe<Groupable>;
   /** The profile for the user group */
   profile?: Maybe<Profile>;
-};
-
-export type UserSendMessageInput = {
-  /** The message being sent */
-  message: Scalars['String'];
-  /** The user a message is being sent to */
-  receivingUserID: Scalars['String'];
 };
 
 export type UserTemplate = {
@@ -2297,6 +2284,28 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
                     visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
                   }
               >;
+            }
+        >
+      >;
+    };
+};
+
+export type ChallengesWithActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengesWithActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenges?: Maybe<
+        Array<
+          { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'nameID'> & {
+              activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
+              context?: Maybe<
+                { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
+                    visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'background'>>;
+                  }
+              >;
+              tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>;
             }
         >
       >;
