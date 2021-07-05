@@ -8,7 +8,6 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
-import { OpportunityCard } from '../components/Challenge/Cards';
 import CommunitySection from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
@@ -30,6 +29,7 @@ import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import BackdropWithMessage from '../components/layout/BackdropWithMessage';
 import getActivityCount from '../utils/get-activity-count';
+import OpportunityCard from '../components/Challenge/OpportunityCard';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -317,16 +317,19 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
       {opportunities && (
-        <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-          {opportunities?.map((props, i) => (
+        <CardContainer>
+          {opportunities?.map((opp, i) => (
             <OpportunityCard
               key={i}
-              displayName={props.displayName}
-              url={`${url}/opportunities/${props.nameID}`}
-              lifecycle={{ state: props?.lifecycle?.state || '' }}
+              displayName={opp.displayName}
+              activity={opp.activity || []}
+              url={`${url}/opportunities/${opp.nameID}`}
+              lifecycle={{ state: opp?.lifecycle?.state || '' }}
               context={{
-                visual: { background: props?.context?.visual?.background || '' },
+                tagline: opp?.context?.tagline || '',
+                visual: { background: opp?.context?.visual?.background || '' },
               }}
+              tags={opp?.tagset?.tags || []}
             />
           ))}
         </CardContainer>

@@ -171,10 +171,14 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private"
+      "private": "Private",
+      "status": "Status: {{statusName}}"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
+    },
+    "loading": {
+      "message": "Loading {{blockName}}..."
     },
     "groupForm": {
       "title": "Edit group"
