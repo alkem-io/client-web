@@ -1,12 +1,12 @@
 import { ReactComponent as CheckCircle } from 'bootstrap-icons/icons/check-circle.svg';
 import React, { FC } from 'react';
-import { Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
+import AuthenticationLayout from '../../layout/AuthenticationLayout';
 
 interface VerificationSuccessPageProps {}
 
@@ -14,7 +14,7 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
   const { t } = useTranslation();
 
   return (
-    <Container>
+    <AuthenticationLayout>
       <Typography variant={'h2'} className={'text-center'}>
         <Icon component={CheckCircle} color={'primary'} size={'xl'} />
       </Typography>
@@ -30,7 +30,7 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
           {t('buttons.home')}
         </Button>
       </div>
-    </Container>
+    </AuthenticationLayout>
   );
 };
 export default VerificationSuccessPage;

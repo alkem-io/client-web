@@ -6,6 +6,7 @@ query challenges($ecoverseId: UUID_NAMEID!) {
       displayName
       nameID
       context {
+        id
         tagline
         references {
           name
