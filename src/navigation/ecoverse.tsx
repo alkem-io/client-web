@@ -18,6 +18,7 @@ import {
   Opportunity as OpportunityPage,
   PageProps,
 } from '../pages';
+import EcoverseApplyPage from '../pages/EcoverseApplyPage';
 import {
   AuthorizationCredential,
   Challenge as ChallengeType,
@@ -66,6 +67,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} challenges={challenges} />
+      </Route>
+      <Route path={`${path}/apply`}>
+        <EcoverseApplyPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

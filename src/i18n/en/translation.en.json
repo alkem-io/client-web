@@ -10,6 +10,7 @@
   },
   "buttons": {
     "learn-more": "Learn more",
+    "apply": "Apply",
     "explore": "Explore",
     "create": "Create",
     "save": "Save",
@@ -213,6 +214,13 @@
     },
     "ecoverse": {
       "title": "Ecoverse",
+      "application": {
+        "title": "Answer the questions below",
+        "finish": "Thank you for applying",
+        "backButton": "Back",
+        "loading": "Loading questions",
+        "errorBlockName": "the questions"
+      },
       "sections": {
         "challenges": {
           "header": "Challenges",
