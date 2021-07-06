@@ -1,0 +1,13 @@
+fragment CommunityMessages on Community {
+  id
+  room {
+    id
+    isDirect
+    receiverID
+    messages {
+      timestamp
+      sender
+      message
+    }
+  }
+}

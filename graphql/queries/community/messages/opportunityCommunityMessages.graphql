@@ -1,0 +1,10 @@
+query opportunityCommunityMessages($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      community {
+        ...CommunityMessages
+      }
+    }
+  }
+}
