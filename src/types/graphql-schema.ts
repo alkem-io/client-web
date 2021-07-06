@@ -1819,6 +1819,14 @@ export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
   createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name'>;
 };
 
+export type CreateApplicationMutationVariables = Exact<{
+  input: CreateApplicationInput;
+}>;
+
+export type CreateApplicationMutation = { __typename?: 'Mutation' } & {
+  createApplication: { __typename?: 'Application' } & Pick<Application, 'id'>;
+};
+
 export type CreateAspectMutationVariables = Exact<{
   input: CreateAspectInput;
 }>;
@@ -2238,6 +2246,28 @@ export type ChallengeActivityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChallengeApplicationTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      challenges: Array<
+        { __typename?: 'ChallengeTemplate' } & Pick<ChallengeTemplate, 'name'> & {
+            applications?: Maybe<
+              Array<
+                { __typename?: 'ApplicationTemplate' } & Pick<ApplicationTemplate, 'name'> & {
+                    questions: Array<
+                      { __typename?: 'QuestionTemplate' } & Pick<QuestionTemplate, 'required' | 'question'>
+                    >;
+                  }
+              >
+            >;
+          }
+      >;
+    };
+  };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -2450,6 +2480,28 @@ export type EcoverseActivityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
     };
+};
+
+export type EcoverseApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseApplicationTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      ecoverses: Array<
+        { __typename?: 'EcoverseTemplate' } & Pick<EcoverseTemplate, 'name'> & {
+            applications?: Maybe<
+              Array<
+                { __typename?: 'ApplicationTemplate' } & Pick<ApplicationTemplate, 'name'> & {
+                    questions: Array<
+                      { __typename?: 'QuestionTemplate' } & Pick<QuestionTemplate, 'required' | 'question'>
+                    >;
+                  }
+              >
+            >;
+          }
+      >;
+    };
+  };
 };
 
 export type EcoverseCommunityQueryVariables = Exact<{
