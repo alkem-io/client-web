@@ -30,6 +30,7 @@ import { PageProps } from './common';
 import BackdropWithMessage from '../components/layout/BackdropWithMessage';
 import getActivityCount from '../utils/get-activity-count';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
+import { SEARCH_PAGE } from '../models/Constants';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -305,7 +306,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
           users={users}
-          onExplore={() => history.push('/community')}
+          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </BackdropWithMessage>
       <Divider />

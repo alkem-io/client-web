@@ -1,4 +1,5 @@
 import { ApolloProvider } from '@apollo/client';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
@@ -18,6 +19,7 @@ import { Routing } from './navigation/routing';
 import { Error as ErrorPage } from './pages/Error';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
+import { defaultMuiTheme } from './themes/defaultMui';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -82,15 +84,17 @@ const ReduxRoot: FC = () => {
         <AuthenticationProvider>
           <CTApolloProvider>
             <ThemeProvider>
-              <NavigationProvider>
-                <EcoversesProvider>
-                  <UserProvider>
-                    <App>
-                      <Routing />
-                    </App>
-                  </UserProvider>
-                </EcoversesProvider>
-              </NavigationProvider>
+              <MuiThemeProvider theme={defaultMuiTheme}>
+                <NavigationProvider>
+                  <EcoversesProvider>
+                    <UserProvider>
+                      <App>
+                        <Routing />
+                      </App>
+                    </UserProvider>
+                  </EcoversesProvider>
+                </NavigationProvider>
+              </MuiThemeProvider>
             </ThemeProvider>
           </CTApolloProvider>
         </AuthenticationProvider>

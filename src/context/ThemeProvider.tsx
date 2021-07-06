@@ -122,7 +122,7 @@ const defaultEarlyAccessAlert: EarlyAccessAlert = {
   height: 40,
 };
 
-const defaultTheme: Theme = {
+export const defaultTheme: Theme = {
   palette: defaultPalette,
   typography: defaultTypography,
   shape: defaultShape,

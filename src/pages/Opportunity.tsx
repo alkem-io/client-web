@@ -46,6 +46,7 @@ import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
 import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks/useEcoverse';
+import { SEARCH_PAGE } from '../models/Constants';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -469,7 +470,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         subTitle={t('pages.opportunity.sections.community.subtitle')}
         users={users}
         shuffle={true}
-        onExplore={() => history.push('/community')}
+        onExplore={() => history.push(SEARCH_PAGE)}
       />
       <Divider />
       <div ref={projectRef} />

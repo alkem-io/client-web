@@ -32,6 +32,7 @@ import MembershipBackdrop from '../components/layout/MembershipBackdrop';
 import getActivityCount from '../utils/get-activity-count';
 import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import Loading from '../components/core/Loading';
+import { SEARCH_PAGE } from '../models/Constants';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -219,7 +220,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
           users={users}
           body={t('pages.ecoverse.sections.community.body')}
           shuffle={true}
-          onExplore={() => history.push('/community')}
+          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </AuthenticationBackdrop>
       <Divider />
