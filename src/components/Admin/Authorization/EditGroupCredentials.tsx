@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
-  useRevokeCredentialsMutation,
+  useRemoveUserFromGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
@@ -36,7 +36,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     onError: handleError,
   });
 
-  const [revoke] = useRevokeCredentialsMutation({
+  const [revoke] = useRemoveUserFromGroupMutation({
     onError: handleError,
   });
 
@@ -62,8 +62,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
       variables: {
         input: {
           userID: _member.id,
-          type: credential,
-          resourceID: resourceId,
+          groupID: resourceId,
         },
       },
       refetchQueries: [

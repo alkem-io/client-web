@@ -1,12 +1,10 @@
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useCreateUserMutation } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useNotification } from '../../hooks/useNotification';
 import { useWhoami } from '../../hooks/useWhoami';
-import { WELCOME_PAGE } from '../../models/Constants';
 import { defaultUser, UserModel } from '../../models/User';
 import { updateStatus } from '../../reducers/auth/actions';
 import { CreateUserInput } from '../../types/graphql-schema';
@@ -21,7 +19,6 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   const { resetStore } = useAuthenticate();
   const { session: iam } = useWhoami();
   const dispatch = useDispatch();
-  const history = useHistory();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const [createUser, { loading }] = useCreateUserMutation({
@@ -30,7 +27,6 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
       notify('User profile created successfully', 'success');
       resetStore().then(() => {
         dispatch(updateStatus('done'));
-        history.push(WELCOME_PAGE);
       });
     },
   });
