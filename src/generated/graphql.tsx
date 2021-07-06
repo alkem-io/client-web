@@ -2643,6 +2643,75 @@ export type ChallengeActivityQueryResult = Apollo.QueryResult<
 export function refetchChallengeActivityQuery(variables?: SchemaTypes.ChallengeActivityQueryVariables) {
   return { query: ChallengeActivityDocument, variables: variables };
 }
+export const ChallengeApplicationTemplateDocument = gql`
+  query challengeApplicationTemplate {
+    configuration {
+      template {
+        challenges {
+          name
+          applications {
+            name
+            questions {
+              required
+              question
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeApplicationTemplateQuery__
+ *
+ * To run a query within a React component, call `useChallengeApplicationTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeApplicationTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeApplicationTemplateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChallengeApplicationTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeApplicationTemplateQuery,
+    SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  >
+) {
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeApplicationTemplateQuery,
+    SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  >(ChallengeApplicationTemplateDocument, baseOptions);
+}
+export function useChallengeApplicationTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeApplicationTemplateQuery,
+    SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeApplicationTemplateQuery,
+    SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  >(ChallengeApplicationTemplateDocument, baseOptions);
+}
+export type ChallengeApplicationTemplateQueryHookResult = ReturnType<typeof useChallengeApplicationTemplateQuery>;
+export type ChallengeApplicationTemplateLazyQueryHookResult = ReturnType<
+  typeof useChallengeApplicationTemplateLazyQuery
+>;
+export type ChallengeApplicationTemplateQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeApplicationTemplateQuery,
+  SchemaTypes.ChallengeApplicationTemplateQueryVariables
+>;
+export function refetchChallengeApplicationTemplateQuery(
+  variables?: SchemaTypes.ChallengeApplicationTemplateQueryVariables
+) {
+  return { query: ChallengeApplicationTemplateDocument, variables: variables };
+}
 export const ChallengeCommunityDocument = gql`
   query challengeCommunity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {

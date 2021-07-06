@@ -8,14 +8,13 @@ import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import Button from '../components/core/Button';
 import { Loading } from '../components/core/Loading';
-import { useCreateApplicationMutation, useEcoverseApplicationTemplateQuery } from '../generated/graphql';
+import { useCreateApplicationMutation } from '../generated/graphql';
 import ErrorBlock from '../components/core/ErrorBlock';
 import { Required } from '../components/Required';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../hooks/useEcoverse';
-import { CreateNvpInput } from '../types/graphql-schema';
+import { CreateNvpInput, QuestionTemplate } from '../types/graphql-schema';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 
 const useStyles = createStyles(() => ({
@@ -28,9 +27,22 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-interface EcoverseApplyPageProps extends PageProps {}
+interface ApplyPageProps extends PageProps {
+  loading: boolean;
+  error: boolean;
+  communityId: string;
+  questions: QuestionTemplate[];
+  backUrl: string;
+}
 
-const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactElement => {
+const ApplyPage: FC<ApplyPageProps> = ({
+  paths,
+  communityId,
+  questions,
+  loading,
+  error,
+  backUrl,
+}): React.ReactElement => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'apply', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -39,16 +51,9 @@ const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactEl
   const handleError = useApolloErrorHandler();
 
   const { user } = useUserContext();
-  const userId = user?.user.id;
-
-  const { ecoverse } = useEcoverse();
-  const communityId = ecoverse?.ecoverse.community?.id;
+  const userId = user?.user.id || '';
 
   const [hasApplied, setHasApplied] = useState(false);
-
-  const { data, loading: isTemplateLoading, error } = useEcoverseApplicationTemplateQuery();
-  /* todo: get applications by ecoverse and application name */
-  const questions = data?.configuration.template.ecoverses[0].applications?.[0].questions || [];
 
   const [createApplication, { loading: isCreationLoading }] = useCreateApplicationMutation({
     onCompleted: () => {
@@ -87,8 +92,8 @@ const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactEl
     await createApplication({
       variables: {
         input: {
-          userID: userId || '',
-          parentID: communityId || '',
+          userID: userId,
+          parentID: communityId,
           questions: questionsAndAnswers,
         },
       },
@@ -97,17 +102,18 @@ const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactEl
 
   return (
     <Container>
-      {isTemplateLoading && <Loading text={t('pages.ecoverse.application.loading')} />}
+      {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
           <Typography variant={'h3'}>{t('pages.ecoverse.application.finish')}</Typography>
-          <Button as={Link} to={`/${ecoverse?.ecoverse.nameID}`}>
+          <Button as={Link} to={backUrl}>
             {t('pages.ecoverse.application.backButton')}
           </Button>
         </div>
       ) : (
-        questions.length > 0 && (
+        questions.length > 0 &&
+        !loading && (
           <>
             <Typography variant={'h3'} className={'mt-4 mb-4'}>
               {t('pages.ecoverse.application.title')}
@@ -155,4 +161,4 @@ const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactEl
   );
 };
 
-export default EcoverseApplyPage;
+export default ApplyPage;

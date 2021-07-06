@@ -2246,6 +2246,28 @@ export type ChallengeActivityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChallengeApplicationTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      challenges: Array<
+        { __typename?: 'ChallengeTemplate' } & Pick<ChallengeTemplate, 'name'> & {
+            applications?: Maybe<
+              Array<
+                { __typename?: 'ApplicationTemplate' } & Pick<ApplicationTemplate, 'name'> & {
+                    questions: Array<
+                      { __typename?: 'QuestionTemplate' } & Pick<QuestionTemplate, 'required' | 'question'>
+                    >;
+                  }
+              >
+            >;
+          }
+      >;
+    };
+  };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
