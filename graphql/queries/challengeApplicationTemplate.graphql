@@ -1,0 +1,16 @@
+query challengeApplicationTemplate {
+  configuration {
+    template {
+      challenges {
+        name
+        applications {
+          name
+          questions {
+            required
+            question
+          }
+        }
+      }
+    }
+  }
+}
