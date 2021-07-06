@@ -3263,6 +3263,7 @@ export const ChallengesDocument = gql`
         displayName
         nameID
         context {
+          id
           tagline
           references {
             name
