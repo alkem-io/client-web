@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Role } from '../models/Role';
-import { AuthorizationCredential, Membership, User } from '../types/graphql-schema';
+import { AuthorizationCredential, UserMembership, User } from '../types/graphql-schema';
 import { useCredentialsResolver } from './useCredentialsResolver';
 
 export interface UserMetadata {
@@ -23,7 +23,7 @@ export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
 
   const toUserMetadata = useCallback(
-    (user: User | undefined, membershipData?: Membership): UserMetadata | undefined => {
+    (user: User | undefined, membershipData?: UserMembership): UserMetadata | undefined => {
       if (!user) {
         return;
       }

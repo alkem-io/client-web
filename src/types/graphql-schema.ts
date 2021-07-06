@@ -665,17 +665,9 @@ export type Lifecycle = {
   templateName?: Maybe<Scalars['String']>;
 };
 
-export type Membership = {
-  __typename?: 'Membership';
-  /** Details of Ecoverses the user is a member of, with child memberships */
-  ecoverses: Array<MembershipResultEntryEcoverse>;
-  /** Details of the Organisations the user is a member of, with child memberships. */
-  organisations: Array<MembershipResultEntryOrganisation>;
-};
-
-export type MembershipInput = {
-  /** The ID of the user to retrieve the membership of. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+export type MembershipOrganisationInput = {
+  /** The ID of the organisation to retrieve the membership of. */
+  organisationID: Scalars['UUID_NAMEID'];
 };
 
 export type MembershipResultEntry = {
@@ -688,8 +680,13 @@ export type MembershipResultEntry = {
   nameID: Scalars['NameID'];
 };
 
-export type MembershipResultEntryEcoverse = {
-  __typename?: 'MembershipResultEntryEcoverse';
+export type MembershipUserInput = {
+  /** The ID of the user to retrieve the membership of. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type MembershipUserResultEntryEcoverse = {
+  __typename?: 'MembershipUserResultEntryEcoverse';
   /** Details of the Challenges the user is a member of */
   challenges: Array<MembershipResultEntry>;
   /** Display name of the entity */
@@ -704,15 +701,15 @@ export type MembershipResultEntryEcoverse = {
   userGroups: Array<MembershipResultEntry>;
 };
 
-export type MembershipResultEntryOrganisation = {
-  __typename?: 'MembershipResultEntryOrganisation';
+export type MembershipUserResultEntryOrganisation = {
+  __typename?: 'MembershipUserResultEntryOrganisation';
   /** Display name of the entity */
   displayName: Scalars['String'];
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
-  /** Details of the UserGroups the user is a member of */
+  /** Details of the Organisations the user is a member of */
   userGroups: Array<MembershipResultEntry>;
 };
 
@@ -1147,6 +1144,14 @@ export type OrganisationGroupArgs = {
   ID: Scalars['UUID'];
 };
 
+export type OrganisationMembership = {
+  __typename?: 'OrganisationMembership';
+  /** Details of the Challenges the Organisation is leading. */
+  challengesLeading: Array<MembershipResultEntry>;
+  /** Details of Ecoverses the Organisation is hosting. */
+  ecoversesHosting: Array<MembershipResultEntry>;
+};
+
 export type OryConfig = {
   __typename?: 'OryConfig';
   /** Ory Issuer. */
@@ -1223,8 +1228,10 @@ export type Query = {
   ecoverses: Array<Ecoverse>;
   /** The currently logged in user */
   me: User;
+  /** The memberships for this Organisation */
+  membershipOrganisation: OrganisationMembership;
   /** Search the ecoverse for terms supplied */
-  membership: Membership;
+  membershipUser: UserMembership;
   messages: Array<Message>;
   /** Alkemio Services Metadata */
   metadata: Metadata;
@@ -1250,8 +1257,12 @@ export type QueryEcoverseArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type QueryMembershipArgs = {
-  membershipData: MembershipInput;
+export type QueryMembershipOrganisationArgs = {
+  membershipData: MembershipOrganisationInput;
+};
+
+export type QueryMembershipUserArgs = {
+  membershipData: MembershipUserInput;
 };
 
 export type QueryOrganisationArgs = {
@@ -1621,6 +1632,14 @@ export type UserGroup = Searchable & {
   parent?: Maybe<Groupable>;
   /** The profile for the user group */
   profile?: Maybe<Profile>;
+};
+
+export type UserMembership = {
+  __typename?: 'UserMembership';
+  /** Details of Ecoverses the user is a member of, with child memberships */
+  ecoverses: Array<MembershipUserResultEntryEcoverse>;
+  /** Details of the Organisations the user is a member of, with child memberships. */
+  organisations: Array<MembershipUserResultEntryOrganisation>;
 };
 
 export type UserSendMessageInput = {
@@ -2000,6 +2019,16 @@ export type GrantCredentialsMutation = { __typename?: 'Mutation' } & {
   grantCredentialToUser: { __typename?: 'User' } & Pick<User, 'id' | 'displayName'> & UserAgentFragment;
 };
 
+export type RemoveUserFromCommunityMutationVariables = Exact<{
+  input: RemoveCommunityMemberInput;
+}>;
+
+export type RemoveUserFromCommunityMutation = { __typename?: 'Mutation' } & {
+  removeUserFromCommunity: { __typename?: 'Community' } & Pick<Community, 'id'> & {
+      members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+    };
+};
+
 export type RemoveUserFromGroupMutationVariables = Exact<{
   input: RemoveUserGroupMemberInput;
 }>;
@@ -2143,19 +2172,6 @@ export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
   };
 };
 
-export type ChallengeActivityQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeActivityQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
-          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
-        };
-    };
-};
-
 export type ChallengeCardQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -2171,6 +2187,61 @@ export type ChallengeCardQuery = { __typename?: 'Query' } & {
                 visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
               }
           >;
+        };
+    };
+};
+
+export type GroupCardQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type GroupCardQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
+          parent?: Maybe<
+            | ({ __typename: 'Community' } & Pick<Community, 'displayName'>)
+            | ({ __typename: 'Organisation' } & Pick<Organisation, 'displayName'>)
+          >;
+          members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'displayName'>>>;
+          profile?: Maybe<
+            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
+                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
+                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+              }
+          >;
+        };
+    };
+};
+
+export type OrganizationCardQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationCardQuery = { __typename?: 'Query' } & {
+  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName' | 'nameID'> & {
+      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'> & {
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
+          references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
+        };
+    };
+};
+
+export type UserCardQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserCardQuery = { __typename?: 'Query' } & { user: { __typename: 'User' } & UserDetailsFragment };
+
+export type ChallengeActivityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeActivityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
+          activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
         };
     };
 };
@@ -2515,29 +2586,6 @@ export type GlobalActivityQuery = { __typename?: 'Query' } & {
   metadata: { __typename?: 'Metadata' } & { activity: Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>> };
 };
 
-export type GroupCardQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupCardQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      group: { __typename: 'UserGroup' } & Pick<UserGroup, 'name'> & {
-          parent?: Maybe<
-            | ({ __typename: 'Community' } & Pick<Community, 'displayName'>)
-            | ({ __typename: 'Organisation' } & Pick<Organisation, 'displayName'>)
-          >;
-          members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'displayName'>>>;
-          profile?: Maybe<
-            { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar' | 'description'> & {
-                references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'description'>>>;
-                tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'name' | 'tags'>>>;
-              }
-          >;
-        };
-    };
-};
-
 export type GroupMembersQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -2557,15 +2605,30 @@ export type MeQuery = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & UserDetailsFragment & UserAgentFragment;
 };
 
-export type MembershipQueryVariables = Exact<{
-  input: MembershipInput;
+export type MembershipOrganisationQueryVariables = Exact<{
+  input: MembershipOrganisationInput;
 }>;
 
-export type MembershipQuery = { __typename?: 'Query' } & {
-  membership: { __typename?: 'Membership' } & {
+export type MembershipOrganisationQuery = { __typename?: 'Query' } & {
+  membershipOrganisation: { __typename?: 'OrganisationMembership' } & {
+    ecoversesHosting: Array<
+      { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+    >;
+    challengesLeading: Array<
+      { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+    >;
+  };
+};
+
+export type MembershipUserQueryVariables = Exact<{
+  input: MembershipUserInput;
+}>;
+
+export type MembershipUserQuery = { __typename?: 'Query' } & {
+  membershipUser: { __typename?: 'UserMembership' } & {
     ecoverses: Array<
-      { __typename?: 'MembershipResultEntryEcoverse' } & Pick<
-        MembershipResultEntryEcoverse,
+      { __typename?: 'MembershipUserResultEntryEcoverse' } & Pick<
+        MembershipUserResultEntryEcoverse,
         'id' | 'nameID' | 'displayName'
       > & {
           challenges: Array<
@@ -2580,8 +2643,8 @@ export type MembershipQuery = { __typename?: 'Query' } & {
         }
     >;
     organisations: Array<
-      { __typename?: 'MembershipResultEntryOrganisation' } & Pick<
-        MembershipResultEntryOrganisation,
+      { __typename?: 'MembershipUserResultEntryOrganisation' } & Pick<
+        MembershipUserResultEntryOrganisation,
         'id' | 'nameID' | 'displayName'
       > & {
           userGroups: Array<
@@ -2868,18 +2931,6 @@ export type OrganisationGroupQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type OrganizationCardQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationCardQuery = { __typename?: 'Query' } & {
-  organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'> & {
-      groups?: Maybe<Array<{ __typename?: 'UserGroup' } & Pick<UserGroup, 'name'>>>;
-      members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
-      profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'>;
-    };
-};
-
 export type OrganizationDetailsQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID'];
 }>;
@@ -3073,14 +3124,6 @@ export type UserAvatarsQuery = { __typename?: 'Query' } & {
         profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>>;
       }
   >;
-};
-
-export type UserCardDataQueryVariables = Exact<{
-  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type UserCardDataQuery = { __typename?: 'Query' } & {
-  usersById: Array<{ __typename: 'User' } & UserDetailsFragment & UserAgentFragment>;
 };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;

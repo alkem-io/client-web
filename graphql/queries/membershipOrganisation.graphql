@@ -1,0 +1,14 @@
+query membershipOrganisation($input: MembershipOrganisationInput!) {
+  membershipOrganisation(membershipData: $input) {
+    ecoversesHosting {
+      id
+      nameID
+      displayName
+    }
+    challengesLeading {
+      id
+      nameID
+      displayName
+    }
+  }
+}
