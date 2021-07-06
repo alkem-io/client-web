@@ -397,14 +397,14 @@
       }
     },
     "registration-success": {
-      "header": "You have been registered successfully!",
-      "subheader": "An e-mail was send to your email. Please check your e-mail and verify it.",
-      "message": "some very nice markdown **to be tested**"
+      "header": "Thank you for signing up!",
+      "subheader": "For security purposes we need to validate the provided email address. Please check your inbox and follow instructions there.",
+      "message": "Suggested next steps:"
     },
     "verification-success": {
-      "header": "You have been ....verified!",
-      "subheader": "to be updated",
-      "message": "some very nice markdown **to be tested**"
+      "header": "Thank you for verifying your email address!",
+      "subheader": "Your profile is now fully activated on the platform. Enjoy!",
+      "message": "Please do consider filling out all aspects of your [profile](./profile) - helps with both applying to join communities and with others being able to connect with you. "
     },
     "recovery": {
       "form": {
