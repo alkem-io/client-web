@@ -12,7 +12,11 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
   const role = useMemo(() => {
     return roles.filter(r => !r.hidden)[0]?.name;
   }, [userMetadata]);
-  return user && <User name={user.displayName} title={role} orientation={orientation} src={user.profile?.avatar} />;
+  return (
+    user && (
+      <User name={user.displayName} title={role} orientation={orientation} src={user.profile?.avatar} reverseLayout />
+    )
+  );
 };
 
 export default UserSegment;

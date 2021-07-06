@@ -6,6 +6,7 @@ const useMainStyles = createStyles(() => ({
   main: {
     flexGrow: 1,
     padding: '40px 0 0 0',
+    maxWidth: 1380,
   },
 }));
 

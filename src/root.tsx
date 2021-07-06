@@ -49,13 +49,12 @@ const useGlobalStyles = createStyles(theme => ({
       height: '100%',
       minHeight: '100%',
       display: 'flex',
-      flexDirection: 'column',
     },
     '#main': {
       display: 'flex',
+      flexDirection: 'column',
       flexGrow: 1,
-      width: `calc(100vw - ${theme.sidebar.width}px - ${theme.shape.spacing(2)}px)`,
-      marginLeft: theme.sidebar.width + theme.shape.spacing(2),
+      position: 'relative',
     },
   },
 }));

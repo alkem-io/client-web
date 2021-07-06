@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 
 export interface Palette {
   primary: string;
@@ -34,7 +35,8 @@ export interface Shape {
 }
 
 export interface Sidebar {
-  width: number;
+  maxWidth: number;
+  minWidth: number;
 }
 
 export interface EarlyAccessAlert {
@@ -115,7 +117,8 @@ const defaultMedia: Media = {
 };
 
 const defaultSidebar: Sidebar = {
-  width: 65,
+  maxWidth: 280,
+  minWidth: 90,
 };
 
 const defaultEarlyAccessAlert: EarlyAccessAlert = {
@@ -131,11 +134,26 @@ const defaultTheme: Theme = {
   earlyAccessAlert: defaultEarlyAccessAlert,
 };
 
+const defaultMuiTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: defaultTheme.palette.primary,
+    },
+    background: {
+      paper: defaultTheme.palette.neutralLight,
+    },
+  },
+});
+
 const ThemeContext = React.createContext<Theme>(defaultTheme);
 
 const ThemeProvider: FC<{}> = ({ children }) => {
   // can merge external configuration for the theme and pass it to the provider
-  return <ThemeContext.Provider value={defaultTheme}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={defaultTheme}>
+      <MuiThemeProvider theme={defaultMuiTheme}>{children}</MuiThemeProvider>
+    </ThemeContext.Provider>
+  );
 };
 
-export { ThemeProvider, ThemeContext };
+export { ThemeProvider, ThemeContext, defaultMuiTheme };

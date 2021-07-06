@@ -5,7 +5,6 @@ import { Breakpoints, Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Container from './Container';
-import Hidden from './Hidden';
 import Tag from './Tag';
 import Typography from './Typography';
 
@@ -163,9 +162,15 @@ const useSectionStyles = createStyles(theme => ({
   avatar: {
     display: 'flex',
     flexDirection: 'row-reverse',
+    overflow: 'hidden',
+    justifyContent: 'center',
 
     '& > *': {
       display: 'flex',
+    },
+
+    '&.mini': {
+      width: 100,
     },
   },
   gutter: {
@@ -195,16 +200,14 @@ const Section: FC<SectionProps> = ({
       <div className={styles.cover} />
       <Row className={styles.row}>
         {!hideAvatar && (
-          <Col xs={false} lg={3}>
-            <Hidden lgDown>
-              <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
-            </Hidden>
+          <Col md={12} lg={3}>
+            <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
           </Col>
         )}
         <Col
           className={'d-flex flex-column position-relative'}
           xs={12}
-          md={8 + (hideDetails ? 4 : 0)}
+          md={8 + (hideDetails || !details ? 4 : 0)}
           lg={6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)}
         >
           <Content gutters={gutters.content}>{children}</Content>

@@ -10,6 +10,7 @@ import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { useGlobalActivityQuery } from '../../generated/graphql';
 import Loading from '../../components/core/Loading';
 import getActivityCount from '../../utils/get-activity-count';
+import Image from '../../components/core/Image';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -63,6 +64,13 @@ const WelcomeSection = () => {
   return (
     <>
       <Section
+        avatar={
+          <Image
+            src={'.\\logo192.png'}
+            alt={'alkemio logo'}
+            style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
+          />
+        }
         details={
           isActivityLoading ? (
             <Loading text={'Loading statistics ...'} />

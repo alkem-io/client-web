@@ -23,13 +23,16 @@ const useToolbarStyles = createStyles(theme => ({
 
 interface ToolbarProps {
   dense?: boolean;
-  paddingClass?: string;
-  classes?: string;
+  classes?: {
+    padding?: string;
+    densePadding?: string;
+  };
+  className?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   innerRef?: RefObject<any>;
 }
 
-const Toolbar: FC<ToolbarProps> = ({ dense, paddingClass, classes, children, innerRef }) => {
+const Toolbar: FC<ToolbarProps> = ({ dense, classes, className, children, innerRef }) => {
   const styles = useToolbarStyles();
 
   return (
@@ -37,10 +40,10 @@ const Toolbar: FC<ToolbarProps> = ({ dense, paddingClass, classes, children, inn
       ref={innerRef}
       className={clsx(
         styles.toolbar,
-        paddingClass || styles.paddingDefault,
-        dense && styles.paddingDense,
+        classes?.padding || styles.paddingDefault,
+        dense && (classes?.densePadding || styles.paddingDense),
         styles.responsivePadding,
-        classes
+        className
       )}
     >
       {children}

@@ -12,6 +12,9 @@ const useFooterStyles = createStyles(theme => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
+    maxWidth: 1380,
+    width: '100%',
+    margin: 'auto',
   },
   column: {
     display: 'flex',
@@ -29,7 +32,6 @@ const useFooterStyles = createStyles(theme => ({
     display: 'flex',
     justifyContent: 'start',
     position: 'relative',
-    left: theme.sidebar.width,
   },
 }));
 
@@ -39,7 +41,7 @@ const Footer: FC = ({ children }) => {
   const platform = data?.configuration.platform;
 
   return (
-    <Toolbar classes={styles.footer} dense={true}>
+    <Toolbar className={styles.footer} dense={true}>
       <div className={styles.copyright}>
         <Typography variant="caption" color="neutralMedium" weight="boldLight">
           © 2021 Cherrytwist Foundation

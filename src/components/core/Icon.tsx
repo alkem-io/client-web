@@ -24,7 +24,7 @@ const useIconStyles = createStyles(theme => ({
   },
 }));
 
-interface IconProps extends React.SVGProps<SVGSVGElement> {
+export interface IconProps extends React.SVGProps<SVGSVGElement> {
   component: FunctionComponent<SVGProps<SVGSVGElement>>;
   size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   color: keyof Palette | 'inherit';
