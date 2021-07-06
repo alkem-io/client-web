@@ -1,35 +1,20 @@
 import { ReactComponent as CheckCircle } from 'bootstrap-icons/icons/check-circle.svg';
 import React, { FC } from 'react';
-import { Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
-
-import Image from '../../components/core/Image';
-import { Link } from 'react-router-dom';
-import { createStyles } from '../../hooks/useTheme';
-
-const useRegistrationStyles = createStyles(theme => ({
-  logo: {
-    height: theme.shape.spacing(4),
-  },
-}));
+import AuthenticationLayout from '../../layout/AuthenticationLayout';
 
 interface RegistrationSuccessPageProps {}
 
 export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { t } = useTranslation();
-  const styles = useRegistrationStyles();
 
   return (
-    <Container>
-      <div className="text-center">
-        <Link to={'/about'} href="https://alkem.io/about/">
-          <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-        </Link>
-      </div>
+    <AuthenticationLayout>
       <Typography variant={'h2'} className={'text-center'}>
         <Icon component={CheckCircle} color={'primary'} size={'xl'} />
       </Typography>
@@ -91,7 +76,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
           {t('buttons.home')}
         </Button>
       </div>
-    </Container>
+    </AuthenticationLayout>
   );
 };
 export default RegistrationSuccessPage;
