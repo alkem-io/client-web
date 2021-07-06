@@ -3,7 +3,7 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import React, { FC, useMemo } from 'react';
 import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
@@ -30,8 +30,21 @@ import { PageProps } from './common';
 import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/layout/MembershipBackdrop';
 import getActivityCount from '../utils/get-activity-count';
-import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import Loading from '../components/core/Loading';
+import ChallengeCard from '../components/Ecoverse/ChallengeCard';
+import { createStyles } from '../hooks/useTheme';
+
+const useStyles = createStyles(theme => ({
+  buttonsWrapper: {
+    display: 'flex',
+    gap: theme.shape.spacing(1),
+  },
+  ecoverseBannerImg: {
+    maxWidth: 320,
+    height: 'initial',
+    margin: '0 auto',
+  },
+}));
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -39,6 +52,7 @@ interface EcoversePageProps extends PageProps {
 }
 
 const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
+  const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -146,11 +160,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
       <Section
         avatar={
           ecoverseBanner ? (
-            <Image
-              src={ecoverseBanner}
-              alt={`${name} logo`}
-              style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
-            />
+            <Image src={ecoverseBanner} alt={`${name} logo`} className={styles.ecoverseBannerImg} />
           ) : (
             <div />
           )
@@ -166,7 +176,10 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
         <SubHeader text={tagline} />
         <Body>
           <Markdown children={vision} />
-          {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
+          <div className={styles.buttonsWrapper}>
+            {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
+            {user?.ofEcoverse(ecoverseId) ? <></> : <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />}
+          </div>
         </Body>
       </Section>
       <Divider />
