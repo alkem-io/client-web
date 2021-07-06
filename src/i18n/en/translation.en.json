@@ -216,7 +216,10 @@
       "title": "Ecoverse",
       "application": {
         "title": "Answer the questions below",
-        "finish": "Thank you for applying"
+        "finish": "Thank you for applying",
+        "backButton": "Back",
+        "loading": "Loading questions",
+        "errorBlockName": "the questions"
       },
       "sections": {
         "challenges": {

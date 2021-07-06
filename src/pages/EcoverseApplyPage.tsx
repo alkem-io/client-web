@@ -1,5 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
 import { Container, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -22,7 +23,8 @@ const useStyles = createStyles(() => ({
     height: '100%',
     width: '100%',
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 }));
 
@@ -95,11 +97,14 @@ const EcoverseApplyPage: FC<EcoverseApplyPageProps> = ({ paths }): React.ReactEl
 
   return (
     <Container>
-      {isTemplateLoading && <Loading text={'Loading questions ...'} />}
-      {error && <ErrorBlock blockName={''} />}
+      {isTemplateLoading && <Loading text={t('pages.ecoverse.application.loading')} />}
+      {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
-          <Typography variant={'h3'}>{'Thank you for applying'}</Typography>
+          <Typography variant={'h3'}>{t('pages.ecoverse.application.finish')}</Typography>
+          <Button as={Link} to={`/${ecoverse?.ecoverse.nameID}`}>
+            {t('pages.ecoverse.application.backButton')}
+          </Button>
         </div>
       ) : (
         questions.length > 0 && (
