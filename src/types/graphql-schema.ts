@@ -2423,7 +2423,7 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
         Array<
           { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'nameID'> & {
               context?: Maybe<
-                { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
                     references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
                     visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
                   }
