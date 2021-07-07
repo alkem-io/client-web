@@ -32,6 +32,7 @@ const useStyles = createStyles(theme => ({
     display: 'flex',
     gap: theme.shape.spacing(2),
     justifyContent: 'center',
+    alignItems: 'center',
 
     '& > img': {
       height: theme.shape.spacing(4),
