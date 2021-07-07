@@ -1,16 +1,18 @@
+import { Box } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Button from '../../components/core/Button';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
-import { createStyles } from '../../hooks/useTheme';
-import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
-import { useGlobalActivityQuery } from '../../generated/graphql';
-import Loading from '../../components/core/Loading';
-import getActivityCount from '../../utils/get-activity-count';
 import Image from '../../components/core/Image';
+import Loading from '../../components/core/Loading';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import { Theme } from '../../context/ThemeProvider';
+import { useGlobalActivityQuery } from '../../generated/graphql';
+import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
+import { createStyles } from '../../hooks/useTheme';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
+import getActivityCount from '../../utils/get-activity-count';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -24,6 +26,16 @@ const useStyles = createStyles(theme => ({
   flexCol: {
     display: 'flex',
     flexDirection: 'column',
+  },
+  link: {
+    marginTop: `${theme.shape.spacing(2)}px`,
+    marginRight: `${theme.shape.spacing(4)}px`,
+    '&:hover': {
+      color: theme.palette.background,
+    },
+  },
+  banner: {
+    backgroundOpacity: 0.6,
   },
 }));
 
@@ -61,12 +73,14 @@ const WelcomeSection = () => {
     [globalActivity]
   );
 
+  const banner = './alkemio-banner.png';
+
   return (
     <>
       <Section
         avatar={
           <Image
-            src={'.\\logo192.png'}
+            src={'./logo192.png'}
             alt={'alkemio logo'}
             style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
           />
@@ -94,6 +108,38 @@ const WelcomeSection = () => {
           </div>
         </Body>
       </Section>
+      <Box p={2} />
+      <Section
+        details={<div></div>}
+        className={styles.banner}
+        classes={{
+          background: (_: Theme) => `url("${banner}") no-repeat center center / cover`,
+          coverBackground: (_: Theme) =>
+            'linear-gradient(90deg, rgba(0,0,0,0.5326505602240896) 11%, rgba(0,226,255,0.10127801120448177) 91%)',
+        }}
+        gutters={{
+          root: true,
+          content: true,
+          details: false,
+        }}
+      >
+        <Body className="d-flex flex-column flex-grow-1">
+          <SectionHeader
+            text={'Want to collaborate and host challenges with Alkemio?'}
+            classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
+          />
+          <div>
+            <Button
+              inset
+              variant="semiTransparent"
+              text="contact us"
+              onClick={() => console.log()}
+              className={styles.link}
+            />
+          </div>
+        </Body>
+      </Section>
+      <Box p={2} />
     </>
   );
 };
