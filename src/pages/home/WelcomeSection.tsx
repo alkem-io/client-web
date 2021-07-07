@@ -35,7 +35,10 @@ const useStyles = createStyles(theme => ({
     },
   },
   banner: {
-    backgroundOpacity: 0.6,
+    '& > .section-cover': {
+      outline: `${theme.shape.spacing(0.5)}px solid ${theme.palette.neutralMedium}`,
+      outlineOffset: -theme.shape.spacing(2),
+    },
   },
 }));
 

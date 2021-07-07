@@ -197,7 +197,7 @@ const Section: FC<SectionProps> = ({
 
   return (
     <Container disableGutters={!gutters.root} className={clsx(styles.root, className)}>
-      <div className={styles.cover} />
+      <div className={clsx(styles.cover, 'section-cover')} />
       <Row className={styles.row}>
         {!hideAvatar && (
           <Col md={12} lg={3}>
