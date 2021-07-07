@@ -165,7 +165,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           </Col>
         </Row>
       </Container>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
+      <CardContainer cardHeight={290} xs={12} md={6} lg={4} xl={2}>
         {community.slice(0, 12).map(el => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
           if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;
@@ -174,7 +174,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           return null;
         })}
       </CardContainer>
-      <Divider />
     </>
   );
 };

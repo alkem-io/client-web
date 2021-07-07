@@ -2483,6 +2483,7 @@ export const ChallengeCardDocument = gql`
           tagline
           visual {
             avatar
+            background
           }
         }
       }
