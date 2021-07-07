@@ -9,20 +9,37 @@ interface Props {
   paths: Path[];
   path: string;
   communityId: string;
+  communityName: string;
+  tagline: string;
+  avatar: string;
   questions: QuestionTemplate[];
   loading: boolean;
   error: boolean;
   backUrl: string;
 }
 
-const ApplyRoute: FC<Props> = ({ paths, path, communityId, questions, loading, error, backUrl }) => {
+const ApplyRoute: FC<Props> = ({
+  paths,
+  path,
+  communityId,
+  communityName,
+  tagline,
+  avatar,
+  questions,
+  loading,
+  error,
+  backUrl,
+}) => {
   return (
     <Switch>
       <Route path={`${path}/apply`}>
         <ApplyPage
           paths={paths}
           communityId={communityId}
+          communityName={communityName}
           questions={questions}
+          tagline={tagline}
+          avatar={avatar}
           backUrl={backUrl}
           loading={loading}
           error={error}

@@ -87,6 +87,18 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
+export type ApplicationResultEntry = {
+  __typename?: 'ApplicationResultEntry';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** The current state of the application. */
+  state: Scalars['String'];
+};
+
 export type ApplicationTemplate = {
   __typename?: 'ApplicationTemplate';
   /** Application template name. */
@@ -1648,6 +1660,8 @@ export type UserGroup = Searchable & {
 
 export type UserMembership = {
   __typename?: 'UserMembership';
+  /** Open applications for this user. */
+  applications?: Maybe<Array<ApplicationResultEntry>>;
   /** Details of Ecoverses the user is a member of, with child memberships */
   ecoverses: Array<MembershipUserResultEntryEcoverse>;
   /** Details of the Organisations the user is a member of, with child memberships. */
@@ -2171,6 +2185,31 @@ export type AllOpportunitiesQueryVariables = Exact<{
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID'>>;
+    };
+};
+
+export type ChallengeApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
+export type EcoverseApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName'> & {
+      context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
     };
 };
 

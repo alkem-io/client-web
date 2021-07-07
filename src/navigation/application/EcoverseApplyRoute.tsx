@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router';
-import { useEcoverseApplicationTemplateQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
+import { useEcoverseApplicationQuery, useEcoverseApplicationTemplateQuery } from '../../generated/graphql';
 import { PageProps } from '../../pages';
 import ApplyRoute from './ApplyRoute';
 
@@ -11,13 +11,15 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
   const { ecoverseId } = useParams<{ ecoverseId: string }>();
   const backUrl = `/${ecoverseId}`;
 
-  /* todo: only community ID is needed */
-  const { data: communityData, loading: isCommunityLoading, error: communityError } = useEcoverseCommunityQuery({
+  const { data: ecoverseInfoData, loading: isCommunityLoading, error: communityError } = useEcoverseApplicationQuery({
     variables: {
       ecoverseId: ecoverseId,
     },
   });
-  const communityId = communityData?.ecoverse.community?.id || '';
+  const communityId = ecoverseInfoData?.ecoverse.community?.id || '';
+  const ecoverseName = ecoverseInfoData?.ecoverse.displayName || '';
+  const avatar = ecoverseInfoData?.ecoverse.context?.visual?.avatar || '';
+  const tagline = ecoverseInfoData?.ecoverse.context?.tagline || '';
 
   const {
     data: templateData,
@@ -34,6 +36,9 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
       paths={paths}
       path={path}
       communityId={communityId}
+      communityName={ecoverseName}
+      tagline={tagline}
+      avatar={avatar}
       questions={questions}
       backUrl={backUrl}
     />

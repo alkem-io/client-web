@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Container, Form } from 'react-bootstrap';
+import { Container, Form, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -16,8 +16,10 @@ import { useUserContext } from '../hooks/useUserContext';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { CreateNvpInput, QuestionTemplate } from '../types/graphql-schema';
 import { useUpdateNavigation } from '../hooks/useNavigation';
+import clsx from 'clsx';
+import Image from '../components/core/Image';
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles(theme => ({
   thankYouDiv: {
     height: '100%',
     width: '100%',
@@ -25,12 +27,21 @@ const useStyles = createStyles(() => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  logo: {
+    height: theme.shape.spacing(4),
+  },
+  logoWrapper: {
+    marginBottom: theme.shape.spacing(2),
+  },
 }));
 
 interface ApplyPageProps extends PageProps {
   loading: boolean;
   error: boolean;
   communityId: string;
+  communityName: string;
+  tagline: string;
+  avatar: string;
   questions: QuestionTemplate[];
   backUrl: string;
 }
@@ -38,7 +49,10 @@ interface ApplyPageProps extends PageProps {
 const ApplyPage: FC<ApplyPageProps> = ({
   paths,
   communityId,
+  communityName,
   questions,
+  tagline,
+  avatar,
   loading,
   error,
   backUrl,
@@ -100,13 +114,19 @@ const ApplyPage: FC<ApplyPageProps> = ({
     });
   };
 
+  //todo-svetoslav: logo / tagline displaying nicely on application page, logo displaying nicely on completed applcation page
+
   return (
     <Container>
       {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
-          <Typography variant={'h3'}>{t('pages.ecoverse.application.finish')}</Typography>
+          <Image src={avatar} alt="Alkemio" className={styles.logo} />
+          <Typography variant={'h3'}>
+            {t('pages.ecoverse.application.finish')}
+            {communityName}
+          </Typography>
           <Button as={Link} to={backUrl}>
             {t('pages.ecoverse.application.backButton')}
           </Button>
@@ -115,8 +135,20 @@ const ApplyPage: FC<ApplyPageProps> = ({
         questions.length > 0 &&
         !loading && (
           <>
-            <Typography variant={'h3'} className={'mt-4 mb-4'}>
+            <Typography variant={'h2'} className={'mt-4 mb-4'}>
               {t('pages.ecoverse.application.title')}
+              {communityName}
+            </Typography>
+            <Container>
+              <Row>
+                <Col className={clsx('d-flex justify-content-left', styles.logoWrapper)}>
+                  {avatar && <Image src={avatar} alt="Alkemio" className={styles.logo} />}
+                </Col>
+                <Col className={clsx('d-flex justify-content-left', styles.logoWrapper)}>{tagline}</Col>
+              </Row>
+            </Container>
+            <Typography variant={'h3'} className={'mt-5 mb-5'}>
+              {t('pages.ecoverse.application.subheader')}
             </Typography>
             <Formik
               initialValues={initialValues}

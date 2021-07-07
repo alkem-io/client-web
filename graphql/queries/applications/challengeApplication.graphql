@@ -1,0 +1,15 @@
+query challengeApplication($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      displayName
+      context{
+        ...ContextDetails
+      }
+      community {
+        ...CommunityDetails
+      }
+    }
+  }
+}
