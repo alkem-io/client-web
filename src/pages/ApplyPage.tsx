@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Container, Form, Row, Col } from 'react-bootstrap';
+import { Container, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,6 @@ import { useUserContext } from '../hooks/useUserContext';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { CreateNvpInput, QuestionTemplate } from '../types/graphql-schema';
 import { useUpdateNavigation } from '../hooks/useNavigation';
-import clsx from 'clsx';
 import Image from '../components/core/Image';
 
 const useStyles = createStyles(theme => ({
@@ -26,12 +25,17 @@ const useStyles = createStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    gap: theme.shape.spacing(1),
+    marginTop: theme.shape.spacing(2),
   },
-  logo: {
-    height: theme.shape.spacing(4),
-  },
-  logoWrapper: {
-    marginBottom: theme.shape.spacing(2),
+  logoDiv: {
+    display: 'flex',
+    gap: theme.shape.spacing(2),
+    justifyContent: 'center',
+
+    '& > img': {
+      height: theme.shape.spacing(4),
+    },
   },
 }));
 
@@ -70,9 +74,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
   const [hasApplied, setHasApplied] = useState(false);
 
   const [createApplication, { loading: isCreationLoading }] = useCreateApplicationMutation({
-    onCompleted: () => {
-      setHasApplied(true);
-    },
+    onCompleted: () => setHasApplied(true),
     onError: handleError,
   });
 
@@ -114,15 +116,31 @@ const ApplyPage: FC<ApplyPageProps> = ({
     });
   };
 
-  //todo-svetoslav: logo / tagline displaying nicely on application page, logo displaying nicely on completed applcation page
-
   return (
     <Container>
-      {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
+      {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
+      {!loading && !hasApplied && (
+        <>
+          <Typography variant={'h2'} className={'mt-4 mb-4'}>
+            {t('pages.ecoverse.application.title')}
+            {communityName}
+          </Typography>
+        </>
+      )}
+      {!loading && (
+        <div className={styles.logoDiv}>
+          {avatar && <Image src={avatar} alt="Alkemio" />}
+          {!hasApplied && <span>{tagline}</span>}
+        </div>
+      )}
+      {!loading && !hasApplied && (
+        <Typography variant={'h3'} className={'mt-5 mb-5'}>
+          {t('pages.ecoverse.application.subheader')}
+        </Typography>
+      )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
-          <Image src={avatar} alt="Alkemio" className={styles.logo} />
           <Typography variant={'h3'}>
             {t('pages.ecoverse.application.finish')}
             {communityName}
@@ -132,62 +150,44 @@ const ApplyPage: FC<ApplyPageProps> = ({
           </Button>
         </div>
       ) : (
-        questions.length > 0 &&
-        !loading && (
-          <>
-            <Typography variant={'h2'} className={'mt-4 mb-4'}>
-              {t('pages.ecoverse.application.title')}
-              {communityName}
-            </Typography>
-            <Container>
-              <Row>
-                <Col className={clsx('d-flex justify-content-left', styles.logoWrapper)}>
-                  {avatar && <Image src={avatar} alt="Alkemio" className={styles.logo} />}
-                </Col>
-                <Col className={clsx('d-flex justify-content-left', styles.logoWrapper)}>{tagline}</Col>
-              </Row>
-            </Container>
-            <Typography variant={'h3'} className={'mt-5 mb-5'}>
-              {t('pages.ecoverse.application.subheader')}
-            </Typography>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              enableReinitialize
-              onSubmit={async values => onSubmit(values)}
-            >
-              {({ handleSubmit, handleChange, errors }) => {
-                return (
-                  <>
-                    {questions.map((x, i) => (
-                      <Form.Group key={i}>
-                        <Form.Label>
-                          {x.question}
-                          {x.required && <Required />}
-                        </Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={2}
-                          name={x.question}
-                          required={x.required}
-                          onChange={handleChange}
-                          autoComplete="on"
-                          autoCapitalize="sentences"
-                          autoCorrect="on"
-                          isInvalid={!!errors[x.question]}
-                        />
-                        <Form.Control.Feedback type="invalid">This is required</Form.Control.Feedback>
-                      </Form.Group>
-                    ))}
-                    <Button variant="primary" type="submit" disabled={isCreationLoading} onClick={() => handleSubmit()}>
-                      {isCreationLoading ? 'Processing...' : 'Apply'}
-                    </Button>
-                  </>
-                );
-              }}
-            </Formik>
-          </>
-        )
+        <>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize
+            onSubmit={async values => onSubmit(values)}
+          >
+            {({ handleSubmit, handleChange, errors }) => {
+              return (
+                <>
+                  {questions.map((x, i) => (
+                    <Form.Group key={i}>
+                      <Form.Label>
+                        {x.question}
+                        {x.required && <Required />}
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={2}
+                        name={x.question}
+                        required={x.required}
+                        onChange={handleChange}
+                        autoComplete="on"
+                        autoCapitalize="sentences"
+                        autoCorrect="on"
+                        isInvalid={!!errors[x.question]}
+                      />
+                      <Form.Control.Feedback type="invalid">This is required</Form.Control.Feedback>
+                    </Form.Group>
+                  ))}
+                  <Button variant="primary" type="submit" disabled={isCreationLoading} onClick={() => handleSubmit()}>
+                    {isCreationLoading ? 'Processing...' : 'Apply'}
+                  </Button>
+                </>
+              );
+            }}
+          </Formik>
+        </>
       )}
     </Container>
   );

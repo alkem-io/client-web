@@ -215,9 +215,9 @@
     "ecoverse": {
       "title": "Ecoverse",
       "application": {
-        "title": "Application to join Ecoverse: ",
-        "subheader": "Please fill out the questsions below, which together with your profile will be sent to the relevant party.",
-        "finish": "Thank you for completing your application for: ",
+        "title": "Application to join Ecoverse ",
+        "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
+        "finish": "Thank you for completing your application for ",
         "backButton": "Back",
         "loading": "Loading questions",
         "errorBlockName": "the questions"
