@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import CommunitySection from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
@@ -119,6 +119,10 @@ const useChallengeStyles = createStyles(theme => ({
     '&:hover': {
       cursor: 'pointer',
     },
+  },
+  buttonsWrapper: {
+    display: 'flex',
+    gap: theme.shape.spacing(1),
   },
 }));
 
@@ -291,7 +295,16 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
       >
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
-        <Body text={background}>{video && <Button text="See more" as={'a'} href={video.uri} target="_blank" />}</Body>
+        <Body text={background}>
+          <div className={styles.buttonsWrapper}>
+            {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
+            {user?.ofChallenge(challenge?.id) ? (
+              <></>
+            ) : (
+              <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />
+            )}
+          </div>
+        </Body>
       </Section>
       <Divider />
       <BackdropWithMessage

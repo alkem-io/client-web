@@ -9,6 +9,12 @@ fragment UserDetails on User {
   city
   phone
   accountUpn
+  agent {
+    credentials {
+      type
+      resourceID
+    }
+  }
   profile {
     id
     description

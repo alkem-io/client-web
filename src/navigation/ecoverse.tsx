@@ -26,6 +26,8 @@ import {
   User,
 } from '../types/graphql-schema';
 import { Project } from './project';
+import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
+import ChallengeApplyRoute from './application/ChallengeApplyRoute';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -66,6 +68,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} challenges={challenges} />
+      </Route>
+      <Route path={path}>
+        <EcoverseApplyRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -126,6 +131,9 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
             paths={currentPaths}
           />
         )}
+      </Route>
+      <Route path={path}>
+        <ChallengeApplyRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/opportunities/:id`}>
         <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />

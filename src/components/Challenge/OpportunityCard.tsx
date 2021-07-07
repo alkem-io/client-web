@@ -20,9 +20,6 @@ const useCardStyles = createStyles(theme => ({
     border: `1px solid ${theme.palette.neutralMedium}`,
     height: 400,
   },
-  body: {
-    height: 150,
-  },
   content: {
     height: '225px',
     background: theme.palette.background,
@@ -81,7 +78,6 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
           classes: {
             background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
           },
-          className: styles.body,
         }}
         primaryTextProps={{
           text: displayName,
@@ -128,7 +124,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline}>
+          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
             <span>{tagline}</span>
           </Typography>
         )}

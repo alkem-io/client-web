@@ -1,0 +1,5 @@
+mutation createApplication($input: CreateApplicationInput!) {
+  createApplication(applicationData: $input) {
+    id
+  }
+}

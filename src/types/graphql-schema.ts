@@ -1777,6 +1777,11 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
   'id' | 'displayName' | 'firstName' | 'lastName' | 'email' | 'gender' | 'country' | 'city' | 'phone' | 'accountUpn'
 > & {
+    agent?: Maybe<
+      { __typename?: 'Agent' } & {
+        credentials?: Maybe<Array<{ __typename?: 'Credential' } & Pick<Credential, 'type' | 'resourceID'>>>;
+      }
+    >;
     profile?: Maybe<
       { __typename?: 'Profile' } & Pick<Profile, 'id' | 'description' | 'avatar'> & {
           references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'id' | 'name' | 'uri'>>>;
@@ -1817,6 +1822,14 @@ export type CreateActorGroupMutationVariables = Exact<{
 
 export type CreateActorGroupMutation = { __typename?: 'Mutation' } & {
   createActorGroup: { __typename?: 'ActorGroup' } & Pick<ActorGroup, 'id' | 'name'>;
+};
+
+export type CreateApplicationMutationVariables = Exact<{
+  input: CreateApplicationInput;
+}>;
+
+export type CreateApplicationMutation = { __typename?: 'Mutation' } & {
+  createApplication: { __typename?: 'Application' } & Pick<Application, 'id'>;
 };
 
 export type CreateAspectMutationVariables = Exact<{
@@ -2149,6 +2162,31 @@ export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type ChallengeApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
+export type EcoverseApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName'> & {
+      context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
+    };
+};
+
 export type AuthenticationConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AuthenticationConfigurationQuery = { __typename?: 'Query' } & {
@@ -2236,6 +2274,28 @@ export type ChallengeActivityQuery = { __typename?: 'Query' } & {
           activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
         };
     };
+};
+
+export type ChallengeApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChallengeApplicationTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      challenges: Array<
+        { __typename?: 'ChallengeTemplate' } & Pick<ChallengeTemplate, 'name'> & {
+            applications?: Maybe<
+              Array<
+                { __typename?: 'ApplicationTemplate' } & Pick<ApplicationTemplate, 'name'> & {
+                    questions: Array<
+                      { __typename?: 'QuestionTemplate' } & Pick<QuestionTemplate, 'required' | 'question'>
+                    >;
+                  }
+              >
+            >;
+          }
+      >;
+    };
+  };
 };
 
 export type ChallengeCommunityQueryVariables = Exact<{
@@ -2393,7 +2453,7 @@ export type ChallengesQuery = { __typename?: 'Query' } & {
         Array<
           { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName' | 'nameID'> & {
               context?: Maybe<
-                { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
+                { __typename?: 'Context' } & Pick<Context, 'id' | 'tagline'> & {
                     references?: Maybe<Array<{ __typename?: 'Reference' } & Pick<Reference, 'name' | 'uri'>>>;
                     visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
                   }
@@ -2450,6 +2510,28 @@ export type EcoverseActivityQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       activity?: Maybe<Array<{ __typename?: 'NVP' } & Pick<Nvp, 'name' | 'value'>>>;
     };
+};
+
+export type EcoverseApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoverseApplicationTemplateQuery = { __typename?: 'Query' } & {
+  configuration: { __typename?: 'Config' } & {
+    template: { __typename?: 'Template' } & {
+      ecoverses: Array<
+        { __typename?: 'EcoverseTemplate' } & Pick<EcoverseTemplate, 'name'> & {
+            applications?: Maybe<
+              Array<
+                { __typename?: 'ApplicationTemplate' } & Pick<ApplicationTemplate, 'name'> & {
+                    questions: Array<
+                      { __typename?: 'QuestionTemplate' } & Pick<QuestionTemplate, 'required' | 'question'>
+                    >;
+                  }
+              >
+            >;
+          }
+      >;
+    };
+  };
 };
 
 export type EcoverseCommunityQueryVariables = Exact<{
