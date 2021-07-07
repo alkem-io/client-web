@@ -67,6 +67,7 @@ const App = ({ children }): React.ReactElement => {
       <Sidebar
         isUserAuth={Boolean(user)}
         ecoverses={ecoverses}
+        userMetadata={user}
         drawerProps={{ open: drawerOpen, onClose: () => setDrawerOpen(false) }}
       />
       <div id="main">

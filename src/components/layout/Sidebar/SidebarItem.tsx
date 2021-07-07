@@ -1,18 +1,23 @@
+import { Typography } from '@material-ui/core';
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import IconButton from '../../core/IconButton';
 import { Link } from 'react-router-dom';
-import Icon, { IconProps } from '../../core/Icon';
-import { Typography } from '@material-ui/core';
 import { createStyles } from '../../../hooks/useTheme';
+import Button from '../../core/Button';
+import Icon, { IconProps } from '../../core/Icon';
 
-const useStyles = createStyles(theme => ({
+const useStyles = createStyles(_ => ({
   link: {
     alignItems: 'center',
+    width: '100%',
+    flexGrow: 1,
+  },
+  center: {
     justifyContent: 'center',
-    '& > *': {
-      margin: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
-    },
+  },
+  start: {
+    justifyContent: 'flex-start',
   },
 }));
 
@@ -21,29 +26,40 @@ interface SidebarItemProps {
   to: string;
   label: string;
   hideLabel?: boolean;
+  centerLabel?: boolean;
   tooltip: string;
   disabled?: boolean;
 }
 
-const SidebarItem: FC<SidebarItemProps> = ({ iconProps, to, label, hideLabel, tooltip, disabled }) => {
+const SidebarItem: FC<SidebarItemProps> = ({ iconProps, to, label, hideLabel, centerLabel, tooltip, disabled }) => {
   const styles = useStyles();
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <OverlayTrigger
         offset={[100, 100]}
         placement="right"
         trigger={hideLabel ? ['hover', 'focus'] : []}
         overlay={<Tooltip id={`tooltip-${tooltip.toLowerCase()}`}>{tooltip}</Tooltip>}
       >
-        <span>
-          <IconButton disabled={disabled} as={Link} to={to} className={styles.link}>
+        <span style={{ width: '100%', display: 'flex' }}>
+          <Button
+            inset
+            variant="transparent"
+            disabled={disabled}
+            as={Link}
+            to={to}
+            className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
+          >
             <Icon {...iconProps} />
             {label && !hideLabel && (
-              <Typography variant="button" color="inherit">
-                {label}
-              </Typography>
+              <>
+                <div style={{ padding: 5 }} />
+                <Typography variant="button" color="inherit">
+                  {label}
+                </Typography>
+              </>
             )}
-          </IconButton>
+          </Button>
         </span>
       </OverlayTrigger>
     </div>

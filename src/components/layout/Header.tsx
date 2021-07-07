@@ -5,8 +5,8 @@ import { createStyles } from '../../hooks/useTheme';
 import hexToRgba from '../../utils/hexToRGBA';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import { useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 
 const appBarZIndex = 100;
@@ -82,9 +82,9 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   const styles = useHeaderStyles();
   const [headerInSight, setHeaderInSight] = useState(true);
-  const theme = useTheme();
-  const upSm = useMediaQuery(theme.breakpoints.up('sm'));
-  const upMd = useMediaQuery(theme.breakpoints.up('md'));
+  // const theme = useTheme();
+  // const upSm = useMediaQuery(theme.breakpoints.up('sm'));
+  // const upMd = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <>
@@ -95,8 +95,8 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
       <Container
         className={clsx(
           styles[headerInSight ? 'absolute' : 'fixed'],
-          styles.root,
-          !headerInSight && (upMd ? styles.offsetLeftMax : upSm ? styles.offsetLeftMin : styles.offsetLeftNone)
+          styles.root
+          // !headerInSight && (upMd ? styles.offsetLeftMax : upSm ? styles.offsetLeftMin : styles.offsetLeftNone)
         )}
       >
         <Row>

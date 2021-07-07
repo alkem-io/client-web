@@ -5,13 +5,16 @@ import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
 import { createStyles } from '../../../hooks/useTheme';
 import Avatar from '../../core/Avatar';
 import { Typography } from '@material-ui/core';
+import clsx from 'clsx';
+import Button from '../../core/Button';
 
 interface SidebarItemEcoverseProps {
   ecoverse: EcoverseDetailsFragment;
   hideLabel?: boolean;
+  centerLabel?: boolean;
 }
 
-const useStyles = createStyles(theme => ({
+const useStyles = createStyles(_ => ({
   textDecorationNone: {
     textDecoration: 'none',
     '&:hover': {
@@ -20,34 +23,53 @@ const useStyles = createStyles(theme => ({
   },
   wrapper: {
     display: 'flex',
+  },
+  widthFull: {
+    width: '100%',
+  },
+  link: {
     alignItems: 'center',
-
-    '& > *': {
-      margin: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
-    },
+    width: '100%',
+    flexGrow: 1,
+  },
+  center: {
+    justifyContent: 'center',
+  },
+  start: {
+    justifyContent: 'flex-start',
   },
 }));
 
-const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel }) => {
+const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel, centerLabel }) => {
   const styles = useStyles();
   const tooltip = ecoverse.displayName;
   const ecoverseLogo = ecoverse?.context?.visual?.avatar;
 
   return (
-    <div>
-      <Link to={`/${ecoverse.nameID}`} className={styles.textDecorationNone}>
+    <div className={styles.widthFull}>
+      <Link to={`/${ecoverse.nameID}`} className={clsx(styles.textDecorationNone, styles.widthFull)}>
         <OverlayTrigger
           offset={[100, 100]}
           placement="right"
+          trigger={hideLabel ? ['hover', 'focus'] : []}
           overlay={<Tooltip id={`tooltip-${tooltip.toLowerCase()}`}>{tooltip}</Tooltip>}
         >
-          <span className={styles.wrapper}>
-            <Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />
-            {!hideLabel && (
-              <Typography variant="button" color="primary" className={styles.textDecorationNone}>
-                {ecoverse.displayName}
-              </Typography>
-            )}
+          <span className={clsx(styles.wrapper, styles.widthFull)}>
+            <Button
+              inset
+              variant="transparent"
+              className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
+            >
+              <Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />
+              {!hideLabel && (
+                <>
+                  <div style={{ padding: 5 }} />
+                  <Typography variant="button" color="inherit" className={styles.textDecorationNone}>
+                    {ecoverse.displayName}
+                  </Typography>
+                </>
+              )}
+            </Button>
           </span>
         </OverlayTrigger>
       </Link>

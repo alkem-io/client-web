@@ -71,6 +71,7 @@ const WelcomeSection = () => {
             style={{ maxWidth: 320, height: 'initial', margin: '0 auto' }}
           />
         }
+        hideAvatar
         details={
           isActivityLoading ? (
             <Loading text={'Loading statistics ...'} />
