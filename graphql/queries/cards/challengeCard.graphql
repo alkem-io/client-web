@@ -18,6 +18,7 @@ query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         tagline
         visual {
           avatar
+          background
         }
       }
     }
