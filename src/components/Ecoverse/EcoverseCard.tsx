@@ -99,7 +99,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
           },
         }}
         primaryTextProps={{

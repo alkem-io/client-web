@@ -46,6 +46,7 @@ import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
 import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks/useEcoverse';
+import { SEARCH_PAGE } from '../models/Constants';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -191,7 +192,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         classes={{
           background: (theme: Theme) =>
             visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
         }}
         gutters={{
           root: true,
@@ -469,7 +470,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         subTitle={t('pages.opportunity.sections.community.subtitle')}
         users={users}
         shuffle={true}
-        onExplore={() => history.push('/community')}
+        onExplore={() => history.push(SEARCH_PAGE)}
       />
       <Divider />
       <div ref={projectRef} />

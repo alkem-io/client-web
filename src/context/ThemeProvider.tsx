@@ -1,3 +1,4 @@
+import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import React, { FC } from 'react';
 
 export interface Palette {
@@ -34,7 +35,8 @@ export interface Shape {
 }
 
 export interface Sidebar {
-  width: number;
+  maxWidth: number;
+  minWidth: number;
 }
 
 export interface EarlyAccessAlert {
@@ -115,14 +117,15 @@ const defaultMedia: Media = {
 };
 
 const defaultSidebar: Sidebar = {
-  width: 65,
+  maxWidth: 280,
+  minWidth: 90,
 };
 
 const defaultEarlyAccessAlert: EarlyAccessAlert = {
   height: 40,
 };
 
-const defaultTheme: Theme = {
+export const defaultTheme: Theme = {
   palette: defaultPalette,
   typography: defaultTypography,
   shape: defaultShape,
@@ -131,11 +134,34 @@ const defaultTheme: Theme = {
   earlyAccessAlert: defaultEarlyAccessAlert,
 };
 
+const defaultMuiTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: defaultTheme.palette.primary,
+    },
+    background: {
+      paper: defaultTheme.palette.neutralLight,
+    },
+  },
+  typography: {
+    fontFamily: '"MONTSERRAT"',
+  },
+  props: {
+    MuiButtonBase: {
+      disableRipple: true, // No more ripple, on the whole application!
+    },
+  },
+});
+
 const ThemeContext = React.createContext<Theme>(defaultTheme);
 
 const ThemeProvider: FC<{}> = ({ children }) => {
   // can merge external configuration for the theme and pass it to the provider
-  return <ThemeContext.Provider value={defaultTheme}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={defaultTheme}>
+      <MuiThemeProvider theme={defaultMuiTheme}>{children}</MuiThemeProvider>
+    </ThemeContext.Provider>
+  );
 };
 
-export { ThemeProvider, ThemeContext };
+export { ThemeProvider, ThemeContext, defaultMuiTheme };

@@ -1,0 +1,22 @@
+fragment CommunityMessages on Community {
+  id
+  updatesRoom {
+    id
+    messages {
+      ...MessageDetails
+    }
+  }
+  discussionRoom {
+    id
+    messages {
+      ...MessageDetails
+    }
+  }
+}
+
+fragment MessageDetails on CommunicationMessageResult {
+  id
+  sender
+  message
+  timestamp
+}

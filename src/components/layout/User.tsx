@@ -36,6 +36,19 @@ const useUserStyles = createStyles(theme => ({
       // marginTop: theme.shape.spacing(0.5),
       // marginBottom: theme.shape.spacing(0.5),
     },
+    '&.horizontal.reversed': {
+      marginLeft: 0,
+      marginRight: theme.shape.spacing(2),
+    },
+    '&.vertical.reversed': {
+      marginLeft: 0,
+      marginRight: theme.shape.spacing(2),
+      // marginTop: theme.shape.spacing(0.5),
+      // marginBottom: theme.shape.spacing(0.5),
+    },
+  },
+  reversedLayout: {
+    flexDirection: 'row-reverse',
   },
 }));
 
@@ -44,18 +57,28 @@ interface UserProps {
   name: string;
   title: string;
   src: string | undefined;
+  reverseLayout?: boolean;
 }
 
-const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src }) => {
+const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src, reverseLayout = false }) => {
   const styles = useUserStyles();
 
-  const childrenClasses = clsx(styles.children, orientation);
+  const childrenClasses = clsx(styles.children, orientation, reverseLayout && 'reversed');
   const size = orientation === 'vertical' ? 'md' : 'sm';
 
   return (
-    <Link className={clsx(styles.flex, styles.center, styles.horizontal)} to="/profile">
+    <Link
+      className={clsx(styles.flex, styles.center, styles.horizontal, reverseLayout && styles.reversedLayout)}
+      to="/profile"
+    >
       <Avatar size={size} src={src} />
-      <div className={clsx(styles.flex, styles[orientation])}>
+      <div
+        className={clsx(
+          styles.flex,
+          styles[orientation],
+          orientation === 'horizontal' && reverseLayout && styles.reversedLayout
+        )}
+      >
         <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
           {name}
         </Typography>

@@ -1726,6 +1726,20 @@ export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Commu
     >;
   };
 
+export type CommunityMessagesFragment = { __typename?: 'Community' } & Pick<Community, 'id'> & {
+    updatesRoom: { __typename?: 'CommunityRoom' } & Pick<CommunityRoom, 'id'> & {
+        messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
+      };
+    discussionRoom: { __typename?: 'CommunityRoom' } & Pick<CommunityRoom, 'id'> & {
+        messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
+      };
+  };
+
+export type MessageDetailsFragment = { __typename?: 'CommunicationMessageResult' } & Pick<
+  CommunicationMessageResult,
+  'id' | 'sender' | 'message' | 'timestamp'
+>;
+
 export type ContextDetailsFragment = { __typename?: 'Context' } & Pick<
   Context,
   'id' | 'tagline' | 'background' | 'vision' | 'impact' | 'who'
@@ -1815,6 +1829,35 @@ export type UserDetailsFragment = { __typename?: 'User' } & Pick<
         }
     >;
   };
+
+export type UserMembershipDetailsFragment = { __typename?: 'UserMembership' } & {
+  ecoverses: Array<
+    { __typename?: 'MembershipUserResultEntryEcoverse' } & Pick<
+      MembershipUserResultEntryEcoverse,
+      'id' | 'nameID' | 'displayName'
+    > & {
+        challenges: Array<
+          { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+        >;
+        opportunities: Array<
+          { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+        >;
+        userGroups: Array<
+          { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+        >;
+      }
+  >;
+  organisations: Array<
+    { __typename?: 'MembershipUserResultEntryOrganisation' } & Pick<
+      MembershipUserResultEntryOrganisation,
+      'id' | 'nameID' | 'displayName'
+    > & {
+        userGroups: Array<
+          { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
+        >;
+      }
+  >;
+};
 
 export type AssignUserToCommunityMutationVariables = Exact<{
   input: AssignCommunityMemberInput;
@@ -2158,26 +2201,6 @@ export type UploadAvatarMutation = { __typename?: 'Mutation' } & {
   uploadAvatar: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>;
 };
 
-export type AllCommunitiesQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AllCommunitiesQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & {
-    community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment>;
-    challenges?: Maybe<
-      Array<
-        { __typename?: 'Challenge' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
-      >
-    >;
-    opportunities: Array<
-      { __typename?: 'Opportunity' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
-    >;
-  };
-};
-
-export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>;
-
 export type AllOpportunitiesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2322,19 +2345,6 @@ export type ChallengeApplicationTemplateQuery = { __typename?: 'Query' } & {
       >;
     };
   };
-};
-
-export type ChallengeCommunityQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
-          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
-        };
-    };
 };
 
 export type ChallengeGroupsQueryVariables = Exact<{
@@ -2512,6 +2522,39 @@ export type ChallengesWithActivityQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type AllCommunitiesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AllCommunitiesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & {
+    community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment>;
+    challenges?: Maybe<
+      Array<
+        { __typename?: 'Challenge' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+      >
+    >;
+    opportunities: Array<
+      { __typename?: 'Opportunity' } & { community?: Maybe<{ __typename?: 'Community' } & AllCommunityDetailsFragment> }
+    >;
+  };
+};
+
+export type AllCommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>;
+
+export type ChallengeCommunityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
 export type ChallengesWithCommunityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2525,6 +2568,65 @@ export type ChallengesWithCommunityQuery = { __typename?: 'Query' } & {
             }
         >
       >;
+    };
+};
+
+export type EcoverseCommunityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+    };
+};
+
+export type ChallengeCommunityMessagesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCommunityMessagesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & {
+        community?: Maybe<{ __typename?: 'Community' } & CommunityMessagesFragment>;
+      };
+    };
+};
+
+export type EcoversCommunityMessagesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoversCommunityMessagesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'nameID'> & {
+      community?: Maybe<{ __typename?: 'Community' } & CommunityMessagesFragment>;
+    };
+};
+
+export type OpportunityCommunityMessagesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCommunityMessagesQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & {
+        community?: Maybe<{ __typename?: 'Community' } & CommunityMessagesFragment>;
+      };
+    };
+};
+
+export type OpportunityCommunityQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName'> & {
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
     };
 };
 
@@ -2558,16 +2660,6 @@ export type EcoverseApplicationTemplateQuery = { __typename?: 'Query' } & {
       >;
     };
   };
-};
-
-export type EcoverseCommunityQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-}>;
-
-export type EcoverseCommunityQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
-    };
 };
 
 export type EcoverseGroupQueryVariables = Exact<{
@@ -2703,34 +2795,7 @@ export type MembershipUserQueryVariables = Exact<{
 }>;
 
 export type MembershipUserQuery = { __typename?: 'Query' } & {
-  membershipUser: { __typename?: 'UserMembership' } & {
-    ecoverses: Array<
-      { __typename?: 'MembershipUserResultEntryEcoverse' } & Pick<
-        MembershipUserResultEntryEcoverse,
-        'id' | 'nameID' | 'displayName'
-      > & {
-          challenges: Array<
-            { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
-          >;
-          opportunities: Array<
-            { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
-          >;
-          userGroups: Array<
-            { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
-          >;
-        }
-    >;
-    organisations: Array<
-      { __typename?: 'MembershipUserResultEntryOrganisation' } & Pick<
-        MembershipUserResultEntryOrganisation,
-        'id' | 'nameID' | 'displayName'
-      > & {
-          userGroups: Array<
-            { __typename?: 'MembershipResultEntry' } & Pick<MembershipResultEntry, 'id' | 'nameID' | 'displayName'>
-          >;
-        }
-    >;
-  };
+  membershipUser: { __typename?: 'UserMembership' } & UserMembershipDetailsFragment;
 };
 
 export type OpportunitiesQueryVariables = Exact<{
@@ -2806,19 +2871,6 @@ export type OpportunityAspectsQuery = { __typename?: 'Query' } & {
           }
         >;
       };
-    };
-};
-
-export type OpportunityCommunityQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityCommunityQuery = { __typename?: 'Query' } & {
-  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      opportunity: { __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'displayName'> & {
-          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
-        };
     };
 };
 

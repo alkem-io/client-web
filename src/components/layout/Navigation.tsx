@@ -7,7 +7,7 @@ import { ReactComponent as GlobeIcon } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
-import { ReactComponent as ThreeDotsIcon } from 'bootstrap-icons/icons/three-dots.svg';
+import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { createStyles } from '../../hooks/useTheme';
 import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
@@ -23,13 +23,7 @@ interface NavigationProps {
 }
 
 const useNavigationStyles = createStyles(theme => ({
-  navLinkOffset: {
-    marginLeft: theme.shape.spacing(3),
-
-    [theme.media.down('xl')]: {
-      marginLeft: theme.shape.spacing(2),
-    },
-  },
+  navLinkOffset: {},
   menuItem: {
     flexDirection: 'row',
     display: 'flex',
@@ -57,13 +51,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
     <>
       <Hidden mdDown>
         <div className={styles.flexCenterItems}>
-          <div className={styles.flexCenterItems} ref={popoverAnchorMdDown}>
-            {isAuthenticated && (
-              <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
-                <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
-              </IconButton>
-            )}
-          </div>
+          <div className={styles.flexCenterItems} ref={popoverAnchorMdDown}></div>
           <Overlay
             show={dropdownOpen}
             target={popoverAnchorMdDown}
@@ -122,7 +110,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
       <Hidden mdUp>
         <div className={styles.flexCenterItems} ref={popoverAnchorMdUp}>
           <IconButton className={styles.navLinkOffset} onClick={() => setDropdownOpen(x => !x)}>
-            <Icon component={ThreeDotsIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
+            <Icon component={ListIcon} color="inherit" size={maximize ? 'lg' : 'sm'} />
           </IconButton>
         </div>
         <Overlay

@@ -1,0 +1,32 @@
+fragment UserMembershipDetails on UserMembership {
+  ecoverses {
+    id
+    nameID
+    displayName
+    challenges {
+      id
+      nameID
+      displayName
+    }
+    opportunities {
+      id
+      nameID
+      displayName
+    }
+    userGroups {
+      id
+      nameID
+      displayName
+    }
+  }
+  organisations {
+    id
+    nameID
+    displayName
+    userGroups {
+      id
+      nameID
+      displayName
+    }
+  }
+}
