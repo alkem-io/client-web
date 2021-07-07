@@ -1,3 +1,4 @@
+import { makeStyles } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
@@ -51,6 +52,15 @@ const messages: Message[] = [
   },
 ];
 
+const useCommunityStyles = makeStyles(theme => ({
+  tabPanel: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0),
+  },
+}));
+
 export const CommunitySection: FC<CommunitySectionProps> = ({
   title,
   subTitle,
@@ -59,6 +69,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   onExplore,
   shuffle = false,
 }) => {
+  const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
@@ -76,14 +87,14 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             <Tab label="Updates" value={'updates'} />
             <Tab label="Discussion" value={'discussion'} />
           </TabList>
-          <TabPanel value={'members'}>
+          <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
             <Members shuffle={shuffle} users={users} />
             {onExplore && <Button text="Explore and connect" onClick={() => onExplore()} />}
           </TabPanel>
-          <TabPanel value={'updates'}>
+          <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
             <Updates messages={messages} />
           </TabPanel>
-          <TabPanel value={'discussion'}>
+          <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
             <Section gutters={{ root: true, avatar: false, content: false }}>
               <Header text="" tagText="coming soon" />
             </Section>

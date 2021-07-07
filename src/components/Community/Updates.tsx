@@ -20,12 +20,10 @@ export const Updates: FC<UpdatesProps> = ({ messages }) => {
     <div className={styles.container}>
       {messages.map((m, i) => (
         <div key={i} className={'mb-5'}>
+          <Typography>{m.message}</Typography>
           <Typography className={'text-right'} color={'neutralMedium'} variant="caption">{`${m.sender} - ${new Date(
             m.timestamp
           ).toLocaleString()}`}</Typography>
-          <div style={{ display: 'flex' }}>
-            <span>{m.message}</span>
-          </div>
         </div>
       ))}
     </div>
