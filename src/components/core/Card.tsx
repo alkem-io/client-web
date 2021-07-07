@@ -48,15 +48,17 @@ export const HeaderCaption: FC<HeaderProps> = ({ text, className, classes }) => 
 };
 
 const usePrimaryTextStyles = createStyles(theme => ({
-  text: {
+  primaryText: {
     display: 'flex',
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     textTransform: 'uppercase',
     lineHeight: props => agnosticFunctor(props.lineHeight)(theme, {}),
   },
-  wrapper: {
+  primaryTextWrapper: {
     color: props => agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral,
+    display: 'flex',
+    flexBasis: '60px',
   },
 }));
 
@@ -66,13 +68,13 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   if (tooltip) {
     return (
       <OverlayTrigger placement="right" overlay={<Tooltip id={`challenge-${text}-tooltip`}>{text}</Tooltip>}>
-        <div className={styles.wrapper}>
+        <div className={styles.primaryTextWrapper}>
           <Typography
             as="h4"
             variant="h4"
             weight="bold"
             color="inherit"
-            className={clsx(styles.text, className)}
+            className={clsx(styles.primaryText, className)}
             clamp={2}
           >
             {text}
@@ -83,8 +85,15 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   }
 
   return (
-    <div className={styles.wrapper}>
-      <Typography as="h4" variant="h4" weight="bold" color="inherit" className={clsx(styles.text, className)} clamp={2}>
+    <div className={styles.primaryTextWrapper}>
+      <Typography
+        as="h4"
+        variant="h4"
+        weight="bold"
+        color="inherit"
+        className={clsx(styles.primaryText, className)}
+        clamp={2}
+      >
         {text}
       </Typography>
     </div>
@@ -203,28 +212,31 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
 };
 
 const useBodyStyles = createStyles(theme => ({
-  top: {
+  body: {
     display: 'flex',
+    height: 150,
     width: '100%',
     flexDirection: 'column',
     flexGrow: 1,
     background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
-    padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, {}) || theme.shape.spacing(4),
+    padding: (props: ClassProps) =>
+      agnosticFunctor(props.padding)(theme, {}) ||
+      `${theme.shape.spacing(3)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
 
     [theme.media.down('md')]: {
       background: (props: ClassProps) =>
         agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { md: true }) || theme.shape.spacing(4),
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { md: true }) || theme.shape.spacing(3),
     },
     [theme.media.down('sm')]: {
       background: (props: ClassProps) =>
         agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.shape.spacing(4),
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.shape.spacing(3),
     },
     [theme.media.down('xs')]: {
       background: (props: ClassProps) =>
         agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.shape.spacing(4),
+      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.shape.spacing(3),
     },
   },
 }));
@@ -242,7 +254,7 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.top, 'ct-card-body', className)}>{children}</div>;
+  return <div className={clsx(styles.body, 'ct-card-body', className)}>{children}</div>;
 };
 
 interface SectionProps {
