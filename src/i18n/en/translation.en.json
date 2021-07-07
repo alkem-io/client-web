@@ -10,6 +10,7 @@
   },
   "buttons": {
     "learn-more": "Learn more",
+    "apply": "Apply",
     "explore": "Explore",
     "create": "Create",
     "save": "Save",
@@ -202,7 +203,7 @@
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Unleashing societies potential. Building a better future, together."
+          "body": "Realising societies potential. Building a better future, together."
         },
         "ecoverse": {
           "header": "Explore the hosted Ecoverses!",
@@ -213,6 +214,14 @@
     },
     "ecoverse": {
       "title": "Ecoverse",
+      "application": {
+        "title": "Application to join Ecoverse ",
+        "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
+        "finish": "Thank you for completing your application for ",
+        "backButton": "Back",
+        "loading": "Loading questions",
+        "errorBlockName": "the questions"
+      },
       "sections": {
         "challenges": {
           "header": "Challenges",

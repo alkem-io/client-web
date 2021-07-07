@@ -269,7 +269,9 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
     <div>
       <div className={styles.item}>
         <Typography as={'p'}>Status:</Typography>
-        <Button onClick={() => setModalVisible(true)}>{lifecycle?.state}</Button>
+        <Button small inset variant="primary" onClick={() => setModalVisible(true)}>
+          {lifecycle?.state}
+        </Button>
       </div>
       <LifecycleModal
         lifecycle={lifecycle}

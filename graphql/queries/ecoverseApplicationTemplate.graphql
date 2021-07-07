@@ -1,0 +1,16 @@
+query ecoverseApplicationTemplate {
+  configuration {
+    template {
+      ecoverses {
+        name
+        applications {
+          name
+          questions {
+            required
+            question
+          }
+        }
+      }
+    }
+  }
+}

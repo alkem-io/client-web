@@ -34,7 +34,7 @@ const UserCardInner: FC<UserCardProps> = ({ displayName: name, terms, id }) => {
 
   const { user: userMetadata, loading } = useUserCardMetadata(id);
 
-  const role = userMetadata?.roles[0].name || 'Registered';
+  const role = userMetadata?.roles[0]?.name || 'Registered';
 
   const avatar = userMetadata?.user.profile?.avatar;
 

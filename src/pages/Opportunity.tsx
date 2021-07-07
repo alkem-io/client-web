@@ -192,7 +192,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
         classes={{
           background: (theme: Theme) =>
             visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
         }}
         gutters={{
           root: true,

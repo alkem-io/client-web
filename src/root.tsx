@@ -1,5 +1,4 @@
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
@@ -19,7 +18,6 @@ import { Routing } from './navigation/routing';
 import { Error as ErrorPage } from './pages/Error';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
-import { defaultMuiTheme } from './themes/defaultMui';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -51,13 +49,12 @@ const useGlobalStyles = createStyles(theme => ({
       height: '100%',
       minHeight: '100%',
       display: 'flex',
-      flexDirection: 'column',
     },
     '#main': {
       display: 'flex',
+      flexDirection: 'column',
       flexGrow: 1,
-      width: `calc(100vw - ${theme.sidebar.width}px - ${theme.shape.spacing(2)}px)`,
-      marginLeft: theme.sidebar.width + theme.shape.spacing(2),
+      position: 'relative',
     },
   },
 }));
@@ -84,17 +81,15 @@ const ReduxRoot: FC = () => {
         <AuthenticationProvider>
           <CTApolloProvider>
             <ThemeProvider>
-              <MuiThemeProvider theme={defaultMuiTheme}>
-                <NavigationProvider>
-                  <EcoversesProvider>
-                    <UserProvider>
-                      <App>
-                        <Routing />
-                      </App>
-                    </UserProvider>
-                  </EcoversesProvider>
-                </NavigationProvider>
-              </MuiThemeProvider>
+              <NavigationProvider>
+                <EcoversesProvider>
+                  <UserProvider>
+                    <App>
+                      <Routing />
+                    </App>
+                  </UserProvider>
+                </EcoversesProvider>
+              </NavigationProvider>
             </ThemeProvider>
           </CTApolloProvider>
         </AuthenticationProvider>
