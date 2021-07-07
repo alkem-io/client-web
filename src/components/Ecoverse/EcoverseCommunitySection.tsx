@@ -1,29 +1,33 @@
 import React, { FC } from 'react';
-import { useEcoversCommunityMessagesQuery } from '../../generated/graphql';
+import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
-import CommunitySection, { CommunitySectionProps } from '../Community/CommunitySection';
+import { User } from '../../types/graphql-schema';
+import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import Loading from '../core/Loading';
 
-interface EcoverseCommunitySectionProps extends CommunitySectionProps {}
+interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
-export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({
-  updates: _updates,
-  discussions: _discussions,
-  ...rest
-}) => {
+export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
   const { ecoverseId } = useEcoverse();
+  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
+    variables: {
+      ecoverseId: ecoverseId,
+    },
+    errorPolicy: 'all',
+  });
   const { data, loading } = useEcoversCommunityMessagesQuery({
     variables: {
       ecoverseId: ecoverseId,
     },
   });
 
-  if (loading) return <Loading text={'Loading updates'} />;
+  if (usersLoading || loading) return <Loading text={'Loading community data'} />;
 
   return (
     <CommunitySection
       updates={data?.ecoverse.community?.updatesRoom.messages}
       discussions={data?.ecoverse.community?.discussionRoom.messages}
+      users={(usersQuery?.ecoverse.community?.members as User[]) || []}
       {...rest}
     />
   );

@@ -27,7 +27,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
 import { SEARCH_PAGE } from '../models/Constants';
-import { Challenge as ChallengeType, Context, Organisation, User } from '../types/graphql-schema';
+import { Challenge as ChallengeType, Context, Organisation } from '../types/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
@@ -105,7 +105,6 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
-  users?: User[];
 }
 
 const useChallengeStyles = createStyles(theme => ({
@@ -133,7 +132,7 @@ interface Params {
   ecoverseId?: string;
 }
 
-const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
+const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -320,7 +319,6 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
-          users={users}
           onExplore={() => history.push(SEARCH_PAGE)}
         />
       </BackdropWithMessage>
