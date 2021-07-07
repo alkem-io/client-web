@@ -195,6 +195,12 @@ export const UserDetailsFragmentDoc = gql`
     city
     phone
     accountUpn
+    agent {
+      credentials {
+        type
+        resourceID
+      }
+    }
     profile {
       id
       description
