@@ -8,7 +8,8 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
-import CommunitySection from '../components/Community/CommunitySection';
+import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
+import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
@@ -17,6 +18,7 @@ import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
+import BackdropWithMessage from '../components/layout/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../generated/graphql';
@@ -24,12 +26,11 @@ import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { Challenge as ChallengeType, Context, Organisation, User } from '../types/graphql-schema';
+import { SEARCH_PAGE } from '../models/Constants';
+import { Challenge as ChallengeType, Context, Organisation } from '../types/graphql-schema';
+import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import BackdropWithMessage from '../components/layout/BackdropWithMessage';
-import getActivityCount from '../utils/get-activity-count';
-import OpportunityCard from '../components/Challenge/OpportunityCard';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -104,7 +105,6 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
-  users?: User[];
 }
 
 const useChallengeStyles = createStyles(theme => ({
@@ -132,7 +132,7 @@ interface Params {
   ecoverseId?: string;
 }
 
-const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): React.ReactElement => {
+const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -222,7 +222,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         classes={{
           background: (theme: Theme) =>
             bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
         }}
         gutters={{
           root: true,
@@ -313,12 +313,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         })}
         show={!!user}
       >
-        <CommunitySection
+        <ChallengeCommunitySection
+          challengeId={challenge.id}
+          ecoverseId={ecoverseId}
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
-          users={users}
-          onExplore={() => history.push('/community')}
+          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </BackdropWithMessage>
       <Divider />

@@ -1,5 +1,8 @@
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
-import React, { useRef } from 'react';
+import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
+import React, { useRef, useState } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -22,7 +25,6 @@ import Section from './core/Section';
 import Footer from './layout/Footer';
 import Header from './layout/Header';
 import Main from './layout/Main';
-import Navigation from './layout/Navigation';
 import Sidebar from './layout/Sidebar/Sidebar';
 import UserSegment from './User/UserSegment';
 
@@ -37,8 +39,11 @@ const App = ({ children }): React.ReactElement => {
   const { paths } = useNavigation();
   const headerRef = useRef<HTMLElement>(null);
   const isUserSegmentVisible = useTypedSelector<boolean>(state => state.ui.userSegment.visible);
+  const theme = useTheme();
+  const upSm = useMediaQuery(theme.breakpoints.up('sm'));
   useUserScope(user);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
       console.table({
@@ -59,53 +64,71 @@ const App = ({ children }): React.ReactElement => {
 
   return (
     <div id="app">
-      <Header innerRef={headerRef}>
-        {isVisible => (
-          <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-            {isUserSegmentVisible && user && (
-              <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />
-            )}
-            <div style={{ display: 'flex', flexGrow: 1 }} />
-            <Navigation maximize={isVisible} userMetadata={user} />
-            {loginVisible && (
-              <>
-                {!isAuthenticated && (
-                  <Button
-                    as={Link}
-                    to={AUTH_LOGIN_PATH}
-                    text={t('authentication.sign-in')}
-                    style={{ marginLeft: 20 }}
-                    small
-                  />
-                )}
-                {!isAuthenticated && (
-                  <Button
-                    as={Link}
-                    to={AUTH_REGISTER_PATH}
-                    text={t('authentication.sign-up')}
-                    style={{ marginLeft: 20 }}
-                    small
-                  />
-                )}
-              </>
-            )}
-          </div>
-        )}
-      </Header>
-      <Sidebar isUserAuth={Boolean(user)} ecoverses={ecoverses} />
+      <Sidebar
+        isUserAuth={Boolean(user)}
+        ecoverses={ecoverses}
+        userMetadata={user}
+        drawerProps={{ open: drawerOpen, onClose: () => setDrawerOpen(false) }}
+      />
       <div id="main">
+        <Header innerRef={headerRef}>
+          {isVisible => (
+            <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
+              {/* <Navigation maximize={isVisible} userMetadata={user} /> */}
+              {!upSm && (
+                <IconButton onClick={() => setDrawerOpen(x => !x)}>
+                  <Icon component={ListIcon} color="inherit" size={isVisible ? 'lg' : 'sm'} />
+                </IconButton>
+              )}
+              <div style={{ display: 'flex', flexGrow: 1 }} />
+              {loginVisible && (
+                <>
+                  {!isAuthenticated && (
+                    <Button
+                      as={Link}
+                      to={AUTH_LOGIN_PATH}
+                      text={t('authentication.sign-in')}
+                      style={{ marginLeft: 20 }}
+                      small
+                      variant="primary"
+                    />
+                  )}
+                  {!isAuthenticated && (
+                    <Button
+                      as={Link}
+                      to={AUTH_REGISTER_PATH}
+                      text={t('authentication.sign-up')}
+                      style={{ marginLeft: 20 }}
+                      small
+                    />
+                  )}
+                </>
+              )}
+              {isUserSegmentVisible && user && (
+                <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />
+              )}
+            </div>
+          )}
+        </Header>
         <Main>
-          <Section
-            hideDetails
-            gutters={{ content: false, details: false, root: true }}
-            classes={{
-              padding: '0',
-            }}
-          >
-            <Breadcrumbs paths={paths} />
-          </Section>
+          {paths.length > 0 && (
+            <Section
+              hideDetails
+              gutters={{ content: false, details: false, root: true }}
+              classes={{
+                padding: '0',
+              }}
+            >
+              <Breadcrumbs paths={paths} />
+            </Section>
+          )}
           {children}
         </Main>
+        <Footer>
+          <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+            <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
+          </IconButton>
+        </Footer>
       </div>
       <CookieConsent
         location="bottom"
@@ -117,11 +140,6 @@ const App = ({ children }): React.ReactElement => {
       >
         {t('cookie.consent')}
       </CookieConsent>
-      <Footer>
-        <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
-          <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
-        </IconButton>
-      </Footer>
       <NotificationHandler />
     </div>
   );

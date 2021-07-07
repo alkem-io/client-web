@@ -1,7 +1,7 @@
 {
-  "name": "alkemio-web",
-  "version": "0.8.1",
-  "description": "Alkemio client, responsible for managing the shared representation of the ecoverse",
+  "name": "@alkemio/client-web",
+  "version": "0.8.3",
+  "description": "Alkemio client, responsible for managing the ecoverses on the platform",
   "author": "Cherrytwist Foundation",
   "repository": {
     "type": "git",
@@ -11,6 +11,8 @@
   "license": "EUPL-1.2",
   "dependencies": {
     "@apollo/client": "^3.3.6",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@ory/kratos-client": "^0.6.3-alpha.1",
     "@sentry/react": "^5.30.0",
     "@sentry/tracing": "^5.30.0",

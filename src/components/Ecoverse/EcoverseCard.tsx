@@ -45,9 +45,6 @@ const useCardStyles = createStyles(theme => ({
     border: `1px solid ${theme.palette.neutralMedium}`,
     height: 400,
   },
-  body: {
-    height: 150,
-  },
   content: {
     height: '225px',
     background: theme.palette.background,
@@ -102,9 +99,8 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
           },
-          className: styles.body,
         }}
         primaryTextProps={{
           text: displayName || '',

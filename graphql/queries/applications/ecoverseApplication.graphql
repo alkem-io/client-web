@@ -1,0 +1,13 @@
+query ecoverseApplication($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    displayName
+    context{
+      ...ContextDetails
+    }
+    community {
+      id
+      displayName
+    }
+  }
+}

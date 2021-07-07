@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router';
-import { useChallengeApplicationTemplateQuery, useChallengeCommunityQuery } from '../../generated/graphql';
+import { useChallengeApplicationQuery, useChallengeApplicationTemplateQuery } from '../../generated/graphql';
 import ApplyRoute from './ApplyRoute';
 import { PageProps } from '../../pages';
 
@@ -17,13 +17,16 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
   const backUrl = `/${ecoverseId}/challenges/${challengeId}`;
 
   /* todo: only community ID is needed */
-  const { data: communityData, loading: isCommunityLoading, error: communityError } = useChallengeCommunityQuery({
+  const { data: challengeData, loading: isCommunityLoading, error: communityError } = useChallengeApplicationQuery({
     variables: {
       ecoverseId: ecoverseId,
       challengeId: challengeId,
     },
   });
-  const communityId = communityData?.ecoverse.challenge.community?.id || '';
+  const communityId = challengeData?.ecoverse.challenge.community?.id || '';
+  const ecoverseName = challengeData?.ecoverse.challenge.displayName || '';
+  const avatar = challengeData?.ecoverse.challenge.context?.visual?.avatar || '';
+  const tagline = challengeData?.ecoverse.challenge.context?.tagline || '';
 
   const {
     data: templateData,
@@ -39,6 +42,9 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
       error={!!(communityError || templateError)}
       paths={paths}
       path={path}
+      avatar={avatar}
+      tagline={tagline}
+      communityName={ecoverseName}
       communityId={communityId}
       questions={questions}
       backUrl={backUrl}
