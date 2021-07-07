@@ -5,16 +5,20 @@ import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
-import CommunitySection from '../components/Community/CommunitySection';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
+import Loading from '../components/core/Loading';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
+import ChallengeCard from '../components/Ecoverse/ChallengeCard';
+import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
+import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
+import MembershipBackdrop from '../components/layout/MembershipBackdrop';
 import {
   useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
@@ -25,14 +29,10 @@ import {
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { useUserContext } from '../hooks/useUserContext';
-import { Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
-import { PageProps } from './common';
-import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import MembershipBackdrop from '../components/layout/MembershipBackdrop';
-import getActivityCount from '../utils/get-activity-count';
-import ChallengeCard from '../components/Ecoverse/ChallengeCard';
-import Loading from '../components/core/Loading';
 import { SEARCH_PAGE } from '../models/Constants';
+import { Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
+import getActivityCount from '../utils/get-activity-count';
+import { PageProps } from './common';
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
@@ -214,7 +214,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
 
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!!user}>
-        <CommunitySection
+        <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
           users={users}

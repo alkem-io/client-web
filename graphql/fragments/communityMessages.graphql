@@ -1,13 +1,22 @@
 fragment CommunityMessages on Community {
   id
-  room {
+  updatesRoom {
     id
-    isDirect
-    receiverID
     messages {
-      timestamp
-      sender
-      message
+      ...MessageDetails
     }
   }
+  discussionRoom {
+    id
+    messages {
+      ...MessageDetails
+    }
+  }
+}
+
+fragment MessageDetails on CommunicationMessageResult {
+  id
+  sender
+  message
+  timestamp
 }

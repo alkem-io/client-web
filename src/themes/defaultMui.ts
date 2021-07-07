@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
 import { defaultTheme } from '../context/ThemeProvider';
 
 export const defaultMuiTheme = createMuiTheme({

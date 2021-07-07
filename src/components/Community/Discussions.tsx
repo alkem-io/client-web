@@ -3,21 +3,21 @@ import { createStyles } from '../../hooks/useTheme';
 import { CommunicationMessageResult } from '../../types/graphql-schema';
 import Typography from '../core/Typography';
 
-const useUpdatesStyles = createStyles(_theme => ({
+const useDiscussionsStyles = createStyles(_theme => ({
   container: {
     maxHeight: '480px',
     overflow: 'auto',
     paddingRight: '15px',
   },
 }));
-interface UpdatesProps {
+interface DiscussionsProps {
   messages?: CommunicationMessageResult[];
 }
 
-export const Updates: FC<UpdatesProps> = ({ messages }) => {
-  const styles = useUpdatesStyles();
+export const Discussions: FC<DiscussionsProps> = ({ messages }) => {
+  const styles = useDiscussionsStyles();
 
-  let messagesComponent = <Typography> No updates</Typography>;
+  let messagesComponent = <Typography> No discussionss</Typography>;
 
   if (messages) {
     messagesComponent = (
@@ -36,4 +36,4 @@ export const Updates: FC<UpdatesProps> = ({ messages }) => {
 
   return <div className={styles.container}>{messagesComponent}</div>;
 };
-export default Updates;
+export default Discussions;

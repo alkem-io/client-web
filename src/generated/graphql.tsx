@@ -31,20 +31,31 @@ export const CommunityDetailsFragmentDoc = gql`
   }
   ${GroupMembersFragmentDoc}
 `;
+export const MessageDetailsFragmentDoc = gql`
+  fragment MessageDetails on CommunicationMessageResult {
+    id
+    sender
+    message
+    timestamp
+  }
+`;
 export const CommunityMessagesFragmentDoc = gql`
   fragment CommunityMessages on Community {
     id
-    room {
+    updatesRoom {
       id
-      isDirect
-      receiverID
       messages {
-        timestamp
-        sender
-        message
+        ...MessageDetails
+      }
+    }
+    discussionRoom {
+      id
+      messages {
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export const ContextVisualFragmentDoc = gql`
   fragment ContextVisual on Visual {
@@ -223,6 +234,40 @@ export const UserDetailsFragmentDoc = gql`
         id
         name
         tags
+      }
+    }
+  }
+`;
+export const UserMembershipDetailsFragmentDoc = gql`
+  fragment UserMembershipDetails on UserMembership {
+    ecoverses {
+      id
+      nameID
+      displayName
+      challenges {
+        id
+        nameID
+        displayName
+      }
+      opportunities {
+        id
+        nameID
+        displayName
+      }
+      userGroups {
+        id
+        nameID
+        displayName
+      }
+    }
+    organisations {
+      id
+      nameID
+      displayName
+      userGroups {
+        id
+        nameID
+        displayName
       }
     }
   }
@@ -4393,38 +4438,10 @@ export function refetchMembershipOrganisationQuery(variables?: SchemaTypes.Membe
 export const MembershipUserDocument = gql`
   query membershipUser($input: MembershipUserInput!) {
     membershipUser(membershipData: $input) {
-      ecoverses {
-        id
-        nameID
-        displayName
-        challenges {
-          id
-          nameID
-          displayName
-        }
-        opportunities {
-          id
-          nameID
-          displayName
-        }
-        userGroups {
-          id
-          nameID
-          displayName
-        }
-      }
-      organisations {
-        id
-        nameID
-        displayName
-        userGroups {
-          id
-          nameID
-          displayName
-        }
-      }
+      ...UserMembershipDetails
     }
   }
+  ${UserMembershipDetailsFragmentDoc}
 `;
 
 /**
