@@ -1,4 +1,4 @@
-import { Drawer, DrawerProps } from '@material-ui/core';
+import { Box, Drawer, DrawerProps } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
@@ -13,6 +13,7 @@ import { createStyles } from '../../../hooks/useTheme';
 import { UserMetadata } from '../../../hooks/useUserMetadataWrapper';
 import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
 import { Image } from '../../core/Image';
+import Tag from '../../core/Tag';
 import SidebarItem from './SidebarItem';
 import SidebarItemEcoverse from './SidebarItemEcoverse';
 
@@ -54,6 +55,16 @@ const useStyles = createStyles(theme => ({
   logoSm: {
     padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(2)}px`,
   },
+  previewTag: {
+    opacity: 1,
+    zIndex: -1,
+    right: theme.shape.spacing(0),
+    top: theme.shape.spacing(0.0),
+  },
+  tagScale: {
+    display: 'none',
+    transform: 'scale(0.5)',
+  },
   copyright: {
     padding: `${theme.shape.spacing(2)}px`,
   },
@@ -77,25 +88,30 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
       {...drawerProps}
       open={upSm || open}
     >
-      {upMd || !upSm ? (
-        <Image
-          src={'.\\logo.png'}
-          className={styles.logoLg}
-          alt="alkemio"
-          onError={() => {
-            /* TODO */
-          }}
-        />
-      ) : (
-        <Image
-          src={'.\\logo192.png'}
-          className={styles.logoSm}
-          alt="alkemio"
-          onError={() => {
-            /* TODO */
-          }}
-        />
-      )}
+      <Box position="relative" display="flex" flexDirection="column">
+        {upMd || !upSm ? (
+          <Image
+            src={'.\\logo.png'}
+            className={styles.logoLg}
+            alt="alkemio"
+            onError={() => {
+              /* TODO */
+            }}
+          />
+        ) : (
+          <Image
+            src={'.\\logo192.png'}
+            className={styles.logoSm}
+            alt="alkemio"
+            onError={() => {
+              /* TODO */
+            }}
+          />
+        )}
+        <Box position="absolute" className={clsx(styles.previewTag, upMd || !upSm ? '' : styles.tagScale)}>
+          <Tag text={'public preview'} color="positive" />
+        </Box>
+      </Box>
       <div className={styles.sidebarStatic}>
         <SidebarItem
           iconProps={{ component: HouseIcon, size: iconSize, color: 'inherit' }}
@@ -149,6 +165,11 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           hideLabel={upSm && !upMd}
           tooltip="Contact us"
           to={env?.REACT_APP_FEEDBACK_URL || ''}
+          buttonProps={{
+            as: 'a',
+            href: env?.REACT_APP_FEEDBACK_URL,
+            target: '_blank',
+          }}
         />
         {/* <Box className={styles.copyright}>
           <Typography variant="caption" color="neutralMedium" weight="boldLight">

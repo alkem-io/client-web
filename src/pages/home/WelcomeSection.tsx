@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Theme } from '../../context/ThemeProvider';
+import { env } from '../../env';
 import { useGlobalActivityQuery } from '../../generated/graphql';
 import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
 import { createStyles } from '../../hooks/useTheme';
@@ -35,10 +36,16 @@ const useStyles = createStyles(theme => ({
     },
   },
   banner: {
-    '& > .section-cover': {
-      outline: `${theme.shape.spacing(0.5)}px solid ${theme.palette.neutralMedium}`,
-      outlineOffset: -theme.shape.spacing(2),
-    },
+    // '& > .section-cover': {
+    //   outline: `${theme.shape.spacing(0.5)}px solid ${theme.palette.neutralMedium}`,
+    //   outlineOffset: -theme.shape.spacing(2),
+    // },
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.shape.spacing(1),
+  },
+  bannerBtn: {
+    margin: 0,
   },
 }));
 
@@ -110,39 +117,37 @@ const WelcomeSection = () => {
             )}
           </div>
         </Body>
-      </Section>
-      <Box p={2} />
-      <Section
-        details={<div></div>}
-        className={styles.banner}
-        classes={{
-          background: (_: Theme) => `url("${banner}") no-repeat center center / cover`,
-          coverBackground: (_: Theme) =>
-            'linear-gradient(90deg, rgba(0,0,0,0.5326505602240896) 11%, rgba(0,226,255,0.10127801120448177) 91%)',
-        }}
-        gutters={{
-          root: true,
-          content: true,
-          details: false,
-        }}
-      >
-        <Body className="d-flex flex-column flex-grow-1">
-          <SectionHeader
-            text={'Want to collaborate and host challenges with Alkemio?'}
-            classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
-          />
-          <div>
+        <Section
+          hideAvatar
+          hideDetails
+          classes={{
+            background: (_: Theme) => `url("${banner}") no-repeat center center / cover`,
+            coverBackground: (_: Theme) =>
+              'linear-gradient(90deg, rgba(0,0,0,0.5326505602240896) 11%, rgba(0,226,255,0.10127801120448177) 91%)',
+          }}
+          gutters={{
+            root: false,
+            content: false,
+            details: false,
+          }}
+        >
+          <Body className={clsx('d-flex flex-row flex-grow-1', styles.banner)}>
+            <Box color="white">
+              <Typography color="inherit" variant="h5">
+                Interested in learning more about using Alkemio?
+              </Typography>
+            </Box>
             <Button
               inset
-              variant="semiTransparent"
+              variant="primary"
               text="contact us"
-              onClick={() => console.log()}
-              className={styles.link}
+              href={env?.REACT_APP_FEEDBACK_URL || ''}
+              as={'a'}
+              target="_blank"
             />
-          </div>
-        </Body>
+          </Body>
+        </Section>
       </Section>
-      <Box p={2} />
     </>
   );
 };

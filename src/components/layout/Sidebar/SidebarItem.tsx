@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { createStyles } from '../../../hooks/useTheme';
-import Button from '../../core/Button';
+import Button, { ButtonProps } from '../../core/Button';
 import Icon, { IconProps } from '../../core/Icon';
 import Typography from '../../core/Typography';
 
@@ -26,6 +26,7 @@ const useStyles = createStyles(theme => ({
 
 interface SidebarItemProps {
   iconProps: IconProps;
+  buttonProps?: ButtonProps;
   to: string;
   label: string;
   hideLabel?: boolean;
@@ -34,7 +35,16 @@ interface SidebarItemProps {
   disabled?: boolean;
 }
 
-const SidebarItem: FC<SidebarItemProps> = ({ iconProps, to, label, hideLabel, centerLabel, tooltip, disabled }) => {
+const SidebarItem: FC<SidebarItemProps> = ({
+  iconProps,
+  to,
+  label,
+  hideLabel,
+  centerLabel,
+  tooltip,
+  disabled,
+  buttonProps,
+}) => {
   const styles = useStyles();
   return (
     <div style={{ width: '100%' }}>
@@ -52,6 +62,7 @@ const SidebarItem: FC<SidebarItemProps> = ({ iconProps, to, label, hideLabel, ce
             as={Link}
             to={to}
             className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
+            {...buttonProps}
           >
             <Icon {...iconProps} className={styles.avatarIcon} />
             {label && !hideLabel && (
