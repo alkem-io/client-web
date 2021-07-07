@@ -4,9 +4,9 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
 import { createStyles } from '../../../hooks/useTheme';
 import Avatar from '../../core/Avatar';
-import { Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import Button from '../../core/Button';
+import Typography from '../../core/Typography';
 
 interface SidebarItemEcoverseProps {
   ecoverse: EcoverseDetailsFragment;
@@ -20,6 +20,9 @@ const useStyles = createStyles(_ => ({
     '&:hover': {
       textDecoration: 'none',
     },
+  },
+  textAlignLeft: {
+    textAlign: 'left',
   },
   wrapper: {
     display: 'flex',
@@ -64,7 +67,12 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
               {!hideLabel && (
                 <>
                   <div style={{ padding: 5 }} />
-                  <Typography variant="button" color="inherit" className={styles.textDecorationNone}>
+                  <Typography
+                    variant="button"
+                    weight="bold"
+                    color="inherit"
+                    className={clsx(styles.textDecorationNone, styles.textAlignLeft)}
+                  >
                     {ecoverse.displayName}
                   </Typography>
                 </>

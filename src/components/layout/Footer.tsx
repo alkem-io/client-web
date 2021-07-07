@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
+import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
-import { usePlatformConfigurationQuery } from '../../generated/graphql';
-import Image from '../core/Image';
-import { Link } from 'react-router-dom';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
-    position: 'relative',
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
+    // position: 'relative',
+    // alignItems: 'center',
+    // display: 'flex',
+    // justifyContent: 'space-between',
     maxWidth: 1380,
     width: '100%',
     margin: 'auto',
@@ -28,6 +28,10 @@ const useFooterStyles = createStyles(theme => ({
   logo: {
     height: theme.shape.spacing(2),
   },
+  footerSecondary: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   copyright: {
     display: 'flex',
     justifyContent: 'start',
@@ -41,45 +45,55 @@ const Footer: FC = ({ children }) => {
   const platform = data?.configuration.platform;
 
   return (
-    <Toolbar className={styles.footer} dense={true}>
-      <div className={styles.copyright}>
-        <Typography variant="caption" color="neutralMedium" weight="boldLight">
-          © 2021 Cherrytwist Foundation
-        </Typography>
-      </div>
-      <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
-        <div className={styles.column}>
-          <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
-            Terms
-          </a>
-          <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
-            Privacy
-          </a>
-          <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
-            Security
-          </a>
-        </div>
+    <Container className={styles.footer}>
+      <Row>
+        <Col xs={12}>
+          <Toolbar dense>
+            <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
+              <div className={styles.column}>
+                <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
+                  Terms
+                </a>
+                <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
+                  Privacy
+                </a>
+                <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
+                  Security
+                </a>
+              </div>
 
-        <div className="d-none d-lg-block mx-xl-1">
-          <Link to={'/about'} href="https://alkem.io/about/">
-            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-          </Link>
-        </div>
+              {/* <div className="d-none d-lg-block mx-xl-1">
+                <Link to={'/about'} href="https://alkem.io/about/">
+                  <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+                </Link>
+              </div> */}
 
-        <div className={styles.column}>
-          <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
-            Feedback
-          </a>
-          <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
-            Support
-          </a>
-          <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
-            About
-          </a>
-        </div>
-      </div>
-      <div className="d-flex justify-content-start">{children}</div>
-    </Toolbar>
+              <div className={styles.column}>
+                <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
+                  Feedback
+                </a>
+                <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
+                  Support
+                </a>
+                <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
+                  About
+                </a>
+              </div>
+            </div>
+          </Toolbar>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12}>
+          <Toolbar dense className={styles.footerSecondary}>
+            <Typography variant="caption" color="neutralMedium" weight="boldLight">
+              © 2021 Cherrytwist Foundation
+            </Typography>
+            <div className="d-flex justify-content-end">{children}</div>
+          </Toolbar>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

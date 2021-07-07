@@ -1,20 +1,20 @@
-import React, { FC } from 'react';
-import { ReactComponent as HouseIcon } from 'bootstrap-icons/icons/house.svg';
-import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import { ReactComponent as EnvelopeIcon } from 'bootstrap-icons/icons/envelope.svg';
-import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
-import { createStyles } from '../../../hooks/useTheme';
-import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
-import SidebarItemEcoverse from './SidebarItemEcoverse';
-import SidebarItem from './SidebarItem';
-import { env } from '../../../env';
 import { Drawer, DrawerProps } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
-import { Image } from '../../core/Image';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
+import { ReactComponent as EnvelopeIcon } from 'bootstrap-icons/icons/envelope.svg';
+import { ReactComponent as HouseIcon } from 'bootstrap-icons/icons/house.svg';
+import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import clsx from 'clsx';
+import React, { FC } from 'react';
+import { env } from '../../../env';
+import { createStyles } from '../../../hooks/useTheme';
 import { UserMetadata } from '../../../hooks/useUserMetadataWrapper';
+import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
+import { Image } from '../../core/Image';
+import SidebarItem from './SidebarItem';
+import SidebarItemEcoverse from './SidebarItemEcoverse';
 
 interface SidebarProps {
   isUserAuth?: boolean;
@@ -53,6 +53,9 @@ const useStyles = createStyles(theme => ({
   },
   logoSm: {
     padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(2)}px`,
+  },
+  copyright: {
+    padding: `${theme.shape.spacing(2)}px`,
   },
 }));
 
@@ -112,7 +115,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           label="Search"
           centerLabel={upSm && !upMd}
           hideLabel={upSm && !upMd}
-          tooltip="Search"
+          tooltip={isUserAuth ? 'Search' : 'Sign in to browse the community'}
           to="/search"
           disabled={!isUserAuth}
         />
@@ -121,7 +124,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           label="Messages"
           centerLabel={upSm && !upMd}
           hideLabel={upSm && !upMd}
-          tooltip="Messages"
+          tooltip={isUserAuth ? 'Messages' : 'Sign in to message the community'}
           to="/messages"
           disabled={!isUserAuth}
         />
@@ -146,8 +149,12 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           hideLabel={upSm && !upMd}
           tooltip="Contact us"
           to={env?.REACT_APP_FEEDBACK_URL || ''}
-          disabled={!isUserAuth}
         />
+        {/* <Box className={styles.copyright}>
+          <Typography variant="caption" color="neutralMedium" weight="boldLight">
+            © 2021 Cherrytwist Foundation
+          </Typography>
+        </Box> */}
       </div>
     </Drawer>
   );

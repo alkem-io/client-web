@@ -1,4 +1,3 @@
-import { Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -6,8 +5,9 @@ import { Link } from 'react-router-dom';
 import { createStyles } from '../../../hooks/useTheme';
 import Button from '../../core/Button';
 import Icon, { IconProps } from '../../core/Icon';
+import Typography from '../../core/Typography';
 
-const useStyles = createStyles(_ => ({
+const useStyles = createStyles(theme => ({
   link: {
     alignItems: 'center',
     width: '100%',
@@ -18,6 +18,9 @@ const useStyles = createStyles(_ => ({
   },
   start: {
     justifyContent: 'flex-start',
+  },
+  avatarIcon: {
+    width: theme.shape.spacing(4),
   },
 }));
 
@@ -50,11 +53,11 @@ const SidebarItem: FC<SidebarItemProps> = ({ iconProps, to, label, hideLabel, ce
             to={to}
             className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
           >
-            <Icon {...iconProps} />
+            <Icon {...iconProps} className={styles.avatarIcon} />
             {label && !hideLabel && (
               <>
                 <div style={{ padding: 5 }} />
-                <Typography variant="button" color="inherit">
+                <Typography variant="button" weight="bold" color="inherit">
                   {label}
                 </Typography>
               </>

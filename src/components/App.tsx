@@ -111,15 +111,17 @@ const App = ({ children }): React.ReactElement => {
           )}
         </Header>
         <Main>
-          <Section
-            hideDetails
-            gutters={{ content: false, details: false, root: true }}
-            classes={{
-              padding: '0',
-            }}
-          >
-            <Breadcrumbs paths={paths} />
-          </Section>
+          {paths.length > 0 && (
+            <Section
+              hideDetails
+              gutters={{ content: false, details: false, root: true }}
+              classes={{
+                padding: '0',
+              }}
+            >
+              <Breadcrumbs paths={paths} />
+            </Section>
+          )}
           {children}
         </Main>
         <Footer>
