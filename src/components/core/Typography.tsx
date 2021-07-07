@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
 import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import _clamp from 'clamp-js';
@@ -112,6 +112,12 @@ const Typography: FC<TypographyProps> = ({
   const styles = useTypographyStyles(classes);
   const ref = useRef();
 
+  useLayoutEffect(() => {
+    if (clamp && ref?.current) {
+      _clamp(ref.current, { clamp });
+    }
+  });
+
   const removeSlashes = (string: string) => replaceAll('\\"', '"', replaceAll('\\n', '<br/>', string));
 
   const plainText = children as string;
@@ -128,10 +134,6 @@ const Typography: FC<TypographyProps> = ({
     }
     return children;
   }, [children]);
-
-  if (clamp && ref?.current) {
-    _clamp(ref.current, { clamp });
-  }
 
   return (
     <Component
