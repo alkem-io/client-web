@@ -80,7 +80,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
           },
           className: styles.body,
         }}

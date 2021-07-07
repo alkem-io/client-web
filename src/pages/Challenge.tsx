@@ -218,7 +218,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, users = [] }): Re
         classes={{
           background: (theme: Theme) =>
             bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
+          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
         }}
         gutters={{
           root: true,
