@@ -17,7 +17,7 @@ interface DiscussionsProps {
 export const Discussions: FC<DiscussionsProps> = ({ messages }) => {
   const styles = useDiscussionsStyles();
 
-  let messagesComponent = <Typography> No discussionss</Typography>;
+  let messagesComponent = <Typography> No discussions</Typography>;
 
   if (messages) {
     messagesComponent = (
