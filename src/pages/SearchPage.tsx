@@ -137,35 +137,39 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         />
       </Section>
       <Divider />
-      <Container>
-        <Row className={'justify-content-md-center mb-5'}>
-          <Col lg={3}>
-            <DropdownButton title={typesFilter.title} variant={'info'}>
-              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>{filtersConfig.all.title}</Dropdown.Item>
-              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>
-                {filtersConfig.user.title}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
-                {filtersConfig.group.title}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.organization)}>
-                {filtersConfig.organization.title}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.challenge)}>
-                {filtersConfig.challenge.title}
-              </Dropdown.Item>
-            </DropdownButton>
-          </Col>
-          <Col lg={9}>
-            {community.length > 10 && (
-              <Typography>
-                There are more search results. Please use more specific search criteria to narrow down the results
-              </Typography>
-            )}
-          </Col>
-        </Row>
-      </Container>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={3} xl={2}>
+      {community.length > 0 && (
+        <Container>
+          <Row className={'justify-content-md-center mb-5'}>
+            <Col lg={3}>
+              <DropdownButton title={typesFilter.title} variant={'info'}>
+                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>
+                  {filtersConfig.all.title}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>
+                  {filtersConfig.user.title}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
+                  {filtersConfig.group.title}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.organization)}>
+                  {filtersConfig.organization.title}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.challenge)}>
+                  {filtersConfig.challenge.title}
+                </Dropdown.Item>
+              </DropdownButton>
+            </Col>
+            <Col lg={9}>
+              {community.length > 10 && (
+                <Typography>
+                  There are more search results. Please use more specific search criteria to narrow down the results
+                </Typography>
+              )}
+            </Col>
+          </Row>
+        </Container>
+      )}
+      <CardContainer cardHeight={320} xs={12} sm={6} md={4}>
         {community.slice(0, 12).map(el => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
           if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;
@@ -174,7 +178,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           return null;
         })}
       </CardContainer>
-      <Divider />
     </>
   );
 };

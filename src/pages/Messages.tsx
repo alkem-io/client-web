@@ -153,6 +153,7 @@ export const DummyChat: FC = () => {
       bodyProps={{
         classes: {
           background: theme => theme.palette.neutralLight,
+          padding: theme => `${theme.shape.spacing(1)}px`,
         },
         className: clsx(styles.container),
       }}

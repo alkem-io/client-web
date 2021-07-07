@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
@@ -6,6 +5,9 @@ import { createStyles } from '../../hooks/useTheme';
 import hexToRgba from '../../utils/hexToRGBA';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
+// import { useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
+import clsx from 'clsx';
 
 const appBarZIndex = 100;
 
@@ -19,20 +21,32 @@ const useHeaderStyles = createStyles(theme => ({
   alertText: {
     padding: `0 ${theme.earlyAccessAlert.height}px`,
   },
+  root: {
+    maxWidth: 1380,
+    margin: 'auto',
+  },
   absolute: {
     position: 'absolute',
     top: 0,
-    left: 0,
     right: 0,
+    left: 0,
     zIndex: appBarZIndex,
   },
   fixed: {
     position: 'fixed',
     top: 0,
-    left: 0,
     right: 0,
     zIndex: appBarZIndex,
     background: hexToRgba(theme.palette.background, 0.8),
+  },
+  offsetLeftMax: {
+    left: theme.sidebar.maxWidth,
+  },
+  offsetLeftNone: {
+    left: 0,
+  },
+  offsetLeftMin: {
+    left: theme.sidebar.minWidth,
   },
   centerContent: {
     alignItems: 'center',
@@ -40,6 +54,22 @@ const useHeaderStyles = createStyles(theme => ({
   link: {
     textDecoration: 'underline',
     color: theme.palette.background,
+  },
+  toolbar: {
+    padding: `${theme.shape.spacing(4)}px 0`,
+
+    [theme.media.down('md')]: {
+      paddingLeft: theme.shape.spacing(0),
+      paddingRight: theme.shape.spacing(0),
+    },
+  },
+  toolbarDense: {
+    padding: `${theme.shape.spacing(2)}px 0`,
+
+    [theme.media.down('md')]: {
+      paddingLeft: theme.shape.spacing(0),
+      paddingRight: theme.shape.spacing(0),
+    },
   },
 }));
 
@@ -52,6 +82,9 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   const styles = useHeaderStyles();
   const [headerInSight, setHeaderInSight] = useState(true);
+  // const theme = useTheme();
+  // const upSm = useMediaQuery(theme.breakpoints.up('sm'));
+  // const upMd = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <>
@@ -59,12 +92,24 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
         <Toolbar innerRef={innerRef} />
       </ReactVisibilitySensor>
 
-      <Container className={styles[headerInSight ? 'absolute' : 'fixed']}>
-        <Row className={styles.earlyAccessAlert} />
+      <Container
+        className={clsx(
+          styles[headerInSight ? 'absolute' : 'fixed'],
+          styles.root
+          // !headerInSight && (upMd ? styles.offsetLeftMax : upSm ? styles.offsetLeftMin : styles.offsetLeftNone)
+        )}
+      >
         <Row>
-          <Col xs={false} lg={3}></Col>
+          {/* <Col xs={false} lg={3}></Col> */}
           <Col xs>
-            <Toolbar dense={!headerInSight} classes={clsx(styles.centerContent)}>
+            <Toolbar
+              dense={!headerInSight}
+              className={clsx(styles.centerContent)}
+              classes={{
+                padding: styles.toolbar,
+                densePadding: styles.toolbarDense,
+              }}
+            >
               {children(headerInSight)}
             </Toolbar>
           </Col>

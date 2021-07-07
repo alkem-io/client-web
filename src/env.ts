@@ -9,6 +9,7 @@ declare global {
       REACT_APP_VERSION?: string;
       REACT_APP_DEBUG_QUERY?: string;
       REACT_APP_LOG_ERRORS?: string;
+      REACT_APP_FEEDBACK_URL?: string;
     };
   }
 }
