@@ -4323,9 +4323,15 @@ export function refetchEcoverseInfoQuery(variables?: SchemaTypes.EcoverseInfoQue
   return { query: EcoverseInfoDocument, variables: variables };
 }
 export const EcoverseUserIdsDocument = gql`
-  query ecoverseUserIds {
-    users {
+  query ecoverseUserIds($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
       id
+      community {
+        id
+        members {
+          id
+        }
+      }
     }
   }
 `;
@@ -4342,11 +4348,12 @@ export const EcoverseUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseUserIdsQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
 export function useEcoverseUserIdsQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
 ) {
   return Apollo.useQuery<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>(
     EcoverseUserIdsDocument,

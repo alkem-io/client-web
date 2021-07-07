@@ -230,7 +230,7 @@
         },
         "community": {
           "header": "Community",
-          "subheader": "The heroes working on this challenge",
+          "subheader": "Connect with the users contributing, get updates and discuss!",
           "body": ""
         },
         "projects": {
@@ -351,7 +351,7 @@
         },
         "community": {
           "title": "Community",
-          "subtitle": "The heroes working on this opportunity",
+          "subtitle": "Connect with the users contributing, get updates and discuss!",
           "body": ""
         }
       }
