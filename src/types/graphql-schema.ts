@@ -235,8 +235,6 @@ export type ChallengeTemplate = {
 
 export type CommunicationMessageResult = {
   __typename?: 'CommunicationMessageResult';
-  /** The id for the message event (Matrix) */
-  id: Scalars['String'];
   /** The message being sent */
   message: Scalars['String'];
   /** The sender email */
@@ -251,8 +249,6 @@ export type Community = Groupable & {
   applications: Array<Application>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** Room with messages for this community. */
-  discussionRoom: CommunityRoom;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -262,15 +258,7 @@ export type Community = Groupable & {
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
   /** Room with messages for this community. */
-  updatesRoom: CommunityRoom;
-};
-
-export type CommunityRoom = {
-  __typename?: 'CommunityRoom';
-  /** The identifier of the room */
-  id: Scalars['String'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<CommunicationMessageResult>;
+  room: Room;
 };
 
 export type CommunitySendMessageInput = {
@@ -549,16 +537,6 @@ export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type DirectRoom = {
-  __typename?: 'DirectRoom';
-  /** The identifier of the room */
-  id: Scalars['String'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<CommunicationMessageResult>;
-  /** The recepient userID */
-  receiverID?: Maybe<Scalars['String']>;
-};
-
 export type EcosystemModel = {
   __typename?: 'EcosystemModel';
   /** A list of ActorGroups */
@@ -832,10 +810,8 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Sends an update message on the specified community */
-  messageDiscussionCommunity: Scalars['String'];
-  /** Sends an update message on the specified community */
-  messageUpdateCommunity: Scalars['String'];
+  /** Sends a message on the specified community */
+  messageCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a User as a member of the specified Community. */
@@ -1024,11 +1000,7 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationMessageDiscussionCommunityArgs = {
-  msgData: CommunitySendMessageInput;
-};
-
-export type MutationMessageUpdateCommunityArgs = {
+export type MutationMessageCommunityArgs = {
   msgData: CommunitySendMessageInput;
 };
 
@@ -1375,6 +1347,18 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type Room = {
+  __typename?: 'Room';
+  /** The identifier of the room */
+  id: Scalars['String'];
+  /** Whether the Room is for direct messages to another user. */
+  isDirect: Scalars['Boolean'];
+  /** The messages that have been sent to the Room. */
+  messages: Array<CommunicationMessageResult>;
+  /** The recepient userID */
+  receiverID?: Maybe<Scalars['String']>;
+};
+
 export type SearchInput = {
   /** Restrict the search to only the specified challenges. Default is all Challenges. */
   challengesFilter?: Maybe<Array<Scalars['Float']>>;
@@ -1604,11 +1588,7 @@ export type User = Searchable & {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   city: Scalars['String'];
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunityRoom>>;
   country: Scalars['String'];
-  /** The direct rooms this user is a member of */
-  directRooms?: Maybe<Array<DirectRoom>>;
   /** The display name. */
   displayName: Scalars['String'];
   /** The email address for this User. */
@@ -1623,6 +1603,14 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The profile for this User */
   profile?: Maybe<Profile>;
+  /** An overview of the rooms this user is a member of */
+  room?: Maybe<Room>;
+  /** The rooms this user is a member of */
+  rooms?: Maybe<Array<Room>>;
+};
+
+export type UserRoomArgs = {
+  roomID: Scalars['String'];
 };
 
 export type UserAuthorizationPrivilegesInput = {
@@ -2171,6 +2159,31 @@ export type AllOpportunitiesQueryVariables = Exact<{
 export type AllOpportunitiesQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       opportunities: Array<{ __typename?: 'Opportunity' } & Pick<Opportunity, 'id' | 'nameID'>>;
+    };
+};
+
+export type ChallengeApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id' | 'displayName'> & {
+          context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+          community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
+        };
+    };
+};
+
+export type EcoverseApplicationQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseApplicationQuery = { __typename?: 'Query' } & {
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id' | 'displayName'> & {
+      context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
+      community?: Maybe<{ __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'>>;
     };
 };
 
