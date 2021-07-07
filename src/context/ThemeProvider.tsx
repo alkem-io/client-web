@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import React, { FC } from 'react';
 
 export interface Palette {
   primary: string;
@@ -125,7 +125,7 @@ const defaultEarlyAccessAlert: EarlyAccessAlert = {
   height: 40,
 };
 
-const defaultTheme: Theme = {
+export const defaultTheme: Theme = {
   palette: defaultPalette,
   typography: defaultTypography,
   shape: defaultShape,
@@ -141,6 +141,14 @@ const defaultMuiTheme = createMuiTheme({
     },
     background: {
       paper: defaultTheme.palette.neutralLight,
+    },
+  },
+  typography: {
+    fontFamily: '"MONTSERRAT"',
+  },
+  props: {
+    MuiButtonBase: {
+      disableRipple: true, // No more ripple, on the whole application!
     },
   },
 });
