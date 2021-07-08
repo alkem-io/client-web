@@ -2,6 +2,7 @@ query challengeLifecycle($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) 
   ecoverse(ID: $ecoverseId) {
     id
     challenge(ID: $challengeId) {
+      id
       lifecycle {
         id
       	machineDef

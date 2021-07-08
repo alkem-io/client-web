@@ -59,6 +59,7 @@ const ActivityCard: FC<ActivityCardProps> = ({
           background: (theme: Theme) => theme.palette.background,
           ...classes,
         },
+        className: 'h-100',
       }}
       primaryTextProps={{ text: title }}
     >
