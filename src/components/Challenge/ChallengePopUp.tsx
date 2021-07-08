@@ -110,7 +110,7 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
                   <Divider noPadding />
                   <div className={styles.divCentered}>
                     <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
-                      {tags.length > 0 ? tags : 'No tags available'}
+                      {tags.length > 0 ? tags.join(', ') : 'No tags available'}
                     </Typography>
                   </div>
                 </div>
