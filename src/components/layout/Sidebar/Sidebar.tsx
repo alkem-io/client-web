@@ -91,7 +91,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
       <Box position="relative" display="flex" flexDirection="column">
         {upMd || !upSm ? (
           <Image
-            src={'.\\logo.png'}
+            src={'/logo.png'}
             className={styles.logoLg}
             alt="alkemio"
             onError={() => {
@@ -100,7 +100,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           />
         ) : (
           <Image
-            src={'.\\logo192.png'}
+            src={'/logo192.png'}
             className={styles.logoSm}
             alt="alkemio"
             onError={() => {
