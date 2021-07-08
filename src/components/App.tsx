@@ -134,7 +134,7 @@ const App = ({ children }): React.ReactElement => {
         location="bottom"
         buttonText="Ok"
         cookieName="cookie_consent"
-        style={{ background: '#09bcd4' }}
+        style={{ background: '#09bcd4', zIndex: 1500 }}
         buttonStyle={{ width: '150px', background: '#2d546a', color: '#FFFFFF', fontSize: '16px' }}
         expires={150}
       >
