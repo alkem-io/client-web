@@ -6,6 +6,7 @@ query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       displayName
+      nameID
       ecoverseID
       activity {
         name
@@ -19,6 +20,7 @@ query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         visual {
           avatar
           background
+          banner
         }
       }
     }
