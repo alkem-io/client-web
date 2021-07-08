@@ -63,7 +63,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
     onError: handleError,
   });
   const [createOpportunity, { loading: loading2 }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeId })],
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
@@ -169,7 +169,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
                 nameID: nameID,
                 context: createContext,
                 displayName: name,
-                challengeID: challengeId,
+                challengeID: challengeNameId,
                 tags: tagsets.map(x => x.tags.join()),
               },
             },
