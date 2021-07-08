@@ -108,14 +108,14 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
+      <Route path={`${path}/opportunities/:id`}>
+        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
+      </Route>
       <Route exact path={path}>
         {!loading && <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} />}
       </Route>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
