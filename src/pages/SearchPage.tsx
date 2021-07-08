@@ -169,7 +169,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           </Row>
         </Container>
       )}
-      <CardContainer cardHeight={320} xs={12} sm={6} md={4}>
+      <CardContainer cardHeight={290} xs={12} sm={6} md={6}>
         {community.slice(0, 12).map(el => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
           if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;

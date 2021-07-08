@@ -364,7 +364,6 @@ const Card: FC<CardProps> = ({
         {matchedTerms && (
           <>
             <MatchedTerms {...matchedTerms} />
-            <div className="flex-grow-1" />
           </>
         )}
         {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}

@@ -1661,7 +1661,7 @@ export type UserGroup = Searchable & {
 export type UserMembership = {
   __typename?: 'UserMembership';
   /** Open applications for this user. */
-  applications: Array<ApplicationResultEntry>;
+  applications?: Maybe<Array<ApplicationResultEntry>>;
   /** Details of Ecoverses the user is a member of, with child memberships */
   ecoverses: Array<MembershipUserResultEntryEcoverse>;
   /** Details of the Organisations the user is a member of, with child memberships. */
@@ -2263,7 +2263,7 @@ export type ChallengeCardQuery = { __typename?: 'Query' } & {
           tagset?: Maybe<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>;
           context?: Maybe<
             { __typename?: 'Context' } & Pick<Context, 'tagline'> & {
-                visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar'>>;
+                visual?: Maybe<{ __typename?: 'Visual' } & Pick<Visual, 'avatar' | 'background'>>;
               }
           >;
         };
@@ -2709,10 +2709,18 @@ export type EcoverseInfoQuery = { __typename?: 'Query' } & {
   } & EcoverseDetailsFragment;
 };
 
-export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseUserIdsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
-  users: Array<{ __typename?: 'User' } & Pick<User, 'id'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      community?: Maybe<
+        { __typename?: 'Community' } & Pick<Community, 'id'> & {
+            members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
+          }
+      >;
+    };
 };
 
 export type EcoverseVisualQueryVariables = Exact<{

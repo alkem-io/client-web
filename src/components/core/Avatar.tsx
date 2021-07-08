@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { FC, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
@@ -100,45 +100,48 @@ export interface AvatarProps {
   userId?: string;
 }
 
-const Avatar: FC<AvatarProps> = ({ size = 'md', classes = {}, className, src, theme = 'dark', name, userId }) => {
-  const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
+const Avatar = forwardRef<unknown, AvatarProps>(
+  ({ size = 'md', classes = {}, className, src, theme = 'dark', name, userId }, ref) => {
+    const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
 
-  const styles = useAvatarStyles(classes);
-  const [fallback, setFallback] = useState(false);
+    const styles = useAvatarStyles(classes);
+    const [fallback, setFallback] = useState(false);
 
-  return (
-    <div
-      className={clsx(styles.avatarWrapper, userId && styles.clickable, size, className)}
-      onClick={() => userId && !isPopUpShown && setIsPopUpShown(true)}
-    >
-      {(!src || fallback) && (
-        <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
-          <Typography variant="button" color="inherit">
-            ?
-          </Typography>
-        </div>
-      )}
-      {src && !fallback && name && (
-        <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
+    return (
+      <div
+        ref={ref as any}
+        className={clsx(styles.avatarWrapper, userId && styles.clickable, size, className)}
+        onClick={() => userId && !isPopUpShown && setIsPopUpShown(true)}
+      >
+        {(!src || fallback) && (
+          <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
+            <Typography variant="button" color="inherit">
+              ?
+            </Typography>
+          </div>
+        )}
+        {src && !fallback && name && (
+          <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
+            <Image
+              className={clsx(styles.avatar, size, className)}
+              src={src}
+              alt="user"
+              onError={() => setFallback(true)}
+            />
+          </OverlayTrigger>
+        )}
+        {src && !fallback && !name && (
           <Image
             className={clsx(styles.avatar, size, className)}
             src={src}
             alt="user"
             onError={() => setFallback(true)}
           />
-        </OverlayTrigger>
-      )}
-      {src && !fallback && !name && (
-        <Image
-          className={clsx(styles.avatar, size, className)}
-          src={src}
-          alt="user"
-          onError={() => setFallback(true)}
-        />
-      )}
-      {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
-    </div>
-  );
-};
+        )}
+        {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
+      </div>
+    );
+  }
+);
 
 export default Avatar;
