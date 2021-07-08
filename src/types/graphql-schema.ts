@@ -2371,9 +2371,9 @@ export type ChallengeLifecycleQueryVariables = Exact<{
 
 export type ChallengeLifecycleQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & {
-        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
-      };
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
+        };
     };
 };
 

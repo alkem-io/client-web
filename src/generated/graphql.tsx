@@ -2912,6 +2912,7 @@ export const ChallengeLifecycleDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeId) {
+        id
         lifecycle {
           id
           machineDef
