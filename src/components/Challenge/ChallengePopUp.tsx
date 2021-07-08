@@ -7,16 +7,14 @@ import Button from '../core/Button';
 import Divider from '../core/Divider';
 import Loading from '../core/Loading';
 import Typography from '../core/Typography';
+import hexToRGBA from '../../utils/hexToRGBA';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
+// todo restructure css
 const groupPopUpStyles = createStyles(theme => ({
   title: {
     textTransform: 'capitalize',
-  },
-  centeredText: {
-    textAlign: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   icon: {
     marginRight: theme.shape.spacing(1),
@@ -35,6 +33,19 @@ const groupPopUpStyles = createStyles(theme => ({
     opacity: 0.6,
     fontStyle: 'italic',
   },
+  divCentered: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexGrow: 1,
+  },
+  wrapperBackdrop: {
+    background: hexToRGBA(theme.palette.neutral, 0.6),
+  },
+  wrapperInner: {
+    padding: '1rem',
+  },
+  top: {},
+  body: {},
 }));
 
 interface ChallengePopUpProps {
@@ -44,61 +55,76 @@ interface ChallengePopUpProps {
 }
 
 const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => {
+  const { t } = useTranslation();
   const styles = groupPopUpStyles();
 
   const { data, loading } = useChallengeCardQuery({ variables: { ecoverseId: ecoverseId, challengeId: id } });
   const challenge = data?.ecoverse?.challenge;
-  const ecoverseName = data?.ecoverse?.nameID;
+  const ecoverseNameID = data?.ecoverse?.nameID;
+  const ecoverseDisplayName = data?.ecoverse?.displayName;
   const name = challenge?.displayName;
+  const nameID = challenge?.nameID;
   const tags: string[] = challenge?.tagset?.tags || [];
   const avatar = challenge?.context?.visual?.avatar;
+  const banner = challenge?.context?.visual?.banner || '';
   const tagline = challenge?.context?.tagline;
 
   return (
     <>
       <Modal show={true} onHide={onHide} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Challenge Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <Modal.Body
+          style={{
+            background: banner ? `url("${banner}") no-repeat center center / cover` : 'none',
+            padding: 0,
+          }}
+        >
           {loading ? (
             <Loading text={'Loading the challenge'} />
           ) : (
-            <>
-              <div className={'d-flex align-items-center mb-3'}>
-                <Avatar src={avatar} size={'lg'} />
-                <div className={'ml-3'}>
-                  <Typography variant={'h3'} className={styles.title}>
-                    {name}
+            <div className={styles.wrapperBackdrop}>
+              <div className={styles.wrapperInner}>
+                <div className={styles.top}>
+                  <div className={'d-flex align-items-center mb-3'}>
+                    <Avatar src={avatar} size={'lg'} />
+                    <div className={styles.divCentered}>
+                      <Typography variant={'h3'} color={'neutralLight'} className={styles.title}>
+                        {name}
+                      </Typography>
+                    </div>
+                  </div>
+                  <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                    {tagline}
                   </Typography>
                 </div>
-                <div className={'flex-grow-1'} />
+
+                <div className={styles.body}>
+                  <Divider noPadding />
+                  <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                    Ecoverse: {ecoverseDisplayName}
+                  </Typography>
+
+                  {/*<Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
+                    Todo: ue the banner, label for the ecoverse displayName, more info button for the Challenge, link to
+                    the ecoverse?
+                  </Typography> */}
+                  <Divider noPadding />
+                  <div className={styles.divCentered}>
+                    <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                      {tags.length > 0 ? tags : 'No tags available'}
+                    </Typography>
+                  </div>
+                </div>
               </div>
-
-              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                {tagline}
-              </Typography>
-              <Divider noPadding />
-
-              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                Ecoverse: {ecoverseName}
-              </Typography>
-              <Divider noPadding />
-
-              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                Todo: ue the banner, label for the ecoverse displayName, more info button for the Challenge, link to the
-                ecoverse?
-              </Typography>
-              <Divider noPadding />
-
-              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                Tags: {tags}
-              </Typography>
-              <Divider noPadding />
-            </>
+            </div>
           )}
         </Modal.Body>
         <Modal.Footer>
+          <Button
+            variant="primary"
+            text={t('buttons.explore')}
+            as={Link}
+            to={`/${ecoverseNameID}/challenges/${nameID}`}
+          />
           <Button onClick={onHide}>Close</Button>
         </Modal.Footer>
       </Modal>

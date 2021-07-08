@@ -64,7 +64,9 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
               <Box display="flex" flexDirection={'column'} maxWidth={280}>
                 <Box display="flex" flexDirection="column" alignItems="center" className={styles.userHeader}>
                   <Avatar size={'lg'} src={user.profile?.avatar} />
-                  <Typography variant="h3">{user.displayName}</Typography>
+                  <Typography variant="h3" className={'text-center'}>
+                    {user.displayName}
+                  </Typography>
                   <Typography variant="h5" color="neutralMedium">
                     {role}
                   </Typography>

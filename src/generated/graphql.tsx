@@ -2469,6 +2469,7 @@ export const ChallengeCardDocument = gql`
       challenge(ID: $challengeId) {
         id
         displayName
+        nameID
         ecoverseID
         activity {
           name
@@ -2482,6 +2483,7 @@ export const ChallengeCardDocument = gql`
           visual {
             avatar
             background
+            banner
           }
         }
       }
