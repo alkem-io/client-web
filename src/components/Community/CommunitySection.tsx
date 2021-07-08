@@ -11,7 +11,9 @@ import Discussions from './Discussions';
 import Members from './Members';
 import Updates from './Updates';
 
-export interface CommunitySectionProps {
+export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
+
+interface CommunitySectionProps {
   title: string;
   subTitle: string;
   body?: string;

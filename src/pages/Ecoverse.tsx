@@ -31,7 +31,7 @@ import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
 import { SEARCH_PAGE } from '../models/Constants';
-import { Context, EcoverseInfoQuery, User } from '../types/graphql-schema';
+import { Context, EcoverseInfoQuery } from '../types/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
 
@@ -49,10 +49,9 @@ const useStyles = createStyles(theme => ({
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
-  users: User[] | undefined;
 }
 
-const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -230,7 +229,6 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse, users = [] }): R
         <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
-          users={users}
           body={t('pages.ecoverse.sections.community.body')}
           shuffle={true}
           onExplore={() => history.push(SEARCH_PAGE)}

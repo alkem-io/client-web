@@ -169,7 +169,7 @@ const OppChallPage: FC<Props> = ({ paths, mode, title }) => {
                 nameID: nameID,
                 context: createContext,
                 displayName: name,
-                challengeID: challengeId,
+                challengeID: challengeNameId,
                 tags: tagsets.map(x => x.tags.join()),
               },
             },

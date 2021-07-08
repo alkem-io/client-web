@@ -2371,9 +2371,9 @@ export type ChallengeLifecycleQueryVariables = Exact<{
 
 export type ChallengeLifecycleQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
-      challenge: { __typename?: 'Challenge' } & {
-        lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
-      };
+      challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'machineDef' | 'state'>>;
+        };
     };
 };
 
@@ -2709,10 +2709,18 @@ export type EcoverseInfoQuery = { __typename?: 'Query' } & {
   } & EcoverseDetailsFragment;
 };
 
-export type EcoverseUserIdsQueryVariables = Exact<{ [key: string]: never }>;
+export type EcoverseUserIdsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
 
 export type EcoverseUserIdsQuery = { __typename?: 'Query' } & {
-  users: Array<{ __typename?: 'User' } & Pick<User, 'id'>>;
+  ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
+      community?: Maybe<
+        { __typename?: 'Community' } & Pick<Community, 'id'> & {
+            members?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id'>>>;
+          }
+      >;
+    };
 };
 
 export type EcoverseVisualQueryVariables = Exact<{

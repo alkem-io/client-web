@@ -4,8 +4,6 @@ import Loading from '../components/core/Loading';
 import {
   useChallengeProfileQuery,
   useChallengesQuery,
-  useChallengeUserIdsQuery,
-  useEcoverseUserIdsQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
@@ -25,9 +23,9 @@ import {
   Opportunity as OpportunityType,
   User,
 } from '../types/graphql-schema';
-import { Project } from './project';
-import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import ChallengeApplyRoute from './application/ChallengeApplyRoute';
+import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
+import { Project } from './project';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -39,13 +37,12 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
     errorPolicy: 'ignore' /*todo do not ignore errors*/,
   });
 
-  const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({ errorPolicy: 'all' });
   const currentPaths = useMemo(
     () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.displayName, real: true }] : paths),
     [paths, ecoverseInfo]
   );
 
-  const loading = ecoverseLoading || usersLoading || challengesLoading;
+  const loading = ecoverseLoading || challengesLoading;
 
   if (loading) {
     return <Loading text={'Loading ecoverse'} />;
@@ -58,13 +55,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        {!loading && (
-          <EcoversePage
-            ecoverse={ecoverseInfo}
-            users={(usersQuery?.users || undefined) as User[] | undefined}
-            paths={currentPaths}
-          />
-        )}
+        {!loading && <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} />}
       </Route>
       <Route path={`${path}/challenges/:id`}>
         <Challenge paths={currentPaths} challenges={challenges} />
@@ -97,13 +88,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
     },
     errorPolicy: 'all',
   });
-  const { data: usersQuery, loading: usersLoading } = useChallengeUserIdsQuery({
-    variables: {
-      ecoverseId,
-      challengeId,
-    },
-    errorPolicy: 'all',
-  });
+
   const challenge = query?.ecoverse.challenge;
 
   const currentPaths = useMemo(
@@ -111,7 +96,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
     [paths, id, challenge]
   );
 
-  const loading = challengeLoading || usersLoading;
+  const loading = challengeLoading;
 
   if (loading) {
     return <Loading text={'Loading challenge'} />;
@@ -123,20 +108,14 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
+      <Route path={`${path}/opportunities/:id`}>
+        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
+      </Route>
       <Route exact path={path}>
-        {!loading && (
-          <ChallengePage
-            challenge={challenge as ChallengeType}
-            users={(usersQuery?.ecoverse.challenge.community?.members || undefined) as User[] | undefined}
-            paths={currentPaths}
-          />
-        )}
+        {!loading && <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} />}
       </Route>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

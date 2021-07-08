@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
+import React, { forwardRef } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
@@ -57,38 +56,43 @@ interface UserProps {
   name: string;
   title: string;
   src: string | undefined;
+  onClick?: () => void;
   reverseLayout?: boolean;
 }
 
-const User: FC<UserProps> = ({ orientation = 'vertical', name, title, src, reverseLayout = false }) => {
-  const styles = useUserStyles();
+const User = forwardRef<unknown, UserProps>(
+  ({ orientation = 'vertical', name, title, src, reverseLayout = false, onClick }, ref) => {
+    const styles = useUserStyles();
 
-  const childrenClasses = clsx(styles.children, orientation, reverseLayout && 'reversed');
-  const size = orientation === 'vertical' ? 'md' : 'sm';
+    const childrenClasses = clsx(styles.children, orientation, reverseLayout && 'reversed');
+    const size = orientation === 'vertical' ? 'md' : 'sm';
 
-  return (
-    <Link
-      className={clsx(styles.flex, styles.center, styles.horizontal, reverseLayout && styles.reversedLayout)}
-      to="/profile"
-    >
-      <Avatar size={size} src={src} />
+    return (
       <div
-        className={clsx(
-          styles.flex,
-          styles[orientation],
-          orientation === 'horizontal' && reverseLayout && styles.reversedLayout
-        )}
+        onClick={onClick}
+        className={clsx(styles.flex, styles.center, styles.horizontal, reverseLayout && styles.reversedLayout)}
+        style={{ cursor: 'pointer' }}
+        // to="/profile"
       >
-        <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
-          {name}
-        </Typography>
-        <Typography variant="caption" color="neutralMedium" weight="medium" className={childrenClasses}>
-          {title}
-        </Typography>
+        <Avatar size={size} src={src} ref={ref as any} />
+        <div
+          className={clsx(
+            styles.flex,
+            styles[orientation],
+            orientation === 'horizontal' && reverseLayout && styles.reversedLayout
+          )}
+        >
+          <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
+            {name}
+          </Typography>
+          <Typography variant="caption" color="neutralMedium" weight="medium" className={childrenClasses}>
+            {title}
+          </Typography>
+        </div>
+        {/* <UserRoles /> */}
       </div>
-      {/* <UserRoles /> */}
-    </Link>
-  );
-};
+    );
+  }
+);
 
 export default User;

@@ -106,17 +106,7 @@ const WelcomeSection = () => {
       >
         <SectionHeader text={t('pages.home.sections.welcome.header')} />
         <SubHeader text={t('pages.home.sections.welcome.subheader')} />
-        <Body text={t('pages.home.sections.welcome.body')}>
-          <div className={clsx(styles.flexCol, styles.flexGap)}>
-            {!isAuthenticated && (
-              <div className={clsx(styles.flexGap, styles.flexAlignCenter)}>
-                <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} target="_blank" />
-                OR
-                <Button text={t('authentication.sign-up')} as={'a'} href={AUTH_REGISTER_PATH} target="_blank" />
-              </div>
-            )}
-          </div>
-        </Body>
+        <Body text={t('pages.home.sections.welcome.body')}></Body>
         <Section
           hideAvatar
           hideDetails
@@ -147,6 +137,18 @@ const WelcomeSection = () => {
             />
           </Body>
         </Section>
+        <div className={clsx(styles.flexCol, styles.flexGap)}>
+          {!isAuthenticated && (
+            <>
+              <Box p={0.5}></Box>
+              <div className={clsx(styles.flexGap, styles.flexAlignCenter)}>
+                <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} target="_blank" />
+                OR
+                <Button text={t('authentication.sign-up')} as={'a'} href={AUTH_REGISTER_PATH} target="_blank" />
+              </div>
+            </>
+          )}
+        </div>
       </Section>
     </>
   );

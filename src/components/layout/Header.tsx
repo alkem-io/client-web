@@ -1,3 +1,6 @@
+// import { useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
+import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
@@ -5,9 +8,6 @@ import { createStyles } from '../../hooks/useTheme';
 import hexToRgba from '../../utils/hexToRGBA';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
-// import { useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
-import clsx from 'clsx';
 
 const appBarZIndex = 100;
 
