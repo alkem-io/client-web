@@ -1,10 +1,11 @@
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import React, { FC } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
+import { VERIFY_PATH } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
@@ -122,7 +123,7 @@ export const UserProfile: FC = () => {
   const styles = useMemberOfStyles();
 
   useTransactionScope({ type: 'authentication' });
-  const { user: userMetadata, loading } = useUserContext();
+  const { user: userMetadata, loading, verified } = useUserContext();
 
   const user = (userMetadata?.user as User) || defaultUser || {};
 
@@ -150,6 +151,11 @@ export const UserProfile: FC = () => {
       </div>
       <Body>
         <div style={{ marginTop: 20 }} />
+        <Alert show={!verified} variant={'warning'}>
+          <span>
+            Please verify your <Link to={VERIFY_PATH}>email</Link>.
+          </span>
+        </Alert>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
         <Card className={'mt-2'}>
           {tagsets &&

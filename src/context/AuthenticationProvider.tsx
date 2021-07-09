@@ -6,15 +6,17 @@ export interface AuthContext {
   loading: boolean;
   isAuthenticated: boolean;
   session?: Session;
+  verified: boolean;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
   loading: true,
   isAuthenticated: false,
+  verified: false,
 });
 
 const AuthenticationProvider: FC = ({ children }) => {
-  const { session, isAuthenticated, loading } = useWhoami();
+  const { session, isAuthenticated, loading, verified } = useWhoami();
 
   return (
     <AuthenticationContext.Provider
@@ -22,6 +24,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         isAuthenticated,
         loading,
         session,
+        verified,
       }}
     >
       {children}

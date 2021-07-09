@@ -14,6 +14,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const [verificationFlow, setVerificationFlow] = useState<VerificationFlow>();
   const kratos = useKratosClient();
   const { t } = useTranslation();
+
   useEffect(() => {
     if (flow && kratos) {
       kratos.getSelfServiceVerificationFlow(flow).then(({ status, data: flow, ..._response }) => {
@@ -26,8 +27,10 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   }, [flow]);
 
   if (!flow) {
-    window.location.replace('/'); // TODO [ATS]: Might redirect to invalid page ...
+    window.location.replace('/self-service/verification/browser');
+    return null;
   }
+
   return (
     <Container fluid={'sm'}>
       <Row className={'d-flex justify-content-center'}>
