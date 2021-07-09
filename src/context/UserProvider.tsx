@@ -1,6 +1,4 @@
-import React, { FC, useCallback, useEffect } from 'react';
-import { ReactNode } from 'react-markdown';
-import Loading from '../components/core/Loading';
+import React, { FC, useEffect } from 'react';
 import {
   refetchMeQuery,
   useCreateUserNewRegistrationMutation,
@@ -11,7 +9,7 @@ import {
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks/useUserMetadataWrapper';
 import { Error } from '../pages/Error';
-import { User, UserMembershipDetailsFragment } from '../types/graphql-schema';
+import { User } from '../types/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;
@@ -23,87 +21,48 @@ const UserContext = React.createContext<UserContextContract>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
-  const { isAuthenticated, loading } = useAuthenticationContext();
-
-  const getProvider = useCallback(
-    (me?: User, membership?: UserMembershipDetailsFragment) => {
-      const wrappedMe = me ? wrapper(me as User, membership) : undefined;
-      return (
-        <UserContext.Provider
-          value={{
-            user: wrappedMe,
-            loading,
-          }}
-        >
-          {children}
-        </UserContext.Provider>
-      );
-    },
-    [loading]
-  );
-
-  if (loading) return <Loading text={'Check session'} />;
-
-  if (!isAuthenticated) return getProvider();
-
-  return (
-    <EnsureUserProfileExists>
-      <UserLoader>
-        {me => {
-          if (me) {
-            return <MembershipWrapper userId={me.id}>{membership => getProvider(me, membership)}</MembershipWrapper>;
-          }
-          return getProvider();
-        }}
-      </UserLoader>
-    </EnsureUserProfileExists>
-  );
-};
-
-const MembershipWrapper: FC<{
-  userId: string;
-  children: (membership?: UserMembershipDetailsFragment) => React.ReactNode;
-}> = ({ userId, children }) => {
-  const { data: membershipData, loading: loadingMembership } = useMembershipUserQuery({
-    variables: { input: { userID: userId } },
-    errorPolicy: 'all',
-    onError: () => {
-      // because reset store can crash - error needs to be consumed
+  const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
+  const { data: meHasProfileData, loading: LoadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
+  const { data: meData, loading: loadingMe } = useMeQuery({
+    skip: !meHasProfileData?.meHasProfile,
+  });
+  const { data: membershipData, loading: loadingMembershipData } = useMembershipUserQuery({
+    skip: !meData?.me.id,
+    variables: {
+      input: {
+        userID: meData?.me.id || '',
+      },
     },
   });
-  if (loadingMembership) return <Loading text={'Loading membership'} />;
-  return <>{children(membershipData?.membershipUser)}</>;
-};
 
-const UserLoader: FC<{
-  children: (me?: User) => ReactNode;
-}> = ({ children }) => {
-  const { data, loading: profileLoading } = useMeQuery({ errorPolicy: 'all' });
-  const { me } = data || {};
-  if (profileLoading) return <Loading text={'Loading user profile'} />;
-  return <>{children(me as User)} </>;
-};
-
-const EnsureUserProfileExists: FC = ({ children }) => {
-  const { data, loading: loadingMe } = useMeHasProfileQuery();
-  const [createUser, { loading, error }] = useCreateUserNewRegistrationMutation({
+  const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
     refetchQueries: [refetchMeQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
 
   useEffect(() => {
-    if (data) {
-      if (data.meHasProfile) {
-      } else {
-        createUser();
-      }
+    if (isAuthenticated && meHasProfileData && !meHasProfileData.meHasProfile) {
+      createUserProfile();
     }
-  }, [data]);
+  }, [meHasProfileData]);
 
-  if (loading || loadingMe) return <Loading text={'Initializing user profile ...'} />;
+  const loading =
+    loadingAuthentication || LoadingMeHasProfile || loadingCreateUser || loadingMe || loadingMembershipData;
+
   if (error) return <Error error={error} />;
-  return <>{children}</>;
+
+  const wrappedMe = meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined;
+  return (
+    <UserContext.Provider
+      value={{
+        user: wrappedMe,
+        loading,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export { UserProvider, UserContext };

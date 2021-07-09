@@ -82,13 +82,13 @@ const ReduxRoot: FC = () => {
           <CTApolloProvider>
             <ThemeProvider>
               <NavigationProvider>
-                <UserProvider>
-                  <EcoversesProvider>
+                <EcoversesProvider>
+                  <UserProvider>
                     <App>
                       <Routing />
                     </App>
-                  </EcoversesProvider>
-                </UserProvider>
+                  </UserProvider>
+                </EcoversesProvider>
               </NavigationProvider>
             </ThemeProvider>
           </CTApolloProvider>
