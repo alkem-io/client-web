@@ -52,9 +52,8 @@ const OrganizationCardStyles = createStyles(theme => ({
 }));
 
 // todo: remove avatar & fix type
-type MembershipResultEntry_ = MembershipResultEntry & { avatar: string };
 type AvatarInfo = { avatar?: string; displayName?: string; more?: string };
-const getAvatarInfo = (results: MembershipResultEntry_[] = []): AvatarInfo[] => {
+const getAvatarInfo = (results: (MembershipResultEntry & { avatar: string })[] = []): AvatarInfo[] => {
   const avatars: AvatarInfo[] = results
     .map(x => ({
       avatar: x.avatar,
@@ -173,7 +172,13 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
           !isModalOpened && setIsModalOpened(true);
         }}
       >
-        {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
+        {isModalOpened && org && (
+          <OrganizationPopUp
+            id={org?.id}
+            membership={membership?.membershipOrganisation}
+            onHide={() => setIsModalOpened(false)}
+          />
+        )}
       </Card>
     </div>
   );
