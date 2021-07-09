@@ -5,17 +5,14 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
 import { env } from '../env';
 import { typePolicies } from '../graphql/typePolicies';
 import { ErrorStatus } from '../models/Errors';
-import { updateStatus } from '../reducers/auth/actions';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
@@ -25,10 +22,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
         switch (err?.extensions?.code) {
           case ErrorStatus.TOKEN_EXPIRED:
             // should not happen
-            break;
-          case ErrorStatus.USER_NOT_REGISTERED:
-            dispatch(updateStatus('userRegistration'));
-            history.push('/profile/create');
             break;
           default:
             const newMessage = `${err.message}`;

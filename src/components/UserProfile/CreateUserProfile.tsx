@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useCreateUserNewRegistrationMutation, useMeHasProfileQuery } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
+import { useQueryParams } from '../../hooks/useQueryParams';
 import { updateStatus } from '../../reducers/auth/actions';
 import { Loading } from '../core/Loading';
 
@@ -15,8 +16,15 @@ export const CreateUserProfile: FC<CreateUserProfileProps> = () => {
   const dispatch = useDispatch();
   const handleError = useApolloErrorHandler();
   const { data } = useMeHasProfileQuery();
-
-  const goHome = useCallback(() => history.push('/'), [history]);
+  const params = useQueryParams();
+  const goHome = useCallback(() => {
+    const returnUrl = params.get('returnUrl');
+    if (returnUrl) {
+      history.push(returnUrl);
+    } else {
+      history.push('/');
+    }
+  }, [history, params]);
 
   const [createUser] = useCreateUserNewRegistrationMutation({
     onError: handleError,
