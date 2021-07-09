@@ -1,6 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
+import { hideLoginNavigation, showLoginNavigation } from '../../reducers/ui/loginNavigation/actions';
 import ErrorRoute from './error';
 import LoginRoute from './login';
 import LogoutRoute from './logout';
@@ -11,6 +13,15 @@ import VerifyRoute from './verify';
 
 export const AuthRoute: FC = () => {
   const { path } = useRouteMatch();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(hideLoginNavigation());
+    return () => {
+      dispatch(showLoginNavigation());
+    };
+  }, []);
 
   return (
     <Switch>

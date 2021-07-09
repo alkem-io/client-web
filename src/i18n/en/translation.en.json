@@ -414,7 +414,7 @@
     "verification-success": {
       "header": "Thank you for verifying your email address!",
       "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your [profile](./profile) - helps with both applying to join communities and with others being able to connect with you. "
+      "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
     },
     "recovery": {
       "form": {
@@ -448,6 +448,9 @@
       "buttons": {
         "register": "Verify"
       }
+    },
+    "user-profile": {
+      "email-not-verified": " Please verify your <l>email</l>."
     }
   }
 }

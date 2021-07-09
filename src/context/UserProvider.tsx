@@ -13,15 +13,17 @@ import { User } from '../types/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;
+  verified: boolean;
 }
 const UserContext = React.createContext<UserContextContract>({
   user: undefined,
   loading: true,
+  verified: false,
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
-  const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
+  const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
   const { data: meHasProfileData, loading: LoadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
   const { data: meData, loading: loadingMe } = useMeQuery({
     skip: !meHasProfileData?.meHasProfile,
@@ -58,6 +60,7 @@ const UserProvider: FC<{}> = ({ children }) => {
       value={{
         user: wrappedMe,
         loading,
+        verified,
       }}
     >
       {children}
