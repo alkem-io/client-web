@@ -808,6 +808,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new User on the platform. */
   createUser: User;
+  /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
+  createUserNewRegistration: User;
   /** Deletes the specified Actor. */
   deleteActor: Actor;
   /** Deletes the specified Actor Group, including contained Actors. */
@@ -1268,6 +1270,8 @@ export type Query = {
   ecoverses: Array<Ecoverse>;
   /** The currently logged in user */
   me: User;
+  /** Check if the currently logged in user has a User profile */
+  meHasProfile: Scalars['Boolean'];
   /** The memberships for this Organisation */
   membershipOrganisation: OrganisationMembership;
   /** Search the ecoverse for terms supplied */
@@ -2003,6 +2007,12 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation' } & {
   createUser: { __typename?: 'User' } & UserDetailsFragment;
+};
+
+export type CreateUserNewRegistrationMutationVariables = Exact<{ [key: string]: never }>;
+
+export type CreateUserNewRegistrationMutation = { __typename?: 'Mutation' } & {
+  createUserNewRegistration: { __typename?: 'User' } & UserDetailsFragment;
 };
 
 export type DeleteActorMutationVariables = Exact<{
@@ -2782,6 +2792,10 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & UserDetailsFragment & UserAgentFragment;
 };
+
+export type MeHasProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeHasProfileQuery = { __typename?: 'Query' } & Pick<Query, 'meHasProfile'>;
 
 export type MembershipOrganisationQueryVariables = Exact<{
   input: MembershipOrganisationInput;
