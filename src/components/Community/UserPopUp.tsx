@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Modal, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
@@ -9,6 +10,7 @@ import Typography from '../core/Typography';
 import { useTranslation } from 'react-i18next';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
+import Delimiter from '../core/Delimiter';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
@@ -76,6 +78,13 @@ const useUserPopUpStyles = createStyles(theme => ({
   marginBottom: {
     marginBottom: theme.shape.spacing(2),
   },
+  refRow: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  refDiv: {
+    marginBottom: theme.shape.spacing(1),
+  },
 }));
 
 interface UserPopUpProps {
@@ -90,6 +99,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
 
   const { user: userMetadata, loading } = useUserMetadata(id);
   const user = userMetadata?.user;
+  const refs = user?.profile?.references || [];
 
   const getStringOfNames = arr => arr.join(', ');
 
@@ -203,6 +213,19 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                 </div>
               )}
             </div>
+            {refs.length > 0 && (
+              <>
+                <Delimiter />
+                <div className={clsx(styles.refDiv, 'container')}>
+                  {refs.map(x => (
+                    <div className={styles.refRow}>
+                      <span className="col-5">{x.name}</span>
+                      <span className="col-5">{x.uri}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
       </Modal.Body>
