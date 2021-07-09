@@ -28,8 +28,6 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
             break;
           case ErrorStatus.USER_NOT_REGISTERED:
             dispatch(updateStatus('userRegistration'));
-            // Trigger the call to ensure the user profile is create
-            //useCreateUserNewRegistrationMutation();
             history.push('/profile/create');
             break;
           default:
