@@ -1,6 +1,7 @@
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import React, { FC } from 'react';
 import { Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
@@ -152,9 +153,12 @@ export const UserProfile: FC = () => {
       <Body>
         <div style={{ marginTop: 20 }} />
         <Alert show={!verified} variant={'warning'}>
-          <span>
-            Please verify your <Link to={VERIFY_PATH}>email</Link>.
-          </span>
+          <Trans
+            i18nKey={'pages.user-profile.email-not-verified'}
+            components={{
+              l: <Link to={VERIFY_PATH} />,
+            }}
+          />
         </Alert>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
         <Card className={'mt-2'}>

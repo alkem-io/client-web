@@ -448,6 +448,9 @@
       "buttons": {
         "register": "Verify"
       }
+    },
+    "user-profile": {
+      "email-not-verified": " Please verify your <l>email</l>."
     }
   }
 }
