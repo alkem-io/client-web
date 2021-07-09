@@ -47,6 +47,12 @@ const useUserPopUpStyles = createStyles(theme => ({
   body: {
     maxHeight: 600,
     overflow: 'auto',
+
+    '& > div': {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: theme.shape.spacing(2),
+    },
   },
   centeredText: {
     textAlign: 'center',
@@ -66,6 +72,9 @@ const useUserPopUpStyles = createStyles(theme => ({
     '& td': {
       padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     },
+  },
+  marginBottom: {
+    marginBottom: theme.shape.spacing(2),
   },
 }));
 
@@ -121,76 +130,84 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
         {loading ? (
           <Loading text={'Loading user'} />
         ) : (
-          <>
-            <TagContainer>
-              {tags.map((t, i) => (
-                <Tag key={i} text={t} color="neutralMedium" />
-              ))}
-            </TagContainer>
-            <Table striped bordered hover size="sm" className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Community</th>
-                  <th>List</th>
-                </tr>
-              </thead>
-              <tbody>
-                {groups && groups.length > 0 && (
+          <div>
+            <div className={styles.centeredText}>
+              {tags.length > 0 ? (
+                <TagContainer>
+                  {tags.map((t, i) => (
+                    <Tag key={i} text={t} color="neutralMedium" />
+                  ))}
+                </TagContainer>
+              ) : (
+                <span>No tags available</span>
+              )}
+            </div>
+            <div>
+              <Table striped bordered hover size="sm" className={styles.table}>
+                <thead>
                   <tr>
-                    <td>
-                      <Typography weight={'medium'} className={styles.centeredText}>
-                        Groups
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
-                    </td>
+                    <th>Community</th>
+                    <th>List</th>
                   </tr>
-                )}
-                {challenges && challenges.length > 0 && (
-                  <tr>
-                    <td>
-                      <Typography weight={'medium'} className={styles.centeredText}>
-                        Challenges
-                      </Typography>
-                    </td>
-                    <td>{getStringOfNames(challenges)}</td>
-                  </tr>
-                )}
-                {organizations && organizations.length > 0 && (
-                  <tr>
-                    <td>
-                      <Typography weight={'medium'} className={styles.centeredText}>
-                        Organisations
-                      </Typography>
-                    </td>
-                    <td>{getStringOfNames(organizations)}</td>
-                  </tr>
-                )}
-                {opportunities && opportunities.length > 0 && (
-                  <tr>
-                    <td>
-                      <Typography weight={'medium'} className={styles.centeredText}>
-                        Opportunites
-                      </Typography>
-                    </td>
-                    <td>{getStringOfNames(opportunities)}</td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-            {noMembership && (
-              <div className={styles.centeredText}>
-                <Typography weight={'medium'} className={styles.centeredText}>
-                  User has no memberships
-                </Typography>
-              </div>
-            )}
-          </>
+                </thead>
+                <tbody>
+                  {groups && groups.length > 0 && (
+                    <tr>
+                      <td>
+                        <Typography weight={'medium'} className={styles.centeredText}>
+                          Groups
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
+                      </td>
+                    </tr>
+                  )}
+                  {challenges && challenges.length > 0 && (
+                    <tr>
+                      <td>
+                        <Typography weight={'medium'} className={styles.centeredText}>
+                          Challenges
+                        </Typography>
+                      </td>
+                      <td>{getStringOfNames(challenges)}</td>
+                    </tr>
+                  )}
+                  {organizations && organizations.length > 0 && (
+                    <tr>
+                      <td>
+                        <Typography weight={'medium'} className={styles.centeredText}>
+                          Organisations
+                        </Typography>
+                      </td>
+                      <td>{getStringOfNames(organizations)}</td>
+                    </tr>
+                  )}
+                  {opportunities && opportunities.length > 0 && (
+                    <tr>
+                      <td>
+                        <Typography weight={'medium'} className={styles.centeredText}>
+                          Opportunites
+                        </Typography>
+                      </td>
+                      <td>{getStringOfNames(opportunities)}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+              {noMembership && (
+                <div className={styles.centeredText}>
+                  <Typography weight={'medium'} className={styles.centeredText}>
+                    User has no memberships
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Comming soon</Tooltip>}>
+        <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Coming soon</Tooltip>}>
           <span>
             <Button variant={'primary'} disabled={true}>
               Send message
