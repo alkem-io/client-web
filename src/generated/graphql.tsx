@@ -1126,6 +1126,52 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserMutation,
   SchemaTypes.CreateUserMutationVariables
 >;
+export const CreateUserNewRegistrationDocument = gql`
+  mutation createUserNewRegistration {
+    createUserNewRegistration {
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+export type CreateUserNewRegistrationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateUserNewRegistrationMutation,
+  SchemaTypes.CreateUserNewRegistrationMutationVariables
+>;
+
+/**
+ * __useCreateUserNewRegistrationMutation__
+ *
+ * To run a mutation, you first call `useCreateUserNewRegistrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserNewRegistrationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserNewRegistrationMutation, { data, loading, error }] = useCreateUserNewRegistrationMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateUserNewRegistrationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateUserNewRegistrationMutation,
+    SchemaTypes.CreateUserNewRegistrationMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.CreateUserNewRegistrationMutation,
+    SchemaTypes.CreateUserNewRegistrationMutationVariables
+  >(CreateUserNewRegistrationDocument, baseOptions);
+}
+export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
+export type CreateUserNewRegistrationMutationResult = Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
+export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateUserNewRegistrationMutation,
+  SchemaTypes.CreateUserNewRegistrationMutationVariables
+>;
 export const DeleteActorDocument = gql`
   mutation deleteActor($input: DeleteActorInput!) {
     deleteActor(deleteData: $input) {
@@ -4702,6 +4748,52 @@ export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
 export function refetchMeQuery(variables?: SchemaTypes.MeQueryVariables) {
   return { query: MeDocument, variables: variables };
+}
+export const MeHasProfileDocument = gql`
+  query meHasProfile {
+    meHasProfile
+  }
+`;
+
+/**
+ * __useMeHasProfileQuery__
+ *
+ * To run a query within a React component, call `useMeHasProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeHasProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeHasProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeHasProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
+    MeHasProfileDocument,
+    baseOptions
+  );
+}
+export function useMeHasProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
+    MeHasProfileDocument,
+    baseOptions
+  );
+}
+export type MeHasProfileQueryHookResult = ReturnType<typeof useMeHasProfileQuery>;
+export type MeHasProfileLazyQueryHookResult = ReturnType<typeof useMeHasProfileLazyQuery>;
+export type MeHasProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.MeHasProfileQuery,
+  SchemaTypes.MeHasProfileQueryVariables
+>;
+export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQueryVariables) {
+  return { query: MeHasProfileDocument, variables: variables };
 }
 export const MembershipOrganisationDocument = gql`
   query membershipOrganisation($input: MembershipOrganisationInput!) {
