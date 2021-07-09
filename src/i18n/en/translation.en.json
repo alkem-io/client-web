@@ -16,7 +16,8 @@
     "save": "Save",
     "back": "Back",
     "see-more": "See more",
-    "home": "Home"
+    "home": "Home",
+    "close": "Close"
   },
   "authentication": {
     "sign-in": "Sign in",
