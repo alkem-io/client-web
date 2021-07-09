@@ -14,26 +14,33 @@ import { Error } from '../pages/Error';
 import { User, UserMembershipDetailsFragment } from '../types/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;
+  loading: boolean;
 }
 const UserContext = React.createContext<UserContextContract>({
   user: undefined,
+  loading: true,
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
   const { isAuthenticated, loading } = useAuthenticationContext();
-  const getProvider = useCallback((me?: User, membership?: UserMembershipDetailsFragment) => {
-    const wrappedMe = me ? wrapper(me as User, membership) : undefined;
-    return (
-      <UserContext.Provider
-        value={{
-          user: wrappedMe,
-        }}
-      >
-        {children}
-      </UserContext.Provider>
-    );
-  }, []);
+
+  const getProvider = useCallback(
+    (me?: User, membership?: UserMembershipDetailsFragment) => {
+      const wrappedMe = me ? wrapper(me as User, membership) : undefined;
+      return (
+        <UserContext.Provider
+          value={{
+            user: wrappedMe,
+            loading,
+          }}
+        >
+          {children}
+        </UserContext.Provider>
+      );
+    },
+    [loading]
+  );
 
   if (loading) return <Loading text={'Check session'} />;
 
