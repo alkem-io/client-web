@@ -10,7 +10,7 @@ import Typography from '../../components/core/Typography';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import { useKratosClient } from '../../hooks/useKratosClient';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
-import { AUTH_REGISTER_PATH } from '../../models/Constants';
+import { AUTH_LOGIN_PATH } from '../../models/Constants';
 
 interface RegisterPageProps {
   flow?: string;
@@ -51,8 +51,8 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.registration.login')}
           </Typography>
-          <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_REGISTER_PATH)}>
-            {t('authentication.sign-up')}
+          <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_LOGIN_PATH)}>
+            {t('authentication.sign-in')}
           </Button>
         </Col>
       </Row>
