@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import {
-  refetchMeQuery,
+  refetchMeHasProfileQuery,
   useCreateUserNewRegistrationMutation,
   useMeHasProfileQuery,
   useMembershipUserQuery,
@@ -38,7 +38,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchMeQuery()],
+    refetchQueries: [refetchMeHasProfileQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
@@ -50,7 +50,12 @@ const UserProvider: FC<{}> = ({ children }) => {
   }, [meHasProfileData]);
 
   const loading =
-    loadingAuthentication || LoadingMeHasProfile || loadingCreateUser || loadingMe || loadingMembershipData;
+    loadingAuthentication ||
+    LoadingMeHasProfile ||
+    loadingCreateUser ||
+    loadingMe ||
+    loadingMembershipData ||
+    (isAuthenticated && !meHasProfileData?.meHasProfile);
 
   if (error) return <Error error={error} />;
 
