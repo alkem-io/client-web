@@ -11,14 +11,14 @@ import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { UserModel } from '../../../models/User';
-import { PageProps } from '../../../pages';
+import { PageProps } from '../..';
 import { CreateUserInput } from '../../../types/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
-import { Loading } from '../../core/Loading';
-import { getUpdateUserInput } from '../../UserProfile';
-import UserForm from '../../UserProfile/UserForm';
-import UserRemoveModal from './UserRemoveModal';
+import { Loading } from '../../../components/core/Loading';
+import { getUpdateUserInput } from '../../../components/UserProfile';
+import UserForm from '../../../components/UserProfile/UserForm';
+import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
