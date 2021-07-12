@@ -404,7 +404,8 @@
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"
-      }
+      },
+      "login": "Have an account?"
     },
     "registration-success": {
       "header": "Thank you for signing up!",
