@@ -15,8 +15,7 @@ import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/Constants';
 
 interface LoginPageProps {
-  flow: string;
-  redirect?: string;
+  flow?: string;
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
@@ -43,6 +42,10 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
         });
     }
   }, [flow, kratos]);
+
+  if (!flow) {
+    window.location.replace('/self-service/login/browser');
+  }
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 
