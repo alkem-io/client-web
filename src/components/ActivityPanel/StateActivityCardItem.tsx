@@ -1,29 +1,37 @@
 import React, { FC, useCallback, useState } from 'react';
+import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
+import { createMachine } from 'xstate';
+import { toDirectedGraph } from '@xstate/graph';
 import { Maybe, Lifecycle } from '../../types/graphql-schema';
 import { createStyles, useTheme } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
-import { Modal } from 'react-bootstrap';
 import Button from '../core/Button';
-import { createMachine } from 'xstate';
-import { toDirectedGraph } from '@xstate/graph';
 
 import * as d3 from 'd3';
+import Icon from '../core/Icon';
 
 export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;
 }
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = createStyles(() => ({
   item: {
     display: 'flex',
-    justifyContent: 'space-between',
     flexGrow: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
+
+    '& > span': {
+      textTransform: 'capitalize',
+    },
+  },
+  title: {
+    display: 'flex',
+    alignItems: 'center',
 
     '& > p': {
       marginBottom: 0,
-      textTransform: 'capitalize',
     },
   },
 }));
@@ -268,10 +276,15 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
   return (
     <div>
       <div className={styles.item}>
-        <Typography as={'p'}>Status:</Typography>
-        <Button small inset variant="primary" onClick={() => setModalVisible(true)}>
-          {lifecycle?.state}
-        </Button>
+        <div className={styles.title}>
+          <Typography as={'p'}>State</Typography>
+          <OverlayTrigger placement={'top'} overlay={<Tooltip id="lifecycle-graph">View lifecycle graph</Tooltip>}>
+            <Button small inset variant="whiteStatic" onClick={() => setModalVisible(true)}>
+              <Icon component={InfoCircle} color="primary" size="sm" />
+            </Button>
+          </OverlayTrigger>
+        </div>
+        <span>{lifecycle?.state}</span>
       </div>
       <LifecycleModal
         lifecycle={lifecycle}
