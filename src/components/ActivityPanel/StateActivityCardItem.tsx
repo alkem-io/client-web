@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
@@ -265,20 +266,22 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
 };
 
 const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) => {
+  const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState<boolean>();
   const styles = useCardStyles();
   if (lifecycle == null) {
     return null;
   }
 
-  // TODO: How to get the button to match theme?
-
   return (
     <div>
       <div className={styles.item}>
         <div className={styles.title}>
           <Typography as={'p'}>State</Typography>
-          <OverlayTrigger placement={'top'} overlay={<Tooltip id="lifecycle-graph">View lifecycle graph</Tooltip>}>
+          <OverlayTrigger
+            placement={'top'}
+            overlay={<Tooltip id="lifecycle-graph">{t('pages.activity.lifecycle-info')}</Tooltip>}
+          >
             <Button small inset variant="whiteStatic" onClick={() => setModalVisible(true)}>
               <Icon component={InfoCircle} color="primary" size="sm" />
             </Button>
