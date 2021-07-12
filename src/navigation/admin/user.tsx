@@ -5,7 +5,7 @@ import { useUserQuery, useUsersQuery } from '../../generated/graphql';
 import { UserModel } from '../../models/User';
 import Loading from '../../components/core/Loading';
 import { UserList } from '../../components/Admin/User/UserList';
-import { UserPage } from '../../components/Admin/User/UserPage';
+import { UserPage } from '../../pages/Admin/User/UserPage';
 import { EditMode } from '../../utils/editMode';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {

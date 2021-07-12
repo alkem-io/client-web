@@ -1,4 +1,4 @@
 export * from './Group/GroupPage';
 export * from './ListPage';
 export * from './User/UserList';
-export * from './User/UserPage';
+export * from '../../pages/Admin/User/UserPage';

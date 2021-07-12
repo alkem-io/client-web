@@ -3,6 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
@@ -45,6 +46,12 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 
+  const resetPassword = (
+    <div className={'text-right'}>
+      <Link to={'/auth/recovery'}>Reset password</Link>
+    </div>
+  );
+
   return (
     <AuthenticationLayout>
       <Row className={'d-flex justify-content-center'}>
@@ -52,7 +59,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.login.title')}
           </Typography>
-          <KratosUI flow={loginFlow} />
+          <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter />
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.login.register')}

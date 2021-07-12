@@ -12,7 +12,6 @@ import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg'
 import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
 import React, { FC, useMemo, useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
 import Icon from '../core/Icon';
@@ -25,6 +24,7 @@ interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
   termsURL?: string;
   privacyURL?: string;
+  resetPasswordComponent?: React.ReactChild;
 }
 
 interface KratosProps {
@@ -202,7 +202,7 @@ const toUiControl = (node: UiNode, key: number) => {
   }
 };
 
-export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
+export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...rest }) => {
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
@@ -236,7 +236,7 @@ export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
         <Form action={ui.action} method={ui.method} noValidate>
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
-          {nodesByGroup.password.length > 0 && <ResetPassword />}
+          {resetPasswordComponent}
           {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
           {nodesByGroup.oidc.map(toUiControl)}
           {nodesByGroup.rest.map(toUiControl)}
@@ -269,13 +269,5 @@ export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL
     >
       {children}
     </KratosUIContext.Provider>
-  );
-};
-
-const ResetPassword: FC = () => {
-  return (
-    <div className={'text-right'}>
-      <Link to={'/auth/recovery'}>Reset password</Link>
-    </div>
   );
 };
