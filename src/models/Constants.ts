@@ -10,6 +10,8 @@ export const VERIFY_PATH = '/auth/verify';
 
 export const LOGO_REFERENCE_NAME = 'logo';
 
+export const LOCAL_STORAGE_RETURN_URL_KEY = 'returnUrl';
+
 export enum CommunityType {
   ECOVERSE = 'ecoverse',
   CHALLENGE = 'challenge',

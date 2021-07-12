@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
+import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import { useKratosClient } from '../../hooks/useKratosClient';
@@ -23,9 +24,6 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!flow) {
-      window.location.replace('/self-service/registration/browser');
-    }
     if (flow && kratos) {
       kratos.getSelfServiceRegistrationFlow(flow).then(({ status, data: flow, ..._response }) => {
         if (status !== 200) {
@@ -38,6 +36,12 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   const { data } = usePlatformConfigurationQuery();
   const platform = data?.configuration.platform;
+
+  if (!flow) {
+    window.location.replace('/self-service/registration/browser');
+  }
+
+  if (!registrationFlow) return <Loading text={'Loading flow'} />;
 
   return (
     <AuthenticationLayout>

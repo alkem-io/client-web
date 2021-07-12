@@ -1,16 +1,14 @@
 import React, { FC } from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { useAuthenticate } from '../hooks/useAuthenticate';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks/useUserContext';
+import { LOCAL_STORAGE_RETURN_URL_KEY } from '../models/Constants';
 import { AuthorizationCredential } from '../types/graphql-schema';
 
 interface RestrictedRoutePros extends RouteProps {
   requiredCredentials?: AuthorizationCredential[];
 }
-
-interface AuthenticatedRoutePros extends RouteProps {}
 
 const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
   const { pathname } = useLocation();
@@ -22,6 +20,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   }
 
   if (!isAuthenticated) {
+    localStorage.setItem(LOCAL_STORAGE_RETURN_URL_KEY, window.location.pathname);
     return <Redirect to={`/auth/login?redirect=${encodeURI(pathname)}`} />;
   }
 
@@ -36,10 +35,10 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   );
 };
 
-export const AuthenticatedRoute: FC<AuthenticatedRoutePros> = ({ children, ...rest }) => {
-  const { status } = useAuthenticate();
+export const NotAuthenticatedRoute: FC<RouteProps> = ({ children, ...rest }) => {
+  const { isAuthenticated } = useAuthenticationContext();
 
-  if (status === 'userRegistration') return <Redirect to={'/profile/create'} />;
+  if (isAuthenticated) return <Redirect to={'/'} />;
 
   return (
     // Show the component only when the user is logged in
