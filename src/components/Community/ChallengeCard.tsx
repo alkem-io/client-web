@@ -87,7 +87,7 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
           ),
           className: styles.content,
         }}
-        matchedTerms={{ terms, variant: 'light' }}
+        matchedTerms={{ terms }}
         tagProps={{
           text: `${ecoverseName}`,
           color: 'background',
