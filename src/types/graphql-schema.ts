@@ -2092,7 +2092,7 @@ export type DeleteUserMutationVariables = Exact<{
 }>;
 
 export type DeleteUserMutation = { __typename?: 'Mutation' } & {
-  deleteUser: { __typename?: 'User' } & UserDetailsFragment;
+  deleteUser: { __typename?: 'User' } & Pick<User, 'id'>;
 };
 
 export type GrantCredentialsMutationVariables = Exact<{
