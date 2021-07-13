@@ -1,24 +1,48 @@
-import { ReactComponent as BookMarks } from 'bootstrap-icons/icons/bookmarks.svg';
-import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { ReactComponent as People } from 'bootstrap-icons/icons/people.svg';
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useOrganizationDetailsQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
-import { User } from '../../types/graphql-schema';
-import shuffleCollection from '../../utils/shuffleCollection';
-import Tags from '../Community/Tags';
+import { OrganisationMembership } from '../../types/graphql-schema';
 import Avatar from '../core/Avatar';
-import AvatarContainer from '../core/AvatarContainer';
 import Button from '../core/Button';
-import Divider from '../core/Divider';
 import Loading from '../core/Loading';
 import Typography from '../core/Typography';
+import TagContainer from '../core/TagContainer';
+import Tag from '../core/Tag';
 
 const groupPopUpStyles = createStyles(theme => ({
-  title: {
-    textTransform: 'capitalize',
+  header: {
+    display: 'flex',
+    gap: theme.shape.spacing(4),
+    alignItems: 'center',
+
+    [theme.media.down('sm')]: {
+      flexWrap: 'wrap',
+      gap: theme.shape.spacing(2),
+    },
+  },
+  profile: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.shape.spacing(1),
+
+    [theme.media.down('sm')]: {
+      gap: 0,
+      flexGrow: 1,
+    },
+  },
+  userName: {
+    whiteSpace: 'nowrap',
+    display: 'flex',
+
+    [theme.media.down('sm')]: {
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
+  },
+  description: {
+    display: 'flex',
+    flexGrow: 1,
   },
   centeredText: {
     textAlign: 'center',
@@ -39,150 +63,124 @@ const groupPopUpStyles = createStyles(theme => ({
       padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
     },
   },
+  tableScrollable: {
+    height: '200px',
+    overflowY: 'auto',
+  },
+  tablesDiv: {
+    display: 'flex',
+    gap: theme.shape.spacing(2),
+    flexDirection: 'column',
+  },
   italic: {
     opacity: 0.6,
     fontStyle: 'italic',
   },
 }));
 
-interface TableProps {
-  headerTitles: string[];
-  icon: React.ComponentType<any>;
-  iconText: string;
-}
-
-const ProfileTable: FC<TableProps> = ({ headerTitles, children, icon: Icon, iconText }) => {
-  const styles = groupPopUpStyles();
-
-  return (
-    <>
-      <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
-        <Icon width={25} height={25} className={styles.icon} /> {iconText}
-      </Typography>
-      <Table striped bordered hover size="sm" className={styles.table}>
-        <thead>
-          <tr>
-            {headerTitles.map((ht, index) => (
-              <th key={index}>{ht}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </Table>
-    </>
-  );
-};
-
 interface OrganizationPopUpProps {
   id: string;
   onHide: () => void;
+  membership?: OrganisationMembership;
 }
 
-const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
+const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id, membership }) => {
   const styles = groupPopUpStyles();
 
   const { data, loading } = useOrganizationDetailsQuery({ variables: { id } });
   const profile = data?.organisation?.profile;
   const name = data?.organisation?.displayName;
-  const groups = data?.organisation?.groups;
+  /*const groups = data?.organisation?.groups; todo: group section?*/
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
+
+  const ecoversesHosting = membership?.ecoversesHosting || [];
+  const challengesLeading = membership?.challengesLeading || [];
 
   return (
     <>
       <Modal show={true} onHide={onHide} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Organization Details</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            <div className={styles.header}>
+              <div className={styles.profile}>
+                <Avatar src={profile?.avatar} size={'lg'} />
+                <div className={styles.userName}>
+                  <Typography variant={'h3'}>{name}</Typography>
+                </div>
+              </div>
+              {profile?.description && (
+                <div className={styles.description}>
+                  <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+                    {profile?.description}
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {loading ? (
             <Loading text={'Loading the organization'} />
           ) : (
-            <>
-              <div className={'d-flex align-items-center mb-3'}>
-                <Avatar src={profile?.avatar} size={'lg'} />
-                <div className={'ml-3'}>
-                  <Typography variant={'h3'} className={styles.title}>
-                    {name}
-                  </Typography>
-                </div>
-                <div className={'flex-grow-1'} />
-              </div>
-
-              <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                {profile?.description}
-              </Typography>
-              <Divider noPadding />
-
-              <ProfileTable headerTitles={['Tagset', 'Tags']} icon={BookMarks} iconText={'Tags'}>
-                {tags.length > 0 && (
-                  <>
-                    {profile?.tagsets?.map((ts, index) => (
-                      <tr key={index}>
-                        <td>
-                          <Typography weight={'medium'} className={styles.centeredText}>
-                            {ts.name}
-                          </Typography>
-                        </td>
-                        <td>
-                          {ts.tags.length > 0 ? (
-                            <Tags tags={ts.tags} />
-                          ) : (
-                            <Typography weight={'medium'} className={styles.italic}>
-                              no tags yet
-                            </Typography>
-                          )}
-                        </td>
-                      </tr>
+            <div className={styles.tablesDiv}>
+              <div className={styles.centeredText}>
+                {tags.length > 0 ? (
+                  <TagContainer>
+                    {tags.map((t, i) => (
+                      <Tag key={i} text={t} color="neutralMedium" />
                     ))}
-                  </>
+                  </TagContainer>
+                ) : (
+                  <span>No tags available</span>
                 )}
-              </ProfileTable>
-
-              {profile?.references && profile?.references.length > 0 && (
-                <ProfileTable headerTitles={['Name', 'URI']} icon={InfoCircle} iconText={'References'}>
-                  {profile?.references?.map((ref, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Typography weight={'medium'} className={styles.centeredText}>
-                          {ref.name}
-                        </Typography>
-                      </td>
-                      <td>
-                        <Typography weight={'medium'} className={styles.centeredText}>
-                          {ref.uri}
-                        </Typography>
-                      </td>
+              </div>
+              <div className={ecoversesHosting.length > 0 ? styles.tableScrollable : undefined}>
+                <Table striped bordered hover size="sm" className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Name</th>
+                      <th>Tagline</th>
                     </tr>
-                  ))}
-                </ProfileTable>
-              )}
-
-              <Divider noPadding />
-
-              <Typography weight={'medium'} color={'neutral'} variant={'h4'} className={styles.centeredText}>
-                <People width={25} height={25} className={styles.icon} /> Groups
-              </Typography>
-
-              {groups?.map((g, index) => (
-                <AvatarsProvider users={g.members as User[]} count={10} key={index}>
-                  {populated => (
-                    <AvatarContainer className="d-flex" title={g.name}>
-                      {shuffleCollection(populated).map((u, i) => (
-                        <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.displayName} />
+                  </thead>
+                  <tbody>
+                    {ecoversesHosting.length > 0 &&
+                      ecoversesHosting.map(x => (
+                        <tr>
+                          <td>{'' /*avatar*/ ? <Avatar src={'' /*avatar*/} size={'md'} /> : ''}</td>
+                          <td>{x.displayName}</td>
+                          <td>{/*tagline*/}</td>
+                        </tr>
                       ))}
-                      {g.members && g.members?.length === 0 && (
-                        <Typography className={styles.italic}>No members yet</Typography>
-                      )}
-                      {g.members && g.members?.length - populated.length > 0 && (
-                        <Typography variant="h3" as="h3" color="positive">
-                          {`... + ${g.members.length - populated.length} other members`}
-                        </Typography>
-                      )}
-                    </AvatarContainer>
-                  )}
-                </AvatarsProvider>
-              ))}
-            </>
+                  </tbody>
+                </Table>
+                {ecoversesHosting.length === 0 && <div className={styles.centeredText}>No ecoverses are hosted</div>}
+              </div>
+              <div className={ecoversesHosting.length > 0 ? styles.tableScrollable : undefined}>
+                <Table striped bordered hover size="sm" className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Name</th>
+                      <th>Tagline</th>
+                      <th>Ecoverse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {challengesLeading.length > 0 &&
+                      challengesLeading.map(x => (
+                        <tr>
+                          <td>{'' /*avatar*/ ? <Avatar src={'' /*avatar*/} size={'md'} /> : ''}</td>
+                          <td>{x.displayName}</td>
+                          <td>{/*tagline*/}</td>
+                          <td>{/*ecoverseName*/}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+                {challengesLeading.length === 0 && <div className={styles.centeredText}>No challenges are led</div>}
+              </div>
+            </div>
           )}
         </Modal.Body>
         <Modal.Footer>
