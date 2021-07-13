@@ -13,7 +13,6 @@ import {
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
-import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import Button from '../core/Button';
@@ -150,20 +149,23 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
     initialState[key] = value || ('' as any);
   });
 
+  const handleSubmit = () => {
+    //} (e: FormEvent<HTMLFormElement>) => {
+    return false;
+  };
+
   return (
     <KratosUIProvider {...rest}>
       <div>
         <KratosMessages messages={ui.messages} />
-        <Formik initialValues={initialState} onSubmit={() => {}}>
-          <Form action={ui.action} method={ui.method} noValidate>
-            {nodesByGroup.default.map(toUiControl)}
-            {nodesByGroup.password.map(toUiControl)}
-            {resetPasswordComponent}
-            {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
-            {nodesByGroup.oidc.map(toUiControl)}
-            {nodesByGroup.rest.map(toUiControl)}
-          </Form>
-        </Formik>
+        <Form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
+          {nodesByGroup.default.map(toUiControl)}
+          {nodesByGroup.password.map(toUiControl)}
+          {resetPasswordComponent}
+          {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
+          {nodesByGroup.oidc.map(toUiControl)}
+          {nodesByGroup.rest.map(toUiControl)}
+        </Form>
       </div>
     </KratosUIProvider>
   );
