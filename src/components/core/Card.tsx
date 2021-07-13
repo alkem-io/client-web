@@ -369,8 +369,8 @@ const Card: FC<CardProps> = ({
         {bgText && <span className={styles.cardBgText}>{bgText.text}</span>}
         {children}
       </Body>
-      {sectionProps && <Section {...sectionProps}></Section>}
-      {footerProps && <Footer {...footerProps}></Footer>}
+      {sectionProps && sectionProps?.children && <Section {...sectionProps} />}
+      {footerProps && footerProps?.children && <Footer {...footerProps} />}
     </div>
   );
 };
