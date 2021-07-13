@@ -26,9 +26,7 @@ function buildConfiguration(cb) {
     }
   });
 
-  configuration['REACT_APP_GRAPHQL_ENDPOINT'] =
-    configuration['REACT_APP_GRAPHQL_ENDPOINT'] ||
-    (nodeEnv === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
+  configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
 
   const envBasePath = path.join(__dirname, '.env.deployment', '.env.base');
   let envBase = fs.createWriteStream(envBasePath, { flags: 'w' });

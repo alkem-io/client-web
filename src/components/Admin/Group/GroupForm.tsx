@@ -14,7 +14,7 @@ import EditableAvatar from '../../EditableAvatar';
 import { FormikInputField } from '../Common/FormikInputField';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from '../Common/TagsetSegment';
+import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
 
 interface GroupFormProps {
@@ -66,7 +66,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
-    tagsets: tagsetFragmentSchema,
+    tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
     description: yup.string().max(400),
   });
