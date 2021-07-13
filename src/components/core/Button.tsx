@@ -16,7 +16,7 @@ const useButtonStyles = createStyles(theme => ({
     borderStyle: 'double',
 
     '&.inset': {
-      borderColor: 'transparent',
+      borderRightColor: 'transparent',
       borderTopColor: 'transparent',
       borderBottomColor: 'transparent',
       borderRadius: 0,
