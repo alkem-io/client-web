@@ -40,9 +40,6 @@ const userCardStyles = createStyles(theme => ({
   section: {
     padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(3)}px`,
   },
-  body: {
-    flexGrow: 0,
-  },
 }));
 
 const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
@@ -70,7 +67,6 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
             padding: (theme: Theme) =>
               `${theme.shape.spacing(4)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
           },
-          className: styles.body,
         }}
         primaryTextProps={{
           text: (

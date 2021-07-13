@@ -129,6 +129,10 @@ const useButtonStyles = createStyles(theme => ({
         outline: 'none',
       },
     },
+
+    '&.inset': {
+      borderColor: 'transparent',
+    },
   },
   negative: {
     color: theme.palette.negative,

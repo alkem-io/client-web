@@ -250,7 +250,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
             <Button
               className={styles.offset}
               inset
-              variant={'primary'}
+              variant="semiTransparent"
               text={t('pages.opportunity.sections.header.buttons.projects.text')}
               onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
@@ -261,7 +261,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                   as="a"
                   className={clsx(styles.offset, styles.link)}
                   inset
-                  variant={'primary'}
+                  variant="semiTransparent"
                   text={l.name}
                   href={l.uri}
                   target="_blank"
