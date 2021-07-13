@@ -150,7 +150,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 <Table striped bordered hover size="sm" className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Hosted ecoverses</th>
+                      <th>Ecoverses hosted</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -170,7 +170,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 <Table striped bordered hover size="sm" className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Led challenges</th>
+                      <th>Challenges being lead</th>
                     </tr>
                   </thead>
                   <tbody>

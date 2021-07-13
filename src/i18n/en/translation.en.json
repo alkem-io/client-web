@@ -9,8 +9,8 @@
     "body": "",
     "organization": {
       "no-tags": "No tags available",
-      "no-hosted": "No hosted ecoverses by this organization",
-      "no-leading": "No led challenges by this organization"
+      "no-hosted": "None",
+      "no-leading": "None"
     }
   },
   "buttons": {
