@@ -14,7 +14,7 @@ import EditableAvatar from '../../EditableAvatar';
 import FormikInputField from '../Common/FormikInputField';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from '../Common/TagsetSegment';
+import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 
 const emptyOrganization = {
   displayName: '',
@@ -90,7 +90,7 @@ export const OrganizationForm: FC<Props> = ({
     nameID: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
     description: yup.string().max(400),
-    tagsets: tagsetFragmentSchema,
+    tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
 
