@@ -50,7 +50,7 @@ const useStyles = createStyles(theme => ({
     overflowY: 'auto',
   },
   logoLg: {
-    padding: `${theme.shape.spacing(3)}px ${theme.shape.spacing(4)}px`,
+    padding: `${theme.shape.spacing(4)}px`,
   },
   logoSm: {
     padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(2)}px`,

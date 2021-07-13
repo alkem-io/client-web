@@ -355,6 +355,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
           return (
             <CardContainer
               key={index}
+              cardHeight={260}
               xs={12}
               md={6}
               lg={4}

@@ -22,7 +22,6 @@ const useHeaderStyles = createStyles(theme => ({
     padding: `0 ${theme.earlyAccessAlert.height}px`,
   },
   root: {
-    maxWidth: 1380,
     margin: 'auto',
   },
   absolute: {
