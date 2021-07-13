@@ -269,7 +269,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           <div>
             <Button
               inset
-              variant="whiteStatic"
+              variant="semiTransparent"
               text="opportunities"
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
               className={styles.link}
@@ -279,7 +279,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
                 key={i}
                 as="a"
                 inset
-                variant="whiteStatic"
+                variant="semiTransparent"
                 text={l.name}
                 href={l.uri}
                 target="_blank"

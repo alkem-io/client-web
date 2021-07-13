@@ -1,13 +1,16 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useMemo, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
-import { useMembershipOrganisationQuery, useOrganizationCardQuery } from '../../generated/graphql';
+import { useOrganizationCardQuery } from '../../generated/graphql';
 import { Organisation } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import Loading from '../core/Loading';
+import TagContainer from '../core/TagContainer';
+import Tag from '../core/Tag';
 
 interface OrganizationCardStylesProps extends Organisation {
   terms?: Array<string>;
@@ -19,11 +22,34 @@ const OrganizationCardStyles = createStyles(theme => ({
     '&:hover': {
       boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
     },
+    border: `1px solid ${hexToRGBA(theme.palette.primary, 0.3)}`,
     borderTopRightRadius: 15,
     overflow: 'hidden',
   },
-  tag: {
-    borderTopRightRadius: 15,
+  relative: {
+    position: 'relative',
+  },
+  divCentered: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.shape.spacing(1),
+  },
+  section: {
+    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(3)}px`,
+  },
+  avatarsDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.shape.spacing(1),
+  },
+  avatarDiv: {
+    display: 'flex',
+    gap: theme.shape.spacing(1),
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  body: {
+    flexGrow: 0,
   },
 }));
 
@@ -34,59 +60,68 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
     variables: { id },
   });
 
+  const tagProps = { text: 'Organization' };
+
   const org = data?.organisation;
-  const avatar = org?.profile?.avatar;
-  const { data: membership, loading: loading2 } = useMembershipOrganisationQuery({
-    variables: {
-      input: {
-        organisationID: id,
-      },
-    },
-  });
+  const displayName = org?.displayName || '';
+  const avatar = org?.profile?.avatar || '';
 
-  if (loading || loading2) return <Loading text={''} />;
+  const tags = (org?.profile?.tagsets || []).flatMap(x => x.tags);
+  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
-  const ecoversesHosting = membership?.membershipOrganisation.ecoversesHosting;
-  let ecoversesLabel = '';
-  if (ecoversesHosting) {
-    for (const ecoverseHostRole of ecoversesHosting) {
-      if (ecoversesLabel === '') {
-        ecoversesLabel = `Host of: ${ecoverseHostRole.displayName}`;
-      } else {
-        ecoversesLabel = `${ecoversesLabel}, ${ecoverseHostRole.displayName}`;
-      }
-    }
-  }
+  if (loading) return <Loading text={''} />;
 
   return (
-    <Card
-      bodyProps={{
-        classes: {
-          background: (theme: Theme) => theme.palette.positive,
-        },
-      }}
-      primaryTextProps={{
-        text: org?.displayName || '',
-        classes: {
-          lineHeight: '36px',
-          color: theme => theme.palette.background,
-        },
-      }}
-      className={styles.card}
-      matchedTerms={{ terms, variant: 'light' }}
-      bgText={{ text: 'Org' }}
-      tagProps={{
-        text: ecoversesLabel,
-        color: 'background',
-        className: styles.tag,
-      }}
-      onClick={() => {
-        !isModalOpened && setIsModalOpened(true);
-      }}
-    >
-      {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
-      {avatar && <Avatar size="lg" src={avatar} />}
-    </Card>
+    <div className={styles.relative}>
+      <Card
+        className={styles.card}
+        bodyProps={{
+          classes: {
+            background: (theme: Theme) => theme.palette.background,
+            padding: (theme: Theme) =>
+              `${theme.shape.spacing(4)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
+          },
+          className: styles.body,
+        }}
+        primaryTextProps={{
+          text: (
+            <div className={styles.divCentered}>
+              {avatar && <Avatar size="md" src={avatar} />}
+              {displayName}
+            </div>
+          ),
+        }}
+        sectionProps={{
+          children: (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <TagContainer>
+                {truncatedTags.map((t, i) => (
+                  <Tag key={i} text={t} color="neutralMedium" />
+                ))}
+                {tags.length > 3 && (
+                  <OverlayTrigger
+                    placement={'right'}
+                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
+                  >
+                    <span>
+                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
+                    </span>
+                  </OverlayTrigger>
+                )}
+              </TagContainer>
+            </div>
+          ),
+          className: styles.section,
+        }}
+        tagProps={tagProps}
+        matchedTerms={{ terms }}
+        onClick={() => {
+          !isModalOpened && setIsModalOpened(true);
+        }}
+      >
+        {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
+      </Card>
+    </div>
   );
 };
 
