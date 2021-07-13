@@ -1,5 +1,5 @@
 mutation deleteUser($input: DeleteUserInput!) {
     deleteUser(deleteData: $input) {
-      ...UserDetails
+      id
     }
   }
