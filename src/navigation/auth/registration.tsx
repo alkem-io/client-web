@@ -13,7 +13,7 @@ export const RegistrationRoute: FC = () => {
   return (
     <Switch>
       <NotAuthenticatedRoute exact path={`${path}`}>
-        <RegistrationPage flow={flow} />;
+        <RegistrationPage flow={flow} />
       </NotAuthenticatedRoute>
       <Route exact path={`${path}/success`}>
         <RegistrationSuccessPage />
