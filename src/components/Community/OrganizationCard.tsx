@@ -3,12 +3,14 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
-import { useMembershipOrganisationQuery, useOrganizationCardQuery } from '../../generated/graphql';
-import { MembershipResultEntry, Organisation } from '../../types/graphql-schema';
+import { useOrganizationCardQuery } from '../../generated/graphql';
+import { Organisation } from '../../types/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import Loading from '../core/Loading';
+import TagContainer from '../core/TagContainer';
+import Tag from '../core/Tag';
 
 interface OrganizationCardStylesProps extends Organisation {
   terms?: Array<string>;
@@ -51,23 +53,6 @@ const OrganizationCardStyles = createStyles(theme => ({
   },
 }));
 
-// todo: remove avatar & fix type
-type AvatarInfo = { avatar?: string; displayName?: string; more?: string };
-const getAvatarInfo = (results: (MembershipResultEntry & { avatar: string })[] = []): AvatarInfo[] => {
-  const avatars: AvatarInfo[] = results
-    .map(x => ({
-      avatar: x.avatar,
-      displayName: x.displayName,
-    }))
-    .splice(0, 3);
-
-  if (results.length - 3 > 0) {
-    avatars.push({ more: `+${results.length - 3} more` });
-  }
-
-  return avatars;
-};
-
 const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
@@ -81,27 +66,10 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
   const displayName = org?.displayName || '';
   const avatar = org?.profile?.avatar || '';
 
-  const { data: membership, loading: loading2 } = useMembershipOrganisationQuery({
-    variables: {
-      input: {
-        organisationID: id,
-      },
-    },
-  });
+  const tags = (org?.profile?.tagsets || []).flatMap(x => x.tags);
+  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
-  // todo: remove avatar
-  const ecoversesHosting = (membership?.membershipOrganisation.ecoversesHosting || []).map(x => ({
-    ...x,
-    avatar: '',
-  }));
-  const challengesLeading = (membership?.membershipOrganisation.challengesLeading || []).map(x => ({
-    ...x,
-    avatar: '',
-  }));
-  const ecoAvatars = useMemo(() => getAvatarInfo(ecoversesHosting), [ecoversesHosting]);
-  const challAvatars = useMemo(() => getAvatarInfo(challengesLeading), [challengesLeading]);
-
-  if (loading || loading2) return <Loading text={''} />;
+  if (loading) return <Loading text={''} />;
 
   return (
     <div className={styles.relative}>
@@ -124,44 +92,23 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
           ),
         }}
         sectionProps={{
-          children: (ecoAvatars.length > 0 || challAvatars.length > 0) && (
-            <div className={styles.avatarsDiv}>
-              {challAvatars.length > 0 && (
-                <div className={styles.avatarDiv}>
-                  {challAvatars.map(x =>
-                    x.more ? (
-                      <span>{x.more}</span>
-                    ) : (
-                      <OverlayTrigger
-                        placement={'top'}
-                        overlay={<Tooltip id={'display-name'}>{x.displayName}</Tooltip>}
-                      >
-                        <span>
-                          <Avatar size="md" src={x.avatar} />
-                        </span>
-                      </OverlayTrigger>
-                    )
-                  )}
-                </div>
-              )}
-              {ecoAvatars.length > 0 && (
-                <div className={styles.avatarDiv}>
-                  {ecoAvatars.map(x =>
-                    x.more ? (
-                      <span>{x.more}</span>
-                    ) : (
-                      <OverlayTrigger
-                        placement={'top'}
-                        overlay={<Tooltip id={'display-name'}>{x.displayName}</Tooltip>}
-                      >
-                        <span>
-                          <Avatar size="md" src={x.avatar} />
-                        </span>
-                      </OverlayTrigger>
-                    )
-                  )}
-                </div>
-              )}
+          children: (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <TagContainer>
+                {truncatedTags.map((t, i) => (
+                  <Tag key={i} text={t} color="neutralMedium" />
+                ))}
+                {tags.length > 3 && (
+                  <OverlayTrigger
+                    placement={'right'}
+                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
+                  >
+                    <span>
+                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
+                    </span>
+                  </OverlayTrigger>
+                )}
+              </TagContainer>
             </div>
           ),
           className: styles.section,
@@ -172,13 +119,7 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
           !isModalOpened && setIsModalOpened(true);
         }}
       >
-        {isModalOpened && org && (
-          <OrganizationPopUp
-            id={org?.id}
-            membership={membership?.membershipOrganisation}
-            onHide={() => setIsModalOpened(false)}
-          />
-        )}
+        {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
       </Card>
     </div>
   );

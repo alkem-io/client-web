@@ -1,14 +1,15 @@
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { useOrganizationDetailsQuery } from '../../generated/graphql';
+import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
-import { OrganisationMembership } from '../../types/graphql-schema';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
+import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 const groupPopUpStyles = createStyles(theme => ({
   header: {
@@ -64,8 +65,12 @@ const groupPopUpStyles = createStyles(theme => ({
     },
   },
   tableScrollable: {
-    height: '200px',
+    height: '217px' /* 35px table header + 45px row * 4 rows + 1px line * 2 */,
     overflowY: 'auto',
+
+    '& > table': {
+      marginBottom: 0,
+    },
   },
   tablesDiv: {
     display: 'flex',
@@ -81,20 +86,27 @@ const groupPopUpStyles = createStyles(theme => ({
 interface OrganizationPopUpProps {
   id: string;
   onHide: () => void;
-  membership?: OrganisationMembership;
 }
 
-const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id, membership }) => {
+const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
+  const { t } = useTranslation();
   const styles = groupPopUpStyles();
 
-  const { data, loading } = useOrganizationDetailsQuery({ variables: { id } });
+  const { data, loading: loadingOrg } = useOrganizationDetailsQuery({ variables: { id } });
   const profile = data?.organisation?.profile;
   const name = data?.organisation?.displayName;
-  /*const groups = data?.organisation?.groups; todo: group section?*/
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
 
-  const ecoversesHosting = membership?.ecoversesHosting || [];
-  const challengesLeading = membership?.challengesLeading || [];
+  const { data: membership, loading: loadingMembership } = useMembershipOrganisationQuery({
+    variables: {
+      input: {
+        organisationID: id,
+      },
+    },
+  });
+
+  const ecoversesHosting = membership?.membershipOrganisation?.ecoversesHosting || [];
+  const challengesLeading = membership?.membershipOrganisation?.challengesLeading || [];
 
   return (
     <>
@@ -119,7 +131,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id, membership 
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {loading ? (
+          {loadingOrg || loadingMembership ? (
             <Loading text={'Loading the organization'} />
           ) : (
             <div className={styles.tablesDiv}>
@@ -131,54 +143,48 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id, membership 
                     ))}
                   </TagContainer>
                 ) : (
-                  <span>No tags available</span>
+                  <span>{t('search.organization.no-tags')}</span>
                 )}
               </div>
-              <div className={ecoversesHosting.length > 0 ? styles.tableScrollable : undefined}>
+              <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
                 <Table striped bordered hover size="sm" className={styles.table}>
                   <thead>
                     <tr>
-                      <th></th>
-                      <th>Name</th>
-                      <th>Tagline</th>
+                      <th>Hosted ecoverses</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ecoversesHosting.length > 0 &&
                       ecoversesHosting.map(x => (
-                        <tr>
-                          <td>{'' /*avatar*/ ? <Avatar src={'' /*avatar*/} size={'md'} /> : ''}</td>
-                          <td>{x.displayName}</td>
-                          <td>{/*tagline*/}</td>
+                        <tr key={`tr-${x.id}`}>
+                          <td key={`td-${x.id}`}>{x.displayName}</td>
                         </tr>
                       ))}
                   </tbody>
                 </Table>
-                {ecoversesHosting.length === 0 && <div className={styles.centeredText}>No ecoverses are hosted</div>}
+                {ecoversesHosting.length === 0 && (
+                  <div className={styles.centeredText}>{t('search.organization.no-hosted')}</div>
+                )}
               </div>
-              <div className={ecoversesHosting.length > 0 ? styles.tableScrollable : undefined}>
+              <div className={clsx({ [styles.tableScrollable]: challengesLeading.length > 0 })}>
                 <Table striped bordered hover size="sm" className={styles.table}>
                   <thead>
                     <tr>
-                      <th></th>
-                      <th>Name</th>
-                      <th>Tagline</th>
-                      <th>Ecoverse</th>
+                      <th>Led challenges</th>
                     </tr>
                   </thead>
                   <tbody>
                     {challengesLeading.length > 0 &&
                       challengesLeading.map(x => (
-                        <tr>
-                          <td>{'' /*avatar*/ ? <Avatar src={'' /*avatar*/} size={'md'} /> : ''}</td>
-                          <td>{x.displayName}</td>
-                          <td>{/*tagline*/}</td>
-                          <td>{/*ecoverseName*/}</td>
+                        <tr key={`tr-${x.id}`}>
+                          <td key={`td-${x.id}`}>{x.displayName}</td>
                         </tr>
                       ))}
                   </tbody>
                 </Table>
-                {challengesLeading.length === 0 && <div className={styles.centeredText}>No challenges are led</div>}
+                {challengesLeading.length === 0 && (
+                  <div className={styles.centeredText}>{t('search.organization.no-leading')}</div>
+                )}
               </div>
             </div>
           )}

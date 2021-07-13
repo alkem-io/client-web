@@ -6,7 +6,12 @@
     "header": "Search",
     "subheader": "Find relevant users, organisations, groups and not least Challenges!",
     "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
-    "body": ""
+    "body": "",
+    "organization": {
+      "no-tags": "No tags available",
+      "no-hosted": "No hosted ecoverses by this organization",
+      "no-leading": "No led challenges by this organization"
+    }
   },
   "buttons": {
     "learn-more": "Learn more",
