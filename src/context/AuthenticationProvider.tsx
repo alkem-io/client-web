@@ -24,7 +24,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         isAuthenticated,
         loading,
         session,
-        verified,
+        verified: true || verified, // Remove until smtp server is configured.
       }}
     >
       {children}

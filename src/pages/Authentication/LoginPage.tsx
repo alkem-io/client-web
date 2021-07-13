@@ -3,7 +3,6 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
@@ -15,8 +14,7 @@ import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/Constants';
 
 interface LoginPageProps {
-  flow: string;
-  redirect?: string;
+  flow?: string;
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
@@ -44,13 +42,19 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     }
   }, [flow, kratos]);
 
+  if (!flow) {
+    window.location.replace('/self-service/login/browser');
+  }
+
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 
-  const resetPassword = (
-    <div className={'text-right'}>
-      <Link to={'/auth/recovery'}>Reset password</Link>
-    </div>
-  );
+  // Remove resetpassword until the SMTP server is configured correctly
+  const resetPassword = <></>;
+  // (
+  //    <div className={'text-right'}>
+  //     <Link to={'/auth/recovery'}>Reset password</Link>
+  //    </div>
+  //  );
 
   return (
     <AuthenticationLayout>

@@ -7,12 +7,12 @@ import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../types/graphql-schema';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
-import { Search } from './search';
 import { EcoverseRoute } from './ecoverse';
 import { Messages } from './messages';
 import ProfileRoute from './profile';
 import { Restricted } from './restricted';
-import RestrictedRoute, { AuthenticatedRoute } from './route.extensions';
+import RestrictedRoute from './route.extensions';
+import { Search } from './search';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -58,11 +58,11 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
-      <AuthenticatedRoute path="/:ecoverseId">
+      <Route path="/:ecoverseId">
         <EcoverseProvider>
           <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>
-      </AuthenticatedRoute>
+      </Route>
       <Route path="*">
         <FourOuFour />
       </Route>

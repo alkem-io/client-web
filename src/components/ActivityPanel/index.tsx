@@ -66,11 +66,11 @@ const ActivityCard: FC<ActivityCardProps> = ({
       <div className={styles.wrapper}>
         {items.map(({ name, digit, color }, i) => (
           <div className={styles.item} key={i}>
-            <Typography as={'p'}>{name}:</Typography>
+            <Typography as={'p'}>{name}</Typography>
             <CircleTag text={`${digit}`} color={color || 'neutral'} />
           </div>
         ))}
-        <StateActivityCardItem lifecycle={lifecycle || undefined}></StateActivityCardItem>
+        <StateActivityCardItem lifecycle={lifecycle || undefined} />
       </div>
     </Card>
   );
