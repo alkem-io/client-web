@@ -197,7 +197,8 @@
       "members": "Members",
       "interests": "Interests",
       "users": "Users",
-      "organisations": "Organisations"
+      "organisations": "Organisations",
+      "lifecycle-info": "Click to view lifecycle graph"
     },
     "home": {
       "sections": {
