@@ -15,7 +15,7 @@ interface TagsSegmentProps {
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
-export const tagsetFragmentSchema = yup.array().of(
+export const tagsetSegmentSchema = yup.array().of(
   yup.object().shape({
     name: yup.string(),
     tags: yup.array().of(yup.string()),

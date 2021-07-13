@@ -8,13 +8,13 @@ import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import { Required } from '../Required';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
-import { contextFragmentSchema, ContextSegment } from './Common/ContextSegment';
+import { contextSegmentSchema, ContextSegment } from './Common/ContextSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from './Common/TagsetSegment';
+import { tagsetSegmentSchema, TagsetSegment } from './Common/TagsetSegment';
 import useProfileStyles from './Common/useProfileStyles';
-import { visualFragmentSchema, VisualSegment } from './Common/VisualSegment';
+import { visualSegmentSchema, VisualSegment } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -96,14 +96,14 @@ const EcoverseEditForm: FC<Props> = ({
     name: profileSegmentSchema.fields?.name || yup.string(),
     nameID: profileSegmentSchema.fields?.nameID || yup.string(),
     host: yup.string().required(t('forms.validations.required')),
-    background: contextFragmentSchema.fields?.background || yup.string(),
-    impact: contextFragmentSchema.fields?.impact || yup.string(),
-    tagline: contextFragmentSchema.fields?.tagline || yup.string(),
-    vision: contextFragmentSchema.fields?.vision || yup.string(),
-    who: contextFragmentSchema.fields?.who || yup.string(),
+    background: contextSegmentSchema.fields?.background || yup.string(),
+    impact: contextSegmentSchema.fields?.impact || yup.string(),
+    tagline: contextSegmentSchema.fields?.tagline || yup.string(),
+    vision: contextSegmentSchema.fields?.vision || yup.string(),
+    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    visual: visualFragmentSchema,
-    tagsets: tagsetFragmentSchema,
+    visual: visualSegmentSchema,
+    tagsets: tagsetSegmentSchema,
     anonymousReadAccess: yup.boolean(),
   });
 
