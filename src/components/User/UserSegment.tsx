@@ -25,9 +25,10 @@ const useStyles = createStyles(theme => ({
 interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
+  emailVerified: boolean;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
@@ -35,6 +36,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata }) => {
   const history = useHistory();
 
   const role = useMemo(() => {
+    if (!emailVerified) return 'Not verified';
     return roles.filter(r => !r.hidden)[0]?.name;
   }, [userMetadata]);
 

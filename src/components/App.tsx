@@ -33,7 +33,7 @@ const App = ({ children }): React.ReactElement => {
   const { isAuthenticated } = useAuthenticationContext();
   const { ecoverses } = useEcoversesContext();
 
-  const { user, loading } = useUserContext();
+  const { user, loading, verified } = useUserContext();
   const { loading: configLoading } = useConfig();
   const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
@@ -105,7 +105,11 @@ const App = ({ children }): React.ReactElement => {
                 </>
               )}
               {isUserSegmentVisible && user && (
-                <UserSegment userMetadata={user} orientation={isVisible ? 'vertical' : 'horizontal'} />
+                <UserSegment
+                  userMetadata={user}
+                  orientation={isVisible ? 'vertical' : 'horizontal'}
+                  emailVerified={verified}
+                />
               )}
             </div>
           )}

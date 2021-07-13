@@ -197,7 +197,8 @@
       "members": "Members",
       "interests": "Interests",
       "users": "Users",
-      "organisations": "Organisations"
+      "organisations": "Organisations",
+      "lifecycle-info": "Click to view lifecycle graph"
     },
     "home": {
       "sections": {
@@ -404,7 +405,8 @@
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "buttons": {
         "register": "Register"
-      }
+      },
+      "login": "Have an account?"
     },
     "registration-success": {
       "header": "Thank you for signing up!",
@@ -414,7 +416,7 @@
     "verification-success": {
       "header": "Thank you for verifying your email address!",
       "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your [profile](./profile) - helps with both applying to join communities and with others being able to connect with you. "
+      "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
     },
     "recovery": {
       "form": {
@@ -448,6 +450,9 @@
       "buttons": {
         "register": "Verify"
       }
+    },
+    "user-profile": {
+      "email-not-verified": " Please verify your <l>email</l>."
     }
   }
 }

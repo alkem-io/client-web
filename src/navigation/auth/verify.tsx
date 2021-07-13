@@ -10,10 +10,11 @@ export const VerifyRoute: FC<VerifyRouteProps> = () => {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
   const { path } = useRouteMatch();
+
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <VerificationPage flow={flow} />;
+        <VerificationPage flow={flow} />
       </Route>
       <Route exact path={`${path}/success`}>
         <VerificationSuccessPage />

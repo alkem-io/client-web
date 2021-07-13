@@ -1,9 +1,8 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
-  useDeleteReferenceMutation,
   useDeleteUserMutation,
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
@@ -12,14 +11,14 @@ import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { UserModel } from '../../../models/User';
-import { PageProps } from '../../../pages';
+import { PageProps } from '../..';
 import { CreateUserInput } from '../../../types/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
-import { Loading } from '../../core/Loading';
-import { getUpdateUserInput } from '../../UserProfile';
-import UserForm from '../../UserProfile/UserForm';
-import UserRemoveModal from './UserRemoveModal';
+import { Loading } from '../../../components/core/Loading';
+import { getUpdateUserInput } from '../../../components/UserProfile';
+import UserForm from '../../../components/UserProfile/UserForm';
+import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
@@ -31,8 +30,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
-  const [addReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
 
   const currentPaths = useMemo(
     () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
@@ -93,6 +90,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     },
   });
 
+  const [createTagset] = useCreateTagsetOnProfileMutation();
+
   const isSaving = updateMutationLoading || createMutationLoading;
 
   const handleCancel = () => history.goBack();
@@ -118,31 +117,21 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
         },
       });
     } else if (isEditMode && editedUser.id) {
-      // TODO [ATS] - Optimze, same code available in EditUserProfile
       const profileId = editedUser.profile.id;
-      const initialReferences = user?.profile?.references || [];
-      const references = editedUser.profile.references;
-      const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-      const toAdd = references.filter(x => !x.id);
+      const tagsetsToAdd = editedUser.profile.tagsets.filter(x => !x.id);
 
-      for (const ref of toRemove) {
-        if (ref.id) await deleteReference({ variables: { input: { ID: ref.id } } });
-      }
-
-      if (profileId) {
-        for (const ref of toAdd) {
-          await addReference({
-            variables: {
-              input: {
-                profileID: profileId,
-                name: ref.name,
-                description: ref.description,
-                uri: ref.uri,
-              },
+      for (const tagset of tagsetsToAdd) {
+        await createTagset({
+          variables: {
+            input: {
+              name: tagset.name,
+              tags: [...tagset.tags],
+              profileID: profileId,
             },
-          });
-        }
+          },
+        });
       }
+
       updateUser({
         variables: {
           input: getUpdateUserInput(editedUser),

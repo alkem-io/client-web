@@ -1,28 +1,25 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { FC } from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useQueryParams } from '../../hooks/useQueryParams';
 import LoginPage from '../../pages/Authentication/LoginPage';
-import { hideLoginNavigation, showLoginNavigation } from '../../reducers/ui/loginNavigation/actions';
+import LoginSuccessPage from '../../pages/Authentication/LoginSuccessPage';
+import { NotAuthenticatedRoute } from '../route.extensions';
 
 export const LoginRoute: FC = () => {
-  const dispatch = useDispatch();
   const params = useQueryParams();
-  const flow = params.get('flow');
-  const redirect = params.get('redirect');
+  const flow = params.get('flow') || undefined;
+  const { path } = useRouteMatch();
 
-  useEffect(() => {
-    dispatch(hideLoginNavigation());
-    return () => {
-      dispatch(showLoginNavigation());
-    };
-  }, []);
-
-  if (!flow) {
-    window.location.replace('/self-service/login/browser');
-    return null;
-  }
-
-  return <LoginPage flow={flow} redirect={redirect ?? undefined} />;
+  return (
+    <Switch>
+      <NotAuthenticatedRoute exact path={`${path}`}>
+        <LoginPage flow={flow} />;
+      </NotAuthenticatedRoute>
+      <Route exact path={`${path}/success`}>
+        <LoginSuccessPage />
+      </Route>
+    </Switch>
+  );
 };
 
 export default LoginRoute;

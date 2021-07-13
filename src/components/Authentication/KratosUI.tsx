@@ -24,6 +24,7 @@ interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
   termsURL?: string;
   privacyURL?: string;
+  resetPasswordComponent?: React.ReactChild;
 }
 
 interface KratosProps {
@@ -201,7 +202,7 @@ const toUiControl = (node: UiNode, key: number) => {
   }
 };
 
-export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
+export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...rest }) => {
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
@@ -235,6 +236,7 @@ export const KratosUI: FC<KratosUIProps> = ({ flow, ...rest }) => {
         <Form action={ui.action} method={ui.method} noValidate>
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
+          {resetPasswordComponent}
           {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
           {nodesByGroup.oidc.map(toUiControl)}
           {nodesByGroup.rest.map(toUiControl)}

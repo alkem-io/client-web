@@ -4,6 +4,7 @@ import { FourOuFour } from '../../pages';
 import { QuestionTemplate } from '../../types/graphql-schema';
 import { Path } from '../../context/NavigationProvider';
 import ApplyPage from '../../pages/ApplyPage';
+import RestrictedRoute from '../route.extensions';
 
 interface Props {
   paths: Path[];
@@ -32,7 +33,7 @@ const ApplyRoute: FC<Props> = ({
 }) => {
   return (
     <Switch>
-      <Route path={`${path}/apply`}>
+      <RestrictedRoute path={`${path}/apply`}>
         <ApplyPage
           paths={paths}
           communityId={communityId}
@@ -44,7 +45,7 @@ const ApplyRoute: FC<Props> = ({
           loading={loading}
           error={error}
         />
-      </Route>
+      </RestrictedRoute>
       <Route path="*">
         <FourOuFour />
       </Route>

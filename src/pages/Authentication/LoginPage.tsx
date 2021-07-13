@@ -14,8 +14,7 @@ import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/Constants';
 
 interface LoginPageProps {
-  flow: string;
-  redirect?: string;
+  flow?: string;
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
@@ -43,7 +42,19 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     }
   }, [flow, kratos]);
 
+  if (!flow) {
+    window.location.replace('/self-service/login/browser');
+  }
+
   if (!loginFlow) return <Loading text={'Loading flow'} />;
+
+  // Remove resetpassword until the SMTP server is configured correctly
+  const resetPassword = <></>;
+  // (
+  //    <div className={'text-right'}>
+  //     <Link to={'/auth/recovery'}>Reset password</Link>
+  //    </div>
+  //  );
 
   return (
     <AuthenticationLayout>
@@ -52,7 +63,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.login.title')}
           </Typography>
-          <KratosUI flow={loginFlow} />
+          <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter />
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.login.register')}
