@@ -3,38 +3,37 @@ import {
   RecoveryFlow,
   RegistrationFlow,
   SettingsFlow,
+  SubmitSelfServiceLoginFlow,
+  SubmitSelfServiceRecoveryFlowWithLinkMethod,
+  SubmitSelfServiceRegistrationFlow,
+  SubmitSelfServiceSettingsFlow,
+  SubmitSelfServiceVerificationFlowWithLinkMethod,
   UiNode,
-  UiNodeInputAttributes,
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
-import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
-import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
-import React, { FC, useMemo, useState } from 'react';
-import { Alert, Form, InputGroup } from 'react-bootstrap';
-import Button from '../core/Button';
+import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
+import { Alert, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import Delimiter from '../core/Delimiter';
-import Icon from '../core/Icon';
-import IconButton from '../core/IconButton';
-import { Required } from '../Required';
-import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
-import KratosTermsLabel from './KratosTermsLabel';
+import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
+import KratosButton from './Kratos/KratosButton';
+import KratosCheckbox from './Kratos/KratosCheckbox';
+import KratosHidden from './Kratos/KratosHidden';
+import KratosInput from './Kratos/KratosInput';
+import { KratosInputExtraProps } from './Kratos/KratosProps';
 
+type FormType =
+  | SubmitSelfServiceSettingsFlow
+  | SubmitSelfServiceLoginFlow
+  | SubmitSelfServiceRegistrationFlow
+  | SubmitSelfServiceVerificationFlowWithLinkMethod
+  | SubmitSelfServiceRecoveryFlowWithLinkMethod;
 interface KratosUIProps {
   flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
   termsURL?: string;
   privacyURL?: string;
   resetPasswordComponent?: React.ReactChild;
-}
-
-interface KratosProps {
-  node: UiNode;
-}
-
-interface KratosInputExtraProps {
-  autoComplete?: string;
-  autoCapitalize?: string;
-  autoCorrect?: string;
 }
 
 const toAlertVariant = (type: string) => {
@@ -43,116 +42,6 @@ const toAlertVariant = (type: string) => {
   } else {
     return 'primary';
   }
-};
-
-const isInvalid = (node: UiNode) =>
-  !!(node && Array.isArray(node.messages) && node.messages.find(x => x.type === 'error'));
-
-const getFeedbackElements = (node: UiNode) =>
-  isInvalid(node)
-    ? node.messages.map((x, key) => (
-        <Form.Control.Feedback type="invalid" key={key}>
-          {x.text}
-        </Form.Control.Feedback>
-      ))
-    : null;
-
-type KratosInputProps = KratosProps & KratosInputExtraProps;
-
-const KratosHidden: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  return <Form.Control type={'hidden'} value={attributes.value as string} name={attributes.name} />;
-};
-
-const KratosButton: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  return (
-    <Button
-      name={getNodeName(node)}
-      variant="primary"
-      type={attributes.type}
-      disabled={attributes.disabled}
-      value={attributes.value}
-      block
-      small
-    >
-      {getNodeTitle(node)}
-    </Button>
-  );
-};
-
-const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
-  const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
-  const [value, setValue] = useState(getNodeValue(node));
-  const [inputType, setInputType] = useState(attributes.type);
-  const isPassword = useMemo(() => attributes.type === 'password', [attributes]);
-
-  const invalid = isInvalid(node);
-  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
-
-  return (
-    <Form.Group>
-      <Form.Label>
-        {getNodeTitle(node)}
-        {attributes.required && <Required />}
-      </Form.Label>
-      <InputGroup>
-        <Form.Control
-          type={inputType}
-          value={value ? String(value) : ''}
-          name={getNodeName(node)}
-          onChange={e => setValue(e.target.value)}
-          required={attributes.required}
-          disabled={attributes.disabled}
-          isInvalid={invalid}
-          autoComplete={autoComplete}
-          autoCorrect={autoCorrect}
-          autoCapitalize={autoCapitalize}
-          /*aria-labelledby={} TODO */
-        />
-        {isPassword && (
-          <InputGroup.Append>
-            <InputGroup.Text>
-              <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
-                <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
-              </IconButton>
-            </InputGroup.Text>
-          </InputGroup.Append>
-        )}
-        {feedbackElements}
-      </InputGroup>
-    </Form.Group>
-  );
-};
-
-const KratosCheckbox: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  const [state, setState] = useState(Boolean(getNodeValue(node)));
-
-  const invalid = isInvalid(node);
-
-  const feedbackElements = useMemo(() => getFeedbackElements(node), [node]);
-  const updatedTitle = attributes.name === 'traits.accepted_terms' ? <KratosTermsLabel /> : getNodeTitle(node);
-
-  return (
-    <Form.Group controlId={node.group}>
-      <Form.Check name={getNodeName(node)} type="checkbox">
-        <Form.Check.Input
-          type="checkbox"
-          name={getNodeName(node)}
-          checked={state}
-          onChange={() => setState(oldState => !oldState)}
-          isInvalid={invalid}
-          value={String(state)}
-        />
-        <Form.Check.Label>
-          {updatedTitle}
-          {attributes.required && <Required />}
-        </Form.Check.Label>
-        {feedbackElements}
-      </Form.Check>
-    </Form.Group>
-  );
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
@@ -203,6 +92,25 @@ const toUiControl = (node: UiNode, key: number) => {
 };
 
 export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...rest }) => {
+  const { t } = useTranslation();
+  const [showFormAlert, setShowFormAlert] = useState(false);
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      const button = getActiveElement() as any;
+      // do ckeck if only submitting password method
+      if (button && button.name === 'method' && button.value === 'password') {
+        if (!e.currentTarget.checkValidity()) {
+          setShowFormAlert(true);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+    },
+    [showFormAlert]
+  );
+
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
@@ -229,11 +137,36 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
 
   const ui = flow.ui;
 
+  const initialState: Partial<FormType> = {};
+
+  ui.nodes.forEach((node: UiNode) => {
+    const name = getNodeName(node);
+    const value = getNodeValue(node);
+
+    const key = name as keyof FormType;
+    initialState[key] = value || ('' as any);
+  });
+
+  const getActiveElement = (doc?: Document): Element | null => {
+    doc = doc || (typeof document !== 'undefined' ? document : undefined);
+    if (typeof doc === 'undefined') {
+      return null;
+    }
+    try {
+      return doc.activeElement || doc.body;
+    } catch (e) {
+      return doc.body;
+    }
+  };
+
   return (
     <KratosUIProvider {...rest}>
       <div>
+        <Alert show={showFormAlert} variant={'warning'} onClose={() => setShowFormAlert(false)}>
+          {t('authentication.validation.fill-fields')}
+        </Alert>
         <KratosMessages messages={ui.messages} />
-        <Form action={ui.action} method={ui.method} noValidate>
+        <Form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
           {resetPasswordComponent}
