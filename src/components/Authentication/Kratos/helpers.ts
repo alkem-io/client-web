@@ -76,3 +76,13 @@ export const guessVariant = ({ attributes }: UiNode) => {
       return 'text';
   }
 };
+
+export const isInvalidNode = (node: UiNode) =>
+  !!(node && Array.isArray(node.messages) && node.messages.find(x => x.type === 'error'));
+
+export const isRequired = (node: UiNode) => {
+  const requiredFileds = ['traits.email', 'traits.name.first', 'traits.name.last', 'traits.accepted_terms'];
+  const attributes = node.attributes as UiNodeInputAttributes;
+  const name = getNodeName(node);
+  return attributes.required || requiredFileds.includes(name);
+};
