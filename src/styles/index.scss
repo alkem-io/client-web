@@ -46,3 +46,12 @@ code {
     display: none;
   }
 }
+
+
+.modal-backdrop {
+  z-index: 1300 // sidebar is 1200
+}
+
+.modal {
+  z-index: 1310
+}

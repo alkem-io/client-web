@@ -28,6 +28,7 @@ import Typography from '../core/Typography';
 import { Spacer } from '../shared/Spacer';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -54,6 +55,9 @@ const useCardStyles = createStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  relative: {
+    position: 'relative',
   },
 }));
 
@@ -88,7 +92,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
   });
 
   return (
-    <>
+    <div className={styles.relative}>
       <Card
         className={styles.border}
         bodyProps={{
@@ -120,7 +124,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
         onConfirm={() => removeRelation()}
         onCancel={() => setShowRemove(false)}
       />
-    </>
+    </div>
   );
 };
 
@@ -155,7 +159,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
   const onRemove = () => removeActor({ variables: { input: { ID: id } } });
 
   return (
-    <>
+    <div className={styles.relative}>
       <Card
         className={styles.border}
         bodyProps={{
@@ -204,7 +208,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
       />
-    </>
+    </div>
   );
 };
 
@@ -215,26 +219,27 @@ interface NewActorProps {
 }
 
 const useNewActorCardStyles = createStyles(theme => ({
-  activeCard: {
+  card: {
     color: theme.palette.primary,
-    height: '100%',
+    transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {
-      opacity: 0.7,
-      cursor: 'pointer',
-      background: theme.palette.primary,
-      color: theme.palette.background,
-
-      '& > .ct-card-body': {
-        background: 'transparent',
-        color: theme.palette.background,
-      },
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
     },
+    border: `1px solid ${hexToRGBA(theme.palette.primary, 0.3)}`,
+    borderTopRightRadius: 15,
+    overflow: 'hidden',
+  },
+  section: {
+    background: theme.palette.neutralLight,
   },
   inner: {
     display: 'flex',
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  relative: {
+    position: 'relative',
   },
 }));
 
@@ -243,12 +248,20 @@ export const NewActorCard: FC<NewActorProps> = ({ text, actorGroupId, opportunit
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
 
   return (
-    <>
-      <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
-        <div className={styles.inner}>
-          <Icon component={PlusIcon} color="inherit" size="xxl" />
-        </div>
-      </Card>
+    <div className={styles.relative}>
+      <Card
+        className={styles.card}
+        primaryTextProps={{ text }}
+        onClick={() => setEditOpened(true)}
+        sectionProps={{
+          children: (
+            <div className={styles.inner}>
+              <Icon component={PlusIcon} color="inherit" size="xxl" />
+            </div>
+          ),
+          className: styles.section,
+        }}
+      />
 
       <ActorEdit
         isCreate={true}
@@ -257,7 +270,7 @@ export const NewActorCard: FC<NewActorProps> = ({ text, actorGroupId, opportunit
         opportunityId={opportunityId}
         actorGroupId={actorGroupId}
       />
-    </>
+    </div>
   );
 };
 
@@ -290,7 +303,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
     user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   return (
-    <>
+    <div className={styles.relative}>
       <Card
         className={styles.border}
         bodyProps={{
@@ -338,7 +351,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
       />
-    </>
+    </div>
   );
 };
 
@@ -354,8 +367,8 @@ export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportun
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
 
   return (
-    <>
-      <Card className={styles.activeCard} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
+    <div className={styles.relative}>
+      <Card className={styles.card} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
         <div className={styles.inner}>
           <Icon component={PlusIcon} color="inherit" size="xxl" />
         </div>
@@ -369,6 +382,6 @@ export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportun
         opportunityId={opportunityId}
         existingAspectNames={existingAspectNames}
       />
-    </>
+    </div>
   );
 };

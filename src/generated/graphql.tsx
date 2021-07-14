@@ -1583,10 +1583,9 @@ export type DeleteRelationMutationOptions = Apollo.BaseMutationOptions<
 export const DeleteUserDocument = gql`
   mutation deleteUser($input: DeleteUserInput!) {
     deleteUser(deleteData: $input) {
-      ...UserDetails
+      id
     }
   }
-  ${UserDetailsFragmentDoc}
 `;
 export type DeleteUserMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteUserMutation,
