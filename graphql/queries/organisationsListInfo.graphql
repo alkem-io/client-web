@@ -1,0 +1,13 @@
+query organisationsListInfo {
+  organisations {
+    id
+    displayName
+    profile {
+      id
+      avatar
+      tagsets {
+        tags
+      }
+    }
+  }
+}
