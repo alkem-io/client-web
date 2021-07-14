@@ -9,19 +9,19 @@ import {
   SubmitSelfServiceSettingsFlow,
   SubmitSelfServiceVerificationFlowWithLinkMethod,
   UiNode,
-  UiNodeInputAttributes,
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
 import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
-import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
+import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
+import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
+import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
-import { KratosInputExtraProps, KratosProps } from './Kratos/KratosProps';
+import { KratosInputExtraProps } from './Kratos/KratosProps';
 
 type FormType =
   | SubmitSelfServiceSettingsFlow
@@ -42,28 +42,6 @@ const toAlertVariant = (type: string) => {
   } else {
     return 'primary';
   }
-};
-
-const KratosHidden: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  return <Form.Control type={'hidden'} value={attributes.value as string} name={attributes.name} />;
-};
-
-const KratosButton: FC<KratosProps> = ({ node }) => {
-  const attributes = node.attributes as UiNodeInputAttributes;
-  return (
-    <Button
-      name={getNodeName(node)}
-      variant="primary"
-      type={attributes.type}
-      disabled={attributes.disabled}
-      value={attributes.value}
-      block
-      small
-    >
-      {getNodeTitle(node)}
-    </Button>
-  );
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
