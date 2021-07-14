@@ -13,8 +13,9 @@ import {
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
 import { getNodeName, getNodeTitle, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
@@ -113,6 +114,27 @@ const toUiControl = (node: UiNode, key: number) => {
 };
 
 export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...rest }) => {
+  const { t } = useTranslation();
+  const [showFormAlert, setShowFormAlert] = useState(false);
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      const button = getActiveElement() as any;
+      // do ckeck if only submitting password method
+      if (button && button.name === 'method' && button.value === 'password') {
+        if (!e.currentTarget.checkValidity()) {
+          setShowFormAlert(true);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    [showFormAlert]
+  );
+
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 
   const nodesByGroup = useMemo(() => {
@@ -149,14 +171,24 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
     initialState[key] = value || ('' as any);
   });
 
-  const handleSubmit = () => {
-    //} (e: FormEvent<HTMLFormElement>) => {
-    return false;
+  const getActiveElement = (doc?: Document): Element | null => {
+    doc = doc || (typeof document !== 'undefined' ? document : undefined);
+    if (typeof doc === 'undefined') {
+      return null;
+    }
+    try {
+      return doc.activeElement || doc.body;
+    } catch (e) {
+      return doc.body;
+    }
   };
 
   return (
     <KratosUIProvider {...rest}>
       <div>
+        <Alert show={showFormAlert} variant={'warning'} onClose={() => setShowFormAlert(false)}>
+          {t('authentication.validation.fill-fields')}
+        </Alert>
         <KratosMessages messages={ui.messages} />
         <Form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
           {nodesByGroup.default.map(toUiControl)}
