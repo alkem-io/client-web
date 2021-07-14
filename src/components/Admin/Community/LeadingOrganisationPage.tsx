@@ -188,6 +188,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
                     <thead className="thead-dark">
                       <tr>
                         <th />
+                        <th>Avatar</th>
                         <th>Name</th>
                       </tr>
                     </thead>
@@ -198,6 +199,9 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
                             <Button disabled={isUpdating} variant="outline-info" size="sm" onClick={() => onAdd(x.id)}>
                               +
                             </Button>
+                          </td>
+                          <td>
+                            <Avatar size="md" src={x.profile.avatar} />
                           </td>
                           <td>{x.displayName}</td>
                         </tr>
