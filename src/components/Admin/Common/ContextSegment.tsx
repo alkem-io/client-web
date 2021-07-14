@@ -4,7 +4,7 @@ import { useInputField } from './useInputField';
 import * as yup from 'yup';
 import { useMarkdownInputField } from './useMarkdownInputField';
 
-export const contextFragmentSchema = yup.object().shape({
+export const contextSegmentSchema = yup.object().shape({
   background: yup.string(),
   impact: yup.string(),
   tagline: yup.string(),

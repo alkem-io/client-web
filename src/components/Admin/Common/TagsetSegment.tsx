@@ -15,7 +15,7 @@ interface TagsSegmentProps {
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
-export const tagsetFragmentSchema = yup.array().of(
+export const tagsetSegmentSchema = yup.array().of(
   yup.object().shape({
     name: yup.string(),
     tags: yup.array().of(yup.string()),
@@ -37,6 +37,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false,
         tagsets.map((tagSet, index) => (
           <TagsetField
             key={index}
+            displayLabel={tagsets.length > 1} /* display label only if tagsets are more than 1 */
             name={`tagsets[${index}].tags`}
             title={toFirstCaptitalLetter(tagSet.name)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
@@ -58,6 +59,7 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
+  displayLabel?: boolean;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -66,6 +68,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   required = false,
   readOnly = false,
   disabled = false,
+  displayLabel = true,
   placeholder,
 }) => {
   const styles = useProfileStyles();
@@ -73,7 +76,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   return (
     <Form.Row>
       <Form.Group as={Col}>
-        <Form.Label>{title}</Form.Label>
+        {displayLabel && <Form.Label>{title}</Form.Label>}
         <Form.Control
           name={name}
           type={'text'}

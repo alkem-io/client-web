@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
 import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
-import { contextFragmentSchema, ContextSegment } from '../Admin/Common/ContextSegment';
+import { contextSegmentSchema, ContextSegment } from '../Admin/Common/ContextSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Admin/Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
-import { visualFragmentSchema, VisualSegment } from '../Admin/Common/VisualSegment';
+import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
+import { visualSegmentSchema, VisualSegment } from '../Admin/Common/VisualSegment';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 
@@ -79,14 +79,14 @@ const ProfileForm: FC<Props> = ({
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : profileSegmentSchema.fields?.name || yup.string(),
     nameID: contextOnly ? yup.string() : profileSegmentSchema.fields?.nameID || yup.string(),
-    background: contextFragmentSchema.fields?.background || yup.string(),
-    impact: contextFragmentSchema.fields?.impact || yup.string(),
-    tagline: contextFragmentSchema.fields?.tagline || yup.string(),
-    vision: contextFragmentSchema.fields?.vision || yup.string(),
-    who: contextFragmentSchema.fields?.who || yup.string(),
+    background: contextSegmentSchema.fields?.background || yup.string(),
+    impact: contextSegmentSchema.fields?.impact || yup.string(),
+    tagline: contextSegmentSchema.fields?.tagline || yup.string(),
+    vision: contextSegmentSchema.fields?.vision || yup.string(),
+    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    visual: visualFragmentSchema,
-    tagsets: tagsetFragmentSchema,
+    visual: visualSegmentSchema,
+    tagsets: tagsetSegmentSchema,
   });
 
   let isSubmitWired = false;

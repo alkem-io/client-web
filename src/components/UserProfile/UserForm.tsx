@@ -12,7 +12,7 @@ import { EditMode } from '../../utils/editMode';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
 import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
-import { tagsetFragmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
+import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import SearchDropdown from '../core/SearchDropdown';
@@ -104,7 +104,7 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    tagsets: tagsetFragmentSchema,
+    tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
     bio: yup.string().max(400),
   });
