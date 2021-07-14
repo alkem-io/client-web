@@ -1,10 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import { useChallengeCommunityQuery, useEcoverseCommunityQuery, useOpportunitiesQuery } from '../../generated/graphql';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
@@ -85,19 +84,4 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       </Route>
     </Switch>
   );
-};
-export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
-  const { challengeId } = useParams<AdminParameters>();
-  const { ecoverseId } = useEcoverse();
-
-  const { data } = useOpportunitiesQuery({ variables: { ecoverseId, challengeId } });
-
-  const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
-    id: o.id,
-    value: o.displayName,
-    url: `${url}/${o.id}`,
-  }));
-
-  return <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />;
 };
