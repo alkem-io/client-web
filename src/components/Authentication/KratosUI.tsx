@@ -129,8 +129,6 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
           return;
         }
       }
-      e.preventDefault();
-      e.stopPropagation();
     },
     [showFormAlert]
   );
