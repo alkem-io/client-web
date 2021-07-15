@@ -4,8 +4,11 @@ query challengeLeadOrganisations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_N
     challenge(ID: $challengeID) {
       id
       leadOrganisations {
-        id
+        ...OrganisationDetails
       }
     }
+  }
+  organisations {
+    ...OrganisationDetails
   }
 }

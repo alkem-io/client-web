@@ -151,6 +151,19 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
+export const OrganisationDetailsFragmentDoc = gql`
+  fragment OrganisationDetails on Organisation {
+    id
+    displayName
+    profile {
+      id
+      avatar
+      tagsets {
+        tags
+      }
+    }
+  }
+`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organisation {
     id
@@ -2961,11 +2974,15 @@ export const ChallengeLeadOrganisationsDocument = gql`
       challenge(ID: $challengeID) {
         id
         leadOrganisations {
-          id
+          ...OrganisationDetails
         }
       }
     }
+    organisations {
+      ...OrganisationDetails
+    }
   }
+  ${OrganisationDetailsFragmentDoc}
 `;
 
 /**
@@ -5912,68 +5929,6 @@ export type OrganisationGroupQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganisationGroupQuery(variables?: SchemaTypes.OrganisationGroupQueryVariables) {
   return { query: OrganisationGroupDocument, variables: variables };
-}
-export const OrganisationsListInfoDocument = gql`
-  query organisationsListInfo {
-    organisations {
-      id
-      displayName
-      profile {
-        id
-        avatar
-        tagsets {
-          tags
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganisationsListInfoQuery__
- *
- * To run a query within a React component, call `useOrganisationsListInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganisationsListInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganisationsListInfoQuery({
- *   variables: {
- *   },
- * });
- */
-export function useOrganisationsListInfoQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.OrganisationsListInfoQuery,
-    SchemaTypes.OrganisationsListInfoQueryVariables
-  >
-) {
-  return Apollo.useQuery<SchemaTypes.OrganisationsListInfoQuery, SchemaTypes.OrganisationsListInfoQueryVariables>(
-    OrganisationsListInfoDocument,
-    baseOptions
-  );
-}
-export function useOrganisationsListInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganisationsListInfoQuery,
-    SchemaTypes.OrganisationsListInfoQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<SchemaTypes.OrganisationsListInfoQuery, SchemaTypes.OrganisationsListInfoQueryVariables>(
-    OrganisationsListInfoDocument,
-    baseOptions
-  );
-}
-export type OrganisationsListInfoQueryHookResult = ReturnType<typeof useOrganisationsListInfoQuery>;
-export type OrganisationsListInfoLazyQueryHookResult = ReturnType<typeof useOrganisationsListInfoLazyQuery>;
-export type OrganisationsListInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganisationsListInfoQuery,
-  SchemaTypes.OrganisationsListInfoQueryVariables
->;
-export function refetchOrganisationsListInfoQuery(variables?: SchemaTypes.OrganisationsListInfoQueryVariables) {
-  return { query: OrganisationsListInfoDocument, variables: variables };
 }
 export const OrganizationDetailsDocument = gql`
   query organizationDetails($id: UUID_NAMEID!) {

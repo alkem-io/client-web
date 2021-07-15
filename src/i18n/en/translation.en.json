@@ -32,6 +32,11 @@
     "log-in": "Log in"
   },
   "common": {
+    "avatar": "Avatar",
+    "name": "Name",
+    "tags": "Tags",
+    "add": "Add",
+    "remove": "Remove",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

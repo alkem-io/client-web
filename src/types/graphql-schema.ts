@@ -1786,6 +1786,12 @@ export type NewOpportunityFragment = { __typename?: 'Opportunity' } & Pick<
   'id' | 'nameID' | 'displayName'
 >;
 
+export type OrganisationDetailsFragment = { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'> & {
+    profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'> & {
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>>;
+      };
+  };
+
 export type OrganizationProfileInfoFragment = { __typename?: 'Organisation' } & Pick<
   Organisation,
   'id' | 'nameID' | 'displayName'
@@ -2382,9 +2388,10 @@ export type ChallengeLeadOrganisationsQueryVariables = Exact<{
 export type ChallengeLeadOrganisationsQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
-          leadOrganisations: Array<{ __typename?: 'Organisation' } & Pick<Organisation, 'id'>>;
+          leadOrganisations: Array<{ __typename?: 'Organisation' } & OrganisationDetailsFragment>;
         };
     };
+  organisations: Array<{ __typename?: 'Organisation' } & OrganisationDetailsFragment>;
 };
 
 export type ChallengeLifecycleQueryVariables = Exact<{
@@ -3094,18 +3101,6 @@ export type OrganisationGroupQuery = { __typename?: 'Query' } & {
   organisation: { __typename?: 'Organisation' } & Pick<Organisation, 'id'> & {
       group?: Maybe<{ __typename?: 'UserGroup' } & GroupInfoFragment>;
     };
-};
-
-export type OrganisationsListInfoQueryVariables = Exact<{ [key: string]: never }>;
-
-export type OrganisationsListInfoQuery = { __typename?: 'Query' } & {
-  organisations: Array<
-    { __typename?: 'Organisation' } & Pick<Organisation, 'id' | 'displayName'> & {
-        profile: { __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'> & {
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset' } & Pick<Tagset, 'tags'>>>;
-          };
-      }
-  >;
 };
 
 export type OrganizationDetailsQueryVariables = Exact<{
