@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { PageProps } from '../../pages';
 import { ApplicationRoute } from './ApplicationRoute';
 import { Application, User } from '../../types/graphql-schema';
+import Loading from '../../components/core/Loading';
 
 interface Props extends PageProps {}
 
@@ -27,6 +28,11 @@ export const ChallengeApplicationRoute: FC<Props> = ({ paths }) => {
     },
   ] as Application[]; // get applications by ecoverseId & challengeId
   const applications = data;
+  const loading = false;
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return <ApplicationRoute paths={paths} applications={applications} />;
 };

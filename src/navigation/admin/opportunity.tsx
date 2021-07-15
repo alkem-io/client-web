@@ -72,6 +72,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
           parentMembers={parentMembers}
           credential={AuthorizationCredential.OpportunityMember}
           resourceId={opportunityUUID}
+          accessedFrom="opportunity"
         />
       </Route>
       <Route path="*">

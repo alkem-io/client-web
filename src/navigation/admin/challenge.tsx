@@ -71,6 +71,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           parentMembers={parentMembers}
           credential={AuthorizationCredential.ChallengeMember}
           resourceId={challengeUUID}
+          accessedFrom="challenge"
         />
       </Route>
       <Route path={`${path}/opportunities`}>

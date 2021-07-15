@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
@@ -10,14 +10,12 @@ import { EcoverseGroupRoute } from './EcoverseGroupRoute';
 import { EcoverseApplicationRoute } from './EcoverseApplicationRoute';
 import { ChallengeApplicationRoute } from './ChallengeApplicationRoute';
 
-interface Params {
-  ecoverseId: string;
-  challengeId: string;
-}
+type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
 interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
   credential: CommunityCredentials;
   resourceId: string;
+  accessedFrom: AccessedFrom;
 }
 
 export const CommunityRoute: FC<CommunityRouteProps> = ({
@@ -26,9 +24,9 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   parentMembers,
   credential,
   resourceId,
+  accessedFrom,
 }) => {
   const { path } = useRouteMatch();
-  const { ecoverseId, challengeId } = useParams<Params>();
 
   return (
     <Switch>
@@ -45,8 +43,8 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
       </Route>
       <Route path={`${path}/applications`}>
-        {ecoverseId && !challengeId && <EcoverseApplicationRoute paths={paths} />}
-        {ecoverseId && challengeId && <ChallengeApplicationRoute paths={paths} />}
+        {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
+        {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
       </Route>
     </Switch>
   );

@@ -1,0 +1,25 @@
+query ecoverseApplications($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community {
+      id
+      applications {
+        id
+        lifecycle {
+          id
+          state
+          nextEvents
+        }
+        user {
+          id
+          displayName
+        }
+        questions {
+          id
+          name
+          value
+        }
+      }
+    }
+  }
+}
