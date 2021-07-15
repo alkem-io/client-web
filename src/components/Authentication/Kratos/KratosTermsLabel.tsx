@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { FC, useContext } from 'react';
 import { Trans } from 'react-i18next';
-import { KratosUIContext } from './KratosUI';
+import { KratosUIContext } from '../KratosUI';
 
 interface KratosTermsLabelProps {}
 
