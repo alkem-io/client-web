@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
+import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
 import { useKratosClient } from '../../hooks/useKratosClient';
 
@@ -17,12 +18,22 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   useEffect(() => {
     if (flow && kratos) {
-      kratos.getSelfServiceVerificationFlow(flow).then(({ status, data: flow, ..._response }) => {
-        if (status !== 200) {
-          console.error(flow);
-        }
-        setVerificationFlow(flow);
-      });
+      kratos
+        .getSelfServiceVerificationFlow(flow)
+        .then(({ status, data: flow, ..._response }) => {
+          if (status !== 200) {
+            console.error(flow);
+          }
+          setVerificationFlow(flow);
+        })
+        .catch(err => {
+          const response = err && err.response;
+          if (response) {
+            if (response.status === 410) {
+              window.location.replace(response.data.error.details.redirect_to);
+            }
+          }
+        });
     }
   }, [flow]);
 
@@ -30,6 +41,8 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     window.location.replace('/self-service/verification/browser');
     return null;
   }
+
+  if (!verificationFlow) return <Loading text={'Loading flow'} />;
 
   return (
     <Container fluid={'sm'}>
