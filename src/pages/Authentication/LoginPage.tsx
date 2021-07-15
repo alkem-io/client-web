@@ -30,14 +30,19 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     if (flow && kratos) {
       kratos
         .getSelfServiceLoginFlow(flow)
-        .then(({ status, data: flow, ..._response }) => {
+        .then(({ status, data: flow }) => {
           if (status !== 200) {
             console.error(flow);
           }
           setLoginFlow(flow);
         })
-        .catch(e => {
-          console.error(e);
+        .catch(err => {
+          const response = err && err.response;
+          if (response) {
+            if (response.status === 410) {
+              window.location.replace(response.data.error.details.redirect_to);
+            }
+          }
         });
     }
   }, [flow, kratos]);

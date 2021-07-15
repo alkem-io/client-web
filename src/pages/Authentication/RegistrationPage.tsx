@@ -25,23 +25,33 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   useEffect(() => {
     if (flow && kratos) {
-      kratos.getSelfServiceRegistrationFlow(flow).then(({ status, data: flow, ..._response }) => {
-        if (status !== 200) {
-          console.error(flow);
-        }
-        setRegistrationFlow(flow);
-      });
+      kratos
+        .getSelfServiceRegistrationFlow(flow)
+        .then(({ status, data: flow, ..._response }) => {
+          if (status !== 200) {
+            console.error(flow);
+          }
+          setRegistrationFlow(flow);
+        })
+        .catch(err => {
+          const response = err && err.response;
+          if (response) {
+            if (response.status === 410) {
+              window.location.replace(response.data.error.details.redirect_to);
+            }
+          }
+        });
     }
   }, [flow]);
 
-  const { data } = usePlatformConfigurationQuery();
+  const { data, loading } = usePlatformConfigurationQuery();
   const platform = data?.configuration.platform;
 
   if (!flow) {
     window.location.replace('/self-service/registration/browser');
   }
 
-  if (!registrationFlow) return <Loading text={'Loading flow'} />;
+  if (!registrationFlow || loading) return <Loading text={'Loading flow'} />;
 
   return (
     <AuthenticationLayout>
