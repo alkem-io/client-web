@@ -151,6 +151,19 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
+export const OrganisationDetailsFragmentDoc = gql`
+  fragment OrganisationDetails on Organisation {
+    id
+    displayName
+    profile {
+      id
+      avatar
+      tagsets {
+        tags
+      }
+    }
+  }
+`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organisation {
     id
@@ -3107,6 +3120,74 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeGroupsQuery(variables?: SchemaTypes.ChallengeGroupsQueryVariables) {
   return { query: ChallengeGroupsDocument, variables: variables };
+}
+export const ChallengeLeadOrganisationsDocument = gql`
+  query challengeLeadOrganisations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeID) {
+        id
+        leadOrganisations {
+          ...OrganisationDetails
+        }
+      }
+    }
+    organisations {
+      ...OrganisationDetails
+    }
+  }
+  ${OrganisationDetailsFragmentDoc}
+`;
+
+/**
+ * __useChallengeLeadOrganisationsQuery__
+ *
+ * To run a query within a React component, call `useChallengeLeadOrganisationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeLeadOrganisationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeLeadOrganisationsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useChallengeLeadOrganisationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeLeadOrganisationsQuery,
+    SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+  >
+) {
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeLeadOrganisationsQuery,
+    SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+  >(ChallengeLeadOrganisationsDocument, baseOptions);
+}
+export function useChallengeLeadOrganisationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeLeadOrganisationsQuery,
+    SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeLeadOrganisationsQuery,
+    SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+  >(ChallengeLeadOrganisationsDocument, baseOptions);
+}
+export type ChallengeLeadOrganisationsQueryHookResult = ReturnType<typeof useChallengeLeadOrganisationsQuery>;
+export type ChallengeLeadOrganisationsLazyQueryHookResult = ReturnType<typeof useChallengeLeadOrganisationsLazyQuery>;
+export type ChallengeLeadOrganisationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeLeadOrganisationsQuery,
+  SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+>;
+export function refetchChallengeLeadOrganisationsQuery(
+  variables?: SchemaTypes.ChallengeLeadOrganisationsQueryVariables
+) {
+  return { query: ChallengeLeadOrganisationsDocument, variables: variables };
 }
 export const ChallengeLifecycleDocument = gql`
   query challengeLifecycle($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {

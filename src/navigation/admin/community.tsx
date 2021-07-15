@@ -7,6 +7,7 @@ import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Co
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { FourOuFour } from '../../pages';
 import { EcoverseGroupRoute } from './EcoverseGroupRoute';
+import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
 import { EcoverseApplicationRoute } from './EcoverseApplicationRoute';
 import { ChallengeApplicationRoute } from './ChallengeApplicationRoute';
 
@@ -45,6 +46,12 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       <Route path={`${path}/applications`}>
         {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
         {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
+      </Route>
+      <Route path={`${path}/lead`}>
+        <LeadingOrganisationPage paths={paths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
       </Route>
     </Switch>
   );

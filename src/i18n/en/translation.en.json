@@ -29,9 +29,17 @@
     "sign-up": "Sign up",
     "sign-out": "Sign out",
     "log-out": "Log out",
-    "log-in": "Log in"
+    "log-in": "Log in",
+    "validation": {
+      "fill-fields": "Please fill required fields!"
+    }
   },
   "common": {
+    "avatar": "Avatar",
+    "name": "Name",
+    "tags": "Tags",
+    "add": "Add",
+    "remove": "Remove",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

@@ -1,0 +1,14 @@
+query challengeLeadOrganisations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeID) {
+      id
+      leadOrganisations {
+        ...OrganisationDetails
+      }
+    }
+  }
+  organisations {
+    ...OrganisationDetails
+  }
+}
