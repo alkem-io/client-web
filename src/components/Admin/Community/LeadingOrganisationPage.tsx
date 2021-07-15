@@ -170,6 +170,7 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
       field: 'avatarSrc',
       headerName: t('common.avatar'),
       width: 130,
+      filterable: false,
       renderCell: params => <Avatar src={params.value as string} />,
     },
     { field: 'name', headerName: 'Name', flex: 1 },
@@ -181,6 +182,7 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
     {
       field: 'id',
       width: 140,
+      filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
         <Button variant="outline-danger" size="sm" onClick={() => onRemove(params.value as string)}>
@@ -196,6 +198,7 @@ const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
     {
       field: 'id',
       width: 110,
+      filterable: false,
       headerName: t('common.add'),
       renderCell: params => (
         <Button variant="outline-info" size="sm" onClick={() => onAdd(params.value as string)}>
@@ -205,6 +208,7 @@ const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
     },
     {
       field: 'avatarSrc',
+      filterable: false,
       headerName: t('common.avatar'),
       width: 130,
       renderCell: params => <Avatar src={params.value as string} />,
