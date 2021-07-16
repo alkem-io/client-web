@@ -32,6 +32,7 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
     }
@@ -471,6 +472,10 @@
     },
     "user-profile": {
       "email-not-verified": " Please verify your <l>email</l>."
+    },
+    "authentication-required": {
+      "header": "The page you are trying to reach requires you to be logged in.",
+      "subheader": "Please sign-in or register to continue!"
     }
   }
 }
