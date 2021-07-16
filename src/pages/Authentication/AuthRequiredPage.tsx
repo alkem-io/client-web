@@ -37,7 +37,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
           {t('authentication.sign-in')}
         </Button>
         <Button as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }}>
-          {t('authentication.register')}
+          {t('authentication.sign-up')}
         </Button>
       </div>
     </AuthenticationLayout>
