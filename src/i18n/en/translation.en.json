@@ -16,6 +16,8 @@
   "buttons": {
     "learn-more": "Learn more",
     "apply": "Apply",
+    "apply-not-signed": "Sign in to apply",
+    "apply-pending": "Application pending",
     "explore": "Explore",
     "create": "Create",
     "save": "Save",
