@@ -1,12 +1,15 @@
+import { TextField } from '@material-ui/core';
 import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
-import React, { FC, useEffect, useState } from 'react';
+import { Formik } from 'formik';
+import React, { FC } from 'react';
+import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import * as yup from 'yup';
 import Button from '../../components/core/Button';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import TextInput, { TextArea } from '../../components/core/TextInput';
 import { ContentCard } from '../../components/Project/Cards';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { createStyles } from '../../hooks/useTheme';
@@ -32,17 +35,6 @@ interface ProjectPageProps extends PageProps {
   onCreate: (project: Pick<ProjectType, 'displayName' | 'description' | 'nameID'>) => void;
 }
 
-const textIdValidator = (value: string) => {
-  if (!value) return false;
-
-  const parts = value.split(' ').flatMap(x => x.split('-'));
-
-  if (parts.length > 2 || parts.length === 0) return false;
-  if (parts.some(x => /\s/.test(x))) return false;
-
-  return true;
-};
-
 const createTextId = (value: string) => {
   return value
     .split(' ')
@@ -51,19 +43,22 @@ const createTextId = (value: string) => {
 };
 
 const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.ReactElement => {
+  useUpdateNavigation({ currentPaths: paths });
+
   const { t } = useTranslation();
   const styles = useStyles();
   const history = useHistory();
 
-  useUpdateNavigation({ currentPaths: paths });
-  const [name, setName] = useState('New project');
-  const [shortName, setShortName] = useState('');
-  const [description, setDescription] = useState('');
-  const [formValid, setFormValid] = useState(false);
-
-  useEffect(() => {
-    setFormValid(textIdValidator(shortName));
-  }, [shortName, setFormValid]);
+  const initialValues = {
+    name: 'New project',
+    shortName: '',
+    description: '',
+  };
+  const validationSchema = yup.object().shape({
+    name: yup.string().required(t('forms.validations.required')),
+    shortName: yup.string().required(t('forms.validations.required')).min(3),
+    description: yup.string().required(t('forms.validations.required')),
+  });
 
   return (
     <>
@@ -72,41 +67,70 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
         <SubHeader text={t('pages.opportunity.sections.projects.new-project.subheader')} />
         <Body text={t('pages.opportunity.sections.projects.new-project.body')}></Body>
         <ContentCard title="Project name & description">
-          <TextInput label="project name" value={name} error={!name} onChange={e => setName(e.target.value)} />
-          <div className={styles.spacer}></div>
-          <TextInput
-            label="project short name (max 2 words)"
-            value={shortName}
-            error={!formValid}
-            disabled={loading}
-            onChange={e => setShortName(e.target.value)}
-          />
-
-          <div className={styles.spacer}></div>
-          <TextArea
-            label="project description"
-            value={description}
-            error={!description}
-            disabled={loading}
-            onChange={e => setDescription(e.target.value)}
-          />
-          <div className={styles.spacer}></div>
-          <div className={'d-flex'}>
-            <Button
-              disabled={loading}
-              text="Cancel project"
-              variant="transparent"
-              inset
-              onClick={() => history.goBack()}
-            />
-            <div className={'flex-grow-1'}></div>
-            <Button
-              text="create project"
-              variant="primary"
-              disabled={!name || !description || !formValid || loading}
-              onClick={() => onCreate({ displayName: name, description, nameID: createTextId(shortName) })}
-            />
-          </div>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={({ name, description, shortName }) =>
+              onCreate({ displayName: name, description, nameID: createTextId(shortName) })
+            }
+          >
+            {({ isValid, handleSubmit, handleChange, handleBlur, errors }) => (
+              <Form noValidate onSubmit={handleSubmit}>
+                <div>
+                  <TextField
+                    name={'name'}
+                    label={'Name'}
+                    defaultValue={'New Project'}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant={'outlined'}
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.name}
+                    helperText={errors.name}
+                    fullWidth
+                  />
+                </div>
+                <div className={styles.spacer}></div>
+                <TextField
+                  name={'shortName'}
+                  label={'Short name (max 2 words)'}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  variant={'outlined'}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errors.shortName}
+                  helperText={errors.shortName}
+                  fullWidth
+                />
+                <div className={styles.spacer}></div>
+                <TextField
+                  name={'description'}
+                  label={'Description'}
+                  multiline
+                  rows={3}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  variant={'outlined'}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errors.description}
+                  helperText={errors.description}
+                  fullWidth
+                />
+                <div className={styles.spacer}></div>
+                <div className={'d-flex'}>
+                  <Button
+                    disabled={loading}
+                    text="Cancel project"
+                    variant="transparent"
+                    inset
+                    onClick={() => history.goBack()}
+                  />
+                  <div className={'flex-grow-1'}></div>
+                  <Button type={'submit'} text="create project" variant="primary" disabled={!isValid} />
+                </div>
+              </Form>
+            )}
+          </Formik>
         </ContentCard>
       </Section>
       <Divider />
