@@ -15,6 +15,7 @@ import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
@@ -147,7 +148,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities, leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
-  const { references, background, tagline, who, visual } = context || {};
+  const { references, background = '', tagline, who = '', visual } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
 
@@ -295,7 +296,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
       >
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
-        <Body text={background}>
+        <Body>
+          <Markdown children={background} />
           <div className={styles.buttonsWrapper}>
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
             {user?.ofChallenge(challenge?.id) ? (
