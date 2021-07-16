@@ -142,9 +142,9 @@ const WelcomeSection = () => {
             <>
               <Box p={0.5}></Box>
               <div className={clsx(styles.flexGap, styles.flexAlignCenter)}>
-                <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} target="_blank" />
+                <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} />
                 OR
-                <Button text={t('authentication.sign-up')} as={'a'} href={AUTH_REGISTER_PATH} target="_blank" />
+                <Button text={t('authentication.sign-up')} as={'a'} href={AUTH_REGISTER_PATH} />
               </div>
             </>
           )}
