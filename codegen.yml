@@ -12,6 +12,7 @@ generates:
       - "typescript-operations"
     config:
       maybeValue: T | undefined
+      preResolveTypes: true
       scalars:
         Upload: File
         TextID: string

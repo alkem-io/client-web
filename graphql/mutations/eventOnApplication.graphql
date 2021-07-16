@@ -1,0 +1,10 @@
+mutation eventOnApplication($input: ApplicationEventInput!) {
+  eventOnApplication(applicationEventData: $input) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
+    }
+  }
+}

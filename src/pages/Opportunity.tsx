@@ -47,6 +47,7 @@ import { PageProps } from './common';
 import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks/useEcoverse';
 import { SEARCH_PAGE } from '../models/Constants';
+import Markdown from '../components/core/Markdown';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -121,7 +122,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
 
-  const { references, background, tagline, who, impact, vision, aspects = [], visual } = context || {};
+  const { references, background = '', tagline, who = '', impact = '', vision = '', aspects = [], visual } =
+    context || {};
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);
@@ -286,13 +288,17 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
-              <SubHeader text={background} />
+              <Body>
+                <Markdown children={background} />
+              </Body>
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
-              <SubHeader text={vision} />
+              <Body>
+                <Markdown children={vision} />
+              </Body>
             </Section>
           </Col>
         </Row>
@@ -300,13 +306,17 @@ const Opportunity: FC<OpportunityPageProps> = ({
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={t('pages.opportunity.sections.who.header')} />
-              <SubHeader text={who} />
+              <Body>
+                <Markdown children={who} />
+              </Body>
             </Section>
           </Col>
           <Col sm={12} md={6}>
             <Section hideAvatar hideDetails gutters={{ content: true }}>
               <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
-              <SubHeader text={impact} />
+              <Body>
+                <Markdown children={impact} />
+              </Body>
             </Section>
           </Col>
         </Row>

@@ -10,10 +10,14 @@ export const typePolicies = {
     merge: true,
     fields: {
       template: {
-        merge(existing, incoming) {
-          // Better, but not quite correct.
-          return { ...existing, ...incoming };
-        },
+        merge: true,
+      },
+    },
+  },
+  Challenge: {
+    fields: {
+      leadOrganisations: {
+        merge: false,
       },
     },
   },

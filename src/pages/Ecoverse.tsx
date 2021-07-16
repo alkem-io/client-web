@@ -25,12 +25,13 @@ import {
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
+  useUserApplicationsQuery,
 } from '../generated/graphql';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { SEARCH_PAGE } from '../models/Constants';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/Constants';
 import { Context, EcoverseInfoQuery } from '../types/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
@@ -58,7 +59,12 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { displayName: name, context, nameID: ecoverseId } = ecoverse.ecoverse;
+  const { displayName: name, context, nameID: ecoverseId, community } = ecoverse.ecoverse;
+  const communityId = community?.id;
+
+  const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: user?.user?.id || '' } } });
+  const applications = memberShip?.membershipUser?.applications || [];
+  const userApplication = applications.find(x => x.communityID === communityId);
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
 
@@ -155,6 +161,20 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
     [activity]
   );
 
+  const applicationButtonState = useMemo(() => {
+    if (!user) {
+      return <Button text={t('buttons.apply-not-signed')} as={Link} to={AUTH_LOGIN_PATH} />;
+    } else {
+      if (userApplication) {
+        if (userApplication.state === APPLICATION_STATE_NEW || userApplication.state === APPLICATION_STATE_REJECTED) {
+          return <Button text={t('buttons.apply-pending')} disabled />;
+        }
+      } else {
+        return <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />;
+      }
+    }
+  }, [user, userApplication]);
+
   return (
     <>
       <Section
@@ -178,7 +198,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
           <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
-            {user?.ofEcoverse(ecoverseId) ? <></> : <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />}
+            {applicationButtonState}
           </div>
         </Body>
       </Section>
