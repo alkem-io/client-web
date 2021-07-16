@@ -1,0 +1,9 @@
+query userApplications($input: MembershipUserInput!) {
+  membershipUser(membershipData: $input) {
+    applications {
+      id
+      state
+      communityID
+    }
+  }
+}
