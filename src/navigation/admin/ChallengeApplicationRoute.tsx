@@ -1,34 +1,24 @@
 import React, { FC } from 'react';
 import { PageProps } from '../../pages';
 import { ApplicationRoute } from './ApplicationRoute';
-import { Application, User } from '../../types/graphql-schema';
 import Loading from '../../components/core/Loading';
+import { useChallengeApplicationsQuery } from '../../generated/graphql';
+import { useParams } from 'react-router';
+
+interface Params {
+  ecoverseId: string;
+  challengeId: string;
+}
 
 interface Props extends PageProps {}
 
 export const ChallengeApplicationRoute: FC<Props> = ({ paths }) => {
-  const data = [
-    {
-      id: '1',
-      user: { displayName: 'Chall-user' } as User,
-      lifecycle: { id: '1', machineDef: '' },
-      questions: [
-        { id: '1', name: 'Is this ecoverse', value: 'No' },
-        { id: '2', name: 'Is this challenge', value: 'Yes' },
-      ],
-    },
-    {
-      id: '2',
-      user: { displayName: 'Chall-user2' } as User,
-      lifecycle: { id: '1', machineDef: '' },
-      questions: [
-        { id: '1', name: 'Is this ecoverse2', value: 'No2' },
-        { id: '2', name: 'Is this challenge2', value: 'Yes2' },
-      ],
-    },
-  ] as Application[]; // get applications by ecoverseId & challengeId
-  const applications = data;
-  const loading = false;
+  const { ecoverseId, challengeId } = useParams<Params>();
+  const { data, loading } = useChallengeApplicationsQuery({
+    variables: { ecoverseId: ecoverseId, challengeId: challengeId },
+  });
+
+  const applications = data?.ecoverse?.challenge?.community?.applications || [];
 
   if (loading) {
     return <Loading />;

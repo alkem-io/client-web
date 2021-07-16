@@ -4,21 +4,7 @@ query ecoverseApplications($ecoverseId: UUID_NAMEID!) {
     community {
       id
       applications {
-        id
-        lifecycle {
-          id
-          state
-          nextEvents
-        }
-        user {
-          id
-          displayName
-        }
-        questions {
-          id
-          name
-          value
-        }
+        ...ApplicationInfo
       }
     }
   }

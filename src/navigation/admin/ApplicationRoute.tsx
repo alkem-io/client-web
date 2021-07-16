@@ -3,16 +3,16 @@ import { Route, Switch, useRouteMatch } from 'react-router';
 import { FourOuFour } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
-import { Application } from '../../types/graphql-schema';
+import { ApplicationInfoFragment } from '../../types/graphql-schema';
 import ApplicationDetailsPage from '../../components/Admin/Community/ApplicationDetailsPage';
 
 interface Props {
   paths: Path[];
-  applications: Application[];
+  applications: ApplicationInfoFragment[];
 }
 
 export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
-  const { path, url } = useRouteMatch();
+  const { path } = useRouteMatch();
 
   return (
     <Switch>
@@ -20,7 +20,7 @@ export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
         <ApplicationDetailsPage />
       </Route>
       <Route path={path}>
-        <ApplicationPage paths={paths} url={url} applications={applications} />
+        <ApplicationPage paths={paths} applications={applications} />
       </Route>
       <Route path="*">
         <FourOuFour />

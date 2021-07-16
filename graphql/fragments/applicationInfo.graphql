@@ -1,0 +1,22 @@
+fragment ApplicationInfo on Application {
+  id
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    id
+    displayName
+    email
+    profile {
+      id
+      avatar
+    }
+  }
+  questions {
+    id
+    name
+    value
+  }
+}

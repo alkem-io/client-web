@@ -1718,6 +1718,14 @@ export type Visual = {
   id: Scalars['UUID'];
 };
 
+export type ApplicationInfoFragment = { __typename?: 'Application' } & Pick<Application, 'id'> & {
+    lifecycle: { __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'state' | 'nextEvents'>;
+    user: { __typename?: 'User' } & Pick<User, 'id' | 'displayName' | 'email'> & {
+        profile?: Maybe<{ __typename?: 'Profile' } & Pick<Profile, 'id' | 'avatar'>>;
+      };
+    questions: Array<{ __typename?: 'Question' } & Pick<Question, 'id' | 'name' | 'value'>>;
+  };
+
 export type CommunityDetailsFragment = { __typename?: 'Community' } & Pick<Community, 'id' | 'displayName'> & {
     applications: Array<{ __typename?: 'Application' } & Pick<Application, 'id'>>;
     members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
@@ -2101,6 +2109,16 @@ export type DeleteUserMutation = { __typename?: 'Mutation' } & {
   deleteUser: { __typename?: 'User' } & Pick<User, 'id'>;
 };
 
+export type EventOnApplicationMutationVariables = Exact<{
+  input: ApplicationEventInput;
+}>;
+
+export type EventOnApplicationMutation = { __typename?: 'Mutation' } & {
+  eventOnApplication: { __typename?: 'Application' } & Pick<Application, 'id'> & {
+      lifecycle: { __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'nextEvents' | 'state'>;
+    };
+};
+
 export type GrantCredentialsMutationVariables = Exact<{
   input: GrantAuthorizationCredentialInput;
 }>;
@@ -2251,13 +2269,7 @@ export type ChallengeApplicationsQuery = { __typename?: 'Query' } & {
       challenge: { __typename?: 'Challenge' } & Pick<Challenge, 'id'> & {
           community?: Maybe<
             { __typename?: 'Community' } & Pick<Community, 'id'> & {
-                applications: Array<
-                  { __typename?: 'Application' } & Pick<Application, 'id'> & {
-                      lifecycle: { __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'state' | 'nextEvents'>;
-                      user: { __typename?: 'User' } & Pick<User, 'id' | 'displayName'>;
-                      questions: Array<{ __typename?: 'Question' } & Pick<Question, 'id' | 'name' | 'value'>>;
-                    }
-                >;
+                applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
               }
           >;
         };
@@ -2283,13 +2295,7 @@ export type EcoverseApplicationsQuery = { __typename?: 'Query' } & {
   ecoverse: { __typename?: 'Ecoverse' } & Pick<Ecoverse, 'id'> & {
       community?: Maybe<
         { __typename?: 'Community' } & Pick<Community, 'id'> & {
-            applications: Array<
-              { __typename?: 'Application' } & Pick<Application, 'id'> & {
-                  lifecycle: { __typename?: 'Lifecycle' } & Pick<Lifecycle, 'id' | 'state' | 'nextEvents'>;
-                  user: { __typename?: 'User' } & Pick<User, 'id' | 'displayName'>;
-                  questions: Array<{ __typename?: 'Question' } & Pick<Question, 'id' | 'name' | 'value'>>;
-                }
-            >;
+            applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
           }
       >;
     };

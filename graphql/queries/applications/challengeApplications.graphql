@@ -6,21 +6,7 @@ query challengeApplications($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID
       community {
         id
         applications {
-          id
-          lifecycle {
-            id
-            state
-            nextEvents
-          }
-          user {
-            id
-            displayName
-          }
-          questions {
-            id
-            name
-            value
-          }
+          ...ApplicationInfo
         }
       }
     }

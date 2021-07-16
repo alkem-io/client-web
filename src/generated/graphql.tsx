@@ -2,6 +2,30 @@ import * as SchemaTypes from '../types/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+export const ApplicationInfoFragmentDoc = gql`
+  fragment ApplicationInfo on Application {
+    id
+    lifecycle {
+      id
+      state
+      nextEvents
+    }
+    user {
+      id
+      displayName
+      email
+      profile {
+        id
+        avatar
+      }
+    }
+    questions {
+      id
+      name
+      value
+    }
+  }
+`;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -1636,6 +1660,57 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
+export const EventOnApplicationDocument = gql`
+  mutation eventOnApplication($input: ApplicationEventInput!) {
+    eventOnApplication(applicationEventData: $input) {
+      id
+      lifecycle {
+        id
+        nextEvents
+        state
+      }
+    }
+  }
+`;
+export type EventOnApplicationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.EventOnApplicationMutation,
+  SchemaTypes.EventOnApplicationMutationVariables
+>;
+
+/**
+ * __useEventOnApplicationMutation__
+ *
+ * To run a mutation, you first call `useEventOnApplicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEventOnApplicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [eventOnApplicationMutation, { data, loading, error }] = useEventOnApplicationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEventOnApplicationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.EventOnApplicationMutation,
+    SchemaTypes.EventOnApplicationMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.EventOnApplicationMutation, SchemaTypes.EventOnApplicationMutationVariables>(
+    EventOnApplicationDocument,
+    baseOptions
+  );
+}
+export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
+export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
+export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.EventOnApplicationMutation,
+  SchemaTypes.EventOnApplicationMutationVariables
+>;
 export const GrantCredentialsDocument = gql`
   mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
     grantCredentialToUser(grantCredentialData: $input) {
@@ -2392,26 +2467,13 @@ export const ChallengeApplicationsDocument = gql`
         community {
           id
           applications {
-            id
-            lifecycle {
-              id
-              state
-              nextEvents
-            }
-            user {
-              id
-              displayName
-            }
-            questions {
-              id
-              name
-              value
-            }
+            ...ApplicationInfo
           }
         }
       }
     }
   }
+  ${ApplicationInfoFragmentDoc}
 `;
 
 /**
@@ -2533,25 +2595,12 @@ export const EcoverseApplicationsDocument = gql`
       community {
         id
         applications {
-          id
-          lifecycle {
-            id
-            state
-            nextEvents
-          }
-          user {
-            id
-            displayName
-          }
-          questions {
-            id
-            name
-            value
-          }
+          ...ApplicationInfo
         }
       }
     }
   }
+  ${ApplicationInfoFragmentDoc}
 `;
 
 /**
