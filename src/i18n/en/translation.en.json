@@ -474,7 +474,7 @@
       "email-not-verified": " Please verify your <l>email</l>."
     },
     "authentication-required": {
-      "header": "You are trying to reach protected resource!",
+      "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
     }
   }
