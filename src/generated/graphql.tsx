@@ -6732,6 +6732,62 @@ export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTy
 export function refetchUserQuery(variables?: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
+export const UserApplicationsDocument = gql`
+  query userApplications($input: MembershipUserInput!) {
+    membershipUser(membershipData: $input) {
+      applications {
+        id
+        state
+        communityID
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserApplicationsQuery__
+ *
+ * To run a query within a React component, call `useUserApplicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserApplicationsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUserApplicationsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>(
+    UserApplicationsDocument,
+    baseOptions
+  );
+}
+export function useUserApplicationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserApplicationsQuery,
+    SchemaTypes.UserApplicationsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>(
+    UserApplicationsDocument,
+    baseOptions
+  );
+}
+export type UserApplicationsQueryHookResult = ReturnType<typeof useUserApplicationsQuery>;
+export type UserApplicationsLazyQueryHookResult = ReturnType<typeof useUserApplicationsLazyQuery>;
+export type UserApplicationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserApplicationsQuery,
+  SchemaTypes.UserApplicationsQueryVariables
+>;
+export function refetchUserApplicationsQuery(variables?: SchemaTypes.UserApplicationsQueryVariables) {
+  return { query: UserApplicationsDocument, variables: variables };
+}
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
