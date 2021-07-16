@@ -369,7 +369,7 @@ export type CreateChallengeInput = {
 };
 
 export type CreateContextInput = {
-  background?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['Markdown']>;
   impact?: Maybe<Scalars['Markdown']>;
   /** Set of References for the new Context. */
   references?: Maybe<Array<CreateReferenceInput>>;
@@ -377,7 +377,7 @@ export type CreateContextInput = {
   vision?: Maybe<Scalars['Markdown']>;
   /** The Visual assets for the new Context. */
   visual?: Maybe<CreateVisualInput>;
-  who?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['Markdown']>;
 };
 
 export type CreateEcoverseInput = {
@@ -772,6 +772,8 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Reset the AuthorizationDefinition on the specified Ecoverse. */
   authorizationDefinitionResetOnEcoverse: Ecoverse;
+  /** Reset the AuthorizationDefinition on the specified User. */
+  authorizationDefinitionResetOnUser: User;
   /** Authorizes a User to be able to modify the state on the specified Challenge. */
   authorizeStateModificationOnChallenge: User;
   /** Creates a new Actor in the specified ActorGroup. */
@@ -892,6 +894,10 @@ export type MutationAssignUserToGroupArgs = {
 
 export type MutationAuthorizationDefinitionResetOnEcoverseArgs = {
   authorizationResetData: EcoverseAuthorizationResetInput;
+};
+
+export type MutationAuthorizationDefinitionResetOnUserArgs = {
+  authorizationResetData: UserAuthorizationResetInput;
 };
 
 export type MutationAuthorizeStateModificationOnChallengeArgs = {
@@ -1498,7 +1504,7 @@ export type UpdateChallengeInput = {
 };
 
 export type UpdateContextInput = {
-  background?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['Markdown']>;
   impact?: Maybe<Scalars['Markdown']>;
   /** Update the set of References for the Context. */
   references?: Maybe<Array<UpdateReferenceInput>>;
@@ -1506,7 +1512,7 @@ export type UpdateContextInput = {
   vision?: Maybe<Scalars['Markdown']>;
   /** Update the Visual assets for the new Context. */
   visual?: Maybe<UpdateVisualInput>;
-  who?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['Markdown']>;
 };
 
 export type UpdateEcoverseInput = {
@@ -1648,6 +1654,11 @@ export type UserAuthorizationPrivilegesInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type UserAuthorizationResetInput = {
+  /** The identifier of the User whose AuthorizationDefinition should be reset. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type UserGroup = Searchable & {
   __typename?: 'UserGroup';
   /** The authorization rules for the entity */
@@ -1716,6 +1727,20 @@ export type Visual = {
   banner: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+};
+
+export type ApplicationInfoFragment = {
+  __typename?: 'Application';
+  id: string;
+  lifecycle: { __typename?: 'Lifecycle'; id: string; state?: Maybe<string>; nextEvents?: Maybe<Array<string>> };
+  user: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    email: string;
+    profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
+  };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
 };
 
 export type CommunityDetailsFragment = {
@@ -2171,6 +2196,19 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
+export type EventOnApplicationMutationVariables = Exact<{
+  input: ApplicationEventInput;
+}>;
+
+export type EventOnApplicationMutation = {
+  __typename?: 'Mutation';
+  eventOnApplication: {
+    __typename?: 'Application';
+    id: string;
+    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>>; state?: Maybe<string> };
+  };
+};
+
 export type GrantCredentialsMutationVariables = Exact<{
   input: GrantAuthorizationCredentialInput;
 }>;
@@ -2340,6 +2378,28 @@ export type ChallengeApplicationQuery = {
   };
 };
 
+export type ChallengeApplicationsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeApplicationsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?: Maybe<{
+        __typename?: 'Community';
+        id: string;
+        applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+      }>;
+    };
+  };
+};
+
 export type EcoverseApplicationQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -2352,6 +2412,23 @@ export type EcoverseApplicationQuery = {
     displayName: string;
     context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  };
+};
+
+export type EcoverseApplicationsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseApplicationsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+    }>;
   };
 };
 

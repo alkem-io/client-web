@@ -39,9 +39,12 @@
   "common": {
     "avatar": "Avatar",
     "name": "Name",
+    "username": "Username",
     "tags": "Tags",
     "add": "Add",
     "remove": "Remove",
+    "email": "Email",
+    "state": "State",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
