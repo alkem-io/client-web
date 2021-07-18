@@ -3,7 +3,6 @@ import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks/useUserContext';
-import { LOCAL_STORAGE_RETURN_URL_KEY } from '../models/Constants';
 import { AuthorizationCredential } from '../types/graphql-schema';
 
 interface RestrictedRoutePros extends RouteProps {
@@ -20,8 +19,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   }
 
   if (!isAuthenticated) {
-    localStorage.setItem(LOCAL_STORAGE_RETURN_URL_KEY, window.location.pathname);
-    return <Redirect to={`/auth/login?redirect=${encodeURI(pathname)}`} />;
+    return <Redirect to={`/auth/required?returnUrl=${encodeURI(pathname)}`} />;
   }
 
   if (requiredCredentials.every(x => !user || !user.hasCredentials(x)) && requiredCredentials.length !== 0) {
