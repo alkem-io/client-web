@@ -3,9 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
-  useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
-  useDeleteReferenceMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
@@ -32,8 +30,6 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     paths,
   ]);
   const notify = useNotification();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
   const [createTagset] = useCreateTagsetOnProfileMutation();
   const history = useHistory();
   const { url } = useRouteMatch();
@@ -86,31 +82,8 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
     if (mode === EditMode.edit) {
       const profileId = organization?.profile?.id;
-      const initialReferences = organization?.profile?.references || [];
       const references = editedOrganization.profile.references || [];
-      const refToRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-      const refToAdd = references.filter(x => !x.id);
-      const refToUpdate = references.filter(x => x.id);
       const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
-
-      for (const ref of refToRemove) {
-        await deleteReference({ variables: { input: { ID: ref.id } } });
-      }
-
-      if (profileId) {
-        for (const ref of refToAdd) {
-          await createReference({
-            variables: {
-              input: {
-                profileID: profileId,
-                name: ref.name,
-                description: ref.description,
-                uri: ref.uri,
-              },
-            },
-          });
-        }
-      }
 
       for (const tagset of tagsetsToAdd) {
         await createTagset({
@@ -131,7 +104,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
-          references: refToUpdate.map(x => ({
+          references: references.map(x => ({
             ID: x.id,
             description: x.description,
             name: x.name,
