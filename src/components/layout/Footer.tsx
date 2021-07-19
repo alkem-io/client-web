@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
+import Image from '../core/Image';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
@@ -62,11 +64,11 @@ const Footer: FC = ({ children }) => {
                 </a>
               </div>
 
-              {/* <div className="d-none d-lg-block mx-xl-1">
-                <Link to={'/about'} href="https://alkem.io/about/">
+              <div className="d-none d-lg-block mx-xl-1">
+                <Link to={'/about'}>
                   <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
                 </Link>
-              </div> */}
+              </div>
 
               <div className={styles.column}>
                 <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
