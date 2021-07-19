@@ -2,26 +2,27 @@ import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { Container } from 'react-bootstrap';
 import { Path } from '../../context/NavigationProvider';
-import Typography from '../core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
-import Button from '../core/Button';
-import Loading from '../core/Loading';
+import {
+  refetchOpportunitiesQuery,
+  refetchOpportunityProfileInfoQuery,
+  useCreateOpportunityMutation,
+  useOpportunityProfileInfoQuery,
+  useUpdateOpportunityMutation,
+} from '../../generated/graphql';
 import { useNotification } from '../../hooks/useNotification';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
-import {
-  refetchChallengeProfileInfoQuery,
-  refetchChallengesWithCommunityQuery,
-  useChallengeProfileInfoQuery,
-  useCreateChallengeMutation,
-  useUpdateChallengeMutation,
-} from '../../generated/graphql';
+import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import { CreateContextInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
+import Typography from '../core/Typography';
+import Button from '../core/Button';
+import Loading from '../core/Loading';
 import FormMode from './FormMode';
 
 interface Params {
-  challengeId?: string;
   ecoverseId?: string;
+  challengeId?: string;
+  opportunityId?: string;
 }
 
 interface Props {
@@ -30,39 +31,43 @@ interface Props {
   title: string;
 }
 
-const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
+const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId: challengeNameId = '', ecoverseId = '' } = useParams<Params>();
+  const {
+    ecoverseId = '',
+    opportunityId: opportunityNameId = '',
+    challengeId: challengeNameId = '',
+  } = useParams<Params>();
 
-  const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
+  const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],
+    awaitRefetchQueries: true,
     onCompleted: () => onSuccess('Successfully created'),
     onError: handleError,
-    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
-    awaitRefetchQueries: true,
   });
-
-  const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
+  const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
-  const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+  const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
+    variables: { ecoverseId: ecoverseId, opportunityId: opportunityNameId },
     skip: mode === FormMode.create,
   });
-  const challenge = challengeProfile?.ecoverse?.challenge;
-  const challengeId = useMemo(() => challenge?.id || '', [challenge]);
+
+  const opportunity = opportunityProfile?.ecoverse?.opportunity;
+  const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
 
   const isLoading = isCreating || isUpdating;
 
-  const currentPaths = useMemo(() => [...paths, { name: challenge?.displayName || 'new', real: false }], [
+  const currentPaths = useMemo(() => [...paths, { name: opportunity?.displayName || 'new', real: false }], [
     paths,
-    challenge,
+    opportunity,
   ]);
   useUpdateNavigation({ currentPaths });
 
@@ -97,26 +102,26 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
 
     switch (mode) {
       case FormMode.create:
-        createChallenge({
+        createOpportunity({
           variables: {
             input: {
               nameID: nameID,
-              displayName: name,
-              parentID: ecoverseId,
               context: createContext,
+              displayName: name,
+              challengeID: challengeNameId,
               tags: tagsets.map(x => x.tags.join()),
             },
           },
         });
         break;
       case FormMode.update:
-        updateChallenge({
+        updateOpportunity({
           variables: {
             input: {
-              ID: challengeId,
               nameID: nameID,
-              displayName: name,
               context: updateContext,
+              displayName: name,
+              ID: opportunityId,
               tags: tagsets.map(x => x.tags.join()),
             },
           },
@@ -135,10 +140,10 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
       </Typography>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={challenge?.displayName}
-        nameID={challenge?.nameID}
-        tagset={challenge?.tagset}
-        context={challenge?.context}
+        name={opportunity?.displayName}
+        nameID={opportunity?.nameID}
+        tagset={opportunity?.tagset}
+        context={opportunity?.context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -150,4 +155,4 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
     </Container>
   );
 };
-export default EditChallenge;
+export default EditOpportunity;

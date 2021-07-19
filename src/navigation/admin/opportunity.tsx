@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import Loading from '../../components/core/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
@@ -11,6 +10,8 @@ import OpportunityList from '../../pages/Admin/Opportunity/OpportunityList';
 import { AuthorizationCredential } from '../../types/graphql-schema';
 import { AdminParameters } from './admin';
 import { CommunityRoute } from './community';
+import EditOpportunity from '../../components/Admin/EditOpportunity';
+import FormMode from '../../components/Admin/FormMode';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -23,7 +24,7 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunityList paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <OppChallPage title={'Create opportunity'} mode={ProfileSubmitMode.createOpportunity} paths={currentPaths} />
+        <EditOpportunity title={'Create opportunity'} mode={FormMode.create} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
@@ -63,7 +64,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <OppChallPage title={'Edit opportunity'} mode={ProfileSubmitMode.updateOpportunity} paths={currentPaths} />
+        <EditOpportunity title={'Edit opportunity'} mode={FormMode.update} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute
