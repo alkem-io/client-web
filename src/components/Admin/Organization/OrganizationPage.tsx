@@ -88,16 +88,17 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       const profileId = organization?.profile?.id;
       const initialReferences = organization?.profile?.references || [];
       const references = editedOrganization.profile.references || [];
-      const toRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
-      const toAdd = references.filter(x => !x.id);
+      const refToRemove = initialReferences.filter(x => x.id && !references.some(r => r.id && r.id === x.id));
+      const refToAdd = references.filter(x => !x.id);
+      const refToUpdate = references.filter(x => x.id);
       const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
 
-      for (const ref of toRemove) {
+      for (const ref of refToRemove) {
         await deleteReference({ variables: { input: { ID: ref.id } } });
       }
 
       if (profileId) {
-        for (const ref of toAdd) {
+        for (const ref of refToAdd) {
           await createReference({
             variables: {
               input: {
@@ -130,6 +131,12 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
           ID: profileId || '',
           avatar: profile.avatar,
           description: profile.description || '',
+          references: refToUpdate.map(x => ({
+            ID: x.id,
+            description: x.description,
+            name: x.name,
+            uri: x.uri,
+          })),
           tagsets: profile?.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })) || [],
         },
       };
