@@ -2,13 +2,14 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
 import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
 import { AuthorizationCredential } from '../../types/graphql-schema';
+import EditChallenge from '../../components/Admin/EditChallenge';
+import FormMode from '../../components/Admin/FormMode';
 import { AdminParameters } from './admin';
 import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
@@ -25,10 +26,10 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ChallengeList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
-        <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
+        <EditChallenge mode={FormMode.create} paths={currentPaths} title="New challenge" />
       </Route>
       <Route exact path={`${path}/:challengeId/edit`}>
-        <OppChallPage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
+        <EditChallenge mode={FormMode.update} paths={currentPaths} title="Edit challenge" />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
