@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
@@ -43,10 +43,10 @@ const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) =>
     []) as OrganisationDetailsFragment[];
   const organisations = (_leadingOrganisations?.organisations || []) as OrganisationDetailsFragment[];
 
-  const available = useMemo(() => organisations.filter(x => !leadingOrganisations.find(y => y.id === x.id)), [
-    organisations,
-    leadingOrganisations,
-  ]);
+  const available = useMemo(
+    () => organisations.filter(x => !leadingOrganisations.find(y => y.id === x.id)),
+    [organisations, leadingOrganisations]
+  );
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onError: handleError,
