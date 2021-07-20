@@ -1,19 +1,19 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { FourOuFour, PageProps } from '../../pages';
-import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
-import { AuthorizationCredential } from '../../types/graphql-schema';
-import EditChallenge from '../../components/Admin/EditChallenge';
-import FormMode from '../../components/Admin/FormMode';
-import { AdminParameters } from './admin';
-import AuthorizationRoute from './authorization';
-import { CommunityRoute } from './community';
-import { OpportunitiesRoutes } from './opportunity';
+import { managementData } from '../../../components/Admin/managementData';
+import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../generated/graphql';
+import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { FourOuFour, PageProps } from '../../../pages';
+import ChallengeList from '../../../pages/Admin/Challenge/ChallengeList';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
+import EditChallenge from '../../../components/Admin/EditChallenge';
+import FormMode from '../../../components/Admin/FormMode';
+import { AdminParameters } from '../admin';
+import AuthorizationRoute from '../authorization';
+import { CommunityRoute } from '../community';
+import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { useTranslation } from 'react-i18next';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
@@ -32,6 +32,9 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route exact path={`${path}/:challengeId/edit`}>
         <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
+      </Route>
+      <Route exact path={`${path}/:challengeId/lifecycle`}>
+        <>Edit</>
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />

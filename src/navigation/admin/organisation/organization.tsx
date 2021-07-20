@@ -1,19 +1,19 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
-import { ListPage } from '../../components/Admin';
-import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import { CreateOrganizationGroupPage } from '../../components/Admin/Organization/CreateOrganizationGroup';
-import OrganizationList from '../../components/Admin/Organization/OrganizationList';
-import OrganizationPage from '../../components/Admin/Organization/OrganizationPage';
-import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../generated/graphql';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { FourOuFour, PageProps } from '../../pages';
-import { Organisation } from '../../types/graphql-schema';
-import { EditMode } from '../../utils/editMode';
-import { AdminParameters } from './admin';
 import { OrganisationGroupRoute } from './OrganisationGroupRoute';
+import { AdminParameters } from '../admin';
+import { WithParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
+import OrganizationList from '../../../components/Admin/Organization/OrganizationList';
+import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
+import { EditMode } from '../../../utils/editMode';
+import { FourOuFour, PageProps } from '../../../pages';
+import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../generated/graphql';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import { managementData } from '../../../components/Admin/managementData';
+import { Organisation } from '../../../types/graphql-schema';
+import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
+import { ListPage } from '../../../components/Admin';
 
 export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
