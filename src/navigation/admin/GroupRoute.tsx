@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import Loading from '../../components/core/Loading';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import { FourOuFour } from '../../pages';
 import { UserGroup } from '../../types/graphql-schema';
