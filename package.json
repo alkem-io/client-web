@@ -138,5 +138,9 @@
       "<rootDir>/src/generated",
       "<rootDir>/src/sentry"
     ]
+  },
+  "engines": {
+    "node": ">=14",
+    "npm": ">=7"
   }
 }
