@@ -13,11 +13,11 @@ import { useNotification } from '../../hooks/useNotification';
 import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
-import { CreateContextInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import FormMode from './FormMode';
+import { createContextInput, updateContextInput } from '../../utils/buildContext';
 
 interface Params {
   ecoverseId?: string;
@@ -72,33 +72,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, background, impact, tagline, vision, who, references, visual, tagsets } = values;
-
-    const updatedRefs: UpdateReferenceInput[] = references.map<UpdateReferenceInput>(r => ({
-      ID: r.id,
-      description: r.description,
-      name: r.name,
-      uri: r.uri,
-    }));
-
-    const updateContext: UpdateContextInput = {
-      background: background,
-      impact: impact,
-      references: updatedRefs,
-      tagline: tagline,
-      vision: vision,
-      visual: visual,
-      who: who,
-    };
-    const createContext: CreateContextInput = {
-      background: background,
-      impact: impact,
-      references: references,
-      tagline: tagline,
-      vision: vision,
-      visual: visual,
-      who: who,
-    };
+    const { name, nameID, tagsets } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -106,7 +80,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContext,
+              context: createContextInput(values),
               displayName: name,
               challengeID: challengeNameId,
               tags: tagsets.map(x => x.tags.join()),
@@ -119,7 +93,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContext,
+              context: updateContextInput(values),
               displayName: name,
               ID: opportunityId,
               tags: tagsets.map(x => x.tags.join()),

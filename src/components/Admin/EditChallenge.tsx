@@ -16,8 +16,8 @@ import {
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
 } from '../../generated/graphql';
-import { CreateContextInput, UpdateContextInput, UpdateReferenceInput } from '../../types/graphql-schema';
 import FormMode from './FormMode';
+import { createContextInput, updateContextInput } from '../../utils/buildContext';
 
 interface Params {
   challengeId?: string;
@@ -67,33 +67,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, background, impact, tagline, vision, who, references, visual, tagsets } = values;
-
-    const updatedRefs: UpdateReferenceInput[] = references.map<UpdateReferenceInput>(r => ({
-      ID: r.id,
-      description: r.description,
-      name: r.name,
-      uri: r.uri,
-    }));
-
-    const updateContext: UpdateContextInput = {
-      background: background,
-      impact: impact,
-      references: updatedRefs,
-      tagline: tagline,
-      vision: vision,
-      visual: visual,
-      who: who,
-    };
-    const createContext: CreateContextInput = {
-      background: background,
-      impact: impact,
-      references: references,
-      tagline: tagline,
-      vision: vision,
-      visual: visual,
-      who: who,
-    };
+    const { name, nameID, tagsets } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -103,7 +77,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               displayName: name,
               parentID: ecoverseId,
-              context: createContext,
+              context: createContextInput(values),
               tags: tagsets.map(x => x.tags.join()),
             },
           },
@@ -116,7 +90,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
               ID: challengeId,
               nameID: nameID,
               displayName: name,
-              context: updateContext,
+              context: updateContextInput(values),
               tags: tagsets.map(x => x.tags.join()),
             },
           },

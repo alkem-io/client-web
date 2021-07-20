@@ -14,8 +14,10 @@ import { AdminParameters } from './admin';
 import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
 import { OpportunitiesRoutes } from './opportunity';
+import { useTranslation } from 'react-i18next';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
@@ -26,10 +28,10 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ChallengeList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
-        <EditChallenge mode={FormMode.create} paths={currentPaths} title="New challenge" />
+        <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
       <Route exact path={`${path}/:challengeId/edit`}>
-        <EditChallenge mode={FormMode.update} paths={currentPaths} title="Edit challenge" />
+        <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />

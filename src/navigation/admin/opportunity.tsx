@@ -12,8 +12,10 @@ import { AdminParameters } from './admin';
 import { CommunityRoute } from './community';
 import EditOpportunity from '../../components/Admin/EditOpportunity';
 import FormMode from '../../components/Admin/FormMode';
+import { useTranslation } from 'react-i18next';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
@@ -24,7 +26,7 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunityList paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <EditOpportunity title={'Create opportunity'} mode={FormMode.create} paths={currentPaths} />
+        <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:opportunityId`}>
         <OpportunityRoutes paths={currentPaths} />
@@ -37,6 +39,7 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
 };
 
 export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { opportunityId, challengeId } = useParams<AdminParameters>();
   const { ecoverseId } = useEcoverse();
@@ -64,7 +67,7 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <EditOpportunity title={'Edit opportunity'} mode={FormMode.update} paths={currentPaths} />
+        <EditOpportunity title={t('navigation.admin.opportunity.edit')} mode={FormMode.update} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute
