@@ -23,11 +23,11 @@ export const useCredentialsResolver = (): CredentialResolver => {
     // Most common case is inconsistency between the backend and the forntened.
     // check if the `AuthorizationCredential` was updated and add/remove missing items
     // in the translation file.
-    return t(`common.enums.authorization-credentials.${value}.order` as const);
+    return Number(t(`common.enums.authorization-credentials.${value}.order` as const));
   };
 
   const isHidden = (value: AuthorizationCredential) => {
-    return t(`common.enums.authorization-credentials.${value}.hidden` as const);
+    return Boolean(t(`common.enums.authorization-credentials.${value}.hidden` as const));
   };
 
   return { toRoleName, toRoleOrder, isHidden };
