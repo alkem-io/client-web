@@ -9,8 +9,8 @@ import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useEcoverse } from '../../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
-import { UpdateContextInput, UpdateReferenceInput } from '../../../types/graphql-schema';
 import { PageProps } from '../../common';
+import { updateContextInput } from '../../../utils/buildContext';
 
 interface EcoverseEditProps extends PageProps {}
 
@@ -40,41 +40,12 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const {
-      name,
-      host,
-      background,
-      impact,
-      tagline,
-      vision,
-      who,
-      references,
-      visual,
-      tagsets,
-      anonymousReadAccess,
-    } = values;
-
-    const updatedRefs = references.map<UpdateReferenceInput>(r => ({
-      ID: r.id,
-      description: r.description,
-      name: r.name,
-      uri: r.uri,
-    }));
-
-    const contextWithUpdatedRefs: UpdateContextInput = {
-      background: background,
-      impact: impact,
-      references: updatedRefs,
-      tagline: tagline,
-      vision: vision,
-      visual: visual,
-      who: who,
-    };
+    const { name, host, tagsets, anonymousReadAccess } = values;
 
     updateEcoverse({
       variables: {
         input: {
-          context: contextWithUpdatedRefs,
+          context: updateContextInput(values),
           displayName: name,
           ID: ecoverseId,
           hostID: host,
