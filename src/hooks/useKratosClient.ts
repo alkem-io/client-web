@@ -7,6 +7,15 @@ export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryC
   return (pet as OryConfig).__typename === 'OryConfig';
 }
 
+export const handleFlowError = err => {
+  const response = err && err.response;
+  if (response) {
+    if (response.status === 410) {
+      window.location.replace(response.data.error.details.redirect_to);
+    }
+  }
+};
+
 export const useKratosClient = () => {
   const { authentication } = useConfig();
 

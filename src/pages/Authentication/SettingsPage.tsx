@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient } from '../../hooks/useKratosClient';
+import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
 
 interface RegisterPageProps {
   flow: string;
@@ -27,14 +27,7 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
           }
           setSettingsFlow(flow);
         })
-        .catch(err => {
-          const response = err && err.response;
-          if (response) {
-            if (response.status === 410) {
-              window.location.replace(response.data.error.details.redirect_to);
-            }
-          }
-        });
+        .catch(handleFlowError);
     }
   }, [flow]);
 

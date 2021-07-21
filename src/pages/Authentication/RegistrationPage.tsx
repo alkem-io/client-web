@@ -9,7 +9,7 @@ import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
-import { useKratosClient } from '../../hooks/useKratosClient';
+import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/Constants';
 
@@ -33,14 +33,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
           }
           setRegistrationFlow(flow);
         })
-        .catch(err => {
-          const response = err && err.response;
-          if (response) {
-            if (response.status === 410) {
-              window.location.replace(response.data.error.details.redirect_to);
-            }
-          }
-        });
+        .catch(handleFlowError);
     }
   }, [flow]);
 
