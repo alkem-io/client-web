@@ -1,4 +1,4 @@
-import { LoginFlow } from '@ory/kratos-client';
+import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +18,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
-  const [loginFlow, setLoginFlow] = useState<LoginFlow>();
+  const [loginFlow, setLoginFlow] = useState<SelfServiceLoginFlow>();
   const kratos = useKratosClient();
   const history = useHistory();
   const { t } = useTranslation();
@@ -27,6 +27,14 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   useUpdateNavigation({ currentPaths });
 
   useEffect(() => {
+    if (!flow && kratos) {
+      kratos.initializeSelfServiceLoginFlowForBrowsers().then(({ status, data }) => {
+        if (status !== 200) {
+          console.error(data);
+        }
+        setLoginFlow(data);
+      });
+    }
     if (flow && kratos) {
       kratos
         .getSelfServiceLoginFlow(flow)
@@ -46,10 +54,6 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
         });
     }
   }, [flow, kratos]);
-
-  if (!flow) {
-    window.location.replace('/self-service/login/browser');
-  }
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 

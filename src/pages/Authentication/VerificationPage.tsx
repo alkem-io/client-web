@@ -1,4 +1,4 @@
-import { VerificationFlow } from '@ory/kratos-client';
+import { SelfServiceVerificationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ interface RegisterPageProps {
 }
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [verificationFlow, setVerificationFlow] = useState<VerificationFlow>();
+  const [verificationFlow, setVerificationFlow] = useState<SelfServiceVerificationFlow>();
   const kratos = useKratosClient();
   const { t } = useTranslation();
 

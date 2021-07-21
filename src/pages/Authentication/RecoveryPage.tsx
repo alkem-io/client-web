@@ -1,4 +1,4 @@
-import { RecoveryFlow } from '@ory/kratos-client';
+import { SelfServiceRecoveryFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ interface RegisterPageProps {
 }
 
 export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [recoveryFlow, setRecoveryFlow] = useState<RecoveryFlow>();
+  const [recoveryFlow, setRecoveryFlow] = useState<SelfServiceRecoveryFlow>();
   const kratos = useKratosClient();
 
   const { t } = useTranslation();

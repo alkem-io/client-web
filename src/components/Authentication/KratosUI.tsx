@@ -1,16 +1,16 @@
 import {
-  LoginFlow,
-  RecoveryFlow,
-  RegistrationFlow,
-  SettingsFlow,
-  SubmitSelfServiceLoginFlow,
-  SubmitSelfServiceRecoveryFlowWithLinkMethod,
-  SubmitSelfServiceRegistrationFlow,
-  SubmitSelfServiceSettingsFlow,
-  SubmitSelfServiceVerificationFlowWithLinkMethod,
   UiNode,
   UiText,
-  VerificationFlow,
+  SelfServiceLoginFlow,
+  SelfServiceRegistrationFlow,
+  SelfServiceSettingsFlow,
+  SelfServiceVerificationFlow,
+  SelfServiceRecoveryFlow,
+  SubmitSelfServiceLoginFlowBody,
+  SubmitSelfServiceRegistrationFlowBody,
+  SubmitSelfServiceVerificationFlowWithLinkMethodBody,
+  SubmitSelfServiceRecoveryFlowWithLinkMethodBody,
+  SubmitSelfServiceSettingsFlowBody,
 } from '@ory/kratos-client';
 import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
@@ -24,13 +24,18 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 
 type FormType =
-  | SubmitSelfServiceSettingsFlow
-  | SubmitSelfServiceLoginFlow
-  | SubmitSelfServiceRegistrationFlow
-  | SubmitSelfServiceVerificationFlowWithLinkMethod
-  | SubmitSelfServiceRecoveryFlowWithLinkMethod;
+  | SubmitSelfServiceLoginFlowBody
+  | SubmitSelfServiceSettingsFlowBody
+  | SubmitSelfServiceRegistrationFlowBody
+  | SubmitSelfServiceVerificationFlowWithLinkMethodBody
+  | SubmitSelfServiceRecoveryFlowWithLinkMethodBody;
 interface KratosUIProps {
-  flow?: LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
+  flow?:
+    | SelfServiceLoginFlow
+    | SelfServiceRegistrationFlow
+    | SelfServiceSettingsFlow
+    | SelfServiceVerificationFlow
+    | SelfServiceRecoveryFlow;
   termsURL?: string;
   privacyURL?: string;
   resetPasswordComponent?: React.ReactChild;

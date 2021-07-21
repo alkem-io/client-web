@@ -1,4 +1,4 @@
-import { SettingsFlow } from '@ory/kratos-client';
+import { SelfServiceSettingsFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ interface RegisterPageProps {
 }
 
 export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [settingsFlow, setSettingsFlow] = useState<SettingsFlow>();
+  const [settingsFlow, setSettingsFlow] = useState<SelfServiceSettingsFlow>();
   const kratos = useKratosClient();
 
   const { t } = useTranslation();

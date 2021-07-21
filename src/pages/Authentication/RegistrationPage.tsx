@@ -1,4 +1,4 @@
-import { RegistrationFlow } from '@ory/kratos-client';
+import { SelfServiceRegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +18,7 @@ interface RegisterPageProps {
 }
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [registrationFlow, setRegistrationFlow] = useState<RegistrationFlow>();
+  const [registrationFlow, setRegistrationFlow] = useState<SelfServiceRegistrationFlow>();
   const kratos = useKratosClient();
   const history = useHistory();
   const { t } = useTranslation();

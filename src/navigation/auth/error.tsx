@@ -1,4 +1,4 @@
-import { SelfServiceErrorContainer } from '@ory/kratos-client';
+import { SelfServiceError } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Loading } from '../../components/core/Loading';
@@ -8,29 +8,27 @@ import { useQueryParams } from '../../hooks/useQueryParams';
 export const ErrorRoute: FC = () => {
   const params = useQueryParams();
   const errorCode = params.get('error');
-  const [errorContainer, setErrorContainer] = useState<SelfServiceErrorContainer>();
+  const [error, setError] = useState<SelfServiceError>();
   const kratos = useKratosClient();
 
   useEffect(() => {
     if (errorCode && kratos) {
-      kratos.getSelfServiceError(errorCode).then(({ status, data: errorContainer, ..._response }) => {
+      kratos.getSelfServiceError(errorCode).then(({ status, data: selfServiceError, ..._response }) => {
         if (status !== 200) {
-          console.error(errorContainer);
+          console.error(selfServiceError);
         }
-        setErrorContainer(errorContainer);
+        setError(selfServiceError);
       });
     }
   }, [errorCode, kratos]);
 
-  if (!errorContainer) {
+  if (!error) {
     return <Loading text={'Loading config'} />;
   }
 
   return (
     <Container fluid={'sm'}>
-      {errorContainer.errors.map((e, i) => (
-        <p key={i}>{`${e['code']} - ${e['message']} (${e['reason']})`}</p>
-      ))}
+      {error.error ? <p>{`${error.error['code']} - ${error.error['message']} (${error.error['reason']})`}</p> : null}
     </Container>
   );
 };
