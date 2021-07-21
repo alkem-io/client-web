@@ -59,7 +59,10 @@ export const managementData = {
   challengeLvl: [
     {
       name: 'Context',
-      buttons: [{ description: 'Edit', url: '/edit' }],
+      buttons: [
+        { description: 'Edit', url: '/edit' },
+        { description: 'Lifecycle', url: '/lifecycle' },
+      ],
     },
     {
       name: 'Community',

@@ -15,7 +15,7 @@ import { AdminParameters } from '../admin';
 import AuthorizationRoute from '../authorization';
 import { CommunityRoute } from '../community';
 import { OpportunitiesRoutes } from '../opportunity/opportunity';
-import { useTranslation } from 'react-i18next';
+import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -84,6 +84,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/authorization`}>
         <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
+      </Route>
+      <Route path={`${path}/lifecycle`}>
+        <ChallengeLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
