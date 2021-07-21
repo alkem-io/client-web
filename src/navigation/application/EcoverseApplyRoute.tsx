@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
+import { useParams, useRouteMatch } from 'react-router-dom';
 import { useEcoverseApplicationQuery, useEcoverseApplicationTemplateQuery } from '../../generated/graphql';
 import { PageProps } from '../../pages';
 import ApplyRoute from './ApplyRoute';
@@ -11,7 +11,11 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
   const { ecoverseId } = useParams<{ ecoverseId: string }>();
   const backUrl = `/${ecoverseId}`;
 
-  const { data: ecoverseInfoData, loading: isCommunityLoading, error: communityError } = useEcoverseApplicationQuery({
+  const {
+    data: ecoverseInfoData,
+    loading: isCommunityLoading,
+    error: communityError,
+  } = useEcoverseApplicationQuery({
     variables: {
       ecoverseId: ecoverseId,
     },

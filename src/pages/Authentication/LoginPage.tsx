@@ -2,7 +2,7 @@ import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';

@@ -8,7 +8,7 @@ import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import Button from '../components/core/Button';
 import { Loading } from '../components/core/Loading';
-import { useCreateApplicationMutation } from '../generated/graphql';
+import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../generated/graphql';
 import ErrorBlock from '../components/core/ErrorBlock';
 import { Required } from '../components/Required';
 import { createStyles } from '../hooks/useTheme';
@@ -76,6 +76,8 @@ const ApplyPage: FC<ApplyPageProps> = ({
 
   const [createApplication, { loading: isCreationLoading }] = useCreateApplicationMutation({
     onCompleted: () => setHasApplied(true),
+    // refetch user applications
+    refetchQueries: [refetchUserApplicationsQuery({ input: { userID: userId } })],
     onError: handleError,
   });
 

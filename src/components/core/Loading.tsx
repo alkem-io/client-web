@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
@@ -15,9 +14,12 @@ const useStyles = createStyles(theme => ({
   text: {
     marginLeft: theme.shape.spacing(2),
   },
-  itemsContentCenter: {
+  container: {
+    display: 'flex',
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: '100%',
   },
 }));
 
@@ -25,7 +27,7 @@ export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
   const styles = useStyles();
 
   return (
-    <div className={clsx('d-flex', 'flex-grow-1', styles.itemsContentCenter)}>
+    <div className={styles.container}>
       <Spinner animation="grow" className={styles.spinner} />
       <Typography variant="caption" color="primary" className={styles.text}>
         {text}

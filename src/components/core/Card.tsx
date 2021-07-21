@@ -214,7 +214,6 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
 const useBodyStyles = createStyles(theme => ({
   body: {
     display: 'flex',
-    height: 150,
     width: '100%',
     flexDirection: 'column',
     flexGrow: 1,

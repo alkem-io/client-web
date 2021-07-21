@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
+import { useParams, useRouteMatch } from 'react-router-dom';
 import { useChallengeApplicationQuery, useChallengeApplicationTemplateQuery } from '../../generated/graphql';
 import ApplyRoute from './ApplyRoute';
 import { PageProps } from '../../pages';
@@ -17,7 +17,11 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
   const backUrl = `/${ecoverseId}/challenges/${challengeId}`;
 
   /* todo: only community ID is needed */
-  const { data: challengeData, loading: isCommunityLoading, error: communityError } = useChallengeApplicationQuery({
+  const {
+    data: challengeData,
+    loading: isCommunityLoading,
+    error: communityError,
+  } = useChallengeApplicationQuery({
     variables: {
       ecoverseId: ecoverseId,
       challengeId: challengeId,

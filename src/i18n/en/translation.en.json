@@ -16,6 +16,8 @@
   "buttons": {
     "learn-more": "Learn more",
     "apply": "Apply",
+    "apply-not-signed": "Sign in to apply",
+    "apply-pending": "Application pending",
     "explore": "Explore",
     "create": "Create",
     "save": "Save",
@@ -30,11 +32,20 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
     }
   },
   "common": {
+    "avatar": "Avatar",
+    "name": "Name",
+    "username": "Username",
+    "tags": "Tags",
+    "add": "Add",
+    "remove": "Remove",
+    "email": "Email",
+    "state": "State",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -193,6 +204,18 @@
     },
     "groupForm": {
       "title": "Edit group"
+    }
+  },
+  "navigation": {
+    "admin": {
+      "opportunity": {
+        "create": "Create opportunity",
+        "edit": "Edit opportunity"
+      },
+      "challenge": {
+        "create": "Create challenge",
+        "edit": "Edit challenge"
+      }
     }
   },
   "pages": {
@@ -461,6 +484,10 @@
     },
     "user-profile": {
       "email-not-verified": " Please verify your <l>email</l>."
+    },
+    "authentication-required": {
+      "header": "The page you are trying to reach requires you to be logged in.",
+      "subheader": "Please sign-in or register to continue!"
     }
   }
 }

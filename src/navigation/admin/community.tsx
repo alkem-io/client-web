@@ -2,16 +2,21 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
-import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { FourOuFour } from '../../pages';
 import { EcoverseGroupRoute } from './EcoverseGroupRoute';
+import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
+import { EcoverseApplicationRoute } from './EcoverseApplicationRoute';
+import { ChallengeApplicationRoute } from './ChallengeApplicationRoute';
+
+type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
 interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
   credential: CommunityCredentials;
   resourceId: string;
+  accessedFrom: AccessedFrom;
 }
 
 export const CommunityRoute: FC<CommunityRouteProps> = ({
@@ -20,6 +25,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   parentMembers,
   credential,
   resourceId,
+  accessedFrom,
 }) => {
   const { path } = useRouteMatch();
 
@@ -38,7 +44,14 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
       </Route>
       <Route path={`${path}/applications`}>
-        <ApplicationPage paths={paths} />
+        {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
+        {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
+      </Route>
+      <Route path={`${path}/lead`}>
+        <LeadingOrganisationPage paths={paths} />
+      </Route>
+      <Route path="*">
+        <FourOuFour />
       </Route>
     </Switch>
   );

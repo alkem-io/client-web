@@ -1,21 +1,23 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { ListPage } from '../../components/Admin/ListPage';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import { useChallengeCommunityQuery, useEcoverseCommunityQuery, useOpportunitiesQuery } from '../../generated/graphql';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import { FourOuFour, PageProps } from '../../pages';
 import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
 import { AuthorizationCredential } from '../../types/graphql-schema';
+import EditChallenge from '../../components/Admin/EditChallenge';
+import FormMode from '../../components/Admin/FormMode';
 import { AdminParameters } from './admin';
 import AuthorizationRoute from './authorization';
 import { CommunityRoute } from './community';
 import { OpportunitiesRoutes } from './opportunity';
+import { useTranslation } from 'react-i18next';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
@@ -26,10 +28,10 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ChallengeList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
-        <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
+        <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
       <Route exact path={`${path}/:challengeId/edit`}>
-        <OppChallPage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
+        <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
@@ -72,6 +74,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           parentMembers={parentMembers}
           credential={AuthorizationCredential.ChallengeMember}
           resourceId={challengeUUID}
+          accessedFrom="challenge"
         />
       </Route>
       <Route path={`${path}/opportunities`}>
@@ -85,19 +88,4 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       </Route>
     </Switch>
   );
-};
-export const ChallengeOpportunities: FC<PageProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
-  const { challengeId } = useParams<AdminParameters>();
-  const { ecoverseId } = useEcoverse();
-
-  const { data } = useOpportunitiesQuery({ variables: { ecoverseId, challengeId } });
-
-  const opportunities = data?.ecoverse?.challenge?.opportunities?.map(o => ({
-    id: o.id,
-    value: o.displayName,
-    url: `${url}/${o.id}`,
-  }));
-
-  return <ListPage paths={paths} data={opportunities || []} newLink={`${url}/new`} />;
 };

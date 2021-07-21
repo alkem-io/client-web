@@ -13,8 +13,8 @@ import {
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
-import { CreateContextInput } from '../../../types/graphql-schema';
 import { PageProps } from '../../common';
+import { createContextInput } from '../../../utils/buildContext';
 
 interface NewEcoverseProps extends PageProps {}
 
@@ -67,24 +67,14 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   const isLoading = loading1 || loadingOrganizations;
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
-    const { name, nameID, host, background, impact, tagline, vision, who, references, visual, tagsets } = values;
-
-    const context: CreateContextInput = {
-      background: background,
-      tagline: tagline,
-      impact: impact,
-      vision: vision,
-      visual: visual,
-      who: who,
-      references: references,
-    };
+    const { name, nameID, host, tagsets } = values;
 
     await createEcoverse({
       variables: {
         input: {
           nameID,
           hostID: host,
-          context,
+          context: createContextInput(values),
           displayName: name,
           tags: tagsets.map(x => x.tags.join()),
         },

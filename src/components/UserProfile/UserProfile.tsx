@@ -16,6 +16,7 @@ import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
 import Tag from '../core/Tag';
 import Typography from '../core/Typography';
+import TagContainer from '../core/TagContainer';
 
 const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
   return value ? (
@@ -168,11 +169,11 @@ export const UserProfile: FC = () => {
                 <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
                   {toFirstCaptitalLetter(t.name)}
                 </Typography>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
-                  {t.tags.map((x, i) => (
-                    <Tag key={i} text={x} />
+                <TagContainer>
+                  {t.tags.map((t, i) => (
+                    <Tag key={i} text={t} color="neutralMedium" />
                   ))}
-                </div>
+                </TagContainer>
               </div>
             ))}
         </Card>

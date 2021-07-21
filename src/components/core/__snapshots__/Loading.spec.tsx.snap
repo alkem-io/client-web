@@ -19,7 +19,7 @@ exports[`Loading component render correctly Typography component 1`] = `
 
 exports[`Loading component render correctly loading component 1`] = `
 <div
-  className="d-flex flex-grow-1 itemsContentCenter-0-2-20"
+  className="container-0-2-20"
 >
   <div
     className="spinner-0-2-18 spinner-grow"
