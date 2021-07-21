@@ -3358,7 +3358,14 @@ export type OpportunityLifecycleQuery = {
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
-      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; machineDef: string; state?: Maybe<string> }>;
+      id: string;
+      lifecycle?: Maybe<{
+        __typename?: 'Lifecycle';
+        id: string;
+        machineDef: string;
+        state?: Maybe<string>;
+        nextEvents?: Maybe<Array<string>>;
+      }>;
     };
   };
 };

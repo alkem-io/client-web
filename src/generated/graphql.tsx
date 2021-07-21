@@ -5622,10 +5622,12 @@ export const OpportunityLifecycleDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         lifecycle {
           id
           machineDef
           state
+          nextEvents
         }
       }
     }

@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading';
@@ -12,7 +13,7 @@ import { AdminParameters } from '../admin';
 import { CommunityRoute } from '../community';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
-import { useTranslation } from 'react-i18next';
+import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -78,6 +79,9 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
           resourceId={opportunityUUID}
           accessedFrom="opportunity"
         />
+      </Route>
+      <Route path={`${path}/lifecycle`}>
+        <OpportunityLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

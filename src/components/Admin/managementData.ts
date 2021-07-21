@@ -88,7 +88,10 @@ export const managementData = {
   opportunityLvl: [
     {
       name: 'Opportunity info',
-      buttons: [{ description: 'Edit', url: '/edit' }],
+      buttons: [
+        { description: 'Edit', url: '/edit' },
+        { description: 'Lifecycle', url: '/lifecycle' },
+      ],
     },
     {
       name: 'Community',
