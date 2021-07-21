@@ -65,7 +65,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   const isLoading = isCreating || isUpdating;
 
-  const currentPaths = useMemo(() => [...paths, { name: opportunity?.displayName || 'new', real: false }], [
+  const currentPaths = useMemo(() => [...paths, { name: opportunityId ? 'edit' : 'new', real: false }], [
     paths,
     opportunity,
   ]);
