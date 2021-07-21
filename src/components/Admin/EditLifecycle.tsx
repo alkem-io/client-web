@@ -6,7 +6,7 @@ import { createStyles, useTheme } from '../../hooks/useTheme';
 import { useRouteMatch } from 'react-router';
 import { PageProps } from '../../pages';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
-import Button from '../core/Button';
+import LifecycleButton from '../core/LifecycleButton';
 
 const useStyles = createStyles(theme => ({
   wrapper: {
@@ -23,7 +23,7 @@ const useStyles = createStyles(theme => ({
 
 interface Props extends PageProps {
   data?: Lifecycle;
-  id?: string;
+  id: string;
   onSetNewState: (id: string, newState: string) => void;
 }
 
@@ -51,9 +51,7 @@ const EditLifecycle: FC<Props> = ({ paths, data, id, onSetNewState }) => {
       {nextEvents && (
         <div className={clsx(styles.buttonsWrapper, 'col-7')}>
           {nextEvents.map((x, i) => (
-            <Button key={i} variant="default" onClick={() => onSetNewState(id || '', x)}>
-              {x}
-            </Button>
+            <LifecycleButton key={i} stateName={x} onClick={() => onSetNewState(id, x)} />
           ))}
         </div>
       )}

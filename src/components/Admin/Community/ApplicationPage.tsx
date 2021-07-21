@@ -9,9 +9,9 @@ import { ApplicationInfoFragment } from '../../../types/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { createStyles } from '../../../hooks/useTheme';
 import Typography from '../../core/Typography';
-import Button from '../../core/Button';
 import { useEventOnApplicationMutation } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import LifecycleButton from '../../core/LifecycleButton';
 
 interface ApplicationViewmodel {
   id: string;
@@ -184,16 +184,14 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
       {nextEvents.length > 0 && (
         <Modal.Footer>
           {nextEvents.map((x, i) => (
-            <Button
+            <LifecycleButton
               key={i}
-              variant="default"
+              stateName={x}
               onClick={() => {
                 onSetNewState(appId, x);
                 onHide();
               }}
-            >
-              {x}
-            </Button>
+            />
           ))}
         </Modal.Footer>
       )}
