@@ -1,0 +1,10 @@
+mutation eventOnChallenge($input: ChallengeEventInput!) {
+  eventOnChallenge(challengeEventData: $input) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
+    }
+  }
+}
