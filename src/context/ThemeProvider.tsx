@@ -1,4 +1,4 @@
-import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme as createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import React, { FC } from 'react';
 
 export interface Palette {
