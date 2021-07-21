@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../generated/graphql';
@@ -30,12 +31,6 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/new`}>
         <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
-      <Route exact path={`${path}/:challengeId/edit`}>
-        <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
-      </Route>
-      <Route exact path={`${path}/:challengeId/lifecycle`}>
-        <>Edit</>
-      </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
       </Route>
@@ -47,6 +42,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 };
 
 const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
   const { ecoverseId } = useEcoverse();
@@ -69,6 +65,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
     <Switch>
       <Route exact path={`${path}`}>
         <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/edit`}>
+        <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute
