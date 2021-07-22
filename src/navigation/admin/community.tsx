@@ -6,10 +6,10 @@ import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import { FourOuFour } from '../../pages';
-import { EcoverseGroupRoute } from './EcoverseGroupRoute';
+import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
-import { EcoverseApplicationRoute } from './EcoverseApplicationRoute';
-import { ChallengeApplicationRoute } from './ChallengeApplicationRoute';
+import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
+import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 

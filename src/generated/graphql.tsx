@@ -1711,6 +1711,108 @@ export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
   SchemaTypes.EventOnApplicationMutationVariables
 >;
+export const EventOnChallengeDocument = gql`
+  mutation eventOnChallenge($input: ChallengeEventInput!) {
+    eventOnChallenge(challengeEventData: $input) {
+      id
+      lifecycle {
+        id
+        nextEvents
+        state
+      }
+    }
+  }
+`;
+export type EventOnChallengeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.EventOnChallengeMutation,
+  SchemaTypes.EventOnChallengeMutationVariables
+>;
+
+/**
+ * __useEventOnChallengeMutation__
+ *
+ * To run a mutation, you first call `useEventOnChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEventOnChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [eventOnChallengeMutation, { data, loading, error }] = useEventOnChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEventOnChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.EventOnChallengeMutation,
+    SchemaTypes.EventOnChallengeMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.EventOnChallengeMutation, SchemaTypes.EventOnChallengeMutationVariables>(
+    EventOnChallengeDocument,
+    baseOptions
+  );
+}
+export type EventOnChallengeMutationHookResult = ReturnType<typeof useEventOnChallengeMutation>;
+export type EventOnChallengeMutationResult = Apollo.MutationResult<SchemaTypes.EventOnChallengeMutation>;
+export type EventOnChallengeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.EventOnChallengeMutation,
+  SchemaTypes.EventOnChallengeMutationVariables
+>;
+export const EventOnOpportunityDocument = gql`
+  mutation eventOnOpportunity($input: OpportunityEventInput!) {
+    eventOnOpportunity(opportunityEventData: $input) {
+      id
+      lifecycle {
+        id
+        nextEvents
+        state
+      }
+    }
+  }
+`;
+export type EventOnOpportunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.EventOnOpportunityMutation,
+  SchemaTypes.EventOnOpportunityMutationVariables
+>;
+
+/**
+ * __useEventOnOpportunityMutation__
+ *
+ * To run a mutation, you first call `useEventOnOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEventOnOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [eventOnOpportunityMutation, { data, loading, error }] = useEventOnOpportunityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEventOnOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.EventOnOpportunityMutation,
+    SchemaTypes.EventOnOpportunityMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.EventOnOpportunityMutation, SchemaTypes.EventOnOpportunityMutationVariables>(
+    EventOnOpportunityDocument,
+    baseOptions
+  );
+}
+export type EventOnOpportunityMutationHookResult = ReturnType<typeof useEventOnOpportunityMutation>;
+export type EventOnOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.EventOnOpportunityMutation>;
+export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.EventOnOpportunityMutation,
+  SchemaTypes.EventOnOpportunityMutationVariables
+>;
 export const GrantCredentialsDocument = gql`
   mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
     grantCredentialToUser(grantCredentialData: $input) {
@@ -3248,6 +3350,7 @@ export const ChallengeLifecycleDocument = gql`
           id
           machineDef
           state
+          nextEvents
         }
       }
     }
@@ -5519,10 +5622,12 @@ export const OpportunityLifecycleDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         lifecycle {
           id
           machineDef
           state
+          nextEvents
         }
       }
     }

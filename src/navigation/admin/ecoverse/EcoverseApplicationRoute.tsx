@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { PageProps } from '../../pages';
-import { ApplicationRoute } from './ApplicationRoute';
-import { useEcoverseApplicationsQuery } from '../../generated/graphql';
-import { useParams } from 'react-router-dom';
-import Loading from '../../components/core/Loading';
+import { PageProps } from '../../../pages';
+import { ApplicationRoute } from '../ApplicationRoute';
+import { useEcoverseApplicationsQuery } from '../../../generated/graphql';
+import { useParams } from 'react-router';
+import Loading from '../../../components/core/Loading';
 
 interface Params {
   ecoverseId: string;

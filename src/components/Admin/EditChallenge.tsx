@@ -60,7 +60,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
 
   const isLoading = isCreating || isUpdating;
 
-  const currentPaths = useMemo(() => [...paths, { name: challenge?.displayName || 'new', real: false }], [
+  const currentPaths = useMemo(() => [...paths, { name: challengeId ? 'edit' : 'new', real: false }], [
     paths,
     challenge,
   ]);
