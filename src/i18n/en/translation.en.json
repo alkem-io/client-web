@@ -2,6 +2,13 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
+  "general": {
+    "ecoverse": "Ecoverse",
+    "challenge": "Challenge",
+    "opportunity": "Opportunity",
+    "group": "Group",
+    "organization": "Organization"
+  },
   "search": {
     "header": "Search",
     "subheader": "Find relevant users, organisations, groups and not least Challenges!",
