@@ -81,6 +81,38 @@ export const CommunityMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
+export const ConfigurationFragmentDoc = gql`
+  fragment Configuration on Config {
+    authentication {
+      enabled
+      providers {
+        name
+        label
+        icon
+        enabled
+        config {
+          __typename
+          ... on OryConfig {
+            kratosPublicBaseURL
+            issuer
+          }
+        }
+      }
+    }
+    platform {
+      about
+      feedback
+      privacy
+      security
+      support
+      terms
+      featureFlags {
+        enabled
+        name
+      }
+    }
+  }
+`;
 export const ContextVisualFragmentDoc = gql`
   fragment ContextVisual on Visual {
     id
@@ -782,7 +814,8 @@ export function useCreateGroupOnOrganizationMutation(
   >(CreateGroupOnOrganizationDocument, baseOptions);
 }
 export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
-export type CreateGroupOnOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnOrganizationMutation>;
+export type CreateGroupOnOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnOrganizationMutation,
   SchemaTypes.CreateGroupOnOrganizationMutationVariables
@@ -971,7 +1004,8 @@ export function useCreateReferenceOnContextMutation(
   >(CreateReferenceOnContextDocument, baseOptions);
 }
 export type CreateReferenceOnContextMutationHookResult = ReturnType<typeof useCreateReferenceOnContextMutation>;
-export type CreateReferenceOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnContextMutation>;
+export type CreateReferenceOnContextMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateReferenceOnContextMutation>;
 export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateReferenceOnContextMutation,
   SchemaTypes.CreateReferenceOnContextMutationVariables
@@ -1020,7 +1054,8 @@ export function useCreateReferenceOnProfileMutation(
   >(CreateReferenceOnProfileDocument, baseOptions);
 }
 export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
-export type CreateReferenceOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
+export type CreateReferenceOnProfileMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateReferenceOnProfileMutation,
   SchemaTypes.CreateReferenceOnProfileMutationVariables
@@ -1204,7 +1239,8 @@ export function useCreateUserNewRegistrationMutation(
   >(CreateUserNewRegistrationDocument, baseOptions);
 }
 export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
-export type CreateUserNewRegistrationMutationResult = Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
+export type CreateUserNewRegistrationMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserNewRegistrationMutation,
   SchemaTypes.CreateUserNewRegistrationMutationVariables
@@ -2751,77 +2787,6 @@ export type EcoverseApplicationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchEcoverseApplicationsQuery(variables?: SchemaTypes.EcoverseApplicationsQueryVariables) {
   return { query: EcoverseApplicationsDocument, variables: variables };
-}
-export const AuthenticationConfigurationDocument = gql`
-  query authenticationConfiguration {
-    configuration {
-      authentication {
-        enabled
-        providers {
-          name
-          label
-          icon
-          enabled
-          config {
-            __typename
-            ... on OryConfig {
-              kratosPublicBaseURL
-              issuer
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useAuthenticationConfigurationQuery__
- *
- * To run a query within a React component, call `useAuthenticationConfigurationQuery` and pass it any options that fit your needs.
- * When your component renders, `useAuthenticationConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAuthenticationConfigurationQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAuthenticationConfigurationQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.AuthenticationConfigurationQuery,
-    SchemaTypes.AuthenticationConfigurationQueryVariables
-  >
-) {
-  return Apollo.useQuery<
-    SchemaTypes.AuthenticationConfigurationQuery,
-    SchemaTypes.AuthenticationConfigurationQueryVariables
-  >(AuthenticationConfigurationDocument, baseOptions);
-}
-export function useAuthenticationConfigurationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AuthenticationConfigurationQuery,
-    SchemaTypes.AuthenticationConfigurationQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<
-    SchemaTypes.AuthenticationConfigurationQuery,
-    SchemaTypes.AuthenticationConfigurationQueryVariables
-  >(AuthenticationConfigurationDocument, baseOptions);
-}
-export type AuthenticationConfigurationQueryHookResult = ReturnType<typeof useAuthenticationConfigurationQuery>;
-export type AuthenticationConfigurationLazyQueryHookResult = ReturnType<typeof useAuthenticationConfigurationLazyQuery>;
-export type AuthenticationConfigurationQueryResult = Apollo.QueryResult<
-  SchemaTypes.AuthenticationConfigurationQuery,
-  SchemaTypes.AuthenticationConfigurationQueryVariables
->;
-export function refetchAuthenticationConfigurationQuery(
-  variables?: SchemaTypes.AuthenticationConfigurationQueryVariables
-) {
-  return { query: AuthenticationConfigurationDocument, variables: variables };
 }
 export const ChallengeCardDocument = gql`
   query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -4402,6 +4367,55 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityCommunityQuery(variables?: SchemaTypes.OpportunityCommunityQueryVariables) {
   return { query: OpportunityCommunityDocument, variables: variables };
+}
+export const ConfigurationDocument = gql`
+  query configuration {
+    configuration {
+      ...Configuration
+    }
+  }
+  ${ConfigurationFragmentDoc}
+`;
+
+/**
+ * __useConfigurationQuery__
+ *
+ * To run a query within a React component, call `useConfigurationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigurationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigurationQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>(
+    ConfigurationDocument,
+    baseOptions
+  );
+}
+export function useConfigurationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>(
+    ConfigurationDocument,
+    baseOptions
+  );
+}
+export type ConfigurationQueryHookResult = ReturnType<typeof useConfigurationQuery>;
+export type ConfigurationLazyQueryHookResult = ReturnType<typeof useConfigurationLazyQuery>;
+export type ConfigurationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ConfigurationQuery,
+  SchemaTypes.ConfigurationQueryVariables
+>;
+export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
+  return { query: ConfigurationDocument, variables: variables };
 }
 export const EcoverseActivityDocument = gql`
   query ecoverseActivity($ecoverseId: UUID_NAMEID!) {
@@ -6535,67 +6549,6 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
   return { query: OrganizationsListDocument, variables: variables };
-}
-export const PlatformConfigurationDocument = gql`
-  query platformConfiguration {
-    configuration {
-      platform {
-        about
-        feedback
-        privacy
-        security
-        support
-        terms
-      }
-    }
-  }
-`;
-
-/**
- * __usePlatformConfigurationQuery__
- *
- * To run a query within a React component, call `usePlatformConfigurationQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformConfigurationQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformConfigurationQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformConfigurationQuery,
-    SchemaTypes.PlatformConfigurationQueryVariables
-  >
-) {
-  return Apollo.useQuery<SchemaTypes.PlatformConfigurationQuery, SchemaTypes.PlatformConfigurationQueryVariables>(
-    PlatformConfigurationDocument,
-    baseOptions
-  );
-}
-export function usePlatformConfigurationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformConfigurationQuery,
-    SchemaTypes.PlatformConfigurationQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<SchemaTypes.PlatformConfigurationQuery, SchemaTypes.PlatformConfigurationQueryVariables>(
-    PlatformConfigurationDocument,
-    baseOptions
-  );
-}
-export type PlatformConfigurationQueryHookResult = ReturnType<typeof usePlatformConfigurationQuery>;
-export type PlatformConfigurationLazyQueryHookResult = ReturnType<typeof usePlatformConfigurationLazyQuery>;
-export type PlatformConfigurationQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformConfigurationQuery,
-  SchemaTypes.PlatformConfigurationQueryVariables
->;
-export function refetchPlatformConfigurationQuery(variables?: SchemaTypes.PlatformConfigurationQueryVariables) {
-  return { query: PlatformConfigurationDocument, variables: variables };
 }
 export const ProjectProfileDocument = gql`
   query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {

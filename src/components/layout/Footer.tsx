@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
-import { usePlatformConfigurationQuery } from '../../generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Container from '../core/Container';
 import Toolbar from '../core/Toolbar';
 import Typography from '../core/Typography';
 import Image from '../core/Image';
+import { useConfig } from '../../hooks/useConfig';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
@@ -43,8 +43,7 @@ const useFooterStyles = createStyles(theme => ({
 
 const Footer: FC = ({ children }) => {
   const styles = useFooterStyles();
-  const { data } = usePlatformConfigurationQuery();
-  const platform = data?.configuration.platform;
+  const { platform } = useConfig();
 
   return (
     <Container className={styles.footer}>

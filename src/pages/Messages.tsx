@@ -5,8 +5,10 @@ import { Fade, Spinner } from 'react-bootstrap';
 import Card from '../components/core/Card';
 import Section, { Header, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
+import { useConfig } from '../hooks/useConfig';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import { createStyles } from '../hooks/useTheme';
+import { FEATURE_COMMUNICATIONS } from '../models/Constants';
 import { PageProps } from './common';
 
 const date = new Date();
@@ -269,6 +271,11 @@ const paths = {
 
 export const Messages: FC<PageProps> = () => {
   useUpdateNavigation(paths);
+  const { isFeatureEnabled } = useConfig();
+
+  if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+    return <div>Comming soon!</div>;
+  }
 
   return (
     <>

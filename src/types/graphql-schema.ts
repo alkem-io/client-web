@@ -123,6 +123,11 @@ export type AssignCommunityMemberInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignOrganisationMemberInput = {
+  organisationID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignUserGroupMemberInput = {
   groupID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -770,6 +775,8 @@ export type Mutation = {
   assignUserToCommunity: Community;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
+  /** Assigns a User as a member of the specified Organisation. */
+  assignUserToOrganisation: Organisation;
   /** Reset the Authorization Policy on the specified Ecoverse. */
   authorizationPolicyResetOnEcoverse: Ecoverse;
   /** Reset the Authorization Policy on the specified Organisation. */
@@ -860,6 +867,8 @@ export type Mutation = {
   removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
+  /** Removes a User as a member of the specified Organisation. */
+  removeUserFromOrganisation: Organisation;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
   /** Updates the specified Actor. */
@@ -892,6 +901,10 @@ export type MutationAssignUserToCommunityArgs = {
 
 export type MutationAssignUserToGroupArgs = {
   membershipData: AssignUserGroupMemberInput;
+};
+
+export type MutationAssignUserToOrganisationArgs = {
+  membershipData: AssignOrganisationMemberInput;
 };
 
 export type MutationAuthorizationPolicyResetOnEcoverseArgs = {
@@ -1068,6 +1081,10 @@ export type MutationRemoveUserFromCommunityArgs = {
 
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
+};
+
+export type MutationRemoveUserFromOrganisationArgs = {
+  membershipData: RemoveOrganisationMemberInput;
 };
 
 export type MutationRevokeCredentialFromUserArgs = {
@@ -1392,6 +1409,11 @@ export type Relation = {
 
 export type RemoveCommunityMemberInput = {
   communityID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveOrganisationMemberInput = {
+  organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -1791,6 +1813,32 @@ export type MessageDetailsFragment = {
   sender: string;
   message: string;
   timestamp: number;
+};
+
+export type ConfigurationFragment = {
+  __typename?: 'Config';
+  authentication: {
+    __typename?: 'AuthenticationConfig';
+    enabled: boolean;
+    providers: Array<{
+      __typename?: 'AuthenticationProviderConfig';
+      name: string;
+      label: string;
+      icon: string;
+      enabled: boolean;
+      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+    }>;
+  };
+  platform: {
+    __typename?: 'Platform';
+    about: string;
+    feedback: string;
+    privacy: string;
+    security: string;
+    support: string;
+    terms: string;
+    featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
+  };
 };
 
 export type ContextDetailsFragment = {
@@ -2479,27 +2527,6 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
-export type AuthenticationConfigurationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AuthenticationConfigurationQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    authentication: {
-      __typename?: 'AuthenticationConfig';
-      enabled: boolean;
-      providers: Array<{
-        __typename?: 'AuthenticationProviderConfig';
-        name: string;
-        label: string;
-        icon: string;
-        enabled: boolean;
-        config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-      }>;
-    };
-  };
-};
-
 export type ChallengeCardQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -3023,6 +3050,13 @@ export type OpportunityCommunityQuery = {
       community?: Maybe<{ __typename?: 'Community' } & CommunityDetailsFragment>;
     };
   };
+};
+
+export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigurationQuery = {
+  __typename?: 'Query';
+  configuration: { __typename?: 'Config' } & ConfigurationFragment;
 };
 
 export type EcoverseActivityQueryVariables = Exact<{
@@ -3637,24 +3671,6 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 export type OrganizationsListQuery = {
   __typename?: 'Query';
   organisations: Array<{ __typename?: 'Organisation'; id: string; displayName: string }>;
-};
-
-export type PlatformConfigurationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformConfigurationQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    platform: {
-      __typename?: 'Platform';
-      about: string;
-      feedback: string;
-      privacy: string;
-      security: string;
-      support: string;
-      terms: string;
-    };
-  };
 };
 
 export type ProjectProfileQueryVariables = Exact<{
