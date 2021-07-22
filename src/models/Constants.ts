@@ -7,6 +7,7 @@ export const AUTH_REGISTER_PATH = '/auth/registration';
 export const AUTH_LOGIN_PATH = '/auth/login';
 export const SEARCH_PAGE = '/search';
 export const VERIFY_PATH = '/auth/verify';
+export const LOGOUT_PATH = '/auth/logout';
 
 export const LOGO_REFERENCE_NAME = 'logo';
 

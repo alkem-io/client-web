@@ -1,17 +1,17 @@
 import { Box } from '@material-ui/core';
+import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
+import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { Overlay, Popover } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import { createStyles } from '../../hooks/useTheme';
 import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
-import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
-import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import Avatar from '../core/Avatar';
+import Button from '../core/Button';
+import Icon from '../core/Icon';
 import Typography from '../core/Typography';
 import User from '../layout/User';
-import Button from '../core/Button';
-import { useHistory } from 'react-router-dom';
-import Icon from '../core/Icon';
-import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -30,7 +30,7 @@ interface UserSegmentProps {
   logoutUrl?: string;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified, logoutUrl: _l }) => {
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified, logoutUrl: _logoutUrl }) => {
   const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -95,12 +95,13 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 </Box>
                 <Box>
                   <Button
-                    //as="a"
+                    as={'a'}
+                    href={_logoutUrl}
+                    // as={Link}
+                    // to={LOGOUT_PATH}
                     onClick={() => {
                       setDropdownOpen(false);
-                      history.push('/auth/logout');
                     }}
-                    // href={logoutUrl}
                     variant="transparent"
                     inset
                     block
