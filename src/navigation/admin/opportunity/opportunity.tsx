@@ -1,18 +1,19 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import Loading from '../../components/core/Loading';
-import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { FourOuFour, PageProps } from '../../pages';
-import OpportunityList from '../../pages/Admin/Opportunity/OpportunityList';
-import { AuthorizationCredential } from '../../types/graphql-schema';
-import { AdminParameters } from './admin';
-import { CommunityRoute } from './community';
-import EditOpportunity from '../../components/Admin/EditOpportunity';
-import FormMode from '../../components/Admin/FormMode';
 import { useTranslation } from 'react-i18next';
+import { managementData } from '../../../components/Admin/managementData';
+import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import Loading from '../../../components/core/Loading';
+import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../generated/graphql';
+import { useEcoverse } from '../../../hooks/useEcoverse';
+import { FourOuFour, PageProps } from '../../../pages';
+import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
+import { AdminParameters } from '../admin';
+import { CommunityRoute } from '../community';
+import EditOpportunity from '../../../components/Admin/EditOpportunity';
+import FormMode from '../../../components/Admin/FormMode';
+import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 
 export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -78,6 +79,9 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
           resourceId={opportunityUUID}
           accessedFrom="opportunity"
         />
+      </Route>
+      <Route path={`${path}/lifecycle`}>
+        <OpportunityLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

@@ -1,20 +1,20 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import Loading from '../../components/core/Loading';
-import { EcoverseProvider } from '../../context/EcoverseProvider';
-import { useEcoverseCommunityQuery, useUsersQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { useTransactionScope } from '../../hooks/useSentry';
-import { FourOuFour, PageProps } from '../../pages';
-import EcoverseList from '../../pages/Admin/Ecoverse/EcoverseList';
-import EditEcoverse from '../../pages/Admin/Ecoverse/EditEcoverse';
-import NewEcoverse from '../../pages/Admin/Ecoverse/NewEcoverse';
-import { AuthorizationCredential } from '../../types/graphql-schema';
-import AuthorizationRoute from './authorization';
-import { ChallengesRoute } from './challenge';
-import { CommunityRoute } from './community';
+import { managementData } from '../../../components/Admin/managementData';
+import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import Loading from '../../../components/core/Loading';
+import { EcoverseProvider } from '../../../context/EcoverseProvider';
+import { useEcoverseCommunityQuery, useUsersQuery } from '../../../generated/graphql';
+import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useTransactionScope } from '../../../hooks/useSentry';
+import { FourOuFour, PageProps } from '../../../pages';
+import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
+import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
+import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
+import AuthorizationRoute from '../authorization';
+import { ChallengesRoute } from '../challenge/challenge';
+import { CommunityRoute } from '../community';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });

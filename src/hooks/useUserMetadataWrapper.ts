@@ -29,7 +29,7 @@ export const useUserMetadataWrapper = () => {
       }
       const ecoverses = membershipData?.ecoverses.map(getDisplayName) || [];
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
-      const opportunities = [];
+      const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organisations.map(getDisplayName) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
 

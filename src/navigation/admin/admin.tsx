@@ -7,8 +7,8 @@ import { useUsersQuery } from '../../generated/graphql';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { FourOuFour } from '../../pages';
 import AuthorizationRoute from './authorization';
-import { EcoverseListAdminRoute } from './ecoverse';
-import { OrganizationsRoute } from './organization';
+import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
+import { OrganizationsRoute } from './organisation/organization';
 import { UsersRoute } from './user';
 
 export interface AdminParameters {
