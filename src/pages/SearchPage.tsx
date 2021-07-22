@@ -137,7 +137,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         />
       </Section>
       <Divider />
-      {community.length > 0 && (
+      {tags.length > 0 && (
         <Container>
           <Row className={'justify-content-md-center mb-5'}>
             <Col lg={3}>

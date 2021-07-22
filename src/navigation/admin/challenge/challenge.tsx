@@ -1,20 +1,24 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import OppChallPage, { ProfileSubmitMode } from '../../components/Admin/OppChallPage';
-import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { FourOuFour, PageProps } from '../../pages';
-import ChallengeList from '../../pages/Admin/Challenge/ChallengeList';
-import { AuthorizationCredential } from '../../types/graphql-schema';
-import { AdminParameters } from './admin';
-import AuthorizationRoute from './authorization';
-import { CommunityRoute } from './community';
-import { OpportunitiesRoutes } from './opportunity';
+import { useTranslation } from 'react-i18next';
+import { managementData } from '../../../components/Admin/managementData';
+import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../generated/graphql';
+import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { FourOuFour, PageProps } from '../../../pages';
+import ChallengeList from '../../../pages/Admin/Challenge/ChallengeList';
+import { AuthorizationCredential } from '../../../types/graphql-schema';
+import EditChallenge from '../../../components/Admin/EditChallenge';
+import FormMode from '../../../components/Admin/FormMode';
+import { AdminParameters } from '../admin';
+import AuthorizationRoute from '../authorization';
+import { CommunityRoute } from '../community';
+import { OpportunitiesRoutes } from '../opportunity/opportunity';
+import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
@@ -25,10 +29,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <ChallengeList paths={currentPaths} />
       </Route>
       <Route path={`${path}/new`}>
-        <OppChallPage mode={ProfileSubmitMode.createChallenge} paths={currentPaths} title="New challenge" />
-      </Route>
-      <Route exact path={`${path}/:challengeId/edit`}>
-        <OppChallPage mode={ProfileSubmitMode.updateChallenge} paths={currentPaths} title="Edit challenge" />
+        <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
       <Route path={`${path}/:challengeId`}>
         <ChallengeRoutes paths={currentPaths} />
@@ -41,6 +42,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 };
 
 const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
   const { ecoverseId } = useEcoverse();
@@ -64,6 +66,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}`}>
         <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
       </Route>
+      <Route path={`${path}/edit`}>
+        <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
+      </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute
           paths={currentPaths}
@@ -79,6 +84,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/authorization`}>
         <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
+      </Route>
+      <Route path={`${path}/lifecycle`}>
+        <ChallengeLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

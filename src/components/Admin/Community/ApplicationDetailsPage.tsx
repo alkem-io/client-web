@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 interface Params {
   appId: string;

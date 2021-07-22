@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';

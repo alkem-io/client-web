@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
 import { QuestionTemplate } from '../../types/graphql-schema';
 import { Path } from '../../context/NavigationProvider';

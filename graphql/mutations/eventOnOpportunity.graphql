@@ -1,0 +1,10 @@
+mutation eventOnOpportunity($input: OpportunityEventInput!) {
+  eventOnOpportunity(opportunityEventData: $input) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
+    }
+  }
+}

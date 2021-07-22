@@ -2,10 +2,12 @@ query opportunityLifecycle($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEI
   ecoverse(ID: $ecoverseId) {
     id
     opportunity(ID: $opportunityId) {
+      id
       lifecycle {
         id
       	machineDef
     		state
+        nextEvents
       }
     }
   }

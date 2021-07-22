@@ -1,4 +1,4 @@
-import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import React, { FC } from 'react';
 
 export interface Palette {
@@ -134,7 +134,7 @@ export const defaultTheme: Theme = {
   earlyAccessAlert: defaultEarlyAccessAlert,
 };
 
-const defaultMuiTheme = createMuiTheme({
+const defaultMuiTheme = createTheme({
   palette: {
     primary: {
       main: defaultTheme.palette.primary,
