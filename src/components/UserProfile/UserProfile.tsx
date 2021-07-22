@@ -1,7 +1,7 @@
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import React, { FC } from 'react';
 import { Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { createStyles } from '../../hooks/useTheme';
@@ -14,7 +14,7 @@ import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
-import Tag from '../core/Tag';
+import Tag, { TagProps } from '../core/Tag';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 
@@ -70,6 +70,7 @@ const useMemberOfStyles = createStyles(theme => ({
     backgroundColor: theme.palette.neutralLight,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   noPadding: {
     padding: 0,
@@ -80,42 +81,35 @@ export type MemberOfProps = {
   groups: string[];
   challenges: string[];
   opportunities: string[];
+  ecoverses: string[];
+  organizations: string[];
 };
 
-export const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities }) => {
+export const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecoverses, organizations }) => {
+  const { t } = useTranslation();
   const styles = useMemberOfStyles();
+
+  const membershipItems = (names: string[], tagText: string, tagColor: TagProps['color']) => {
+    return (
+      names &&
+      names.map((x, i) => (
+        <div key={i} className={styles.listDetail}>
+          <Typography as="span" className={styles.noPadding}>
+            {x}
+          </Typography>
+          <Tag text={tagText} color={tagColor} />
+        </div>
+      ))
+    );
+  };
+
   return (
     <Card primaryTextProps={{ text: 'Member of' }} className={'mt-2'}>
-      {groups &&
-        groups?.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography as="span" className={styles.noPadding}>
-              {x}
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="group" color="primary" />
-          </div>
-        ))}
-      {challenges &&
-        challenges.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography as="span" className={styles.noPadding}>
-              {x}
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="challenge" color="neutral" />
-          </div>
-        ))}
-      {opportunities &&
-        opportunities.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography as="span" className={styles.noPadding}>
-              {x}
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <Tag text="opportunity" color="primary" />
-          </div>
-        ))}
+      {membershipItems(ecoverses, t('general.ecoverse'), 'primary')}
+      {membershipItems(groups, t('general.group'), 'primary')}
+      {membershipItems(challenges, t('general.challenge'), 'neutral')}
+      {membershipItems(opportunities, t('general.opportunity'), 'primary')}
+      {membershipItems(organizations, t('general.organization'), 'positive')}
     </Card>
   );
 };
@@ -131,10 +125,7 @@ export const UserProfile: FC = () => {
 
   const references = user?.profile?.references || [];
 
-  const groups = userMetadata?.groups || [];
-
-  const challenges = userMetadata?.challenges || [];
-  const opportunities = userMetadata?.opportunities || [];
+  const { groups = [], challenges = [], opportunities = [], ecoverses = [], organizations = [] } = userMetadata || {};
 
   const tagsets = user?.profile?.tagsets;
   const handleEditContactDetails = () => {
@@ -145,7 +136,7 @@ export const UserProfile: FC = () => {
 
   return (
     <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />}>
-      <Header text={user?.displayName}></Header>
+      <Header text={user?.displayName} />
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
           {userMetadata?.roles[0].name}
@@ -192,7 +183,13 @@ export const UserProfile: FC = () => {
             </div>
           ))}
         </Card>
-        <MemberOf groups={groups} challenges={challenges} opportunities={opportunities} />
+        <MemberOf
+          groups={groups}
+          challenges={challenges}
+          opportunities={opportunities}
+          ecoverses={ecoverses}
+          organizations={organizations}
+        />
       </Body>
     </Section>
   );
