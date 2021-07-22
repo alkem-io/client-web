@@ -16,6 +16,7 @@ import Hidden from '../core/Hidden';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 import { SEARCH_PAGE } from '../../models/Constants';
+import { useTranslation } from 'react-i18next';
 
 interface NavigationProps {
   maximize: boolean;
@@ -40,6 +41,7 @@ const useNavigationStyles = createStyles(theme => ({
 }));
 
 const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
+  const { t } = useTranslation();
   const styles = useNavigationStyles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchorMdUp = useRef(null);
@@ -91,7 +93,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                   )}
                   {isAuthenticated && (
                     <Button
-                      text="Sign out"
+                      text={t('authentication.sign-out')}
                       as={Link}
                       to={'/auth/logout'}
                       inset

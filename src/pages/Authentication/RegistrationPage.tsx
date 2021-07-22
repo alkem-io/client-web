@@ -1,5 +1,4 @@
-import { SelfServiceRegistrationFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -9,7 +8,7 @@ import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
 import { usePlatformConfigurationQuery } from '../../generated/graphql';
-import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
+import { useKratos } from '../../hooks/useKratos';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/Constants';
 
@@ -18,33 +17,18 @@ interface RegisterPageProps {
 }
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [registrationFlow, setRegistrationFlow] = useState<SelfServiceRegistrationFlow>();
-  const kratos = useKratosClient();
   const history = useHistory();
   const { t } = useTranslation();
+  const { registrationFlow, getRegistrationFlow, loading } = useKratos();
 
   useEffect(() => {
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceRegistrationFlow(flow)
-        .then(({ status, data: flow, ..._response }) => {
-          if (status !== 200) {
-            console.error(flow);
-          }
-          setRegistrationFlow(flow);
-        })
-        .catch(handleFlowError);
-    }
-  }, [flow]);
+    getRegistrationFlow(flow);
+  }, [getRegistrationFlow, flow]);
 
-  const { data, loading } = usePlatformConfigurationQuery();
+  const { data, loading: loadingPlatform } = usePlatformConfigurationQuery();
   const platform = data?.configuration.platform;
 
-  if (!flow) {
-    window.location.replace('/self-service/registration/browser');
-  }
-
-  if (!registrationFlow || loading) return <Loading text={'Loading flow'} />;
+  if (loadingPlatform || loading) return <Loading text={'Loading flow'} />;
 
   return (
     <AuthenticationLayout>

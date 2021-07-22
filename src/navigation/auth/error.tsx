@@ -7,7 +7,7 @@ import { useQueryParams } from '../../hooks/useQueryParams';
 
 export const ErrorRoute: FC = () => {
   const params = useQueryParams();
-  const errorCode = params.get('error');
+  const errorCode = params.get('id');
   const [error, setError] = useState<SelfServiceError>();
   const kratos = useKratosClient();
 

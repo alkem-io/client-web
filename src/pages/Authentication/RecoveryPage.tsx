@@ -1,36 +1,23 @@
-import { SelfServiceRecoveryFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
+import { useKratos } from '../../hooks/useKratos';
 interface RegisterPageProps {
   flow: string;
 }
 
 export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [recoveryFlow, setRecoveryFlow] = useState<SelfServiceRecoveryFlow>();
-  const kratos = useKratosClient();
-
   const { t } = useTranslation();
+  const { recoveryFlow, getRecoveryFlow, loading } = useKratos();
 
   useEffect(() => {
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceRecoveryFlow(flow)
-        .then(({ status, data: flow, ..._response }) => {
-          if (status !== 200) {
-            console.error(flow);
-          }
-          setRecoveryFlow(flow);
-        })
-        .catch(handleFlowError);
-    }
-  }, [flow]);
+    getRecoveryFlow(flow);
+  }, [getRecoveryFlow, flow]);
 
-  if (!recoveryFlow) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={'Loading flow'} />;
 
   return (
     <Container fluid={'sm'}>

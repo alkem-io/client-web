@@ -30,7 +30,7 @@ import UserSegment from './User/UserSegment';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthenticationContext();
+  const { isAuthenticated, logoutUrl } = useAuthenticationContext();
   const { ecoverses } = useEcoversesContext();
 
   const { user, loading, verified } = useUserContext();
@@ -109,6 +109,7 @@ const App = ({ children }): React.ReactElement => {
                   userMetadata={user}
                   orientation={isVisible ? 'vertical' : 'horizontal'}
                   emailVerified={verified}
+                  logoutUrl={logoutUrl}
                 />
               )}
             </div>

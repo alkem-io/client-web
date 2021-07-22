@@ -1,41 +1,24 @@
-import { SelfServiceVerificationFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
+import { useKratos } from '../../hooks/useKratos';
 
 interface RegisterPageProps {
   flow?: string;
 }
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [verificationFlow, setVerificationFlow] = useState<SelfServiceVerificationFlow>();
-  const kratos = useKratosClient();
   const { t } = useTranslation();
+  const { verificationFlow, getVerificationFlow, loading } = useKratos();
 
   useEffect(() => {
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceVerificationFlow(flow)
-        .then(({ status, data: flow, ..._response }) => {
-          if (status !== 200) {
-            console.error(flow);
-          }
-          setVerificationFlow(flow);
-        })
-        .catch(handleFlowError);
-    }
-  }, [flow]);
+    getVerificationFlow(flow);
+  }, [getVerificationFlow, flow]);
 
-  if (!flow) {
-    window.location.replace('/self-service/verification/browser');
-    return null;
-  }
-
-  if (!verificationFlow) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={'Loading flow'} />;
 
   return (
     <Container fluid={'sm'}>

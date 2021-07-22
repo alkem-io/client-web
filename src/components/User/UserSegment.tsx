@@ -11,6 +11,7 @@ import User from '../layout/User';
 import Button from '../core/Button';
 import { useHistory } from 'react-router-dom';
 import Icon from '../core/Icon';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -26,9 +27,11 @@ interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
   emailVerified: boolean;
+  logoutUrl?: string;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified, logoutUrl: _l }) => {
+  const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
@@ -92,10 +95,12 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 </Box>
                 <Box>
                   <Button
+                    //as="a"
                     onClick={() => {
                       setDropdownOpen(false);
                       history.push('/auth/logout');
                     }}
+                    // href={logoutUrl}
                     variant="transparent"
                     inset
                     block
@@ -103,7 +108,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                   >
                     <Icon component={DoorOpenIcon} color="inherit" size="sm" />
                     <Typography variant="button" color="inherit">
-                      Sign out
+                      {t('authentication.sign-out')}
                     </Typography>
                   </Button>
                 </Box>

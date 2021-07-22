@@ -7,6 +7,7 @@ export interface AuthContext {
   isAuthenticated: boolean;
   session?: Session;
   verified: boolean;
+  logoutUrl?: string;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
@@ -16,7 +17,7 @@ const AuthenticationContext = React.createContext<AuthContext>({
 });
 
 const AuthenticationProvider: FC = ({ children }) => {
-  const { session, isAuthenticated, loading, verified } = useWhoami();
+  const { session, isAuthenticated, loading, verified, logoutUrl } = useWhoami();
 
   return (
     <AuthenticationContext.Provider
@@ -25,6 +26,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         loading,
         session,
         verified: true || verified, // Remove until smtp server is configured.
+        logoutUrl,
       }}
     >
       {children}

@@ -1,5 +1,4 @@
-import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -8,7 +7,7 @@ import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { handleFlowError, useKratosClient } from '../../hooks/useKratosClient';
+import { useKratos } from '../../hooks/useKratos';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/Constants';
@@ -18,8 +17,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
-  const [loginFlow, setLoginFlow] = useState<SelfServiceLoginFlow>();
-  const kratos = useKratosClient();
+  const { loginFlow, getLoginFlow, loading } = useKratos();
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -27,28 +25,10 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   useUpdateNavigation({ currentPaths });
 
   useEffect(() => {
-    if (!flow && kratos) {
-      kratos.initializeSelfServiceLoginFlowForBrowsers().then(({ status, data }) => {
-        if (status !== 200) {
-          console.error(data);
-        }
-        setLoginFlow(data);
-      });
-    }
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceLoginFlow(flow)
-        .then(({ status, data: flow }) => {
-          if (status !== 200) {
-            console.error(flow);
-          }
-          setLoginFlow(flow);
-        })
-        .catch(handleFlowError);
-    }
-  }, [flow, kratos]);
+    getLoginFlow(flow);
+  }, [getLoginFlow, flow]);
 
-  if (!loginFlow) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={'Loading flow'} />;
 
   // Remove resetpassword until the SMTP server is configured correctly
   const resetPassword = <></>;
