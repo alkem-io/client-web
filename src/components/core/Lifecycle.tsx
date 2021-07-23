@@ -1,9 +1,10 @@
+import * as d3 from 'd3';
+import React, { FC, MutableRefObject, useCallback } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import * as d3 from 'd3';
-import { Lifecycle } from '../types/graphql-schema';
-import { MutableRefObject } from 'react';
-import { Theme } from '../context/ThemeProvider';
+import { Lifecycle } from '../../types/graphql-schema';
+import { Theme } from '../../context/ThemeProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 export interface GraphThemeOptions {
   strokePrimaryColor?: string;
@@ -13,7 +14,26 @@ export interface GraphThemeOptions {
   fontSize?: number;
 }
 
-export const buildGraph = (
+interface Props {
+  lifecycle: Lifecycle;
+  options?: GraphThemeOptions;
+}
+
+const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
+  const theme = useTheme().theme;
+  const divRef = useCallback(
+    svgRef => {
+      if (lifecycle) {
+        buildGraph(svgRef, lifecycle, theme, options);
+      }
+    },
+    [lifecycle]
+  );
+
+  return <svg id="graph-container" className="col-7" ref={divRef} />;
+};
+
+const buildGraph = (
   ref: MutableRefObject<SVGSVGElement>,
   lifecycle: Lifecycle,
   theme: Theme,
@@ -215,3 +235,4 @@ const _buildGraph = (ref: MutableRefObject<SVGSVGElement>, lifecycle: Lifecycle,
     simulation.stop();
   }, 1);
 };
+export default LifecycleVisualizer;
