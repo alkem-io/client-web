@@ -1397,6 +1397,7 @@ export const DeleteGroupDocument = gql`
   mutation deleteGroup($input: DeleteUserGroupInput!) {
     deleteUserGroup(deleteData: $input) {
       id
+      name
     }
   }
 `;

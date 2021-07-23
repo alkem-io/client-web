@@ -2162,7 +2162,7 @@ export type DeleteGroupMutationVariables = Exact<{
 
 export type DeleteGroupMutation = {
   __typename?: 'Mutation';
-  deleteUserGroup: { __typename?: 'UserGroup'; id: string };
+  deleteUserGroup: { __typename?: 'UserGroup'; id: string; name: string };
 };
 
 export type DeleteOpportunityMutationVariables = Exact<{

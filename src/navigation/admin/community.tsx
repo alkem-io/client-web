@@ -10,6 +10,9 @@ import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
+import { useDeleteGroupMutation } from '../../generated/graphql';
+import { useNotification } from '../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
@@ -61,17 +64,45 @@ interface CommunityGroupsRouteProps extends WithParentMembersProps, WithCommunit
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, community, parentMembers }) => {
   const { path, url } = useRouteMatch();
+  const handleError = useApolloErrorHandler();
+  const notify = useNotification();
+  const success = (message: string) => notify(message, 'success');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
+
+  const [deleteGroup] = useDeleteGroupMutation({
+    onCompleted: data => success(`Group ${data.deleteUserGroup.name} deleted successfully`),
+    onError: handleError,
+    // todo: wrap into util function
+    update: (cache, { data }) => {
+      if (data) {
+        const { id, __typename } = data.deleteUserGroup;
+        const normalizedId = cache.identify({ id: id, __typename: __typename });
+        cache.evict({ id: normalizedId });
+        cache.gc();
+      }
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    deleteGroup({
+      variables: {
+        input: {
+          ID: id,
+        },
+      },
+    });
+  };
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
         <ListPage
-          data={groupsList || []}
+          data={groupsList}
           paths={currentPaths}
           title={community ? `${community?.displayName} Groups` : 'Groups'}
+          onDelete={x => handleDelete(x.id)}
           newLink={`${url}/new`}
         />
       </Route>
