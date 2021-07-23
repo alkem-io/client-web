@@ -1696,6 +1696,52 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
+export const DeleteUserApplicationDocument = gql`
+  mutation deleteUserApplication($input: DeleteApplicationInput!) {
+    deleteUserApplication(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeleteUserApplicationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteUserApplicationMutation,
+  SchemaTypes.DeleteUserApplicationMutationVariables
+>;
+
+/**
+ * __useDeleteUserApplicationMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserApplicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserApplicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserApplicationMutation, { data, loading, error }] = useDeleteUserApplicationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteUserApplicationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteUserApplicationMutation,
+    SchemaTypes.DeleteUserApplicationMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.DeleteUserApplicationMutation,
+    SchemaTypes.DeleteUserApplicationMutationVariables
+  >(DeleteUserApplicationDocument, baseOptions);
+}
+export type DeleteUserApplicationMutationHookResult = ReturnType<typeof useDeleteUserApplicationMutation>;
+export type DeleteUserApplicationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserApplicationMutation>;
+export type DeleteUserApplicationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteUserApplicationMutation,
+  SchemaTypes.DeleteUserApplicationMutationVariables
+>;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
     eventOnApplication(applicationEventData: $input) {
@@ -7000,6 +7046,7 @@ export const UserApplicationsDocument = gql`
         id
         state
         communityID
+        displayName
       }
     }
   }

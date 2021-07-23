@@ -1,10 +1,8 @@
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import React, { FC } from 'react';
-import { Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Trans, useTranslation } from 'react-i18next';
+import { Alert } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks/useSentry';
-import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks/useUserContext';
 import { AUTH_VERIFY_PATH } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
@@ -14,56 +12,15 @@ import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Loading } from '../core/Loading';
 import Section, { Body, Header } from '../core/Section';
-import Tag, { TagProps } from '../core/Tag';
+import Tag from '../core/Tag';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
+import MemberOf from './MemberOf';
+import ContactDetails from './ContactDetails';
+import { createStyles } from '../../hooks/useTheme';
+import PendingApplications from './PendingApplications';
 
-const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
-  return value ? (
-    <>
-      <Typography color="primary" weight="boldLight" className={'mt-2'}>
-        {title}
-      </Typography>
-      <Typography>{value}</Typography>{' '}
-    </>
-  ) : (
-    <></>
-  );
-};
-
-const useContactDetailsStyles = createStyles(_theme => ({
-  edit: {
-    fill: _theme.palette.neutral,
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-}));
-
-export const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
-  user: { country, city, email, phone, profile },
-  onEdit,
-}) => {
-  const styles = useContactDetailsStyles();
-  return (
-    <>
-      <Card bodyProps={{ classes: {} }}>
-        <div className={'d-flex align-items-end flex-column'}>
-          <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'Edit profile'}>Edit profile</Tooltip>}>
-            <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
-          </OverlayTrigger>
-        </div>
-        <Detail title="Email" value={email} />
-        <Detail title="Bio" value={profile?.description || ''} />
-        <Detail title="Phone" value={phone} />
-        <Detail title="Country" value={country} />
-        <Detail title="City" value={city} />
-      </Card>
-    </>
-  );
-};
-
-const useMemberOfStyles = createStyles(theme => ({
+const useStyles = createStyles(theme => ({
   listDetail: {
     padding: theme.shape.spacing(1),
     marginTop: theme.shape.spacing(1),
@@ -72,51 +29,11 @@ const useMemberOfStyles = createStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  noPadding: {
-    padding: 0,
-  },
 }));
-
-export type MemberOfProps = {
-  groups: string[];
-  challenges: string[];
-  opportunities: string[];
-  ecoverses: string[];
-  organizations: string[];
-};
-
-export const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecoverses, organizations }) => {
-  const { t } = useTranslation();
-  const styles = useMemberOfStyles();
-
-  const membershipItems = (names: string[], tagText: string, tagColor: TagProps['color']) => {
-    return (
-      names &&
-      names.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
-            {x}
-          </Typography>
-          <Tag text={tagText} color={tagColor} />
-        </div>
-      ))
-    );
-  };
-
-  return (
-    <Card primaryTextProps={{ text: 'Member of' }} className={'mt-2'}>
-      {membershipItems(ecoverses, t('general.ecoverse'), 'primary')}
-      {membershipItems(groups, t('general.group'), 'primary')}
-      {membershipItems(challenges, t('general.challenge'), 'neutral')}
-      {membershipItems(opportunities, t('general.opportunity'), 'primary')}
-      {membershipItems(organizations, t('general.organization'), 'positive')}
-    </Card>
-  );
-};
 
 export const UserProfile: FC = () => {
   const history = useHistory();
-  const styles = useMemberOfStyles();
+  const styles = useStyles();
 
   useTransactionScope({ type: 'authentication' });
   const { user: userMetadata, loading, verified } = useUserContext();
@@ -153,6 +70,7 @@ export const UserProfile: FC = () => {
           />
         </Alert>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
+        <PendingApplications user={user} />
         <Card className={'mt-2'}>
           {tagsets &&
             tagsets.map((t, i) => (

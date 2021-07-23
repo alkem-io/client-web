@@ -2255,6 +2255,15 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
+export type DeleteUserApplicationMutationVariables = Exact<{
+  input: DeleteApplicationInput;
+}>;
+
+export type DeleteUserApplicationMutation = {
+  __typename?: 'Mutation';
+  deleteUserApplication: { __typename?: 'Application'; id: string };
+};
+
 export type EventOnApplicationMutationVariables = Exact<{
   input: ApplicationEventInput;
 }>;
@@ -3829,7 +3838,13 @@ export type UserApplicationsQuery = {
   membershipUser: {
     __typename?: 'UserMembership';
     applications?: Maybe<
-      Array<{ __typename?: 'ApplicationResultEntry'; id: string; state: string; communityID: string }>
+      Array<{
+        __typename?: 'ApplicationResultEntry';
+        id: string;
+        state: string;
+        communityID: string;
+        displayName: string;
+      }>
     >;
   };
 };
