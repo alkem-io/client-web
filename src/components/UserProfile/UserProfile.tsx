@@ -52,7 +52,7 @@ export const UserProfile: FC = () => {
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
   return (
-    <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />}>
+    <Section avatar={<Avatar size="lg" src={user?.profile?.avatar} />} data-testid="user-profile">
       <Header text={user?.displayName} />
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Typography as="span" variant="caption">
