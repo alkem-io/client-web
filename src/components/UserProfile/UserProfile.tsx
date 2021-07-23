@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks/useSentry';
 import { useUserContext } from '../../hooks/useUserContext';
-import { VERIFY_PATH } from '../../models/Constants';
+import { AUTH_VERIFY_PATH } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
@@ -65,7 +65,7 @@ export const UserProfile: FC = () => {
           <Trans
             i18nKey={'pages.user-profile.email-not-verified'}
             components={{
-              l: <Link to={VERIFY_PATH} />,
+              l: <Link to={AUTH_VERIFY_PATH} />,
             }}
           />
         </Alert>
