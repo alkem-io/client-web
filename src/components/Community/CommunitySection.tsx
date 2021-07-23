@@ -48,14 +48,14 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');
   const { isFeatureEnabled } = useConfig();
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+  const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
 
   const tabList = [
     { name: 'members', label: 'Members', enabled: true },
     { name: 'updates', label: 'Updates', enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
-    { name: 'discussion', label: 'Discussion', enaled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
+    { name: 'discussion', label: 'Discussion', enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
   ].filter(x => x.enabled);
 
   return (
@@ -74,14 +74,15 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             {onExplore && <Button text="Explore and connect" onClick={() => onExplore()} />}
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
-            <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
-              <Updates messages={updates} />
-            </TabPanel>
-          )}
-          {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
-            <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
-              <Discussions messages={discussions} />
-            </TabPanel>
+            <>
+              <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
+                <Updates messages={updates} />
+              </TabPanel>
+
+              <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
+                <Discussions messages={discussions} />
+              </TabPanel>
+            </>
           )}
         </TabContext>
       </Body>

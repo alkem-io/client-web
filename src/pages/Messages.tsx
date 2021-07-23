@@ -274,7 +274,7 @@ export const Messages: FC<PageProps> = () => {
   const { isFeatureEnabled } = useConfig();
 
   if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
-    return <div>Comming soon!</div>;
+    return <div>Coming soon!</div>;
   }
 
   return (
