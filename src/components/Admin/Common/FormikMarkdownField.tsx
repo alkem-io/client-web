@@ -6,11 +6,13 @@ import { Form, FormControlProps } from 'react-bootstrap';
 import { Required } from '../../Required';
 import { createStyles } from '../../../hooks/useTheme';
 
-createStyles(() => ({
+const useStyle = createStyles(() => ({
   padding: {
-    padding: 0,
-
-    '& .w-md-editor-content .w-md-editor-preview': {
+    /*
+      select the inner div only if state classes are applied
+      and offset the text to the left if a tick or error icon is displayed
+    */
+    '&.is-invalid .w-md-editor-content .w-md-editor-preview, &.is-valid .w-md-editor-content .w-md-editor-preview': {
       paddingRight: 30,
     },
   },
@@ -36,15 +38,10 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   placeholder,
   autoComplete,
 }) => {
+  const styles = useStyle();
   const [field, meta, helper] = useField(name);
-  const validClass = useMemo(
-    () => (required && Boolean(!meta.error) && meta.touched ? 'padding form-control is-valid' : undefined),
-    [meta]
-  );
-  const invalidClass = useMemo(
-    () => (Boolean(!!meta.error) && meta.touched ? 'padding form-control is-invalid' : undefined),
-    [meta]
-  );
+  const validClass = useMemo(() => (required && Boolean(!meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
+  const invalidClass = useMemo(() => (Boolean(!!meta.error) && meta.touched ? 'is-invalid' : undefined), [meta]);
 
   return (
     <>
@@ -55,8 +52,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
       <MDEditor
         value={field.value}
         onChange={e => helper.setValue(e)}
-        className={clsx(validClass, invalidClass)}
-        style={{ padding: 0 }}
+        className={clsx('form-control', styles.padding, validClass, invalidClass)}
+        style={{ padding: 0 }} /* using style because it's overwritten otherwise */
         textareaProps={{
           name: name,
           placeholder: placeholder || title,
