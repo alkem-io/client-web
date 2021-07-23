@@ -1,15 +1,15 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Maybe, Lifecycle } from '../../types/graphql-schema';
-import { createStyles, useTheme } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
-import { buildGraph } from '../../utils/buildGraph';
+import LifecycleVisualizer from '../core/Lifecycle';
 
 export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;
@@ -54,7 +54,6 @@ export interface LifecycleModalProps {
 
 const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
   const styles = useUserPopUpStyles();
-  const theme = useTheme().theme;
   const machine = createMachine(JSON.parse(lifecycle.machineDef));
   const graph = toDirectedGraph(machine);
 
@@ -65,15 +64,6 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
     ?.edges.map(edge => edge.target.id.split('.').pop())
     .join(', ');
 
-  const divRef = useCallback(
-    svgRef => {
-      if (lifecycle) {
-        buildGraph(svgRef, lifecycle, theme);
-      }
-    },
-    [lifecycle]
-  );
-
   return (
     <div>
       <Modal size="lg" show={show} onHide={onHide}>
@@ -83,9 +73,7 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
             {nextStates && <p>Next states: {nextStates}</p>}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className={styles.body}>
-          <svg id="graph-container" ref={divRef}></svg>
-        </Modal.Body>
+        <Modal.Body className={styles.body}>{lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}</Modal.Body>
       </Modal>
     </div>
   );

@@ -4,6 +4,7 @@ query userApplications($input: MembershipUserInput!) {
       id
       state
       communityID
+      displayName
     }
   }
 }
