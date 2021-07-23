@@ -1,0 +1,5 @@
+mutation deleteUserApplication($input: DeleteApplicationInput!) {
+  deleteUserApplication(deleteData: $input) {
+    id
+  }
+}
