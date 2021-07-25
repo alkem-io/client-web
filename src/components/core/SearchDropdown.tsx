@@ -66,7 +66,7 @@ const SearchDropdown: FC<Props> = ({ onSelect, data, value, readOnly = false, di
         <ul className={clsx('list-unstyled', styles.list)}>
           {React.Children.toArray(children).filter(
             //@ts-ignore
-            child => !value || child.props.children.toLowerCase().includes(value)
+            child => !value || child.props.children.toLowerCase().includes(value.toLowerCase())
           )}
         </ul>
       </div>

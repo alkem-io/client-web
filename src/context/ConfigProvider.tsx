@@ -2,17 +2,15 @@ import axios from 'axios';
 import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading';
-import { AuthenticationConfigurationDocument } from '../generated/graphql';
-import { Configuration } from '../models/Configuration';
+import { ConfigurationDocument } from '../generated/graphql';
 import { Error } from '../pages/Error';
-import { getConfig } from '../utils/configHelper';
+import { ConfigurationFragment, ConfigurationQuery } from '../types/graphql-schema';
 export interface ConfigContext {
-  config: Configuration;
+  config?: ConfigurationFragment;
   loading: boolean;
 }
 
 const configContext = React.createContext<ConfigContext>({
-  config: getConfig(),
   loading: true,
 });
 
@@ -21,7 +19,7 @@ interface ConfigProviderProps {
 }
 
 const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
-  const [config, setConfig] = useState(getConfig());
+  const [config, setConfig] = useState<ConfigurationFragment>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -29,10 +27,10 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
     setLoading(true);
 
     const queryConfig = async (url: string) => {
-      const result = await axios.post(
+      const result = await axios.post<{ data: ConfigurationQuery }>(
         url,
         {
-          query: print(AuthenticationConfigurationDocument),
+          query: print(ConfigurationDocument),
         },
         {
           responseType: 'json',
@@ -40,7 +38,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
         }
       );
       if (result) {
-        return getConfig(result.data.data.configuration);
+        return result.data.data.configuration;
       }
     };
 

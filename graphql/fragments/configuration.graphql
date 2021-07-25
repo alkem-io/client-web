@@ -1,0 +1,30 @@
+fragment Configuration on Config {
+  authentication {
+    enabled
+    providers {
+      name
+      label
+      icon
+      enabled
+      config {
+        __typename
+        ... on OryConfig {
+          kratosPublicBaseURL
+          issuer
+        }
+      }
+    }
+  }
+  platform {
+    about
+    feedback
+    privacy
+    security
+    support
+    terms
+    featureFlags {
+      enabled
+      name
+    }
+  }
+}
