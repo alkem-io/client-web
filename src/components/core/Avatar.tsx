@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
@@ -106,6 +106,10 @@ const Avatar = forwardRef<unknown, AvatarProps>(
 
     const styles = useAvatarStyles(classes);
     const [fallback, setFallback] = useState(false);
+    useEffect(() => {
+      // reset fallback when image source changes.
+      setFallback(false);
+    }, [src]);
 
     return (
       <div
@@ -125,7 +129,7 @@ const Avatar = forwardRef<unknown, AvatarProps>(
             <Image
               className={clsx(styles.avatar, size, className)}
               src={src}
-              alt="user"
+              alt="avatar"
               onError={() => setFallback(true)}
             />
           </OverlayTrigger>
@@ -134,7 +138,7 @@ const Avatar = forwardRef<unknown, AvatarProps>(
           <Image
             className={clsx(styles.avatar, size, className)}
             src={src}
-            alt="user"
+            alt="avatar"
             onError={() => setFallback(true)}
           />
         )}
