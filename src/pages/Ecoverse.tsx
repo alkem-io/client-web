@@ -17,8 +17,8 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
-import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import MembershipBackdrop from '../components/layout/MembershipBackdrop';
+import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
+import MembershipBackdrop from '../components/MembershipBackdrop';
 import {
   useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
@@ -68,7 +68,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
 
-  const { data: _challenges, error: challengesError, loading: isChallengeLoading } = useChallengesWithActivityQuery({
+  const {
+    data: _challenges,
+    error: challengesError,
+    loading: isChallengeLoading,
+  } = useChallengesWithActivityQuery({
     variables: { ecoverseId },
   });
   const challenges = _challenges?.ecoverse?.challenges || [];

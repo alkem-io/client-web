@@ -19,7 +19,7 @@ import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import BackdropWithMessage from '../components/layout/BackdropWithMessage';
+import BackdropWithMessage from '../components/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../generated/graphql';

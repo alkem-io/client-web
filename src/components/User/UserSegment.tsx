@@ -7,7 +7,7 @@ import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
-import User from '../layout/User';
+import User from './User';
 import Button from '../core/Button';
 import { useHistory } from 'react-router-dom';
 import Icon from '../core/Icon';

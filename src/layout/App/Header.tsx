@@ -6,8 +6,8 @@ import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRgba from '../../utils/hexToRGBA';
-import Container from '../core/Container';
-import Toolbar from '../core/Toolbar';
+import Container from '../../components/core/Container';
+import Toolbar from '../../components/core/Toolbar';
 
 const appBarZIndex = 100;
 

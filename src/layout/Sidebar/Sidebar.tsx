@@ -8,12 +8,12 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { env } from '../../../env';
-import { createStyles } from '../../../hooks/useTheme';
-import { UserMetadata } from '../../../hooks/useUserMetadataWrapper';
-import { EcoverseDetailsFragment } from '../../../types/graphql-schema';
-import { Image } from '../../core/Image';
-import Tag from '../../core/Tag';
+import { env } from '../../env';
+import { createStyles } from '../../hooks/useTheme';
+import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { EcoverseDetailsFragment } from '../../types/graphql-schema';
+import { Image } from '../../components/core/Image';
+import Tag from '../../components/core/Tag';
 import SidebarItem from './SidebarItem';
 import SidebarItemEcoverse from './SidebarItemEcoverse';
 
