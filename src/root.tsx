@@ -14,8 +14,8 @@ import { env } from './env';
 import { useGraphQLClient } from './hooks/useGraphQLClient';
 import { createStyles } from './hooks/useTheme';
 import './i18n/config';
-import { Routing } from './routes/routing';
 import { Error as ErrorPage } from './pages/Error';
+import { Routing } from './routes/routing';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
 

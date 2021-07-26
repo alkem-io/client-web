@@ -1,20 +1,47 @@
-import { combineReducers } from 'redux';
-import auth from './auth/reducers';
-import { AuthActionTypes } from './auth/types';
-import error from './error/reducers';
-import { ErrorActionTypes } from './error/types';
-import notifications from './notifincations/reducers';
-import { NotificationActionTypes } from './notifincations/types';
-import ui, { UiStoreActions } from './ui';
+import { applyMiddleware, compose, createStore, Store } from 'redux';
+import thunk from 'redux-thunk';
+import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
+import reducers, { RootState, StoreActions } from './rootReducer';
+import { AuthState, AuthStatus } from './auth/types';
+import { isAuthenticated } from '../utils/isAuthenitcated';
 
-const rootReducer = combineReducers({
-  auth,
-  error,
-  notifications,
-  ui,
-});
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
+}
 
-export default rootReducer;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export type RootState = ReturnType<typeof rootReducer>;
-export type StoreActions = AuthActionTypes | ErrorActionTypes | NotificationActionTypes | UiStoreActions;
+const preservedState = () => {
+  try {
+    let status = localStorage.getItem(AUTH_STATUS_KEY) as AuthStatus;
+    status = status === 'done' ? status : 'unauthenticated';
+    const token = status === 'done' ? localStorage.getItem(TOKEN_KEY) : undefined;
+    return {
+      auth: {
+        status,
+        isAuthenticated: isAuthenticated(status),
+        accessToken: token,
+      } as AuthState,
+    };
+  } catch {}
+};
+
+export default function configureStore(): Store<RootState, StoreActions> {
+  const store = createStore(reducers, preservedState(), composeEnhancers(applyMiddleware(thunk)));
+
+  store.subscribe(() => {
+    const auth = store.getState().auth;
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+
+      if (auth.status) localStorage.setItem(AUTH_STATUS_KEY, auth.status);
+      else localStorage.removeItem(AUTH_STATUS_KEY);
+    } catch {
+      // Ignore errors
+    }
+  });
+
+  return store;
+}
