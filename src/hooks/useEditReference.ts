@@ -5,7 +5,7 @@ import {
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
 } from '../generated/graphql';
-import { useApolloErrorHandler } from './useApolloErrorHandler';
+import { useApolloErrorHandler } from './graphql/useApolloErrorHandler';
 
 export type PushFunc = (success: boolean) => void;
 export type RemoveFunc = (obj?: any) => void;

@@ -11,13 +11,14 @@ import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import { env } from './env';
-import { useGraphQLClient } from './hooks/useGraphQLClient';
+
 import { createStyles } from './hooks/useTheme';
 import './i18n/config';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routes/routing';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
+import useGraphQLClient from './hooks/graphql/useGraphQLClient';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 

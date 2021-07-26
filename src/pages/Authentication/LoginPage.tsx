@@ -8,7 +8,7 @@ import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient } from '../../hooks/useKratosClient';
+import { useKratosClient } from '../../hooks/kratos/useKratosClient';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/Constants';

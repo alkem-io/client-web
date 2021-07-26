@@ -5,7 +5,7 @@ import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
 import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { useEcoverse } from '../../../hooks/useEcoverse';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';

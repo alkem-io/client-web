@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useDeleteUserMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import ListPage from '../ListPage';

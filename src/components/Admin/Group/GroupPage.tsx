@@ -6,7 +6,7 @@ import {
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { useDeleteUserGroup } from '../../../hooks/useDeleteUserGroup';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';

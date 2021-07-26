@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import Button from '../core/Button';
 import Loading from '../core/Loading';

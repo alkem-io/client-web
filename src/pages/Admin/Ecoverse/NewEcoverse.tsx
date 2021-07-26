@@ -10,7 +10,7 @@ import {
   useCreateEcoverseMutation,
   useOrganizationsListQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../common';

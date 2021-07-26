@@ -6,7 +6,7 @@ import {
   useCreateTagsetOnProfileMutation,
   useUpdateOrganizationMutation,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
@@ -26,9 +26,10 @@ interface Props extends PageProps {
 }
 
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
-  const currentPaths = useMemo(() => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }], [
-    paths,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }],
+    [paths]
+  );
   const notify = useNotification();
   const [createTagset] = useCreateTagsetOnProfileMutation();
   const history = useHistory();

@@ -13,7 +13,7 @@ import ErrorBlock from '../components/core/ErrorBlock';
 import { Required } from '../components/Required';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks/useUserContext';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../hooks/graphql/useApolloErrorHandler';
 import { CreateNvpInput, QuestionTemplate } from '../types/graphql-schema';
 import { useUpdateNavigation } from '../hooks/useNavigation';
 import Image from '../components/core/Image';

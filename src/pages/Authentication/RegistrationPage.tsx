@@ -9,7 +9,7 @@ import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
 import { useConfig } from '../../hooks/useConfig';
-import { useKratosClient } from '../../hooks/useKratosClient';
+import { useKratosClient } from '../../hooks/kratos/useKratosClient';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/Constants';
 

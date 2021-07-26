@@ -12,7 +12,7 @@ import { createStyles } from '../../hooks/useTheme';
 import Icon from '../core/Icon';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import IconButton from '../core/IconButton';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
 import { useNotification } from '../../hooks/useNotification';
 import { User } from '../../types/graphql-schema';
 

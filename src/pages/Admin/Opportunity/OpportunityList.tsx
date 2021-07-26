@@ -9,7 +9,7 @@ import {
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { useEcoverse } from '../../../hooks/useEcoverse';
 import { AdminParameters } from '../../../routes/admin/admin';
 

@@ -11,7 +11,7 @@ import {
   useChallengeNameQuery,
   useUpdateChallengeMutation,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../types/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { TFunction } from 'i18next';

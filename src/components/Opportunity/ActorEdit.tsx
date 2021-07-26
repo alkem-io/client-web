@@ -7,7 +7,7 @@ import {
   useCreateActorMutation,
   useUpdateActorMutation,
 } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
 import { useEcoverse } from '../../hooks/useEcoverse';
 import { createStyles } from '../../hooks/useTheme';
 import { Actor } from '../../types/graphql-schema';

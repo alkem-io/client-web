@@ -5,7 +5,7 @@ import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/g
 import { useEcoverse } from '../hooks/useEcoverse';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { Project as ProjectType } from '../types/graphql-schema';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../hooks/graphql/useApolloErrorHandler';
 import RestrictedRoute from './route.extensions';
 /*local files imports end*/
 

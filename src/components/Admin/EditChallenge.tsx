@@ -7,7 +7,7 @@ import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
 import { useNotification } from '../../hooks/useNotification';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
 import { useUpdateNavigation } from '../../hooks/useNavigation';
 import {
   refetchChallengeProfileInfoQuery,

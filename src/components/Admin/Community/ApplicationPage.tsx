@@ -10,7 +10,7 @@ import Avatar from '../../core/Avatar';
 import { createStyles } from '../../../hooks/useTheme';
 import Typography from '../../core/Typography';
 import { useEventOnApplicationMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
 import LifecycleButton from '../../core/LifecycleButton';
 
 interface ApplicationViewmodel {
