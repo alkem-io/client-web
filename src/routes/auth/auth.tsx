@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
-import { hideLoginNavigation, showLoginNavigation } from '../../reducers/ui/loginNavigation/actions';
+import { hideLoginNavigation, showLoginNavigation } from '../../store/ui/loginNavigation/actions';
 import RestrictedRoute from '../route.extensions';
 import ErrorRoute from './error';
 import LoginRoute from './login';

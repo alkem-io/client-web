@@ -7,8 +7,8 @@ import { Toast } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
-import { clearNotification } from '../reducers/notifincations/actions';
-import { Notification, Severity } from '../reducers/notifincations/types';
+import { clearNotification } from '../store/notifincations/actions';
+import { Notification, Severity } from '../store/notifincations/types';
 
 export const NotificationHandler: FC = () => {
   const { t } = useTranslation();

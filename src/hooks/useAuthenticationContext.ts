@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import { AuthenticationContext } from '../context/AuthenticationProvider';
-import { AuthStatus } from '../reducers/auth/types';
+import { AuthStatus } from '../store/auth/types';
 import { useTypedSelector } from './useTypedSelector';
 
 export const useAuthenticationContext = () => {
