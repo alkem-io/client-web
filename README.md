@@ -23,7 +23,13 @@ The endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment 
 
 All further configuration is obtained from the server configuration graphql schema.
 
-## Launching the client Scripts
+## Launching the client
+
+Instantiate dependent services:
+
+```bash
+   docker-compose -f quickstart-services.yml --env-file .env.docker up --build --force-recreate
+```
 
 In the project directory, you can run:
 

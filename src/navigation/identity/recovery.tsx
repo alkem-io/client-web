@@ -9,7 +9,7 @@ export const RecoveryRoute: FC<RecoveryRouteProps> = () => {
   const flow = params.get('flow');
 
   if (!flow) {
-    window.location.replace('/self-service/recovery/browser');
+    window.location.replace('/identity/ory/kratos/public/self-service/recovery/browser');
     return null;
   }
 
