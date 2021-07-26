@@ -5,11 +5,12 @@ import { CommunityCredentials } from '../../components/Admin/Authorization/EditC
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
-import { FourOuFour } from '../../pages';
-import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
-import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
+import { useDeleteUserGroup } from '../../hooks/useDeleteUserGroup';
+import { FourOuFour } from '../../pages';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
+import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
+import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
@@ -61,6 +62,9 @@ interface CommunityGroupsRouteProps extends WithParentMembersProps, WithCommunit
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, community, parentMembers }) => {
   const { path, url } = useRouteMatch();
+
+  const { handleDelete } = useDeleteUserGroup();
+
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
@@ -69,9 +73,10 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
     <Switch>
       <Route exact path={`${path}`}>
         <ListPage
-          data={groupsList || []}
+          data={groupsList}
           paths={currentPaths}
           title={community ? `${community?.displayName} Groups` : 'Groups'}
+          onDelete={x => handleDelete(x.id)}
           newLink={`${url}/new`}
         />
       </Route>

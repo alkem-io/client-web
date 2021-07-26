@@ -110,7 +110,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     name={'name'}
                     title={'Name'}
                     value={name}
-                    required={true && !isReadOnlyMode}
+                    required={!isReadOnlyMode}
                     readOnly={isReadOnlyMode}
                     placeholder={'Full Name'}
                     disabled={isSubmitting}
@@ -149,16 +149,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
               {isEditMode && (
                 <div className={'d-flex mt-4'}>
                   <div className={'flex-grow-1'} />
-                  {onDelete && (
-                    <Button
-                      variant={'negative'}
-                      onClick={() => onDelete(groupId)}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                    >
-                      {'Delete'}
-                    </Button>
-                  )}
                   {onCancel && (
                     <Button
                       variant={isEditMode ? 'default' : 'primary'}
@@ -167,6 +157,16 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                       className={'ml-3'}
                     >
                       {isEditMode ? 'Cancel' : 'Back'}
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      variant={'negative'}
+                      onClick={() => onDelete(groupId)}
+                      disabled={isSubmitting}
+                      className={'ml-3'}
+                    >
+                      {'Delete'}
                     </Button>
                   )}
                   <Button variant={'primary'} type={'submit'} className={'ml-3'} disabled={isSubmitting}>
