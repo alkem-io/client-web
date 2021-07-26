@@ -496,5 +496,11 @@
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
     }
+  },
+  "operations": {
+    "user-group": {
+      "updated-successfuly": "Group {{name}} has been updated!",
+      "deleted-successfuly": "Group {{name}} deleted successfully"
+    }
   }
 }
