@@ -5,7 +5,7 @@ import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useUpdateOrganizationMutation,
-} from '../../../generated/graphql';
+} from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
@@ -16,7 +16,7 @@ import {
   Reference,
   Tagset,
   UpdateOrganisationInput,
-} from '../../../types/graphql-schema';
+} from '../../../models/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import OrganizationForm from './OrganizationForm';
 interface Props extends PageProps {

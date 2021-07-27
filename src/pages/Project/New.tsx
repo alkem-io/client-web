@@ -12,8 +12,8 @@ import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { ContentCard } from '../../components/Project/Cards';
 import { useUpdateNavigation } from '../../hooks';
-import { createStyles } from '../../hooks';
-import { Project as ProjectType, User } from '../../types/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
+import { Project as ProjectType, User } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({

@@ -6,7 +6,7 @@ import { useTransactionScope } from '../../hooks';
 import { useUserContext } from '../../hooks';
 import { AUTH_VERIFY_PATH } from '../../models/constants';
 import { defaultUser } from '../../models/User';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
@@ -17,7 +17,7 @@ import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import MemberOf from './MemberOf';
 import ContactDetails from './ContactDetails';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import PendingApplications from './PendingApplications';
 
 const useStyles = createStyles(theme => ({

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import Loading from '../components/core/Loading';
-import { useUserAvatarsQuery } from '../generated/graphql';
-import { User } from '../types/graphql-schema';
+import { useUserAvatarsQuery } from '../components/generated/graphql';
+import { User } from '../models/graphql-schema';
 
 interface AvatarsProviderProps {
   users?: User[];

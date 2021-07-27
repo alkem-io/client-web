@@ -1,4 +1,4 @@
-import * as SchemaTypes from '../types/graphql-schema';
+import * as SchemaTypes from '../../models/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';

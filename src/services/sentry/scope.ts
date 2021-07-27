@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
-import { env } from '../env';
-import { User } from '../types/graphql-schema';
+import { env } from '../../types/env';
+import { User } from '../../models/graphql-schema';
 
 const piiEnabled = env && env.REACT_APP_SENTRY_PII_ENABLED;
 

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Role } from '../../models/Role';
-import { AuthorizationCredential, User, UserMembershipDetailsFragment } from '../../types/graphql-schema';
+import { AuthorizationCredential, User, UserMembershipDetailsFragment } from '../../models/graphql-schema';
 import { useCredentialsResolver } from '../useCredentialsResolver';
 
 export interface UserMetadata {

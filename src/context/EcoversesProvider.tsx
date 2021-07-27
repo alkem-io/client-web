@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useEcoversesQuery } from '../generated/graphql';
-import { EcoverseDetailsFragment } from '../types/graphql-schema';
+import { useEcoversesQuery } from '../components/generated/graphql';
+import { EcoverseDetailsFragment } from '../models/graphql-schema';
 import { ApolloError } from '@apollo/client';
 
 interface EcoversesContextProps {

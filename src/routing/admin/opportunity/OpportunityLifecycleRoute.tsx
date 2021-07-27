@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import EditLifecycle from '../../../components/Admin/EditLifecycle';
 import { useParams } from 'react-router';
-import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../../generated/graphql';
+import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../../components/generated/graphql';
 import Loading from '../../../components/core/Loading';
 import { PageProps } from '../../../pages';
 import { useApolloErrorHandler } from '../../../hooks';

@@ -7,7 +7,7 @@ import {
   UpdateReferenceInput,
   UpdateVisualInput,
   Visual,
-} from '../types/graphql-schema';
+} from '../models/graphql-schema';
 
 interface ContextObject {
   background?: string;

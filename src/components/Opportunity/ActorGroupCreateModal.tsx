@@ -4,7 +4,7 @@ import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorGroupMutation,
   useOpportunityProfileQuery,
-} from '../../generated/graphql';
+} from '../generated/graphql';
 import { useEcoverse } from '../../hooks';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';

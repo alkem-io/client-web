@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { useCreateProjectMutation, useProjectProfileQuery } from '../generated/graphql';
+import { useCreateProjectMutation, useProjectProfileQuery } from '../components/generated/graphql';
 import { useEcoverse } from '../hooks';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
-import { Project as ProjectType } from '../types/graphql-schema';
+import { Project as ProjectType } from '../models/graphql-schema';
 import { useApolloErrorHandler } from '../hooks';
 import RestrictedRoute from './route.extensions';
 /*local files imports end*/

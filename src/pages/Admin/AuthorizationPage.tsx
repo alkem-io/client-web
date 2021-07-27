@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useUsersQuery } from '../../generated/graphql';
+import { useUsersQuery } from '../../components/generated/graphql';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '..';
 import Loading from '../../components/core/Loading';
 import EditGlobalCredentials from '../../components/Admin/Authorization/EditGlobalCredentials';
-import { AuthorizationCredential } from '../../types/graphql-schema';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 
 interface AuthorizationPageProps extends PageProps {
   resourceId?: string;

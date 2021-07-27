@@ -7,7 +7,7 @@ import Section, { Header, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { useConfig } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
-import { createStyles } from '../hooks';
+import { createStyles } from '../hooks/useTheme';
 import { FEATURE_COMMUNICATIONS } from '../models/constants';
 import { PageProps } from './common';
 

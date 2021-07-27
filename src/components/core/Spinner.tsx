@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { Spinner as BootstrapSpinner, SpinnerProps as BootstrapSpinnerProps } from 'react-bootstrap';
 
 interface SpinnerProps extends Omit<BootstrapSpinnerProps, 'animation'> {

@@ -8,7 +8,7 @@ import {
   refetchChallengesWithCommunityQuery,
   useChallengesWithCommunityQuery,
   useDeleteChallengeMutation,
-} from '../../../generated/graphql';
+} from '../../../components/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
 

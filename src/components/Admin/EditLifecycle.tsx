@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
-import { Lifecycle } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks';
+import { Lifecycle } from '../../models/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
 import { useRouteMatch } from 'react-router';
 import { PageProps } from '../../pages';
 import { useUpdateNavigation } from '../../hooks';

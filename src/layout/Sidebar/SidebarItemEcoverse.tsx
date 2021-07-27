@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { EcoverseDetailsFragment } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks';
+import { EcoverseDetailsFragment } from '../../models/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../../components/core/Avatar';
 import clsx from 'clsx';
 import Button from '../../components/core/Button';

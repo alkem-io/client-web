@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
-import { ApplicationInfoFragment } from '../../types/graphql-schema';
+import { ApplicationInfoFragment } from '../../models/graphql-schema';
 import ApplicationDetailsPage from '../../components/Admin/Community/ApplicationDetailsPage';
 
 interface Props {

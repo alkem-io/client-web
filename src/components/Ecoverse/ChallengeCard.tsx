@@ -11,8 +11,8 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
-import { Nvp } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks';
+import { Nvp } from '../../models/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
 
 const useCardStyles = createStyles(theme => ({
   relative: {

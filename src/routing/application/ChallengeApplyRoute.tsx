@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useChallengeApplicationQuery, useChallengeApplicationTemplateQuery } from '../../generated/graphql';
+import { useChallengeApplicationQuery, useChallengeApplicationTemplateQuery } from '../../components/generated/graphql';
 import ApplyRoute from './ApplyRoute';
 import { PageProps } from '../../pages';
 

@@ -7,11 +7,11 @@ import OrganizationList from '../../../components/Admin/Organization/Organizatio
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { EditMode } from '../../../utils/editMode';
 import { FourOuFour, PageProps } from '../../../pages';
-import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../generated/graphql';
+import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../components/generated/graphql';
 import { useUpdateNavigation } from '../../../hooks';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import { managementData } from '../../../components/Admin/managementData';
-import { Organisation } from '../../../types/graphql-schema';
+import { Organisation } from '../../../models/graphql-schema';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
 import { ListPage } from '../../../components/Admin';
 

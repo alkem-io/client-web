@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
-import { QuestionTemplate } from '../../types/graphql-schema';
+import { QuestionTemplate } from '../../models/graphql-schema';
 import { Path } from '../../context/NavigationProvider';
 import ApplyPage from '../../pages/ApplyPage';
 import RestrictedRoute from '../route.extensions';

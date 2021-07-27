@@ -8,10 +8,10 @@ import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Theme } from '../../context/ThemeProvider';
-import { env } from '../../env';
-import { useGlobalActivityQuery } from '../../generated/graphql';
+import { env } from '../../types/env';
+import { useGlobalActivityQuery } from '../../components/generated/graphql';
 import { useAuthenticationContext } from '../../hooks';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 

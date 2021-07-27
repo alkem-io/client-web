@@ -5,7 +5,7 @@ import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../generated/graphql';
+} from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useDeleteUserGroup } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
@@ -18,7 +18,7 @@ import {
   UpdateProfileInput,
   User,
   UserGroup,
-} from '../../../types/graphql-schema';
+} from '../../../models/graphql-schema';
 import { urlStrip } from '../../../utils/urlStrip';
 import GroupForm from './GroupForm';
 

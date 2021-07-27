@@ -5,11 +5,11 @@ import { TFunction } from 'i18next';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
-import { ApplicationInfoFragment } from '../../../types/graphql-schema';
+import { ApplicationInfoFragment } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
-import { createStyles } from '../../../hooks';
+import { createStyles } from '../../../hooks/useTheme';
 import Typography from '../../core/Typography';
-import { useEventOnApplicationMutation } from '../../../generated/graphql';
+import { useEventOnApplicationMutation } from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import LifecycleButton from '../../core/LifecycleButton';
 

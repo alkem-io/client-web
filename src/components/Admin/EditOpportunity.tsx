@@ -8,7 +8,7 @@ import {
   useCreateOpportunityMutation,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
-} from '../../generated/graphql';
+} from '../generated/graphql';
 import { useNotification } from '../../hooks';
 import { useApolloErrorHandler } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';

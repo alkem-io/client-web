@@ -4,7 +4,7 @@ import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { Form, FormControlProps } from 'react-bootstrap';
 import { Required } from '../../Required';
-import { createStyles } from '../../../hooks';
+import { createStyles } from '../../../hooks/useTheme';
 
 const useStyle = createStyles(() => ({
   padding: {

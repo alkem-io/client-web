@@ -5,9 +5,9 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { env } from '../../env';
-import { typePolicies } from '../../graphql/typePolicies';
-import { ErrorStatus } from '../../models/Errors';
+import { env } from '../../types/env';
+import { typePolicies } from '../../config/graphql/typePolicies';
+import { ErrorStatus } from '../../models/constants/erros.constants';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');

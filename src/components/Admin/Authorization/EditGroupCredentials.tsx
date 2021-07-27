@@ -4,10 +4,10 @@ import {
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../generated/graphql';
+} from '../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
-import { AuthorizationCredential } from '../../../types/graphql-schema';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 import Loading from '../../core/Loading';
 import { EditMembers } from '../Community/EditMembers';
 

@@ -1,6 +1,6 @@
 import { Configuration, PublicApi } from '@ory/kratos-client';
 import { useMemo } from 'react';
-import { AuthenticationProviderConfigUnion, OryConfig } from '../../types/graphql-schema';
+import { AuthenticationProviderConfigUnion, OryConfig } from '../../models/graphql-schema';
 import { useConfig } from '../useConfig';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {

@@ -5,11 +5,11 @@ import {
   useMeHasProfileQuery,
   useMembershipUserQuery,
   useMeQuery,
-} from '../generated/graphql';
+} from '../components/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks';
 import { Error } from '../pages/Error';
-import { User } from '../types/graphql-schema';
+import { User } from '../models/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;

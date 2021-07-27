@@ -14,12 +14,12 @@ import {
   useDeleteActorMutation,
   useDeleteAspectMutation,
   useDeleteRelationMutation,
-} from '../../generated/graphql';
+} from '../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { useEcoverse } from '../../hooks';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { useUserContext } from '../../hooks';
-import { AuthorizationCredential } from '../../types/graphql-schema';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';
 import Icon from '../core/Icon';

@@ -1,4 +1,4 @@
-import { Nvp } from '../types/graphql-schema';
+import { Nvp } from '../models/graphql-schema';
 
 /***
  * Return a value by activity's name or <i>null</i> otherwise

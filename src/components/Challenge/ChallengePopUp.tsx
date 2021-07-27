@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useChallengeCardQuery } from '../../generated/graphql';
-import { createStyles } from '../../hooks';
+import { useChallengeCardQuery } from '../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Divider from '../core/Divider';

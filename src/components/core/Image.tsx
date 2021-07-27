@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Image as BootstrapImage, ImageProps, Spinner } from 'react-bootstrap';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const useStyles = createStyles(theme => ({
   spinner: {

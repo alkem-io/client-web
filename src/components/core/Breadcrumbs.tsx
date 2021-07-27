@@ -1,7 +1,7 @@
 import React, { FC, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
 
 const useBreadcrumbStyles = createStyles(theme => ({

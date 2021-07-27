@@ -4,17 +4,17 @@ import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,
   useUserApplicationsQuery,
-} from '../../generated/graphql';
+} from '../generated/graphql';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
 import Typography from '../core/Typography';
 import Tag from '../core/Tag';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import Icon from '../core/Icon';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import IconButton from '../core/IconButton';
 import { useApolloErrorHandler } from '../../hooks';
 import { useNotification } from '../../hooks';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 
 const useStyles = createStyles(theme => ({
   listDetail: {

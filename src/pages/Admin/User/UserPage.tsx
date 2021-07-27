@@ -6,13 +6,13 @@ import {
   useDeleteUserMutation,
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
-} from '../../../generated/graphql';
+} from '../../../components/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
-import { CreateUserInput } from '../../../types/graphql-schema';
+import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
 import { Loading } from '../../../components/core/Loading';

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Modal, Table } from 'react-bootstrap';
-import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../../generated/graphql';
-import { createStyles } from '../../hooks';
+import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Loading from '../core/Loading';

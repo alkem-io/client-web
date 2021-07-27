@@ -7,7 +7,7 @@ import IconButton from '../core/IconButton';
 import { Tooltip, Overlay } from 'react-bootstrap';
 
 import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const useMultipleSelectStyles = createStyles(theme => {
   const element = {

@@ -9,7 +9,7 @@ import {
   EcoverseDetailsFragmentDoc,
   useCreateEcoverseMutation,
   useOrganizationsListQuery,
-} from '../../../generated/graphql';
+} from '../../../components/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';

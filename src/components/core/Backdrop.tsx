@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const useMainStyles = createStyles(theme => ({
   backdrop: {

@@ -6,7 +6,7 @@ import {
   useChallengesQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
-} from '../generated/graphql';
+} from '../components/generated/graphql';
 import { useEcoverse } from '../hooks';
 import { useUserContext } from '../hooks';
 import {
@@ -22,7 +22,7 @@ import {
   ChallengesQuery,
   Opportunity as OpportunityType,
   User,
-} from '../types/graphql-schema';
+} from '../models/graphql-schema';
 import ChallengeApplyRoute from './application/ChallengeApplyRoute';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import { Project } from './project';

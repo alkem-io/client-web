@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const useIconStyles = createStyles(theme => ({
   root: {

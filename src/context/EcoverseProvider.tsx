@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { useEcoverseInfoQuery } from '../generated/graphql';
-import { EcoverseInfoQuery } from '../types/graphql-schema';
+import { useEcoverseInfoQuery } from '../components/generated/graphql';
+import { EcoverseInfoQuery } from '../models/graphql-schema';
 
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoQuery;

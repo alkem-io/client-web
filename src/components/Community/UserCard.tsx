@@ -1,8 +1,8 @@
 import React, { FC, memo, useMemo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { useUserCardMetadata } from '../../hooks';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';

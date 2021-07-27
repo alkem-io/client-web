@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
 import Loading from '../../components/core/Loading';
-import { useUsersQuery } from '../../generated/graphql';
+import { useUsersQuery } from '../../components/generated/graphql';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import AuthorizationRoute from './authorization';

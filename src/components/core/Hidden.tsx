@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Breakpoints } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const displayNone = {
   display: 'none',

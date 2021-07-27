@@ -6,7 +6,7 @@ hooks:
     - eslint --fix
     - prettier --write
 generates:
-  src/types/graphql-schema.ts:
+  src/models/graphql-schema.ts:
     plugins:
       - typescript
       - "typescript-operations"
@@ -25,7 +25,7 @@ generates:
         JSON: string
         Markdown: string
       strictScalars: true
-  src/generated/graphql.tsx:
+  src/components/generated/graphql.tsx:
     preset: import-types
     presetConfig:
       typesPath: ../types/graphql-schema

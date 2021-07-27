@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { PageProps } from '../../../pages';
 import { ApplicationRoute } from '../ApplicationRoute';
-import { useEcoverseApplicationsQuery } from '../../../generated/graphql';
+import { useEcoverseApplicationsQuery } from '../../../components/generated/graphql';
 import { useParams } from 'react-router';
 import Loading from '../../../components/core/Loading';
 

@@ -29,10 +29,10 @@ import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
-} from '../generated/graphql';
+} from '../components/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
-import { createStyles } from '../hooks';
+import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks';
 import {
   AuthorizationCredential,
@@ -40,7 +40,7 @@ import {
   Opportunity as OpportunityType,
   Project,
   User,
-} from '../types/graphql-schema';
+} from '../models/graphql-schema';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';

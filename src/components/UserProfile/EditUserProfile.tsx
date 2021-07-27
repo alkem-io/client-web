@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
+import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { useNotification } from '../../hooks';
 import { UserModel } from '../../models/User';
-import { UpdateUserInput, User } from '../../types/graphql-schema';
+import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { Loading } from '../core/Loading';
 import { UserForm } from './UserForm';

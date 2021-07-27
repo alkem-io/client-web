@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { AuthorizationCredential } from '../types/graphql-schema';
+import { AuthorizationCredential } from '../models/graphql-schema';
 
 export interface CredentialResolver {
   toRoleName: (value: AuthorizationCredential) => string;

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { forwardRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../Community/UserPopUp';
 import Image from './Image';

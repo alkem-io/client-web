@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { Dropdown, FormControl } from 'react-bootstrap';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 // import Button from './Button';
 
 const NOT_SELECTED = 'Not selected';

@@ -1,5 +1,5 @@
-import { useMembershipUserQuery, useUserQuery } from '../../generated/graphql';
-import { User } from '../../types/graphql-schema';
+import { useMembershipUserQuery, useUserQuery } from '../../components/generated/graphql';
+import { User } from '../../models/graphql-schema';
 import { useUserMetadataWrapper } from './useUserMetadataWrapper';
 
 export const useUserMetadata = (id: string) => {

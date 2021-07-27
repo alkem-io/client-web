@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import shuffleCollection from '../../utils/shuffleCollection';
 import Avatar from '../core/Avatar';
 import AvatarContainer from '../core/AvatarContainer';

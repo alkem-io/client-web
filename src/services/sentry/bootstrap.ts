@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { env } from '../env';
+import { env } from '../../types/env';
 
 const sentryEndpoint = env && env.REACT_APP_SENTRY_ENDPOINT;
 const sentryEnabled =

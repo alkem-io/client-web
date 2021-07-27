@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Typography from '../core/Typography';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 
 const useUserPopUpStyles = createStyles(theme => ({
   terms: {

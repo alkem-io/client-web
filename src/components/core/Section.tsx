@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Breakpoints, Theme } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Container from './Container';
 import Tag from './Tag';

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { Col, Container as BootstrapContainer, ContainerProps as BootstrapContainerProps, Row } from 'react-bootstrap';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
 
 const useContainerStyles = createStyles(() => ({

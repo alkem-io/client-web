@@ -1,4 +1,4 @@
-import { createStyles } from '../../../hooks';
+import { createStyles } from '../../../hooks/useTheme';
 
 const useProfileStyles = createStyles(theme => ({
   field: {

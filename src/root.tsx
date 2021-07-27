@@ -9,13 +9,13 @@ import { EcoversesProvider } from './context/EcoversesProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { env } from './env';
+import { env } from './types/env';
 import { createStyles, useGraphQLClient } from './hooks';
 import './i18n/config';
 import App from './layout/App/App';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
-import sentryBootstrap from './sentry/bootstrap';
+import sentryBootstrap from './services/sentry/bootstrap';
 import configureStore from './store';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';

@@ -26,13 +26,13 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
   useUserApplicationsQuery,
-} from '../generated/graphql';
+} from '../components/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
-import { createStyles } from '../hooks';
+import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
-import { Context, EcoverseInfoQuery } from '../types/graphql-schema';
+import { Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
 

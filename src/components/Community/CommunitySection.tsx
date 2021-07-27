@@ -5,7 +5,7 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { CommunicationMessageResult, User } from '../../types/graphql-schema';
+import { CommunicationMessageResult, User } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Section';

@@ -5,13 +5,13 @@ import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import { useTranslation } from 'react-i18next';
-import { Nvp } from '../../types/graphql-schema';
+import { Nvp } from '../../models/graphql-schema';
 import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
 
 const useCardStyles = createStyles(theme => ({

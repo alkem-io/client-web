@@ -4,7 +4,7 @@ import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../component
 import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
-import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../generated/graphql';
+import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../components/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';

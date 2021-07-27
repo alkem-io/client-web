@@ -13,9 +13,9 @@ import Icon from '../components/core/Icon';
 import MultipleSelect from '../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { SearchDocument } from '../generated/graphql';
+import { SearchDocument } from '../components/generated/graphql';
 import { useUpdateNavigation } from '../hooks';
-import { Challenge, Organisation, User, UserGroup } from '../types/graphql-schema';
+import { Challenge, Organisation, User, UserGroup } from '../models/graphql-schema';
 import { PageProps } from './common';
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {

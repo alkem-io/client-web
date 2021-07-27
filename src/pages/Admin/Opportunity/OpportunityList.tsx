@@ -8,7 +8,7 @@ import {
   refetchOpportunitiesQuery,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
-} from '../../../generated/graphql';
+} from '../../../components/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
 import { AdminParameters } from '../../../routing/admin/admin';

@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
+import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
 import { contextSegmentSchema, ContextSegment } from '../Admin/Common/ContextSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Admin/Common/ProfileSegment';

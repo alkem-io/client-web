@@ -3,7 +3,7 @@ import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
 import { useAuthenticationContext } from '../hooks';
 import { useUserContext } from '../hooks';
-import { AuthorizationCredential } from '../types/graphql-schema';
+import { AuthorizationCredential } from '../models/graphql-schema';
 
 interface RestrictedRoutePros extends RouteProps {
   requiredCredentials?: AuthorizationCredential[];

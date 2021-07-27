@@ -4,7 +4,7 @@ import { EcoverseProvider } from '../context/EcoverseProvider';
 import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
-import { AuthorizationCredential } from '../types/graphql-schema';
+import { AuthorizationCredential } from '../models/graphql-schema';
 import { Admin } from './admin/admin';
 import { AuthRoute } from './auth/auth';
 import { EcoverseRoute } from './ecoverse';

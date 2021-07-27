@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset, Visual } from '../../types/graphql-schema';
+import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import { Required } from '../Required';

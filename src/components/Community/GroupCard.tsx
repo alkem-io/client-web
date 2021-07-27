@@ -1,9 +1,9 @@
 import React, { FC, memo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { useGroupCardQuery } from '../../generated/graphql';
+import { useGroupCardQuery } from '../generated/graphql';
 import { useEcoverse } from '../../hooks';
-import { createStyles } from '../../hooks';
-import { UserGroup } from '../../types/graphql-schema';
+import { createStyles } from '../../hooks/useTheme';
+import { UserGroup } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
