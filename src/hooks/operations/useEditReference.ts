@@ -4,7 +4,7 @@ import {
   useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
-} from '../../components/generated/graphql';
+} from '../generated/graphql';
 import { useApolloErrorHandler } from '../graphql/useApolloErrorHandler';
 
 export type PushFunc = (success: boolean) => void;

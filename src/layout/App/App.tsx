@@ -7,7 +7,7 @@ import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../../components/containers/NotificationHandler';
-import { useServerMetadataQuery } from '../../components/generated/graphql';
+import { useServerMetadataQuery } from '../../hooks/generated/graphql';
 import { useAuthenticationContext } from '../../hooks';
 import { useConfig } from '../../hooks';
 import { useEcoversesContext } from '../../hooks';

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useOpportunityCommunityMessagesQuery, useOpportunityUserIdsQuery } from '../generated/graphql';
+import { useOpportunityCommunityMessagesQuery, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
 import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import Loading from '../core/Loading';

@@ -4,7 +4,7 @@ import {
   useGrantCredentialsMutation,
   useRevokeCredentialsMutation,
   useUsersWithCredentialsQuery,
-} from '../../generated/graphql';
+} from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential } from '../../../models/graphql-schema';

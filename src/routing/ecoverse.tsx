@@ -6,7 +6,7 @@ import {
   useChallengesQuery,
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
-} from '../components/generated/graphql';
+} from '../hooks/generated/graphql';
 import { useEcoverse } from '../hooks';
 import { useUserContext } from '../hooks';
 import {

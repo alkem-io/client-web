@@ -4,7 +4,7 @@ import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../../generated/graphql';
+import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { GroupFormGenerated } from '../../../models/Group';
 import { Tagset as TagsetModel } from '../../../models/Profile';
 import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';

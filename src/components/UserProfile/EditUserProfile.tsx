@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../generated/graphql';
+import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { useNotification } from '../../hooks';
 import { UserModel } from '../../models/User';

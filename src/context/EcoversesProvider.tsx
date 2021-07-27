@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useEcoversesQuery } from '../components/generated/graphql';
+import { useEcoversesQuery } from '../hooks/generated/graphql';
 import { EcoverseDetailsFragment } from '../models/graphql-schema';
 import { ApolloError } from '@apollo/client';
 

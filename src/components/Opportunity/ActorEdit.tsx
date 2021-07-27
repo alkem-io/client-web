@@ -6,7 +6,7 @@ import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorMutation,
   useUpdateActorMutation,
-} from '../generated/graphql';
+} from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';

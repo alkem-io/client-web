@@ -4,7 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../../generated/graphql';
+import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { OrganisationModel } from '../../../models/Organisation';
 import { Tagset } from '../../../models/Profile';
 import { Organisation, TagsetTemplate } from '../../../models/graphql-schema';

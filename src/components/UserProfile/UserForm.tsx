@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../generated/graphql';
+import { useTagsetsTemplateQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES } from '../../models/constants';
 import { Tagset } from '../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';

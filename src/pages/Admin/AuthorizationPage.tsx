@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useUsersQuery } from '../../components/generated/graphql';
+import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '..';
 import Loading from '../../components/core/Loading';

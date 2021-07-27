@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { WithParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
-import { useOrganisationGroupQuery } from '../../../components/generated/graphql';
+import { useOrganisationGroupQuery } from '../../../hooks/generated/graphql';
 import { GroupRoute } from '../GroupRoute';
 
 interface GroupRouteProps extends WithParentMembersProps {}

@@ -15,7 +15,7 @@ import {
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
-} from '../generated/graphql';
+} from '../../hooks/generated/graphql';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 

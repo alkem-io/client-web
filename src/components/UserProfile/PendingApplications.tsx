@@ -4,7 +4,7 @@ import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,
   useUserApplicationsQuery,
-} from '../generated/graphql';
+} from '../../hooks/generated/graphql';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
 import Typography from '../core/Typography';
 import Tag from '../core/Tag';

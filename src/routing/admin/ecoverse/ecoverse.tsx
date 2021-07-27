@@ -4,7 +4,7 @@ import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
-import { useEcoverseCommunityQuery, useUsersQuery } from '../../../components/generated/graphql';
+import { useEcoverseCommunityQuery, useUsersQuery } from '../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../hooks';
 import { useTransactionScope } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';

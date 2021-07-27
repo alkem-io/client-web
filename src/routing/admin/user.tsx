@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { FourOuFour, PageProps } from '../../pages';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import { useUserQuery, useUsersQuery } from '../../components/generated/graphql';
+import { useUserQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { UserModel } from '../../models/User';
 import Loading from '../../components/core/Loading';
 import { UserList } from '../../components/Admin/User/UserList';

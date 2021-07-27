@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { useDeleteGroupMutation } from '../../components/generated/graphql';
+import { useDeleteGroupMutation } from '../generated/graphql';
 import { DeleteGroupMutation } from '../../models/graphql-schema';
 import { useApolloErrorHandler } from '../graphql/useApolloErrorHandler';
 import { useNotification } from '../useNotification';

@@ -5,7 +5,7 @@ import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useUpdateOrganizationMutation,
-} from '../../generated/graphql';
+} from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';

@@ -9,7 +9,7 @@ import { ApplicationInfoFragment } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { createStyles } from '../../../hooks/useTheme';
 import Typography from '../../core/Typography';
-import { useEventOnApplicationMutation } from '../../generated/graphql';
+import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import LifecycleButton from '../../core/LifecycleButton';
 

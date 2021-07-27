@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, useCallback } from 'react';
-import { useUploadAvatarMutation } from './generated/graphql';
+import { useUploadAvatarMutation } from '../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
 import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';

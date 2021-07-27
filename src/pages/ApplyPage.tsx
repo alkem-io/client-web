@@ -8,7 +8,7 @@ import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import Button from '../components/core/Button';
 import { Loading } from '../components/core/Loading';
-import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../components/generated/graphql';
+import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
 import ErrorBlock from '../components/core/ErrorBlock';
 import { Required } from '../components/Required';
 import { createStyles } from '../hooks/useTheme';

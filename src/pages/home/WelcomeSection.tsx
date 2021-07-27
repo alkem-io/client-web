@@ -9,7 +9,7 @@ import Loading from '../../components/core/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Theme } from '../../context/ThemeProvider';
 import { env } from '../../types/env';
-import { useGlobalActivityQuery } from '../../components/generated/graphql';
+import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import { useAuthenticationContext } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';

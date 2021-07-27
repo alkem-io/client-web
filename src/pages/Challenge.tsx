@@ -22,7 +22,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import BackdropWithMessage from '../components/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { Theme } from '../context/ThemeProvider';
-import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../components/generated/graphql';
+import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';

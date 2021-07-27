@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useEcoverseApplicationQuery, useEcoverseApplicationTemplateQuery } from '../../components/generated/graphql';
+import { useEcoverseApplicationQuery, useEcoverseApplicationTemplateQuery } from '../../hooks/generated/graphql';
 import { PageProps } from '../../pages';
 import ApplyRoute from './ApplyRoute';
 

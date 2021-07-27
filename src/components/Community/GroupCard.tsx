@@ -1,6 +1,6 @@
 import React, { FC, memo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { useGroupCardQuery } from '../generated/graphql';
+import { useGroupCardQuery } from '../../hooks/generated/graphql';
 import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { UserGroup } from '../../models/graphql-schema';

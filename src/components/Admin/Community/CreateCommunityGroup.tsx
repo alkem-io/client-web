@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../generated/graphql';
+import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';

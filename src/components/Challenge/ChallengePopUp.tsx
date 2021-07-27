@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useChallengeCardQuery } from '../generated/graphql';
+import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';

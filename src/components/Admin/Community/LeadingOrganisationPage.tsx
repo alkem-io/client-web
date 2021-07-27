@@ -10,7 +10,7 @@ import {
   useChallengeLeadOrganisationsQuery,
   useChallengeNameQuery,
   useUpdateChallengeMutation,
-} from '../../generated/graphql';
+} from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';

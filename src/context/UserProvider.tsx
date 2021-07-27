@@ -5,7 +5,7 @@ import {
   useMeHasProfileQuery,
   useMembershipUserQuery,
   useMeQuery,
-} from '../components/generated/graphql';
+} from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks';
 import { Error } from '../pages/Error';

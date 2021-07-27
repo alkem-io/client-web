@@ -29,7 +29,7 @@ import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
-} from '../components/generated/graphql';
+} from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';

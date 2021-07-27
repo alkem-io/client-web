@@ -25,10 +25,10 @@ generates:
         JSON: string
         Markdown: string
       strictScalars: true
-  src/components/generated/graphql.tsx:
+  src/hooks/generated/graphql.ts:
     preset: import-types
     presetConfig:
-      typesPath: ../types/graphql-schema
+      typesPath: ../../models/graphql-schema
       importTypesNamespace: SchemaTypes
     plugins:
       - "typescript-react-apollo"
