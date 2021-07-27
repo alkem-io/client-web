@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Typography from './Typography';
 
 const useButtonStyles = createStyles(theme => ({

@@ -15,10 +15,10 @@ import {
   useDeleteAspectMutation,
   useDeleteRelationMutation,
 } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { createStyles } from '../../hooks/useTheme';
-import { useUserContext } from '../../hooks/useUserContext';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
+import { createStyles } from '../../hooks';
+import { useUserContext } from '../../hooks';
 import { AuthorizationCredential } from '../../types/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';

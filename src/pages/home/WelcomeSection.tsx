@@ -10,8 +10,8 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { Theme } from '../../context/ThemeProvider';
 import { env } from '../../env';
 import { useGlobalActivityQuery } from '../../generated/graphql';
-import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
-import { createStyles } from '../../hooks/useTheme';
+import { useAuthenticationContext } from '../../hooks';
+import { createStyles } from '../../hooks';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
 import getActivityCount from '../../utils/get-activity-count';
 

@@ -1,4 +1,4 @@
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Tag, { TagProps } from '../core/Tag';

@@ -1,9 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { useDeleteGroupMutation } from '../generated/graphql';
-import { DeleteGroupMutation } from '../types/graphql-schema';
-import { useApolloErrorHandler } from './graphql/useApolloErrorHandler';
-import { useNotification } from './useNotification';
+import { useDeleteGroupMutation } from '../../generated/graphql';
+import { DeleteGroupMutation } from '../../types/graphql-schema';
+import { useApolloErrorHandler } from '../graphql/useApolloErrorHandler';
+import { useNotification } from '../useNotification';
 
 type Options = {
   onComplete?: (data: DeleteGroupMutation) => void;

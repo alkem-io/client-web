@@ -2,8 +2,8 @@ import { SelfServiceErrorContainer } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Loading } from '../../components/core/Loading';
-import { useKratosClient } from '../../hooks/kratos/useKratosClient';
-import { useQueryParams } from '../../hooks/useQueryParams';
+import { useKratosClient } from '../../hooks';
+import { useQueryParams } from '../../hooks';
 
 export const ErrorRoute: FC = () => {
   const params = useQueryParams();

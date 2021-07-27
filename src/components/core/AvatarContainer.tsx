@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import { agnosticFunctor } from '../../utils/functor';
 import Typography from './Typography';
 

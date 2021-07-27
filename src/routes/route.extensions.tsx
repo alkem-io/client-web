@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { useUserContext } from '../hooks/useUserContext';
+import { useAuthenticationContext } from '../hooks';
+import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../types/graphql-schema';
 
 interface RestrictedRoutePros extends RouteProps {

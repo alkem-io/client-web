@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Typography from '../core/Typography';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import { User } from '../../types/graphql-schema';
 import Card from '../core/Card';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { useTransactionScope } from '../hooks/useSentry';
+import { useTransactionScope } from '../hooks';
 import { FourOuFour } from '../pages';
 import { SearchPage } from '../pages/SearchPage';
 

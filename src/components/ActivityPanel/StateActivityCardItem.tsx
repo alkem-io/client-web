@@ -5,7 +5,7 @@ import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Maybe, Lifecycle } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
 import Icon from '../core/Icon';

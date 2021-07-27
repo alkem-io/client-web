@@ -7,9 +7,9 @@ import {
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
 import { CreateUserInput } from '../../../types/graphql-schema';

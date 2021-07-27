@@ -7,8 +7,8 @@ import {
   useOpportunityProfileQuery,
   useOpportunityUserIdsQuery,
 } from '../generated/graphql';
-import { useEcoverse } from '../hooks/useEcoverse';
-import { useUserContext } from '../hooks/useUserContext';
+import { useEcoverse } from '../hooks';
+import { useUserContext } from '../hooks';
 import {
   Challenge as ChallengePage,
   Ecoverse as EcoversePage,

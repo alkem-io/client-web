@@ -4,8 +4,8 @@ import { CardContainer } from '../../components/core/Container';
 import Loading from '../../components/core/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import { useUserContext } from '../../hooks/useUserContext';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useUserContext } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import { useEcoversesWithActivityQuery } from '../../generated/graphql';
 
 const EcoversesSection = () => {

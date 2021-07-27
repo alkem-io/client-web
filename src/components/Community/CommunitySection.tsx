@@ -3,7 +3,7 @@ import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
-import { useConfig } from '../../hooks/useConfig';
+import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/Constants';
 import { CommunicationMessageResult, User } from '../../types/graphql-schema';
 import Button from '../core/Button';

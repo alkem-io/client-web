@@ -6,9 +6,9 @@ import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
 import Loading from '../core/Loading';
-import { useNotification } from '../../hooks/useNotification';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useNotification } from '../../hooks';
+import { useApolloErrorHandler } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,

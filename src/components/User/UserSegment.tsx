@@ -1,8 +1,8 @@
 import { Box } from '@material-ui/core';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { Overlay, Popover } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
-import { UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { createStyles } from '../../hooks';
+import { UserMetadata } from '../../hooks';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import Avatar from '../core/Avatar';

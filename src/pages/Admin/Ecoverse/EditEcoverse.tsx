@@ -5,10 +5,10 @@ import Button from '../../../components/core/Button';
 import Loading from '../../../components/core/Loading';
 import Typography from '../../../components/core/Typography';
 import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../../hooks/useEcoverse';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useEcoverse } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
 

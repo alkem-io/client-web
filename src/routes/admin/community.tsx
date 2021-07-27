@@ -6,7 +6,7 @@ import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
-import { useDeleteUserGroup } from '../../hooks/useDeleteUserGroup';
+import { useDeleteUserGroup } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';

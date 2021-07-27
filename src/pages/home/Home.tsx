@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Icon from '../../components/core/Icon';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../hooks';
 import Divider from '../../components/core/Divider';
 import EcoversesSection from './EcoversesSection';
 import WelcomeSection from './WelcomeSection';

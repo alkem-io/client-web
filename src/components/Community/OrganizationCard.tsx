@@ -5,7 +5,7 @@ import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
 import { useOrganizationCardQuery } from '../../generated/graphql';
 import { Organisation } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import Loading from '../core/Loading';

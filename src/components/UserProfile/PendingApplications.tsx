@@ -8,12 +8,12 @@ import {
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/Constants';
 import Typography from '../core/Typography';
 import Tag from '../core/Tag';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Icon from '../core/Icon';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import IconButton from '../core/IconButton';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useNotification } from '../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../hooks';
+import { useNotification } from '../../hooks';
 import { User } from '../../types/graphql-schema';
 
 const useStyles = createStyles(theme => ({

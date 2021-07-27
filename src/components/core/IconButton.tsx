@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import hexToRGBA from '../../utils/hexToRGBA';
 
 const useIconButtonStyles = createStyles(theme => ({

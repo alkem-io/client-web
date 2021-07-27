@@ -3,7 +3,7 @@ import React, { FC, memo, useState } from 'react';
 import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
 import { Challenge } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Loading from '../core/Loading';
 import { useChallengeCardQuery } from '../../generated/graphql';

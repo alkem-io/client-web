@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useQueryParams } from '../../hooks/useQueryParams';
+import { useQueryParams } from '../../hooks';
 import SettingsPage from '../../pages/Authentication/SettingsPage';
 
 export const SettingsRoute: FC = () => {

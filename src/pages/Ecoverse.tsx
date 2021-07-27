@@ -27,10 +27,10 @@ import {
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../generated/graphql';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { useUpdateNavigation } from '../hooks/useNavigation';
-import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks/useUserContext';
+import { useAuthenticationContext } from '../hooks';
+import { useUpdateNavigation } from '../hooks';
+import { createStyles } from '../hooks';
+import { useUserContext } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/Constants';
 import { Context, EcoverseInfoQuery } from '../types/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';

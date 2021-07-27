@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { useQueryParams } from '../../hooks/useQueryParams';
+import { useQueryParams } from '../../hooks';
 import VerificationPage from '../../pages/Authentication/VerificationPage';
 import VerificationSuccessPage from '../../pages/Authentication/VerificationSuccessPage';
 

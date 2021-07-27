@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
-import { useTransactionScope } from '../../hooks/useSentry';
-import { useUserContext } from '../../hooks/useUserContext';
+import { useTransactionScope } from '../../hooks';
+import { useUserContext } from '../../hooks';
 import { AUTH_VERIFY_PATH } from '../../models/Constants';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
@@ -17,7 +17,7 @@ import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import MemberOf from './MemberOf';
 import ContactDetails from './ContactDetails';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import PendingApplications from './PendingApplications';
 
 const useStyles = createStyles(theme => ({

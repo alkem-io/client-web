@@ -3,7 +3,6 @@ import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import App from './layout/App/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { EcoversesProvider } from './context/EcoversesProvider';
@@ -11,14 +10,13 @@ import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import { env } from './env';
-
-import { createStyles } from './hooks/useTheme';
+import { createStyles, useGraphQLClient } from './hooks';
 import './i18n/config';
+import App from './layout/App/App';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routes/routing';
 import sentryBootstrap from './sentry/bootstrap';
 import configureStore from './store';
-import useGraphQLClient from './hooks/graphql/useGraphQLClient';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 

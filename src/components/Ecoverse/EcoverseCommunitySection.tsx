@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
+import { useEcoverse } from '../../hooks';
 import { User } from '../../types/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import Loading from '../core/Loading';

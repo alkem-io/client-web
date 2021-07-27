@@ -30,10 +30,10 @@ import {
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
 } from '../generated/graphql';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { useUpdateNavigation } from '../hooks/useNavigation';
-import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks/useUserContext';
+import { useAuthenticationContext } from '../hooks';
+import { useUpdateNavigation } from '../hooks';
+import { createStyles } from '../hooks';
+import { useUserContext } from '../hooks';
 import {
   AuthorizationCredential,
   Context,
@@ -45,7 +45,7 @@ import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
 import getActivityCount from '../utils/get-activity-count';
-import { useEcoverse } from '../hooks/useEcoverse';
+import { useEcoverse } from '../hooks';
 import { SEARCH_PAGE } from '../models/Constants';
 import Markdown from '../components/core/Markdown';
 
@@ -122,8 +122,16 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
   const actorGroups = context?.ecosystemModel?.actorGroups || [];
 
-  const { references, background = '', tagline, who = '', impact = '', vision = '', aspects = [], visual } =
-    context || {};
+  const {
+    references,
+    background = '',
+    tagline,
+    who = '',
+    impact = '',
+    vision = '',
+    aspects = [],
+    visual,
+  } = context || {};
   const meme = references?.find(x => x.name === 'meme');
   const links = references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1);
   const isMemberOfOpportunity = relations.find(r => r.actorName === userName);

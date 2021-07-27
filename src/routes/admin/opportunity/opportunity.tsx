@@ -5,7 +5,7 @@ import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../generated/graphql';
-import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useEcoverse } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';
 import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
 import { AuthorizationCredential } from '../../../types/graphql-schema';

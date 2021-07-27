@@ -12,7 +12,7 @@ import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
 import { Nvp } from '../../types/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 
 const useCardStyles = createStyles(theme => ({
   relative: {

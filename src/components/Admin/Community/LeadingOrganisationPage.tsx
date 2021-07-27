@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   refetchChallengeLeadOrganisationsQuery,
@@ -11,7 +11,7 @@ import {
   useChallengeNameQuery,
   useUpdateChallengeMutation,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../types/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { TFunction } from 'i18next';

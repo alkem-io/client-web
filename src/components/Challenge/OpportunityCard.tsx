@@ -11,7 +11,7 @@ import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Typography from '../core/Typography';
 
 const useCardStyles = createStyles(theme => ({

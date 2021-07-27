@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
 import { WithCommunity } from './CommunityTypes';

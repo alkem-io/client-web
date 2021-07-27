@@ -6,10 +6,10 @@ import {
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useDeleteUserGroup } from '../../../hooks/useDeleteUserGroup';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useDeleteUserGroup } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   AuthorizationCredential,

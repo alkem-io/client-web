@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, RefObject } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 
 const useToolbarStyles = createStyles(theme => ({
   toolbar: {

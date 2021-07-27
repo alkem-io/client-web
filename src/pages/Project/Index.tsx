@@ -5,8 +5,8 @@ import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Tag from '../../components/core/Tag';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
-import { createStyles } from '../../hooks/useTheme';
+import { useUpdateNavigation } from '../../hooks';
+import { createStyles } from '../../hooks';
 import { Project as ProjectType, User } from '../../types/graphql-schema';
 import { PageProps } from '../common';
 

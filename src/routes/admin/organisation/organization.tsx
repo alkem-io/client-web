@@ -8,7 +8,7 @@ import OrganizationPage from '../../../components/Admin/Organization/Organizatio
 import { EditMode } from '../../../utils/editMode';
 import { FourOuFour, PageProps } from '../../../pages';
 import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../generated/graphql';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../../hooks';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import { managementData } from '../../../components/Admin/managementData';
 import { Organisation } from '../../../types/graphql-schema';

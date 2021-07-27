@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
 import * as React from 'react';

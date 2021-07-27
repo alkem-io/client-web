@@ -9,8 +9,8 @@ import {
   useChallengesWithCommunityQuery,
   useDeleteChallengeMutation,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useEcoverse } from '../../../hooks';
 
 interface ChallengeListProps extends PageProps {}
 

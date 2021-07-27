@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import { useRouteMatch } from 'react-router-dom';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import EditCommunityCredentials, { CommunityCredentials } from '../Authorization/EditCommunityCredentials';

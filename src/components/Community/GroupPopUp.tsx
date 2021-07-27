@@ -5,7 +5,7 @@ import Typography from '../core/Typography';
 import { User } from '../../types/graphql-schema';
 import { Tagset } from '../../models/Profile';
 import Tags from './Tags';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Divider from '../core/Divider';
 import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';

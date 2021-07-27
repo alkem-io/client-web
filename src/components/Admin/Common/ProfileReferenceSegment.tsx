@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../hooks/useEditReference';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';

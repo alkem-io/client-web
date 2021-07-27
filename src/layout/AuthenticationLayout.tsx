@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { Col, Container, ContainerProps, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Image from '../components/core/Image';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 
 const useAuthenticationLayout = createStyles(theme => ({
   logo: {

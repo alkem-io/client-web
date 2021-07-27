@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 import Backdrop from './core/Backdrop';
 import Typography from './core/Typography';
 

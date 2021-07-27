@@ -4,7 +4,7 @@ import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Lifecycle } from '../../types/graphql-schema';
 import { Theme } from '../../context/ThemeProvider';
-import { useTheme } from '../../hooks/useTheme';
+import { useTheme } from '../../hooks';
 
 export interface GraphThemeOptions {
   strokePrimaryColor?: string;

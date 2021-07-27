@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useNotification } from '../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../hooks';
+import { useNotification } from '../../hooks';
 import { UserModel } from '../../models/User';
 import { UpdateUserInput, User } from '../../types/graphql-schema';
 import { EditMode } from '../../utils/editMode';

@@ -4,7 +4,7 @@ import Card, { CardProps } from '../core/Card';
 import Typography from '../core/Typography';
 import CircleTag from '../core/CircleTag';
 
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import { Theme } from '../../context/ThemeProvider';
 import activitiesMock from './tempMockActivities';
 import StateActivityCardItem from './StateActivityCardItem';

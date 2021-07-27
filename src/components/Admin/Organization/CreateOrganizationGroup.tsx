@@ -5,8 +5,8 @@ import {
   useCreateGroupOnOrganizationMutation,
   useOrganizationNameQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
 

@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Modal, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
-import { useUserMetadata } from '../../hooks/useUserMetadata';
+import { createStyles } from '../../hooks';
+import { useUserMetadata } from '../../hooks';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Loading from '../core/Loading';

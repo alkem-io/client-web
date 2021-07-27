@@ -9,9 +9,9 @@ import {
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
-import { useNotification } from '../../hooks/useNotification';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useNotification } from '../../hooks';
+import { useApolloErrorHandler } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Typography from '../core/Typography';
 import Button from '../core/Button';

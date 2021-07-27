@@ -5,7 +5,7 @@ import {
   useCreateActorGroupMutation,
   useOpportunityProfileQuery,
 } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
+import { useEcoverse } from '../../hooks';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import Loading from '../core/Loading';

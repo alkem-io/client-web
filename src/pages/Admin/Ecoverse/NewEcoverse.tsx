@@ -10,9 +10,9 @@ import {
   useCreateEcoverseMutation,
   useOrganizationsListQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { createContextInput } from '../../../utils/buildContext';
 

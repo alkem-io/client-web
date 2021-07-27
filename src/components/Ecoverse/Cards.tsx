@@ -3,7 +3,7 @@ import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import Icon from '../core/Icon';

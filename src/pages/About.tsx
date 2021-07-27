@@ -2,7 +2,7 @@ import React from 'react';
 import { Col } from 'react-bootstrap';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 import { useServerMetadataQuery } from '../generated/graphql';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FunctionComponent, SVGProps } from 'react';
 import { Palette } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 
 const useIconStyles = createStyles(theme => ({
   xs: {},

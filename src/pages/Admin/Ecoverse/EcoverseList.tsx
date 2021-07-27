@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { refetchEcoversesQuery, useDeleteEcoverseMutation, useEcoversesQuery } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../..';
 import Loading from '../../../components/core/Loading';
 import ListPage from '../../../components/Admin/ListPage';

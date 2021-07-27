@@ -7,9 +7,9 @@ import {
   useCreateActorMutation,
   useUpdateActorMutation,
 } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
+import { createStyles } from '../../hooks';
 import { Actor } from '../../types/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';

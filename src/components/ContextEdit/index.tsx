@@ -6,9 +6,9 @@ import {
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
 } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { createStyles } from '../../hooks/useTheme';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
+import { createStyles } from '../../hooks';
 import {
   Context,
   UpdateChallengeInput,

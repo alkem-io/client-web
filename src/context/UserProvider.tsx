@@ -6,8 +6,8 @@ import {
   useMembershipUserQuery,
   useMeQuery,
 } from '../generated/graphql';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { UserMetadata, useUserMetadataWrapper } from '../hooks/useUserMetadataWrapper';
+import { useAuthenticationContext } from '../hooks';
+import { UserMetadata, useUserMetadataWrapper } from '../hooks';
 import { Error } from '../pages/Error';
 import { User } from '../types/graphql-schema';
 export interface UserContextContract {

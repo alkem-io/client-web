@@ -9,8 +9,8 @@ import {
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
-import { useEcoverse } from '../../../hooks/useEcoverse';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useEcoverse } from '../../../hooks';
 import { AdminParameters } from '../../../routes/admin/admin';
 
 interface OpportunityListProps extends PageProps {}

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Col } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 
 interface DelimiterProps {}
 

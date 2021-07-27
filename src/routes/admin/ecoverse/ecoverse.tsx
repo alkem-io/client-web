@@ -5,8 +5,8 @@ import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemp
 import Loading from '../../../components/core/Loading';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useEcoverseCommunityQuery, useUsersQuery } from '../../../generated/graphql';
-import { useEcoverse } from '../../../hooks/useEcoverse';
-import { useTransactionScope } from '../../../hooks/useSentry';
+import { useEcoverse } from '../../../hooks';
+import { useTransactionScope } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';
 import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
 import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';

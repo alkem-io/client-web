@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Typography from './Typography';
 
 interface LoadingProps {

@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import { useChallengeLifecycleQuery, useEventOnChallengeMutation } from '../../../generated/graphql';
 import Loading from '../../../components/core/Loading';
 import { PageProps } from '../../../pages';
-import { useApolloErrorHandler } from '../../../hooks/graphql/useApolloErrorHandler';
+import { useApolloErrorHandler } from '../../../hooks';
 
 interface Params {
   ecoverseId: string;

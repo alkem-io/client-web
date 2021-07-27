@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 
 import { Path } from '../../context/NavigationProvider';
 import hexToRGBA from '../../utils/hexToRGBA';

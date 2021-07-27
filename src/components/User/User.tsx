@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { forwardRef } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
 
