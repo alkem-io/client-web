@@ -15,7 +15,7 @@ import { useNavigation } from '../../hooks';
 import { useUserScope } from '../../hooks';
 import { useTypedSelector } from '../../hooks';
 import { useUserContext } from '../../hooks';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import Breadcrumbs from '../../components/core/Breadcrumbs';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';

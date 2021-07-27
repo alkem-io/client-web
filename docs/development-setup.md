@@ -1,0 +1,3 @@
+# Development setup
+
+## Folder structure

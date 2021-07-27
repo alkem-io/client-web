@@ -11,7 +11,7 @@ import Typography from '../../components/core/Typography';
 import { useConfig } from '../../hooks';
 import { useKratosClient } from '../../hooks';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
-import { AUTH_LOGIN_PATH } from '../../models/Constants';
+import { AUTH_LOGIN_PATH } from '../../models/constants';
 
 interface RegisterPageProps {
   flow?: string;

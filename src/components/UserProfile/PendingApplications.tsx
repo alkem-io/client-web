@@ -5,7 +5,7 @@ import {
   useDeleteUserApplicationMutation,
   useUserApplicationsQuery,
 } from '../../generated/graphql';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/Constants';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
 import Typography from '../core/Typography';
 import Tag from '../core/Tag';
 import { createStyles } from '../../hooks';

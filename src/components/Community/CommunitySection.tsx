@@ -4,7 +4,7 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
 import { useConfig } from '../../hooks';
-import { FEATURE_COMMUNICATIONS } from '../../models/Constants';
+import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { CommunicationMessageResult, User } from '../../types/graphql-schema';
 import Button from '../core/Button';
 import Icon from '../core/Icon';

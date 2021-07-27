@@ -27,7 +27,7 @@ import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks';
 import { useUserContext } from '../hooks';
-import { SEARCH_PAGE } from '../models/Constants';
+import { SEARCH_PAGE } from '../models/constants';
 import { Challenge as ChallengeType, Context, Organisation } from '../types/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';

@@ -1,6 +1,6 @@
 import { applyMiddleware, compose, createStore, Store } from 'redux';
 import thunk from 'redux-thunk';
-import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/Constants';
+import { AUTH_STATUS_KEY, TOKEN_KEY } from '../models/constants';
 import reducers, { RootState, StoreActions } from './rootReducer';
 import { AuthState, AuthStatus } from './auth/types';
 import { isAuthenticated } from '../utils/isAuthenitcated';

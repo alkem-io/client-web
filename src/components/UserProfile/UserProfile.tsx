@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks';
 import { useUserContext } from '../../hooks';
-import { AUTH_VERIFY_PATH } from '../../models/Constants';
+import { AUTH_VERIFY_PATH } from '../../models/constants';
 import { defaultUser } from '../../models/User';
 import { User } from '../../types/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';

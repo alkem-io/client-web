@@ -11,7 +11,7 @@ import {
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
-import { AdminParameters } from '../../../routes/admin/admin';
+import { AdminParameters } from '../../../routing/admin/admin';
 
 interface OpportunityListProps extends PageProps {}
 

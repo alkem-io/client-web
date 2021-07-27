@@ -12,7 +12,7 @@ import { env } from '../../env';
 import { useGlobalActivityQuery } from '../../generated/graphql';
 import { useAuthenticationContext } from '../../hooks';
 import { createStyles } from '../../hooks';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 
 const useStyles = createStyles(theme => ({

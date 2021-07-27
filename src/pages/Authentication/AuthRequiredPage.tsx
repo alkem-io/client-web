@@ -7,7 +7,7 @@ import Icon from '../../components/core/Icon';
 import Typography from '../../components/core/Typography';
 import { useQueryParams } from '../../hooks';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/Constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
 
 interface AuthRequiredPageProps {}
 

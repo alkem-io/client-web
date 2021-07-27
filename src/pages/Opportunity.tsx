@@ -46,7 +46,7 @@ import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
 import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks';
-import { SEARCH_PAGE } from '../models/Constants';
+import { SEARCH_PAGE } from '../models/constants';
 import Markdown from '../components/core/Markdown';
 
 const useStyles = createStyles(theme => ({

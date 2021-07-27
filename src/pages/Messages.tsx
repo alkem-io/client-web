@@ -8,7 +8,7 @@ import Typography from '../components/core/Typography';
 import { useConfig } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks';
-import { FEATURE_COMMUNICATIONS } from '../models/Constants';
+import { FEATURE_COMMUNICATIONS } from '../models/constants';
 import { PageProps } from './common';
 
 const date = new Date();
