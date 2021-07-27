@@ -1,0 +1,80 @@
+version: v0.6.3-alpha.1
+
+dsn: memory
+
+serve:
+  public:
+    base_url: http://localhost:3000/identity/ory/kratos/public
+    cors:
+      enabled: true
+  admin:
+    base_url: http://ct_demo_kratos:4434/
+
+selfservice:
+  default_browser_return_url: http://localhost:3000/
+  whitelisted_return_urls:
+    - http://localhost:3000
+
+  methods:
+    password:
+      enabled: true
+    oidc:
+      enabled: false
+
+  flows:
+    error:
+      ui_url: http://localhost:3000/identity/error
+
+    settings:
+      ui_url: http://localhost:3000/identity/settings
+      privileged_session_max_age: 15m
+
+    recovery:
+      enabled: true
+      ui_url: http://localhost:3000/identity/recovery
+
+    verification:
+      enabled: true
+      ui_url: http://localhost:3000/identity/verify
+      after:
+        default_browser_return_url: http://localhost:3000/
+
+    logout:
+      after:
+        default_browser_return_url: http://localhost:3000/identity/login
+
+    login:
+      ui_url: http://localhost:3000/identity/login
+      lifespan: 10m
+
+    registration:
+      lifespan: 10m
+      ui_url: http://localhost:3000/identity/registration
+      after:
+        password:
+          hooks:
+            - hook: session
+
+log:
+  level: debug
+  format: text
+  leak_sensitive_values: true
+
+secrets:
+  cookie:
+    - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE
+
+hashers:
+  argon2:
+    parallelism: 1
+    memory: 128MB
+    iterations: 2
+    salt_length: 16
+    key_length: 16
+
+identity:
+  default_schema_url: file:///etc/config/kratos/identity.schema.json
+
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true

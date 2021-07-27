@@ -47,7 +47,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { platform, loading } = useConfig();
 
   if (!flow) {
-    window.location.replace('/self-service/registration/browser');
+    window.location.replace('/identity/ory/kratos/public/self-service/registration/browser');
   }
 
   if (!registrationFlow || loading) return <Loading text={'Loading flow'} />;
