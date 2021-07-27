@@ -48,7 +48,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   }, [flow, kratos]);
 
   if (!flow) {
-    window.location.replace('/self-service/login/browser');
+    window.location.replace('/identity/ory/kratos/public/self-service/login/browser');
   }
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;

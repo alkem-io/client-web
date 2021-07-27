@@ -93,7 +93,7 @@ const Navigation: FC<NavigationProps> = ({ maximize, userMetadata }) => {
                     <Button
                       text="Sign out"
                       as={Link}
-                      to={'/auth/logout'}
+                      to={'/identity/logout'}
                       inset
                       className={styles.menuItem}
                       onClick={() => setDropdownOpen(false)}

@@ -1,0 +1,20 @@
+- id: 'alkemio:graphql:protected'
+  upstream:
+    preserve_host: true
+    url: 'http://alkemio_server:4000'
+  match:
+    url: 'http://localhost:3000/graphql'
+    methods:
+      - POST
+      - GET
+  authenticators:
+    - handler: cookie_session
+    - handler: noop
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: id_token
+  errors:
+    - handler: redirect
+      config:
+        to: http://localhost:3000/identity/login
