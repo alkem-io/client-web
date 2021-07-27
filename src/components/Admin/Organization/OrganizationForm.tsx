@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
@@ -9,12 +9,14 @@ import { OrganisationModel } from '../../../models/Organisation';
 import { Tagset } from '../../../models/Profile';
 import { Organisation, TagsetTemplate } from '../../../types/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
+import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';
 import FormikInputField from '../Common/FormikInputField';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
+import { useInputField } from '../Common/useInputField';
 
 const emptyOrganization = {
   displayName: '',
@@ -42,6 +44,7 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
+  const getInputField = useInputField();
   const { data: config } = useTagsetsTemplateQuery({});
 
   useEffect(() => {}, [config]);
@@ -120,7 +123,7 @@ export const OrganizationForm: FC<Props> = ({
   const handleBack = () => history.goBack();
 
   const backButton = (
-    <Button variant={editMode ? 'secondary' : 'primary'} onClick={handleBack}>
+    <Button variant={editMode ? 'default' : 'primary'} onClick={handleBack}>
       {editMode ? 'Cancel' : 'Back'}
     </Button>
   );
@@ -182,7 +185,7 @@ export const OrganizationForm: FC<Props> = ({
                           as={'textarea'}
                         />
                       </Form.Row>
-
+                      {getInputField({ name: 'avatar', label: t('components.visualSegment.avatar') })}
                       <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                       {isEditMode && (
                         <ProfileReferenceSegment

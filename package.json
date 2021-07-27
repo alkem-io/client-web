@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Alkemio client, responsible for managing the ecoverses on the platform",
   "author": "Cherrytwist Foundation",
   "repository": {
@@ -25,6 +25,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/yup": "^0.29.11",
+    "@uiw/react-md-editor": "^3.4.10",
     "@xstate/graph": "^1.3.0",
     "apollo-upload-client": "^14.1.3",
     "axios": "^0.21.1",
@@ -106,7 +107,6 @@
     "enzyme": "^3.11.0",
     "eslint-config-prettier": "^8.3.0",
     "gulp": "^4.0.2",
-    "http-proxy-middleware": "^1.0.6",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
     "prettier": "2.3.2"

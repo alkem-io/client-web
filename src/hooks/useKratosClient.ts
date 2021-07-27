@@ -11,7 +11,7 @@ export const useKratosClient = () => {
   const { authentication } = useConfig();
 
   return useMemo(() => {
-    const config = authentication.providers.map(x => x.config).find(x => isOryConfig(x));
+    const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
     return new PublicApi(new Configuration({ basePath: config?.kratosPublicBaseURL }));
   }, [authentication]);
 };

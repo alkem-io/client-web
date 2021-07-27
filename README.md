@@ -23,7 +23,13 @@ The endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment 
 
 All further configuration is obtained from the server configuration graphql schema.
 
-## Launching the client Scripts
+## Launching the client
+
+Instantiate dependent services:
+
+```bash
+   docker-compose -f quickstart-services.yml --env-file .env.docker up --build --force-recreate
+```
 
 In the project directory, you can run:
 
@@ -32,6 +38,8 @@ In the project directory, you can run:
 
 This runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+**NB**: The alkemio web client runs on the port specified by the **PORT** env variable (3001 by default). All the alkemio dependencies run behind a traefik reverse proxy running on port 3000 and to make `npm start` run by default with react-scripts, **BROWSER** and **BROWSER_ARGS** env variables are specified to point the browser (Chrome) to port 3000 and not 3001. If you don't have Chrome, manually navigate to http://localhost:3000.
 
 The page will reload if you make edits.<br />
 By default, eslint will cause compilation errors and be prominently visible.

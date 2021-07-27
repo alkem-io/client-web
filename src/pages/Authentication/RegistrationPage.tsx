@@ -8,7 +8,7 @@ import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading';
 import Typography from '../../components/core/Typography';
-import { usePlatformConfigurationQuery } from '../../generated/graphql';
+import { useConfig } from '../../hooks/useConfig';
 import { useKratosClient } from '../../hooks/useKratosClient';
 import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/Constants';
@@ -44,11 +44,10 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
     }
   }, [flow]);
 
-  const { data, loading } = usePlatformConfigurationQuery();
-  const platform = data?.configuration.platform;
+  const { platform, loading } = useConfig();
 
   if (!flow) {
-    window.location.replace('/self-service/registration/browser');
+    window.location.replace('/identity/ory/kratos/public/self-service/registration/browser');
   }
 
   if (!registrationFlow || loading) return <Loading text={'Loading flow'} />;

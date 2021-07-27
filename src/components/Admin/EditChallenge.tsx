@@ -60,10 +60,10 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
 
   const isLoading = isCreating || isUpdating;
 
-  const currentPaths = useMemo(() => [...paths, { name: challengeId ? 'edit' : 'new', real: false }], [
-    paths,
-    challenge,
-  ]);
+  const currentPaths = useMemo(
+    () => [...paths, { name: challengeId ? 'edit' : 'new', real: false }],
+    [paths, challenge]
+  );
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {

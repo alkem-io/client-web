@@ -1,11 +1,13 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useDeleteUserGroup } from '../../../hooks/useDeleteUserGroup';
 import { useUpdateNavigation } from '../../../hooks/useNavigation';
 import { useNotification } from '../../../hooks/useNotification';
 import { PageProps } from '../../../pages';
@@ -17,8 +19,8 @@ import {
   User,
   UserGroup,
 } from '../../../types/graphql-schema';
+import { urlStrip } from '../../../utils/urlStrip';
 import GroupForm from './GroupForm';
-import { useTranslation } from 'react-i18next';
 
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
@@ -38,9 +40,18 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
 
 export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   const { t } = useTranslation();
+  const { url } = useRouteMatch();
   const notify = useNotification();
+  const success = (message: string) => notify(message, 'success');
   const handleError = useApolloErrorHandler();
+
   const history = useHistory();
+  const returnRoute = urlStrip(url);
+
+  const { handleDelete } = useDeleteUserGroup({
+    onComplete: () => history.push(returnRoute),
+  });
+
   const { data: membersData } = useUsersWithCredentialsQuery({
     variables: {
       input: {
@@ -56,20 +67,21 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({
     onError: handleError,
-    onCompleted: data => notify(`Group ${data.updateUserGroup.name} has been update!`, 'success'),
+    onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
   });
 
   const [createTagset] = useCreateTagsetOnProfileMutation({ onError: handleError });
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
 
-  const handleCancel = () => history.goBack();
+  const handleCancel = () => history.push(returnRoute);
 
   const handleSave = async (group: UserGroup) => {
     const profileId = group.profile?.id || '';
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
 
     for (const tagset of tagsetsToAdd) {
+      debugger;
       await createTagset({
         variables: {
           input: {
@@ -98,6 +110,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
       group={group || { id: '-1', name: '' }}
       members={members}
       onSave={handleSave}
+      onDelete={handleDelete}
       onCancel={handleCancel}
     />
   );
