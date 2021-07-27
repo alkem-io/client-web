@@ -39,6 +39,8 @@ In the project directory, you can run:
 This runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+**NB**: The alkemio web client runs on the port specified by the **PORT** env variable (3001 by default). All the alkemio dependencies run behind a traefik reverse proxy running on port 3000 and to make `npm start` run by default with react-scripts, **BROWSER** and **BROWSER_ARGS** env variables are specified to point the browser (Chrome) to port 3000 and not 3001. If you don't have Chrome, manually navigate to http://localhost:3000.
+
 The page will reload if you make edits.<br />
 By default, eslint will cause compilation errors and be prominently visible.
 Setting `ESLINT_NO_DEV_ERRORS=true` in `.env.local` reduces eslint errors to warnings in the console.
