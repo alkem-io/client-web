@@ -8,7 +8,7 @@ import { Organisation } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 

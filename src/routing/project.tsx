@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../hooks/generated/graphql';
 import { useEcoverse } from '../hooks';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';

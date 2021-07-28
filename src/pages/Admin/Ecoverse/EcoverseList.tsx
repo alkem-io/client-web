@@ -3,7 +3,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { refetchEcoversesQuery, useDeleteEcoverseMutation, useEcoversesQuery } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../..';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../../components/Admin/SearchableList';
 

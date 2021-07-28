@@ -6,7 +6,7 @@ import { User } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import UserPopUp from './UserPopUp';
 import Tag from '../core/Tag';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';

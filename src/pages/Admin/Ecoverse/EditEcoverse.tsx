@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import Typography from '../../../components/core/Typography';
 import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';

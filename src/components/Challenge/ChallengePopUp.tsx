@@ -5,7 +5,7 @@ import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Divider from '../core/Divider';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';

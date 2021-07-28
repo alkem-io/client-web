@@ -4,7 +4,7 @@ import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';

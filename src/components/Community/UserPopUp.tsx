@@ -5,7 +5,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { useUserMetadata } from '../../hooks';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import { useTranslation } from 'react-i18next';
 import Tag from '../core/Tag';

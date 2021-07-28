@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useKratosClient } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';

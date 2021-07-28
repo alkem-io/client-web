@@ -14,7 +14,7 @@ import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import SearchDropdown from '../core/SearchDropdown';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';

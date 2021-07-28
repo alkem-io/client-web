@@ -10,7 +10,7 @@ import { User } from '../../models/graphql-schema';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import Section, { Body, Header } from '../core/Section';
 import Tag from '../core/Tag';
 import Typography from '../core/Typography';

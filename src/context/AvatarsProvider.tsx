@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import { useUserAvatarsQuery } from '../hooks/generated/graphql';
 import { User } from '../models/graphql-schema';
 

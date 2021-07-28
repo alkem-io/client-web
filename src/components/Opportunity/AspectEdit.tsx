@@ -15,7 +15,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Aspect } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 
 interface Props {

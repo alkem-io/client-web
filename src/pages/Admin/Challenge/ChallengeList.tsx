@@ -3,7 +3,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import {
   refetchChallengesWithCommunityQuery,
   useChallengesWithCommunityQuery,

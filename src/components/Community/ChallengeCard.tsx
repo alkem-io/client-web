@@ -5,7 +5,7 @@ import { Theme } from '../../context/ThemeProvider';
 import { Challenge } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import ChallengePopUp from '../Challenge/ChallengePopUp';
 import { Activities } from '../ActivityPanel';

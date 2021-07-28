@@ -11,7 +11,7 @@ import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';

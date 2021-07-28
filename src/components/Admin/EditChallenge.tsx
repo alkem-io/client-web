@@ -5,7 +5,7 @@ import { Path } from '../../context/NavigationProvider';
 import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { useNotification } from '../../hooks';
 import { useApolloErrorHandler } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';

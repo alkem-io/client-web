@@ -3,7 +3,7 @@ import { PageProps } from '../../../pages';
 import { ApplicationRoute } from '../ApplicationRoute';
 import { useEcoverseApplicationsQuery } from '../../../hooks/generated/graphql';
 import { useParams } from 'react-router';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 
 interface Params {
   ecoverseId: string;

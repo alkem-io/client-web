@@ -4,7 +4,7 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '..';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import EditGlobalCredentials from '../../components/Admin/Authorization/EditGlobalCredentials';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 

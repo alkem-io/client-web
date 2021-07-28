@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import {
   useChallengeProfileQuery,
   useChallengesQuery,

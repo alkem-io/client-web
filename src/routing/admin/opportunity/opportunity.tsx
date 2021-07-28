@@ -3,7 +3,7 @@ import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';

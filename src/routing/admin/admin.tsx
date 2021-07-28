@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';

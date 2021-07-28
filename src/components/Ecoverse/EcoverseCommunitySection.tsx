@@ -3,7 +3,7 @@ import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../..
 import { useEcoverse } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 

@@ -8,7 +8,7 @@ import {
 import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import Loading from '../../core/Loading';
+import { Loading } from '../../core';
 import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {

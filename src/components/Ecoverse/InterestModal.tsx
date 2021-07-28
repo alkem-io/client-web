@@ -4,7 +4,7 @@ import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery
 import { useApolloErrorHandler } from '../../hooks';
 import { useEcoverse } from '../../hooks';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 

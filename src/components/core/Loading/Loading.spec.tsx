@@ -1,7 +1,7 @@
 import renderer from 'react-test-renderer';
 import Loading from './Loading';
 import { Spinner } from 'react-bootstrap';
-import Typography from './Typography';
+import Typography from '../Typography';
 import { render, screen } from '@testing-library/react';
 
 describe('Loading component', () => {

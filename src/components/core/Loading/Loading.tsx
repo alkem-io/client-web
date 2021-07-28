@@ -1,30 +1,14 @@
 import React, { FC } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
-import Typography from './Typography';
+import Typography from '../Typography';
+import { useLoadingStyles } from './Loading.styles';
 
 interface LoadingProps {
   text?: string;
 }
 
-const useStyles = createStyles(theme => ({
-  spinner: {
-    color: theme.palette.primary,
-  },
-  text: {
-    marginLeft: theme.shape.spacing(2),
-  },
-  container: {
-    display: 'flex',
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-  },
-}));
-
 export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
-  const styles = useStyles();
+  const styles = useLoadingStyles();
 
   return (
     <div className={styles.container}>

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useChallengeCommunityMessagesQuery, useChallengeUserIdsQuery } from '../../hooks/generated/graphql';
 import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 
 interface ChallengeCommunitySectionProps extends CommunitySectionPropsExt {
   ecoverseId: string;

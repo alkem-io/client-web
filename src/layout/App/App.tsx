@@ -20,7 +20,7 @@ import Breadcrumbs from '../../components/core/Breadcrumbs';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import IconButton from '../../components/core/IconButton';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import Section from '../../components/core/Section';
 import Footer from './Footer';
 import Header from './Header';

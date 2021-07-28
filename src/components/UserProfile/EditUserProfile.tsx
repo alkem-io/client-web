@@ -6,7 +6,7 @@ import { useNotification } from '../../hooks';
 import { UserModel } from '../../models/User';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { EditMode } from '../../utils/editMode';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import { UserForm } from './UserForm';
 
 interface EditUserProfileProps {}

@@ -1,7 +1,7 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
 import { Form, Col } from 'react-bootstrap';
-import { Required } from '../../Required';
+import { Required } from '../../core/Required';
 
 interface CheckBoxFieldProps {
   value?: string | ReadonlyArray<string> | number;

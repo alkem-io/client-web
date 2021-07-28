@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
-import { Required } from '../Required';
+import { Required } from '../core/Required';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema, ContextSegment } from './Common/ContextSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';

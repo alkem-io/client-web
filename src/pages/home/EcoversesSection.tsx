@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Col } from 'react-bootstrap';
 import { CardContainer } from '../../components/core/Container';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import { useUserContext } from '../../hooks';

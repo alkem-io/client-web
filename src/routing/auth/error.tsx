@@ -1,7 +1,7 @@
 import { SelfServiceErrorContainer } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { Loading } from '../../components/core/Loading';
+import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
 

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import { useAuthenticationContext } from '../hooks';
 import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';

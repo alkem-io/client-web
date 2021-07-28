@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useEcoverseCommunityQuery, useUsersQuery } from '../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../hooks';

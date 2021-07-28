@@ -35,4 +35,25 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
 
   return <ListPage data={data} paths={paths} onDelete={handleDelete} />;
 };
+
+// interface Props<TEntities, TActions> {
+//   entities: TEntities;
+//   actions: TActions;
+// }
+
+// interface Entities {
+//   users: UserModel[];
+// }
+
+// interface Actions {
+//   onDelete?: () => void;
+// }
+
+// interface UserProps extends Props<Entities, Actions> {
+
+// }
+
+// interface CompositeEntities extends Entities {
+// }
+
 export default UserList;

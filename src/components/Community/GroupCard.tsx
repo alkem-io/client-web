@@ -7,7 +7,7 @@ import { UserGroup } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import GroupPopUp from './GroupPopUp';
 interface GroupCardProps extends UserGroup {

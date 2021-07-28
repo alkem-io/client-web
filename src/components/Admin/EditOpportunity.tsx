@@ -15,7 +15,7 @@ import { useUpdateNavigation } from '../../hooks';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 

@@ -8,7 +8,7 @@ import {
 import { useEcoverse } from '../../hooks';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 
 interface P {

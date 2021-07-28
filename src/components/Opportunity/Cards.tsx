@@ -25,7 +25,7 @@ import Card from '../core/Card';
 import Icon from '../core/Icon';
 import RemoveModal from '../core/RemoveModal';
 import Typography from '../core/Typography';
-import { Spacer } from '../shared/Spacer';
+import { Spacer } from '../core/Spacer';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
 import hexToRGBA from '../../utils/hexToRGBA';
