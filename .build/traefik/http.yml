@@ -50,12 +50,6 @@ http:
         forceSlash: false
 
   routers:
-    mysql:
-      rule: "HostSNI(`*`)"
-      service: "mysql"
-      entryPoints:
-        - "mysql"
-
     graphql:
       rule: "PathPrefix(`/graphql`)"
       service: "oathkeeper-proxy"
@@ -104,3 +98,10 @@ tcp:
       loadBalancer:
         servers:
           - address: "mysql_db:3306"
+
+  routers:
+    mysql:
+      rule: "HostSNI(`*`)"
+      service: "mysql"
+      entryPoints:
+        - "mysql"
