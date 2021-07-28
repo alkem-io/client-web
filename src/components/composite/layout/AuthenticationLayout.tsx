@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Col, Container, ContainerProps, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Image from '../components/core/Image';
-import { createStyles } from '../hooks/useTheme';
+import Image from '../../core/Image';
+import { createStyles } from '../../../hooks/useTheme';
 
 const useAuthenticationLayout = createStyles(theme => ({
   logo: {

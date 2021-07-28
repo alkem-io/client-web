@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
-import Container from '../../components/core/Container';
-import Toolbar from '../../components/core/Toolbar';
-import Typography from '../../components/core/Typography';
-import Image from '../../components/core/Image';
-import { useConfig } from '../../hooks';
+import { createStyles } from '../../../../hooks/useTheme';
+import Container from '../../../core/Container';
+import Toolbar from '../../../core/Toolbar';
+import Typography from '../../../core/Typography';
+import Image from '../../../core/Image';
+import { useConfig } from '../../../../hooks';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {

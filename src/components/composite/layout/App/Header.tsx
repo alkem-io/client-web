@@ -4,10 +4,10 @@ import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
-import { createStyles } from '../../hooks/useTheme';
-import hexToRgba from '../../utils/hexToRGBA';
-import Container from '../../components/core/Container';
-import Toolbar from '../../components/core/Toolbar';
+import { createStyles } from '../../../../hooks/useTheme';
+import hexToRgba from '../../../../utils/hexToRGBA';
+import Container from '../../../core/Container';
+import Toolbar from '../../../core/Toolbar';
 
 const appBarZIndex = 100;
 

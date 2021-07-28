@@ -6,7 +6,7 @@ import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
-import AuthenticationLayout from '../../layout/AuthenticationLayout';
+import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 
 interface RegistrationSuccessPageProps {}
 

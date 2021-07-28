@@ -2,10 +2,10 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { createStyles } from '../../hooks/useTheme';
-import Button, { ButtonProps } from '../../components/core/Button';
-import Icon, { IconProps } from '../../components/core/Icon';
-import Typography from '../../components/core/Typography';
+import { createStyles } from '../../../../hooks/useTheme';
+import Button, { ButtonProps } from '../../../core/Button';
+import Icon, { IconProps } from '../../../core/Icon';
+import Typography from '../../../core/Typography';
 
 const useStyles = createStyles(theme => ({
   link: {

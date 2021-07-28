@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../../../hooks/useTheme';
 
 const useMainStyles = createStyles(() => ({
   main: {
