@@ -2,9 +2,9 @@ import * as d3 from 'd3';
 import React, { FC, MutableRefObject, useCallback } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { Lifecycle } from '../../types/graphql-schema';
+import { Lifecycle } from '../../models/graphql-schema';
 import { Theme } from '../../context/ThemeProvider';
-import { useTheme } from '../../hooks/useTheme';
+import { useTheme } from '../../hooks';
 
 export interface GraphThemeOptions {
   strokePrimaryColor?: string;

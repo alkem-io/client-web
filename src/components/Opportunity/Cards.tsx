@@ -14,18 +14,18 @@ import {
   useDeleteActorMutation,
   useDeleteAspectMutation,
   useDeleteRelationMutation,
-} from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
+} from '../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
-import { useUserContext } from '../../hooks/useUserContext';
-import { AuthorizationCredential } from '../../types/graphql-schema';
+import { useUserContext } from '../../hooks';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import RemoveModal from '../core/RemoveModal';
 import Typography from '../core/Typography';
-import { Spacer } from '../shared/Spacer';
+import { Spacer } from '../core/Spacer';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
 import hexToRGBA from '../../utils/hexToRGBA';

@@ -5,16 +5,16 @@ import {
   refetchOpportunityProfileQuery,
   useUpdateChallengeMutation,
   useUpdateOpportunityMutation,
-} from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
+} from '../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import {
   Context,
   UpdateChallengeInput,
   UpdateOpportunityInput,
   UpdateReferenceInput,
-} from '../../types/graphql-schema';
+} from '../../models/graphql-schema';
 import Button from '../core/Button';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 

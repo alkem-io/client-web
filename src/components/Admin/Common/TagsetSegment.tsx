@@ -3,7 +3,7 @@ import React, { FC, useCallback } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import * as yup from 'yup';
 import { Tagset } from '../../../models/Profile';
-import { TagsetTemplate } from '../../../types/graphql-schema';
+import { TagsetTemplate } from '../../../models/graphql-schema';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 import useProfileStyles from './useProfileStyles';
 

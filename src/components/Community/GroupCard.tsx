@@ -1,13 +1,13 @@
 import React, { FC, memo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
-import { useGroupCardQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
+import { useGroupCardQuery } from '../../hooks/generated/graphql';
+import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
-import { UserGroup } from '../../types/graphql-schema';
+import { UserGroup } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import GroupPopUp from './GroupPopUp';
 interface GroupCardProps extends UserGroup {

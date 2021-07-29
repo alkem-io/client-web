@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import { AuthorizationCredential } from '../../../types/graphql-schema';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
 
 import { WithCommunity } from '../Community/CommunityTypes';

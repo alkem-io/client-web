@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import Typography from '../core/Typography';
 import { createStyles } from '../../hooks/useTheme';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import Card from '../core/Card';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';

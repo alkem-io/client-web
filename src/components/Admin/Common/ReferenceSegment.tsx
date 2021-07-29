@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { PushFunc, RemoveFunc } from '../../../hooks/useEditReference';
+import { PushFunc, RemoveFunc } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';

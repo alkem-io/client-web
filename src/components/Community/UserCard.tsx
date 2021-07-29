@@ -1,12 +1,12 @@
 import React, { FC, memo, useMemo, useState } from 'react';
 import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
-import { useUserCardMetadata } from '../../hooks/useUserCardMetadata';
-import { User } from '../../types/graphql-schema';
+import { useUserCardMetadata } from '../../hooks';
+import { User } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Loading } from '../core/Loading';
+import { Loading } from '../core';
 import UserPopUp from './UserPopUp';
 import Tag from '../core/Tag';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';

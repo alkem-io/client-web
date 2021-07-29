@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
-import { Lifecycle } from '../../types/graphql-schema';
+import { Lifecycle } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import { useRouteMatch } from 'react-router';
 import { PageProps } from '../../pages';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../hooks';
 import LifecycleButton from '../core/LifecycleButton';
 import LifecycleVisualizer from '../core/Lifecycle';
 

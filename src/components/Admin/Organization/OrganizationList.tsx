@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useDeleteOrganizationMutation, useOrganizationsListQuery } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useDeleteOrganizationMutation, useOrganizationsListQuery } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import { ListPage } from '../ListPage';
 import { SearchableListItem } from '../SearchableList';

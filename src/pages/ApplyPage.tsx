@@ -7,15 +7,15 @@ import * as yup from 'yup';
 import { PageProps } from './common';
 import Typography from '../components/core/Typography';
 import Button from '../components/core/Button';
-import { Loading } from '../components/core/Loading';
-import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../generated/graphql';
+import { Loading } from '../components/core/Loading/Loading';
+import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
 import ErrorBlock from '../components/core/ErrorBlock';
-import { Required } from '../components/Required';
+import { Required } from '../components/core/Required';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks/useUserContext';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-import { CreateNvpInput, QuestionTemplate } from '../types/graphql-schema';
-import { useUpdateNavigation } from '../hooks/useNavigation';
+import { useUserContext } from '../hooks';
+import { useApolloErrorHandler } from '../hooks';
+import { CreateNvpInput, QuestionTemplate } from '../models/graphql-schema';
+import { useUpdateNavigation } from '../hooks';
 import Image from '../components/core/Image';
 
 const useStyles = createStyles(theme => ({

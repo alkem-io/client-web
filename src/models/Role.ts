@@ -1,4 +1,4 @@
-import { AuthorizationCredential } from '../types/graphql-schema';
+import { AuthorizationCredential } from './graphql-schema';
 
 export interface Role {
   code: string;

@@ -1,7 +1,7 @@
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { Required } from '../../Required';
+import { Required } from '../../core/Required';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode } from './helpers';
 import KratosFeedback from './KratosFeedback';
 import { KratosProps } from './KratosProps';

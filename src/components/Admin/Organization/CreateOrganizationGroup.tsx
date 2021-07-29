@@ -4,9 +4,9 @@ import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnOrganizationMutation,
   useOrganizationNameQuery,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
 

@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { pushNotification } from '../reducers/notifincations/actions';
-import { Severity } from '../reducers/notifincations/types';
+import { pushNotification } from '../store/notifincations/actions';
+import { Severity } from '../store/notifincations/types';
 
 export const useNotification = () => {
   const dispatch = useDispatch();

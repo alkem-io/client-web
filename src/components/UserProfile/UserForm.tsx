@@ -3,18 +3,18 @@ import React, { FC, useMemo } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../../generated/graphql';
+import { useTagsetsTemplateQuery } from '../../hooks/generated/graphql';
+import { COUNTRIES } from '../../models/constants';
 import { Tagset } from '../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
-import { TagsetTemplate } from '../../types/graphql-schema';
-import countriesList from '../../utils/countriesList.json';
+import { TagsetTemplate } from '../../models/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
 import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import SearchDropdown from '../core/SearchDropdown';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';
@@ -246,7 +246,7 @@ export const UserForm: FC<UserProps> = ({
                   <Form.Label>Country</Form.Label>
                   <SearchDropdown
                     value={country}
-                    data={countriesList.map(el => el.name)}
+                    data={COUNTRIES.map(el => el.name)}
                     readOnly={isReadOnlyMode}
                     onSelect={value => setFieldValue('country', value)}
                     disabled={isSubmitting}

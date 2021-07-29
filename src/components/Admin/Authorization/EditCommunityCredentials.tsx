@@ -4,11 +4,11 @@ import {
   useAssignUserToCommunityMutation,
   useRemoveUserFromCommunityMutation,
   useUsersWithCredentialsQuery,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
-import { AuthorizationCredential } from '../../../types/graphql-schema';
-import Loading from '../../core/Loading';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { Loading } from '../../core';
 import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {

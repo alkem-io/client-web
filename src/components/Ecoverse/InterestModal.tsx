@@ -1,10 +1,10 @@
 import React, { FC, useState } from 'react';
 import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
-import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
+import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 

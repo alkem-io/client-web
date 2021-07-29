@@ -3,16 +3,16 @@ import { useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   refetchChallengeLeadOrganisationsQuery,
   useChallengeLeadOrganisationsQuery,
   useChallengeNameQuery,
   useUpdateChallengeMutation,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
-import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../types/graphql-schema';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { TFunction } from 'i18next';
 

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from '../../core/Button';
-import Loading from '../../core/Loading';
+import { Loading } from '../../core';
 
 interface UserRemoveModalProps {
   show: boolean;

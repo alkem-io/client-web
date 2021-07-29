@@ -8,14 +8,14 @@ import {
   useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
-} from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
+} from '../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
-import { Aspect } from '../../types/graphql-schema';
+import { Aspect } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 
 interface Props {

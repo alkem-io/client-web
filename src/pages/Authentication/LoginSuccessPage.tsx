@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Redirect } from 'react-router-dom';
-import { LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/Constants';
+import { LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
 
 interface LoginSuccessPageProps {}
 

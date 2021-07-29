@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { Form, FormControlProps } from 'react-bootstrap';
-import { Required } from '../../Required';
+import { Required } from '../../core/Required';
 import { createStyles } from '../../../hooks/useTheme';
 
 const useStyle = createStyles(() => ({

@@ -6,12 +6,12 @@ import { useHistory } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useConfig } from '../../hooks/useConfig';
-import { useKratosClient } from '../../hooks/useKratosClient';
-import AuthenticationLayout from '../../layout/AuthenticationLayout';
-import { AUTH_LOGIN_PATH } from '../../models/Constants';
+import { useConfig } from '../../hooks';
+import { useKratosClient } from '../../hooks';
+import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
+import { AUTH_LOGIN_PATH } from '../../models/constants';
 
 interface RegisterPageProps {
   flow?: string;

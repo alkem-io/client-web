@@ -8,14 +8,14 @@ import {
   useCreateOpportunityMutation,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
-} from '../../generated/graphql';
-import { useNotification } from '../../hooks/useNotification';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+} from '../../hooks/generated/graphql';
+import { useNotification } from '../../hooks';
+import { useApolloErrorHandler } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 

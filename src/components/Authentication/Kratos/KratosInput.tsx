@@ -6,7 +6,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Icon from '../../core/Icon';
 import IconButton from '../../core/IconButton';
-import { Required } from '../../Required';
+import { Required } from '../../core/Required';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
 import KratosFeedback from './KratosFeedback';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';

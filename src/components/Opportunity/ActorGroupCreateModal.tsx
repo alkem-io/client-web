@@ -4,11 +4,11 @@ import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorGroupMutation,
   useOpportunityProfileQuery,
-} from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
+} from '../../hooks/generated/graphql';
+import { useEcoverse } from '../../hooks';
 import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 
 interface P {

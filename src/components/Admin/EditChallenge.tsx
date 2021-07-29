@@ -5,17 +5,17 @@ import { Path } from '../../context/NavigationProvider';
 import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
-import Loading from '../core/Loading';
-import { useNotification } from '../../hooks/useNotification';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { Loading } from '../core';
+import { useNotification } from '../../hooks';
+import { useApolloErrorHandler } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
-} from '../../generated/graphql';
+} from '../../hooks/generated/graphql';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 

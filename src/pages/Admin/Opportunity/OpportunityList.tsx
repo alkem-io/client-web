@@ -3,15 +3,15 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
-import Loading from '../../../components/core/Loading';
+import Loading from '../../../components/core/Loading/Loading';
 import {
   refetchOpportunitiesQuery,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../../hooks/useEcoverse';
-import { AdminParameters } from '../../../navigation/admin/admin';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useEcoverse } from '../../../hooks';
+import { AdminParameters } from '../../../routing/admin/admin';
 
 interface OpportunityListProps extends PageProps {}
 

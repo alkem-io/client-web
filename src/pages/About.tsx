@@ -3,7 +3,7 @@ import { Col } from 'react-bootstrap';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
-import { useServerMetadataQuery } from '../generated/graphql';
+import { useServerMetadataQuery } from '../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
 
 const useAboutStyles = createStyles(theme => ({

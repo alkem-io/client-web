@@ -5,7 +5,7 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import Button from '../core/Button';
 import Card from '../core/Card';
 
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../hooks';
 import { Theme } from '../../context/ThemeProvider';
 import { PageProps } from '../../pages';
 

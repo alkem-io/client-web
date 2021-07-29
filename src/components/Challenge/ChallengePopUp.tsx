@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useChallengeCardQuery } from '../../generated/graphql';
+import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Divider from '../core/Divider';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import Typography from '../core/Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';

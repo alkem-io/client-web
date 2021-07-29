@@ -6,11 +6,11 @@ import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorMutation,
   useUpdateActorMutation,
-} from '../../generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/useApolloErrorHandler';
-import { useEcoverse } from '../../hooks/useEcoverse';
+} from '../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../hooks';
+import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
-import { Actor } from '../../types/graphql-schema';
+import { Actor } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
 
