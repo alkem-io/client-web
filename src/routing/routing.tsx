@@ -6,7 +6,7 @@ import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { Admin } from './admin/admin';
-import { AuthRoute } from './auth/auth';
+import { AuthRoute } from './identity/auth';
 import { EcoverseRoute } from './ecoverse';
 import { Messages } from './messages';
 import ProfileRoute from './profile';
