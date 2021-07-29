@@ -94,7 +94,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                   <Button
                     onClick={() => {
                       setDropdownOpen(false);
-                      history.push('/auth/logout');
+                      history.push('/identity/logout');
                     }}
                     variant="transparent"
                     inset

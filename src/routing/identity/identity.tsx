@@ -13,7 +13,7 @@ import RegistrationRoute from './registration';
 import SettingsRoute from './settings';
 import VerifyRoute from './verify';
 
-export const AuthRoute: FC = () => {
+export const IdentityRoute: FC = () => {
   const { path } = useRouteMatch();
 
   const dispatch = useDispatch();

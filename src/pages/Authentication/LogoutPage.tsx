@@ -11,7 +11,7 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
   useUpdateNavigation({ currentPaths });
 
   useEffect(() => {
-    window.location.replace('/self-service/browser/flows/logout');
+    window.location.replace('/identity/ory/kratos/public/self-service/browser/flows/logout');
     return () => {};
   }, []);
 

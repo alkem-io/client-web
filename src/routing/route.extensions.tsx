@@ -19,7 +19,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   }
 
   if (!isAuthenticated) {
-    return <Redirect to={`/auth/required?returnUrl=${encodeURI(pathname)}`} />;
+    return <Redirect to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
   }
 
   if (requiredCredentials.every(x => !user || !user.hasCredentials(x)) && requiredCredentials.length !== 0) {

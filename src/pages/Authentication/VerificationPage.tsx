@@ -38,7 +38,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   }, [flow]);
 
   if (!flow) {
-    window.location.replace('/self-service/verification/browser');
+    window.location.replace('/identity/ory/kratos/public/self-service/verification/browser');
     return null;
   }
 
