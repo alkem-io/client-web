@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
-import { Severity } from '../../store/notifincations/types';
+import { Severity } from '../../state/global/notifications/notificationMachine';
+
 import { useNotification } from '../useNotification';
 
 export const useApolloErrorHandler = (severity: Severity = 'error') => {

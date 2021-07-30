@@ -16,7 +16,7 @@
     |__ /views        //  views - combinantion of container + presentational components.
     |__ /routing      //  routing components - move to components
     |__ /services     //  plain typescript modules
-    |__ /store        //  Redux reducers/actions ?? x-state??/
+    |__ /state        //  X state machines
     |__ /styles       //  to be removed
     |__ /themes       //  theme(s) defenition
     |__ /types        //
@@ -118,6 +118,18 @@ interface CompositeEntities extends Entities {}
 ### Providers/Context
 
 TBD
+
+### XState
+
+XState is used for application state managment. Global and local state managment is supported.
+
+#### Global State
+
+All machines should be instantiated in the `GlobalStateProvider`. the global state context can be accessed using `useGlobalState`.
+
+### Local State
+
+Local state machines can be used wherever is needed. ex. A composite component with complicated internal states.
 
 ### Routing
 

@@ -1,10 +1,13 @@
-import { useDispatch } from 'react-redux';
-import { pushNotification } from '../store/notifincations/actions';
-import { Severity } from '../store/notifincations/types';
+import { useGlobalState } from './useGlobalState';
+import { Severity } from '../state/global/notifications/notificationMachine';
 
 export const useNotification = () => {
-  const dispatch = useDispatch();
+  const { notificationsService } = useGlobalState();
   return (message: string, severity: Severity = 'information') => {
-    dispatch(pushNotification(message, severity));
+    notificationsService.send({
+      type: 'PUSH',
+      message,
+      severity,
+    });
   };
 };
