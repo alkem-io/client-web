@@ -1,6 +1,5 @@
 import { v4 } from 'uuid';
-import { ContextFrom, EventFrom } from 'xstate';
-import { createModel } from 'xstate/lib/model';
+import { assign, createMachine } from 'xstate';
 
 export type Severity = 'information' | 'warning' | 'error' | 'success';
 
@@ -10,58 +9,37 @@ export type Notification = {
   message: string;
 };
 
-// export type NotificationEvent = {
-//   events: {
-//     PUSH: (message: string, severity?: Severity) => { notification: Notification };
-//     CLEAR: (id: string) => { id: string };
-//   };
-// };
+export const PUSH_NOTIFICATION = 'PUSH';
+export const CLEAR_NOTIFICATION = 'CLEAR';
 
-// export interface NotificationContext {
-//   notifications: Notification[];
-// }
-// export type NotificationState = { value: 'active'; context: {} };
+export type NotificationsContext = {
+  notifications: Notification[];
+};
+export type NotificationsEvent =
+  | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
+  | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
+export type LoginNavigationState = { value: 'visible'; context: {} } | { value: 'hidden'; context: {} };
 
-const notificationsModel = createModel(
-  {
-    notifications: [] as Notification[],
-  },
-  {
-    events: {
-      PUSH: (message: string, severity: Severity = 'information') => ({
-        message,
-        severity,
-      }),
-      CLEAR: (id: string) => ({
-        id,
-      }),
-    },
-  }
-);
-
-export const notificationMachine = notificationsModel.createMachine({
+export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
   id: 'notification',
   initial: 'active',
   states: {
     active: {
       on: {
         PUSH: {
-          actions: notificationsModel.assign({
+          actions: assign({
             notifications: (context, event) => [
               ...context.notifications,
-              { id: v4(), message: event.message, severity: event.severity },
+              { id: v4(), message: event.payload.message, severity: event.payload.severity || 'information' },
             ],
           }),
         },
         CLEAR: {
-          actions: notificationsModel.assign({
-            notifications: (context, event) => context.notifications.filter(x => x.id !== event.id),
+          actions: assign({
+            notifications: (context, event) => context.notifications.filter(x => x.id !== event.payload.id),
           }),
         },
       },
     },
   },
 });
-
-export type NotificationsContext = ContextFrom<typeof notificationsModel>;
-export type NotificationsEvent = EventFrom<typeof notificationsModel>;

@@ -21,9 +21,9 @@ export const IdentityRoute: FC = () => {
   } = useGlobalState();
 
   useEffect(() => {
-    loginNavigationService?.send(HIDE_LOGIN_NAVIGATION);
+    loginNavigationService.send(HIDE_LOGIN_NAVIGATION);
     return () => {
-      loginNavigationService?.send(SHOW_LOGIN_NAVIGATION);
+      loginNavigationService.send(SHOW_LOGIN_NAVIGATION);
     };
   }, []);
 

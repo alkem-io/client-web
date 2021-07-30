@@ -1,5 +1,5 @@
 import { useInterpret } from '@xstate/react';
-import React, { createContext } from 'react';
+import React, { createContext, useMemo } from 'react';
 import { Interpreter } from 'xstate';
 import {
   notificationMachine,
@@ -33,13 +33,14 @@ export const GlobalStateProvider = ({ children }) => {
   const userSegmentService = useInterpret(userSegmentMachine);
   const notificationsService = useInterpret(notificationMachine);
 
+  const ui = useMemo(
+    () => ({ loginNavigationService, userSegmentService }),
+    [loginNavigationService, userSegmentService]
+  );
   return (
     <GlobalStateContext.Provider
       value={{
-        ui: {
-          loginNavigationService,
-          userSegmentService,
-        },
+        ui: ui,
         notificationsService,
       }}
     >

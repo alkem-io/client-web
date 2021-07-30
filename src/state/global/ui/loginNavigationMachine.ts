@@ -1,7 +1,7 @@
 import { createMachine } from 'xstate';
 
-export const HIDE_LOGIN_NAVIGATION = 'SHOW';
-export const SHOW_LOGIN_NAVIGATION = 'HIDE';
+export const HIDE_LOGIN_NAVIGATION = 'HIDE';
+export const SHOW_LOGIN_NAVIGATION = 'SHOW';
 
 export type LoginNavigationEvent = { type: typeof SHOW_LOGIN_NAVIGATION } | { type: typeof HIDE_LOGIN_NAVIGATION };
 export interface LoginNavigationContext {}
@@ -14,14 +14,14 @@ export const loginNavigationMachine = createMachine<LoginNavigationContext, Logi
     states: {
       visible: {
         on: {
-          HIDE: {
+          [HIDE_LOGIN_NAVIGATION]: {
             target: 'hidden',
           },
         },
       },
       hidden: {
         on: {
-          SHOW: {
+          [SHOW_LOGIN_NAVIGATION]: {
             target: 'visible',
           },
         },

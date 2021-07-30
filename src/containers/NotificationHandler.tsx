@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 import { Toast } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useGlobalState } from '../hooks';
-import { Severity } from '../state/global/notifications/notificationMachine';
+import { Severity, CLEAR_NOTIFICATION } from '../state/global/notifications/notificationMachine';
 
 export const NotificationHandler: FC = () => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ export const NotificationHandler: FC = () => {
   });
 
   const closeMessage = (id: string): void => {
-    notificationsService.send({ type: 'CLEAR', id });
+    notificationsService.send({ type: CLEAR_NOTIFICATION, payload: { id } });
   };
 
   const getIcon = (severity: Severity) => {
