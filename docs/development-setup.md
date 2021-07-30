@@ -16,7 +16,7 @@
     |__ /views        //  views - combinantion of container + presentational components.
     |__ /routing      //  routing components - move to components
     |__ /services     //  plain typescript modules
-    |__ /state        //  X state machines
+    |__ /state        //  X state machine definitios
     |__ /styles       //  to be removed
     |__ /themes       //  theme(s) defenition
     |__ /types        //
@@ -122,6 +122,37 @@ TBD
 ### XState
 
 XState is used for application state managment.
+At the time this document is writen the XState is used only for handling a few global sates.
+
+#### Global machines
+
+Machine definitions should be store in:
+
+```
+.
+|__ /src
+    |__ /state        // X state machine definitios
+        |__ /global   // global state machine definitons
+            |__ /ui   // UI related machine definitons
+            |__ .     // other global machine definitions
+```
+
+#### Local machines
+
+To be discussed where to store them. It might be as separate file together with container/component that is using the machine.
+
+```
+.
+|__ /src
+    |
+    |__ /containers                 // how things work
+        |__ /users                  // example component
+            |__ /users.graphql      // graphql queries/mutations required by the component.
+            |__ /users.tsx          // the component
+            |__ /users.spec.tsx     // unit tests for the component
+            |__ /users.machine.ts   // local machine definition
+```
+
 Further information [here](https://hackmd.io/hx4VSJv-TZOr220bsb6yfQ#State-XState).
 
 ### Routing
