@@ -121,15 +121,8 @@ TBD
 
 ### XState
 
-XState is used for application state managment. Global and local state managment is supported.
-
-#### Global State
-
-All machines should be instantiated in the `GlobalStateProvider`. the global state context can be accessed using `useGlobalState`.
-
-### Local State
-
-Local state machines can be used wherever is needed. ex. A composite component with complicated internal states.
+XState is used for application state managment.
+Further information [here](https://hackmd.io/hx4VSJv-TZOr220bsb6yfQ#State-XState).
 
 ### Routing
 
