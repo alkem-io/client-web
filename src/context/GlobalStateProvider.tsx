@@ -29,9 +29,9 @@ interface GlobalStateContextProps {
 export const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
 export const GlobalStateProvider = ({ children }) => {
-  const loginNavigationService = useInterpret(loginNavigationMachine, { devTools: true });
-  const userSegmentService = useInterpret(userSegmentMachine, { devTools: true });
-  const notificationsService = useInterpret(notificationMachine, { devTools: true });
+  const loginNavigationService = useInterpret(loginNavigationMachine);
+  const userSegmentService = useInterpret(userSegmentMachine);
+  const notificationsService = useInterpret(notificationMachine);
 
   return (
     <GlobalStateContext.Provider

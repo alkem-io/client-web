@@ -151,7 +151,7 @@ interface GlobalStateContextProps {
 
 export const GlobalStateProvider = ({ children }) => {
   ...
-  const notificationsService = useInterpret(notificationMachine, { devTools: true });
+  const notificationsService = useInterpret(notificationMachine);
 
   return (
     <GlobalStateContext.Provider
