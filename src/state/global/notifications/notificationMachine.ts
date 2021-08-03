@@ -23,6 +23,9 @@ export type LoginNavigationState = { value: 'visible'; context: {} } | { value: 
 export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
   id: 'notification',
   initial: 'active',
+  context: {
+    notifications: [],
+  },
   states: {
     active: {
       on: {
