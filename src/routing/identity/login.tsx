@@ -13,7 +13,7 @@ export const LoginRoute: FC = () => {
   return (
     <Switch>
       <NotAuthenticatedRoute exact path={`${path}`}>
-        <LoginPage flow={flow} />;
+        <LoginPage flow={flow} />
       </NotAuthenticatedRoute>
       <Route exact path={`${path}/success`}>
         <LoginSuccessPage />

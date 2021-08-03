@@ -1,22 +1,21 @@
 import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import App from './components/composite/layout/App/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { EcoversesProvider } from './context/EcoversesProvider';
+import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { env } from './types/env';
 import { createStyles, useGraphQLClient } from './hooks';
 import './i18n/config';
-import App from './components/composite/layout/App/App';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
 import sentryBootstrap from './services/sentry/bootstrap';
-import configureStore from './store';
+import { env } from './types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -66,9 +65,9 @@ const Root: FC = () => {
         return <ErrorPage error={error} />;
       }}
     >
-      <Provider store={configureStore()}>
+      <GlobalStateProvider>
         <ReduxRoot />
-      </Provider>
+      </GlobalStateProvider>
     </Sentry.ErrorBoundary>
   );
 };
