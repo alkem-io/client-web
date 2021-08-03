@@ -6,7 +6,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsQuery,
@@ -15,10 +15,7 @@ import {
   useDeleteAspectMutation,
   useDeleteRelationMutation,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
-import { useEcoverse } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
-import { useUserContext } from '../../hooks';
+import { useEcoverse, createStyles, useApolloErrorHandler, useUserContext } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';

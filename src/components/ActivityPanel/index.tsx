@@ -5,7 +5,7 @@ import Typography from '../core/Typography';
 import CircleTag from '../core/CircleTag';
 
 import { createStyles } from '../../hooks/useTheme';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import activitiesMock from './tempMockActivities';
 import StateActivityCardItem from './StateActivityCardItem';
 import { Maybe, Lifecycle } from '../../models/graphql-schema';

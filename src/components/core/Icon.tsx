@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FunctionComponent, SVGProps } from 'react';
-import { Palette } from '../../context/ThemeProvider';
+import { Palette } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
 
 const useIconStyles = createStyles(theme => ({

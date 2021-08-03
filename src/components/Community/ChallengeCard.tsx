@@ -1,7 +1,7 @@
 import React, { FC, memo, useState } from 'react';
 
 import Card from '../core/Card';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { Challenge } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';

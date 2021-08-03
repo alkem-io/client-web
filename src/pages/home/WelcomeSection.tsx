@@ -7,7 +7,7 @@ import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { env } from '../../types/env';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import { useAuthenticationContext } from '../../hooks';

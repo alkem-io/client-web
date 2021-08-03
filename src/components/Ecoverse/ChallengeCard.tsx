@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';

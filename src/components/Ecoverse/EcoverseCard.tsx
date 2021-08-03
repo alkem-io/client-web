@@ -3,7 +3,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
 import * as React from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Typography from '../core/Typography';
 import Button from '../core/Button';

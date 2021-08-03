@@ -2,7 +2,7 @@ import React, { FC, memo, useMemo, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { useOrganizationCardQuery } from '../../hooks/generated/graphql';
 import { Organisation } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';

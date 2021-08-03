@@ -3,7 +3,7 @@ import React, { FC, MutableRefObject, useCallback } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Lifecycle } from '../../models/graphql-schema';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { useTheme } from '../../hooks';
 
 export interface GraphThemeOptions {

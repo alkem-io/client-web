@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';

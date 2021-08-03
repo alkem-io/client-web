@@ -2,7 +2,7 @@ import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import Card from '../core/Card';

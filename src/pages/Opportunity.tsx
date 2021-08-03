@@ -24,7 +24,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { Theme } from '../context/ThemeProvider';
+import { Theme } from '../themes';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,

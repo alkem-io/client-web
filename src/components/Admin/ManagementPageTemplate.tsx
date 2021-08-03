@@ -6,7 +6,7 @@ import Button from '../core/Button';
 import Card from '../core/Card';
 
 import { useUpdateNavigation } from '../../hooks';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { PageProps } from '../../pages';
 
 interface Props extends PageProps {

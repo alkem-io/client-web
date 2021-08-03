@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
-import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
+import { Palette, Typography as TypographyContract } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
 import _clamp from 'clamp-js';
 import { replaceAll } from '../../utils/replaceAll';

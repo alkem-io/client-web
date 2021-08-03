@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Breakpoints, Theme } from '../../context/ThemeProvider';
+import { Breakpoints, Theme } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Container from './Container';

@@ -1,7 +1,8 @@
 import { Classes } from 'jss';
 import { useContext } from 'react';
 import { createUseStyles, Styles } from 'react-jss';
-import { Theme, ThemeContext } from '../context/ThemeProvider';
+import { Theme } from '../themes';
+import { ThemeContext } from '../context/ThemeProvider';
 // import { functor } from '../utils/functor';
 
 export const useTheme = () => {

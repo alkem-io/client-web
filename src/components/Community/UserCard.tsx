@@ -1,5 +1,5 @@
 import React, { FC, memo, useMemo, useState } from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
 import { useUserCardMetadata } from '../../hooks';
 import { User } from '../../models/graphql-schema';

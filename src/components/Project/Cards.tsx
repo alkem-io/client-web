@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Theme } from '../../context/ThemeProvider';
+import { Theme } from '../../themes';
 import Card from '../core/Card';
 import { Spacer } from '../core/Spacer';
 
