@@ -109,12 +109,9 @@ interface ChallengePageProps extends PageProps {
 }
 
 const useChallengeStyles = createStyles(theme => ({
-  link: {
-    marginTop: `${theme.shape.spacing(2)}px`,
-    marginRight: `${theme.shape.spacing(4)}px`,
-    '&:hover': {
-      color: theme.palette.background,
-    },
+  divNav: {
+    display: 'flex',
+    gap: theme.shape.spacing(4),
   },
   edit: {
     '&:hover': {
@@ -267,25 +264,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             )}
           </div>
 
-          <div>
+          <div className={styles.divNav}>
             <Button
               inset
               variant="semiTransparent"
               text="opportunities"
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className={styles.link}
             />
             {challengeRefs?.map((l, i) => (
-              <Button
-                key={i}
-                as="a"
-                inset
-                variant="semiTransparent"
-                text={l.name}
-                href={l.uri}
-                target="_blank"
-                className={styles.link}
-              />
+              <Button key={i} as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
             ))}
           </div>
         </Body>

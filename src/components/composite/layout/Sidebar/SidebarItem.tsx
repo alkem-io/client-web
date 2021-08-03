@@ -2,12 +2,12 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@material-ui/core';
 import Button, { ButtonProps } from '../../../core/Button';
 import Icon, { IconProps } from '../../../core/Icon';
 import Typography from '../../../core/Typography';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   link: {
     alignItems: 'center',
     width: '100%',
@@ -20,7 +20,7 @@ const useStyles = createStyles(theme => ({
     justifyContent: 'flex-start',
   },
   avatarIcon: {
-    width: theme.shape.spacing(4),
+    width: theme.spacing(4),
   },
 }));
 

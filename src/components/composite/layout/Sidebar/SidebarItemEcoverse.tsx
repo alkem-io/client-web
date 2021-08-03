@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@material-ui/core';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
@@ -14,7 +14,7 @@ interface SidebarItemEcoverseProps {
   centerLabel?: boolean;
 }
 
-const useStyles = createStyles(_ => ({
+const useStyles = makeStyles(() => ({
   textDecorationNone: {
     textDecoration: 'none',
     '&:hover': {

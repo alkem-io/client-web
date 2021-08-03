@@ -1,91 +1,19 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { Button as MuiButton, makeStyles } from '@material-ui/core';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Typography from './Typography';
+import { defaultPalette } from '../../themes';
 
-const useButtonStyles = createStyles(theme => ({
-  button: {
-    padding: `${theme.shape.spacing(1.5)}px ${theme.shape.spacing(2)}px`,
-    display: 'inline-flex',
-    width: 'auto',
-    flexDirection: 'row',
-    borderRadius: theme.shape.borderRadius,
-    borderWidth: 1,
-    transition: 'background-color 0.5s ease-out',
-    borderStyle: 'double',
-
-    '&.inset': {
-      borderRightColor: 'transparent',
-      borderTopColor: 'transparent',
-      borderBottomColor: 'transparent',
-      borderRadius: 0,
-    },
-    '&.small': {
-      padding: `${theme.shape.spacing(0.5)}px ${theme.shape.spacing(1)}px`,
-    },
-
-    '&.block': {
-      display: 'block',
-      width: '100%',
-    },
-
-    '&:hover': {
-      textDecoration: 'none',
-    },
-    '&:focus': {
-      outline: 'none',
-    },
-  },
-  default: {
-    color: theme.palette.primary,
-    borderColor: theme.palette.primary,
-    background: theme.palette.background,
-
-    '&:hover': {
-      color: theme.palette.neutralLight,
-      background: theme.palette.primary,
-    },
-
-    '&:focus': {
-      outline: `1px auto ${theme.palette.primary}`,
-
-      '&.inset': {
-        outline: 'none',
-      },
-    },
-  },
-  primary: {
-    color: theme.palette.neutralLight,
-    borderColor: theme.palette.primary,
-    background: theme.palette.primary,
-
-    '&:hover': {
-      color: theme.palette.neutralLight,
-      background: hexToRGBA(theme.palette.primary, 0.7),
-    },
-
-    '&.inset': {
-      borderColor: theme.palette.neutralLight,
-      borderRightColor: 'transparent',
-      borderTopColor: 'transparent',
-      borderBottomColor: 'transparent',
-
-      '&:hover': {
-        color: theme.palette.primary,
-        background: theme.palette.background,
-        cursor: 'pointer',
-      },
-
-      '&:focus': {
-        outline: 'none',
-      },
-    },
-  },
+const useStyles = makeStyles(theme => ({
   whiteStatic: {
-    color: theme.palette.background,
-    borderColor: theme.palette.background,
+    color: theme.palette.background.default,
+    borderColor: theme.palette.background.default,
     background: 'transparent',
+
+    '&:hover': {
+      background: 'transparent',
+    },
 
     '&.inset': {
       '&:focus': {
@@ -94,13 +22,13 @@ const useButtonStyles = createStyles(theme => ({
     },
   },
   transparent: {
-    color: theme.palette.primary,
-    borderColor: theme.palette.primary,
+    color: theme.palette.primary.main,
+    borderColor: theme.palette.primary.main,
     background: 'transparent',
 
     '&:hover': {
-      color: theme.palette.neutralLight,
-      background: hexToRGBA(theme.palette.primary, 0.7),
+      color: theme.palette.background.default,
+      background: hexToRGBA(theme.palette.primary.main, 0.7),
     },
 
     '&:focus': {
@@ -110,17 +38,17 @@ const useButtonStyles = createStyles(theme => ({
     },
   },
   semiTransparent: {
-    color: theme.palette.background,
-    borderColor: theme.palette.primary,
-    background: hexToRGBA(theme.palette.background, 0.25),
+    color: theme.palette.background.default,
+    borderColor: theme.palette.primary.main,
+    background: hexToRGBA(theme.palette.background.default, 0.25),
 
-    '& > div': {
-      filter: `drop-shadow(1px 1px ${theme.palette.neutral})`,
+    '& > span': {
+      filter: `drop-shadow(1px 1px ${defaultPalette.neutral})`,
     },
 
     '&:hover': {
-      color: theme.palette.neutralLight,
-      background: hexToRGBA(theme.palette.primary, 0.7),
+      color: theme.palette.background.default,
+      background: hexToRGBA(theme.palette.primary.main, 0.7),
       filter: 'none',
     },
 
@@ -135,47 +63,28 @@ const useButtonStyles = createStyles(theme => ({
     },
   },
   negative: {
-    color: theme.palette.negative,
-    borderColor: theme.palette.negative,
-    background: theme.palette.background,
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
+    background: theme.palette.background.default,
 
     '&:hover': {
-      color: theme.palette.neutralLight,
-      background: hexToRGBA(theme.palette.negative, 0.7),
+      color: theme.palette.background.default,
+      background: hexToRGBA(theme.palette.error.main, 0.7),
     },
 
     '&.inset': {
-      borderColor: theme.palette.neutralLight,
+      borderColor: theme.palette.background.default,
       borderRightColor: 'transparent',
       borderTopColor: 'transparent',
       borderBottomColor: 'transparent',
 
       '&:hover': {
-        color: theme.palette.negative,
+        color: theme.palette.error.main,
         background: theme.palette.background,
         cursor: 'pointer',
       },
 
       '&:focus': {
-        outline: 'none',
-      },
-    },
-  },
-  disabled: {
-    color: theme.palette.background,
-    borderColor: theme.palette.neutralLight,
-    background: theme.palette.neutralMedium,
-    opacity: 0.8,
-    cursor: 'default',
-
-    '&:hover': {
-      color: theme.palette.background,
-      background: hexToRGBA(theme.palette.neutralMedium, 0.7),
-      cursor: 'not-allowed',
-    },
-
-    '&:focus': {
-      '&.inset': {
         outline: 'none',
       },
     },
@@ -188,6 +97,7 @@ export interface ButtonProps extends Record<string, unknown> {
   classes?: unknown;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any> | string;
+  to?: string;
   onClick?: (e: Event) => void;
   text?: string;
   variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent' | 'whiteStatic';
@@ -207,12 +117,13 @@ const Button: FC<ButtonProps> = ({
   disabled = false,
   children,
   as: Component = 'button',
+  to,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onClick = () => {},
   text,
   ...rest
 }) => {
-  const styles = useButtonStyles(classes);
+  const styles = useStyles(classes);
 
   const props = disabled
     ? {}
@@ -222,25 +133,21 @@ const Button: FC<ButtonProps> = ({
         ...rest,
       };
 
-  // can always use the bootstrap button internally
   return (
-    <Component
-      className={clsx(
-        styles.button,
-        styles[variant],
-        inset && 'inset',
-        small && 'small',
-        block && 'block',
-        disabled && styles.disabled,
-        className
-      )}
+    <MuiButton
+      className={clsx(className, inset && 'inset', small && 'small', block && 'block')}
+      classes={{
+        outlined: styles[variant],
+      }}
+      component={props => <Component to={to} {...props} />}
+      variant="outlined"
       {...props}
     >
       <Typography variant="button" color="inherit" weight="boldLight">
         {text}
       </Typography>
       {children}
-    </Component>
+    </MuiButton>
   );
 };
 
