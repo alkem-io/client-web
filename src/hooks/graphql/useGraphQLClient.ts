@@ -4,17 +4,14 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { env } from '../../types/env';
 import { typePolicies } from '../../config/graphql/typePolicies';
 import { ErrorStatus } from '../../models/constants/erros.constants';
+import { env } from '../../types/env';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
 export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
-  const dispatch = useDispatch();
-
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
     if (graphQLErrors) {
@@ -99,7 +96,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
     });
-  }, [dispatch]);
+  }, []);
 };
 
 export default useGraphQLClient;

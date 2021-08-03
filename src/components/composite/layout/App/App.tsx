@@ -1,5 +1,6 @@
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useSelector } from '@xstate/react';
 import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
 import React, { useRef, useState } from 'react';
@@ -7,14 +8,16 @@ import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
+import {
+  useAuthenticationContext,
+  useConfig,
+  useEcoversesContext,
+  useNavigation,
+  useUserContext,
+  useUserScope,
+} from '../../../../hooks';
 import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
-import { useAuthenticationContext } from '../../../../hooks';
-import { useConfig } from '../../../../hooks';
-import { useEcoversesContext } from '../../../../hooks';
-import { useNavigation } from '../../../../hooks';
-import { useUserScope } from '../../../../hooks';
-import { useTypedSelector } from '../../../../hooks';
-import { useUserContext } from '../../../../hooks';
+import { useGlobalState } from '../../../../hooks/useGlobalState';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Button from '../../../core/Button';
@@ -22,11 +25,11 @@ import Icon from '../../../core/Icon';
 import IconButton from '../../../core/IconButton';
 import Loading from '../../../core/Loading/Loading';
 import Section from '../../../core/Section';
+import UserSegment from '../../../User/UserSegment';
+import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
 import Header from './Header';
 import Main from './Main';
-import Sidebar from '../Sidebar/Sidebar';
-import UserSegment from '../../../User/UserSegment';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
@@ -35,10 +38,21 @@ const App = ({ children }): React.ReactElement => {
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading } = useConfig();
-  const loginVisible = useTypedSelector(x => x.ui.loginNavigation.visible);
   const { paths } = useNavigation();
+  const {
+    ui: { loginNavigationService, userSegmentService },
+  } = useGlobalState();
+
+  const loginVisible = useSelector(loginNavigationService, state => {
+    return state.matches('visible');
+  });
+
   const headerRef = useRef<HTMLElement>(null);
-  const isUserSegmentVisible = useTypedSelector<boolean>(state => state.ui.userSegment.visible);
+
+  const isUserSegmentVisible = useSelector(userSegmentService, state => {
+    return state.matches('visible');
+  });
+
   const theme = useTheme();
   const upSm = useMediaQuery(theme.breakpoints.up('sm'));
   useUserScope(user);

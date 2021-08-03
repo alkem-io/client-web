@@ -22,4 +22,4 @@ export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
 export * from './useTheme';
-export * from './useTypedSelector';
+export * from './useGlobalState';

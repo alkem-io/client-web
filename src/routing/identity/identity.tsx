@@ -1,9 +1,9 @@
 import React, { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { useGlobalState } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
-import { hideLoginNavigation, showLoginNavigation } from '../../store/ui/loginNavigation/actions';
+import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../state/global/ui/loginNavigationMachine';
 import RestrictedRoute from '../route.extensions';
 import ErrorRoute from './error';
 import LoginRoute from './login';
@@ -16,12 +16,14 @@ import VerifyRoute from './verify';
 export const IdentityRoute: FC = () => {
   const { path } = useRouteMatch();
 
-  const dispatch = useDispatch();
+  const {
+    ui: { loginNavigationService },
+  } = useGlobalState();
 
   useEffect(() => {
-    dispatch(hideLoginNavigation());
+    loginNavigationService.send(HIDE_LOGIN_NAVIGATION);
     return () => {
-      dispatch(showLoginNavigation());
+      loginNavigationService.send(SHOW_LOGIN_NAVIGATION);
     };
   }, []);
 

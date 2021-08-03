@@ -1,3 +1,4 @@
+import { useSelector } from '@xstate/react';
 import { ReactComponent as CheckCircleFill } from 'bootstrap-icons/icons/check-circle-fill.svg';
 import { ReactComponent as ExclamationCircleFill } from 'bootstrap-icons/icons/exclamation-circle-fill.svg';
 import { ReactComponent as InfoCircleFill } from 'bootstrap-icons/icons/info-circle-fill.svg';
@@ -5,19 +6,20 @@ import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fi
 import React, { FC } from 'react';
 import { Toast } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { useTypedSelector } from '../hooks';
-import { clearNotification } from '../store/notifincations/actions';
-import { Notification, Severity } from '../store/notifincations/types';
+import { useGlobalState } from '../hooks';
+import { Severity, CLEAR_NOTIFICATION } from '../state/global/notifications/notificationMachine';
 
 export const NotificationHandler: FC = () => {
   const { t } = useTranslation();
-  const notifications = useTypedSelector<Notification[]>(state => state.notifications.notifications);
 
-  const dispatch = useDispatch();
+  const { notificationsService } = useGlobalState();
+
+  const notifications = useSelector(notificationsService, state => {
+    return state.context.notifications;
+  });
 
   const closeMessage = (id: string): void => {
-    dispatch(clearNotification(id));
+    notificationsService.send({ type: CLEAR_NOTIFICATION, payload: { id } });
   };
 
   const getIcon = (severity: Severity) => {
