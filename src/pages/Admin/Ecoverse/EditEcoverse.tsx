@@ -50,7 +50,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
           ID: ecoverseId,
           hostID: host,
           tags: tagsets.map(x => x.tags.join()),
-          authorizationDefinition: {
+          authorizationPolicy: {
             anonymousReadAccess: anonymousReadAccess,
           },
         },
