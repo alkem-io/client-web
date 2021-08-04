@@ -133,13 +133,15 @@ const Button: FC<ButtonProps> = ({
         ...rest,
       };
 
+  const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
+
   return (
     <MuiButton
       className={clsx(className, inset && 'inset', small && 'small', block && 'block')}
       classes={{
         outlined: styles[variant],
       }}
-      component={props => <Component to={to} {...props} />}
+      component={Link}
       variant="outlined"
       {...props}
     >
