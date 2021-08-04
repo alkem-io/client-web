@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
-import { User } from '../../types/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import { Tagset } from '../../models/Profile';
 import Tags from './Tags';
 import { createStyles } from '../../hooks/useTheme';

@@ -12,7 +12,7 @@ import { Activities } from '../ActivityPanel';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 import getActivityCount from '../../utils/get-activity-count';
-import { Nvp } from '../../types/graphql-schema';
+import { Nvp } from '../../models/graphql-schema';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 // todo: unify in one card props

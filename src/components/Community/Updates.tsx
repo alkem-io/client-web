@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import { CommunicationMessageResult } from '../../types/graphql-schema';
+import { CommunicationMessageResult } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 
 const useUpdatesStyles = createStyles(_theme => ({

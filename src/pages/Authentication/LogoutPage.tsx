@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Loading from '../../components/core/Loading';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import Loading from '../../components/core/Loading/Loading';
+import { useUpdateNavigation } from '../../hooks';
 
 interface LogoutPageProps {}
 

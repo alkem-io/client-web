@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../../generated/graphql';
-import { useEcoverse } from '../../hooks/useEcoverse';
-import { User } from '../../types/graphql-schema';
+import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../../hooks/generated/graphql';
+import { useEcoverse } from '../../hooks';
+import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 

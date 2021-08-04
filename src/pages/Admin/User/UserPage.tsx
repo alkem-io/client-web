@@ -6,16 +6,16 @@ import {
   useDeleteUserMutation,
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
-import { CreateUserInput } from '../../../types/graphql-schema';
+import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
-import { Loading } from '../../../components/core/Loading';
+import { Loading } from '../../../components/core/Loading/Loading';
 import { getUpdateUserInput } from '../../../components/UserProfile';
 import UserForm from '../../../components/UserProfile/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';

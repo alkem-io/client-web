@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUpdateNavigation } from '../../hooks/useNavigation';
+import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../../pages';
 import SearchableList, { SearchableListItem } from './SearchableList';
 import Button from '../core/Button';

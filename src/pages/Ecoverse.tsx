@@ -11,14 +11,14 @@ import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
 import { Image } from '../components/core/Image';
-import Loading from '../components/core/Loading';
+import Loading from '../components/core/Loading/Loading';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
-import AuthenticationBackdrop from '../components/layout/AuthenticationBackdrop';
-import MembershipBackdrop from '../components/layout/MembershipBackdrop';
+import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
+import MembershipBackdrop from '../components/MembershipBackdrop';
 import {
   useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
@@ -26,13 +26,13 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
   useUserApplicationsQuery,
-} from '../generated/graphql';
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
-import { useUpdateNavigation } from '../hooks/useNavigation';
+} from '../hooks/generated/graphql';
+import { useAuthenticationContext } from '../hooks';
+import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks/useUserContext';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/Constants';
-import { Context, EcoverseInfoQuery } from '../types/graphql-schema';
+import { useUserContext } from '../hooks';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
+import { Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
 
@@ -68,7 +68,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
 
-  const { data: _challenges, error: challengesError, loading: isChallengeLoading } = useChallengesWithActivityQuery({
+  const {
+    data: _challenges,
+    error: challengesError,
+    loading: isChallengeLoading,
+  } = useChallengesWithActivityQuery({
     variables: { ecoverseId },
   });
   const challenges = _challenges?.ecoverse?.challenges || [];

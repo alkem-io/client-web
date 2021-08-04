@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import Loading from './Loading';
+import Loading from './Loading/Loading';
 import Typography from './Typography';
 
 interface ThumbnailProps {

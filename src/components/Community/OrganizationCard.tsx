@@ -3,12 +3,12 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Theme } from '../../context/ThemeProvider';
-import { useOrganizationCardQuery } from '../../generated/graphql';
-import { Organisation } from '../../types/graphql-schema';
+import { useOrganizationCardQuery } from '../../hooks/generated/graphql';
+import { Organisation } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
-import Loading from '../core/Loading';
+import { Loading } from '../core';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 

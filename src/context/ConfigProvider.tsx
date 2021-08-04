@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
-import Loading from '../components/core/Loading';
-import { ConfigurationDocument } from '../generated/graphql';
+import Loading from '../components/core/Loading/Loading';
+import { ConfigurationDocument } from '../hooks/generated/graphql';
 import { Error } from '../pages/Error';
-import { ConfigurationFragment, ConfigurationQuery } from '../types/graphql-schema';
+import { ConfigurationFragment, ConfigurationQuery } from '../models/graphql-schema';
 export interface ConfigContext {
   config?: ConfigurationFragment;
   loading: boolean;

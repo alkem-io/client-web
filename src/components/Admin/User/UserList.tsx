@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useDeleteUserMutation } from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
+import { useDeleteUserMutation } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../../../pages';
 import ListPage from '../ListPage';
@@ -35,4 +35,25 @@ export const UserList: FC<UserListProps> = ({ users, paths }) => {
 
   return <ListPage data={data} paths={paths} onDelete={handleDelete} />;
 };
+
+// interface Props<TEntities, TActions> {
+//   entities: TEntities;
+//   actions: TActions;
+// }
+
+// interface Entities {
+//   users: UserModel[];
+// }
+
+// interface Actions {
+//   onDelete?: () => void;
+// }
+
+// interface UserProps extends Props<Entities, Actions> {
+
+// }
+
+// interface CompositeEntities extends Entities {
+// }
+
 export default UserList;

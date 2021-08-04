@@ -5,11 +5,11 @@ import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks/useApolloErrorHandler';
-import { useDeleteUserGroup } from '../../../hooks/useDeleteUserGroup';
-import { useUpdateNavigation } from '../../../hooks/useNavigation';
-import { useNotification } from '../../../hooks/useNotification';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useDeleteUserGroup } from '../../../hooks';
+import { useUpdateNavigation } from '../../../hooks';
+import { useNotification } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   AuthorizationCredential,
@@ -18,7 +18,7 @@ import {
   UpdateProfileInput,
   User,
   UserGroup,
-} from '../../../types/graphql-schema';
+} from '../../../models/graphql-schema';
 import { urlStrip } from '../../../utils/urlStrip';
 import GroupForm from './GroupForm';
 

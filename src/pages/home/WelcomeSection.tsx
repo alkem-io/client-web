@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel';
 import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Theme } from '../../context/ThemeProvider';
-import { env } from '../../env';
-import { useGlobalActivityQuery } from '../../generated/graphql';
-import { useAuthenticationContext } from '../../hooks/useAuthenticationContext';
+import { env } from '../../types/env';
+import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
+import { useAuthenticationContext } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/Constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 
 const useStyles = createStyles(theme => ({

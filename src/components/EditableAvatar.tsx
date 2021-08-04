@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useCallback } from 'react';
-import { useUploadAvatarMutation } from '../generated/graphql';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
+import { useUploadAvatarMutation } from '../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
 import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
 import { Spinner } from './core/Spinner';

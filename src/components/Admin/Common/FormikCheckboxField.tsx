@@ -1,7 +1,7 @@
 import { useField } from 'formik';
 import React, { FC } from 'react';
 import { Col, Form, FormControlProps } from 'react-bootstrap';
-import { Required } from '../../Required';
+import { Required } from '../../core/Required';
 
 interface CheckboxFieldProps extends FormControlProps {
   title: string;

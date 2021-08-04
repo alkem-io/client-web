@@ -1,23 +1,21 @@
 import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import App from './components/App';
+import App from './components/composite/layout/App/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { EcoversesProvider } from './context/EcoversesProvider';
+import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { env } from './env';
-import { useGraphQLClient } from './hooks/useGraphQLClient';
-import { createStyles } from './hooks/useTheme';
+import { createStyles, useGraphQLClient } from './hooks';
 import './i18n/config';
-import { Routing } from './navigation/routing';
 import { Error as ErrorPage } from './pages/Error';
-import sentryBootstrap from './sentry/bootstrap';
-import configureStore from './store';
+import { Routing } from './routing/routing';
+import sentryBootstrap from './services/sentry/bootstrap';
+import { env } from './types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -67,9 +65,9 @@ const Root: FC = () => {
         return <ErrorPage error={error} />;
       }}
     >
-      <Provider store={configureStore()}>
+      <GlobalStateProvider>
         <ReduxRoot />
-      </Provider>
+      </GlobalStateProvider>
     </Sentry.ErrorBoundary>
   );
 };

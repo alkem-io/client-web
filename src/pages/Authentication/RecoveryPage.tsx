@@ -3,9 +3,9 @@ import React, { FC, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
-import Loading from '../../components/core/Loading';
+import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient } from '../../hooks/useKratosClient';
+import { useKratosClient } from '../../hooks';
 interface RegisterPageProps {
   flow: string;
 }
