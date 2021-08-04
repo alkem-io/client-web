@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Button as MuiButton, makeStyles } from '@material-ui/core';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Typography from './Typography';
 import { defaultPalette } from '../../themes';
 
 const useStyles = makeStyles(theme => ({
@@ -97,6 +96,7 @@ export interface ButtonProps extends Record<string, unknown> {
   classes?: unknown;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any> | string;
+  startIcon?: React.ReactNode;
   to?: string;
   onClick?: (e: Event) => void;
   text?: string;
@@ -111,6 +111,7 @@ const Button: FC<ButtonProps> = ({
   className,
   classes = {},
   variant = 'default',
+  startIcon,
   inset = false,
   small = false,
   block = false,
@@ -144,11 +145,10 @@ const Button: FC<ButtonProps> = ({
       component={Link}
       variant="outlined"
       color={variant === 'primary' ? 'primary' : 'default'}
+      startIcon={startIcon}
       {...props}
     >
-      <Typography variant="button" color="inherit" weight="boldLight">
-        {text}
-      </Typography>
+      {text}
       {children}
     </MuiButton>
   );
