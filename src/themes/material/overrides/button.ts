@@ -44,7 +44,7 @@ export const buttonOverrides: Overrides = {
 
       '&:hover': {
         color: defaultPalette.neutralLight,
-        background: hexToRGBA(defaultPalette.primary, 0.7),
+        backgroundColor: hexToRGBA(defaultPalette.primary, 0.7),
       },
 
       '&.inset': {

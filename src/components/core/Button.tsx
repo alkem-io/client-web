@@ -143,6 +143,7 @@ const Button: FC<ButtonProps> = ({
       }}
       component={Link}
       variant="outlined"
+      color={variant === 'primary' ? 'primary' : 'default'}
       {...props}
     >
       <Typography variant="button" color="inherit" weight="boldLight">
