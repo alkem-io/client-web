@@ -160,11 +160,11 @@ export type AuthenticationProviderConfigUnion = OryConfig;
 export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
-  /** The set of credential rules that are contained by this AuthorizationDefinition. */
+  /** The set of credential rules that are contained by this Authorization Policy. */
   credentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The set of verified credential rules that are contained by this AuthorizationDefinition. */
+  /** The set of verified credential rules that are contained by this Authorization Policy. */
   verifiedCredentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
 };
 
@@ -657,7 +657,7 @@ export type EcoverseProjectArgs = {
 };
 
 export type EcoverseAuthorizationResetInput = {
-  /** The identifier of the Ecoverse whose AuthorizationDefinition should be reset. */
+  /** The identifier of the Ecoverse whose Authorization Policy should be reset. */
   ecoverseID: Scalars['UUID_NAMEID'];
 };
 
@@ -1216,7 +1216,7 @@ export type OrganisationGroupArgs = {
 };
 
 export type OrganisationAuthorizationResetInput = {
-  /** The identifier of the Organisation whose AuthorizationDefinition should be reset. */
+  /** The identifier of the Organisation whose Authorization Policy should be reset. */
   organisationID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -1518,7 +1518,7 @@ export type UpdateAspectInput = {
   title?: Maybe<Scalars['String']>;
 };
 
-export type UpdateAuthorizationDefinitionInput = {
+export type UpdateAuthorizationPolicyInput = {
   anonymousReadAccess: Scalars['Boolean'];
 };
 
@@ -1552,7 +1552,7 @@ export type UpdateEcoverseInput = {
   /** The ID or NameID of the Ecoverse. */
   ID: Scalars['UUID_NAMEID'];
   /** Update anonymous visibility for the Ecoverse. */
-  authorizationDefinition?: Maybe<UpdateAuthorizationDefinitionInput>;
+  authorizationPolicy?: Maybe<UpdateAuthorizationPolicyInput>;
   /** Update the contained Context entity. */
   context?: Maybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -1688,7 +1688,7 @@ export type UserAuthorizationPrivilegesInput = {
 };
 
 export type UserAuthorizationResetInput = {
-  /** The identifier of the User whose AuthorizationDefinition should be reset. */
+  /** The identifier of the User whose Authorization Policy should be reset. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
