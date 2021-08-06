@@ -26,7 +26,7 @@ interface Props {
 
 const useContextEditStyles = createStyles(theme => ({
   field: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   row: {
     display: 'flex',

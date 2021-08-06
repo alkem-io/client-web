@@ -91,21 +91,21 @@ const appStyles = createStyles(theme => ({
   },
   header: {
     display: 'flex',
-    gap: theme.shape.spacing(4),
+    gap: theme.spacing(4),
     alignItems: 'center',
     justifyContent: 'center',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexWrap: 'wrap',
-      gap: theme.shape.spacing(2),
+      gap: theme.spacing(2),
     },
   },
   profile: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -114,7 +114,7 @@ const appStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -128,8 +128,8 @@ const appStyles = createStyles(theme => ({
   questions: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.shape.spacing(1),
-    margin: theme.shape.spacing(1),
+    gap: theme.spacing(1),
+    margin: theme.spacing(1),
   },
   question: {
     display: 'flex',

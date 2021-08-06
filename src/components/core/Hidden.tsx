@@ -1,16 +1,16 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Breakpoints } from '../../themes';
 import { createStyles } from '../../hooks/useTheme';
+import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
 
 const displayNone = {
   display: 'none',
 };
 
 const useHiddenStyles = createStyles(theme =>
-  Object.keys(theme.media.breakpoints).reduce((aggr, key) => {
-    aggr[`${key}Up`] = { [theme.media.up(key as keyof Breakpoints)]: displayNone };
-    aggr[`${key}Down`] = { [theme.media.down(key as keyof Breakpoints)]: displayNone };
+  Object.keys(theme.breakpoints).reduce((aggr, key) => {
+    aggr[`${key}Up`] = { [theme.breakpoints.up(key as keyof BreakpointValues)]: displayNone };
+    aggr[`${key}Down`] = { [theme.breakpoints.down(key as keyof BreakpointValues)]: displayNone };
 
     return aggr;
   }, {} as Record<string, {}>)

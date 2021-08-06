@@ -14,20 +14,20 @@ import clsx from 'clsx';
 const groupPopUpStyles = createStyles(theme => ({
   header: {
     display: 'flex',
-    gap: theme.shape.spacing(4),
+    gap: theme.spacing(4),
     alignItems: 'center',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexWrap: 'wrap',
-      gap: theme.shape.spacing(2),
+      gap: theme.spacing(2),
     },
   },
   profile: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -36,7 +36,7 @@ const groupPopUpStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -52,16 +52,16 @@ const groupPopUpStyles = createStyles(theme => ({
     justifyContent: 'center',
   },
   icon: {
-    marginRight: theme.shape.spacing(1),
+    marginRight: theme.spacing(1),
   },
   table: {
     '& > thead > tr > th': {
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
+      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
   },
   tableScrollable: {
@@ -74,7 +74,7 @@ const groupPopUpStyles = createStyles(theme => ({
   },
   tablesDiv: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
     flexDirection: 'column',
   },
   italic: {

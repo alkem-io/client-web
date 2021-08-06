@@ -1,7 +1,6 @@
 import React, { FC, memo, useState } from 'react';
 
 import Card from '../core/Card';
-import { Theme } from '../../themes';
 import { Challenge } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -18,10 +17,10 @@ interface ChallengeCardStylesProps extends Challenge {
 const ChallengeCardStyles = createStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
-    border: `1px solid ${theme.palette.neutralMedium}`,
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
 
     '&:hover': {
-      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral.main, 0.15)}`,
     },
     borderTopRightRadius: 15,
     overflow: 'hidden',
@@ -31,8 +30,8 @@ const ChallengeCardStyles = createStyles(theme => ({
   },
   content: {
     height: 130,
-    background: theme.palette.background,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.background.paper,
+    padding: theme.spacing(2),
   },
   relative: {
     position: 'relative',
@@ -58,20 +57,19 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
       <Card
         className={styles.card}
         classes={{
-          background: (theme: Theme) =>
-            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
+          background: theme =>
+            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral.main,
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.7),
-            padding: (theme: Theme) =>
-              `${theme.shape.spacing(4)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
+            background: theme => hexToRGBA(theme.palette.neutral.main, 0.7),
+            padding: theme => `${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
           },
         }}
         primaryTextProps={{
           text: challenge?.displayName || '',
           classes: {
-            color: theme => theme.palette.background,
+            color: theme => theme.palette.background.paper,
           },
         }}
         sectionProps={{

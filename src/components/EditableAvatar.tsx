@@ -22,8 +22,8 @@ interface EditableAvatarProps extends AvatarProps {
   profileId?: string;
 }
 
-const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
-  const avatarStyles = useAvatarStyles();
+const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
+  const avatarStyles = useAvatarStyles(classes);
   const styles = useEditableAvatarStyles();
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
 

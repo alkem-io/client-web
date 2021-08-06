@@ -2,10 +2,10 @@ import { createStyles } from '../../../hooks/useTheme';
 
 export const useLoadingStyles = createStyles(theme => ({
   spinner: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
   },
   text: {
-    marginLeft: theme.shape.spacing(2),
+    marginLeft: theme.spacing(2),
   },
   container: {
     display: 'flex',

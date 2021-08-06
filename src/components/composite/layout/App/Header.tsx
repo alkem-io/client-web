@@ -16,7 +16,7 @@ const useHeaderStyles = createStyles(theme => ({
     width: 'calc(100% + 30px)',
     marginLeft: -15,
     height: theme.earlyAccessAlert.height,
-    background: theme.palette.primary,
+    background: theme.palette.primary.main,
   },
   alertText: {
     padding: `0 ${theme.earlyAccessAlert.height}px`,
@@ -36,7 +36,7 @@ const useHeaderStyles = createStyles(theme => ({
     top: 0,
     right: 0,
     zIndex: appBarZIndex,
-    background: hexToRgba(theme.palette.background, 0.8),
+    background: hexToRgba(theme.palette.background.paper, 0.8),
   },
   offsetLeftMax: {
     left: theme.sidebar.maxWidth,
@@ -52,22 +52,22 @@ const useHeaderStyles = createStyles(theme => ({
   },
   link: {
     textDecoration: 'underline',
-    color: theme.palette.background,
+    color: theme.palette.background.paper,
   },
   toolbar: {
-    padding: `${theme.shape.spacing(4)}px 0`,
+    padding: `${theme.spacing(4)}px 0`,
 
-    [theme.media.down('md')]: {
-      paddingLeft: theme.shape.spacing(0),
-      paddingRight: theme.shape.spacing(0),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
     },
   },
   toolbarDense: {
-    padding: `${theme.shape.spacing(2)}px 0`,
+    padding: `${theme.spacing(2)}px 0`,
 
-    [theme.media.down('md')]: {
-      paddingLeft: theme.shape.spacing(0),
-      paddingRight: theme.shape.spacing(0),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
     },
   },
 }));
@@ -82,8 +82,8 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   const styles = useHeaderStyles();
   const [headerInSight, setHeaderInSight] = useState(true);
   // const theme = useTheme();
-  // const upSm = useMediaQuery(theme.breakpoints.up('sm'));
-  // const upMd = useMediaQuery(theme.breakpoints.up('md'));
+  // const upSm = useMediaQuery(theme.breakpointss.up('sm'));
+  // const upMd = useMediaQuery(theme.breakpointss.up('md'));
 
   return (
     <>

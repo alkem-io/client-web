@@ -7,10 +7,10 @@ import { createStyles } from '../../../hooks/useTheme';
 
 const useAuthenticationLayout = createStyles(theme => ({
   logo: {
-    height: theme.shape.spacing(4),
+    height: theme.spacing(4),
   },
   logoWrapper: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
 

@@ -15,7 +15,7 @@ const useDelimiterStyle = createStyles(theme => ({
     textAlign: 'center',
   },
   strong: {
-    background: theme.palette.background,
+    background: theme.palette.background.paper,
     fontSize: '12px',
     letterSpacing: '1px',
     padding: '0 20px',

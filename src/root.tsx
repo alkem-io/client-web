@@ -30,7 +30,7 @@ const useGlobalStyles = createStyles(theme => ({
       '-webkit-box-shadow': 'inset 0 0 6px #c3c3c3',
     },
     '*::-webkit-scrollbar-thumb': {
-      backgroundColor: theme.palette.primary,
+      backgroundColor: theme.palette.primary.main,
     },
     html: {
       height: '100%',

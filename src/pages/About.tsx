@@ -11,16 +11,16 @@ const useAboutStyles = createStyles(theme => ({
     display: 'flex',
   },
   content: {
-    padding: `${theme.shape.spacing(4)}px`,
-    [theme.media.down('md')]: {
-      padding: `${theme.shape.spacing(2)}px`,
+    padding: `${theme.spacing(4)}px`,
+    [theme.breakpoints.down('md')]: {
+      padding: `${theme.spacing(2)}px`,
     },
   },
   logo: {
-    height: theme.shape.spacing(7),
+    height: theme.spacing(7),
   },
   mdHidden: {
-    [theme.media.down('lg')]: {
+    [theme.breakpoints.down('lg')]: {
       display: 'none',
       visibility: 'hidden',
       padding: 0,
@@ -35,11 +35,11 @@ const useAboutStyles = createStyles(theme => ({
     width: 3560,
     height: 3560,
     borderRadius: '50%',
-    border: `1px solid ${theme.palette.primary}`,
+    border: `1px solid ${theme.palette.primary.main}`,
     position: 'absolute',
     transform: 'translate3d(-50%, 5%, 0)',
     left: '50%',
-    [theme.media.down('md')]: {
+    [theme.breakpoints.down('md')]: {
       width: 1500,
       height: 1500,
       transform: 'translate3d(-50%, 10%, 0)',

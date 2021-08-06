@@ -6,11 +6,11 @@ const useIconStyles = createStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
-    margin: -theme.shape.spacing(0.5),
-    paddingTop: theme.shape.spacing(1),
-    paddingBottom: theme.shape.spacing(1),
+    margin: -theme.spacing(0.5),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
     '& > *': {
-      margin: theme.shape.spacing(0.5),
+      margin: theme.spacing(0.5),
     },
   },
 }));

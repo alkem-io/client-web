@@ -2,7 +2,6 @@ import React, { FC, memo, useMemo, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { Theme } from '../../themes';
 import { useOrganizationCardQuery } from '../../hooks/generated/graphql';
 import { Organisation } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
@@ -20,9 +19,9 @@ const OrganizationCardStyles = createStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {
-      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral.main, 0.15)}`,
     },
-    border: `1px solid ${hexToRGBA(theme.palette.primary, 0.3)}`,
+    border: `1px solid ${hexToRGBA(theme.palette.primary.main, 0.3)}`,
     borderTopRightRadius: 15,
     overflow: 'hidden',
   },
@@ -32,19 +31,19 @@ const OrganizationCardStyles = createStyles(theme => ({
   divCentered: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
   section: {
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(3)}px`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
   },
   avatarsDiv: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
   avatarDiv: {
     display: 'flex',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
     flexWrap: 'wrap',
     alignItems: 'center',
   },
@@ -77,9 +76,8 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
         className={styles.card}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => theme.palette.background,
-            padding: (theme: Theme) =>
-              `${theme.shape.spacing(4)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
+            background: theme => theme.palette.background.paper,
+            padding: theme => `${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
           },
           className: styles.body,
         }}

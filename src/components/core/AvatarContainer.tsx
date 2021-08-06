@@ -1,16 +1,17 @@
+import { Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Typography from './Typography';
 
-const useAvatarStyles = createStyles(theme => ({
+const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
   container: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
     flexGrow: 1,
-    paddingBottom: theme.shape.spacing(3),
+    paddingBottom: theme.spacing(3),
     flexDirection: 'column',
   },
   avatarContainer: {
@@ -18,23 +19,27 @@ const useAvatarStyles = createStyles(theme => ({
     flexWrap: 'wrap',
 
     '& > *': {
-      marginRight: theme.shape.spacing(1),
-      marginBottom: theme.shape.spacing(1),
+      marginRight: theme.spacing(1),
+      marginBottom: theme.spacing(1),
     },
   },
   avatar: {
     flexBasis: '100%',
     margin: 0,
 
-    [theme.media.down('xl')]: {
+    [theme.breakpoints.down('xl')]: {
       flexBasis: '0',
     },
   },
 }));
 
+interface ClassProps {
+  background?: string;
+}
+
 interface AvatarContainerProps {
   className?: string;
-  classes?: Record<string, unknown>;
+  classes?: ClassProps;
   title: string;
   itemsPerLine?: number;
   children: React.ReactNode[];

@@ -1,69 +1,63 @@
-import { Breakpoints, EarlyAccessAlert, Media, Palette, Shape, Sidebar, Theme, Typography } from './theme';
+import { createTheme, ThemeOptions } from '@material-ui/core';
+import { paletteOptions } from './palette';
+import { typographyOptions } from './typography';
+import { buttonOverrides } from './overrides';
 
-export const defaultEarlyAccessAlert: EarlyAccessAlert = {
-  height: 40,
-};
+const space = 10;
 
-export const defaultPalette: Palette = {
-  primary: '#00BCD4',
-  positive: '#00D4B4',
-  negative: '#D40062',
-  neutral: '#181828',
-  neutralMedium: '#B8BAC8',
-  neutralLight: '#F9F9F9',
-  background: '#FFFFFF',
-  divider: '#00BCD440',
-};
-
-export const monserrat = '"MONTSERRAT"';
-export const sourceSansPro = '"Source Sans Pro"';
-
-export const defaultTypography: Typography = {
-  caption: { font: monserrat, size: 12 },
-  button: { font: monserrat, size: 14 },
-  body: { font: sourceSansPro, size: 16 },
-  h5: { font: sourceSansPro, size: 18 },
-  h4: { font: monserrat, size: 22 },
-  h3: { font: sourceSansPro, size: 24 },
-  h2: { font: monserrat, size: 36 },
-  h1: { font: monserrat, size: 48 },
-};
-
-export const defaultShape: Shape = {
-  borderRadius: 5,
-  space: 10,
-  spacing: function (times) {
-    return times * this.space;
-  },
-};
-
-// as defined in bootstrap
-export const defaultMedia: Media = {
+export const theme: ThemeOptions = {
+  palette: paletteOptions,
+  typography: typographyOptions,
+  shape: { borderRadius: 5 },
+  space: space,
+  spacing: times => times * space,
   breakpoints: {
-    xs: 0,
-    sm: 576,
-    md: 768,
-    lg: 992,
-    xl: 1200,
+    values: {
+      xs: 0,
+      sm: 576,
+      md: 768,
+      lg: 992,
+      xl: 1200,
+    },
   },
-  up: function (key: keyof Breakpoints) {
-    return `@media (min-width: ${this.breakpoints[key]}px)`;
+  earlyAccessAlert: { height: 40 },
+  sidebar: {
+    maxWidth: 280,
+    minWidth: 90,
   },
-  down: function (key: keyof Breakpoints) {
-    return `@media (max-width: ${this.breakpoints[key]}px)`;
+  props: {
+    MuiButtonBase: {
+      disableRipple: true, // No more ripple, on the whole application!
+    },
   },
 };
 
-export const defaultSidebar: Sidebar = {
-  maxWidth: 280,
-  minWidth: 90,
+theme.overrides = {
+  ...theme.overrides,
+  ...buttonOverrides(theme),
 };
 
-export const defaultTheme: Theme = {
-  palette: defaultPalette,
-  typography: defaultTypography,
-  shape: defaultShape,
-  media: defaultMedia,
-  sidebar: defaultSidebar,
-  earlyAccessAlert: defaultEarlyAccessAlert,
-};
+declare module '@material-ui/core/styles/createTheme' {
+  interface Theme {
+    space: number;
+    sidebar: {
+      maxWidth: number;
+      minWidth: number;
+    };
+    earlyAccessAlert: {
+      height: number;
+    };
+  }
+  interface ThemeOptions {
+    space: number;
+    sidebar: {
+      maxWidth: number;
+      minWidth: number;
+    };
+    earlyAccessAlert: {
+      height: number;
+    };
+  }
+}
+
+export const defaultMuiTheme = createTheme(theme);

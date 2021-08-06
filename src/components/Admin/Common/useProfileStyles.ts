@@ -2,7 +2,7 @@ import { createStyles } from '../../../hooks/useTheme';
 
 const useProfileStyles = createStyles(theme => ({
   field: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   row: {
     display: 'flex',

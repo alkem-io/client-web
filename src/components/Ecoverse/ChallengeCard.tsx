@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
-import { Theme } from '../../themes';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';
@@ -22,17 +21,17 @@ const useCardStyles = createStyles(theme => ({
   },
   card: {
     marginTop: 0,
-    border: `1px solid ${theme.palette.neutralMedium}`,
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
     height: 400,
   },
   content: {
     height: '225px',
-    background: theme.palette.background,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.background.paper,
+    padding: theme.spacing(2),
   },
   footer: {
-    background: theme.palette.neutralLight,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.neutralLight.main,
+    padding: theme.spacing(2),
   },
   tagline: {
     flexGrow: 1,
@@ -72,18 +71,18 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
       <Card
         className={styles.card}
         classes={{
-          background: (theme: Theme) =>
-            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral,
+          background: theme =>
+            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.neutral.main,
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
+            background: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
           },
         }}
         primaryTextProps={{
           text: displayName || '',
           classes: {
-            color: (theme: Theme) => theme.palette.neutralLight,
+            color: theme => theme.palette.neutralLight.main,
           },
         }}
         sectionProps={{

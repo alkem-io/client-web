@@ -60,23 +60,23 @@ const messages = [
 const useMessageStyles = createStyles(theme => ({
   messageContainer: {
     display: 'flex',
-    marginTop: theme.shape.spacing(2),
-    color: theme.palette.background,
+    marginTop: theme.spacing(2),
+    color: theme.palette.background.paper,
     flexDirection: 'column',
   },
   containerRight: {
     display: 'flex',
     justifyContent: 'flex-end',
-    marginLeft: theme.shape.spacing(10),
+    marginLeft: theme.spacing(10),
   },
   containerLeft: {
     display: 'flex',
     justifyContent: 'flex-start',
-    marginRight: theme.shape.spacing(10),
+    marginRight: theme.spacing(10),
   },
   message: {
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-    border: `1px solid ${theme.palette.neutralLight}`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    border: `1px solid ${theme.palette.neutralLight.main}`,
     borderRadius: theme.shape.borderRadius,
     cursor: 'pointer',
 
@@ -85,10 +85,10 @@ const useMessageStyles = createStyles(theme => ({
     },
 
     '&.me': {
-      background: theme.palette.neutralMedium,
+      background: theme.palette.neutralMedium.main,
     },
     '&.you': {
-      background: theme.palette.primary,
+      background: theme.palette.primary.main,
     },
   },
   left: {
@@ -98,11 +98,11 @@ const useMessageStyles = createStyles(theme => ({
     justifyContent: 'flex-end',
   },
   loader: {
-    color: theme.palette.neutral,
+    color: theme.palette.neutral.main,
     opacity: 0.7,
 
     '& > div > *': {
-      marginLeft: theme.shape.spacing(0.5),
+      marginLeft: theme.spacing(0.5),
     },
   },
   textLeft: {
@@ -154,8 +154,8 @@ export const DummyChat: FC = () => {
     <Card
       bodyProps={{
         classes: {
-          background: theme => theme.palette.neutralLight,
-          padding: theme => `${theme.shape.spacing(1)}px`,
+          background: theme => theme.palette.neutralLight.main,
+          padding: theme => `${theme.spacing(1)}px`,
         },
         className: clsx(styles.container),
       }}
@@ -202,31 +202,31 @@ const useContactStyles = createStyles(theme => ({
     height: '100%',
   },
   contact: {
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-    marginBotton: theme.shape.spacing(1),
-    background: theme.palette.background,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    marginBotton: theme.spacing(1),
+    background: theme.palette.background.paper,
     cursor: 'pointer',
 
     '&:hover': {
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
     },
   },
   divider: {
-    background: theme.palette.neutralLight,
+    background: theme.palette.neutralLight.main,
     height: 1,
   },
   active: {
-    borderLeft: `2px solid ${theme.palette.primary}`,
-    color: theme.palette.primary,
+    borderLeft: `2px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
 
     '& > h1': {
-      color: theme.palette.positive,
+      color: theme.palette.positive.main,
     },
 
     '&:hover': {
       '& > h1': {
-        color: theme.palette.background,
+        color: theme.palette.background.paper,
       },
     },
   },
@@ -238,8 +238,8 @@ const DummyChatList: FC = () => {
     <Card
       bodyProps={{
         classes: {
-          background: theme => theme.palette.neutralLight,
-          padding: theme => `${theme.shape.spacing(0.5)}px`,
+          background: theme => theme.palette.neutralLight.main,
+          padding: theme => `${theme.spacing(0.5)}px`,
         },
       }}
     >

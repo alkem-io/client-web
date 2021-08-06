@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Breakpoints, Theme } from '../../themes';
+import { Theme } from '@material-ui/core/styles';
+import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
@@ -12,25 +13,25 @@ interface HeaderProps {
   text: string | React.ReactNode;
   className?: string;
   children?: React.ReactNode;
-  classes?: unknown;
+  classes?: ClassProps;
   color?: 'positive' | 'neutralMedium' | 'primary' | 'neutral' | 'negative' | 'background';
   tooltip?: boolean;
 }
 
-const useHeaderStyles = createStyles(theme => ({
+const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
   header: {
     display: 'flex',
     alignItems: 'center',
-    background: theme.palette.neutralMedium,
+    background: theme.palette.neutralMedium.main,
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     minHeight: '58px',
     padding: props =>
       agnosticFunctor(props.color)(theme, {}) ||
-      `${theme.shape.spacing(2)}px ${theme.shape.spacing(6)}px ${theme.shape.spacing(2)}px ${theme.shape.spacing(4)}px`,
+      `${theme.spacing(2)}px ${theme.spacing(6)}px ${theme.spacing(2)}px ${theme.spacing(4)}px`,
 
     '& span': {
-      [theme.media.down('lg')]: {
+      [theme.breakpoints.down('lg')]: {
         minHeight: 0,
       },
     },
@@ -47,7 +48,7 @@ export const HeaderCaption: FC<HeaderProps> = ({ text, className, classes }) => 
   );
 };
 
-const usePrimaryTextStyles = createStyles(theme => ({
+const usePrimaryTextStyles = createStyles<Theme, ClassProps>(theme => ({
   primaryText: {
     display: 'flex',
     wordBreak: 'break-word',
@@ -56,7 +57,7 @@ const usePrimaryTextStyles = createStyles(theme => ({
     lineHeight: props => agnosticFunctor(props.lineHeight)(theme, {}),
   },
   primaryTextWrapper: {
-    color: props => agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral,
+    color: props => agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main,
     display: 'flex',
     flexBasis: '60px',
   },
@@ -134,14 +135,14 @@ export const CardActions: FC<CardActionsProps> = ({ actions }) => {
   );
 };
 
-const useTagStyles = createStyles(theme => ({
+const useTagStyles = createStyles<Theme, ClassProps>(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 0,
-    right: props => (props.actions ? props.actions * 25 + 15 : 0),
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive,
+    right: props => (props.actions ? agnosticFunctor(props.actions)(theme, {}) * 25 + 15 : 0),
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive.main,
   },
 }));
 
@@ -157,7 +158,7 @@ const useMatchedTermsStyles = createStyles(theme => ({
   tagsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    maxHeight: `${theme.shape.spacing(9)}px`,
+    maxHeight: `${theme.spacing(9)}px`,
     overflow: 'hidden',
   },
   title: {
@@ -169,15 +170,15 @@ const useMatchedTermsStyles = createStyles(theme => ({
     width: 'fit-content',
     borderRadius: 15,
     textTransform: 'uppercase',
-    marginRight: `${theme.shape.spacing(1)}px`,
-    marginBottom: `${theme.shape.spacing(1)}px`,
+    marginRight: `${theme.spacing(1)}px`,
+    marginBottom: `${theme.spacing(1)}px`,
   },
   primary: {
-    backgroundColor: theme.palette.primary,
+    backgroundColor: theme.palette.primary.main,
   },
   light: {
-    backgroundColor: theme.palette.background,
-    border: `1px solid ${theme.palette.primary}`,
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.primary.main}`,
   },
 }));
 
@@ -211,38 +212,37 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
   );
 };
 
-const useBodyStyles = createStyles(theme => ({
+const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
   body: {
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
     flexGrow: 1,
-    background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight,
-    padding: (props: ClassProps) =>
-      agnosticFunctor(props.padding)(theme, {}) ||
-      `${theme.shape.spacing(3)}px ${theme.shape.spacing(3)}px ${theme.shape.spacing(1)}px`,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight.main,
+    padding: props =>
+      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
 
-    [theme.media.down('md')]: {
-      background: (props: ClassProps) =>
-        agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { md: true }) || theme.shape.spacing(3),
+    [theme.breakpoints.down('md')]: {
+      background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
+      padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.spacing(3),
     },
-    [theme.media.down('sm')]: {
-      background: (props: ClassProps) =>
-        agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.shape.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
+      padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.spacing(3),
     },
-    [theme.media.down('xs')]: {
-      background: (props: ClassProps) =>
-        agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight,
-      padding: (props: ClassProps) => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.shape.spacing(3),
+    [theme.breakpoints.down('xs')]: {
+      background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
+      padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.spacing(3),
     },
   },
 }));
 
-interface ClassProps {
-  background?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
-  padding?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
+export interface ClassProps {
+  background?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
+  padding?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
+  color?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
+  lineHeight?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
+  actions?: number | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => number | boolean);
 }
 
 interface BodyProps {
@@ -298,13 +298,13 @@ export interface CardProps extends Record<string, unknown> {
   onClick?: () => any;
 }
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = createStyles<Theme, ClassProps>(theme => ({
   root: {
     flexGrow: 1,
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
-    background: (props: ClassProps) => agnosticFunctor(props.background)(theme, {}) || 'none',
+    background: props => agnosticFunctor(props.background)(theme, {}) || 'none',
   },
   clickable: {
     cursor: 'pointer',
@@ -314,11 +314,11 @@ const useCardStyles = createStyles(theme => ({
     position: 'absolute',
     bottom: 0,
     right: -4,
-    color: hexToRGBA(theme.palette.background, 0.3),
+    color: hexToRGBA(theme.palette.background.paper, 0.3),
     textTransform: 'uppercase',
-    letterSpacing: theme.shape.spacing(0.3),
+    letterSpacing: theme.spacing(0.3),
     fontWeight: 800,
-    lineHeight: `${theme.shape.spacing(4)}px`,
+    lineHeight: `${theme.spacing(4)}px`,
   },
 }));
 

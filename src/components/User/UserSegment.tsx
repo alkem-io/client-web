@@ -17,8 +17,8 @@ const useStyles = createStyles(theme => ({
     padding: 0,
   },
   userHeader: {
-    background: theme.palette.neutralLight,
-    padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(4)}px`,
+    background: theme.palette.neutralLight.main,
+    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
   },
 }));
 

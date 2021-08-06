@@ -3,6 +3,7 @@ import React, { FC, Fragment } from 'react';
 import { Col, Container as BootstrapContainer, ContainerProps as BootstrapContainerProps, Row } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
+import { Theme } from '@material-ui/core';
 
 const useContainerStyles = createStyles(() => ({
   noGutters: {
@@ -29,7 +30,7 @@ const Container: FC<ContainerProps> = ({ children, fluid = true, className, clas
 export default Container;
 
 interface CardContainerProps extends ContainerProps {
-  cardHeight?: unknown;
+  cardHeight?: number;
   fullHeight?: boolean;
   children: React.ReactNode[];
   title?: string;
@@ -49,17 +50,22 @@ const defaultProps: Partial<CardContainerProps> = {
   xs: 12,
 };
 
-const useCardContainerStyles = createStyles(theme => ({
+interface ClassProps {
+  cardHeight?: number;
+  fullHeight?: boolean;
+}
+
+const useCardContainerStyles = createStyles<Theme, ClassProps>(theme => ({
   root: {
     '& .ct-card': {
-      height: props => {
+      height: (props: CardContainerProps) => {
         if (props.fullHeight) return '100%';
-        return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.shape.spacing(1.5)}px)`;
+        return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.spacing(1.5)}px)`;
       },
     },
   },
   spacer: {
-    height: theme.shape.spacing(1.5),
+    height: theme.spacing(1.5),
     width: '100%',
   },
   title: {

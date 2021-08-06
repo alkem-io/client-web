@@ -23,7 +23,7 @@ const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
 
 const useContactDetailsStyles = createStyles(theme => ({
   edit: {
-    fill: theme.palette.neutral,
+    fill: theme.palette.neutral.main,
     '&:hover': {
       cursor: 'pointer',
     },

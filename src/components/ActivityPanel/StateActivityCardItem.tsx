@@ -42,7 +42,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     overflow: 'auto',
   },
   activeState: {
-    color: theme.palette.neutralLight,
+    color: theme.palette.neutralLight.main,
   },
 }));
 

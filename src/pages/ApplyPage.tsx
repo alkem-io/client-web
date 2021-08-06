@@ -25,17 +25,17 @@ const useStyles = createStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
-    marginTop: theme.shape.spacing(2),
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
   logoDiv: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
     justifyContent: 'center',
     alignItems: 'center',
 
     '& > img': {
-      height: theme.shape.spacing(4),
+      height: theme.spacing(4),
     },
   },
 }));

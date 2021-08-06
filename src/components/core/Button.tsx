@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Button as MuiButton, makeStyles } from '@material-ui/core';
+import { Button as MuiButton } from '@material-ui/core';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { defaultPalette } from '../../themes';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   whiteStatic: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     background: hexToRGBA(theme.palette.background.default, 0.25),
 
     '& > span': {
-      filter: `drop-shadow(1px 1px ${defaultPalette.neutral})`,
+      filter: `drop-shadow(1px 1px ${theme.palette.neutral.main})`,
     },
 
     '&:hover': {
@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
 
       '&:hover': {
         color: theme.palette.error.main,
-        background: theme.palette.background,
+        background: theme.palette.background.paper,
         cursor: 'pointer',
       },
 

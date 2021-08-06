@@ -21,7 +21,6 @@ import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import BackdropWithMessage from '../components/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { Theme } from '../themes';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
@@ -36,7 +35,7 @@ import { PageProps } from './common';
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
     display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
+    gap: `${theme.spacing(1)}px`,
     flexWrap: 'wrap',
     '&:hover': {
       cursor: 'pointer',
@@ -59,8 +58,8 @@ const useOrganizationStyles = createStyles(theme => ({
     objectFit: 'contain',
   },
   link: {
-    marginTop: `${theme.shape.spacing(2)}px`,
-    marginRight: `${theme.shape.spacing(4)}px`,
+    marginTop: `${theme.spacing(2)}px`,
+    marginRight: `${theme.spacing(4)}px`,
   },
 }));
 
@@ -111,7 +110,7 @@ interface ChallengePageProps extends PageProps {
 const useChallengeStyles = createStyles(theme => ({
   divNav: {
     display: 'flex',
-    gap: theme.shape.spacing(4),
+    gap: theme.spacing(4),
   },
   edit: {
     '&:hover': {
@@ -120,7 +119,7 @@ const useChallengeStyles = createStyles(theme => ({
   },
   buttonsWrapper: {
     display: 'flex',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
 }));
 
@@ -214,13 +213,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activitySummary}
             lifecycle={challengeLifecycleQuery?.ecoverse.challenge.lifecycle}
-            classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
+            classes={{ padding: theme => `${theme.spacing(4)}px` }}
           />
         }
         classes={{
-          background: (theme: Theme) =>
-            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
+          background: theme =>
+            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral.main,
+          coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
         }}
         gutters={{
           root: true,
@@ -233,7 +232,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             <SectionHeader
               text={name}
               className="flex-grow-1"
-              classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
+              classes={{ color: theme => theme.palette.neutralLight.main }}
             />
             {user?.isAdmin && (
               <>
