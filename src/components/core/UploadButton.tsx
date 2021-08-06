@@ -6,7 +6,7 @@ interface UploadButtonProps extends Omit<ButtonProps, 'onClick'> {
   accept?: string;
 }
 
-export const UploadButton: FC<UploadButtonProps> = ({ onChange, children, ...props }) => {
+export const UploadButton: FC<UploadButtonProps> = ({ onChange, ...props }) => {
   const ref = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
@@ -27,9 +27,7 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, children, ...pro
 
   return (
     <>
-      <Button onClick={handleButtonClick} {...props}>
-        {children}
-      </Button>
+      <Button onClick={handleButtonClick} {...props} />
       <input ref={ref} type="file" style={{ display: 'none' }} onChange={handleChange} />
     </>
   );

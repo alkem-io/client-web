@@ -232,12 +232,10 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
       <Modal.Footer>
         <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Coming soon</Tooltip>}>
           <span>
-            <Button variant={'primary'} disabled={true}>
-              Send message
-            </Button>
+            <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
           </span>
         </OverlayTrigger>
-        <Button onClick={onHide}>{t('buttons.close')}</Button>
+        <Button onClick={onHide} text={t('buttons.close')} />
       </Modal.Footer>
     </Modal>
   );

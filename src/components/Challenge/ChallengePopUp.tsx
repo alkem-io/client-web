@@ -125,7 +125,7 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
             as={Link}
             to={`/${ecoverseNameID}/challenges/${nameID}`}
           />
-          <Button onClick={onHide}>Close</Button>
+          <Button onClick={onHide} text={t('buttons.close')} />
         </Modal.Footer>
       </Modal>
     </>

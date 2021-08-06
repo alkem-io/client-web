@@ -267,7 +267,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             <Button
               inset
               variant="semiTransparent"
-              text="opportunities"
+              text={t('common.opportunities')}
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
             {challengeRefs?.map((l, i) => (

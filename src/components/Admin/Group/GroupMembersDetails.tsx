@@ -6,6 +6,7 @@ import Avatar from '../../core/Avatar';
 import AvatarContainer from '../../core/AvatarContainer';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
+import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
   members: User[];
@@ -13,6 +14,7 @@ interface GroupMembersDetailsProps {
 }
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
+  const { t } = useTranslation();
   return (
     <>
       <Typography variant={'h4'}>Members</Typography>
@@ -42,11 +44,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && (
-        <Button className={'mt-2'} small as={Link} to={editLink}>
-          {'Edit Members'}
-        </Button>
-      )}
+      {editLink && <Button className={'mt-2'} small as={Link} to={editLink} text={t('buttons.edit-members')} />}
     </>
   );
 };

@@ -15,9 +15,9 @@ import { useUpdateNavigation } from '../../hooks';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
-import { Loading } from '../core';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
+import { useTranslation } from 'react-i18next';
 
 interface Params {
   ecoverseId?: string;
@@ -32,6 +32,7 @@ interface Props {
 }
 
 const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
@@ -122,9 +123,13 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
+        <Button
+          disabled={isLoading}
+          className={'ml-auto'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
       </div>
     </Container>
   );

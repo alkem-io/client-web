@@ -120,13 +120,13 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                 <div className={'d-flex'}>
                   <Button
                     disabled={loading}
-                    text="Cancel project"
+                    text={t('buttons.cancel-project')}
                     variant="transparent"
                     inset
                     onClick={() => history.goBack()}
                   />
                   <div className={'flex-grow-1'}></div>
-                  <Button type={'submit'} text="create project" variant="primary" disabled={!isValid} />
+                  <Button type={'submit'} text={t('buttons.create-project')} variant="primary" disabled={!isValid} />
                 </div>
               </Form>
             )}

@@ -123,9 +123,11 @@ export const OrganizationForm: FC<Props> = ({
   const handleBack = () => history.goBack();
 
   const backButton = (
-    <Button variant={editMode ? 'default' : 'primary'} onClick={handleBack}>
-      {editMode ? 'Cancel' : 'Back'}
-    </Button>
+    <Button
+      variant={editMode ? 'default' : 'primary'}
+      onClick={handleBack}
+      text={t(`buttons.${editMode ? 'cancel' : 'back'}}`)}
+    />
   );
 
   if (!currentOrganization && editMode !== EditMode.new) {
@@ -200,9 +202,7 @@ export const OrganizationForm: FC<Props> = ({
                     <div className={'d-flex mt-4'}>
                       <div className={'flex-grow-1'} />
                       {backButton}
-                      <Button variant="primary" type={'submit'} className={'ml-3'}>
-                        Save
-                      </Button>
+                      <Button variant="primary" type={'submit'} className={'ml-3'} text={t('buttons.save')} />
                     </div>
                   )}
                 </Section>

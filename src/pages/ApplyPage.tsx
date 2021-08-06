@@ -148,9 +148,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
             {t('pages.ecoverse.application.finish')}
             {communityName}
           </Typography>
-          <Button as={Link} to={backUrl}>
-            {t('pages.ecoverse.application.backButton')}
-          </Button>
+          <Button as={Link} to={backUrl} text={t('pages.ecoverse.application.backButton')} />
         </div>
       ) : (
         <>
@@ -183,9 +181,13 @@ const ApplyPage: FC<ApplyPageProps> = ({
                       <Form.Control.Feedback type="invalid">This is required</Form.Control.Feedback>
                     </Form.Group>
                   ))}
-                  <Button variant="primary" type="submit" disabled={isCreationLoading} onClick={() => handleSubmit()}>
-                    {isCreationLoading ? 'Processing...' : 'Apply'}
-                  </Button>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={isCreationLoading}
+                    onClick={() => handleSubmit()}
+                    text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
+                  />
                 </>
               );
             }}

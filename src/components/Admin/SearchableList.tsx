@@ -6,6 +6,7 @@ import Button from '../core/Button';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 import RemoveModal from '../core/RemoveModal';
+import { useTranslation } from 'react-i18next';
 
 interface SearchableListProps {
   data: SearchableListItem[];
@@ -14,15 +15,13 @@ interface SearchableListProps {
   onDelete?: (item: SearchableListItem) => void;
 }
 
-export const searchableListItemMapper = (url: string, editSuffix?: string) => (item: {
-  id: string;
-  displayName: string;
-  nameID?: string;
-}): SearchableListItem => ({
-  id: item.id,
-  value: item.displayName,
-  url: `${url}/${item.nameID ?? item.id}${editSuffix ?? ''}`,
-});
+export const searchableListItemMapper =
+  (url: string, editSuffix?: string) =>
+  (item: { id: string; displayName: string; nameID?: string }): SearchableListItem => ({
+    id: item.id,
+    value: item.displayName,
+    url: `${url}/${item.nameID ?? item.id}${editSuffix ?? ''}`,
+  });
 
 export interface SearchableListItem {
   id: string;
@@ -31,6 +30,7 @@ export interface SearchableListItem {
 }
 
 export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active, onDelete }) => {
+  const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
@@ -103,9 +103,11 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
         //loading={loading}
       />
       {filteredData.length > limit && limit < 50 && (
-        <Button className={'mt-4'} onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}>
-          Load more
-        </Button>
+        <Button
+          className={'mt-4'}
+          onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}
+          text={t('components.searchableList.load-more')}
+        />
       )}
     </>
   );

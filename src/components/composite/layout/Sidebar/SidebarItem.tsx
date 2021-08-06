@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import Button, { ButtonProps } from '../../../core/Button';
 import Icon, { IconProps } from '../../../core/Icon';
-import Typography from '../../../core/Typography';
 
 const useStyles = makeStyles(theme => ({
   link: {
@@ -62,18 +61,10 @@ const SidebarItem: FC<SidebarItemProps> = ({
             as={Link}
             to={to}
             className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
+            startIcon={<Icon {...iconProps} className={styles.avatarIcon} />}
+            text={label}
             {...buttonProps}
-          >
-            <Icon {...iconProps} className={styles.avatarIcon} />
-            {label && !hideLabel && (
-              <>
-                <div style={{ padding: 5 }} />
-                <Typography variant="button" weight="bold" color="inherit">
-                  {label}
-                </Typography>
-              </>
-            )}
-          </Button>
+          />
         </span>
       </OverlayTrigger>
     </div>

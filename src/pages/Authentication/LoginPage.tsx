@@ -73,9 +73,14 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.login.register')}
           </Typography>
-          <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_REGISTER_PATH)}>
-            {t('authentication.sign-up')}
-          </Button>
+          <Button
+            variant="primary"
+            type={'submit'}
+            small
+            block
+            onClick={() => history.push(AUTH_REGISTER_PATH)}
+            text={t('authentication.sign-up')}
+          />
         </Col>
       </Row>
     </AuthenticationLayout>

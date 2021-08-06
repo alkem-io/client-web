@@ -6,10 +6,6 @@ interface LifecycleButtonProps extends ButtonProps {
 }
 
 const LifecycleButton: FC<LifecycleButtonProps> = ({ stateName, onClick }) => {
-  return (
-    <Button variant="default" onClick={onClick}>
-      {stateName}
-    </Button>
-  );
+  return <Button variant="default" onClick={onClick} text={stateName} />;
 };
 export default LifecycleButton;

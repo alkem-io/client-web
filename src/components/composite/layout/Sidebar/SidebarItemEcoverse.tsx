@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
-import Typography from '../../../core/Typography';
 
 interface SidebarItemEcoverseProps {
   ecoverse: EcoverseDetailsFragment;
@@ -61,23 +60,10 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
             <Button
               inset
               variant="transparent"
-              className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
-            >
-              <Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />
-              {!hideLabel && (
-                <>
-                  <div style={{ padding: 5 }} />
-                  <Typography
-                    variant="button"
-                    weight="bold"
-                    color="inherit"
-                    className={clsx(styles.textDecorationNone, styles.textAlignLeft)}
-                  >
-                    {ecoverse.displayName}
-                  </Typography>
-                </>
-              )}
-            </Button>
+              className={clsx(styles.link, centerLabel ? styles.center : styles.start, styles.textAlignLeft)}
+              text={ecoverse.displayName}
+              startIcon={<Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />}
+            />
           </span>
         </OverlayTrigger>
       </Link>

@@ -78,7 +78,7 @@ const AboutPage = () => {
             </Typography>
             <Typography className={'mb-4'}>{t('pages.about.description')}</Typography>
             <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
-              <Button>{t('buttons.learn-more')}</Button>
+              <Button text={t('buttons.learn-more')} />
             </a>
           </div>
         </Col>

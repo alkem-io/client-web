@@ -7,6 +7,7 @@ import Button from '../core/Button';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
+import { useTranslation } from 'react-i18next';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -73,6 +74,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   onSelect,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const styles = useCardStyles();
   const headerProps = caption ? { text: caption } : undefined;
 
@@ -109,7 +111,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </Typography>
             <div className="flex-grow-1"></div>
             <div>
-              <Button text="Project details" onClick={onSelect} />
+              <Button text={t('buttons.details')} onClick={onSelect} />
             </div>
           </div>
         </>

@@ -3,7 +3,6 @@ import { Container } from 'react-bootstrap';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
-import { Loading } from '../../../components/core/Loading/Loading';
 import Typography from '../../../components/core/Typography';
 import {
   EcoverseDetailsFragmentDoc,
@@ -15,10 +14,12 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { createContextInput } from '../../../utils/buildContext';
+import { useTranslation } from 'react-i18next';
 
 interface NewEcoverseProps extends PageProps {}
 
 export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
   const history = useHistory();
@@ -95,9 +96,13 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
         organizations={organizations}
       />
       <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
+        <Button
+          disabled={isLoading}
+          className={'ml-auto'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
       </div>
     </Container>
   );

@@ -64,9 +64,14 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
           <Typography variant={'h5'} className={'mb-2'}>
             {t('pages.registration.login')}
           </Typography>
-          <Button variant="primary" type={'submit'} small block onClick={() => history.push(AUTH_LOGIN_PATH)}>
-            {t('authentication.sign-in')}
-          </Button>
+          <Button
+            variant="primary"
+            type={'submit'}
+            small
+            block
+            onClick={() => history.push(AUTH_LOGIN_PATH)}
+            text={t('authentication.sign-in')}
+          />
         </Col>
       </Row>
     </AuthenticationLayout>

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { Button, Col, Row, Table } from 'react-bootstrap';
+import { Col, Row, Table } from 'react-bootstrap';
 import { Member } from '../../../models/User';
+import Button from '../../core/Button';
 import { Filter } from '../Common/Filter';
 
 interface EditMembersProps {
@@ -39,11 +40,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                           <td>{m.lastName}</td>
                           <td>{m.email}</td>
                           <td className={'text-right'}>
-                            {onRemove && (
-                              <Button variant="outline-danger" size="sm" onClick={() => onRemove(m)}>
-                                X
-                              </Button>
-                            )}
+                            {onRemove && <Button variant="negative" size="sm" onClick={() => onRemove(m)} text="X" />}
                           </td>
                         </tr>
                       ))}
@@ -71,13 +68,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                     <tbody>
                       {filteredData.map(m => (
                         <tr key={m.email}>
-                          <td>
-                            {onAdd && (
-                              <Button variant="outline-info" size="sm" onClick={() => onAdd(m)}>
-                                +
-                              </Button>
-                            )}
-                          </td>
+                          <td>{onAdd && <Button size="sm" onClick={() => onAdd(m)} text="+" />}</td>
                           <td>{m.displayName}</td>
                         </tr>
                       ))}

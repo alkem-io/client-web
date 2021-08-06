@@ -313,9 +313,8 @@ export const UserForm: FC<UserProps> = ({
                       onClick={() => onDelete(currentUser.id)}
                       disabled={isSubmitting}
                       className={'ml-3'}
-                    >
-                      {'Delete'}
-                    </Button>
+                      text={t('buttons.delete')}
+                    />
                   )}
                   {onCancel && (
                     <Button
@@ -323,13 +322,16 @@ export const UserForm: FC<UserProps> = ({
                       onClick={() => onCancel()}
                       disabled={isSubmitting}
                       className={'ml-3'}
-                    >
-                      {isEditMode ? 'Cancel' : 'Back'}
-                    </Button>
+                      text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                    />
                   )}
-                  <Button variant={'primary'} type={'submit'} className={'ml-3'} disabled={isSubmitting}>
-                    Save
-                  </Button>
+                  <Button
+                    variant={'primary'}
+                    type={'submit'}
+                    className={'ml-3'}
+                    disabled={isSubmitting}
+                    text={t('buttons.save')}
+                  />
                 </div>
               )}
             </Section>

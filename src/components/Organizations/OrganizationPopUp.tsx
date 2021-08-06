@@ -190,7 +190,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={onHide}>Close</Button>
+          <Button onClick={onHide} text={t('buttons.close')} />
         </Modal.Footer>
       </Modal>
     </>

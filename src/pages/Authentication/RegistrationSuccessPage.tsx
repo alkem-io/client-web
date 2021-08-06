@@ -72,9 +72,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
       <Typography>As with any community, the more everyone brings in the more everyone gets out!</Typography>
       <Typography>We really hope you enjoy engaging!</Typography>
       <div className={'mt-4 text-center'}>
-        <Button as={Link} to={'/'}>
-          {t('buttons.home')}
-        </Button>
+        <Button as={Link} to={'/'} text={t('buttons.home')} />
       </div>
     </AuthenticationLayout>
   );

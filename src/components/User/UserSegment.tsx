@@ -11,6 +11,7 @@ import User from './User';
 import Button from '../core/Button';
 import { useHistory } from 'react-router-dom';
 import Icon from '../core/Icon';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -29,6 +30,7 @@ interface UserSegmentProps {
 }
 
 const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
+  const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
@@ -83,12 +85,9 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                     inset
                     block
                     small
-                  >
-                    <Icon component={PersonFill} color="inherit" size="sm" />
-                    <Typography variant="button" color="inherit">
-                      My profile
-                    </Typography>
-                  </Button>
+                    text={t('buttons.my-profile')}
+                    startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
+                  />
                 </Box>
                 <Box>
                   <Button
@@ -100,12 +99,9 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                     inset
                     block
                     small
-                  >
-                    <Icon component={DoorOpenIcon} color="inherit" size="sm" />
-                    <Typography variant="button" color="inherit">
-                      Sign out
-                    </Typography>
-                  </Button>
+                    startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
+                    text={t('buttons.sign-out')}
+                  />
                 </Box>
               </Box>
             </Popover.Content>

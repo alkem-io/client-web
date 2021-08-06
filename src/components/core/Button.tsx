@@ -149,7 +149,6 @@ const Button: FC<ButtonProps> = ({
       {...props}
     >
       {text}
-      {children}
     </MuiButton>
   );
 };

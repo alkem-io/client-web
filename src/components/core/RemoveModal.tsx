@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from './Button';
+import { useTranslation } from 'react-i18next';
 
 interface RelationRemoveModalProps {
   show: boolean;
@@ -11,6 +12,7 @@ interface RelationRemoveModalProps {
 }
 
 const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title = 'Confirm remove', onConfirm }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={show} onHide={onCancel} centered>
       <Modal.Header closeButton>
@@ -18,12 +20,8 @@ const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title
       </Modal.Header>
       <Modal.Body>{text}</Modal.Body>
       <Modal.Footer>
-        <Button small onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button small variant={'negative'} onClick={onConfirm}>
-          Remove
-        </Button>
+        <Button small onClick={onCancel} text={t('buttons.cancel')} />
+        <Button small variant={'negative'} onClick={onConfirm} text={t('buttons.remove')} />
       </Modal.Footer>
     </Modal>
   );

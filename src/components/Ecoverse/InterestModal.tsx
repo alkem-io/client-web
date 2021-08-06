@@ -7,6 +7,7 @@ import Button from '../core/Button';
 import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
+import { useTranslation } from 'react-i18next';
 
 interface P {
   onHide: () => void;
@@ -15,6 +16,7 @@ interface P {
 }
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
@@ -96,18 +98,12 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
-        {data?.createRelation.id && (
-          <Button onClick={onHide} variant={'primary'}>
-            Close
-          </Button>
-        )}
+        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.cancel')} />}
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
           !data?.createRelation.id && (
-            <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
-              Submit
-            </Button>
+            <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
           )
         )}
       </Modal.Footer>

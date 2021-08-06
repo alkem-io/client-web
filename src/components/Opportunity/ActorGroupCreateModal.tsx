@@ -10,6 +10,7 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
+import { useTranslation } from 'react-i18next';
 
 interface P {
   onHide: () => void;
@@ -19,6 +20,7 @@ interface P {
 }
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
@@ -95,9 +97,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
         {loading ? (
           <Loading text={'Creating actor group'} />
         ) : (
-          <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
-            Submit
-          </Button>
+          <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
         )}
       </Modal.Footer>
     </Modal>

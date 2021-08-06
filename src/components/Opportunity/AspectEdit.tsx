@@ -17,6 +17,7 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   show: boolean;
@@ -48,6 +49,7 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
@@ -178,12 +180,8 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
         </Formik>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'}>
-          CANCEL
-        </Button>
-        <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          SAVE
-        </Button>
+        <Button variant="negative" onClick={onHide} className={'mr-2'} text={t('buttons.cancel')} />
+        <Button type={'submit'} variant="primary" onClick={() => submitWired()} text={t('buttons.save')} />
       </Modal.Footer>
     </Modal>
   );

@@ -6,6 +6,7 @@ import { createStyles } from '../hooks/useTheme';
 import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
 import { Spinner } from './core/Spinner';
 import UploadButton from './core/UploadButton';
+import { useTranslation } from 'react-i18next';
 
 const useEditableAvatarStyles = createStyles(() => ({
   outerEditableAvatarWrapper: {
@@ -23,6 +24,7 @@ interface EditableAvatarProps extends AvatarProps {
 }
 
 const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
+  const { t } = useTranslation();
   const avatarStyles = useAvatarStyles(classes);
   const styles = useEditableAvatarStyles();
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
@@ -66,9 +68,8 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
               if (file) handleAvatarChange(file);
             }}
             small
-          >
-            Edit
-          </UploadButton>
+            text={t('buttons.edit')}
+          />
         </div>
       )}
     </div>
