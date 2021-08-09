@@ -7,7 +7,7 @@ export const paletteOptions: PaletteOptions = {
   neutral: { main: '#181828' },
   neutralMedium: { main: '#B8BAC8' },
   neutralLight: { main: '#F9F9F9' },
-  background: { paper: '#FFFFFF' }, // Because hexToRGBA doesn't convert short hex correctly.
+  background: { paper: '#FFF' },
   divider: '#00BCD440',
 };
 
