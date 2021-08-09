@@ -1,7 +1,7 @@
 import { Overrides } from '@material-ui/core/styles/overrides';
 import { SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
 import { TypeBackground } from '@material-ui/core/styles/createPalette';
-import hexToRGBA from '../../utils/hexToRGBA';
+import hexToRGBA from '../../../utils/hexToRGBA';
 
 export const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
   if (!theme) {
@@ -89,6 +89,7 @@ export const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
           },
         },
       },
+      label: { lineHeight: 1.5 },
     },
     MuiButtonBase: {
       root: {

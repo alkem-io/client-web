@@ -5,7 +5,7 @@ import { Palette } from '@material-ui/core/styles/createPalette';
 import { TypographyOptions } from '@material-ui/core/styles/createTypography';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { replaceAll } from '../../utils/replaceAll';
-import { defaultMuiTheme } from '../../themes';
+import { defaultMuiTheme } from '../../themes/default';
 
 const useTypographyStyles = makeStyles(theme => {
   // todo: how to avoid this? custom theme is not loaded yet

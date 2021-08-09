@@ -1,7 +1,7 @@
 import { createTheme, ThemeOptions } from '@material-ui/core';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
-import { buttonOverrides } from './overrides';
+import { buttonOverrides } from './overrides/button';
 
 const space = 10;
 
