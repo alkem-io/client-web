@@ -65,34 +65,28 @@ const Root: FC = () => {
         return <ErrorPage error={error} />;
       }}
     >
-      <GlobalStateProvider>
-        <ReduxRoot />
-      </GlobalStateProvider>
+      <ThemeProvider>
+        <GlobalStateProvider>
+          <BrowserRouter>
+            <ConfigProvider apiUrl={graphQLEndpoint}>
+              <AuthenticationProvider>
+                <CTApolloProvider>
+                  <NavigationProvider>
+                    <EcoversesProvider>
+                      <UserProvider>
+                        <App>
+                          <Routing />
+                        </App>
+                      </UserProvider>
+                    </EcoversesProvider>
+                  </NavigationProvider>
+                </CTApolloProvider>
+              </AuthenticationProvider>
+            </ConfigProvider>
+          </BrowserRouter>
+        </GlobalStateProvider>
+      </ThemeProvider>
     </Sentry.ErrorBoundary>
-  );
-};
-
-const ReduxRoot: FC = () => {
-  return (
-    <BrowserRouter>
-      <ConfigProvider apiUrl={graphQLEndpoint}>
-        <AuthenticationProvider>
-          <CTApolloProvider>
-            <ThemeProvider>
-              <NavigationProvider>
-                <EcoversesProvider>
-                  <UserProvider>
-                    <App>
-                      <Routing />
-                    </App>
-                  </UserProvider>
-                </EcoversesProvider>
-              </NavigationProvider>
-            </ThemeProvider>
-          </CTApolloProvider>
-        </AuthenticationProvider>
-      </ConfigProvider>
-    </BrowserRouter>
   );
 };
 
