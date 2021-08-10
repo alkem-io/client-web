@@ -1,9 +1,10 @@
+import { Fade } from '@material-ui/core';
 import clsx from 'clsx';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Fade, Spinner } from 'react-bootstrap';
 import Card from '../components/core/Card';
 import Section, { Header, SubHeader } from '../components/core/Section';
+import Spinner from '../components/core/Spinner';
 import Typography from '../components/core/Typography';
 import { useConfig } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
@@ -176,18 +177,14 @@ export const DummyChat: FC = () => {
         <Fade key="loader-right" in={showLoader.right}>
           <div className={clsx(styles.containerRight, styles.messageContainer, styles.loader)}>
             <div className={styles.containerRight}>
-              <Spinner animation="grow" size="sm" />
-              <Spinner animation="grow" size="sm" />
-              <Spinner animation="grow" size="sm" />
+              <Spinner size="sm" />
             </div>
           </div>
         </Fade>
         <Fade key="loader-left" in={showLoader.left}>
           <div className={clsx(styles.containerLeft, styles.messageContainer, styles.loader)}>
             <div className={styles.containerLeft}>
-              <Spinner animation="grow" size="sm" />
-              <Spinner animation="grow" size="sm" />
-              <Spinner animation="grow" size="sm" />
+              <Spinner size="sm" />
             </div>
           </div>
         </Fade>

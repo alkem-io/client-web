@@ -1,20 +1,13 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Image as BootstrapImage, ImageProps, Spinner } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
-
-const useStyles = createStyles(theme => ({
-  spinner: {
-    color: theme.palette.primary.main,
-  },
-}));
+import { Image as BootstrapImage, ImageProps } from 'react-bootstrap';
+import Spinner from './Spinner';
 
 export const Image: FC<ImageProps> = ({ src, alt, ...props }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const styles = useStyles();
 
   return (
     <>
-      {!isLoaded && <Spinner animation="grow" className={styles.spinner} />}
+      {!isLoaded && <Spinner />}
       <BootstrapImage
         onLoad={() => setIsLoaded(true)}
         onError={() => setIsLoaded(true)}
