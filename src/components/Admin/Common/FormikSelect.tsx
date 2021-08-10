@@ -18,7 +18,9 @@ export const FormikSelect: FC<FormikSelectProps> = ({ title, name, required = fa
       <InputLabel shrink={true}>{title}</InputLabel>
       <Select name={name} value={field.value} label={title} onBlur={field.onBlur} onChange={field.onChange}>
         {values.map(el => (
-          <MenuItem value={el.id}>{el.label}</MenuItem>
+          <MenuItem key={el.id} value={el.id}>
+            {el.label}
+          </MenuItem>
         ))}
       </Select>
       <FormHelperText>{meta.error}</FormHelperText>
