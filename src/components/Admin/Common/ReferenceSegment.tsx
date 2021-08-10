@@ -1,6 +1,7 @@
+import Tooltip from '@material-ui/core/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
-import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { PushFunc, RemoveFunc } from '../../../hooks';
@@ -57,23 +58,19 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
               </Typography>
             </Form.Group>
             <Form.Group as={Col} className={'d-flex flex-row-reverse'}>
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id={'Add a reference'} placement={'bottom'}>
-                    {t('components.referenceSegment.tooltips.add-reference')}
-                  </Tooltip>
-                }
-              >
-                <Button
-                  type={'button'}
-                  onClick={e => {
-                    e.preventDefault();
-                    handleAdd(push);
-                  }}
-                  disabled={disabled || adding}
-                  text="+"
-                />
-              </OverlayTrigger>
+              <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
+                <span>
+                  <Button
+                    type={'button'}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleAdd(push);
+                    }}
+                    disabled={disabled || adding}
+                    text="+"
+                  />
+                </span>
+              </Tooltip>
             </Form.Group>
           </Form.Row>
           {references?.length === 0 ? (
@@ -106,12 +103,10 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                 </Form.Group>
                 {!readOnly && (
                   <Form.Group as={Col} xs={1} className={'d-flex flex-row-reverse align-items-end'}>
-                    <OverlayTrigger
-                      overlay={
-                        <Tooltip id={'remove a reference'} placement={'bottom'}>
-                          {t('components.referenceSegment.tooltips.remove-reference')}
-                        </Tooltip>
-                      }
+                    <Tooltip
+                      title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                      id={'remove a reference'}
+                      placement={'bottom'}
                     >
                       <Button
                         type={'button'}
@@ -131,7 +126,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                         disabled={disabled || index === removing}
                         text="-"
                       />
-                    </OverlayTrigger>
+                    </Tooltip>
                   </Form.Group>
                 )}
               </Form.Row>
