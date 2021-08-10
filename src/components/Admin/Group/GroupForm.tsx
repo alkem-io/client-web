@@ -125,7 +125,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     value={description}
                     readOnly={isReadOnlyMode}
                     placeholder={'Description'}
-                    as={'textarea'}
+                    multiline
                     disabled={isSubmitting}
                   />
                 </Form.Group>

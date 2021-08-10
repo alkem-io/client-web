@@ -60,4 +60,4 @@ declare module '@material-ui/core/styles/createTheme' {
   }
 }
 
-export const defaultMuiTheme = createTheme(theme);
+export const defaultTheme = createTheme(theme);
