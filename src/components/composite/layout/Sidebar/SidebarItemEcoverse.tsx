@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
@@ -40,6 +40,9 @@ const useStyles = makeStyles(() => ({
   start: {
     justifyContent: 'flex-start',
   },
+  noMarginAvatar: {
+    margin: 0,
+  },
 }));
 
 const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel, centerLabel }) => {
@@ -61,8 +64,11 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
               inset
               variant="transparent"
               className={clsx(styles.link, centerLabel ? styles.center : styles.start, styles.textAlignLeft)}
-              text={ecoverse.displayName}
+              text={hideLabel ? '' : ecoverse.displayName}
               startIcon={<Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />}
+              classOverrides={{
+                startIcon: clsx(hideLabel && styles.noMarginAvatar),
+              }}
             />
           </span>
         </OverlayTrigger>

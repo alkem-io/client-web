@@ -1,8 +1,8 @@
+import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core';
 import Button, { ButtonProps } from '../../../core/Button';
 import Icon, { IconProps } from '../../../core/Icon';
 
@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
   },
   avatarIcon: {
     width: theme.spacing(4),
+  },
+  noMarginIcon: {
+    margin: 0,
   },
 }));
 
@@ -62,7 +65,10 @@ const SidebarItem: FC<SidebarItemProps> = ({
             to={to}
             className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
             startIcon={<Icon {...iconProps} className={styles.avatarIcon} />}
-            text={label}
+            text={hideLabel ? '' : label}
+            classOverrides={{
+              startIcon: clsx(hideLabel && styles.noMarginIcon),
+            }}
             {...buttonProps}
           />
         </span>

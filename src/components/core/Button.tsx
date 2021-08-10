@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Button as MuiButton } from '@material-ui/core';
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@material-ui/core';
 import hexToRGBA from '../../utils/hexToRGBA';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -94,6 +94,7 @@ export interface ButtonProps extends Record<string, unknown> {
   paddingClass?: string;
   className?: string;
   classes?: unknown;
+  classOverrides?: MuiButtonProps['classes'];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any> | string;
   startIcon?: React.ReactNode;
@@ -110,6 +111,7 @@ export interface ButtonProps extends Record<string, unknown> {
 const Button: FC<ButtonProps> = ({
   className,
   classes = {},
+  classOverrides = {},
   variant = 'default',
   startIcon,
   inset = false,
@@ -141,6 +143,7 @@ const Button: FC<ButtonProps> = ({
       className={clsx(className, inset && 'inset', small && 'small', block && 'block')}
       classes={{
         outlined: styles[variant],
+        ...classOverrides,
       }}
       component={Link}
       variant="outlined"
