@@ -3,13 +3,13 @@ import { createStyles } from '../../hooks/useTheme';
 
 const useMainStyles = createStyles(theme => ({
   backdrop: {
-    backgroundColor: theme.palette.background,
+    backgroundColor: theme.palette.background.paper,
     opacity: 0.5,
-    filter: `blur(${theme.shape.spacing(0.5)}px)`,
-    '-webkit-filter': `blur(${theme.shape.spacing(0.5)}px)`,
-    '-moz-filter': `blur(${theme.shape.spacing(0.5)}px)`,
-    '-o-filter': `blur(${theme.shape.spacing(0.5)}px)`,
-    '-ms-filter': `blur(${theme.shape.spacing(0.5)}px)`,
+    filter: `blur(${theme.spacing(0.5)}px)`,
+    '-webkit-filter': `blur(${theme.spacing(0.5)}px)`,
+    '-moz-filter': `blur(${theme.spacing(0.5)}px)`,
+    '-o-filter': `blur(${theme.spacing(0.5)}px)`,
+    '-ms-filter': `blur(${theme.spacing(0.5)}px)`,
   },
 }));
 

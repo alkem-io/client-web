@@ -7,7 +7,6 @@ import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { Theme } from '../../context/ThemeProvider';
 import { env } from '../../types/env';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import { useAuthenticationContext } from '../../hooks';
@@ -22,27 +21,23 @@ const useStyles = createStyles(theme => ({
   },
   flexGap: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
   },
   flexCol: {
     display: 'flex',
     flexDirection: 'column',
   },
   link: {
-    marginTop: `${theme.shape.spacing(2)}px`,
-    marginRight: `${theme.shape.spacing(4)}px`,
+    marginTop: `${theme.spacing(2)}px`,
+    marginRight: `${theme.spacing(4)}px`,
     '&:hover': {
-      color: theme.palette.background,
+      color: theme.palette.background.paper,
     },
   },
   banner: {
-    // '& > .section-cover': {
-    //   outline: `${theme.shape.spacing(0.5)}px solid ${theme.palette.neutralMedium}`,
-    //   outlineOffset: -theme.shape.spacing(2),
-    // },
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: theme.shape.spacing(1),
+    padding: theme.spacing(1),
   },
   bannerBtn: {
     margin: 0,
@@ -111,8 +106,8 @@ const WelcomeSection = () => {
           hideAvatar
           hideDetails
           classes={{
-            background: (_: Theme) => `url("${banner}") no-repeat center center / cover`,
-            coverBackground: (_: Theme) =>
+            background: () => `url("${banner}") no-repeat center center / cover`,
+            coverBackground: () =>
               'linear-gradient(90deg, rgba(0,0,0,0.5326505602240896) 11%, rgba(0,226,255,0.10127801120448177) 91%)',
           }}
           gutters={{

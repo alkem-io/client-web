@@ -6,8 +6,9 @@ import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../Community/UserPopUp';
 import Image from './Image';
 import Typography from './Typography';
+import { Theme } from '@material-ui/core';
 
-export const useAvatarStyles = createStyles(theme => ({
+export const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
   avatarWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -77,23 +78,27 @@ export const useAvatarStyles = createStyles(theme => ({
     },
   },
   dark: {
-    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium,
-    color: theme.palette.background,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium.main,
+    color: theme.palette.background.paper,
     alignItems: 'center',
     placeContent: 'center',
   },
   light: {
-    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.background,
-    color: theme.palette.neutralMedium,
+    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.background.paper,
+    color: theme.palette.neutralMedium.main,
     alignItems: 'center',
     placeContent: 'center',
   },
 }));
 
+interface ClassProps {
+  background?: string;
+}
+
 export interface AvatarProps {
   src?: string;
   className?: string;
-  classes?: unknown;
+  classes?: ClassProps;
   size?: 'md' | 'sm' | 'lg' | 'xl';
   theme?: 'light' | 'dark';
   name?: string;

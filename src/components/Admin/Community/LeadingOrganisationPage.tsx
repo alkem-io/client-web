@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
@@ -15,6 +15,7 @@ import { useApolloErrorHandler } from '../../../hooks';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { TFunction } from 'i18next';
+import Button from '../../core/Button';
 
 interface Params {
   ecoverseId: string;
@@ -185,9 +186,7 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
       filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
-        <Button variant="outline-danger" size="sm" onClick={() => onRemove(params.value as string)}>
-          X
-        </Button>
+        <Button variant="negative" size="sm" onClick={() => onRemove(params.value as string)} text="X" />
       ),
       align: 'right',
     },
@@ -201,9 +200,7 @@ const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
       filterable: false,
       headerName: t('common.add'),
       renderCell: params => (
-        <Button variant="outline-info" size="sm" onClick={() => onAdd(params.value as string)}>
-          +
-        </Button>
+        <Button variant="negative" size="sm" onClick={() => onAdd(params.value as string)} text="+" />
       ),
     },
     {

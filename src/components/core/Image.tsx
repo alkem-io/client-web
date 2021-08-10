@@ -4,7 +4,7 @@ import { createStyles } from '../../hooks/useTheme';
 
 const useStyles = createStyles(theme => ({
   spinner: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
   },
 }));
 

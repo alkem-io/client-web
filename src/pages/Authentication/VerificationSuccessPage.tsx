@@ -26,9 +26,7 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
       </Typography>
       <Markdown children={t('pages.verification-success.message')} />
       <div className={'mt-4 text-center'}>
-        <Button as={Link} to={'/'}>
-          {t('buttons.home')}
-        </Button>
+        <Button as={Link} to={'/'} text={t('buttons.home')} />
       </div>
     </AuthenticationLayout>
   );

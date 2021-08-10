@@ -2,19 +2,19 @@ import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Theme } from '../../context/ThemeProvider';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
+import { useTranslation } from 'react-i18next';
 
 const useCardStyles = createStyles(theme => ({
   item: {
     display: 'flex',
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
+    paddingTop: theme.spacing(2),
   },
   description: {
     flexGrow: 1,
@@ -29,7 +29,7 @@ const useCardStyles = createStyles(theme => ({
   },
   card: {
     marginTop: 0,
-    border: `1px solid ${theme.palette.neutralMedium}`,
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
     height: 400,
   },
   body: {
@@ -37,12 +37,12 @@ const useCardStyles = createStyles(theme => ({
   },
   content: {
     height: '225px',
-    background: theme.palette.background,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.background.paper,
+    padding: theme.spacing(2),
   },
   footer: {
-    background: theme.palette.neutralLight,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.neutralLight.main,
+    padding: theme.spacing(2),
   },
   tagline: {
     flexGrow: 1,
@@ -74,6 +74,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   onSelect,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const styles = useCardStyles();
   const headerProps = caption ? { text: caption } : undefined;
 
@@ -81,7 +82,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     <Card
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.neutralLight,
+          background: theme => theme.palette.neutralLight.main,
         },
       }}
       headerProps={headerProps}
@@ -110,7 +111,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             </Typography>
             <div className="flex-grow-1"></div>
             <div>
-              <Button text="Project details" onClick={onSelect} />
+              <Button text={t('buttons.details')} onClick={onSelect} />
             </div>
           </div>
         </>
@@ -122,17 +123,17 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
 const useAdditionalCardStyles = createStyles(theme => ({
   activeCard: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
 
     '&:hover': {
       opacity: 0.7,
       cursor: 'pointer',
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
 
       '& > .ct-card-body': {
         background: 'transparent',
-        color: theme.palette.background,
+        color: theme.palette.background.paper,
       },
     },
   },
@@ -142,7 +143,7 @@ export const MoreProjectsCard: FC<ProjectCardProps> = ({ title }) => {
   return (
     <ProjectCard title={title} blank>
       <div className={clsx('d-flex')} style={{ flexGrow: 1, flexDirection: 'column-reverse' }}>
-        <Icon component={HourglassIcon} color="primary" size="xl"></Icon>
+        <Icon component={HourglassIcon} color="primary" size="xl" />
       </div>
     </ProjectCard>
   );
@@ -154,7 +155,7 @@ export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
   return (
     <ProjectCard title={title} blank onClick={onSelect} className={styles.activeCard}>
       <div className={clsx('d-flex')} style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon component={PlusIcon} color="inherit" size="xxl"></Icon>
+        <Icon component={PlusIcon} color="inherit" size="xxl" />
       </div>
     </ProjectCard>
   );

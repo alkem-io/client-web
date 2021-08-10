@@ -6,7 +6,6 @@ import Button from '../core/Button';
 import Card from '../core/Card';
 
 import { useUpdateNavigation } from '../../hooks';
-import { Theme } from '../../context/ThemeProvider';
 import { PageProps } from '../../pages';
 
 interface Props extends PageProps {
@@ -31,12 +30,12 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
           <Card
             key={i}
             classes={{
-              background: (theme: Theme) => theme.palette.neutral,
+              background: theme => theme.palette.neutral.main,
             }}
             primaryTextProps={{
               text: x.name || '',
               classes: {
-                color: (theme: Theme) => theme.palette.neutral,
+                color: theme => theme.palette.neutral.main,
                 lineHeight: '36px',
               },
             }}

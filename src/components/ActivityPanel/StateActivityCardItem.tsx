@@ -42,7 +42,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     overflow: 'auto',
   },
   activeState: {
-    color: theme.palette.neutralLight,
+    color: theme.palette.neutralLight.main,
   },
 }));
 
@@ -96,9 +96,13 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
             placement={'top'}
             overlay={<Tooltip id="lifecycle-graph">{t('pages.activity.lifecycle-info')}</Tooltip>}
           >
-            <Button small inset variant="whiteStatic" onClick={() => setModalVisible(true)}>
-              <Icon component={InfoCircle} color="primary" size="sm" />
-            </Button>
+            <Button
+              small
+              inset
+              variant="whiteStatic"
+              onClick={() => setModalVisible(true)}
+              startIcon={<Icon component={InfoCircle} color="primary" size="sm" />}
+            />
           </OverlayTrigger>
         </div>
         <span>{lifecycle?.state}</span>

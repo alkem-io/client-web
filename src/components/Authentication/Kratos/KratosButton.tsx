@@ -11,15 +11,14 @@ export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
   return (
     <Button
       name={getNodeName(node)}
+      text={getNodeTitle(node)}
       variant="primary"
       type={attributes.type}
       disabled={attributes.disabled}
       value={attributes.value}
       block
       small
-    >
-      {getNodeTitle(node)}
-    </Button>
+    />
   );
 };
 export default KratosButton;

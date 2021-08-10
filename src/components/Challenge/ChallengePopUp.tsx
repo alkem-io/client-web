@@ -17,16 +17,16 @@ const groupPopUpStyles = createStyles(theme => ({
     textTransform: 'capitalize',
   },
   icon: {
-    marginRight: theme.shape.spacing(1),
+    marginRight: theme.spacing(1),
   },
   table: {
     '& > thead > tr > th': {
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
+      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
   },
   italic: {
@@ -39,7 +39,7 @@ const groupPopUpStyles = createStyles(theme => ({
     flexGrow: 1,
   },
   wrapperBackdrop: {
-    background: hexToRGBA(theme.palette.neutral, 0.6),
+    background: hexToRGBA(theme.palette.neutral.main, 0.6),
   },
   wrapperInner: {
     padding: '1rem',
@@ -125,7 +125,7 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
             as={Link}
             to={`/${ecoverseNameID}/challenges/${nameID}`}
           />
-          <Button onClick={onHide}>Close</Button>
+          <Button onClick={onHide} text={t('buttons.close')} />
         </Modal.Footer>
       </Modal>
     </>

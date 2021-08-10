@@ -25,17 +25,17 @@ const useStyles = createStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
-    marginTop: theme.shape.spacing(2),
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
   logoDiv: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
     justifyContent: 'center',
     alignItems: 'center',
 
     '& > img': {
-      height: theme.shape.spacing(4),
+      height: theme.spacing(4),
     },
   },
 }));
@@ -148,9 +148,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
             {t('pages.ecoverse.application.finish')}
             {communityName}
           </Typography>
-          <Button as={Link} to={backUrl}>
-            {t('pages.ecoverse.application.backButton')}
-          </Button>
+          <Button as={Link} to={backUrl} text={t('pages.ecoverse.application.backButton')} />
         </div>
       ) : (
         <>
@@ -183,9 +181,13 @@ const ApplyPage: FC<ApplyPageProps> = ({
                       <Form.Control.Feedback type="invalid">This is required</Form.Control.Feedback>
                     </Form.Group>
                   ))}
-                  <Button variant="primary" type="submit" disabled={isCreationLoading} onClick={() => handleSubmit()}>
-                    {isCreationLoading ? 'Processing...' : 'Apply'}
-                  </Button>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={isCreationLoading}
+                    onClick={() => handleSubmit()}
+                    text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
+                  />
                 </>
               );
             }}

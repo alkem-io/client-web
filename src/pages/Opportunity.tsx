@@ -24,7 +24,6 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { Theme } from '../context/ThemeProvider';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
@@ -51,18 +50,18 @@ import Markdown from '../components/core/Markdown';
 
 const useStyles = createStyles(theme => ({
   tag: {
-    top: -theme.shape.spacing(2),
+    top: -theme.spacing(2),
     left: 0,
   },
   offset: {
-    marginTop: theme.shape.spacing(2),
-    marginRight: theme.shape.spacing(4),
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(4),
   },
   title: {
-    filter: `drop-shadow(1px 1px ${hexToRGBA(theme.palette.neutral, 0.3)})`,
+    filter: `drop-shadow(1px 1px ${hexToRGBA(theme.palette.neutral.main, 0.3)})`,
   },
   link: {
-    color: theme.palette.background,
+    color: theme.palette.background.paper,
   },
   tagline: {
     fontStyle: 'italic',
@@ -200,9 +199,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
     <>
       <Section
         classes={{
-          background: (theme: Theme) =>
-            visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
+          background: theme =>
+            visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral.main,
+          coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
         }}
         gutters={{
           root: true,
@@ -215,7 +214,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
             lifecycle={opportunityLifecycleQuery?.ecoverse.opportunity.lifecycle}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             items={activitySummary}
-            classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
+            classes={{ padding: theme => `${theme.spacing(4)}px` }}
           />
         }
       >
@@ -225,7 +224,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               text={name}
               className={clsx('flex-grow-1', styles.title)}
               classes={{
-                color: (theme: Theme) => theme.palette.neutralLight,
+                color: theme => theme.palette.neutralLight.main,
               }}
             />
             {user?.isAdmin && (

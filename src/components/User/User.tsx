@@ -7,9 +7,9 @@ import Typography from '../core/Typography';
 const useUserStyles = createStyles(theme => ({
   flex: {
     display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
-    padding: theme.shape.spacing(1),
-    margin: -theme.shape.spacing(1),
+    gap: `${theme.spacing(1)}px`,
+    padding: theme.spacing(1),
+    margin: -theme.spacing(1),
 
     '&:hover': {
       textDecoration: 'none',
@@ -28,22 +28,22 @@ const useUserStyles = createStyles(theme => ({
     // flex: '1 1 auto',
 
     '&.horizontal': {
-      marginLeft: theme.shape.spacing(2),
+      marginLeft: theme.spacing(2),
     },
     '&.vertical': {
-      marginLeft: theme.shape.spacing(2),
-      // marginTop: theme.shape.spacing(0.5),
-      // marginBottom: theme.shape.spacing(0.5),
+      marginLeft: theme.spacing(2),
+      // marginTop: theme.spacing(0.5),
+      // marginBottom: theme.spacing(0.5),
     },
     '&.horizontal.reversed': {
       marginLeft: 0,
-      marginRight: theme.shape.spacing(2),
+      marginRight: theme.spacing(2),
     },
     '&.vertical.reversed': {
       marginLeft: 0,
-      marginRight: theme.shape.spacing(2),
-      // marginTop: theme.shape.spacing(0.5),
-      // marginBottom: theme.shape.spacing(0.5),
+      marginRight: theme.spacing(2),
+      // marginTop: theme.spacing(0.5),
+      // marginBottom: theme.spacing(0.5),
     },
   },
   reversedLayout: {

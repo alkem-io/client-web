@@ -5,7 +5,6 @@ import { Path } from '../../context/NavigationProvider';
 import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import Button from '../core/Button';
-import { Loading } from '../core';
 import { useNotification } from '../../hooks';
 import { useApolloErrorHandler } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
@@ -18,6 +17,7 @@ import {
 } from '../../hooks/generated/graphql';
 import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
+import { useTranslation } from 'react-i18next';
 
 interface Params {
   challengeId?: string;
@@ -31,6 +31,7 @@ interface Props {
 }
 
 const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
@@ -117,9 +118,13 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
+        <Button
+          disabled={isLoading}
+          className={'ml-auto'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
       </div>
     </Container>
   );

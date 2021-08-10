@@ -20,15 +20,15 @@ const useFooterStyles = createStyles(theme => ({
   },
   column: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
-    marginLeft: theme.shape.spacing(2),
-    marginRight: theme.shape.spacing(2),
-    [theme.media.down('xl')]: {
+    gap: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.down('xl')]: {
       justifyContent: 'center',
     },
   },
   logo: {
-    height: theme.shape.spacing(2),
+    height: theme.spacing(2),
   },
   footerSecondary: {
     justifyContent: 'space-between',

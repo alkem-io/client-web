@@ -8,12 +8,12 @@ const useBreadcrumbStyles = createStyles(theme => ({
   item: {
     '&:hover': {
       textDecoration: 'none',
-      color: theme.palette.primary,
+      color: theme.palette.primary.main,
     },
   },
   spacer: {
-    paddingLeft: theme.shape.spacing(1),
-    paddingRight: theme.shape.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
 }));
 

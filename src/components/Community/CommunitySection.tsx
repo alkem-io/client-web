@@ -12,6 +12,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Secti
 import Discussions from './Discussions';
 import Members from './Members';
 import Updates from './Updates';
+import { useTranslation } from 'react-i18next';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -45,6 +46,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   onExplore,
   shuffle = false,
 }) => {
+  const { t } = useTranslation();
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');
   const { isFeatureEnabled } = useConfig();
@@ -71,7 +73,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
             <Members shuffle={shuffle} users={users} />
-            {onExplore && <Button text="Explore and connect" onClick={() => onExplore()} />}
+            {onExplore && <Button text={t('buttons.explore-and-connect')} onClick={() => onExplore()} />}
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>

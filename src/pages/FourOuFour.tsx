@@ -19,7 +19,7 @@ export const FourOuFour: FC = () => {
       </Typography>
       <Typography as="h5">{t('pages.four-ou-four.message')}</Typography>
       <div>
-        <Button variant="primary" as={Link} to="/" text={t('pages.four-ou-four.buttons.home')} />
+        <Button variant="primary" as={Link} to="/" text={t('buttons.home')} />
       </div>
     </Section>
   );

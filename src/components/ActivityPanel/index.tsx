@@ -5,7 +5,6 @@ import Typography from '../core/Typography';
 import CircleTag from '../core/CircleTag';
 
 import { createStyles } from '../../hooks/useTheme';
-import { Theme } from '../../context/ThemeProvider';
 import activitiesMock from './tempMockActivities';
 import StateActivityCardItem from './StateActivityCardItem';
 import { Maybe, Lifecycle } from '../../models/graphql-schema';
@@ -13,7 +12,6 @@ import { Maybe, Lifecycle } from '../../models/graphql-schema';
 export interface ActivityCardItem {
   name: string;
   digit: number;
-  // color: Pick<Palette, 'positive' | 'neutral' | 'primary' | 'neutralMedium'>;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
 }
 interface ActivityCardProps extends CardProps {
@@ -26,7 +24,7 @@ const useCardStyles = createStyles(theme => ({
   wrapper: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
   },
   item: {
     display: 'flex',
@@ -45,18 +43,18 @@ const ActivityCard: FC<ActivityCardProps> = ({
   title = 'Activity Panel',
   items = activitiesMock,
   lifecycle = null,
-  classes,
+  classes = {},
 }) => {
-  const styles = useCardStyles();
+  const styles = useCardStyles(classes);
 
   return (
     <Card
       bodyProps={{
         classes: {
-          padding: (theme: Theme, { xs, sm, md }) => {
-            return xs || sm || md ? `${theme.shape.spacing(2)}px` : `0 ${theme.shape.spacing(4)}px 0 0`;
+          padding: (theme, { xs, sm, md }) => {
+            return xs || sm || md ? `${theme.spacing(2)}px` : `0 ${theme.spacing(4)}px 0 0`;
           },
-          background: (theme: Theme) => theme.palette.background,
+          background: theme => theme.palette.background.paper,
           ...classes,
         },
         className: 'h-100',

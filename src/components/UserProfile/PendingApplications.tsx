@@ -18,9 +18,9 @@ import { User } from '../../models/graphql-schema';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
-    padding: theme.shape.spacing(1),
-    marginTop: theme.shape.spacing(1),
-    backgroundColor: theme.palette.neutralLight,
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    backgroundColor: theme.palette.neutralLight.main,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',

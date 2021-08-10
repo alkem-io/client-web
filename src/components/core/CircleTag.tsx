@@ -11,24 +11,24 @@ const useCircleTagStyles = createStyles(theme => ({
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 1,
-    backgroundColor: theme.palette.background,
+    backgroundColor: theme.palette.background.paper,
     position: 'relative',
   },
   positive: {
-    borderColor: theme.palette.positive,
-    color: theme.palette.positive,
+    borderColor: theme.palette.positive.main,
+    color: theme.palette.positive.main,
   },
   neutral: {
-    borderColor: theme.palette.neutral,
-    color: theme.palette.neutral,
+    borderColor: theme.palette.neutral.main,
+    color: theme.palette.neutral.main,
   },
   primary: {
-    borderColor: theme.palette.primary,
-    color: theme.palette.primary,
+    borderColor: theme.palette.primary.main,
+    color: theme.palette.primary.main,
   },
   neutralMedium: {
-    borderColor: theme.palette.neutralMedium,
-    color: theme.palette.neutralMedium,
+    borderColor: theme.palette.neutralMedium.main,
+    color: theme.palette.neutralMedium.main,
   },
   tagText: {
     textAlign: 'center',

@@ -2,11 +2,10 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
-import Typography from '../../../core/Typography';
 
 interface SidebarItemEcoverseProps {
   ecoverse: EcoverseDetailsFragment;
@@ -14,7 +13,7 @@ interface SidebarItemEcoverseProps {
   centerLabel?: boolean;
 }
 
-const useStyles = createStyles(_ => ({
+const useStyles = makeStyles(() => ({
   textDecorationNone: {
     textDecoration: 'none',
     '&:hover': {
@@ -41,6 +40,9 @@ const useStyles = createStyles(_ => ({
   start: {
     justifyContent: 'flex-start',
   },
+  noMarginAvatar: {
+    margin: 0,
+  },
 }));
 
 const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel, centerLabel }) => {
@@ -61,23 +63,13 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
             <Button
               inset
               variant="transparent"
-              className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
-            >
-              <Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />
-              {!hideLabel && (
-                <>
-                  <div style={{ padding: 5 }} />
-                  <Typography
-                    variant="button"
-                    weight="bold"
-                    color="inherit"
-                    className={clsx(styles.textDecorationNone, styles.textAlignLeft)}
-                  >
-                    {ecoverse.displayName}
-                  </Typography>
-                </>
-              )}
-            </Button>
+              className={clsx(styles.link, centerLabel ? styles.center : styles.start, styles.textAlignLeft)}
+              text={hideLabel ? '' : ecoverse.displayName}
+              startIcon={<Avatar size="md" src={ecoverseLogo} className={styles.textDecorationNone} />}
+              classOverrides={{
+                startIcon: clsx(hideLabel && styles.noMarginAvatar),
+              }}
+            />
           </span>
         </OverlayTrigger>
       </Link>

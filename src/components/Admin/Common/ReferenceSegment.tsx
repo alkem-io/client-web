@@ -71,9 +71,8 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     handleAdd(push);
                   }}
                   disabled={disabled || adding}
-                >
-                  +
-                </Button>
+                  text="+"
+                />
               </OverlayTrigger>
             </Form.Group>
           </Form.Row>
@@ -130,9 +129,8 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                         }}
                         variant={'negative'}
                         disabled={disabled || index === removing}
-                      >
-                        -
-                      </Button>
+                        text="-"
+                      />
                     </OverlayTrigger>
                   </Form.Group>
                 )}

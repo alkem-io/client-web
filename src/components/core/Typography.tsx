@@ -1,72 +1,73 @@
 import clsx from 'clsx';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
-import { Palette, Typography as TypographyContract } from '../../context/ThemeProvider';
-import { createStyles } from '../../hooks/useTheme';
 import _clamp from 'clamp-js';
+import { Palette } from '@material-ui/core/styles/createPalette';
+import { TypographyOptions } from '@material-ui/core/styles/createTypography';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { replaceAll } from '../../utils/replaceAll';
 
-const useTypographyStyles = createStyles(theme => ({
+const useTypographyStyles = makeStyles(theme => ({
   h1: {
-    fontFamily: theme.typography.h1.font,
-    fontSize: theme.typography.h1.size,
+    fontFamily: theme.typography.h1.fontFamily,
+    fontSize: theme.typography.h1.fontSize,
   },
   h2: {
-    fontFamily: theme.typography.h2.font,
-    fontSize: theme.typography.h2.size,
+    fontFamily: theme.typography.h2.fontFamily,
+    fontSize: theme.typography.h2.fontSize,
     textTransform: 'uppercase',
-    marginBottom: theme.shape.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   h3: {
-    fontFamily: theme.typography.h3.font,
-    fontSize: theme.typography.h3.size,
-    marginBottom: theme.shape.spacing(1),
+    fontFamily: theme.typography.h3.fontFamily,
+    fontSize: theme.typography.h3.fontSize,
+    marginBottom: theme.spacing(1),
   },
   h4: {
-    fontFamily: theme.typography.h4.font,
-    fontSize: theme.typography.h4.size,
-    marginBottom: theme.shape.spacing(1),
+    fontFamily: theme.typography.h4.fontFamily,
+    fontSize: theme.typography.h4.fontSize,
+    marginBottom: theme.spacing(1),
   },
   h5: {
-    fontFamily: theme.typography.h5.font,
-    fontSize: theme.typography.h5.size,
+    fontFamily: theme.typography.h5.fontFamily,
+    fontSize: theme.typography.h5.fontSize,
   },
   caption: {
-    fontFamily: theme.typography.caption.font,
-    fontSize: theme.typography.caption.size,
+    fontFamily: theme.typography.caption.fontFamily,
+    fontSize: theme.typography.caption.fontSize,
     textTransform: 'uppercase',
   },
   body: {
-    fontFamily: theme.typography.body.font,
-    fontSize: theme.typography.body.size,
+    fontFamily: theme.typography.body1.fontFamily,
+    fontSize: theme.typography.body1.fontSize,
   },
   button: {
-    fontFamily: theme.typography.button.font,
-    fontSize: theme.typography.button.size,
+    fontFamily: theme.typography.button.fontFamily,
+    fontSize: theme.typography.button.fontSize,
     textTransform: 'uppercase',
   },
   primary: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
   },
   positive: {
-    color: theme.palette.positive,
+    color: theme.palette.positive.main,
   },
   neutral: {
-    color: theme.palette.neutral,
+    color: theme.palette.neutral.main,
   },
   neutralMedium: {
-    color: theme.palette.neutralMedium,
+    color: theme.palette.neutralMedium.main,
   },
   neutralLight: {
-    color: theme.palette.neutralLight,
+    color: theme.palette.neutralLight.main,
   },
   negative: {
-    color: theme.palette.negative,
+    color: theme.palette.negative.main,
   },
   divider: {
     color: theme.palette.divider,
   },
   background: {
-    color: theme.palette.background,
+    color: theme.palette.background.paper,
   },
   inherit: {
     color: 'inherit',
@@ -88,7 +89,7 @@ const fontWeight: FontWeight = {
 };
 
 interface TypographyProps extends Record<string, unknown> {
-  variant?: keyof TypographyContract;
+  variant?: keyof TypographyOptions;
   className?: string;
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;

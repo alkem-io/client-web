@@ -33,12 +33,14 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
       </Typography>
 
       <div className={'mt-4 text-center'}>
-        <Button as={Link} to={AUTH_LOGIN_PATH} variant={'primary'} style={{ marginLeft: 20 }}>
-          {t('authentication.sign-in')}
-        </Button>
-        <Button as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }}>
-          {t('authentication.sign-up')}
-        </Button>
+        <Button
+          as={Link}
+          to={AUTH_LOGIN_PATH}
+          variant={'primary'}
+          style={{ marginLeft: 20 }}
+          text={t('authentication.sign-in')}
+        />
+        <Button as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
       </div>
     </AuthenticationLayout>
   );

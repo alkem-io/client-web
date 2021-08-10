@@ -17,7 +17,7 @@ const useStyles = createStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
     justifyContent: 'flex-end',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
 }));
 

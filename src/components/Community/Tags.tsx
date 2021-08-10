@@ -5,12 +5,12 @@ import { createStyles } from '../../hooks/useTheme';
 const useUserPopUpStyles = createStyles(theme => ({
   terms: {
     display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
+    gap: `${theme.spacing(1)}px`,
   },
   term: {
     padding: '5px 10px',
-    borderRadius: `${theme.shape.spacing(2)}px`,
-    backgroundColor: theme.palette.primary,
+    borderRadius: `${theme.spacing(2)}px`,
+    backgroundColor: theme.palette.primary.main,
     textTransform: 'capitalize',
   },
 }));

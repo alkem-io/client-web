@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
-import Loading from '../../../components/core/Loading/Loading';
 import Typography from '../../../components/core/Typography';
 import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
@@ -11,10 +10,12 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
+import { useTranslation } from 'react-i18next';
 
 interface EcoverseEditProps extends PageProps {}
 
 export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'edit', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
   const { ecoverseId, ecoverse } = useEcoverse();
@@ -77,9 +78,13 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
+        <Button
+          disabled={isLoading}
+          className={'ml-auto'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
       </div>
     </Container>
   );

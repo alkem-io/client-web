@@ -19,13 +19,13 @@ const useIconButtonStyles = createStyles(theme => ({
     },
   },
   primary: {
-    color: theme.palette.primary,
-    borderColor: theme.palette.primary,
+    color: theme.palette.primary.main,
+    borderColor: theme.palette.primary.main,
     background: 'transparent',
     transition: 'color 0.5s ease-out',
 
     '&:hover': {
-      color: hexToRGBA(theme.palette.primary, 0.5),
+      color: hexToRGBA(theme.palette.primary.main, 0.5),
     },
 
     '&:focus': {
@@ -33,15 +33,15 @@ const useIconButtonStyles = createStyles(theme => ({
     },
   },
   disabled: {
-    color: theme.palette.neutralMedium,
-    borderColor: theme.palette.neutralLight,
+    color: theme.palette.neutralMedium.main,
+    borderColor: theme.palette.neutralLight.main,
     background: 'transparent',
     opacity: 0.8,
     transition: 'color 0.5s ease-out',
     cursor: 'default',
 
     '&:hover': {
-      color: hexToRGBA(theme.palette.neutralMedium, 0.7),
+      color: hexToRGBA(theme.palette.neutralMedium.main, 0.7),
     },
 
     '&:focus': {

@@ -7,10 +7,10 @@ interface SpacerProps {
 
 const useSpacerStyles = createStyles(theme => ({
   mdSpacer: {
-    marginTop: theme.shape.spacing(2),
+    marginTop: theme.spacing(2),
   },
   lgSpacer: {
-    marginTop: theme.shape.spacing(4),
+    marginTop: theme.spacing(4),
   },
 }));
 

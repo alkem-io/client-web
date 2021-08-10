@@ -5,33 +5,33 @@ import Typography from './Typography';
 
 const useIconStyles = createStyles(theme => ({
   tag: {
-    padding: `${theme.shape.spacing(0.7)}px ${theme.shape.spacing(1.4)}px`,
+    padding: `${theme.spacing(0.7)}px ${theme.spacing(1.4)}px`,
     display: 'inline-flex',
   },
   primary: {
-    background: theme.palette.primary,
-    color: theme.palette.neutralLight,
+    background: theme.palette.primary.main,
+    color: theme.palette.neutralLight.main,
   },
   positive: {
-    background: theme.palette.positive,
-    color: theme.palette.neutralLight,
+    background: theme.palette.positive.main,
+    color: theme.palette.neutralLight.main,
   },
   neutralMedium: {
-    background: theme.palette.neutralMedium,
-    color: theme.palette.background,
+    background: theme.palette.neutralMedium.main,
+    color: theme.palette.background.paper,
   },
   neutral: {
-    background: theme.palette.neutral,
-    color: theme.palette.background,
+    background: theme.palette.neutral.main,
+    color: theme.palette.background.paper,
   },
   negative: {
-    background: theme.palette.negative,
-    color: theme.palette.background,
+    background: theme.palette.negative.main,
+    color: theme.palette.background.paper,
   },
   background: {
-    background: theme.palette.background,
-    color: theme.palette.primary,
-    border: `1px solid ${theme.palette.primary}`,
+    background: theme.palette.background.paper,
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
   },
 }));
 

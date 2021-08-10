@@ -13,6 +13,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Actor } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   show: boolean;
@@ -26,7 +27,7 @@ interface Props {
 
 const useContextEditStyles = createStyles(theme => ({
   field: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   row: {
     display: 'flex',
@@ -43,6 +44,7 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
@@ -157,12 +159,13 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
         </Formik>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'}>
-          CANCEL
-        </Button>
-        <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          {!id ? 'Create' : 'SAVE'}
-        </Button>
+        <Button variant="negative" onClick={onHide} className={'mr-2'} text={t('buttons.cancel')} />
+        <Button
+          type={'submit'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${!id ? 'create' : 'save'}`)}
+        />
       </Modal.Footer>
     </Modal>
   );

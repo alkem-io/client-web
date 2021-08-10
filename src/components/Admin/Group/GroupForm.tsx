@@ -155,9 +155,8 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                       onClick={() => onCancel()}
                       disabled={isSubmitting}
                       className={'ml-3'}
-                    >
-                      {isEditMode ? 'Cancel' : 'Back'}
-                    </Button>
+                      text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                    />
                   )}
                   {onDelete && (
                     <Button
@@ -165,13 +164,16 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                       onClick={() => onDelete(groupId)}
                       disabled={isSubmitting}
                       className={'ml-3'}
-                    >
-                      {'Delete'}
-                    </Button>
+                      text={t('buttons.delete')}
+                    />
                   )}
-                  <Button variant={'primary'} type={'submit'} className={'ml-3'} disabled={isSubmitting}>
-                    {'Save'}
-                  </Button>
+                  <Button
+                    variant={'primary'}
+                    type={'submit'}
+                    className={'ml-3'}
+                    disabled={isSubmitting}
+                    text={t('buttons.save')}
+                  />
                 </div>
               )}
             </Section>

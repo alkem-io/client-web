@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Breakpoints, Theme } from '../../context/ThemeProvider';
+import { Theme } from '@material-ui/core/styles';
+import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Container from './Container';
@@ -17,19 +18,19 @@ interface HeaderProps {
   classes?: ClassProps;
 }
 
-const useHeaderStyles = createStyles(theme => ({
+const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
   container: {
     display: 'flex',
   },
   header: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: `${theme.shape.spacing(2)}px`,
+    gap: `${theme.spacing(2)}px`,
     alignItems: 'center',
-    color: (props: ClassProps) => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral} !important`,
+    color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main} !important`,
   },
   tagOffset: {
-    marginLeft: theme.shape.spacing(2),
+    marginLeft: theme.spacing(2),
   },
 }));
 
@@ -58,7 +59,7 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
 const useSubHeaderStyles = createStyles(theme => ({
   header: {
     color: (props: ClassProps) =>
-      `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium} !important`,
+      `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
   },
 }));
 
@@ -93,18 +94,18 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
 
 const useContentStyles = createStyles(theme => ({
   gutters: {
-    padding: theme.shape.spacing(4),
+    padding: theme.spacing(4),
   },
   content: {
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
-    paddingLeft: theme.shape.spacing(4),
-    paddingRight: theme.shape.spacing(4),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
 
-    [theme.media.down('md')]: {
-      paddingLeft: theme.shape.spacing(2),
-      paddingRight: theme.shape.spacing(2),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
     },
   },
 }));
@@ -142,9 +143,10 @@ interface SectionClassProps extends ClassProps {
 
 const useSectionStyles = createStyles(theme => ({
   root: {
-    paddingTop: theme.shape.spacing(2),
-    paddingBottom: theme.shape.spacing(2),
-    background: (props: SectionClassProps) => agnosticFunctor(props.background)(theme, {}) || theme.palette.background,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    background: (props: SectionClassProps) =>
+      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
     position: 'relative',
   },
   cover: {
@@ -153,7 +155,7 @@ const useSectionStyles = createStyles(theme => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: props => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
+    background: (props: SectionClassProps) => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
     zIndex: 0,
   },
   row: {
@@ -174,7 +176,7 @@ const useSectionStyles = createStyles(theme => ({
     },
   },
   gutter: {
-    paddingTop: theme.shape.spacing(4),
+    paddingTop: theme.spacing(4),
   },
 }));
 

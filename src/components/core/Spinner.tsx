@@ -8,7 +8,7 @@ interface SpinnerProps extends Omit<BootstrapSpinnerProps, 'animation'> {
 
 const useStyles = createStyles(theme => ({
   spinner: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
   },
 }));
 

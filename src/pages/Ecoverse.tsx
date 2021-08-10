@@ -39,7 +39,7 @@ import { PageProps } from './common';
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
   ecoverseBannerImg: {
     maxWidth: 320,

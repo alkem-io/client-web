@@ -15,20 +15,20 @@ import Delimiter from '../core/Delimiter';
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
     display: 'flex',
-    gap: theme.shape.spacing(4),
+    gap: theme.spacing(4),
     alignItems: 'center',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexWrap: 'wrap',
-      gap: theme.shape.spacing(2),
+      gap: theme.spacing(2),
     },
   },
   profile: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -37,7 +37,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -53,7 +53,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     '& > div': {
       display: 'flex',
       flexDirection: 'column',
-      gap: theme.shape.spacing(2),
+      gap: theme.spacing(2),
     },
   },
   centeredText: {
@@ -63,27 +63,27 @@ const useUserPopUpStyles = createStyles(theme => ({
     justifyContent: 'center',
   },
   icon: {
-    marginRight: theme.shape.spacing(1),
+    marginRight: theme.spacing(1),
   },
   table: {
     '& > thead > tr > th': {
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
+      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
   },
   marginBottom: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   refRow: {
     display: 'flex',
     justifyContent: 'flex-end',
   },
   refDiv: {
-    marginBottom: theme.shape.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -232,12 +232,10 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
       <Modal.Footer>
         <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Coming soon</Tooltip>}>
           <span>
-            <Button variant={'primary'} disabled={true}>
-              Send message
-            </Button>
+            <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
           </span>
         </OverlayTrigger>
-        <Button onClick={onHide}>{t('buttons.close')}</Button>
+        <Button onClick={onHide} text={t('buttons.close')} />
       </Modal.Footer>
     </Modal>
   );

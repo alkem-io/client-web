@@ -18,14 +18,14 @@ import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({
   tag: {
-    top: -theme.shape.spacing(2),
+    top: -theme.spacing(2),
     left: 0,
   },
   offset: {
-    marginRight: theme.shape.spacing(4),
+    marginRight: theme.spacing(4),
   },
   spacer: {
-    padding: theme.shape.spacing(1),
+    padding: theme.spacing(1),
   },
 }));
 
@@ -120,13 +120,13 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                 <div className={'d-flex'}>
                   <Button
                     disabled={loading}
-                    text="Cancel project"
+                    text={t('buttons.cancel-project')}
                     variant="transparent"
                     inset
                     onClick={() => history.goBack()}
                   />
                   <div className={'flex-grow-1'}></div>
-                  <Button type={'submit'} text="create project" variant="primary" disabled={!isValid} />
+                  <Button type={'submit'} text={t('buttons.create-project')} variant="primary" disabled={!isValid} />
                 </div>
               </Form>
             )}
