@@ -8,8 +8,8 @@ import Card from '../core/Card';
 import { Loading } from '../core';
 import UserPopUp from './UserPopUp';
 import Tag from '../core/Tag';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import TagContainer from '../core/TagContainer';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;
@@ -82,14 +82,11 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags">
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>

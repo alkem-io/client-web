@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Button, { ButtonProps } from '../../../core/Button';
 import Icon, { IconProps } from '../../../core/Icon';
@@ -50,12 +50,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
   const styles = useStyles();
   return (
     <div style={{ width: '100%' }}>
-      <OverlayTrigger
-        offset={[100, 100]}
-        placement="right"
-        trigger={hideLabel ? ['hover', 'focus'] : []}
-        overlay={<Tooltip id={`tooltip-${tooltip.toLowerCase()}`}>{tooltip}</Tooltip>}
-      >
+      <Tooltip placement="right" id={`tooltip-${tooltip.toLowerCase()}`} title={label}>
         <span style={{ width: '100%', display: 'flex' }}>
           <Button
             inset
@@ -72,7 +67,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
             {...buttonProps}
           />
         </span>
-      </OverlayTrigger>
+      </Tooltip>
     </div>
   );
 };

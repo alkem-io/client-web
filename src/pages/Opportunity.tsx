@@ -7,7 +7,7 @@ import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
-import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
@@ -47,6 +47,7 @@ import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks';
 import { SEARCH_PAGE } from '../models/constants';
 import Markdown from '../components/core/Markdown';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -229,13 +230,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
             />
             {user?.isAdmin && (
               <>
-                <OverlayTrigger
+                <Tooltip
                   placement={'bottom'}
-                  overlay={
-                    <Tooltip id={'Edit opportunity context'}>
-                      {t('pages.opportunity.sections.header.buttons.edit.tooltip')}
-                    </Tooltip>
-                  }
+                  id={'Edit opportunity context'}
+                  title={t('pages.opportunity.sections.header.buttons.edit.tooltip') || ''}
                 >
                   <Edit
                     color={'white'}
@@ -244,7 +242,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                     className={styles.edit}
                     onClick={() => setIsEditOpened(true)}
                   />
-                </OverlayTrigger>
+                </Tooltip>
                 <ContextEdit
                   variant={'opportunity'}
                   show={isEditOpened}

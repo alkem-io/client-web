@@ -1,12 +1,11 @@
 import clsx from 'clsx';
 import React, { forwardRef, useEffect, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../Community/UserPopUp';
 import Image from './Image';
 import Typography from './Typography';
-import { Theme } from '@material-ui/core';
+import { Theme, Tooltip } from '@material-ui/core';
 
 export const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
   avatarWrapper: {
@@ -130,14 +129,16 @@ const Avatar = forwardRef<unknown, AvatarProps>(
           </div>
         )}
         {src && !fallback && name && (
-          <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'membersTooltip'}>{name}</Tooltip>}>
-            <Image
-              className={clsx(styles.avatar, size, className)}
-              src={src}
-              alt="avatar"
-              onError={() => setFallback(true)}
-            />
-          </OverlayTrigger>
+          <Tooltip placement={'bottom'} id={'membersTooltip'} title={name}>
+            <span>
+              <Image
+                className={clsx(styles.avatar, size, className)}
+                src={src}
+                alt="avatar"
+                onError={() => setFallback(true)}
+              />
+            </span>
+          </Tooltip>
         )}
         {src && !fallback && !name && (
           <Image

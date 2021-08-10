@@ -1,5 +1,4 @@
 import React, { FC, memo, useMemo, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { useOrganizationCardQuery } from '../../hooks/generated/graphql';
@@ -10,6 +9,7 @@ import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import { Loading } from '../core';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
+import Tooltip from '@material-ui/core/Tooltip';
 
 interface OrganizationCardStylesProps extends Organisation {
   terms?: Array<string>;
@@ -97,14 +97,11 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>

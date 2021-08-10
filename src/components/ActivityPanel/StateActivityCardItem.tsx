@@ -1,15 +1,16 @@
-import React, { FC, useState } from 'react';
-import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
-import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
-import { createMachine } from 'xstate';
+import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import { toDirectedGraph } from '@xstate/graph';
-import { Maybe, Lifecycle } from '../../models/graphql-schema';
+import { ReactComponent as InfoCircle } from 'bootstrap-icons/icons/info-circle.svg';
+import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { createMachine } from 'xstate';
 import { createStyles } from '../../hooks/useTheme';
-import Typography from '../core/Typography';
+import { Lifecycle, Maybe } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
 import LifecycleVisualizer from '../core/Lifecycle';
+import Typography from '../core/Typography';
 
 export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;
@@ -66,15 +67,13 @@ const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHi
 
   return (
     <div>
-      <Modal size="lg" show={show} onHide={onHide}>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Current state: {lifecycle.state}
-            {nextStates && <p>Next states: {nextStates}</p>}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className={styles.body}>{lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}</Modal.Body>
-      </Modal>
+      <Dialog fullWidth maxWidth="md" open={show} onClose={onHide}>
+        <DialogTitle id="contained-modal-title-vcenter">Current state: {lifecycle.state}</DialogTitle>
+        <DialogContent className={styles.body}>
+          <DialogContentText>{nextStates && <p>Next states: {nextStates}</p>}</DialogContentText>
+          {lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -92,18 +91,17 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
       <div className={styles.item}>
         <div className={styles.title}>
           <Typography as={'p'}>State</Typography>
-          <OverlayTrigger
-            placement={'top'}
-            overlay={<Tooltip id="lifecycle-graph">{t('pages.activity.lifecycle-info')}</Tooltip>}
-          >
-            <Button
-              small
-              inset
-              variant="whiteStatic"
-              onClick={() => setModalVisible(true)}
-              startIcon={<Icon component={InfoCircle} color="primary" size="sm" />}
-            />
-          </OverlayTrigger>
+          <Tooltip title={t('pages.activity.lifecycle-info') || ''} id="lifecycle-graph">
+            <span>
+              <Button
+                small
+                inset
+                variant="whiteStatic"
+                onClick={() => setModalVisible(true)}
+                startIcon={<Icon component={InfoCircle} color="primary" size="sm" />}
+              />
+            </span>
+          </Tooltip>
         </div>
         <span>{lifecycle?.state}</span>
       </div>

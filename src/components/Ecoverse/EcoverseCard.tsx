@@ -12,7 +12,7 @@ import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 import getActivityCount from '../../utils/get-activity-count';
 import { Nvp } from '../../models/graphql-schema';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import Tooltip from '@material-ui/core/Tooltip';
 
 // todo: unify in one card props
 interface EcoverseCardProps {
@@ -123,14 +123,11 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>
