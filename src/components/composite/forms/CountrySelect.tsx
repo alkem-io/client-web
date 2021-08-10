@@ -19,7 +19,7 @@ export const CountrySelect: FC<CountrySelectProps> = ({
   readOnly,
   disabled,
 }) => {
-  const [field, , helper] = useField(name);
+  const [field, meta, helper] = useField(name);
 
   return (
     <Autocomplete
@@ -38,6 +38,8 @@ export const CountrySelect: FC<CountrySelectProps> = ({
           InputLabelProps={{ shrink: true }}
           required={required}
           disabled={disabled}
+          error={meta.touched && Boolean(meta.error)}
+          helperText={meta.error}
           inputProps={{
             ...params.inputProps,
             readOnly: readOnly,

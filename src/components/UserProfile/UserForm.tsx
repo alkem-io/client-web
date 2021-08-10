@@ -40,9 +40,9 @@ export const UserForm: FC<UserProps> = ({
   const { t } = useTranslation();
 
   const genders = [
-    { id: '', label: t('common.genders.notSpecified') },
-    { id: 'male', label: t('common.genders.male') },
-    { id: 'female', label: t('common.genders.female') },
+    { id: '', name: t('common.genders.notSpecified') },
+    { id: 'male', name: t('common.genders.male') },
+    { id: 'female', name: t('common.genders.female') },
   ];
   const { data: config, loading } = useTagsetsTemplateQuery();
 
@@ -104,7 +104,6 @@ export const UserForm: FC<UserProps> = ({
     email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
     gender: yup.string(),
     city: yup.string(),
-    country: yup.string(),
     phone: yup
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
@@ -144,11 +143,14 @@ export const UserForm: FC<UserProps> = ({
       initialValues={initialValues}
       validationSchema={isReadOnlyMode ? undefined : validationSchema}
       enableReinitialize
-      onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
+      onSubmit={(values, { setSubmitting }) => {
+        handleSubmit(values).finally(() => setSubmitting(false));
+      }}
     >
-      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting }) => {
+      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, isValid, errors }) => {
+        console.log(errors);
         return (
-          <Form noValidate onSubmit={handleSubmit}>
+          <form noValidate onSubmit={handleSubmit}>
             <Section
               avatar={
                 <EditableAvatar
@@ -286,7 +288,9 @@ export const UserForm: FC<UserProps> = ({
                   {onCancel && (
                     <Button
                       variant={isEditMode ? 'default' : 'primary'}
+                      type="button"
                       onClick={e => {
+                        debugger;
                         e.preventDefault();
                         e.stopPropagation();
                         onCancel();
@@ -299,14 +303,15 @@ export const UserForm: FC<UserProps> = ({
                   <Button
                     variant={'primary'}
                     type="submit"
+                    // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
                     className={'ml-3'}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                     text={t('buttons.save')}
                   />
                 </div>
               )}
             </Section>
-          </Form>
+          </form>
         );
       }}
     </Formik>

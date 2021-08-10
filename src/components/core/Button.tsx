@@ -148,6 +148,7 @@ const Button: FC<ButtonProps> = ({
       variant="outlined"
       color={variant === 'primary' ? 'primary' : 'default'}
       startIcon={startIcon}
+      disabled={disabled}
       {...props}
     >
       {text}
