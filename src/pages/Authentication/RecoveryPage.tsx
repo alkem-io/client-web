@@ -42,7 +42,7 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <Container maxWidth="sm">
-      <Grid container spacing={2} className={'d-flex justify-content-center'}>
+      <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
             {t('pages.recovery.header')}

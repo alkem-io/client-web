@@ -269,8 +269,7 @@ export const UserForm: FC<UserProps> = ({
                 )}
 
                 {isEditMode && (
-                  <div className={'d-flex mt-4'}>
-                    <div className={'flex-grow-1'} />
+                  <Grid container item justifyContent={'flex-end'}>
                     {onDelete && (
                       <Button
                         variant={'negative'}
@@ -303,7 +302,7 @@ export const UserForm: FC<UserProps> = ({
                       disabled={isSubmitting || !isValid}
                       text={t('buttons.save')}
                     />
-                  </div>
+                  </Grid>
                 )}
               </Grid>
             </Section>

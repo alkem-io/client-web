@@ -63,16 +63,14 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   return (
     <AuthenticationLayout>
-      <Grid container spacing={2} className={'d-flex justify-content-center'}>
+      <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.login.title')}
           </Typography>
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter />
-          <Typography variant={'h5'} className={'mb-2'}>
-            {t('pages.login.register')}
-          </Typography>
+          <Typography variant={'h5'}>{t('pages.login.register')}</Typography>
           <Button
             variant="primary"
             type={'submit'}

@@ -54,16 +54,14 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <AuthenticationLayout>
-      <Grid container spacing={2} className={'d-flex justify-content-center'}>
+      <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.registration.header')}
           </Typography>
           <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
           <Delimiter />
-          <Typography variant={'h5'} className={'mb-2'}>
-            {t('pages.registration.login')}
-          </Typography>
+          <Typography variant={'h5'}>{t('pages.registration.login')}</Typography>
           <Button
             variant="primary"
             type={'submit'}

@@ -1,4 +1,4 @@
-import { Checkbox, FormControl, FormControlLabel, FormGroup } from '@material-ui/core';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from '@material-ui/core';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useState } from 'react';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode } from './helpers';
@@ -25,12 +25,14 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
   );
 
   return (
-    <FormControl required={attributes.required} error={invalid}>
-      <FormGroup row>
-        <FormControlLabel control={checkbox} label={updatedTitle} />
-      </FormGroup>
-      <KratosFeedback node={node} />
-    </FormControl>
+    <Grid item xs={12}>
+      <FormControl required={attributes.required} error={invalid}>
+        <FormGroup row>
+          <FormControlLabel control={checkbox} label={updatedTitle} />
+        </FormGroup>
+        <KratosFeedback node={node} />
+      </FormControl>
+    </Grid>
   );
 };
 export default KratosCheckbox;

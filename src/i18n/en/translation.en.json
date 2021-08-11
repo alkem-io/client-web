@@ -46,7 +46,8 @@
     "sign-out": "Sign out",
     "cancel-project": "Cancel project",
     "create-project": "Create project",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "details": "Details"
   },
   "authentication": {
     "sign-in": "Sign in",
