@@ -151,15 +151,6 @@ const useSectionStyles = createStyles(theme => ({
       agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
     position: 'relative',
   },
-  cover: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: (props: SectionClassProps) => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
-    zIndex: 0,
-  },
   avatar: {
     display: 'flex',
     flexDirection: 'row-reverse',
@@ -198,7 +189,6 @@ const Section: FC<SectionProps> = ({
 
   return (
     <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
-      <div className={clsx(styles.cover, 'section-cover')} />
       <Grid container spacing={2}>
         {!hideAvatar && (
           <Grid item md={12} lg={3}>
