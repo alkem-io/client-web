@@ -1,9 +1,10 @@
+import { Grid } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form } from 'react-bootstrap';
-import Dialog from '@material-ui/core/Dialog';
 import * as yup from 'yup';
+import { useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   useCreateAspectMutation,
@@ -11,15 +12,14 @@ import {
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
-import { useEcoverse } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { Aspect } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
-import Button from '../core/Button';
+import FormikSelect from '../Admin/Common/FormikSelect';
 import { Loading } from '../core';
-import { TextArea } from '../core/TextInput';
+import Button from '../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { TextArea } from '../core/TextInput';
 
 interface Props {
   show: boolean;
@@ -135,17 +135,19 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
           enableReinitialize
           onSubmit={values => onSubmit(values)}
         >
-          {({ values, handleChange, errors, touched, handleSubmit, setFieldValue }) => {
+          {({ values, handleChange, errors, touched, handleSubmit }) => {
             const getField = (name: string, label: string) => (
-              <TextArea
-                onChange={handleChange}
-                name={name}
-                value={values[name] as string}
-                label={label}
-                error={touched[name] && !!errors[name]}
-                className={styles.field}
-                rows={2}
-              />
+              <Grid item xs={12}>
+                <TextArea
+                  onChange={handleChange}
+                  name={name}
+                  value={values[name] as string}
+                  label={label}
+                  error={touched[name] && !!errors[name]}
+                  className={styles.field}
+                  rows={2}
+                />
+              </Grid>
             );
 
             if (!submitWired) {
@@ -153,30 +155,17 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
             }
 
             return (
-              <>
-                <Form.Group controlId="aspectTypeSelect">
-                  <Form.Label>Aspect Type</Form.Label>
-                  <Form.Control
-                    as="select"
-                    custom
-                    onChange={e => {
-                      e.preventDefault();
-                      setFieldValue('title', e.target.value);
-                    }}
-                    size={'lg'}
-                    disabled={!isCreate}
-                    defaultValue={values.title ? replaceAll('_', ' ', values.title) : values.title}
-                  >
-                    {availableTypes?.map((at, index) => (
-                      <option value={at} key={index}>
-                        {replaceAll('_', ' ', at)}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </Form.Group>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormikSelect
+                    name={'title'}
+                    title={'Aspect Type'}
+                    values={availableTypes?.map(x => ({ id: x, name: replaceAll('_', ' ', x) })) || []}
+                  />
+                </Grid>
                 {getField('framing', 'Framing')}
                 {getField('explanation', 'Explanation')}
-              </>
+              </Grid>
             );
           }}
         </Formik>

@@ -1,6 +1,6 @@
+import { Grid } from '@material-ui/core';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../hooks/generated/graphql';
@@ -163,8 +163,8 @@ export const UserForm: FC<UserProps> = ({
               }
             >
               <Header text={title} />
-              <Form.Row>
-                <Form.Group as={Col}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'displayName'}
                     title={'Full Name'}
@@ -173,10 +173,9 @@ export const UserForm: FC<UserProps> = ({
                     placeholder={'Full Name'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'firstName'}
                     title={'First Name'}
@@ -185,8 +184,8 @@ export const UserForm: FC<UserProps> = ({
                     placeholder={'First Name'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-                <Form.Group as={Col}>
+                </Grid>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'lastName'}
                     title={'Last name'}
@@ -195,10 +194,9 @@ export const UserForm: FC<UserProps> = ({
                     placeholder={'Last name'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'email'}
                     type={'email'}
@@ -207,24 +205,24 @@ export const UserForm: FC<UserProps> = ({
                     readOnly={isReadOnlyMode || (isEditMode && editMode !== EditMode.new)}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} sm={6}>
-                  <FormikSelect
-                    title={'Gender'}
-                    name={'gender'}
-                    readOnly={isReadOnlyMode}
-                    disabled={isReadOnlyMode || isSubmitting}
-                    values={genders}
-                  />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} xs={6}>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Grid item xs={6}>
+                    <FormikSelect
+                      title={'Gender'}
+                      name={'gender'}
+                      readOnly={isReadOnlyMode}
+                      disabled={isReadOnlyMode || isSubmitting}
+                      values={genders}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={6}>
                   <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
-                </Form.Group>
-                <Form.Group as={Col}>
+                </Grid>
+                <Grid item xs={6}>
                   <FormikInputField
                     name={'city'}
                     title={'City'}
@@ -232,10 +230,9 @@ export const UserForm: FC<UserProps> = ({
                     placeholder={'City'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'phone'}
                     title={'Phone'}
@@ -243,10 +240,9 @@ export const UserForm: FC<UserProps> = ({
                     placeholder={'Phone'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'bio'}
                     title={'Bio'}
@@ -255,61 +251,61 @@ export const UserForm: FC<UserProps> = ({
                     multiline
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
+                </Grid>
 
-              <TagsetSegment
-                tagsets={tagsets}
-                template={tagsetsTemplate}
-                readOnly={isReadOnlyMode}
-                disabled={isSubmitting}
-              />
-              {isEditMode && (
-                <ProfileReferenceSegment
-                  references={references}
+                <TagsetSegment
+                  tagsets={tagsets}
+                  template={tagsetsTemplate}
                   readOnly={isReadOnlyMode}
                   disabled={isSubmitting}
-                  profileId={profileId}
                 />
-              )}
-
-              {isEditMode && (
-                <div className={'d-flex mt-4'}>
-                  <div className={'flex-grow-1'} />
-                  {onDelete && (
-                    <Button
-                      variant={'negative'}
-                      onClick={() => onDelete(currentUser.id)}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                      text={t('buttons.delete')}
-                    />
-                  )}
-                  {onCancel && (
-                    <Button
-                      variant={isEditMode ? 'default' : 'primary'}
-                      type="button"
-                      onClick={e => {
-                        debugger;
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onCancel();
-                      }}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                      text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
-                    />
-                  )}
-                  <Button
-                    variant={'primary'}
-                    type="submit"
-                    // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
-                    className={'ml-3'}
-                    disabled={isSubmitting || !isValid}
-                    text={t('buttons.save')}
+                {isEditMode && (
+                  <ProfileReferenceSegment
+                    references={references}
+                    readOnly={isReadOnlyMode}
+                    disabled={isSubmitting}
+                    profileId={profileId}
                   />
-                </div>
-              )}
+                )}
+
+                {isEditMode && (
+                  <div className={'d-flex mt-4'}>
+                    <div className={'flex-grow-1'} />
+                    {onDelete && (
+                      <Button
+                        variant={'negative'}
+                        onClick={() => onDelete(currentUser.id)}
+                        disabled={isSubmitting}
+                        className={'ml-3'}
+                        text={t('buttons.delete')}
+                      />
+                    )}
+                    {onCancel && (
+                      <Button
+                        variant={isEditMode ? 'default' : 'primary'}
+                        type="button"
+                        onClick={e => {
+                          debugger;
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onCancel();
+                        }}
+                        disabled={isSubmitting}
+                        className={'ml-3'}
+                        text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                      />
+                    )}
+                    <Button
+                      variant={'primary'}
+                      type="submit"
+                      // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
+                      className={'ml-3'}
+                      disabled={isSubmitting || !isValid}
+                      text={t('buttons.save')}
+                    />
+                  </div>
+                )}
+              </Grid>
             </Section>
           </form>
         );

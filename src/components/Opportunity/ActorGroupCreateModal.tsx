@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form } from 'react-bootstrap';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import {
@@ -14,6 +13,7 @@ import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 interface P {
   onHide: () => void;
@@ -69,26 +69,25 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2}>
-          <Grid item lg={12} className={'mb-4'}>
-            <Form.Group controlId="aspectTypeSelect">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                as="select"
-                custom
+          <Grid item lg={12}>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel shrink={true}>{'Name'}</InputLabel>
+              <Select
+                value={name}
+                label={'Name'}
                 onChange={e => {
                   e.preventDefault();
-                  setName(e.target.value);
+                  setName(e.target.value as string);
                 }}
-                size={'lg'}
                 defaultValue={availableActorGroupNames[0]}
               >
-                {availableActorGroupNames?.map((ag, index) => (
-                  <option value={ag} key={index}>
-                    {replaceAll('_', ' ', ag)}
-                  </option>
+                {availableActorGroupNames.map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {replaceAll('_', ' ', el)}
+                  </MenuItem>
                 ))}
-              </Form.Control>
-            </Form.Group>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item lg={12}>
             <TextArea onChange={onDescriptionInput} value={description} rows={2} label={'Description'} />
