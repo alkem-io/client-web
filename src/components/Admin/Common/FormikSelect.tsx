@@ -1,4 +1,12 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps } from '@material-ui/core';
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectProps,
+} from '@material-ui/core';
 import { useField } from 'formik';
 import React, { FC } from 'react';
 
@@ -16,7 +24,15 @@ export const FormikSelect: FC<FormikSelectProps> = ({ title, name, required = fa
   return (
     <FormControl required={required} disabled={disabled} fullWidth variant="outlined" error={!!meta.error}>
       <InputLabel shrink={true}>{title}</InputLabel>
-      <Select name={name} value={field.value} label={title} onBlur={field.onBlur} onChange={field.onChange}>
+      <Select
+        name={name}
+        value={field.value}
+        label={title}
+        onBlur={field.onBlur}
+        onChange={field.onChange}
+        variant={'outlined'}
+        input={<OutlinedInput name="currency" id="outlined-currency-simple" notched label={title} />}
+      >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
             {el.name}
