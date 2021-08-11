@@ -1,16 +1,25 @@
 import React, { FC, useState } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel/InputLabel';
+import Select from '@material-ui/core/Select/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
+import { createStyles, useApolloErrorHandler } from '../../hooks';
 import { useEcoverse } from '../../hooks';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+
+const useStyles = createStyles(() => ({
+  formControl: {
+    minWidth: 150,
+  },
+}));
 
 interface P {
   onHide: () => void;
@@ -20,6 +29,7 @@ interface P {
 
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const { t } = useTranslation();
+  const styles = useStyles();
   const { ecoverseId } = useEcoverse();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
@@ -59,6 +69,10 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
     });
   };
 
+  const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setRole(event.target.value as string);
+  };
+
   return (
     <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="interest-dialog-title">
       <DialogTitle id="interest-dialog-title">Describe your relation</DialogTitle>
@@ -76,13 +90,22 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
                 <Typography variant={'h5'} className={'mb-2'}>
                   Type of collaboration
                 </Typography>
-                <DropdownButton title={role} variant={'info'} className={'mb-4'}>
-                  {roles.map(r => (
-                    <Dropdown.Item onClick={() => setRole(r)} key={r}>
-                      <Typography>{r}</Typography>
-                    </Dropdown.Item>
-                  ))}
-                </DropdownButton>
+                <FormControl variant="outlined" className={styles.formControl}>
+                  <InputLabel id="role-select-label">Role</InputLabel>
+                  <Select
+                    labelId="role-select-label"
+                    id="role-select"
+                    value={role}
+                    label={role}
+                    onChange={handleRoleChange}
+                  >
+                    {roles.map(r => (
+                      <MenuItem value={r} onClick={() => setRole(r)} key={r}>
+                        {r}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 {role === roles[3] && (
                   <TextInput
                     onChange={e => setCustomRole(e.target.value)}
