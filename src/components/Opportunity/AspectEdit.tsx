@@ -1,6 +1,8 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Form, Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { Form } from 'react-bootstrap';
+import Dialog from '@material-ui/core/Dialog';
 import * as yup from 'yup';
 import {
   refetchOpportunityActorGroupsQuery,
@@ -17,7 +19,7 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
-import { useTranslation } from 'react-i18next';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface Props {
   show: boolean;
@@ -122,11 +124,11 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
-    <Modal show={show} onHide={onHide} centered size={'xl'}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Aspect</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+    <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="aspect-edit-dialog-title">
+      <DialogTitle id="aspect-edit-dialog-title" onClose={onHide}>
+        Edit Aspect
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -178,12 +180,11 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
             );
           }}
         </Formik>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'} text={t('buttons.cancel')} />
+      </DialogContent>
+      <DialogActions>
         <Button type={'submit'} variant="primary" onClick={() => submitWired()} text={t('buttons.save')} />
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -22,7 +22,7 @@ const styles = (theme: Theme) =>
 export interface DialogTitleProps extends WithStyles<typeof styles> {
   id: string;
   children: React.ReactNode;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {

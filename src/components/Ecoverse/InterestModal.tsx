@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
-import { Dropdown, DropdownButton, Modal } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
@@ -9,6 +10,7 @@ import Button from '../core/Button';
 import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface P {
   onHide: () => void;
@@ -58,11 +60,9 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Describe your relation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="interest-dialog-title">
+      <DialogTitle id="interest-dialog-title">Describe your relation</DialogTitle>
+      <DialogContent dividers>
         <Grid container spacing={2}>
           {data?.createRelation.id ? (
             <Grid item lg={12}>
@@ -99,8 +99,8 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
             </>
           )}
         </Grid>
-      </Modal.Body>
-      <Modal.Footer>
+      </DialogContent>
+      <DialogActions>
         {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.cancel')} />}
         {loading ? (
           <Loading text={'Sending the request...'} />
@@ -109,8 +109,8 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
             <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
           )
         )}
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

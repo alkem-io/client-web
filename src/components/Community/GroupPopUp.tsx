@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import Dialog from '@material-ui/core/Dialog';
 import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
 import { User } from '../../models/graphql-schema';
@@ -10,6 +10,7 @@ import Divider from '../core/Divider';
 import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { DialogContent, DialogTitle } from '../core/dialog';
 
 const groupPopUpStyles = createStyles(() => ({
   title: {
@@ -36,11 +37,11 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
   const tagList = [...terms, ...tags];
 
   return (
-    <Modal show={true} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Group Details</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="group-dialog-title">
+      <DialogTitle id="group-dialog-title" onClose={onHide}>
+        Group Details
+      </DialogTitle>
+      <DialogContent dividers>
         <div className={'d-flex align-items-center mb-3'}>
           <Avatar src={profile?.avatar} size={'lg'} />
           <div className={'ml-3'}>
@@ -85,8 +86,8 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
             ))}
           </>
         )}
-      </Modal.Body>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 

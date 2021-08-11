@@ -1,8 +1,9 @@
-import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Modal, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '@material-ui/core/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
 import { useUserMetadata } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { Loading } from '../core';
@@ -12,6 +13,7 @@ import Delimiter from '../core/Delimiter';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
 import Typography from '../core/Typography';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
@@ -117,27 +119,25 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
     !(opportunities && opportunities.length > 0);
 
   return (
-    <Modal show={true} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          <div className={styles.header}>
-            <div className={styles.profile}>
-              <Avatar src={user?.profile?.avatar} size={'lg'} />
-              <div className={styles.userName}>
-                <Typography variant={'h3'}>{user?.displayName}</Typography>
-              </div>
+    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
+      <DialogTitle id="user-dialog-title" onClose={onHide}>
+        <div className={styles.header}>
+          <div className={styles.profile}>
+            <Avatar src={user?.profile?.avatar} size={'lg'} />
+            <div className={styles.userName}>
+              <Typography variant={'h3'}>{user?.displayName}</Typography>
             </div>
-            {user?.profile?.description && (
-              <div className={styles.description}>
-                <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
-                  {user?.profile.description}
-                </Typography>
-              </div>
-            )}
           </div>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+          {user?.profile?.description && (
+            <div className={styles.description}>
+              <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+                {user?.profile.description}
+              </Typography>
+            </div>
+          )}
+        </div>
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         {loading ? (
           <Loading text={'Loading user'} />
         ) : (
@@ -229,16 +229,15 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
             )}
           </div>
         )}
-      </Modal.Body>
-      <Modal.Footer>
+      </DialogContent>
+      <DialogActions>
         <Tooltip placement={'top'} title={'Coming soon'} id={'more-tags'}>
           <span>
             <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
           </span>
         </Tooltip>
-        <Button onClick={onHide} text={t('buttons.close')} />
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

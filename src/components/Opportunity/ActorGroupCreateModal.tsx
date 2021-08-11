@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, Modal } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import {
   refetchOpportunityActorGroupsQuery,
@@ -12,6 +13,7 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface P {
   onHide: () => void;
@@ -61,11 +63,11 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Actor group creation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog open={show} maxWidth="md" aria-labelledby="actor-group-dialog-title">
+      <DialogTitle id="actor-group-dialog-title" onClose={onHide}>
+        Actor group creation
+      </DialogTitle>
+      <DialogContent dividers>
         <Grid container spacing={2}>
           <Grid item lg={12} className={'mb-4'}>
             <Form.Group controlId="aspectTypeSelect">
@@ -87,21 +89,20 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
                 ))}
               </Form.Control>
             </Form.Group>
-            {/*<TextArea onChange={e => setName(e.target.value)} value={name} rows={2} label={'Name'} />*/}
           </Grid>
           <Grid item lg={12}>
             <TextArea onChange={onDescriptionInput} value={description} rows={2} label={'Description'} />
           </Grid>
         </Grid>
-      </Modal.Body>
-      <Modal.Footer>
+      </DialogContent>
+      <DialogActions>
         {loading ? (
           <Loading text={'Creating actor group'} />
         ) : (
           <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
         )}
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

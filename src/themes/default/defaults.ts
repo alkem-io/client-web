@@ -38,9 +38,9 @@ theme.overrides = {
   MuiDialogContent: {
     dividers: {
       borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
+      borderBottomColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
     },
   },
-  MuiContainer: {},
 };
 
 declare module '@material-ui/core/styles/createTheme' {
