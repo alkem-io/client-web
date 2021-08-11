@@ -1,8 +1,7 @@
 import { TextField } from '@material-ui/core';
 import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
-import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
