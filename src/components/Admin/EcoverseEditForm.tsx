@@ -1,6 +1,6 @@
+import { Grid } from '@material-ui/core';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
@@ -123,56 +123,44 @@ const EcoverseEditForm: FC<Props> = ({
         }
 
         return (
-          <>
+          <Grid container spacing={2}>
             <ProfileSegment disabled={isEdit} required={!isEdit} />
-            <Form.Row>
-              <Form.Group as={Col}>
-                <FormikSelect
-                  title={t('components.editEcoverseForm.host.title')}
-                  name={'host'}
-                  values={organizations}
-                  required={true}
-                />
-              </Form.Group>
-            </Form.Row>
+            <Grid item xs={12}>
+              <FormikSelect
+                title={t('components.editEcoverseForm.host.title')}
+                name={'host'}
+                values={organizations}
+                required={true}
+              />
+            </Grid>
             <ContextSegment />
-
-            <Form.Group>
+            <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
               </Typography>
-            </Form.Group>
-            <TagsetSegment tagsets={tagsets} />
-
-            <Form.Group>
+              <TagsetSegment tagsets={tagsets} />
+            </Grid>
+            <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
-            </Form.Group>
-            <VisualSegment />
-
-            <ContextReferenceSegment references={references || []} contextId={contextId} />
-
+              <VisualSegment />
+            </Grid>
+            <Grid item xs={12}>
+              <ContextReferenceSegment references={references || []} contextId={contextId} />
+            </Grid>
             {isEdit && (
-              <>
-                <Form.Row>
-                  <Form.Group as={Col} xs={11} className={'d-flex mt-4 align-items-center'}>
-                    <Typography variant={'h4'} color={'primary'}>
-                      {t('components.editEcoverseForm.read-access-title')}
-                    </Typography>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <FormikCheckboxField
-                    name="anonymousReadAccess"
-                    title={t('components.editEcoverseForm.read-access')}
-                  />
-                </Form.Row>
-              </>
+              <Grid item xs={12}>
+                <Typography variant={'h4'} color={'primary'}>
+                  {t('components.editEcoverseForm.read-access-title')}
+                </Typography>
+
+                <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+              </Grid>
             )}
 
             <Divider />
-          </>
+          </Grid>
         );
       }}
     </Formik>
