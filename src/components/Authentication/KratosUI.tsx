@@ -162,24 +162,24 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
 
   return (
     <KratosUIProvider {...rest}>
-      <div>
-        {showFormAlert && (
-          <Alert severity={'warning'} onClose={() => setShowFormAlert(false)}>
-            {t('authentication.validation.fill-fields')}
-          </Alert>
-        )}
-        <KratosMessages messages={ui.messages} />
-        <form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            {nodesByGroup.default.map(toUiControl)}
-            {nodesByGroup.password.map(toUiControl)}
-            {resetPasswordComponent}
-            {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
-            {nodesByGroup.oidc.map(toUiControl)}
-            {nodesByGroup.rest.map(toUiControl)}
+      {showFormAlert && (
+        <Alert severity={'warning'} onClose={() => setShowFormAlert(false)}>
+          {t('authentication.validation.fill-fields')}
+        </Alert>
+      )}
+      <form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item>
+            <KratosMessages messages={ui.messages} />
           </Grid>
-        </form>
-      </div>
+          {nodesByGroup.default.map(toUiControl)}
+          {nodesByGroup.password.map(toUiControl)}
+          {resetPasswordComponent}
+          {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
+          {nodesByGroup.oidc.map(toUiControl)}
+          {nodesByGroup.rest.map(toUiControl)}
+        </Grid>
+      </form>
     </KratosUIProvider>
   );
 };

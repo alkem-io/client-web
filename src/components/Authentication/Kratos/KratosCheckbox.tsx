@@ -21,6 +21,7 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
       checked={state}
       onChange={() => setState(oldState => !oldState)}
       color={'primary'}
+      value={String(state)}
     />
   );
 
