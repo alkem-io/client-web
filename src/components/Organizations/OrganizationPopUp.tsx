@@ -1,5 +1,10 @@
 import React, { FC } from 'react';
-import { Modal, Table } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
@@ -147,40 +152,40 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 )}
               </div>
               <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
-                <Table striped bordered hover size="sm" className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Ecoverses hosted</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table size="small" className={styles.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell component="th">Ecoverses hosted</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
                     {ecoversesHosting.length > 0 &&
                       ecoversesHosting.map(x => (
-                        <tr key={`tr-${x.id}`}>
-                          <td key={`td-${x.id}`}>{x.displayName}</td>
-                        </tr>
+                        <TableRow key={`tr-${x.id}`}>
+                          <TableCell key={`td-${x.id}`}>{x.displayName}</TableCell>
+                        </TableRow>
                       ))}
-                  </tbody>
+                  </TableBody>
                 </Table>
                 {ecoversesHosting.length === 0 && (
                   <div className={styles.centeredText}>{t('search.organization.no-hosted')}</div>
                 )}
               </div>
               <div className={clsx({ [styles.tableScrollable]: challengesLeading.length > 0 })}>
-                <Table striped bordered hover size="sm" className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Challenges being lead</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table size="small" className={styles.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Challenges being lead</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
                     {challengesLeading.length > 0 &&
                       challengesLeading.map(x => (
-                        <tr key={`tr-${x.id}`}>
-                          <td key={`td-${x.id}`}>{x.displayName}</td>
-                        </tr>
+                        <TableRow key={`tr-${x.id}`}>
+                          <TableCell key={`td-${x.id}`}>{x.displayName}</TableCell>
+                        </TableRow>
                       ))}
-                  </tbody>
+                  </TableBody>
                 </Table>
                 {challengesLeading.length === 0 && (
                   <div className={styles.centeredText}>{t('search.organization.no-leading')}</div>
