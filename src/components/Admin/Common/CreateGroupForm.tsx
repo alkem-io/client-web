@@ -1,6 +1,5 @@
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import React, { FC } from 'react';
-import { Form } from 'react-bootstrap';
 import { Container } from '@material-ui/core';
 import Typography from '../../core/Typography';
 import FormikInputField from './FormikInputField';
@@ -41,15 +40,14 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
         {({ values, handleSubmit, isSubmitting }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
-              <Form.Row>
-                <FormikInputField
-                  name={'name'}
-                  title={'Name'}
-                  value={values.name}
-                  required={true}
-                  placeholder={'Enter a name'}
-                />
-              </Form.Row>
+              <FormikInputField
+                name={'name'}
+                title={'Name'}
+                value={values.name}
+                required={true}
+                placeholder={'Enter a name'}
+              />
+
               <div className={'d-flex mt-2'}>
                 <Button
                   type={'submit'}
