@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 import { assign, createMachine } from 'xstate';
 
-export type Severity = 'information' | 'warning' | 'error' | 'success';
+export type Severity = 'info' | 'warning' | 'error' | 'success';
 
 export type Notification = {
   id: string;
@@ -33,7 +33,7 @@ export const notificationMachine = createMachine<NotificationsContext, Notificat
           actions: assign({
             notifications: (context, event) => [
               ...context.notifications,
-              { id: v4(), message: event.payload.message, severity: event.payload.severity || 'information' },
+              { id: v4(), message: event.payload.message, severity: event.payload.severity || 'info' },
             ],
           }),
         },

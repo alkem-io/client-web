@@ -1,10 +1,10 @@
-import { toDirectedGraph } from '@xstate/graph';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, Dialog } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import { createMachine } from 'xstate';
+import { toDirectedGraph } from '@xstate/graph';
 import { createStyles } from '../../hooks/useTheme';
 import { Lifecycle, Maybe } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
