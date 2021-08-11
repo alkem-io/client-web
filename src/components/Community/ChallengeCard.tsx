@@ -25,9 +25,6 @@ const ChallengeCardStyles = createStyles(theme => ({
     borderTopRightRadius: 15,
     overflow: 'hidden',
   },
-  tag: {
-    borderTopRightRadius: 15,
-  },
   content: {
     height: 130,
     background: theme.palette.background.paper,
@@ -88,8 +85,6 @@ const ChallengeCardInner: FC<ChallengeCardStylesProps> = ({ id, terms, ecoverseI
         matchedTerms={{ terms }}
         tagProps={{
           text: `${ecoverseName}`,
-          color: 'background',
-          className: styles.tag,
         }}
         onClick={() => {
           !isModalOpened && setIsModalOpened(true);
