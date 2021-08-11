@@ -74,12 +74,15 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             </Grid>
           </Grid>
           {references?.length === 0 ? (
-            <Input
-              type={'text'}
-              placeholder={t('components.referenceSegment.missing-refreneces')}
-              readOnly={true}
-              disabled={true}
-            />
+            <Grid item xs={12}>
+              <Input
+                type={'text'}
+                placeholder={t('components.referenceSegment.missing-refreneces')}
+                readOnly={true}
+                disabled={true}
+                fullWidth
+              />
+            </Grid>
           ) : (
             references?.map((ref, index) => (
               <Grid key={index} container item alignItems={'flex-end'} xs={12} spacing={2}>
