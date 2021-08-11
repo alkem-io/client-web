@@ -1,9 +1,8 @@
-import { FormGroup, FormHelperText, InputLabel } from '@material-ui/core';
+import { FormGroup, FormHelperText, InputLabel, InputProps } from '@material-ui/core';
 import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { FormControlProps } from 'react-bootstrap';
 import { createStyles } from '../../../hooks/useTheme';
 
 const useStyle = createStyles(() => ({
@@ -18,7 +17,7 @@ const useStyle = createStyles(() => ({
   },
 }));
 
-interface MarkdownFieldProps extends FormControlProps {
+interface MarkdownFieldProps extends InputProps {
   title: string;
   name: string;
   required?: boolean;

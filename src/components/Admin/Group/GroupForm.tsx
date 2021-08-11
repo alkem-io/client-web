@@ -1,6 +1,5 @@
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import * as yup from 'yup';
@@ -16,6 +15,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
+import { Grid } from '@material-ui/core';
 
 interface GroupFormProps {
   title?: string;
@@ -104,8 +104,8 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
               details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
             >
               <Header text={title} />
-              <Form.Row>
-                <Form.Group as={Col}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'name'}
                     title={'Name'}
@@ -115,10 +115,8 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     placeholder={'Full Name'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'description'}
                     title={'Description'}
@@ -128,54 +126,53 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     multiline
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
+                </Grid>
 
-              <TagsetSegment
-                tagsets={tagsets}
-                template={tagsetsTemplate}
-                readOnly={isReadOnlyMode}
-                disabled={isSubmitting}
-              />
-              {isEditMode && (
-                <ProfileReferenceSegment
-                  references={references}
+                <TagsetSegment
+                  tagsets={tagsets}
+                  template={tagsetsTemplate}
                   readOnly={isReadOnlyMode}
                   disabled={isSubmitting}
-                  profileId={profileId}
                 />
-              )}
-
-              {isEditMode && (
-                <div className={'d-flex mt-4'}>
-                  <div className={'flex-grow-1'} />
-                  {onCancel && (
-                    <Button
-                      variant={isEditMode ? 'default' : 'primary'}
-                      onClick={() => onCancel()}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                      text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
-                    />
-                  )}
-                  {onDelete && (
-                    <Button
-                      variant={'negative'}
-                      onClick={() => onDelete(groupId)}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                      text={t('buttons.delete')}
-                    />
-                  )}
-                  <Button
-                    variant={'primary'}
-                    type={'submit'}
-                    className={'ml-3'}
+                {isEditMode && (
+                  <ProfileReferenceSegment
+                    references={references}
+                    readOnly={isReadOnlyMode}
                     disabled={isSubmitting}
-                    text={t('buttons.save')}
+                    profileId={profileId}
                   />
-                </div>
-              )}
+                )}
+
+                {isEditMode && (
+                  <Grid container item justifyContent={'flex-end'}>
+                    {onCancel && (
+                      <Button
+                        variant={isEditMode ? 'default' : 'primary'}
+                        onClick={() => onCancel()}
+                        disabled={isSubmitting}
+                        className={'ml-3'}
+                        text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                      />
+                    )}
+                    {onDelete && (
+                      <Button
+                        variant={'negative'}
+                        onClick={() => onDelete(groupId)}
+                        disabled={isSubmitting}
+                        className={'ml-3'}
+                        text={t('buttons.delete')}
+                      />
+                    )}
+                    <Button
+                      variant={'primary'}
+                      type={'submit'}
+                      className={'ml-3'}
+                      disabled={isSubmitting}
+                      text={t('buttons.save')}
+                    />
+                  </Grid>
+                )}
+              </Grid>
             </Section>
           </Form>
         );
