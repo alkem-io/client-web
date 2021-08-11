@@ -10,7 +10,7 @@ import Divider from '../core/Divider';
 import { Loading } from '../core';
 import Typography from '../core/Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { DialogActions, DialogContent } from '../core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 // todo restructure css
 const groupPopUpStyles = createStyles(theme => ({
@@ -73,6 +73,9 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
   return (
     <>
       <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="challenge-dialog-title">
+        <DialogTitle id="challenge-dialog-title" onClose={onHide}>
+          {undefined}
+        </DialogTitle>
         <DialogContent
           dividers
           style={{
@@ -127,7 +130,6 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
             as={Link}
             to={`/${ecoverseNameID}/challenges/${nameID}`}
           />
-          <Button onClick={onHide} text={t('buttons.close')} />
         </DialogActions>
       </Dialog>
     </>
