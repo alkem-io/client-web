@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Container } from '@material-ui/core';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
@@ -85,7 +85,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
 
   let submitWired;
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {'New Ecoverse'}
       </Typography>

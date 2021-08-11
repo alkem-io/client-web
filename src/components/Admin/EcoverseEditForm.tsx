@@ -6,15 +6,14 @@ import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
-import { Required } from '../core/Required';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
-import { contextSegmentSchema, ContextSegment } from './Common/ContextSegment';
+import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
+import FormikSelect from './Common/FormikSelect';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from './Common/TagsetSegment';
-import useProfileStyles from './Common/useProfileStyles';
-import { visualSegmentSchema, VisualSegment } from './Common/VisualSegment';
+import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
+import { VisualSegment, visualSegmentSchema } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -58,7 +57,6 @@ const EcoverseEditForm: FC<Props> = ({
   organizations = [],
 }) => {
   const { t } = useTranslation();
-  const styles = useProfileStyles();
 
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];
@@ -118,7 +116,7 @@ const EcoverseEditForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, values, handleSubmit, handleChange, handleBlur, errors }) => {
+      {({ values: { references }, handleSubmit }) => {
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -129,29 +127,12 @@ const EcoverseEditForm: FC<Props> = ({
             <ProfileSegment disabled={isEdit} required={!isEdit} />
             <Form.Row>
               <Form.Group as={Col}>
-                <Form.Label>
-                  {t('components.editEcoverseForm.host.title')}
-                  {<Required />}
-                </Form.Label>
-                <Form.Control
-                  as={'select'}
-                  onChange={handleChange}
-                  value={values.host}
+                <FormikSelect
+                  title={t('components.editEcoverseForm.host.title')}
                   name={'host'}
-                  className={styles.field}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors['host']}
-                >
-                  <option key={'not-value-key'} value={''}>
-                    {t('components.editEcoverseForm.host.select')}
-                  </option>
-                  {organizations.map((e, i) => (
-                    <option key={`select-id-${i}`} value={e.id}>
-                      {e.name}
-                    </option>
-                  ))}
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">{errors['host']}</Form.Control.Feedback>
+                  values={organizations}
+                  required={true}
+                />
               </Form.Group>
             </Form.Row>
             <ContextSegment />

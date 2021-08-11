@@ -6,12 +6,12 @@ import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
 import { Nvp } from '../../models/graphql-schema';
 import { createStyles } from '../../hooks/useTheme';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useCardStyles = createStyles(theme => ({
   relative: {
@@ -99,14 +99,11 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>

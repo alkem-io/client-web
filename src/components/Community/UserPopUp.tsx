@@ -1,16 +1,17 @@
+import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Modal, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { Modal, Table } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
+import { Loading } from '../core';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
-import { Loading } from '../core';
-import Typography from '../core/Typography';
-import { useTranslation } from 'react-i18next';
+import Delimiter from '../core/Delimiter';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
-import Delimiter from '../core/Delimiter';
+import Typography from '../core/Typography';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
@@ -230,11 +231,11 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Coming soon</Tooltip>}>
+        <Tooltip placement={'top'} title={'Coming soon'} id={'more-tags'}>
           <span>
             <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
           </span>
-        </OverlayTrigger>
+        </Tooltip>
         <Button onClick={onHide} text={t('buttons.close')} />
       </Modal.Footer>
     </Modal>

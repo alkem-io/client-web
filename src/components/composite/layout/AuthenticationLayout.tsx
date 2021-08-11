@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Col, Container, ContainerProps, Row } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
+import { Container, ContainerProps } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Image from '../../core/Image';
 import { createStyles } from '../../../hooks/useTheme';
@@ -19,14 +20,14 @@ interface AuthenticationLayoutProps extends ContainerProps {}
 export const AuthenticationLayout: FC<AuthenticationLayoutProps> = ({ children, ...rest }) => {
   const styles = useAuthenticationLayout();
   return (
-    <Container {...rest}>
-      <Row>
-        <Col className={clsx('d-flex justify-content-center', styles.logoWrapper)}>
+    <Container maxWidth="xl" {...rest}>
+      <Grid container spacing={2}>
+        <Grid item className={clsx('d-flex justify-content-center', styles.logoWrapper)}>
           <Link to={'/about'} href="https://alkem.io/about/">
             <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
           </Link>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
       {children}
     </Container>
   );

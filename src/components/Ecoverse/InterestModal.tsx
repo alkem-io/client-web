@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
-import { Col, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Grid from '@material-ui/core/Grid';
 import { refetchOpportunityRelationsQuery, useCreateRelationMutation, useMeQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { useEcoverse } from '../../hooks';
@@ -7,7 +9,6 @@ import Button from '../core/Button';
 import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
-import { useTranslation } from 'react-i18next';
 
 interface P {
   onHide: () => void;
@@ -62,40 +63,42 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         <Modal.Title id="contained-modal-title-vcenter">Describe your relation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {data?.createRelation.id ? (
-          <Col lg={12}>
-            <Typography variant={'h3'} color={'positive'}>
-              The request successfully sent
-            </Typography>
-          </Col>
-        ) : (
-          <>
-            <Col lg={12}>
-              <Typography variant={'h5'} className={'mb-2'}>
-                Type of collaboration
+        <Grid container spacing={2}>
+          {data?.createRelation.id ? (
+            <Grid item lg={12}>
+              <Typography variant={'h3'} color={'positive'}>
+                The request successfully sent
               </Typography>
-              <DropdownButton title={role} variant={'info'} className={'mb-4'}>
-                {roles.map(r => (
-                  <Dropdown.Item onClick={() => setRole(r)} key={r}>
-                    <Typography>{r}</Typography>
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-              {role === roles[3] && (
-                <TextInput
-                  onChange={e => setCustomRole(e.target.value)}
-                  value={customRole}
-                  label={'Describe your role'}
-                  className={'mb-4'}
-                  max={380}
-                />
-              )}
-            </Col>
-            <Col lg={12}>
-              <TextArea onChange={onDescriptionInput} value={description} label={'Interest reason'} />
-            </Col>
-          </>
-        )}
+            </Grid>
+          ) : (
+            <>
+              <Grid item lg={12}>
+                <Typography variant={'h5'} className={'mb-2'}>
+                  Type of collaboration
+                </Typography>
+                <DropdownButton title={role} variant={'info'} className={'mb-4'}>
+                  {roles.map(r => (
+                    <Dropdown.Item onClick={() => setRole(r)} key={r}>
+                      <Typography>{r}</Typography>
+                    </Dropdown.Item>
+                  ))}
+                </DropdownButton>
+                {role === roles[3] && (
+                  <TextInput
+                    onChange={e => setCustomRole(e.target.value)}
+                    value={customRole}
+                    label={'Describe your role'}
+                    className={'mb-4'}
+                    max={380}
+                  />
+                )}
+              </Grid>
+              <Grid item lg={12}>
+                <TextArea onChange={onDescriptionInput} value={description} label={'Interest reason'} />
+              </Grid>
+            </>
+          )}
+        </Grid>
       </Modal.Body>
       <Modal.Footer>
         {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.cancel')} />}

@@ -1,6 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Container, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Container } from '@material-ui/core';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -120,7 +121,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {!loading && !hasApplied && (

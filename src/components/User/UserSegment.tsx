@@ -1,6 +1,7 @@
-import { Box } from '@material-ui/core';
 import React, { FC, useMemo, useRef, useState } from 'react';
-import { Overlay, Popover } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Box, Popover } from '@material-ui/core';
 import { createStyles } from '../../hooks/useTheme';
 import { UserMetadata } from '../../hooks';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
@@ -9,9 +10,7 @@ import Avatar from '../core/Avatar';
 import Typography from '../core/Typography';
 import User from './User';
 import Button from '../core/Button';
-import { useHistory } from 'react-router-dom';
 import Icon from '../core/Icon';
-import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -54,59 +53,59 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
           onClick={() => setDropdownOpen(true)}
           reverseLayout
         />
-        <Overlay
-          show={dropdownOpen}
-          target={popoverAnchor}
-          placement="bottom-end"
-          container={popoverAnchor.current}
-          containerPadding={20}
-          rootClose
-          onHide={() => setDropdownOpen(false)}
+        <Popover
+          open={dropdownOpen}
+          anchorEl={popoverAnchor.current}
+          onClose={() => setDropdownOpen(false)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
         >
-          <Popover id="popover-contained">
-            <Popover.Content className={styles.popover}>
-              <Box display="flex" flexDirection={'column'} maxWidth={280}>
-                <Box display="flex" flexDirection="column" alignItems="center" className={styles.userHeader}>
-                  <Avatar size={'lg'} src={user.profile?.avatar} />
-                  <Typography variant="h3" className={'text-center'}>
-                    {user.displayName}
-                  </Typography>
-                  <Typography variant="h5" color="neutralMedium">
-                    {role}
-                  </Typography>
-                </Box>
-                <Box display="flex">
-                  <Button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      history.push('/profile');
-                    }}
-                    variant="transparent"
-                    inset
-                    block
-                    small
-                    text={t('buttons.my-profile')}
-                    startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
-                  />
-                </Box>
-                <Box>
-                  <Button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      history.push('/identity/logout');
-                    }}
-                    variant="transparent"
-                    inset
-                    block
-                    small
-                    startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
-                    text={t('buttons.sign-out')}
-                  />
-                </Box>
-              </Box>
-            </Popover.Content>
-          </Popover>
-        </Overlay>
+          <Box display="flex" flexDirection={'column'} maxWidth={280}>
+            <Box display="flex" flexDirection="column" alignItems="center" className={styles.userHeader}>
+              <Avatar size={'lg'} src={user.profile?.avatar} />
+              <Typography variant="h3" className={'text-center'}>
+                {user.displayName}
+              </Typography>
+              <Typography variant="h5" color="neutralMedium">
+                {role}
+              </Typography>
+            </Box>
+            <Box display="flex">
+              <Button
+                onClick={() => {
+                  setDropdownOpen(false);
+                  history.push('/profile');
+                }}
+                variant="transparent"
+                inset
+                block
+                small
+                text={t('buttons.my-profile')}
+                startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
+              />
+            </Box>
+            <Box>
+              <Button
+                onClick={() => {
+                  setDropdownOpen(false);
+                  history.push('/identity/logout');
+                }}
+                variant="transparent"
+                inset
+                block
+                small
+                startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
+                text={t('buttons.sign-out')}
+              />
+            </Box>
+          </Box>
+        </Popover>
       </>
     )
   );

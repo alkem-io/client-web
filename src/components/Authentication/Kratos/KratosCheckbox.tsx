@@ -1,7 +1,6 @@
+import { Checkbox, FormControl, FormControlLabel, FormGroup } from '@material-ui/core';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { Required } from '../../core/Required';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode } from './helpers';
 import KratosFeedback from './KratosFeedback';
 import { KratosProps } from './KratosProps';
@@ -16,24 +15,22 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
   const invalid = isInvalidNode(node);
   const updatedTitle = attributes.name === 'traits.accepted_terms' ? <KratosTermsLabel /> : getNodeTitle(node);
 
+  const checkbox = (
+    <Checkbox
+      name={getNodeName(node)}
+      checked={state}
+      onChange={() => setState(oldState => !oldState)}
+      color={'primary'}
+    />
+  );
+
   return (
-    <Form.Group controlId={node.group}>
-      <Form.Check name={getNodeName(node)} type="checkbox">
-        <Form.Check.Input
-          type="checkbox"
-          name={getNodeName(node)}
-          checked={state}
-          onChange={() => setState(oldState => !oldState)}
-          isInvalid={invalid}
-          value={String(state)}
-        />
-        <Form.Check.Label>
-          {updatedTitle}
-          {attributes.required && <Required />}
-        </Form.Check.Label>
-        <KratosFeedback node={node} />
-      </Form.Check>
-    </Form.Group>
+    <FormControl required={attributes.required} error={invalid}>
+      <FormGroup row>
+        <FormControlLabel control={checkbox} label={updatedTitle} />
+      </FormGroup>
+      <KratosFeedback node={node} />
+    </FormControl>
   );
 };
 export default KratosCheckbox;

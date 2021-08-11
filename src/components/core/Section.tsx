@@ -1,11 +1,11 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import Grid, { GridSize } from '@material-ui/core/Grid';
 import { Theme } from '@material-ui/core/styles';
+import { Container } from '@material-ui/core';
 import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Container from './Container';
 import Tag from './Tag';
 import Typography from './Typography';
 
@@ -48,9 +48,11 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
         </>
       )}
       {children && (
-        <Col lg={4} md={6} xs={12}>
-          {children}
-        </Col>
+        <Grid container spacing={2}>
+          <Grid item lg={4} md={6} xs={12}>
+            {children}
+          </Grid>
+        </Grid>
       )}
     </Typography>
   );
@@ -158,9 +160,6 @@ const useSectionStyles = createStyles(theme => ({
     background: (props: SectionClassProps) => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
     zIndex: 0,
   },
-  row: {
-    zIndex: 1,
-  },
   avatar: {
     display: 'flex',
     flexDirection: 'row-reverse',
@@ -198,28 +197,29 @@ const Section: FC<SectionProps> = ({
   const styles = useSectionStyles(classes);
 
   return (
-    <Container disableGutters={!gutters.root} className={clsx(styles.root, className)}>
+    <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
       <div className={clsx(styles.cover, 'section-cover')} />
-      <Row className={styles.row}>
+      <Grid container spacing={2}>
         {!hideAvatar && (
-          <Col md={12} lg={3}>
+          <Grid item md={12} lg={3}>
             <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
-          </Col>
+          </Grid>
         )}
-        <Col
+        <Grid
+          item
           className={'d-flex flex-column position-relative'}
           xs={12}
-          md={8 + (hideDetails || !details ? 4 : 0)}
-          lg={6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)}
+          md={(8 + (hideDetails || !details ? 4 : 0)) as GridSize}
+          lg={(6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)) as GridSize}
         >
           <Content gutters={gutters.content}>{children}</Content>
-        </Col>
+        </Grid>
         {!hideDetails && details && (
-          <Col xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={4} lg={3}>
             <div className={clsx(gutters.details && styles.gutter)}>{details}</div>
-          </Col>
+          </Grid>
         )}
-      </Row>
+      </Grid>
     </Container>
   );
 };

@@ -1,33 +1,9 @@
-import clsx from 'clsx';
-import React, { FC, Fragment } from 'react';
-import { Col, Container as BootstrapContainer, ContainerProps as BootstrapContainerProps, Row } from 'react-bootstrap';
+import React, { FC } from 'react';
+import Grid, { GridSize } from '@material-ui/core/Grid';
+import { Theme } from '@material-ui/core';
+import { Container, ContainerProps } from '@material-ui/core';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
-import { Theme } from '@material-ui/core';
-
-const useContainerStyles = createStyles(() => ({
-  noGutters: {
-    padding: 0,
-    margin: 0,
-  },
-}));
-
-interface ContainerProps extends BootstrapContainerProps {
-  classes?: unknown;
-  disableGutters?: boolean;
-}
-
-const Container: FC<ContainerProps> = ({ children, fluid = true, className, classes, disableGutters, ...rest }) => {
-  const styles = useContainerStyles(classes);
-
-  return (
-    <BootstrapContainer className={clsx(disableGutters && styles.noGutters, className)} fluid={fluid} {...rest}>
-      {children}
-    </BootstrapContainer>
-  );
-};
-
-export default Container;
 
 interface CardContainerProps extends ContainerProps {
   cardHeight?: number;
@@ -35,11 +11,11 @@ interface CardContainerProps extends ContainerProps {
   children: React.ReactNode[];
   title?: string;
   withCreate?: React.ReactNode;
-  xs?: number;
-  sm?: number;
-  md?: number;
-  lg?: number;
-  xl?: number;
+  xs?: GridSize;
+  sm?: GridSize;
+  md?: GridSize;
+  lg?: GridSize;
+  xl?: GridSize;
 }
 const defaultProps: Partial<CardContainerProps> = {
   cardHeight: 470,
@@ -77,32 +53,32 @@ const CardContainer: FC<CardContainerProps> = ({ children, fullHeight, cardHeigh
   const styles = useCardContainerStyles({ cardHeight, fullHeight });
 
   return (
-    <Container className={styles.root}>
-      {title && (
-        <Row className={'mb-4'}>
-          <Col xs={12}>
+    <Container maxWidth="xl" className={styles.root}>
+      <Grid container spacing={2}>
+        {title && (
+          <Grid item xs={12} className={'mb-4'}>
             <Typography variant="h4" color="neutral" weight="bold" className={styles.title}>
               {title}
             </Typography>
-          </Col>
-        </Row>
-      )}
-      <Row className={'mb-4'}>
-        {children.map((c, i) => (
-          <Fragment key={i}>
-            <Col {...rest}>
-              {c}
-              <div className={styles.spacer} />
-            </Col>
-          </Fragment>
-        ))}
-        {withCreate && (
-          <Col {...rest}>
-            {withCreate}
-            <div className={styles.spacer} />
-          </Col>
+          </Grid>
         )}
-      </Row>
+        <Grid item>
+          <Grid container className={'mb-4'} spacing={2}>
+            {children.map((c, i) => (
+              <Grid item key={i} {...rest}>
+                {c}
+                <div className={styles.spacer} />
+              </Grid>
+            ))}
+            {withCreate && (
+              <Grid item {...rest}>
+                {withCreate}
+                <div className={styles.spacer} />
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

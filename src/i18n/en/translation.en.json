@@ -236,7 +236,12 @@
       "title": "Edit group"
     },
     "searchableList": {
-      "load-more": "Load more"
+      "placeholder": "Search",
+      "load-more": "Load more",
+      "info": "Showing {{count}} from {{total}}"
+    },
+    "filter": {
+      "placeholder": "Search"
     }
   },
   "navigation": {

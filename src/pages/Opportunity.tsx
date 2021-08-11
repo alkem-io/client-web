@@ -7,19 +7,19 @@ import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
-import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
+import { Container } from '@material-ui/core';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
-import Container, { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/Container';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-// import Tag from '../components/core/Tag';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
@@ -47,6 +47,7 @@ import getActivityCount from '../utils/get-activity-count';
 import { useEcoverse } from '../hooks';
 import { SEARCH_PAGE } from '../models/constants';
 import Markdown from '../components/core/Markdown';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -229,13 +230,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
             />
             {user?.isAdmin && (
               <>
-                <OverlayTrigger
+                <Tooltip
                   placement={'bottom'}
-                  overlay={
-                    <Tooltip id={'Edit opportunity context'}>
-                      {t('pages.opportunity.sections.header.buttons.edit.tooltip')}
-                    </Tooltip>
-                  }
+                  id={'Edit opportunity context'}
+                  title={t('pages.opportunity.sections.header.buttons.edit.tooltip') || ''}
                 >
                   <Edit
                     color={'white'}
@@ -244,7 +242,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                     className={styles.edit}
                     onClick={() => setIsEditOpened(true)}
                   />
-                </OverlayTrigger>
+                </Tooltip>
                 <ContextEdit
                   variant={'opportunity'}
                   show={isEditOpened}
@@ -281,76 +279,76 @@ const Opportunity: FC<OpportunityPageProps> = ({
         </Body>
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
-      <Container className={'p-4'}>
-        {tagline && (
-          <Row>
-            <Col md={12}>
+      <Container maxWidth="xl" className={'p-4'}>
+        <Grid container spacing={2}>
+          {tagline && (
+            <Grid item md={12}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
                 <SubHeader text={tagline} className={styles.tagline} />
               </Section>
-            </Col>
-          </Row>
-        )}
-        <Row>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
-              <Body>
-                <Markdown children={background} />
-              </Body>
-            </Section>
-          </Col>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
-              <Body>
-                <Markdown children={vision} />
-              </Body>
-            </Section>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.who.header')} />
-              <Body>
-                <Markdown children={who} />
-              </Body>
-            </Section>
-          </Col>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
-              <Body>
-                <Markdown children={impact} />
-              </Body>
-            </Section>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={12} md={6} />
-          {!hideMeme && (
-            <Col sm={12} md={6}>
+            </Grid>
+          )}
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
                 <Body>
-                  {meme && (
-                    <div>
-                      <img
-                        src={meme?.uri}
-                        alt={meme?.description}
-                        onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
-                          ev.currentTarget.style.display = 'none';
-                          setHideMeme(true);
-                        }}
-                        height={240}
-                      />
-                    </div>
-                  )}
+                  <Markdown children={background} />
                 </Body>
               </Section>
-            </Col>
-          )}
-        </Row>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
+                <Body>
+                  <Markdown children={vision} />
+                </Body>
+              </Section>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.who.header')} />
+                <Body>
+                  <Markdown children={who} />
+                </Body>
+              </Section>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
+                <Body>
+                  <Markdown children={impact} />
+                </Body>
+              </Section>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6} />
+            {!hideMeme && (
+              <Grid item sm={12} md={6}>
+                <Section hideAvatar hideDetails gutters={{ content: true }}>
+                  <Body>
+                    {meme && (
+                      <div>
+                        <img
+                          src={meme?.uri}
+                          alt={meme?.description}
+                          onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
+                            ev.currentTarget.style.display = 'none';
+                            setHideMeme(true);
+                          }}
+                          height={240}
+                        />
+                      </div>
+                    )}
+                  </Body>
+                </Section>
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
       </Container>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>

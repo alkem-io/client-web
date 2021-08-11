@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { Path } from '../../context/NavigationProvider';
 import {
   refetchOpportunitiesQuery,
@@ -109,7 +109,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   let submitWired;
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {title}
       </Typography>

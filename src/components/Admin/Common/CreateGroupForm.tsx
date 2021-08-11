@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Container, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import Typography from '../../core/Typography';
 import FormikInputField from './FormikInputField';
 import * as yup from 'yup';
@@ -27,7 +28,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Typography variant={'h3'} className={'mb-4'}>
         Create group
       </Typography>

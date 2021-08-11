@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { useUpdateNavigation } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
@@ -18,7 +18,7 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers
   useUpdateNavigation({ currentPaths });
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <EditGroupCredentials
         credential={AuthorizationCredential.UserGroupMember}
         resourceId={groupId || ''}

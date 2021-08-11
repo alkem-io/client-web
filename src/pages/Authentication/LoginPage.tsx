@@ -1,8 +1,8 @@
 import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
@@ -63,8 +63,8 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   return (
     <AuthenticationLayout>
-      <Row className={'d-flex justify-content-center'}>
-        <Col sm={4}>
+      <Grid container spacing={2} className={'d-flex justify-content-center'}>
+        <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.login.title')}
           </Typography>
@@ -81,8 +81,8 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
             onClick={() => history.push(AUTH_REGISTER_PATH)}
             text={t('authentication.sign-up')}
           />
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </AuthenticationLayout>
   );
 };

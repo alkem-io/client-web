@@ -1,12 +1,10 @@
-// import { useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import ReactVisibilitySensor from 'react-visibility-sensor';
+import Grid from '@material-ui/core/Grid';
+import { Container } from '@material-ui/core';
 import { createStyles } from '../../../../hooks/useTheme';
 import hexToRgba from '../../../../utils/hexToRGBA';
-import Container from '../../../core/Container';
 import Toolbar from '../../../core/Toolbar';
 
 const appBarZIndex = 100;
@@ -23,6 +21,7 @@ const useHeaderStyles = createStyles(theme => ({
   },
   root: {
     margin: 'auto',
+    maxWidth: '100%',
   },
   absolute: {
     position: 'absolute',
@@ -81,9 +80,6 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   const styles = useHeaderStyles();
   const [headerInSight, setHeaderInSight] = useState(true);
-  // const theme = useTheme();
-  // const upSm = useMediaQuery(theme.breakpointss.up('sm'));
-  // const upMd = useMediaQuery(theme.breakpointss.up('md'));
 
   return (
     <>
@@ -91,16 +87,9 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
         <Toolbar innerRef={innerRef} />
       </ReactVisibilitySensor>
 
-      <Container
-        className={clsx(
-          styles[headerInSight ? 'absolute' : 'fixed'],
-          styles.root
-          // !headerInSight && (upMd ? styles.offsetLeftMax : upSm ? styles.offsetLeftMin : styles.offsetLeftNone)
-        )}
-      >
-        <Row>
-          {/* <Col xs={false} lg={3}></Col> */}
-          <Col xs>
+      <Container className={clsx(styles[headerInSight ? 'absolute' : 'fixed'], styles.root)}>
+        <Grid container spacing={2}>
+          <Grid item xs>
             <Toolbar
               dense={!headerInSight}
               className={clsx(styles.centerContent)}
@@ -111,8 +100,8 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
             >
               {children(headerInSight)}
             </Toolbar>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
       </Container>
     </>
   );

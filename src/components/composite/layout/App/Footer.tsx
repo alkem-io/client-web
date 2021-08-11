@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { Col, Row } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
+import { Container } from '@material-ui/core';
 import { createStyles } from '../../../../hooks/useTheme';
-import Container from '../../../core/Container';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
@@ -10,10 +10,6 @@ import { useConfig } from '../../../../hooks';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
-    // position: 'relative',
-    // alignItems: 'center',
-    // display: 'flex',
-    // justifyContent: 'space-between',
     maxWidth: 1380,
     width: '100%',
     margin: 'auto',
@@ -47,8 +43,8 @@ const Footer: FC = ({ children }) => {
 
   return (
     <Container className={styles.footer}>
-      <Row>
-        <Col xs={12}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
           <Toolbar dense>
             <div className="d-flex container-xl justify-content-center flex-wrap flex-lg-nowrap">
               <div className={styles.column}>
@@ -82,18 +78,16 @@ const Footer: FC = ({ children }) => {
               </div>
             </div>
           </Toolbar>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
+        </Grid>
+        <Grid item xs={12}>
           <Toolbar dense className={styles.footerSecondary}>
             <Typography variant="caption" color="neutralMedium" weight="boldLight">
               © 2021 Cherrytwist Foundation
             </Typography>
             <div className="d-flex justify-content-end">{children}</div>
           </Toolbar>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

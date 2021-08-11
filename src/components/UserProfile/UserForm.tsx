@@ -5,17 +5,18 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES } from '../../models/constants';
+import { TagsetTemplate } from '../../models/graphql-schema';
 import { Tagset } from '../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
-import { TagsetTemplate } from '../../models/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
+import FormikSelect from '../Admin/Common/FormikSelect';
 import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
-import Button from '../core/Button';
+import { TagsetSegment, tagsetSegmentSchema } from '../Admin/Common/TagsetSegment';
+import CountrySelect from '../composite/forms/CountrySelect';
 import { Loading } from '../core';
-import SearchDropdown from '../core/SearchDropdown';
+import Button from '../core/Button';
 import Section, { Header } from '../core/Section';
 import EditableAvatar from '../EditableAvatar';
 
@@ -38,7 +39,11 @@ export const UserForm: FC<UserProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const genders = [t('common.genders.notSpecified'), t('common.genders.male'), t('common.genders.female')];
+  const genders = [
+    { id: '', name: t('common.genders.notSpecified') },
+    { id: 'male', name: t('common.genders.male') },
+    { id: 'female', name: t('common.genders.female') },
+  ];
   const { data: config, loading } = useTagsetsTemplateQuery();
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -83,7 +88,7 @@ export const UserForm: FC<UserProps> = ({
     email: email || '',
     gender: gender || '',
     city: city || '',
-    country: country || '',
+    country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
     avatar: avatar || '',
     tagsets: tagsets,
@@ -99,7 +104,6 @@ export const UserForm: FC<UserProps> = ({
     email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
     gender: yup.string(),
     city: yup.string(),
-    country: yup.string(),
     phone: yup
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
@@ -116,10 +120,11 @@ export const UserForm: FC<UserProps> = ({
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (userData: UserFromGenerated) => {
-    const { tagsets, avatar, references, bio, profileId, ...otherData } = userData;
+    const { tagsets, avatar, references, bio, profileId, country, ...otherData } = userData;
     const user: UserModel = {
       ...currentUser,
       ...otherData,
+      country: country?.code || '',
       profile: {
         id: profileId,
         description: bio,
@@ -138,30 +143,14 @@ export const UserForm: FC<UserProps> = ({
       initialValues={initialValues}
       validationSchema={isReadOnlyMode ? undefined : validationSchema}
       enableReinitialize
-      onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
+      onSubmit={(values, { setSubmitting }) => {
+        handleSubmit(values).finally(() => setSubmitting(false));
+      }}
     >
-      {({
-        values: {
-          displayName,
-          firstName,
-          lastName,
-          email,
-          city,
-          phone,
-          country,
-          references,
-          tagsets,
-          avatar,
-          gender,
-          bio,
-        },
-        setFieldValue,
-        handleChange,
-        handleSubmit,
-        isSubmitting,
-      }) => {
+      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, isValid, errors }) => {
+        console.log(errors);
         return (
-          <Form noValidate onSubmit={handleSubmit}>
+          <form noValidate onSubmit={handleSubmit}>
             <Section
               avatar={
                 <EditableAvatar
@@ -179,7 +168,6 @@ export const UserForm: FC<UserProps> = ({
                   <FormikInputField
                     name={'displayName'}
                     title={'Full Name'}
-                    value={displayName}
                     required={true && !isReadOnlyMode}
                     readOnly={isReadOnlyMode}
                     placeholder={'Full Name'}
@@ -192,7 +180,6 @@ export const UserForm: FC<UserProps> = ({
                   <FormikInputField
                     name={'firstName'}
                     title={'First Name'}
-                    value={firstName}
                     required={true && !isReadOnlyMode}
                     readOnly={isReadOnlyMode}
                     placeholder={'First Name'}
@@ -203,7 +190,6 @@ export const UserForm: FC<UserProps> = ({
                   <FormikInputField
                     name={'lastName'}
                     title={'Last name'}
-                    value={lastName}
                     required={true && !isReadOnlyMode}
                     readOnly={isReadOnlyMode}
                     placeholder={'Last name'}
@@ -217,7 +203,6 @@ export const UserForm: FC<UserProps> = ({
                     name={'email'}
                     type={'email'}
                     title={'Email'}
-                    value={email}
                     required={true && !isReadOnlyMode}
                     readOnly={isReadOnlyMode || (isEditMode && editMode !== EditMode.new)}
                     disabled={isSubmitting}
@@ -226,37 +211,23 @@ export const UserForm: FC<UserProps> = ({
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} sm={6}>
-                  <Form.Label>Gender</Form.Label>
-                  <Form.Control
-                    as={'select'}
-                    onChange={handleChange}
-                    value={gender.toLowerCase()}
+                  <FormikSelect
+                    title={'Gender'}
                     name={'gender'}
                     readOnly={isReadOnlyMode}
                     disabled={isReadOnlyMode || isSubmitting}
-                  >
-                    {genders.map(el => (
-                      <option key={el}>{el}</option>
-                    ))}
-                  </Form.Control>
+                    values={genders}
+                  />
                 </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} xs={6}>
-                  <Form.Label>Country</Form.Label>
-                  <SearchDropdown
-                    value={country}
-                    data={COUNTRIES.map(el => el.name)}
-                    readOnly={isReadOnlyMode}
-                    onSelect={value => setFieldValue('country', value)}
-                    disabled={isSubmitting}
-                  />
+                  <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
                 </Form.Group>
                 <Form.Group as={Col}>
                   <FormikInputField
                     name={'city'}
                     title={'City'}
-                    value={city}
                     readOnly={isReadOnlyMode}
                     placeholder={'City'}
                     disabled={isSubmitting}
@@ -268,7 +239,6 @@ export const UserForm: FC<UserProps> = ({
                   <FormikInputField
                     name={'phone'}
                     title={'Phone'}
-                    value={phone}
                     readOnly={isReadOnlyMode}
                     placeholder={'Phone'}
                     disabled={isSubmitting}
@@ -280,10 +250,9 @@ export const UserForm: FC<UserProps> = ({
                   <FormikInputField
                     name={'bio'}
                     title={'Bio'}
-                    value={bio}
                     readOnly={isReadOnlyMode}
                     placeholder={'Bio'}
-                    as={'textarea'}
+                    multiline
                     disabled={isSubmitting}
                   />
                 </Form.Group>
@@ -319,7 +288,13 @@ export const UserForm: FC<UserProps> = ({
                   {onCancel && (
                     <Button
                       variant={isEditMode ? 'default' : 'primary'}
-                      onClick={() => onCancel()}
+                      type="button"
+                      onClick={e => {
+                        debugger;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onCancel();
+                      }}
                       disabled={isSubmitting}
                       className={'ml-3'}
                       text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
@@ -327,15 +302,16 @@ export const UserForm: FC<UserProps> = ({
                   )}
                   <Button
                     variant={'primary'}
-                    type={'submit'}
+                    type="submit"
+                    // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
                     className={'ml-3'}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid}
                     text={t('buttons.save')}
                   />
                 </div>
               )}
             </Section>
-          </Form>
+          </form>
         );
       }}
     </Formik>

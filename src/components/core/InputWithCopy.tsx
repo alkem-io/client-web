@@ -11,6 +11,8 @@ interface InputWithCopyProps {
   text: string;
 }
 
+// TODO [ATS]
+
 export const InputWithCopy: FC<InputWithCopyProps> = ({ label, text }) => {
   const [isCopied, setCopied] = useState(false);
   return (

@@ -184,7 +184,7 @@ export const OrganizationForm: FC<Props> = ({
                           value={description}
                           readOnly={isReadOnlyMode}
                           placeholder={'Description'}
-                          as={'textarea'}
+                          multiline
                         />
                       </Form.Row>
                       {getInputField({ name: 'avatar', label: t('components.visualSegment.avatar') })}

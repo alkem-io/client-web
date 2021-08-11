@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Col } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
 import { CardContainer } from '../../components/core/Container';
 import Loading from '../../components/core/Loading/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
@@ -21,9 +21,11 @@ const EcoversesSection = () => {
       {loading ? (
         <Loading text={'Loading ecoverses'} />
       ) : error ? (
-        <Col xs={12}>
-          <ErrorBlock blockName="Ecoverses" />
-        </Col>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ErrorBlock blockName="Ecoverses" />
+          </Grid>
+        </Grid>
       ) : (
         <CardContainer>
           {ecoverses.map((ecoverse, i) => {

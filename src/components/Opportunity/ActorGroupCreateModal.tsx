@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
-import { Col, Form, Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { Form, Modal } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
 import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorGroupMutation,
@@ -10,7 +12,6 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
-import { useTranslation } from 'react-i18next';
 
 interface P {
   onHide: () => void;
@@ -65,8 +66,8 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
         <Modal.Title id="contained-modal-title-vcenter">Actor group creation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <>
-          <Col lg={12} className={'mb-4'}>
+        <Grid container spacing={2}>
+          <Grid item lg={12} className={'mb-4'}>
             <Form.Group controlId="aspectTypeSelect">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -87,11 +88,11 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
               </Form.Control>
             </Form.Group>
             {/*<TextArea onChange={e => setName(e.target.value)} value={name} rows={2} label={'Name'} />*/}
-          </Col>
-          <Col lg={12}>
+          </Grid>
+          <Grid item lg={12}>
             <TextArea onChange={onDescriptionInput} value={description} rows={2} label={'Description'} />
-          </Col>
-        </>
+          </Grid>
+        </Grid>
       </Modal.Body>
       <Modal.Footer>
         {loading ? (

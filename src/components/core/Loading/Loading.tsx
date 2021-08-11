@@ -1,5 +1,5 @@
+import { CircularProgress } from '@material-ui/core';
 import React, { FC } from 'react';
-import { Spinner } from 'react-bootstrap';
 import Typography from '../Typography';
 import { useLoadingStyles } from './Loading.styles';
 
@@ -12,7 +12,7 @@ export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
 
   return (
     <div className={styles.container}>
-      <Spinner animation="grow" className={styles.spinner} />
+      <CircularProgress className={styles.spinner} />
       <Typography variant="caption" color="primary" className={styles.text}>
         {text}
       </Typography>

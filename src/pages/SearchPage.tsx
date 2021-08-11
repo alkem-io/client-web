@@ -1,8 +1,10 @@
 import { useLazyQuery } from '@apollo/client';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useEffect, useState } from 'react';
-import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Container } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import { GroupCard } from '../components/Community/GroupCard';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
 import { ChallengeCard } from '../components/Community/ChallengeCard';
@@ -138,9 +140,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       </Section>
       <Divider />
       {tags.length > 0 && (
-        <Container>
-          <Row className={'justify-content-md-center mb-5'}>
-            <Col lg={3}>
+        <Container maxWidth="xl">
+          <Grid container spacing={2} className={'justify-content-md-center mb-5'}>
+            <Grid item lg={3}>
               <DropdownButton title={typesFilter.title} variant={'info'}>
                 <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>
                   {filtersConfig.all.title}
@@ -158,15 +160,15 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                   {filtersConfig.challenge.title}
                 </Dropdown.Item>
               </DropdownButton>
-            </Col>
-            <Col lg={9}>
+            </Grid>
+            <Grid item lg={9}>
               {community.length > 10 && (
                 <Typography>
                   There are more search results. Please use more specific search criteria to narrow down the results
                 </Typography>
               )}
-            </Col>
-          </Row>
+            </Grid>
+          </Grid>
         </Container>
       )}
       <CardContainer cardHeight={290} xs={12} sm={6} md={6}>
