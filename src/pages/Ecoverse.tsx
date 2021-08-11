@@ -6,7 +6,7 @@ import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';

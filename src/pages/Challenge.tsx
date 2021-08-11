@@ -11,7 +11,7 @@ import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunit
 import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Markdown from '../components/core/Markdown';

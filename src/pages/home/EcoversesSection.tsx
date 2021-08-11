@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
-import { CardContainer } from '../../components/core/Container';
+import { CardContainer } from '../../components/core/CardContainer';
 import Loading from '../../components/core/Loading/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';

@@ -12,7 +12,7 @@ import { GroupCard } from '../components/Community/GroupCard';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
 import { ChallengeCard } from '../components/Community/ChallengeCard';
 import { UserCard } from '../components/Community/UserCard';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import MultipleSelect from '../components/core/MultipleSelect';

@@ -49,7 +49,18 @@ const useCardContainerStyles = createStyles<Theme, ClassProps>(theme => ({
   },
 }));
 
-const CardContainer: FC<CardContainerProps> = ({ children, fullHeight, cardHeight, title, withCreate, ...rest }) => {
+const CardContainer: FC<CardContainerProps> = ({
+  children,
+  fullHeight,
+  cardHeight,
+  title,
+  withCreate,
+  xl,
+  lg,
+  md,
+  sm,
+  xs,
+}) => {
   const styles = useCardContainerStyles({ cardHeight, fullHeight });
 
   return (
@@ -62,16 +73,16 @@ const CardContainer: FC<CardContainerProps> = ({ children, fullHeight, cardHeigh
             </Typography>
           </Grid>
         )}
-        <Grid item>
+        <Grid item xs={12}>
           <Grid container className={'mb-4'} spacing={2}>
             {children.map((c, i) => (
-              <Grid item key={i} {...rest}>
+              <Grid item key={i} xl={xl} lg={lg} md={md} sm={sm} xs={xs}>
                 {c}
                 <div className={styles.spacer} />
               </Grid>
             ))}
             {withCreate && (
-              <Grid item {...rest}>
+              <Grid item xl={xl} lg={lg} md={md} sm={sm} xs={xs}>
                 {withCreate}
                 <div className={styles.spacer} />
               </Grid>
