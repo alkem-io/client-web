@@ -6,6 +6,7 @@ import { Tagset } from '../../../models/Profile';
 import { TagsetTemplate } from '../../../models/graphql-schema';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 import useProfileStyles from './useProfileStyles';
+import { TextField } from '@material-ui/core';
 
 interface TagsSegmentProps {
   tagsets: Tagset[];
@@ -37,7 +38,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false,
         tagsets.map((tagSet, index) => (
           <TagsetField
             key={index}
-            displayLabel={tagsets.length > 1} /* display label only if tagsets are more than 1 */
             name={`tagsets[${index}].tags`}
             title={toFirstCaptitalLetter(tagSet.name)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
@@ -59,7 +59,6 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
-  displayLabel?: boolean;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -68,7 +67,6 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   required = false,
   readOnly = false,
   disabled = false,
-  displayLabel = true,
   placeholder,
 }) => {
   const styles = useProfileStyles();
@@ -76,14 +74,13 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   return (
     <Form.Row>
       <Form.Group as={Col}>
-        {displayLabel && <Form.Label>{title}</Form.Label>}
-        <Form.Control
+        <TextField
           name={name}
-          type={'text'}
+          label={title}
+          variant={'outlined'}
           placeholder={placeholder}
           value={field.value?.join(',')}
           className={styles.field}
-          readOnly={readOnly}
           required={required}
           disabled={disabled}
           onChange={e => {
@@ -99,6 +96,13 @@ export const TagsetField: FC<TagsetFieldProps> = ({
               .filter(x => x);
             helper.setValue(tagsetArray);
           }}
+          InputProps={{
+            readOnly,
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          fullWidth
         />
       </Form.Group>
     </Form.Row>
