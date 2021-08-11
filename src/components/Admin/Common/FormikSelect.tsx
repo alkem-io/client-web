@@ -16,9 +16,17 @@ interface FormikSelectProps extends SelectProps {
   required?: boolean;
   disabled?: boolean;
   values: { id: string; name: string }[];
+  placeholder?: string;
 }
 
-export const FormikSelect: FC<FormikSelectProps> = ({ title, name, required = false, disabled = false, values }) => {
+export const FormikSelect: FC<FormikSelectProps> = ({
+  title,
+  name,
+  required = false,
+  disabled = false,
+  values,
+  placeholder,
+}) => {
   const [field, meta] = useField(name);
 
   return (
@@ -31,7 +39,8 @@ export const FormikSelect: FC<FormikSelectProps> = ({ title, name, required = fa
         onBlur={field.onBlur}
         onChange={field.onChange}
         variant={'outlined'}
-        input={<OutlinedInput name="currency" id="outlined-currency-simple" notched label={title} />}
+        placeholder={placeholder}
+        input={<OutlinedInput name={name} notched label={title} placeholder={placeholder} />}
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>

@@ -131,6 +131,7 @@ const EcoverseEditForm: FC<Props> = ({
                 name={'host'}
                 values={organizations}
                 required={true}
+                placeholder={t('components.editEcoverseForm.host.title')}
               />
             </Grid>
             <ContextSegment />
@@ -146,18 +147,18 @@ const EcoverseEditForm: FC<Props> = ({
               </Typography>
               <VisualSegment />
             </Grid>
-            <Grid item xs={12}>
-              <ContextReferenceSegment references={references || []} contextId={contextId} />
-            </Grid>
             {isEdit && (
               <Grid item xs={12}>
-                <Typography variant={'h4'} color={'primary'}>
-                  {t('components.editEcoverseForm.read-access-title')}
-                </Typography>
-
-                <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+                <ContextReferenceSegment references={references || []} contextId={contextId} />
               </Grid>
             )}
+            <Grid item xs={12}>
+              <Typography variant={'h4'} color={'primary'}>
+                {t('components.editEcoverseForm.read-access-title')}
+              </Typography>
+
+              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+            </Grid>
 
             <Divider />
           </Grid>
