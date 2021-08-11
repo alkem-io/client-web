@@ -1,9 +1,9 @@
+import { FormGroup, FormHelperText, InputLabel } from '@material-ui/core';
 import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Form, FormControlProps } from 'react-bootstrap';
-import { Required } from '../../core/Required';
+import { FormControlProps } from 'react-bootstrap';
 import { createStyles } from '../../../hooks/useTheme';
 
 const useStyle = createStyles(() => ({
@@ -44,11 +44,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const invalidClass = useMemo(() => (Boolean(!!meta.error) && meta.touched ? 'is-invalid' : undefined), [meta]);
 
   return (
-    <>
-      <Form.Label>
-        {title}
-        {required && <Required />}
-      </Form.Label>
+    <FormGroup>
+      <InputLabel required={required}>{title}</InputLabel>
       <MDEditor
         value={field.value}
         onChange={e => helper.setValue(e)}
@@ -64,8 +61,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           onBlur: field.onBlur,
         }}
       />
-      <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-    </>
+      <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>
+    </FormGroup>
   );
 };
 export default FormikMarkdownField;

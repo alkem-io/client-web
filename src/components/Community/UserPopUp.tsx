@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Table } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
 import { useUserMetadata } from '../../hooks';
@@ -72,7 +76,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     '& > thead > tr > th': {
       background: theme.palette.primary.main,
       color: theme.palette.background.paper,
-      textAlign: 'center',
+      // textAlign: 'center',
     },
     '& td': {
       padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
@@ -154,57 +158,61 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
               )}
             </div>
             <div>
-              <Table striped bordered hover size="sm" className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Community</th>
-                    <th>List</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table size="small" className={styles.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell component="th" align="center">
+                      Community
+                    </TableCell>
+                    <TableCell component="th" align="center">
+                      List
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {groups && groups.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Groups
                         </Typography>
-                      </td>
-                      <td>
+                      </TableCell>
+                      <TableCell align="center">
                         <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {challenges && challenges.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Challenges
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(challenges)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(challenges)}</TableCell>
+                    </TableRow>
                   )}
                   {organizations && organizations.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Organisations
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(organizations)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(organizations)}</TableCell>
+                    </TableRow>
                   )}
                   {opportunities && opportunities.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Opportunites
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(opportunities)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(opportunities)}</TableCell>
+                    </TableRow>
                   )}
-                </tbody>
+                </TableBody>
               </Table>
               {noMembership && (
                 <div className={styles.centeredText}>

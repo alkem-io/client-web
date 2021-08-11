@@ -1,7 +1,8 @@
 import { TextField, TextFieldProps } from '@material-ui/core';
+import { Omit } from '@material-ui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
-type InputFieldProps = TextFieldProps & {
+type InputFieldProps = Omit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
   required?: boolean;

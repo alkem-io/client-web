@@ -1,15 +1,14 @@
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
-import { contextSegmentSchema, ContextSegment } from '../Admin/Common/ContextSegment';
+import { ContextSegment, contextSegmentSchema } from '../Admin/Common/ContextSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Admin/Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from '../Admin/Common/TagsetSegment';
-import { visualSegmentSchema, VisualSegment } from '../Admin/Common/VisualSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../Admin/Common/TagsetSegment';
+import { VisualSegment, visualSegmentSchema } from '../Admin/Common/VisualSegment';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 
@@ -114,20 +113,16 @@ const ProfileForm: FC<Props> = ({
 
             {!contextOnly && (
               <>
-                <Form.Group>
-                  <Typography variant={'h4'} color={'primary'}>
-                    {t('components.tagsSegment.title')}
-                  </Typography>
-                </Form.Group>
+                <Typography variant={'h4'} color={'primary'}>
+                  {t('components.tagsSegment.title')}
+                </Typography>
                 <TagsetSegment tagsets={tagsets} />
               </>
             )}
 
-            <Form.Group>
-              <Typography variant={'h4'} color={'primary'}>
-                {t('components.visualSegment.title')}
-              </Typography>
-            </Form.Group>
+            <Typography variant={'h4'} color={'primary'}>
+              {t('components.visualSegment.title')}
+            </Typography>
 
             <VisualSegment />
 
