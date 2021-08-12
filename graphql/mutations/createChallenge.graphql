@@ -1,4 +1,4 @@
-mutation createChallenge($input: CreateChallengeInEcoverseInput!) {
+mutation createChallenge($input: CreateChallengeOnEcoverseInput!) {
   createChallenge(challengeData: $input) {
     ...NewChallenge
   }
