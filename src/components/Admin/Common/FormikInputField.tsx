@@ -28,6 +28,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   return (
     <TextField
       name={name}
+      placeholder={placeholder}
       label={title}
       onBlur={field.onBlur}
       onChange={field.onChange}

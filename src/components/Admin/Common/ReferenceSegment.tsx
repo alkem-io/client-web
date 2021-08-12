@@ -1,4 +1,4 @@
-import { Grid, Input } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
@@ -75,13 +75,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
           </Grid>
           {references?.length === 0 ? (
             <Grid item xs={12}>
-              <Input
-                type={'text'}
-                placeholder={t('components.referenceSegment.missing-refreneces')}
-                readOnly={true}
-                disabled={true}
-                fullWidth
-              />
+              <Typography variant={'caption'}>{t('components.referenceSegment.missing-refreneces')}</Typography>
             </Grid>
           ) : (
             references?.map((ref, index) => (
