@@ -383,7 +383,7 @@ export type CreateAspectInput = {
   title: Scalars['String'];
 };
 
-export type CreateChallengeInChallengeInput = {
+export type CreateChallengeOnChallengeInput = {
   challengeID: Scalars['UUID'];
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
@@ -396,7 +396,7 @@ export type CreateChallengeInChallengeInput = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type CreateChallengeInEcoverseInput = {
+export type CreateChallengeOnEcoverseInput = {
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -989,11 +989,11 @@ export type MutationCreateAspectArgs = {
 };
 
 export type MutationCreateChallengeArgs = {
-  challengeData: CreateChallengeInEcoverseInput;
+  challengeData: CreateChallengeOnEcoverseInput;
 };
 
 export type MutationCreateChildChallengeArgs = {
-  challengeData: CreateChallengeInChallengeInput;
+  challengeData: CreateChallengeOnChallengeInput;
 };
 
 export type MutationCreateEcoverseArgs = {
@@ -2136,7 +2136,7 @@ export type CreateAspectMutation = {
 };
 
 export type CreateChallengeMutationVariables = Exact<{
-  input: CreateChallengeInEcoverseInput;
+  input: CreateChallengeOnEcoverseInput;
 }>;
 
 export type CreateChallengeMutation = {
