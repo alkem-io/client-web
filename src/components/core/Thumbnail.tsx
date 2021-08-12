@@ -23,7 +23,7 @@ export const Thumbnail: FC<ThumbnailProps> = ({ file }) => {
   }, [file]);
   if (loading) return <Loading text={''} />;
 
-  if (file) return <img src={thumbnail} alt={file.name} className="img-thumbnail mt-2" height={200} width={200} />;
+  if (file) return <img src={thumbnail} alt={file.name} className="img-thumbnail" height={200} width={200} />;
   return (
     <Typography variant="button" color="inherit">
       ?

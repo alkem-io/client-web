@@ -81,7 +81,6 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
 
     for (const tagset of tagsetsToAdd) {
-      debugger;
       await createTagset({
         variables: {
           input: {

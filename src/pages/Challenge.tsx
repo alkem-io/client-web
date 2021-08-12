@@ -31,6 +31,7 @@ import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@material-ui/core';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -91,9 +92,9 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           id="challenge-rest-tooltip"
           title={organizations.map(x => x.displayName).join(', ')}
         >
-          <div className={'d-flex'}>
+          <Box display={'flex'}>
             <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
-          </div>
+          </Box>
         </Tooltip>
       )}
     </>
@@ -224,8 +225,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           details: false,
         }}
       >
-        <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex align-items-center flex-grow-1">
+        <Body>
+          <Box display={'flex'} alignItems={'center'} flexGrow={1}>
             <SectionHeader
               text={name}
               className="flex-grow-1"
@@ -255,7 +256,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
                 />
               </>
             )}
-          </div>
+          </Box>
 
           <div className={styles.divNav}>
             <Button

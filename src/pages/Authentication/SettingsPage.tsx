@@ -2,7 +2,7 @@ import { SettingsFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
-import { Container } from '@material-ui/core';
+import { Box, Container } from '@material-ui/core';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
@@ -45,8 +45,9 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
     <Container maxWidth="sm">
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4'}></Typography>
-          {t('pages.settings.header')}
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.settings.header')}</Typography>
+          </Box>
           <KratosUI flow={settingsFlow} />
         </Grid>
       </Grid>

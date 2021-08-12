@@ -1,11 +1,11 @@
-import { Formik, Form } from 'formik';
+import { Grid } from '@material-ui/core';
+import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
-import { Container } from '@material-ui/core';
-import Typography from '../../core/Typography';
-import FormikInputField from './FormikInputField';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import Button from '../../core/Button';
-import { useTranslation } from 'react-i18next';
+import Typography from '../../core/Typography';
+import FormikInputField from './FormikInputField';
 
 interface CreateGroupFormProps {
   onCreate: (name: string) => Promise<void>;
@@ -27,41 +27,41 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant={'h3'} className={'mb-4'}>
-        Create group
-      </Typography>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        enableReinitialize
-        onSubmit={(values, { setSubmitting }) => handleSubmit(values.name, setSubmitting)}
-      >
-        {({ values, handleSubmit, isSubmitting }) => {
-          return (
-            <Form noValidate onSubmit={handleSubmit}>
-              <FormikInputField
-                name={'name'}
-                title={'Name'}
-                value={values.name}
-                required={true}
-                placeholder={'Enter a name'}
-              />
+    <Grid container spacing={2} direction={'column'}>
+      <Grid item>
+        <Typography variant={'h3'}>Create group</Typography>
+      </Grid>
+      <Grid item>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize
+          onSubmit={(values, { setSubmitting }) => handleSubmit(values.name, setSubmitting)}
+        >
+          {({ values, handleSubmit, isSubmitting }) => {
+            return (
+              <Form noValidate onSubmit={handleSubmit}>
+                <Grid container item spacing={2}>
+                  <Grid item xs={12}>
+                    <FormikInputField
+                      name={'name'}
+                      title={'Name'}
+                      value={values.name}
+                      required={true}
+                      placeholder={'Enter a name'}
+                    />
+                  </Grid>
 
-              <div className={'d-flex mt-2'}>
-                <Button
-                  type={'submit'}
-                  variant={'primary'}
-                  className={'ml-auto'}
-                  disabled={isSubmitting}
-                  text={t('buttons.create')}
-                />
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
-    </Container>
+                  <Grid container item justifyContent={'flex-end'}>
+                    <Button type={'submit'} variant={'primary'} disabled={isSubmitting} text={t('buttons.create')} />
+                  </Grid>
+                </Grid>
+              </Form>
+            );
+          }}
+        </Formik>
+      </Grid>
+    </Grid>
   );
 };
 export default CreateGroupForm;

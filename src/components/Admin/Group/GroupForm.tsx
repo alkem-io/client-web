@@ -98,9 +98,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={
-                <EditableAvatar src={avatar} size={'xl'} className={'mb-2'} name={'Avatar'} profileId={profileId} />
-              }
+              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}
               details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
             >
               <Header text={title} />
@@ -144,32 +142,30 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                 )}
 
                 {isEditMode && (
-                  <Grid container item justifyContent={'flex-end'}>
+                  <Grid container item justifyContent={'flex-end'} spacing={2}>
                     {onCancel && (
-                      <Button
-                        variant={isEditMode ? 'default' : 'primary'}
-                        onClick={() => onCancel()}
-                        disabled={isSubmitting}
-                        className={'ml-3'}
-                        text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
-                      />
+                      <Grid item>
+                        <Button
+                          variant={isEditMode ? 'default' : 'primary'}
+                          onClick={() => onCancel()}
+                          disabled={isSubmitting}
+                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                        />
+                      </Grid>
                     )}
                     {onDelete && (
-                      <Button
-                        variant={'negative'}
-                        onClick={() => onDelete(groupId)}
-                        disabled={isSubmitting}
-                        className={'ml-3'}
-                        text={t('buttons.delete')}
-                      />
+                      <Grid item>
+                        <Button
+                          variant={'negative'}
+                          onClick={() => onDelete(groupId)}
+                          disabled={isSubmitting}
+                          text={t('buttons.delete')}
+                        />
+                      </Grid>
                     )}
-                    <Button
-                      variant={'primary'}
-                      type={'submit'}
-                      className={'ml-3'}
-                      disabled={isSubmitting}
-                      text={t('buttons.save')}
-                    />
+                    <Grid item>
+                      <Button variant={'primary'} type={'submit'} disabled={isSubmitting} text={t('buttons.save')} />
+                    </Grid>
                   </Grid>
                 )}
               </Grid>

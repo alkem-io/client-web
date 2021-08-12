@@ -1,7 +1,9 @@
+import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import { Container } from '@material-ui/core';
 import { Path } from '../../context/NavigationProvider';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
 import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
@@ -9,15 +11,11 @@ import {
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
-import { useNotification } from '../../hooks';
-import { useApolloErrorHandler } from '../../hooks';
-import { useUpdateNavigation } from '../../hooks';
-import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
-import Typography from '../core/Typography';
-import Button from '../core/Button';
-import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
-import { useTranslation } from 'react-i18next';
+import Button from '../core/Button';
+import Typography from '../core/Typography';
+import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
+import FormMode from './FormMode';
 
 interface Params {
   ecoverseId?: string;
@@ -109,10 +107,8 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   let submitWired;
   return (
-    <Container maxWidth="xl">
-      <Typography variant={'h2'} className={'mt-4 mb-4'}>
-        {title}
-      </Typography>
+    <Grid container spacing={2}>
+      <Typography variant={'h2'}>{title}</Typography>
       <ProfileForm
         isEdit={mode === FormMode.update}
         name={opportunity?.displayName}
@@ -122,16 +118,15 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
-      <div className={'d-flex mt-4 mb-4'}>
+      <Grid container item justifyContent={'flex-end'}>
         <Button
           disabled={isLoading}
-          className={'ml-auto'}
           variant="primary"
           onClick={() => submitWired()}
           text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
         />
-      </div>
-    </Container>
+      </Grid>
+    </Grid>
   );
 };
 export default EditOpportunity;

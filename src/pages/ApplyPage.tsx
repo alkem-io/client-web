@@ -1,4 +1,4 @@
-import { Container, Grid } from '@material-ui/core';
+import { Box, Container, Grid } from '@material-ui/core';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -122,12 +122,12 @@ const ApplyPage: FC<ApplyPageProps> = ({
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {!loading && !hasApplied && (
-        <>
-          <Typography variant={'h2'} className={'mt-4 mb-4'}>
+        <Box marginY={4}>
+          <Typography variant={'h2'}>
             {t('pages.ecoverse.application.title')}
             {communityName}
           </Typography>
-        </>
+        </Box>
       )}
       {!loading && (
         <div className={styles.logoDiv}>
@@ -136,9 +136,9 @@ const ApplyPage: FC<ApplyPageProps> = ({
         </div>
       )}
       {!loading && !hasApplied && (
-        <Typography variant={'h3'} className={'mt-5 mb-5'}>
-          {t('pages.ecoverse.application.subheader')}
-        </Typography>
+        <Box marginY={5}>
+          <Typography variant={'h3'}>{t('pages.ecoverse.application.subheader')}</Typography>
+        </Box>
       )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>

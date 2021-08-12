@@ -152,15 +152,7 @@ export const UserForm: FC<UserProps> = ({
         return (
           <form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={
-                <EditableAvatar
-                  src={avatar}
-                  size={'xl'}
-                  className={'mb-2'}
-                  name={'Avatar'}
-                  profileId={currentUser.profile.id}
-                />
-              }
+              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />}
             >
               <Header text={title} />
               <Grid container spacing={2}>
@@ -269,39 +261,41 @@ export const UserForm: FC<UserProps> = ({
                 )}
 
                 {isEditMode && (
-                  <Grid container item justifyContent={'flex-end'}>
+                  <Grid container item justifyContent={'flex-end'} spacing={2}>
                     {onDelete && (
-                      <Button
-                        variant={'negative'}
-                        onClick={() => onDelete(currentUser.id)}
-                        disabled={isSubmitting}
-                        className={'ml-3'}
-                        text={t('buttons.delete')}
-                      />
+                      <Grid item>
+                        <Button
+                          variant={'negative'}
+                          onClick={() => onDelete(currentUser.id)}
+                          disabled={isSubmitting}
+                          text={t('buttons.delete')}
+                        />
+                      </Grid>
                     )}
                     {onCancel && (
-                      <Button
-                        variant={isEditMode ? 'default' : 'primary'}
-                        type="button"
-                        onClick={e => {
-                          debugger;
-                          e.preventDefault();
-                          e.stopPropagation();
-                          onCancel();
-                        }}
-                        disabled={isSubmitting}
-                        className={'ml-3'}
-                        text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
-                      />
+                      <Grid item>
+                        <Button
+                          variant={isEditMode ? 'default' : 'primary'}
+                          type="button"
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onCancel();
+                          }}
+                          disabled={isSubmitting}
+                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                        />
+                      </Grid>
                     )}
-                    <Button
-                      variant={'primary'}
-                      type="submit"
-                      // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
-                      className={'ml-3'}
-                      disabled={isSubmitting || !isValid}
-                      text={t('buttons.save')}
-                    />
+                    <Grid item>
+                      <Button
+                        variant={'primary'}
+                        type="submit"
+                        // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
+                        disabled={isSubmitting || !isValid}
+                        text={t('buttons.save')}
+                      />
+                    </Grid>
                   </Grid>
                 )}
               </Grid>

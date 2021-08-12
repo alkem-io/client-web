@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core';
+import { Box, TextField } from '@material-ui/core';
 import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
@@ -116,7 +116,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                   fullWidth
                 />
                 <div className={styles.spacer}></div>
-                <div className={'d-flex'}>
+                <Box display={'flex'}>
                   <Button
                     disabled={loading}
                     text={t('buttons.cancel-project')}
@@ -124,9 +124,9 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                     inset
                     onClick={() => history.goBack()}
                   />
-                  <div className={'flex-grow-1'}></div>
+                  <Box flexGrow={1} />
                   <Button type={'submit'} text={t('buttons.create-project')} variant="primary" disabled={!isValid} />
-                </div>
+                </Box>
               </Form>
             )}
           </Formik>

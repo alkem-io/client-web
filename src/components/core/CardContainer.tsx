@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Grid, { GridSize } from '@material-ui/core/Grid';
-import { Theme } from '@material-ui/core';
+import { Box, Theme } from '@material-ui/core';
 import { Container, ContainerProps } from '@material-ui/core';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
@@ -67,14 +67,14 @@ const CardContainer: FC<CardContainerProps> = ({
     <Container maxWidth="xl" className={styles.root}>
       <Grid container spacing={2}>
         {title && (
-          <Grid item xs={12} className={'mb-4'}>
+          <Grid component={Box} item xs={12} marginBottom={4}>
             <Typography variant="h4" color="neutral" weight="bold" className={styles.title}>
               {title}
             </Typography>
           </Grid>
         )}
         <Grid item xs={12}>
-          <Grid container className={'mb-4'} spacing={2}>
+          <Grid component={Box} container spacing={2} marginBottom={4}>
             {children.map((c, i) => (
               <Grid item key={i} xl={xl} lg={lg} md={md} sm={sm} xs={xs}>
                 {c}
