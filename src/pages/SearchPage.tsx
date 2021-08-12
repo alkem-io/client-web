@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container } from '@material-ui/core';
+import { Container, OutlinedInput } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -181,6 +181,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                   value={typesFilter.typename}
                   label={typesFilter.title}
                   onChange={handleFilterChange}
+                  input={<OutlinedInput notched label={'Filter'} />}
                 >
                   {Object.keys(filtersConfig).map(x => (
                     <MenuItem value={filtersConfig[x].typename}>{filtersConfig[x].title}</MenuItem>
