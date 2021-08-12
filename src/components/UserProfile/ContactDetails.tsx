@@ -5,8 +5,9 @@ import { User } from '../../models/graphql-schema';
 import Card from '../core/Card';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import Tooltip from '@material-ui/core/Tooltip';
+import { COUNTRIES } from '../../models/constants';
 
-const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
+const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
     <>
       {value && (
@@ -63,7 +64,7 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
             <Detail title="Email" value={email} />
             <Detail title="Bio" value={profile?.description || ''} />
             <Detail title="Phone" value={phone} />
-            <Detail title="Country" value={country} />
+            <Detail title="Country" value={COUNTRIES.find(x => x.code === country)?.name} />
             <Detail title="City" value={city} />
           </div>
         </div>
