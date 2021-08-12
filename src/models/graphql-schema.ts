@@ -2887,6 +2887,7 @@ export type ChallengeProfileQuery = {
               lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
             }>
           >;
+          tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
         }>
       >;
       leadOrganisations: Array<{
