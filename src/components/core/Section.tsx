@@ -65,13 +65,18 @@ const useSubHeaderStyles = createStyles(theme => ({
   },
 }));
 
-export const SubHeader: FC<HeaderProps> = ({ text, svg, className, classes = {} }) => {
+export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, classes = {} }) => {
   const styles = useSubHeaderStyles(classes);
 
   return (
-    <Typography as="h3" variant="h3" color="inherit" weight="regular" className={clsx(styles.header, className)}>
-      {text || svg}
-    </Typography>
+    <>
+      {(text || svg) && (
+        <Typography as="h3" variant="h3" color="inherit" weight="regular" className={clsx(styles.header, className)}>
+          {text || svg}
+        </Typography>
+      )}
+      {children}
+    </>
   );
 };
 

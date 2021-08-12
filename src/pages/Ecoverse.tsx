@@ -213,7 +213,9 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
       >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
-          <SubHeader text={background} />
+          <SubHeader>
+            <Markdown children={background} />
+          </SubHeader>
           <Body>
             <Markdown children={impact} />
           </Body>
