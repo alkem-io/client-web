@@ -1,10 +1,8 @@
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import { Spinner as BootstrapSpinner, SpinnerProps as BootstrapSpinnerProps } from 'react-bootstrap';
+import { CircularProgress, CircularProgressProps } from '@material-ui/core';
 
-interface SpinnerProps extends Omit<BootstrapSpinnerProps, 'animation'> {
-  animation?: 'grow' | 'border';
-}
+interface SpinnerProps extends CircularProgressProps {}
 
 const useStyles = createStyles(theme => ({
   spinner: {
@@ -12,9 +10,10 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export const Spinner: FC<SpinnerProps> = ({ animation = 'grow', ...props }) => {
+// TODO [ATS]: Used on one place, needs review.
+export const Spinner: FC<SpinnerProps> = ({ ...props }) => {
   const styles = useStyles();
 
-  return <BootstrapSpinner animation={animation} className={styles.spinner} {...props} />;
+  return <CircularProgress className={styles.spinner} {...props} />;
 };
 export default Spinner;

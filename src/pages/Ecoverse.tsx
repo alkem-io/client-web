@@ -1,12 +1,12 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
-import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
@@ -224,9 +224,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
           />
         )}
         {challengesError ? (
-          <Col xs={12}>
-            <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
-          </Col>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
+            </Grid>
+          </Grid>
         ) : (
           <CardContainer>
             {challenges.map((challenge, i) => (

@@ -1,5 +1,5 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
-import { Col, Form } from 'react-bootstrap';
 import FormikMarkdownField from './FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';
 
@@ -16,19 +16,17 @@ export const useMarkdownInputField = () => {
   const styles = useProfileStyles();
   return ({ name, label, placeholder, rows, disabled = false, required }: MarkdownInputFieldProps) => {
     return (
-      <Form.Row>
-        <Form.Group as={Col} controlId={name}>
-          <FormikMarkdownField
-            name={name}
-            title={label}
-            placeholder={placeholder || label}
-            className={styles.field}
-            disabled={disabled}
-            rows={rows}
-            required={required}
-          />
-        </Form.Group>
-      </Form.Row>
+      <Grid item xs={12}>
+        <FormikMarkdownField
+          name={name}
+          title={label}
+          placeholder={placeholder || label}
+          className={styles.field}
+          disabled={disabled}
+          rows={rows}
+          required={required}
+        />
+      </Grid>
     );
   };
 };

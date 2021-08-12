@@ -1,8 +1,8 @@
 import { RegistrationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
@@ -54,16 +54,14 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <AuthenticationLayout>
-      <Row className={'d-flex justify-content-center'}>
-        <Col sm={4}>
+      <Grid container spacing={2} justifyContent={'center'}>
+        <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
             {t('pages.registration.header')}
           </Typography>
           <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
           <Delimiter />
-          <Typography variant={'h5'} className={'mb-2'}>
-            {t('pages.registration.login')}
-          </Typography>
+          <Typography variant={'h5'}>{t('pages.registration.login')}</Typography>
           <Button
             variant="primary"
             type={'submit'}
@@ -72,8 +70,8 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
             onClick={() => history.push(AUTH_LOGIN_PATH)}
             text={t('authentication.sign-in')}
           />
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </AuthenticationLayout>
   );
 };

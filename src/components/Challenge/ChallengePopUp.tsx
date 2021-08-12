@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import Dialog from '@material-ui/core/Dialog';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
@@ -8,8 +10,7 @@ import Divider from '../core/Divider';
 import { Loading } from '../core';
 import Typography from '../core/Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 // todo restructure css
 const groupPopUpStyles = createStyles(theme => ({
@@ -71,8 +72,12 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
 
   return (
     <>
-      <Modal show={true} onHide={onHide} size="lg" centered>
-        <Modal.Body
+      <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="challenge-dialog-title">
+        <DialogTitle id="challenge-dialog-title" onClose={onHide}>
+          {undefined}
+        </DialogTitle>
+        <DialogContent
+          dividers
           style={{
             background: banner ? `url("${banner}") no-repeat center center / cover` : 'none',
             padding: 0,
@@ -117,17 +122,16 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
               </div>
             </div>
           )}
-        </Modal.Body>
-        <Modal.Footer>
+        </DialogContent>
+        <DialogActions>
           <Button
             variant="primary"
             text={t('buttons.explore')}
             as={Link}
             to={`/${ecoverseNameID}/challenges/${nameID}`}
           />
-          <Button onClick={onHide} text={t('buttons.close')} />
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

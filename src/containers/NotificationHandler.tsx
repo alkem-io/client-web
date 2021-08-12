@@ -1,17 +1,12 @@
+import { Snackbar } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { useSelector } from '@xstate/react';
-import { ReactComponent as CheckCircleFill } from 'bootstrap-icons/icons/check-circle-fill.svg';
-import { ReactComponent as ExclamationCircleFill } from 'bootstrap-icons/icons/exclamation-circle-fill.svg';
-import { ReactComponent as InfoCircleFill } from 'bootstrap-icons/icons/info-circle-fill.svg';
-import { ReactComponent as XCircleFill } from 'bootstrap-icons/icons/x-circle-fill.svg';
 import React, { FC } from 'react';
-import { Toast } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
 import { useGlobalState } from '../hooks';
-import { Severity, CLEAR_NOTIFICATION } from '../state/global/notifications/notificationMachine';
+import { NOTIFICATION_AUTO_HIDE_DURATION } from '../models/constants/configuration.constants';
+import { CLEAR_NOTIFICATION } from '../state/global/notifications/notificationMachine';
 
 export const NotificationHandler: FC = () => {
-  const { t } = useTranslation();
-
   const { notificationsService } = useGlobalState();
 
   const notifications = useSelector(notificationsService, state => {
@@ -22,31 +17,26 @@ export const NotificationHandler: FC = () => {
     notificationsService.send({ type: CLEAR_NOTIFICATION, payload: { id } });
   };
 
-  const getIcon = (severity: Severity) => {
-    if (severity === 'error')
-      return <XCircleFill className="bi bi-alert-triangle text-danger mr-2" height="20" width="20" />;
-    else if (severity === 'warning')
-      return <ExclamationCircleFill className="bi bi-alert-triangle text-warning mr-2" height="20" width="20" />;
-    else if (severity === 'success')
-      return <CheckCircleFill className="bi bi-alert-triangle text-success mr-2" height="20" width="20" />;
-    else return <InfoCircleFill className="bi bi-alert-triangle text-info mr-2" height="20" width="20" />;
-  };
-
   return (
     <>
-      <div style={{ position: 'fixed', bottom: 20, right: 20 }}>
-        {notifications.map((x, i) => {
-          return (
-            <Toast key={i} show={true} onClose={() => closeMessage(x.id)}>
-              <Toast.Header>
-                {getIcon(x.severity)}
-                <strong className="mr-auto">{t(`components.notifications.${x.severity}` as const)}</strong>
-              </Toast.Header>
-              <Toast.Body>{x.message}</Toast.Body>
-            </Toast>
-          );
-        })}
-      </div>
+      {notifications.map((x, i) => {
+        return (
+          <Snackbar
+            key={i}
+            open={true}
+            autoHideDuration={NOTIFICATION_AUTO_HIDE_DURATION}
+            onClose={() => closeMessage(x.id)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+          >
+            <Alert onClose={() => closeMessage(x.id)} severity={x.severity}>
+              {x.message}
+            </Alert>
+          </Snackbar>
+        );
+      })}
     </>
   );
 };

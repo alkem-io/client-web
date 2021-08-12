@@ -1,16 +1,23 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Modal, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import { useTranslation } from 'react-i18next';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
 import { useUserMetadata } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
+import { Loading } from '../core';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
-import { Loading } from '../core';
-import Typography from '../core/Typography';
-import { useTranslation } from 'react-i18next';
+import Delimiter from '../core/Delimiter';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
-import Delimiter from '../core/Delimiter';
+import Typography from '../core/Typography';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
@@ -69,7 +76,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     '& > thead > tr > th': {
       background: theme.palette.primary.main,
       color: theme.palette.background.paper,
-      textAlign: 'center',
+      // textAlign: 'center',
     },
     '& td': {
       padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
@@ -116,27 +123,25 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
     !(opportunities && opportunities.length > 0);
 
   return (
-    <Modal show={true} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          <div className={styles.header}>
-            <div className={styles.profile}>
-              <Avatar src={user?.profile?.avatar} size={'lg'} />
-              <div className={styles.userName}>
-                <Typography variant={'h3'}>{user?.displayName}</Typography>
-              </div>
+    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
+      <DialogTitle id="user-dialog-title" onClose={onHide}>
+        <div className={styles.header}>
+          <div className={styles.profile}>
+            <Avatar src={user?.profile?.avatar} size={'lg'} />
+            <div className={styles.userName}>
+              <Typography variant={'h3'}>{user?.displayName}</Typography>
             </div>
-            {user?.profile?.description && (
-              <div className={styles.description}>
-                <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
-                  {user?.profile.description}
-                </Typography>
-              </div>
-            )}
           </div>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+          {user?.profile?.description && (
+            <div className={styles.description}>
+              <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+                {user?.profile.description}
+              </Typography>
+            </div>
+          )}
+        </div>
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         {loading ? (
           <Loading text={'Loading user'} />
         ) : (
@@ -153,57 +158,61 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
               )}
             </div>
             <div>
-              <Table striped bordered hover size="sm" className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Community</th>
-                    <th>List</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table size="small" className={styles.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell component="th" align="center">
+                      Community
+                    </TableCell>
+                    <TableCell component="th" align="center">
+                      List
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {groups && groups.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Groups
                         </Typography>
-                      </td>
-                      <td>
+                      </TableCell>
+                      <TableCell align="center">
                         <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {challenges && challenges.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Challenges
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(challenges)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(challenges)}</TableCell>
+                    </TableRow>
                   )}
                   {organizations && organizations.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Organisations
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(organizations)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(organizations)}</TableCell>
+                    </TableRow>
                   )}
                   {opportunities && opportunities.length > 0 && (
-                    <tr>
-                      <td>
+                    <TableRow>
+                      <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
                           Opportunites
                         </Typography>
-                      </td>
-                      <td>{getStringOfNames(opportunities)}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell align="center">{getStringOfNames(opportunities)}</TableCell>
+                    </TableRow>
                   )}
-                </tbody>
+                </TableBody>
               </Table>
               {noMembership && (
                 <div className={styles.centeredText}>
@@ -228,16 +237,15 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
             )}
           </div>
         )}
-      </Modal.Body>
-      <Modal.Footer>
-        <OverlayTrigger placement={'top'} overlay={<Tooltip id={'more-tags'}>Coming soon</Tooltip>}>
+      </DialogContent>
+      <DialogActions>
+        <Tooltip placement={'top'} title={'Coming soon'} id={'more-tags'}>
           <span>
             <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
           </span>
-        </OverlayTrigger>
-        <Button onClick={onHide} text={t('buttons.close')} />
-      </Modal.Footer>
-    </Modal>
+        </Tooltip>
+      </DialogActions>
+    </Dialog>
   );
 };
 

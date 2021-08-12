@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Container from './Container';
+import { Container } from '@material-ui/core';
 
 const Divider: FC<{ noPadding?: boolean }> = ({ noPadding }) => {
   const svg = (
@@ -55,7 +55,7 @@ const Divider: FC<{ noPadding?: boolean }> = ({ noPadding }) => {
     return <div style={{ width: '100%', maxWidth: '100%' }}>{svg}</div>;
   }
   return (
-    <Container>
+    <Container maxWidth="xl">
       <div style={{ width: '100%', maxWidth: '100%' }}>{svg}</div>
     </Container>
   );

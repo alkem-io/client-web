@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 
 interface SidebarItemEcoverseProps {
   ecoverse: EcoverseDetailsFragment;
@@ -53,12 +53,7 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
   return (
     <div className={styles.widthFull}>
       <Link to={`/${ecoverse.nameID}`} className={clsx(styles.textDecorationNone, styles.widthFull)}>
-        <OverlayTrigger
-          offset={[100, 100]}
-          placement="right"
-          trigger={hideLabel ? ['hover', 'focus'] : []}
-          overlay={<Tooltip id={`tooltip-${tooltip.toLowerCase()}`}>{tooltip}</Tooltip>}
-        >
+        <Tooltip placement="right" id={`tooltip-${tooltip.toLowerCase()}`} title={ecoverse.displayName}>
           <span className={clsx(styles.wrapper, styles.widthFull)}>
             <Button
               inset
@@ -71,7 +66,7 @@ const SidebarItemEcoverse: FC<SidebarItemEcoverseProps> = ({ ecoverse, hideLabel
               }}
             />
           </span>
-        </OverlayTrigger>
+        </Tooltip>
       </Link>
     </div>
   );

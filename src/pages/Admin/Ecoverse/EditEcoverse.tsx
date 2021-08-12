@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { Container } from '@material-ui/core';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
@@ -10,7 +11,6 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
-import { useTranslation } from 'react-i18next';
 
 interface EcoverseEditProps extends PageProps {}
 
@@ -61,7 +61,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   let submitWired;
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {'Edit Ecoverse'}
       </Typography>

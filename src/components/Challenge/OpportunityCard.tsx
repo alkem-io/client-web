@@ -9,9 +9,9 @@ import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useCardStyles = createStyles(theme => ({
   card: {
@@ -98,14 +98,11 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>

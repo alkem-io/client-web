@@ -1,20 +1,19 @@
+import { Grid } from '@material-ui/core';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import Divider from '../core/Divider';
 import Typography from '../core/Typography';
-import { Required } from '../core/Required';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
-import { contextSegmentSchema, ContextSegment } from './Common/ContextSegment';
+import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
 import FormikCheckboxField from './Common/FormikCheckboxField';
+import FormikSelect from './Common/FormikSelect';
 import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from './Common/TagsetSegment';
-import useProfileStyles from './Common/useProfileStyles';
-import { visualSegmentSchema, VisualSegment } from './Common/VisualSegment';
+import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
+import { VisualSegment, visualSegmentSchema } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -58,7 +57,6 @@ const EcoverseEditForm: FC<Props> = ({
   organizations = [],
 }) => {
   const { t } = useTranslation();
-  const styles = useProfileStyles();
 
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];
@@ -118,80 +116,52 @@ const EcoverseEditForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, values, handleSubmit, handleChange, handleBlur, errors }) => {
+      {({ values: { references }, handleSubmit }) => {
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
         }
 
         return (
-          <>
+          <Grid container spacing={2}>
             <ProfileSegment disabled={isEdit} required={!isEdit} />
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label>
-                  {t('components.editEcoverseForm.host.title')}
-                  {<Required />}
-                </Form.Label>
-                <Form.Control
-                  as={'select'}
-                  onChange={handleChange}
-                  value={values.host}
-                  name={'host'}
-                  className={styles.field}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors['host']}
-                >
-                  <option key={'not-value-key'} value={''}>
-                    {t('components.editEcoverseForm.host.select')}
-                  </option>
-                  {organizations.map((e, i) => (
-                    <option key={`select-id-${i}`} value={e.id}>
-                      {e.name}
-                    </option>
-                  ))}
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">{errors['host']}</Form.Control.Feedback>
-              </Form.Group>
-            </Form.Row>
+            <Grid item xs={12}>
+              <FormikSelect
+                title={t('components.editEcoverseForm.host.title')}
+                name={'host'}
+                values={organizations}
+                required={true}
+                placeholder={t('components.editEcoverseForm.host.title')}
+              />
+            </Grid>
             <ContextSegment />
-
-            <Form.Group>
+            <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
               </Typography>
-            </Form.Group>
-            <TagsetSegment tagsets={tagsets} />
-
-            <Form.Group>
+              <TagsetSegment tagsets={tagsets} />
+            </Grid>
+            <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
-            </Form.Group>
-            <VisualSegment />
-
-            <ContextReferenceSegment references={references || []} contextId={contextId} />
-
+              <VisualSegment />
+            </Grid>
             {isEdit && (
-              <>
-                <Form.Row>
-                  <Form.Group as={Col} xs={11} className={'d-flex mt-4 align-items-center'}>
-                    <Typography variant={'h4'} color={'primary'}>
-                      {t('components.editEcoverseForm.read-access-title')}
-                    </Typography>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <FormikCheckboxField
-                    name="anonymousReadAccess"
-                    title={t('components.editEcoverseForm.read-access')}
-                  />
-                </Form.Row>
-              </>
+              <Grid item xs={12}>
+                <ContextReferenceSegment references={references || []} contextId={contextId} />
+              </Grid>
             )}
+            <Grid item xs={12}>
+              <Typography variant={'h4'} color={'primary'}>
+                {t('components.editEcoverseForm.read-access-title')}
+              </Typography>
+
+              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+            </Grid>
 
             <Divider />
-          </>
+          </Grid>
         );
       }}
     </Formik>

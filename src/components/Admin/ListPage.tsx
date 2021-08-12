@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Container } from '@material-ui/core';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../../pages';
 import SearchableList, { SearchableListItem } from './SearchableList';
 import Button from '../core/Button';
-import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
-import { Container } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
 
 interface ListPageProps extends PageProps {
   data: SearchableListItem[];
@@ -20,7 +20,7 @@ export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDel
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       {(title || newLink) && (
         <div className={'d-flex mb-4'}>
           {title && <Typography variant={'h3'}>{title}</Typography>}

@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks';
@@ -19,6 +18,8 @@ import MemberOf from './MemberOf';
 import ContactDetails from './ContactDetails';
 import { createStyles } from '../../hooks/useTheme';
 import PendingApplications from './PendingApplications';
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -61,14 +62,16 @@ export const UserProfile: FC = () => {
       </div>
       <Body>
         <div style={{ marginTop: 20 }} />
-        <Alert show={!verified} variant={'warning'}>
-          <Trans
-            i18nKey={'pages.user-profile.email-not-verified'}
-            components={{
-              l: <Link to={AUTH_VERIFY_PATH} />,
-            }}
-          />
-        </Alert>
+        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={!verified}>
+          <Alert severity={'warning'}>
+            <Trans
+              i18nKey={'pages.user-profile.email-not-verified'}
+              components={{
+                l: <Link to={AUTH_VERIFY_PATH} />,
+              }}
+            />
+          </Alert>
+        </Snackbar>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
         <PendingApplications user={user} />
         <Card className={'mt-2'}>

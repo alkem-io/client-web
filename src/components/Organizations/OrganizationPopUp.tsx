@@ -1,15 +1,20 @@
+import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Modal, Table } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Dialog from '@material-ui/core/Dialog';
 import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
-import Button from '../core/Button';
 import { Loading } from '../core';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
+import { DialogContent, DialogTitle } from '../core/dialog';
 
 const groupPopUpStyles = createStyles(theme => ({
   header: {
@@ -109,91 +114,84 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
   const challengesLeading = membership?.membershipOrganisation?.challengesLeading || [];
 
   return (
-    <>
-      <Modal show={true} onHide={onHide} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            <div className={styles.header}>
-              <div className={styles.profile}>
-                <Avatar src={profile?.avatar} size={'lg'} />
-                <div className={styles.userName}>
-                  <Typography variant={'h3'}>{name}</Typography>
-                </div>
-              </div>
-              {profile?.description && (
-                <div className={styles.description}>
-                  <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
-                    {profile?.description}
-                  </Typography>
-                </div>
-              )}
+    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">
+      <DialogTitle id="org-dialog-title" onClose={onHide}>
+        <div className={styles.header}>
+          <div className={styles.profile}>
+            <Avatar src={profile?.avatar} size={'lg'} />
+            <div className={styles.userName}>
+              <Typography variant={'h3'}>{name}</Typography>
             </div>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {loadingOrg || loadingMembership ? (
-            <Loading text={'Loading the organization'} />
-          ) : (
-            <div className={styles.tablesDiv}>
-              <div className={styles.centeredText}>
-                {tags.length > 0 ? (
-                  <TagContainer>
-                    {tags.map((t, i) => (
-                      <Tag key={i} text={t} color="neutralMedium" />
-                    ))}
-                  </TagContainer>
-                ) : (
-                  <span>{t('search.organization.no-tags')}</span>
-                )}
-              </div>
-              <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
-                <Table striped bordered hover size="sm" className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Ecoverses hosted</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ecoversesHosting.length > 0 &&
-                      ecoversesHosting.map(x => (
-                        <tr key={`tr-${x.id}`}>
-                          <td key={`td-${x.id}`}>{x.displayName}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-                {ecoversesHosting.length === 0 && (
-                  <div className={styles.centeredText}>{t('search.organization.no-hosted')}</div>
-                )}
-              </div>
-              <div className={clsx({ [styles.tableScrollable]: challengesLeading.length > 0 })}>
-                <Table striped bordered hover size="sm" className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Challenges being lead</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {challengesLeading.length > 0 &&
-                      challengesLeading.map(x => (
-                        <tr key={`tr-${x.id}`}>
-                          <td key={`td-${x.id}`}>{x.displayName}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-                {challengesLeading.length === 0 && (
-                  <div className={styles.centeredText}>{t('search.organization.no-leading')}</div>
-                )}
-              </div>
+          </div>
+          {profile?.description && (
+            <div className={styles.description}>
+              <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+                {profile?.description}
+              </Typography>
             </div>
           )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide} text={t('buttons.close')} />
-        </Modal.Footer>
-      </Modal>
-    </>
+        </div>
+      </DialogTitle>
+      <DialogContent dividers>
+        {loadingOrg || loadingMembership ? (
+          <Loading text={'Loading the organization'} />
+        ) : (
+          <div className={styles.tablesDiv}>
+            <div className={styles.centeredText}>
+              {tags.length > 0 ? (
+                <TagContainer>
+                  {tags.map((t, i) => (
+                    <Tag key={i} text={t} color="neutralMedium" />
+                  ))}
+                </TagContainer>
+              ) : (
+                <span>{t('search.organization.no-tags')}</span>
+              )}
+            </div>
+            <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
+              <Table size="small" className={styles.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell component="th">Ecoverses hosted</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {ecoversesHosting.length > 0 &&
+                    ecoversesHosting.map(x => (
+                      <TableRow key={`tr-${x.id}`}>
+                        <TableCell key={`td-${x.id}`}>{x.displayName}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+              {ecoversesHosting.length === 0 && (
+                <div className={styles.centeredText}>{t('search.organization.no-hosted')}</div>
+              )}
+            </div>
+            <div className={clsx({ [styles.tableScrollable]: challengesLeading.length > 0 })}>
+              <Table size="small" className={styles.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Challenges being lead</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {challengesLeading.length > 0 &&
+                    challengesLeading.map(x => (
+                      <TableRow key={`tr-${x.id}`}>
+                        <TableCell key={`td-${x.id}`}>{x.displayName}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+              {challengesLeading.length === 0 && (
+                <div className={styles.centeredText}>{t('search.organization.no-leading')}</div>
+              )}
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
 

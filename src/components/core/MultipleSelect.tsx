@@ -4,10 +4,10 @@ import clsx from 'clsx';
 import Typography from '../../components/core/Typography';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
-import { Tooltip, Overlay } from 'react-bootstrap';
 
 import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
 import { createStyles } from '../../hooks/useTheme';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useMultipleSelectStyles = createStyles(theme => ({
   groupContainer: {
@@ -286,20 +286,15 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             <IconButton onClick={onSearch} className={styles.searchButton}>
               <Icon component={SearchIcon} color="inherit" size={'sm'} />
             </IconButton>
-            <input
-              ref={input}
-              className={styles.input}
-              onChange={handleInputChange}
-              onKeyDown={handleInputChange}
-              placeholder={'Search people, groups or skills'}
-            />
-            <Overlay target={input.current} show={isTooltipShown} placement="right">
-              {props => (
-                <Tooltip id="overlay-example" {...props}>
-                  You have reached the tags limit of 5
-                </Tooltip>
-              )}
-            </Overlay>
+            <Tooltip id="overlay-example" title={'You have reached the tags limit of 5'} open={isTooltipShown}>
+              <input
+                ref={input}
+                className={styles.input}
+                onChange={handleInputChange}
+                onKeyDown={handleInputChange}
+                placeholder={'Search people, groups or skills'}
+              />
+            </Tooltip>
           </section>
           <div className={styles.elements}>
             {selectedElements.map((selectedEl, index) => (

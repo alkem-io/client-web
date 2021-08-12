@@ -4,7 +4,6 @@ import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/jou
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
@@ -12,7 +11,7 @@ import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunit
 import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Markdown from '../components/core/Markdown';
@@ -31,6 +30,7 @@ import { Challenge as ChallengeType, Context, Organisation } from '../models/gra
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -74,15 +74,11 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
         {organizations.map((org, index) => {
           if (index > 4) return null;
           return (
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.displayName}</Tooltip>}
-              key={index}
-            >
+            <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
               <div className={styles.imgContainer} onClick={() => setModalId(org.id)}>
                 <img src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
               </div>
-            </OverlayTrigger>
+            </Tooltip>
           );
         })}
       </div>
@@ -90,14 +86,15 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
       {!!modalId && <OrganizationPopUp id={modalId} onHide={() => setModalId(null)} />}
 
       {organizations.length > 4 && (
-        <OverlayTrigger
+        <Tooltip
           placement="bottom"
-          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.displayName).join(', ')}</Tooltip>}
+          id="challenge-rest-tooltip"
+          title={organizations.map(x => x.displayName).join(', ')}
         >
           <div className={'d-flex'}>
             <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
           </div>
-        </OverlayTrigger>
+        </Tooltip>
       )}
     </>
   );
@@ -236,13 +233,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             />
             {user?.isAdmin && (
               <>
-                <OverlayTrigger
+                <Tooltip
                   placement={'bottom'}
-                  overlay={
-                    <Tooltip id={'Edit challenge context'}>
-                      {t('pages.challenge.sections.header.buttons.edit.tooltip')}
-                    </Tooltip>
-                  }
+                  id={'Edit challenge context'}
+                  title={t('pages.challenge.sections.header.buttons.edit.tooltip') || ''}
                 >
                   <Edit
                     color={'white'}
@@ -251,7 +245,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
                     className={styles.edit}
                     onClick={() => setIsEditOpened(true)}
                   />
-                </OverlayTrigger>
+                </Tooltip>
                 <ContextEdit
                   variant={'challenge'}
                   show={isEditOpened}

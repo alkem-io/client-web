@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Col } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
 import { createStyles } from '../../hooks/useTheme';
 
 interface DelimiterProps {}
@@ -27,9 +27,11 @@ export const Delimiter: FC<DelimiterProps> = ({ children }) => {
   const style = useDelimiterStyle();
 
   return (
-    <Col className={'p-0'}>
-      <div className={style.line}>{children && <strong className={style.strong}>{children}</strong>}</div>
-    </Col>
+    <Grid container spacing={2}>
+      <Grid item className={'p-0'}>
+        <div className={style.line}>{children && <strong className={style.strong}>{children}</strong>}</div>
+      </Grid>
+    </Grid>
   );
 };
 export default Delimiter;

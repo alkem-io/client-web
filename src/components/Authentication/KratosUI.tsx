@@ -1,3 +1,5 @@
+import { Grid } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import {
   LoginFlow,
   RecoveryFlow,
@@ -13,7 +15,6 @@ import {
   VerificationFlow,
 } from '@ory/kratos-client';
 import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
-import { Alert, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Delimiter from '../core/Delimiter';
 import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
@@ -38,9 +39,9 @@ interface KratosUIProps {
 
 const toAlertVariant = (type: string) => {
   if (type === 'error') {
-    return 'danger';
+    return 'error';
   } else {
-    return 'primary';
+    return 'info';
   }
 };
 
@@ -48,7 +49,7 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
   return (
     <>
       {messages?.map(x => (
-        <Alert key={x.id} variant={toAlertVariant(x.type)}>
+        <Alert key={x.id} severity={toAlertVariant(x.type)}>
           {x.text}
         </Alert>
       ))}
@@ -161,20 +162,24 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
 
   return (
     <KratosUIProvider {...rest}>
-      <div>
-        <Alert show={showFormAlert} variant={'warning'} onClose={() => setShowFormAlert(false)}>
+      {showFormAlert && (
+        <Alert severity={'warning'} onClose={() => setShowFormAlert(false)}>
           {t('authentication.validation.fill-fields')}
         </Alert>
-        <KratosMessages messages={ui.messages} />
-        <Form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
+      )}
+      <form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item>
+            <KratosMessages messages={ui.messages} />
+          </Grid>
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
           {resetPasswordComponent}
           {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
           {nodesByGroup.oidc.map(toUiControl)}
           {nodesByGroup.rest.map(toUiControl)}
-        </Form>
-      </div>
+        </Grid>
+      </form>
     </KratosUIProvider>
   );
 };

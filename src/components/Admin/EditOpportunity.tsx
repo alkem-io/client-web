@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { Path } from '../../context/NavigationProvider';
 import {
   refetchOpportunitiesQuery,
@@ -29,9 +29,10 @@ interface Props {
   mode: FormMode;
   paths: Path[];
   title: string;
+  challengeId: string;
 }
 
-const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
+const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -83,7 +84,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               context: createContextInput(values),
               displayName: name,
-              challengeID: challengeNameId,
+              challengeID: challengeId,
               tags: tagsets.map(x => x.tags.join()),
             },
           },
@@ -109,7 +110,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   let submitWired;
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Typography variant={'h2'} className={'mt-4 mb-4'}>
         {title}
       </Typography>

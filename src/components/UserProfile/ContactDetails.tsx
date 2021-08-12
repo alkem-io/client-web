@@ -3,10 +3,11 @@ import Typography from '../core/Typography';
 import { createStyles } from '../../hooks/useTheme';
 import { User } from '../../models/graphql-schema';
 import Card from '../core/Card';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+import Tooltip from '@material-ui/core/Tooltip';
+import { COUNTRIES } from '../../models/constants';
 
-const Detail: FC<{ title: string; value: string }> = ({ title, value }) => {
+const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
     <>
       {value && (
@@ -53,15 +54,17 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
       <Card>
         <div className={styles.rows}>
           <div className={'d-flex align-items-end flex-column'}>
-            <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={'Edit profile'}>Edit profile</Tooltip>}>
-              <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
-            </OverlayTrigger>
+            <Tooltip placement={'bottom'} id={'Edit profile'} title={'Edit profile'}>
+              <span>
+                <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
+              </span>
+            </Tooltip>
           </div>
           <div className={styles.data}>
             <Detail title="Email" value={email} />
             <Detail title="Bio" value={profile?.description || ''} />
             <Detail title="Phone" value={phone} />
-            <Detail title="Country" value={country} />
+            <Detail title="Country" value={COUNTRIES.find(x => x.code === country)?.name} />
             <Detail title="City" value={city} />
           </div>
         </div>

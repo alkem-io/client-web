@@ -1,6 +1,5 @@
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
-import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
@@ -17,6 +16,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { useInputField } from '../Common/useInputField';
+import { Grid } from '@material-ui/core';
 
 const emptyOrganization = {
   displayName: '',
@@ -126,7 +126,7 @@ export const OrganizationForm: FC<Props> = ({
     <Button
       variant={editMode ? 'default' : 'primary'}
       onClick={handleBack}
-      text={t(`buttons.${editMode ? 'cancel' : 'back'}}`)}
+      text={t(`buttons.${editMode ? 'cancel' : 'back'}`)}
     />
   );
 
@@ -155,56 +155,57 @@ export const OrganizationForm: FC<Props> = ({
                   }
                 >
                   <Header text={title} />
-                  <Form.Row>
-                    <FormikInputField
-                      name={'displayName'}
-                      title={'Display Name'}
-                      value={displayName}
-                      required={true}
-                      readOnly={isReadOnlyMode}
-                    />
-                  </Form.Row>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <FormikInputField
+                        name={'displayName'}
+                        title={'Display Name'}
+                        value={displayName}
+                        required={true}
+                        readOnly={isReadOnlyMode}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormikInputField
+                        name={'nameID'}
+                        title={'Name ID'}
+                        value={nameID}
+                        required={true}
+                        readOnly={isReadOnlyMode || isEditMode}
+                      />
+                    </Grid>
 
-                  <Form.Row>
-                    <FormikInputField
-                      name={'nameID'}
-                      title={'Name ID'}
-                      value={nameID}
-                      required={true}
-                      readOnly={isReadOnlyMode || isEditMode}
-                    />
-                  </Form.Row>
+                    {!isCreateMode && (
+                      <>
+                        <Grid item xs={12}>
+                          <FormikInputField
+                            name={'description'}
+                            title={'Description'}
+                            value={description}
+                            readOnly={isReadOnlyMode}
+                            placeholder={'Description'}
+                            multiline
+                          />
+                        </Grid>
 
-                  {!isCreateMode && (
-                    <>
-                      <Form.Row>
-                        <FormikInputField
-                          name={'description'}
-                          title={'Description'}
-                          value={description}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'Description'}
-                          as={'textarea'}
-                        />
-                      </Form.Row>
-                      {getInputField({ name: 'avatar', label: t('components.visualSegment.avatar') })}
-                      <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                      {isEditMode && (
-                        <ProfileReferenceSegment
-                          references={references}
-                          readOnly={isReadOnlyMode}
-                          profileId={profileId}
-                        />
-                      )}
-                    </>
-                  )}
-                  {!isReadOnlyMode && (
-                    <div className={'d-flex mt-4'}>
-                      <div className={'flex-grow-1'} />
-                      {backButton}
-                      <Button variant="primary" type={'submit'} className={'ml-3'} text={t('buttons.save')} />
-                    </div>
-                  )}
+                        {getInputField({ name: 'avatar', label: t('components.visualSegment.avatar') })}
+                        <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                        {isEditMode && (
+                          <ProfileReferenceSegment
+                            references={references}
+                            readOnly={isReadOnlyMode}
+                            profileId={profileId}
+                          />
+                        )}
+                      </>
+                    )}
+                    {!isReadOnlyMode && (
+                      <Grid container item justifyContent={'flex-end'}>
+                        {backButton}
+                        <Button variant="primary" type={'submit'} className={'ml-3'} text={t('buttons.save')} />
+                      </Grid>
+                    )}
+                  </Grid>
                 </Section>
               </Form>
             );
