@@ -181,6 +181,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                   value={typesFilter.typename}
                   label={typesFilter.title}
                   onChange={handleFilterChange}
+                  variant={'outlined'}
                   input={<OutlinedInput notched label={'Filter'} />}
                 >
                   {Object.keys(filtersConfig).map(x => (

@@ -13,7 +13,7 @@ import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@material-ui/core';
 
 interface P {
   onHide: () => void;
@@ -80,6 +80,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
                   setName(e.target.value as string);
                 }}
                 defaultValue={availableActorGroupNames[0]}
+                input={<OutlinedInput notched label={'Name'} />}
               >
                 {availableActorGroupNames.map((el, i) => (
                   <MenuItem key={i} value={el}>

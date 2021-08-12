@@ -14,6 +14,7 @@ import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { OutlinedInput } from '@material-ui/core';
 
 const useStyles = createStyles(() => ({
   formControl: {
@@ -98,6 +99,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
                     value={role}
                     label={role}
                     onChange={handleRoleChange}
+                    input={<OutlinedInput notched label={'Role'} />}
                   >
                     {roles.map(r => (
                       <MenuItem value={r} onClick={() => setRole(r)} key={r}>
