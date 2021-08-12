@@ -632,7 +632,7 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectMutationVariables
 >;
 export const CreateChallengeDocument = gql`
-  mutation createChallenge($input: CreateChallengeInput!) {
+  mutation createChallenge($input: CreateChallengeInEcoverseInput!) {
     createChallenge(challengeData: $input) {
       ...NewChallenge
     }
