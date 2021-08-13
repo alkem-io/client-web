@@ -1,3 +1,6 @@
+import { Box, Container } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
@@ -9,8 +12,6 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import { Container } from '@material-ui/core';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
@@ -18,21 +19,21 @@ import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
+import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
 } from '../hooks/generated/graphql';
-import { useAuthenticationContext } from '../hooks';
-import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks';
+import { SEARCH_PAGE } from '../models/constants';
 import {
   AuthorizationCredential,
   Context,
@@ -40,14 +41,10 @@ import {
   Project,
   User,
 } from '../models/graphql-schema';
+import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
-import getActivityCount from '../utils/get-activity-count';
-import { useEcoverse } from '../hooks';
-import { SEARCH_PAGE } from '../models/constants';
-import Markdown from '../components/core/Markdown';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -219,8 +216,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
           />
         }
       >
-        <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex align-items-center flex-grow-1">
+        <Box component={Body} display={'flex'} flexDirection={'column'} flexGrow={1}>
+          <Box display={'flex'} alignItems={'center'} flexGrow={1}>
             <SectionHeader
               text={name}
               className={clsx('flex-grow-1', styles.title)}
@@ -252,8 +249,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 />
               </>
             )}
-          </div>
-          <div className="flex-row">
+          </Box>
+          <Box flexDirection={'row'}>
             <Button
               className={styles.offset}
               inset
@@ -275,8 +272,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 />
               ))}
             </>
-          </div>
-        </Body>
+          </Box>
+        </Box>
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
       <Container maxWidth="xl" className={'p-4'}>
@@ -354,11 +351,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
           {isAdmin && availableActorGroupNames.length > 0 && (
-            <Button
-              text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
-              onClick={() => setShowActorGroupModal(true)}
-              className={'ml-4'}
-            />
+            <Box marginLeft={3}>
+              <Button
+                text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
+                onClick={() => setShowActorGroupModal(true)}
+              />
+            </Box>
           )}
         </SectionHeader>
         <SubHeader text={t('pages.opportunity.sections.adoption-ecosystem.subheader')} />
@@ -391,11 +389,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
           {isAuthenticated && !isMemberOfOpportunity && (
-            <Button
-              text={t('pages.opportunity.sections.potential.buttons.apply.text')}
-              onClick={() => setShowInterestModal(true)}
-              className={'ml-4'}
-            />
+            <Box marginLeft={4}>
+              <Button
+                text={t('pages.opportunity.sections.potential.buttons.apply.text')}
+                onClick={() => setShowInterestModal(true)}
+              />
+            </Box>
           )}
         </SectionHeader>
         <SubHeader text={t('pages.opportunity.sections.potential.subheader')} />
@@ -403,12 +402,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
       <Divider />
       {isNoRelations ? (
-        <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
+        <Box display={'flex'} justifyContent={{ lg: 'center' }} alignItems={{ lg: 'center' }}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
           <Typography variant={'h3'} color={'neutralMedium'}>
             {t('pages.opportunity.sections.collaborators.missing-collaborators')}
           </Typography>
-        </div>
+        </Box>
       ) : (
         <>
           {incoming && incoming.length > 0 && (

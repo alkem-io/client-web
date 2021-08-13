@@ -5,6 +5,7 @@ import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
 import { useServerMetadataQuery } from '../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 const useAboutStyles = createStyles(theme => ({
   content: {
@@ -62,18 +63,24 @@ const AboutPage = () => {
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
             {data && (
-              <Typography color={'neutralMedium'} className={'mb-4'}>
-                {t('pages.about.powered-by', {
-                  name: data?.metadata.services[0].name,
-                  version: data?.metadata.services[0].version,
-                })}
-              </Typography>
+              <Box marginBottom={4}>
+                <Typography color={'neutralMedium'}>
+                  {t('pages.about.powered-by', {
+                    name: data?.metadata.services[0].name,
+                    version: data?.metadata.services[0].version,
+                  })}
+                </Typography>
+              </Box>
             )}
 
-            <Typography variant={'h3'} color={'neutralMedium'} className={'mb-4'}>
-              {t('pages.about.title')}
-            </Typography>
-            <Typography className={'mb-4'}>{t('pages.about.description')}</Typography>
+            <Box marginBottom={4}>
+              <Typography variant={'h3'} color={'neutralMedium'}>
+                {t('pages.about.title')}
+              </Typography>
+            </Box>
+            <Box marginBottom={4}>
+              <Typography>{t('pages.about.description')}</Typography>
+            </Box>
             <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
               <Button text={t('buttons.learn-more')} />
             </a>

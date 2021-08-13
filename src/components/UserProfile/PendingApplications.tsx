@@ -15,6 +15,7 @@ import IconButton from '../core/IconButton';
 import { useApolloErrorHandler } from '../../hooks';
 import { useNotification } from '../../hooks';
 import { User } from '../../models/graphql-schema';
+import { Box } from '@material-ui/core';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -65,21 +66,23 @@ const PendingApplications: FC<Props> = ({ user }) => {
   };
 
   return (
-    <Card primaryTextProps={{ text: 'Pending applications' }} className={'mt-2'}>
-      {pendingApp.map((x, i) => (
-        <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
-            {x.displayName}
-          </Typography>
-          <div className="d-flex align-items-center">
-            <Tag text={x.state} color="neutralMedium" />
-            <IconButton onClick={() => handleDelete(x.id)}>
-              <Icon component={Trash} color="negative" size={'md'} />
-            </IconButton>
+    <Box marginY={1}>
+      <Card primaryTextProps={{ text: 'Pending applications' }}>
+        {pendingApp.map((x, i) => (
+          <div key={i} className={styles.listDetail}>
+            <Typography as="span" className={styles.noPadding}>
+              {x.displayName}
+            </Typography>
+            <Box display="flex" alignItems={'center'}>
+              <Tag text={x.state} color="neutralMedium" />
+              <IconButton onClick={() => handleDelete(x.id)}>
+                <Icon component={Trash} color="negative" size={'md'} />
+              </IconButton>
+            </Box>
           </div>
-        </div>
-      ))}
-    </Card>
+        ))}
+      </Card>
+    </Box>
   );
 };
 export default PendingApplications;

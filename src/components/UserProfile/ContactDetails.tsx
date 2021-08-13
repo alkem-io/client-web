@@ -6,17 +6,18 @@ import Card from '../core/Card';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import Tooltip from '@material-ui/core/Tooltip';
 import { COUNTRIES } from '../../models/constants';
+import { Box } from '@material-ui/core';
 
 const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
     <>
       {value && (
-        <>
-          <Typography color="primary" weight="boldLight" className={'mt-2'}>
+        <Box marginY={1}>
+          <Typography color="primary" weight="boldLight">
             {title}
           </Typography>
-          <Typography>{value}</Typography>{' '}
-        </>
+          <Typography>{value}</Typography>
+        </Box>
       )}
     </>
   );
@@ -53,13 +54,13 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
     <>
       <Card>
         <div className={styles.rows}>
-          <div className={'d-flex align-items-end flex-column'}>
+          <Box display={'flex'} alignItems={'end'} flexDirection={'column'}>
             <Tooltip placement={'bottom'} id={'Edit profile'} title={'Edit profile'}>
               <span>
                 <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
               </span>
             </Tooltip>
-          </div>
+          </Box>
           <div className={styles.data}>
             <Detail title="Email" value={email} />
             <Detail title="Bio" value={profile?.description || ''} />

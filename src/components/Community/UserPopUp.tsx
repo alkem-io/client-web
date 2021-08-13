@@ -1,23 +1,23 @@
-import clsx from 'clsx';
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Grid } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
-import Dialog from '@material-ui/core/Dialog';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { Loading } from '../core';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Delimiter from '../core/Delimiter';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
 import Typography from '../core/Typography';
-import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {
@@ -225,14 +225,18 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
             {refs.length > 0 && (
               <>
                 <Delimiter />
-                <div className={clsx(styles.refDiv, 'container')}>
-                  {refs.map(x => (
-                    <div className={styles.refRow}>
-                      <span className="col-5">{x.name}</span>
-                      <span className="col-5">{x.uri}</span>
-                    </div>
+                <Grid container spacing={2}>
+                  {refs.map((x, i) => (
+                    <Grid key={i} item container justifyContent={'center'}>
+                      <Grid item xs={5}>
+                        {x.name}
+                      </Grid>
+                      <Grid item xs={5}>
+                        {x.uri}
+                      </Grid>
+                    </Grid>
                   ))}
-                </div>
+                </Grid>
               </>
             )}
           </div>

@@ -58,7 +58,7 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                         <TableCell>{m.firstName}</TableCell>
                         <TableCell>{m.lastName}</TableCell>
                         <TableCell>{m.email}</TableCell>
-                        <TableCell className={'text-right'}>
+                        <TableCell align={'right'}>
                           {onRemove && <Button variant="negative" size="small" onClick={() => onRemove(m)} text="X" />}
                         </TableCell>
                       </TableRow>

@@ -123,11 +123,13 @@ export const OrganizationForm: FC<Props> = ({
   const handleBack = () => history.goBack();
 
   const backButton = (
-    <Button
-      variant={editMode ? 'default' : 'primary'}
-      onClick={handleBack}
-      text={t(`buttons.${editMode ? 'cancel' : 'back'}`)}
-    />
+    <Grid item>
+      <Button
+        variant={editMode ? 'default' : 'primary'}
+        onClick={handleBack}
+        text={t(`buttons.${editMode ? 'cancel' : 'back'}`)}
+      />
+    </Grid>
   );
 
   if (!currentOrganization && editMode !== EditMode.new) {
@@ -149,11 +151,7 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { displayName, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section
-                  avatar={
-                    <EditableAvatar src={avatar} size={'xl'} className={'mb-2'} name={'Avatar'} profileId={profileId} />
-                  }
-                >
+                <Section avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}>
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -200,9 +198,11 @@ export const OrganizationForm: FC<Props> = ({
                       </>
                     )}
                     {!isReadOnlyMode && (
-                      <Grid container item justifyContent={'flex-end'}>
+                      <Grid container item justifyContent={'flex-end'} spacing={2}>
                         {backButton}
-                        <Button variant="primary" type={'submit'} className={'ml-3'} text={t('buttons.save')} />
+                        <Grid item>
+                          <Button variant="primary" type={'submit'} text={t('buttons.save')} />
+                        </Grid>
                       </Grid>
                     )}
                   </Grid>

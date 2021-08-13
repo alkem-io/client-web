@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { Box, Container } from '@material-ui/core';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
@@ -86,24 +86,23 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   let submitWired;
   return (
     <Container maxWidth="xl">
-      <Typography variant={'h2'} className={'mt-4 mb-4'}>
-        {'New Ecoverse'}
-      </Typography>
+      <Box marginY={3}>
+        <Typography variant={'h2'}>{'New Ecoverse'}</Typography>
+      </Box>
       <EcoverseEditForm
         isEdit={false}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
         organizations={organizations}
       />
-      <div className={'d-flex mt-4 mb-4'}>
+      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
         <Button
           disabled={isLoading}
-          className={'ml-auto'}
           variant="primary"
           onClick={() => submitWired()}
           text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
         />
-      </div>
+      </Box>
     </Container>
   );
 };

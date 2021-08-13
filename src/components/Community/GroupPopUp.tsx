@@ -11,6 +11,7 @@ import shuffleCollection from '../../utils/shuffleCollection';
 import AvatarContainer from '../core/AvatarContainer';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { DialogContent, DialogTitle } from '../core/dialog';
+import { Grid } from '@material-ui/core';
 
 const groupPopUpStyles = createStyles(() => ({
   title: {
@@ -42,28 +43,31 @@ const GroupPopUp: FC<GroupPopUpProps> = ({ onHide, name, members, profile, terms
         Group Details
       </DialogTitle>
       <DialogContent dividers>
-        <div className={'d-flex align-items-center mb-3'}>
-          <Avatar src={profile?.avatar} size={'lg'} />
-          <div className={'ml-3'}>
-            <Typography variant={'h3'} className={styles.title}>
-              {name}
-            </Typography>
-            <Tags tags={tagList} />
-          </div>
-          <div className={'flex-grow-1'} />
-        </div>
+        <Grid container spacing={2}>
+          <Grid item container alignItems={'center'}>
+            <Grid item xs={2}>
+              <Avatar src={profile?.avatar} size={'lg'} />
+            </Grid>
+            <Grid item xs={10}>
+              <Typography variant={'h3'} className={styles.title}>
+                {name || 'Name placeholder'}
+              </Typography>
+              <Tags tags={tagList} />
+            </Grid>
+          </Grid>
+        </Grid>
 
-        <Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-          {profile?.description}
+        <Typography weight={'medium'} variant={'h4'}>
+          {profile?.description || 'Description'}
         </Typography>
 
         <Divider noPadding />
 
         <AvatarsProvider users={members} count={10}>
           {populated => (
-            <AvatarContainer className="d-flex" title={'Active community members'}>
+            <AvatarContainer title={'Active community members'}>
               {shuffleCollection(populated).map((u, i) => (
-                <Avatar className={'d-inline-flex'} key={i} src={u.profile?.avatar} name={u.displayName} />
+                <Avatar key={i} src={u.profile?.avatar} name={u.displayName} />
               ))}
               {members && members?.length - populated.length > 0 && (
                 <Typography variant="h3" as="h3" color="positive">

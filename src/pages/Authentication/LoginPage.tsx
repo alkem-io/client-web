@@ -64,9 +64,9 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     <AuthenticationLayout>
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
-            {t('pages.login.title')}
-          </Typography>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.login.title')}</Typography>
+          </Box>
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter>OR</Delimiter>
           <Typography variant={'h5'}>{t('pages.login.register')}</Typography>

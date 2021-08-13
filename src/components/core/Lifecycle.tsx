@@ -30,7 +30,7 @@ const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
     [lifecycle]
   );
 
-  return <svg id="graph-container" className="col-7" ref={divRef} />;
+  return <svg id="graph-container" ref={divRef} />;
 };
 
 const buildGraph = (

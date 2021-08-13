@@ -2,12 +2,12 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import Grid, { GridSize } from '@material-ui/core/Grid';
 import { Theme } from '@material-ui/core/styles';
-import { Container } from '@material-ui/core';
+import { Box, Container, makeStyles } from '@material-ui/core';
 import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
-import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
+import { createStyles } from '../../hooks/useTheme';
 
 interface HeaderProps {
   text?: string;
@@ -43,7 +43,7 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
       {tagText && <Tag className={styles.tagOffset} text={tagText} />}
       {icon && (
         <>
-          <div className={'flex-grow-1'} />
+          <Box flexGrow={1} />
           {icon}
         </>
       )}
@@ -148,7 +148,7 @@ interface SectionClassProps extends ClassProps {
   coverBackground?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
 }
 
-const useSectionStyles = createStyles(theme => ({
+const useSectionStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
@@ -202,7 +202,8 @@ const Section: FC<SectionProps> = ({
         )}
         <Grid
           item
-          className={'d-flex flex-column position-relative'}
+          container
+          direction={'column'}
           xs={12}
           md={(8 + (hideDetails || !details ? 4 : 0)) as GridSize}
           lg={(6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)) as GridSize}
