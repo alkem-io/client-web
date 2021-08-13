@@ -1,31 +1,53 @@
 import { useLazyQuery } from '@apollo/client';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useEffect, useState } from 'react';
-import { Col, Container, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Box, Container, OutlinedInput } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { GroupCard } from '../components/Community/GroupCard';
 import { OrganizationCard } from '../components/Community/OrganizationCard';
 import { ChallengeCard } from '../components/Community/ChallengeCard';
 import { UserCard } from '../components/Community/UserCard';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import MultipleSelect from '../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SearchDocument } from '../hooks/generated/graphql';
-import { useUpdateNavigation } from '../hooks';
+import { createStyles, useUpdateNavigation } from '../hooks';
 import { Challenge, Organisation, User, UserGroup } from '../models/graphql-schema';
 import { PageProps } from './common';
 
+const useStyles = createStyles(() => ({
+  formControl: {
+    minWidth: 150,
+  },
+}));
+
+interface Filter {
+  title: string;
+  value: string;
+  typename: string;
+}
+
+interface FilterConfig {
+  [key: string]: Filter;
+}
+
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
+  const styles = useStyles();
 
-  const filtersConfig = {
+  const filtersConfig: FilterConfig = {
     all: {
-      title: 'No filters',
+      title: 'All',
       value: '',
-      typename: '',
+      typename: 'all',
     },
     user: {
       title: 'Users only',
@@ -81,7 +103,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const [community, setCommunity] = useState<Array<User | UserGroup | Organisation | Challenge>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
-  const [typesFilter, setTypesFilter] = useState<{ title: string; value: string; typename: string }>(filtersConfig.all);
+  const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
 
   let searchTerm = '';
 
@@ -122,11 +144,23 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     });
   };
 
+  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const typename = event.target.value;
+    const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
+
+    if (filterKey) {
+      const filter = filtersConfig[filterKey];
+      setTypesFilter(filter);
+    }
+  };
+
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('search.header')} />
-        <SubHeader text={t('search.alternativesubheader')} className={'mb-4'} />
+        <Box marginBottom={2}>
+          <SubHeader text={t('search.alternativesubheader')} />
+        </Box>
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
@@ -138,35 +172,36 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       </Section>
       <Divider />
       {tags.length > 0 && (
-        <Container>
-          <Row className={'justify-content-md-center mb-5'}>
-            <Col lg={3}>
-              <DropdownButton title={typesFilter.title} variant={'info'}>
-                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.all)}>
-                  {filtersConfig.all.title}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.user)}>
-                  {filtersConfig.user.title}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.group)}>
-                  {filtersConfig.group.title}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.organization)}>
-                  {filtersConfig.organization.title}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setTypesFilter(filtersConfig.challenge)}>
-                  {filtersConfig.challenge.title}
-                </Dropdown.Item>
-              </DropdownButton>
-            </Col>
-            <Col lg={9}>
-              {community.length > 10 && (
-                <Typography>
-                  There are more search results. Please use more specific search criteria to narrow down the results
-                </Typography>
-              )}
-            </Col>
-          </Row>
+        <Container maxWidth="xl">
+          <Box marginBottom={3}>
+            <Grid container spacing={2} justifyContent={'center'}>
+              <Grid item lg={3}>
+                <FormControl variant="outlined" className={styles.formControl}>
+                  <InputLabel id="filter-select-label">Filter</InputLabel>
+                  <Select
+                    labelId="filter-select-label"
+                    id="filter-select"
+                    value={typesFilter.typename}
+                    label={typesFilter.title}
+                    onChange={handleFilterChange}
+                    variant={'outlined'}
+                    input={<OutlinedInput notched label={'Filter'} />}
+                  >
+                    {Object.keys(filtersConfig).map(x => (
+                      <MenuItem value={filtersConfig[x].typename}>{filtersConfig[x].title}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item lg={9}>
+                {community.length > 10 && (
+                  <Typography>
+                    There are more search results. Please use more specific search criteria to narrow down the results
+                  </Typography>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
         </Container>
       )}
       <CardContainer cardHeight={290} xs={12} sm={6} md={6}>

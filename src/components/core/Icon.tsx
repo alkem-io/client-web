@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FunctionComponent, SVGProps } from 'react';
-import { Palette } from '../../context/ThemeProvider';
+import { Palette } from '@material-ui/core/styles/createPalette';
 import { createStyles } from '../../hooks/useTheme';
 
 const useIconStyles = createStyles(theme => ({
@@ -15,7 +15,10 @@ const useIconStyles = createStyles(theme => ({
     fontSize: 160,
   },
   ...Object.keys(theme.palette).reduce((aggr: Record<string, {}>, key) => {
-    aggr[key] = { color: theme.palette[key as keyof Palette] };
+    const color = theme.palette[key as keyof Palette]['main'];
+    if (color) {
+      aggr[key] = { color: color };
+    }
 
     return aggr;
   }, {}),

@@ -4,18 +4,78 @@ import clsx from 'clsx';
 import Typography from '../../components/core/Typography';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
-import { Tooltip, Overlay } from 'react-bootstrap';
 
 import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
 import { createStyles } from '../../hooks/useTheme';
+import Tooltip from '@material-ui/core/Tooltip';
 
-const useMultipleSelectStyles = createStyles(theme => {
-  const element = {
+const useMultipleSelectStyles = createStyles(theme => ({
+  groupContainer: {
+    position: 'relative',
+    marginTop: -3,
+  },
+  label: {
+    width: '100%',
+    position: 'relative',
+    fontSize: '0.9vw',
+    whiteSpace: 'nowrap',
+    color: theme.palette.neutral.main,
+  },
+  selectContainer: {
+    position: 'relative',
+    height: `${theme.spacing(6)}px`,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+    padding: `${theme.spacing(1)}px`,
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    backgroundColor: `${theme.palette.background.paper}`,
+    color: `${theme.palette.neutral.main}`,
+    transition: 'border-color 0.3s, box-shadow 0.3s',
+    scrollbarColor: `${theme.palette.primary.main} ${theme.palette.background.paper}`,
+    scrollbarWidth: 'thin',
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
+    borderRadius: `${theme.spacing(5)}px`,
+    '&:hover, &:active ': {
+      boxShadow: '0 0 0 0.2rem #007bff25',
+      borderColor: `${theme.palette.primary.main}`,
+      cursor: 'pointer',
+    },
+    '&::-webkit-scrollbar': {
+      height: 6,
+      marginLeft: `${theme.spacing(2)}px`,
+    },
+    /* Track */
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 5px #c3c3c3',
+      backgroundColor: theme.palette.background.paper,
+    },
+
+    /* Handle */
+    '&::-webkit-scrollbar-thumb': {
+      background: `${theme.palette.primary.main}`,
+    },
+    /* Handle on hover */
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: `${theme.palette.positive.main}`,
+    },
+    '&::-webkit-scrollbar-button': {
+      backgroundColor: 'transparent',
+    },
+  },
+  elements: {
+    display: 'flex',
+    boxSizing: 'border-box',
+  },
+  selectedElement: {
     display: 'flex',
     width: 'fit-content',
     alignItems: 'center',
     margin: '0 10px 0 0',
-    borderRadius: `${theme.shape.spacing(5)}px`,
+    borderRadius: `${theme.spacing(5)}px`,
     flexShrink: 0,
     overflowX: 'auto',
     transition: 'background-color 0.25s',
@@ -25,139 +85,84 @@ const useMultipleSelectStyles = createStyles(theme => {
       fontWeight: 700,
       fontFamily: 'Montserrat, sans-serif',
     },
-  };
-
-  return {
-    groupContainer: {
-      position: 'relative',
-      marginTop: -3,
+    padding: '11px 16px 11px 24px',
+    backgroundColor: `${theme.palette.primary.main}`,
+    lineHeight: '18px',
+    '&:hover': {
+      cursor: 'default',
+      backgroundColor: `${theme.palette.positive.main}`,
     },
-    label: {
-      width: '100%',
-      position: 'relative',
-      fontSize: '0.9vw',
-      whiteSpace: 'nowrap',
-      color: theme.palette.neutral,
+  },
+  removeIcon: {
+    flexShrink: 0,
+    color: `${theme.palette.neutral.main}`,
+    marginLeft: `${theme.spacing(1)}px`,
+    '&:hover': {
+      color: `${theme.palette.negative.main}`,
+      cursor: 'pointer',
     },
-    selectContainer: {
-      position: 'relative',
-      height: `${theme.shape.spacing(6)}px`,
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      boxSizing: 'border-box',
-      padding: `${theme.shape.spacing(1)}px`,
-      overflowX: 'auto',
-      overflowY: 'hidden',
-      backgroundColor: `${theme.palette.background}`,
-      color: `${theme.palette.neutral}`,
-      transition: 'border-color 0.3s, box-shadow 0.3s',
-      scrollbarColor: `${theme.palette.primary} ${theme.palette.background}`,
-      scrollbarWidth: 'thin',
-      border: `1px solid ${theme.palette.neutralMedium}`,
-      borderRadius: `${theme.shape.spacing(5)}px`,
-      '&:hover, &:active ': {
-        boxShadow: '0 0 0 0.2rem #007bff25',
-        borderColor: `${theme.palette.primary}`,
-        cursor: 'pointer',
-      },
-      '&::-webkit-scrollbar': {
-        height: 6,
-        marginLeft: `${theme.shape.spacing(2)}px`,
-      },
-      /* Track */
-      '&::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 5px #c3c3c3',
-        backgroundColor: theme.palette.background,
-      },
-
-      /* Handle */
-      '&::-webkit-scrollbar-thumb': {
-        background: `${theme.palette.primary}`,
-      },
-      /* Handle on hover */
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: `${theme.palette.positive}`,
-      },
-      '&::-webkit-scrollbar-button': {
-        backgroundColor: 'transparent',
-      },
+  },
+  flexCenterContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  searchButton: {
+    padding: '10px',
+  },
+  suggestionsTitle: {
+    marginTop: `${theme.spacing(3)}px`,
+    marginBottom: `${theme.spacing(2)}px`,
+    textTransform: 'uppercase',
+  },
+  suggestions: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  suggestionElement: {
+    display: 'flex',
+    width: 'fit-content',
+    alignItems: 'center',
+    margin: '0 10px 0 0',
+    borderRadius: `${theme.spacing(5)}px`,
+    flexShrink: 0,
+    overflowX: 'auto',
+    transition: 'background-color 0.25s',
+    textTransform: 'uppercase',
+    '& > span': {
+      fontSize: 14,
+      fontWeight: 700,
+      fontFamily: 'Montserrat, sans-serif',
     },
-    elements: {
-      display: 'flex',
-      boxSizing: 'border-box',
+    padding: '11px 24px',
+    backgroundColor: `${theme.palette.neutralMedium.main}`,
+    marginBottom: `${theme.spacing(1)}px`,
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: `${theme.palette.primary.main}`,
     },
-    selectedElement: {
-      ...element,
-      padding: '11px 16px 11px 24px',
-      backgroundColor: `${theme.palette.primary}`,
-      lineHeight: '18px',
-      '&:hover': {
-        cursor: 'default',
-        backgroundColor: `${theme.palette.positive}`,
-      },
+  },
+  input: {
+    width: 285,
+    border: 'none',
+    height: 35,
+    padding: '0 15px',
+    fontSize: 16,
+    '&:focus': {
+      outline: 'none',
     },
-    removeIcon: {
-      flexShrink: 0,
-      color: `${theme.palette.neutral}`,
-      marginLeft: `${theme.shape.spacing(1)}px`,
-      '&:hover': {
-        color: `${theme.palette.negative}`,
-        cursor: 'pointer',
-      },
+    '&::placeholder': {
+      fontSize: 20,
     },
-    flexCenterContainer: {
-      display: 'flex',
-      alignItems: 'center',
+  },
+  disabled: {
+    color: '#616161',
+    '&:hover': {
+      cursor: 'not-allowed',
+      backgroundColor: '#fff',
     },
-    searchButton: {
-      padding: '10px',
-    },
-    suggestionsTitle: {
-      marginTop: `${theme.shape.spacing(3)}px`,
-      marginBottom: `${theme.shape.spacing(2)}px`,
-      textTransform: 'uppercase',
-    },
-    suggestions: {
-      width: '100%',
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
-    suggestionElement: {
-      ...element,
-      padding: '11px 24px',
-      backgroundColor: `${theme.palette.neutralMedium}`,
-      flexShrink: 0,
-      overflowX: 'auto',
-      marginBottom: `${theme.shape.spacing(1)}px`,
-      '&:hover': {
-        cursor: 'pointer',
-        backgroundColor: `${theme.palette.primary}`,
-      },
-    },
-    input: {
-      width: 285,
-      border: 'none',
-      height: 35,
-      padding: '0 15px',
-      fontSize: 16,
-      '&:focus': {
-        outline: 'none',
-      },
-      '&::placeholder': {
-        fontSize: 20,
-      },
-    },
-    disabled: {
-      color: '#616161',
-      '&:hover': {
-        cursor: 'not-allowed',
-        backgroundColor: '#fff',
-      },
-    },
-  };
-});
+  },
+}));
 
 interface Element {
   name: string;
@@ -281,20 +286,15 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             <IconButton onClick={onSearch} className={styles.searchButton}>
               <Icon component={SearchIcon} color="inherit" size={'sm'} />
             </IconButton>
-            <input
-              ref={input}
-              className={styles.input}
-              onChange={handleInputChange}
-              onKeyDown={handleInputChange}
-              placeholder={'Search people, groups or skills'}
-            />
-            <Overlay target={input.current} show={isTooltipShown} placement="right">
-              {props => (
-                <Tooltip id="overlay-example" {...props}>
-                  You have reached the tags limit of 5
-                </Tooltip>
-              )}
-            </Overlay>
+            <Tooltip id="overlay-example" title={'You have reached the tags limit of 5'} open={isTooltipShown}>
+              <input
+                ref={input}
+                className={styles.input}
+                onChange={handleInputChange}
+                onKeyDown={handleInputChange}
+                placeholder={'Search people, groups or skills'}
+              />
+            </Tooltip>
           </section>
           <div className={styles.elements}>
             {selectedElements.map((selectedEl, index) => (

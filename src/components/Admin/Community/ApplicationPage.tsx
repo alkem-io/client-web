@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
+import Dialog from '@material-ui/core/Dialog';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
@@ -12,6 +12,7 @@ import Typography from '../../core/Typography';
 import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import LifecycleButton from '../../core/LifecycleButton';
+import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 
 interface ApplicationViewmodel {
   id: string;
@@ -91,21 +92,21 @@ const appStyles = createStyles(theme => ({
   },
   header: {
     display: 'flex',
-    gap: theme.shape.spacing(4),
+    gap: theme.spacing(4),
     alignItems: 'center',
     justifyContent: 'center',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexWrap: 'wrap',
-      gap: theme.shape.spacing(2),
+      gap: theme.spacing(2),
     },
   },
   profile: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -114,7 +115,7 @@ const appStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.media.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -128,8 +129,8 @@ const appStyles = createStyles(theme => ({
   questions: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.shape.spacing(1),
-    margin: theme.shape.spacing(1),
+    gap: theme.spacing(1),
+    margin: theme.spacing(1),
   },
   question: {
     display: 'flex',
@@ -156,9 +157,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
   const avatarSrc = user?.profile?.avatar || '';
 
   return (
-    <Modal show={!!appChosen} size="lg" onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter" className={styles.title}>
+    <Dialog open={!!appChosen} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">
+      <DialogTitle id="org-dialog-title" onClose={onHide}>
+        <div className={styles.title}>
           <div className={styles.header}>
             <div className={styles.profile}>
               <Avatar src={avatarSrc} size={'lg'} />
@@ -167,9 +168,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
               </div>
             </div>
           </div>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+        </div>
+      </DialogTitle>
+      <DialogContent dividers>
         <div className={styles.body}>
           <div className={styles.questions}>
             {questions.map(x => (
@@ -180,9 +181,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
             ))}
           </div>
         </div>
-      </Modal.Body>
+      </DialogContent>
       {nextEvents.length > 0 && (
-        <Modal.Footer>
+        <DialogActions>
           {nextEvents.map((x, i) => (
             <LifecycleButton
               key={i}
@@ -193,9 +194,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
               }}
             />
           ))}
-        </Modal.Footer>
+        </DialogActions>
       )}
-    </Modal>
+    </Dialog>
   );
 };
 

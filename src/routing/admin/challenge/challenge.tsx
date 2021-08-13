@@ -80,7 +80,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route path={`${path}/opportunities`}>
-        <OpportunitiesRoutes paths={currentPaths} />
+        <OpportunitiesRoutes paths={currentPaths} challengeId={challengeUUID} />
       </Route>
       <Route path={`${path}/authorization`}>
         <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />

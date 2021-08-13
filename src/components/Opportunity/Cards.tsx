@@ -6,7 +6,6 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
-import { Theme } from '../../context/ThemeProvider';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsQuery,
@@ -15,10 +14,7 @@ import {
   useDeleteAspectMutation,
   useDeleteRelationMutation,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
-import { useEcoverse } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
-import { useUserContext } from '../../hooks';
+import { useEcoverse, createStyles, useApolloErrorHandler, useUserContext } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';
@@ -35,7 +31,7 @@ const useCardStyles = createStyles(theme => ({
     display: 'flex',
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: theme.shape.spacing(2),
+    paddingTop: theme.spacing(2),
   },
   description: {
     flexGrow: 1,
@@ -49,7 +45,7 @@ const useCardStyles = createStyles(theme => ({
     },
   },
   border: {
-    border: `1px solid ${theme.palette.neutralMedium}`,
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
   },
   iconWrapper: {
     display: 'flex',
@@ -97,7 +93,7 @@ export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, desc
         className={styles.border}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => theme.palette.neutralLight,
+            background: theme => theme.palette.neutralLight.main,
           },
         }}
         primaryTextProps={{ text: actorName }}
@@ -164,7 +160,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
         className={styles.border}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => theme.palette.background,
+            background: theme => theme.palette.background.paper,
           },
         }}
         primaryTextProps={{ text: name, tooltip: true }}
@@ -220,17 +216,17 @@ interface NewActorProps {
 
 const useNewActorCardStyles = createStyles(theme => ({
   card: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
     transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {
-      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral.main, 0.15)}`,
     },
-    border: `1px solid ${hexToRGBA(theme.palette.primary, 0.3)}`,
+    border: `1px solid ${hexToRGBA(theme.palette.primary.main, 0.3)}`,
     borderTopRightRadius: 15,
     overflow: 'hidden',
   },
   section: {
-    background: theme.palette.neutralLight,
+    background: theme.palette.neutralLight.main,
   },
   inner: {
     display: 'flex',
@@ -308,7 +304,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
         className={styles.border}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => theme.palette.background,
+            background: theme => theme.palette.background.paper,
           },
         }}
         primaryTextProps={{ text: replaceAll('_', ' ', title) }}

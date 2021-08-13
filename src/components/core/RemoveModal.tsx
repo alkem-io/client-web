@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
 import Button from './Button';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface RelationRemoveModalProps {
   show: boolean;
@@ -11,21 +13,17 @@ interface RelationRemoveModalProps {
 }
 
 const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title = 'Confirm remove', onConfirm }) => {
+  const { t } = useTranslation();
   return (
-    <Modal show={show} onHide={onCancel} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{text}</Modal.Body>
-      <Modal.Footer>
-        <Button small onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button small variant={'negative'} onClick={onConfirm}>
-          Remove
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="remove-dialog-title">
+      <DialogTitle id="remove-dialog-title" onClose={onCancel}>
+        {title}
+      </DialogTitle>
+      <DialogContent dividers>{text}</DialogContent>
+      <DialogActions>
+        <Button small variant={'negative'} onClick={onConfirm} text={t('buttons.remove')} />
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -1,6 +1,5 @@
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import * as yup from 'yup';
@@ -16,6 +15,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
+import { Grid } from '@material-ui/core';
 
 interface GroupFormProps {
   title?: string;
@@ -98,14 +98,12 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={
-                <EditableAvatar src={avatar} size={'xl'} className={'mb-2'} name={'Avatar'} profileId={profileId} />
-              }
+              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}
               details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
             >
               <Header text={title} />
-              <Form.Row>
-                <Form.Group as={Col}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'name'}
                     title={'Name'}
@@ -115,65 +113,62 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     placeholder={'Full Name'}
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
+                </Grid>
+                <Grid item xs={12}>
                   <FormikInputField
                     name={'description'}
                     title={'Description'}
                     value={description}
                     readOnly={isReadOnlyMode}
                     placeholder={'Description'}
-                    as={'textarea'}
+                    multiline
                     disabled={isSubmitting}
                   />
-                </Form.Group>
-              </Form.Row>
+                </Grid>
 
-              <TagsetSegment
-                tagsets={tagsets}
-                template={tagsetsTemplate}
-                readOnly={isReadOnlyMode}
-                disabled={isSubmitting}
-              />
-              {isEditMode && (
-                <ProfileReferenceSegment
-                  references={references}
+                <TagsetSegment
+                  tagsets={tagsets}
+                  template={tagsetsTemplate}
                   readOnly={isReadOnlyMode}
                   disabled={isSubmitting}
-                  profileId={profileId}
                 />
-              )}
+                {isEditMode && (
+                  <ProfileReferenceSegment
+                    references={references}
+                    readOnly={isReadOnlyMode}
+                    disabled={isSubmitting}
+                    profileId={profileId}
+                  />
+                )}
 
-              {isEditMode && (
-                <div className={'d-flex mt-4'}>
-                  <div className={'flex-grow-1'} />
-                  {onCancel && (
-                    <Button
-                      variant={isEditMode ? 'default' : 'primary'}
-                      onClick={() => onCancel()}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                    >
-                      {isEditMode ? 'Cancel' : 'Back'}
-                    </Button>
-                  )}
-                  {onDelete && (
-                    <Button
-                      variant={'negative'}
-                      onClick={() => onDelete(groupId)}
-                      disabled={isSubmitting}
-                      className={'ml-3'}
-                    >
-                      {'Delete'}
-                    </Button>
-                  )}
-                  <Button variant={'primary'} type={'submit'} className={'ml-3'} disabled={isSubmitting}>
-                    {'Save'}
-                  </Button>
-                </div>
-              )}
+                {isEditMode && (
+                  <Grid container item justifyContent={'flex-end'} spacing={2}>
+                    {onCancel && (
+                      <Grid item>
+                        <Button
+                          variant={isEditMode ? 'default' : 'primary'}
+                          onClick={() => onCancel()}
+                          disabled={isSubmitting}
+                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                        />
+                      </Grid>
+                    )}
+                    {onDelete && (
+                      <Grid item>
+                        <Button
+                          variant={'negative'}
+                          onClick={() => onDelete(groupId)}
+                          disabled={isSubmitting}
+                          text={t('buttons.delete')}
+                        />
+                      </Grid>
+                    )}
+                    <Grid item>
+                      <Button variant={'primary'} type={'submit'} disabled={isSubmitting} text={t('buttons.save')} />
+                    </Grid>
+                  </Grid>
+                )}
+              </Grid>
             </Section>
           </Form>
         );

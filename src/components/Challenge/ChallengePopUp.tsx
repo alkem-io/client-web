@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import Dialog from '@material-ui/core/Dialog';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
@@ -8,8 +10,8 @@ import Divider from '../core/Divider';
 import { Loading } from '../core';
 import Typography from '../core/Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { Grid } from '@material-ui/core';
 
 // todo restructure css
 const groupPopUpStyles = createStyles(theme => ({
@@ -17,16 +19,16 @@ const groupPopUpStyles = createStyles(theme => ({
     textTransform: 'capitalize',
   },
   icon: {
-    marginRight: theme.shape.spacing(1),
+    marginRight: theme.spacing(1),
   },
   table: {
     '& > thead > tr > th': {
-      background: theme.palette.primary,
-      color: theme.palette.background,
+      background: theme.palette.primary.main,
+      color: theme.palette.background.paper,
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
+      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
   },
   italic: {
@@ -39,7 +41,7 @@ const groupPopUpStyles = createStyles(theme => ({
     flexGrow: 1,
   },
   wrapperBackdrop: {
-    background: hexToRGBA(theme.palette.neutral, 0.6),
+    background: hexToRGBA(theme.palette.neutral.main, 0.6),
   },
   wrapperInner: {
     padding: '1rem',
@@ -71,8 +73,12 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
 
   return (
     <>
-      <Modal show={true} onHide={onHide} size="lg" centered>
-        <Modal.Body
+      <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="challenge-dialog-title">
+        <DialogTitle id="challenge-dialog-title" onClose={onHide}>
+          {'Challenge'}
+        </DialogTitle>
+        <DialogContent
+          dividers
           style={{
             background: banner ? `url("${banner}") no-repeat center center / cover` : 'none',
             padding: 0,
@@ -84,50 +90,55 @@ const ChallengePopUp: FC<ChallengePopUpProps> = ({ onHide, id, ecoverseId }) => 
             <div className={styles.wrapperBackdrop}>
               <div className={styles.wrapperInner}>
                 <div className={styles.top}>
-                  <div className={'d-flex align-items-center mb-3'}>
-                    <Avatar src={avatar} size={'lg'} />
-                    <div className={styles.divCentered}>
-                      <Typography variant={'h3'} color={'neutralLight'} className={styles.title}>
-                        {name}
+                  <Grid container spacing={2}>
+                    <Grid item container alignItems={'center'}>
+                      <Grid item xs={2}>
+                        <Avatar src={avatar} size={'lg'} />
+                      </Grid>
+                      <Grid item container justifyContent={'center'} xs={10}>
+                        <Typography variant={'h3'} color={'neutralLight'} className={styles.title}>
+                          {name}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid item>
+                      <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                        {tagline}
                       </Typography>
-                    </div>
-                  </div>
-                  <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
-                    {tagline}
-                  </Typography>
+                    </Grid>
+                  </Grid>
                 </div>
 
                 <div className={styles.body}>
-                  <Divider noPadding />
-                  <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
-                    Ecoverse: {ecoverseDisplayName}
-                  </Typography>
+                  <Grid container spacing={2}>
+                    <Divider />
+                    <Grid item>
+                      <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                        Ecoverse: {ecoverseDisplayName}
+                      </Typography>
+                    </Grid>
 
-                  {/*<Typography weight={'medium'} color={'neutralMedium'} variant={'h4'}>
-                    Todo: ue the banner, label for the ecoverse displayName, more info button for the Challenge, link to
-                    the ecoverse?
-                  </Typography> */}
-                  <Divider noPadding />
-                  <div className={styles.divCentered}>
-                    <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
-                      {tags.length > 0 ? tags.join(', ') : 'No tags available'}
-                    </Typography>
-                  </div>
+                    <Divider />
+                    <div className={styles.divCentered}>
+                      <Typography weight={'medium'} color={'neutralLight'} variant={'h4'}>
+                        {tags.length > 0 ? tags.join(', ') : 'No tags available'}
+                      </Typography>
+                    </div>
+                  </Grid>
                 </div>
               </div>
             </div>
           )}
-        </Modal.Body>
-        <Modal.Footer>
+        </DialogContent>
+        <DialogActions>
           <Button
             variant="primary"
             text={t('buttons.explore')}
             as={Link}
             to={`/${ecoverseNameID}/challenges/${nameID}`}
           />
-          <Button onClick={onHide}>Close</Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

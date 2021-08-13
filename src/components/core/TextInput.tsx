@@ -10,71 +10,71 @@ const useButtonStyles = createStyles(theme => ({
     position: 'relative',
   },
   input: {
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-    paddingTop: theme.shape.spacing(4),
-    color: theme.palette.neutral,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    paddingTop: theme.spacing(4),
+    color: theme.palette.neutral.main,
 
-    border: `2px solid ${theme.palette.neutralMedium}`,
+    border: `2px solid ${theme.palette.neutralMedium.main}`,
     borderRadius: theme.shape.borderRadius,
     '-webkit-transition': '.18s ease-out',
     '-moz-transition': '.18s ease-out',
     '-o-transition': '.18s ease-out',
     transition: '.18s ease-out',
 
-    font: theme.typography.h3.font,
-    fontSize: theme.typography.h3.size,
+    font: theme.typography.h3.fontFamily,
+    fontSize: theme.typography.h3.fontSize,
   },
   textArea: {
-    padding: `${theme.shape.spacing(1)}px ${theme.shape.spacing(2)}px`,
-    paddingTop: theme.shape.spacing(4),
-    color: theme.palette.neutral,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    paddingTop: theme.spacing(4),
+    color: theme.palette.neutral.main,
 
-    border: `2px solid ${theme.palette.neutralMedium}`,
+    border: `2px solid ${theme.palette.neutralMedium.main}`,
     borderRadius: theme.shape.borderRadius,
     '-webkit-transition': '.18s ease-out',
     '-moz-transition': '.18s ease-out',
     '-o-transition': '.18s ease-out',
     transition: '.18s ease-out',
 
-    font: theme.typography.body.font,
-    fontSize: theme.typography.body.size,
+    font: theme.typography.body1.fontFamily,
+    fontSize: theme.typography.body1.fontSize,
   },
   label: {
     position: 'absolute',
     top: 2,
-    left: theme.shape.spacing(2),
+    left: theme.spacing(2),
     width: 'calc(100% - 34px)',
     margin: '0 auto',
-    backgroundColor: theme.palette.background,
-    paddingTop: theme.shape.spacing(1.3),
+    backgroundColor: theme.palette.background.paper,
+    paddingTop: theme.spacing(1.3),
   },
   primary: {
-    color: theme.palette.primary,
+    color: theme.palette.primary.main,
 
     '& > .ct-input,.ct-textarea': {
       '&:hover': {
-        borderColor: theme.palette.primary,
+        borderColor: theme.palette.primary.main,
       },
       '&:focus': {
-        borderColor: theme.palette.primary,
+        borderColor: theme.palette.primary.main,
         outline: 'none',
       },
     },
   },
   neutral: {
-    color: theme.palette.neutral,
+    color: theme.palette.neutral.main,
   },
   error: {
-    color: theme.palette.negative,
+    color: theme.palette.negative.main,
 
     '& > .ct-input,.ct-textarea': {
-      borderColor: theme.palette.negative,
+      borderColor: theme.palette.negative.main,
 
       '&:hover': {
-        borderColor: theme.palette.negative,
+        borderColor: theme.palette.negative.main,
       },
       '&:focus': {
-        borderColor: theme.palette.negative,
+        borderColor: theme.palette.negative.main,
         outline: 'none',
       },
     },

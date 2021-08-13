@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
 import { useParams, useRouteMatch } from 'react-router-dom';
+import { Container } from '@material-ui/core';
 import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '..';
@@ -31,7 +31,7 @@ export const AuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceI
   }
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <EditGlobalCredentials credential={role} parentMembers={parentMembers} resourceId={resourceId} />;
     </Container>
   );

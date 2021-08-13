@@ -1,13 +1,12 @@
+import { makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { createStyles } from '../../../../hooks/useTheme';
 import Button, { ButtonProps } from '../../../core/Button';
 import Icon, { IconProps } from '../../../core/Icon';
-import Typography from '../../../core/Typography';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   link: {
     alignItems: 'center',
     width: '100%',
@@ -20,7 +19,10 @@ const useStyles = createStyles(theme => ({
     justifyContent: 'flex-start',
   },
   avatarIcon: {
-    width: theme.shape.spacing(4),
+    width: theme.spacing(4),
+  },
+  noMarginIcon: {
+    margin: 0,
   },
 }));
 
@@ -48,12 +50,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
   const styles = useStyles();
   return (
     <div style={{ width: '100%' }}>
-      <OverlayTrigger
-        offset={[100, 100]}
-        placement="right"
-        trigger={hideLabel ? ['hover', 'focus'] : []}
-        overlay={<Tooltip id={`tooltip-${tooltip.toLowerCase()}`}>{tooltip}</Tooltip>}
-      >
+      <Tooltip placement="right" id={`tooltip-${tooltip.toLowerCase()}`} title={label}>
         <span style={{ width: '100%', display: 'flex' }}>
           <Button
             inset
@@ -62,20 +59,15 @@ const SidebarItem: FC<SidebarItemProps> = ({
             as={Link}
             to={to}
             className={clsx(styles.link, centerLabel ? styles.center : styles.start)}
+            startIcon={<Icon {...iconProps} className={styles.avatarIcon} />}
+            text={hideLabel ? '' : label}
+            classOverrides={{
+              startIcon: clsx(hideLabel && styles.noMarginIcon),
+            }}
             {...buttonProps}
-          >
-            <Icon {...iconProps} className={styles.avatarIcon} />
-            {label && !hideLabel && (
-              <>
-                <div style={{ padding: 5 }} />
-                <Typography variant="button" weight="bold" color="inherit">
-                  {label}
-                </Typography>
-              </>
-            )}
-          </Button>
+          />
         </span>
-      </OverlayTrigger>
+      </Tooltip>
     </div>
   );
 };

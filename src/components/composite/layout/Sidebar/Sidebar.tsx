@@ -50,23 +50,23 @@ const useStyles = createStyles(theme => ({
     overflowY: 'auto',
   },
   logoLg: {
-    padding: `${theme.shape.spacing(4)}px`,
+    padding: `${theme.spacing(4)}px`,
   },
   logoSm: {
-    padding: `${theme.shape.spacing(2)}px ${theme.shape.spacing(2)}px`,
+    padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
   },
   previewTag: {
     opacity: 1,
     zIndex: -1,
-    right: theme.shape.spacing(0),
-    top: theme.shape.spacing(0.0),
+    right: theme.spacing(0),
+    top: theme.spacing(0.0),
   },
   tagScale: {
     display: 'none',
     transform: 'scale(0.5)',
   },
   copyright: {
-    padding: `${theme.shape.spacing(2)}px`,
+    padding: `${theme.spacing(2)}px`,
   },
 }));
 

@@ -1,9 +1,8 @@
+import { TextField, TextFieldProps } from '@material-ui/core';
+import { Omit } from '@material-ui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
-import { Form, FormControlProps } from 'react-bootstrap';
-import { Required } from '../../core/Required';
-
-interface InputFieldProps extends FormControlProps {
+type InputFieldProps = Omit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
   required?: boolean;
@@ -11,7 +10,7 @@ interface InputFieldProps extends FormControlProps {
   disabled?: boolean;
   placeholder?: string;
   autoComplete?: string;
-}
+};
 
 export const FormikInputField: FC<InputFieldProps> = ({
   title,
@@ -22,35 +21,31 @@ export const FormikInputField: FC<InputFieldProps> = ({
   type,
   placeholder,
   autoComplete,
-  as,
   ...rest
 }) => {
   const [field, meta] = useField(name);
 
   return (
-    <>
-      <Form.Label>
-        {title}
-        {required && <Required />}
-      </Form.Label>
-      <Form.Control
-        name={name}
-        as={as ? as : 'input'}
-        type={type || 'text'}
-        placeholder={placeholder || title}
-        value={field.value}
-        onChange={field.onChange}
-        required={required}
-        readOnly={readOnly}
-        disabled={disabled}
-        isValid={required ? Boolean(!meta.error) && meta.touched : undefined}
-        isInvalid={Boolean(!!meta.error) && meta.touched}
-        autoComplete={autoComplete}
-        onBlur={field.onBlur}
-        {...rest}
-      />
-      <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-    </>
+    <TextField
+      name={name}
+      placeholder={placeholder}
+      label={title}
+      onBlur={field.onBlur}
+      onChange={field.onChange}
+      value={field.value}
+      variant={'outlined'}
+      InputLabelProps={{ shrink: true }}
+      error={meta.touched && Boolean(meta.error)}
+      helperText={meta.touched && meta.error}
+      required={required}
+      disabled={disabled}
+      autoComplete={autoComplete}
+      fullWidth
+      InputProps={{
+        readOnly: readOnly,
+      }}
+      {...rest}
+    />
   );
 };
 export default FormikInputField;

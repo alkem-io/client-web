@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import { Member } from '../../../models/User';
@@ -25,7 +25,7 @@ export const CommunityPage: FC<CommunityPageProps> = ({
   useUpdateNavigation({ currentPaths });
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <EditCommunityCredentials
         credential={credential}
         resourceId={resourceId}

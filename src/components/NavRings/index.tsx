@@ -9,41 +9,41 @@ import Typography from '../core/Typography';
 
 const useNavRingsStyles = createStyles(theme => ({
   wrapper: {
-    [theme.media.down('lg')]: {
+    [theme.breakpoints.down('lg')]: {
       display: 'none',
       visibility: 'hidden',
     },
   },
   navRingsContainer: {
     position: 'fixed',
-    height: `${theme.shape.spacing(36)}px`,
-    width: `${theme.shape.spacing(36)}px`,
-    top: `-${theme.shape.spacing(18)}px`,
-    left: `-${theme.shape.spacing(18)}px`,
+    height: `${theme.spacing(36)}px`,
+    width: `${theme.spacing(36)}px`,
+    top: `-${theme.spacing(18)}px`,
+    left: `-${theme.spacing(18)}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 101,
 
     '& > a': {
-      border: `1px solid ${hexToRGBA(theme.palette.primary, 0.5)}`,
+      border: `1px solid ${hexToRGBA(theme.palette.primary.main, 0.5)}`,
       borderRadius: '50%',
-      backgroundColor: `${theme.palette.background}`,
+      backgroundColor: `${theme.palette.background.paper}`,
       transition: 'border 0.2s ease-in-out',
       position: 'absolute',
 
       '&:last-of-type': {
-        backgroundColor: hexToRGBA(theme.palette.background, 0.8),
+        backgroundColor: hexToRGBA(theme.palette.background.paper, 0.8),
       },
 
       '&:hover': {
-        border: `1px solid ${theme.palette.primary}`,
+        border: `1px solid ${theme.palette.primary.main}`,
       },
     },
   },
   hoveredRoute: {
     position: 'fixed',
-    top: `${theme.shape.spacing(1)}px`,
+    top: `${theme.spacing(1)}px`,
     zIndex: 120,
   },
 }));

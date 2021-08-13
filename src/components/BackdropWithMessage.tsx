@@ -14,7 +14,7 @@ const useBackdropStyles = createStyles(theme => ({
     flexDirection: 'column',
     placeContent: 'center',
     alignItems: 'center',
-    padding: theme.shape.spacing(4),
+    padding: theme.spacing(4),
   },
   message: {
     textAlign: 'center',

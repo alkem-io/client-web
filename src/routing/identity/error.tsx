@@ -1,6 +1,6 @@
 import { SelfServiceErrorContainer } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
@@ -27,7 +27,7 @@ export const ErrorRoute: FC = () => {
   }
 
   return (
-    <Container fluid={'sm'}>
+    <Container maxWidth="sm">
       {errorContainer.errors.map((e, i) => (
         <p key={i}>{`${e['code']} - ${e['message']} (${e['reason']})`}</p>
       ))}

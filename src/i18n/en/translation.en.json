@@ -29,9 +29,25 @@
     "create": "Create",
     "save": "Save",
     "back": "Back",
+    "edit": "Edit",
     "see-more": "See more",
     "home": "Home",
-    "close": "Close"
+    "take-me-home": "Take me home",
+    "close": "Close",
+    "delete": "Delete",
+    "submit": "Submit",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "explore-and-connect": "Explore and connect",
+    "send-message": "Send message",
+    "edit-members": "Edit members",
+    "my-profile": "My profile",
+    "new": "New",
+    "sign-out": "Sign out",
+    "cancel-project": "Cancel project",
+    "create-project": "Create project",
+    "processing": "Processing...",
+    "details": "Details"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -53,6 +69,14 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
+    "ecoverse": "Ecoverse",
+    "ecoverses": "Ecoverses",
+    "challenge": "Challenge",
+    "challenges": "Challenges",
+    "opportunity": "Opportunity",
+    "opportunities": "Opportunities",
+    "project": "Project",
+    "projects": "Projects",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -211,6 +235,14 @@
     },
     "groupForm": {
       "title": "Edit group"
+    },
+    "searchableList": {
+      "placeholder": "Search",
+      "load-more": "Load more",
+      "info": "Showing {{count}} from {{total}}"
+    },
+    "filter": {
+      "placeholder": "Search"
     }
   },
   "navigation": {

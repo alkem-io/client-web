@@ -6,6 +6,8 @@ import { createStyles } from '../hooks/useTheme';
 import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
 import { Spinner } from './core/Spinner';
 import UploadButton from './core/UploadButton';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 const useEditableAvatarStyles = createStyles(() => ({
   outerEditableAvatarWrapper: {
@@ -22,8 +24,9 @@ interface EditableAvatarProps extends AvatarProps {
   profileId?: string;
 }
 
-const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
-  const avatarStyles = useAvatarStyles();
+const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
+  const { t } = useTranslation();
+  const avatarStyles = useAvatarStyles(classes);
   const styles = useEditableAvatarStyles();
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
 
@@ -48,14 +51,17 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
 
   return (
     <div className={clsx(styles.outerEditableAvatarWrapper)}>
-      {loading ? (
-        <div className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}>
-          <Spinner />
-        </div>
-      ) : (
-        <Avatar {...props} />
-      )}
-
+      <Box marginY={1}>
+        {loading ? (
+          <div
+            className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}
+          >
+            <Spinner />
+          </div>
+        ) : (
+          <Avatar {...props} />
+        )}
+      </Box>
       {profileId && (
         <div className={clsx(styles.upload)}>
           <UploadButton
@@ -66,9 +72,8 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, ...props }) => {
               if (file) handleAvatarChange(file);
             }}
             small
-          >
-            Edit
-          </UploadButton>
+            text={t('buttons.edit')}
+          />
         </div>
       )}
     </div>

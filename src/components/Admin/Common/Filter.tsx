@@ -1,5 +1,6 @@
+import { FormControl, OutlinedInput } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
-import { FormControl, InputGroup } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 type FilterProps<T> = {
   data: T[];
@@ -7,6 +8,7 @@ type FilterProps<T> = {
 };
 
 export function Filter<T>({ data, children }: FilterProps<T>): React.ReactElement {
+  const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
 
   const filteredData = useMemo(() => {
@@ -15,7 +17,7 @@ export function Filter<T>({ data, children }: FilterProps<T>): React.ReactElemen
       for (const key in item) {
         const value = item[key];
         if (typeof value === 'string') {
-          if (value.includes(filterBy)) {
+          if (value.toLowerCase().includes(filterBy.toLowerCase())) {
             return true;
           }
         }
@@ -31,9 +33,9 @@ export function Filter<T>({ data, children }: FilterProps<T>): React.ReactElemen
 
   return (
     <>
-      <InputGroup>
-        <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
-      </InputGroup>
+      <FormControl fullWidth size={'small'}>
+        <OutlinedInput placeholder={t('components.filter.placeholder')} onChange={handleSearch} />
+      </FormControl>
       {children(filteredData)}
     </>
   );

@@ -6,6 +6,7 @@ import Avatar from '../../core/Avatar';
 import AvatarContainer from '../../core/AvatarContainer';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
+import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
   members: User[];
@@ -13,6 +14,7 @@ interface GroupMembersDetailsProps {
 }
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
+  const { t } = useTranslation();
   return (
     <>
       <Typography variant={'h4'}>Members</Typography>
@@ -21,15 +23,9 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           const avatars = populated;
           return (
             <>
-              <AvatarContainer className="d-flex" title={''}>
+              <AvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar
-                    className={'d-inline-flex'}
-                    key={i}
-                    src={u.profile?.avatar}
-                    userId={u.id}
-                    name={u.displayName}
-                  />
+                  <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />
@@ -42,11 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && (
-        <Button className={'mt-2'} small as={Link} to={editLink}>
-          {'Edit Members'}
-        </Button>
-      )}
+      {editLink && <Button small as={Link} to={editLink} text={t('buttons.edit-members')} />}
     </>
   );
 };

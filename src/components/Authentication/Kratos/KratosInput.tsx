@@ -1,20 +1,20 @@
+import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@material-ui/core';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
 import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
-import React, { FC, useMemo, useState } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import React, { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icon from '../../core/Icon';
 import IconButton from '../../core/IconButton';
-import { Required } from '../../core/Required';
+import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
-import KratosFeedback from './KratosFeedback';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
 
 interface KratosInputProps extends KratosProps, KratosInputExtraProps {}
 
 export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
   const { t } = useTranslation();
+  const { isHidden } = useContext(KratosUIContext);
   const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
   const [value, setValue] = useState(getNodeValue(node));
   const [touched, setTouched] = useState(false);
@@ -25,40 +25,51 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   const name = getNodeName(node);
   const required = isRequired(node);
 
+  let helperText = '';
+  if (!value && touched) helperText = t('forms.validations.required') + ' ';
+  if (node.messages && node.messages.length > 0) helperText = helperText + node.messages?.map(x => x.text).join(' ');
+
+  let InputProps: Partial<OutlinedInputProps> = {
+    autoComplete,
+    autoCorrect,
+    autoCapitalize,
+  };
+
+  if (isPassword) {
+    InputProps = {
+      ...InputProps,
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
+            <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
+          </IconButton>
+        </InputAdornment>
+      ),
+    };
+  }
+
   return (
-    <Form.Group>
-      <Form.Label>
-        {getNodeTitle(node)}
-        {required && <Required />}
-      </Form.Label>
-      <InputGroup>
-        <Form.Control
+    <Grid item xs={12}>
+      {!isHidden(node) && (
+        <TextField
           name={name}
-          type={inputType}
-          value={value ? String(value) : ''}
-          onChange={e => setValue(e.target.value)}
+          label={getNodeTitle(node)}
           onBlur={() => setTouched(true)}
+          onChange={e => setValue(e.target.value)}
+          value={value ? String(value) : ''}
+          variant={'outlined'}
+          type={inputType}
+          error={touched && invalid}
+          helperText={helperText}
           required={required}
           disabled={attributes.disabled}
-          isInvalid={invalid}
           autoComplete={autoComplete}
-          autoCorrect={autoCorrect}
-          autoCapitalize={autoCapitalize}
-          /*aria-labelledby={} TODO */
+          fullWidth
+          InputProps={{ ...InputProps }}
+          InputLabelProps={{ shrink: true }}
         />
-        {isPassword && (
-          <InputGroup.Append>
-            <InputGroup.Text>
-              <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
-                <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
-              </IconButton>
-            </InputGroup.Text>
-          </InputGroup.Append>
-        )}
-        {!value && <Form.Control.Feedback type="invalid">{t('forms.validations.required')}</Form.Control.Feedback>}
-        <KratosFeedback node={node} />
-      </InputGroup>
-    </Form.Group>
+      )}
+    </Grid>
   );
 };
 export default KratosInput;

@@ -4,7 +4,6 @@ import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/jou
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
@@ -12,7 +11,7 @@ import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunit
 import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
 import Markdown from '../components/core/Markdown';
@@ -21,7 +20,6 @@ import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import BackdropWithMessage from '../components/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { Theme } from '../context/ThemeProvider';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { useUpdateNavigation } from '../hooks';
@@ -32,11 +30,13 @@ import { Challenge as ChallengeType, Context, Organisation } from '../models/gra
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
+import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@material-ui/core';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
     display: 'flex',
-    gap: `${theme.shape.spacing(1)}px`,
+    gap: `${theme.spacing(1)}px`,
     flexWrap: 'wrap',
     '&:hover': {
       cursor: 'pointer',
@@ -59,8 +59,8 @@ const useOrganizationStyles = createStyles(theme => ({
     objectFit: 'contain',
   },
   link: {
-    marginTop: `${theme.shape.spacing(2)}px`,
-    marginRight: `${theme.shape.spacing(4)}px`,
+    marginTop: `${theme.spacing(2)}px`,
+    marginRight: `${theme.spacing(4)}px`,
   },
 }));
 
@@ -75,15 +75,11 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
         {organizations.map((org, index) => {
           if (index > 4) return null;
           return (
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id={`challenge-${org.id}-tooltip`}>{org.displayName}</Tooltip>}
-              key={index}
-            >
+            <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
               <div className={styles.imgContainer} onClick={() => setModalId(org.id)}>
                 <img src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
               </div>
-            </OverlayTrigger>
+            </Tooltip>
           );
         })}
       </div>
@@ -91,14 +87,15 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
       {!!modalId && <OrganizationPopUp id={modalId} onHide={() => setModalId(null)} />}
 
       {organizations.length > 4 && (
-        <OverlayTrigger
+        <Tooltip
           placement="bottom"
-          overlay={<Tooltip id="challenge-rest-tooltip">{organizations.map(x => x.displayName).join(', ')}</Tooltip>}
+          id="challenge-rest-tooltip"
+          title={organizations.map(x => x.displayName).join(', ')}
         >
-          <div className={'d-flex'}>
+          <Box display={'flex'}>
             <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
-          </div>
-        </OverlayTrigger>
+          </Box>
+        </Tooltip>
       )}
     </>
   );
@@ -109,12 +106,9 @@ interface ChallengePageProps extends PageProps {
 }
 
 const useChallengeStyles = createStyles(theme => ({
-  link: {
-    marginTop: `${theme.shape.spacing(2)}px`,
-    marginRight: `${theme.shape.spacing(4)}px`,
-    '&:hover': {
-      color: theme.palette.background,
-    },
+  divNav: {
+    display: 'flex',
+    gap: theme.spacing(4),
   },
   edit: {
     '&:hover': {
@@ -123,7 +117,7 @@ const useChallengeStyles = createStyles(theme => ({
   },
   buttonsWrapper: {
     display: 'flex',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
 }));
 
@@ -217,13 +211,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activitySummary}
             lifecycle={challengeLifecycleQuery?.ecoverse.challenge.lifecycle}
-            classes={{ padding: (theme: Theme) => `${theme.shape.spacing(4)}px` }}
+            classes={{ padding: theme => `${theme.spacing(4)}px` }}
           />
         }
         classes={{
-          background: (theme: Theme) =>
-            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral,
-          coverBackground: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
+          background: theme =>
+            bannerImg ? `url("${bannerImg}") no-repeat center center / cover` : theme.palette.neutral.main,
+          coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
         }}
         gutters={{
           root: true,
@@ -231,22 +225,19 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           details: false,
         }}
       >
-        <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex align-items-center flex-grow-1">
+        <Body>
+          <Box display={'flex'} alignItems={'center'} flexGrow={1}>
             <SectionHeader
               text={name}
               className="flex-grow-1"
-              classes={{ color: (theme: Theme) => theme.palette.neutralLight }}
+              classes={{ color: theme => theme.palette.neutralLight.main }}
             />
             {user?.isAdmin && (
               <>
-                <OverlayTrigger
+                <Tooltip
                   placement={'bottom'}
-                  overlay={
-                    <Tooltip id={'Edit challenge context'}>
-                      {t('pages.challenge.sections.header.buttons.edit.tooltip')}
-                    </Tooltip>
-                  }
+                  id={'Edit challenge context'}
+                  title={t('pages.challenge.sections.header.buttons.edit.tooltip') || ''}
                 >
                   <Edit
                     color={'white'}
@@ -255,7 +246,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
                     className={styles.edit}
                     onClick={() => setIsEditOpened(true)}
                   />
-                </OverlayTrigger>
+                </Tooltip>
                 <ContextEdit
                   variant={'challenge'}
                   show={isEditOpened}
@@ -265,27 +256,17 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
                 />
               </>
             )}
-          </div>
+          </Box>
 
-          <div>
+          <div className={styles.divNav}>
             <Button
               inset
               variant="semiTransparent"
-              text="opportunities"
+              text={t('common.opportunities')}
               onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className={styles.link}
             />
             {challengeRefs?.map((l, i) => (
-              <Button
-                key={i}
-                as="a"
-                inset
-                variant="semiTransparent"
-                text={l.name}
-                href={l.uri}
-                target="_blank"
-                className={styles.link}
-              />
+              <Button key={i} as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
             ))}
           </div>
         </Body>

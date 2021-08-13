@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
 import {
   refetchChallengeProfileQuery,
   refetchOpportunityProfileQuery,
@@ -17,6 +18,7 @@ import {
 } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface Props {
   variant: 'challenge' | 'opportunity';
@@ -34,6 +36,7 @@ const useContextEditStyles = createStyles(() => ({
 }));
 
 const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
@@ -93,11 +96,11 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered size={'xl'}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit context</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+    <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="context-edit-dialog-title">
+      <DialogTitle id="context-edit-dialog-title" onClose={onHide}>
+        Edit context
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         <ProfileForm
           isEdit={true}
           contextOnly={true}
@@ -105,16 +108,11 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}
         />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'}>
-          CANCEL
-        </Button>
-        <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          SAVE
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button type={'submit'} variant="primary" onClick={() => submitWired()} text={t('buttons.save')} />
+      </DialogActions>
+    </Dialog>
   );
 };
 

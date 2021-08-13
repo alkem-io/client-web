@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks';
@@ -19,12 +18,15 @@ import MemberOf from './MemberOf';
 import ContactDetails from './ContactDetails';
 import { createStyles } from '../../hooks/useTheme';
 import PendingApplications from './PendingApplications';
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Box } from '@material-ui/core';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
-    padding: theme.shape.spacing(1),
-    marginTop: theme.shape.spacing(1),
-    backgroundColor: theme.palette.neutralLight,
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    backgroundColor: theme.palette.neutralLight.main,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -61,46 +63,52 @@ export const UserProfile: FC = () => {
       </div>
       <Body>
         <div style={{ marginTop: 20 }} />
-        <Alert show={!verified} variant={'warning'}>
-          <Trans
-            i18nKey={'pages.user-profile.email-not-verified'}
-            components={{
-              l: <Link to={AUTH_VERIFY_PATH} />,
-            }}
-          />
-        </Alert>
+        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={!verified}>
+          <Alert severity={'warning'}>
+            <Trans
+              i18nKey={'pages.user-profile.email-not-verified'}
+              components={{
+                l: <Link to={AUTH_VERIFY_PATH} />,
+              }}
+            />
+          </Alert>
+        </Snackbar>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
         <PendingApplications user={user} />
-        <Card className={'mt-2'}>
-          {tagsets &&
-            tagsets.map((t, i) => (
-              <div key={i}>
-                <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
-                  {toFirstCaptitalLetter(t.name)}
-                </Typography>
-                <TagContainer>
-                  {t.tags.map((t, i) => (
-                    <Tag key={i} text={t} color="neutralMedium" />
-                  ))}
-                </TagContainer>
+        <Box marginY={1}>
+          <Card>
+            {tagsets &&
+              tagsets.map((t, i) => (
+                <Box key={i} marginY={1}>
+                  <Typography as={'span'} color="primary" weight="boldLight">
+                    {toFirstCaptitalLetter(t.name)}
+                  </Typography>
+                  <TagContainer>
+                    {t.tags.map((t, i) => (
+                      <Tag key={i} text={t} color="neutralMedium" />
+                    ))}
+                  </TagContainer>
+                </Box>
+              ))}
+          </Card>
+        </Box>
+        <Box marginY={1}>
+          <Card primaryTextProps={{ text: 'References' }}>
+            {references?.map((x, i) => (
+              <div key={i} className={styles.listDetail}>
+                <div style={{ flexDirection: 'column' }}>
+                  <Typography as="a" href={x.uri} target={'_blank'}>
+                    {x.name}
+                  </Typography>
+                  <Typography variant="caption" color="neutralMedium">
+                    {x.uri}
+                  </Typography>
+                </div>
+                <div style={{ flexGrow: 1 }} />
               </div>
             ))}
-        </Card>
-        <Card primaryTextProps={{ text: 'References' }} className={'mt-2'}>
-          {references?.map((x, i) => (
-            <div key={i} className={styles.listDetail}>
-              <div style={{ flexDirection: 'column' }}>
-                <Typography as="a" href={x.uri} target={'_blank'}>
-                  {x.name}
-                </Typography>
-                <Typography variant="caption" color="neutralMedium">
-                  {x.uri}
-                </Typography>
-              </div>
-              <div style={{ flexGrow: 1 }} />
-            </div>
-          ))}
-        </Card>
+          </Card>
+        </Box>
         <MemberOf
           groups={groups}
           challenges={challenges}

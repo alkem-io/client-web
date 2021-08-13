@@ -1,4 +1,4 @@
-export const COUNTRIES = [
+export const COUNTRIES: CountryType[] = [
   { name: 'Afghanistan', code: 'AF' },
   { name: 'Åland Islands', code: 'AX' },
   { name: 'Albania', code: 'AL' },
@@ -243,3 +243,8 @@ export const COUNTRIES = [
   { name: 'Zambia', code: 'ZM' },
   { name: 'Zimbabwe', code: 'ZW' },
 ];
+
+export type CountryType = {
+  name: string;
+  code: string;
+};

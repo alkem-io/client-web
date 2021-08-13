@@ -1,9 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Box, Container } from '@material-ui/core';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
-import { Loading } from '../../../components/core/Loading/Loading';
 import Typography from '../../../components/core/Typography';
 import {
   EcoverseDetailsFragmentDoc,
@@ -15,10 +14,12 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { createContextInput } from '../../../utils/buildContext';
+import { useTranslation } from 'react-i18next';
 
 interface NewEcoverseProps extends PageProps {}
 
 export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
   const history = useHistory();
@@ -84,21 +85,24 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
 
   let submitWired;
   return (
-    <Container>
-      <Typography variant={'h2'} className={'mt-4 mb-4'}>
-        {'New Ecoverse'}
-      </Typography>
+    <Container maxWidth="xl">
+      <Box marginY={3}>
+        <Typography variant={'h2'}>{'New Ecoverse'}</Typography>
+      </Box>
       <EcoverseEditForm
         isEdit={false}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
         organizations={organizations}
       />
-      <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
-      </div>
+      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
+        <Button
+          disabled={isLoading}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
+      </Box>
     </Container>
   );
 };

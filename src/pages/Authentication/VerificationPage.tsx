@@ -1,7 +1,8 @@
 import { VerificationFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import Grid from '@material-ui/core/Grid';
+import { Box, Container } from '@material-ui/core';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
@@ -45,14 +46,15 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   if (!verificationFlow) return <Loading text={'Loading flow'} />;
 
   return (
-    <Container fluid={'sm'}>
-      <Row className={'d-flex justify-content-center'}>
-        <Col sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4'}></Typography>
-          {t('pages.verification.header')}
+    <Container maxWidth="lg">
+      <Grid container spacing={2} justifyContent={'center'}>
+        <Grid item sm={4}>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.verification.header')}</Typography>
+          </Box>
           <KratosUI flow={verificationFlow} />
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

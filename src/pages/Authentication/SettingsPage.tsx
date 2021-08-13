@@ -1,7 +1,8 @@
 import { SettingsFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Grid from '@material-ui/core/Grid';
+import { Box, Container } from '@material-ui/core';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
@@ -15,6 +16,10 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
   const [settingsFlow, setSettingsFlow] = useState<SettingsFlow>();
   const kratos = useKratosClient();
 
+  const hideFields = useMemo(
+    () => ['traits.name.first', 'traits.name.last', 'traits.accepted_terms', 'profile', 'traits.email'],
+    []
+  );
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -41,14 +46,15 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
   if (!settingsFlow) return <Loading text={'Loading flow'} />;
 
   return (
-    <Container fluid={'sm'}>
-      <Row className={'d-flex justify-content-center'}>
-        <Col sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4'}></Typography>
-          {t('pages.settings.header')}
-          <KratosUI flow={settingsFlow} />
-        </Col>
-      </Row>
+    <Container maxWidth="lg">
+      <Grid container spacing={2} justifyContent={'center'}>
+        <Grid item sm={4}>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.settings.header')}</Typography>
+          </Box>
+          <KratosUI flow={settingsFlow} hideFields={hideFields} />
+        </Grid>
+      </Grid>
     </Container>
   );
 };

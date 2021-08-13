@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
 import * as yup from 'yup';
 import {
   refetchOpportunityActorGroupsQuery,
@@ -13,6 +14,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Actor } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface Props {
   show: boolean;
@@ -26,7 +28,7 @@ interface Props {
 
 const useContextEditStyles = createStyles(theme => ({
   field: {
-    marginBottom: theme.shape.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   row: {
     display: 'flex',
@@ -43,6 +45,7 @@ const useContextEditStyles = createStyles(theme => ({
 }));
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
@@ -104,11 +107,11 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   let submitWired;
 
   return (
-    <Modal show={show} onHide={onHide} centered size={'xl'}>
-      <Modal.Header closeButton>
-        <Modal.Title>{!id ? 'Create' : 'Edit'} Actor</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+    <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="actor-edit-dialog-title">
+      <DialogTitle id="actor-edit-dialog-title" onClose={onHide}>
+        {!id ? 'Create' : 'Edit'} Actor
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -155,16 +158,16 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
             );
           }}
         </Formik>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'}>
-          CANCEL
-        </Button>
-        <Button type={'submit'} variant="primary" onClick={() => submitWired()}>
-          {!id ? 'Create' : 'SAVE'}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          type={'submit'}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${!id ? 'create' : 'save'}`)}
+        />
+      </DialogActions>
+    </Dialog>
   );
 };
 

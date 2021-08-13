@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import React, { FC, MutableRefObject, useCallback } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
+import { Theme } from '@material-ui/core/styles';
 import { Lifecycle } from '../../models/graphql-schema';
-import { Theme } from '../../context/ThemeProvider';
 import { useTheme } from '../../hooks';
 
 export interface GraphThemeOptions {
@@ -20,7 +20,7 @@ interface Props {
 }
 
 const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
-  const theme = useTheme().theme;
+  const theme = useTheme();
   const divRef = useCallback(
     svgRef => {
       if (lifecycle) {
@@ -30,7 +30,7 @@ const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
     [lifecycle]
   );
 
-  return <svg id="graph-container" className="col-7" ref={divRef} />;
+  return <svg id="graph-container" ref={divRef} />;
 };
 
 const buildGraph = (
@@ -44,11 +44,11 @@ const buildGraph = (
   }
 
   const graphThemeDefaults: GraphThemeOptions = {
-    strokePrimaryColor: theme.palette.primary,
+    strokePrimaryColor: theme.palette.primary.main,
     strokeDefaultColor: '#000',
-    fillColor: theme.palette.background,
-    font: theme.typography.button.font,
-    fontSize: theme.typography.button.size,
+    fillColor: theme.palette.background.paper,
+    font: theme.typography.button.fontFamily,
+    fontSize: theme.typography.button.fontSize as number,
   };
 
   options = { ...graphThemeDefaults, ...options };

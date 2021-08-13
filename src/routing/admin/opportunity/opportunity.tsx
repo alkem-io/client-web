@@ -15,7 +15,11 @@ import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 
-export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
+interface Props extends PageProps {
+  challengeId: string;
+}
+
+export const OpportunitiesRoutes: FC<Props> = ({ paths, challengeId }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
 
@@ -27,10 +31,15 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunityList paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
+        <EditOpportunity
+          title={t('navigation.admin.opportunity.create')}
+          challengeId={challengeId}
+          mode={FormMode.create}
+          paths={currentPaths}
+        />
       </Route>
       <Route path={`${path}/:opportunityId`}>
-        <OpportunityRoutes paths={currentPaths} />
+        <OpportunityRoutes paths={currentPaths} challengeId={challengeId} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -39,7 +48,7 @@ export const OpportunitiesRoutes: FC<PageProps> = ({ paths }) => {
   );
 };
 
-export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
+export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { opportunityId, challengeId } = useParams<AdminParameters>();
@@ -68,7 +77,12 @@ export const OpportunityRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <EditOpportunity title={t('navigation.admin.opportunity.edit')} mode={FormMode.update} paths={currentPaths} />
+        <EditOpportunity
+          title={t('navigation.admin.opportunity.edit')}
+          challengeId={challengeUUID}
+          mode={FormMode.update}
+          paths={currentPaths}
+        />
       </Route>
       <Route path={`${path}/community`}>
         <CommunityRoute

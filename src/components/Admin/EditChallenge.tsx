@@ -1,14 +1,9 @@
+import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import { Container } from 'react-bootstrap';
 import { Path } from '../../context/NavigationProvider';
-import Typography from '../core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
-import Button from '../core/Button';
-import { Loading } from '../core';
-import { useNotification } from '../../hooks';
-import { useApolloErrorHandler } from '../../hooks';
-import { useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
@@ -16,8 +11,11 @@ import {
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
 } from '../../hooks/generated/graphql';
-import FormMode from './FormMode';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
+import Button from '../core/Button';
+import Typography from '../core/Typography';
+import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
+import FormMode from './FormMode';
 
 interface Params {
   challengeId?: string;
@@ -31,6 +29,7 @@ interface Props {
 }
 
 const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
@@ -76,7 +75,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               displayName: name,
-              parentID: ecoverseId,
+              ecoverseID: ecoverseId,
               context: createContextInput(values),
               tags: tagsets.map(x => x.tags.join()),
             },
@@ -103,10 +102,8 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
 
   let submitWired;
   return (
-    <Container>
-      <Typography variant={'h2'} className={'mt-4 mb-4'}>
-        {title}
-      </Typography>
+    <Grid container spacing={2}>
+      <Typography variant={'h2'}>{title}</Typography>
       <ProfileForm
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
@@ -116,12 +113,15 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
-      <div className={'d-flex mt-4 mb-4'}>
-        <Button disabled={isLoading} className={'ml-auto'} variant="primary" onClick={() => submitWired()}>
-          {isLoading ? <Loading text={'Processing'} /> : 'Save'}
-        </Button>
-      </div>
-    </Container>
+      <Grid container item justifyContent={'flex-end'}>
+        <Button
+          disabled={isLoading}
+          variant="primary"
+          onClick={() => submitWired()}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+        />
+      </Grid>
+    </Grid>
   );
 };
 export default EditChallenge;

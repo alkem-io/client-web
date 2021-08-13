@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Theme } from '../../context/ThemeProvider';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Button from '../core/Button';
 import Card from '../core/Card';
@@ -10,24 +9,24 @@ import { Activities } from '../ActivityPanel';
 import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useCardStyles = createStyles(theme => ({
   card: {
     marginTop: 0,
-    border: `1px solid ${theme.palette.neutralMedium}`,
+    border: `1px solid ${theme.palette.neutralMedium.main}`,
     height: 400,
   },
   content: {
     height: '225px',
-    background: theme.palette.background,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.background.paper,
+    padding: theme.spacing(2),
   },
   footer: {
-    background: theme.palette.neutralLight,
-    padding: theme.shape.spacing(2),
+    background: theme.palette.neutralLight.main,
+    padding: theme.spacing(2),
   },
   tagline: {
     flexGrow: 1,
@@ -71,18 +70,18 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
       <Card
         className={styles.card}
         classes={{
-          background: (theme: Theme) =>
-            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.primary,
+          background: theme =>
+            backgroundImg ? `url("${backgroundImg}") no-repeat center center / cover` : theme.palette.primary.main,
         }}
         bodyProps={{
           classes: {
-            background: (theme: Theme) => hexToRGBA(theme.palette.neutral, 0.4),
+            background: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
           },
         }}
         primaryTextProps={{
           text: displayName,
           classes: {
-            color: (theme: Theme) => theme.palette.neutralLight,
+            color: theme => theme.palette.neutralLight.main,
           },
         }}
         sectionProps={{
@@ -99,14 +98,11 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
                   <Tag key={i} text={t} color="neutralMedium" />
                 ))}
                 {tags.length > 3 && (
-                  <OverlayTrigger
-                    placement={'right'}
-                    overlay={<Tooltip id={'more-tags'}>{tags.slice(3).join(', ')}</Tooltip>}
-                  >
+                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
                     <span>
                       <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
                     </span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 )}
               </TagContainer>
             </div>

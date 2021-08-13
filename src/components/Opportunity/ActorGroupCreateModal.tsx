@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
-import { Col, Form, Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
+import Grid from '@material-ui/core/Grid';
 import {
   refetchOpportunityActorGroupsQuery,
   useCreateActorGroupMutation,
@@ -10,6 +12,8 @@ import { replaceAll } from '../../utils/replaceAll';
 import Button from '../core/Button';
 import { Loading } from '../core';
 import { TextArea } from '../core/TextInput';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@material-ui/core';
 
 interface P {
   onHide: () => void;
@@ -19,6 +23,7 @@ interface P {
 }
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
+  const { t } = useTranslation();
   const { ecoverseId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
@@ -58,49 +63,46 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Actor group creation</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <>
-          <Col lg={12} className={'mb-4'}>
-            <Form.Group controlId="aspectTypeSelect">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                as="select"
-                custom
+    <Dialog open={show} maxWidth="md" aria-labelledby="actor-group-dialog-title">
+      <DialogTitle id="actor-group-dialog-title" onClose={onHide}>
+        Actor group creation
+      </DialogTitle>
+      <DialogContent dividers>
+        <Grid container spacing={2}>
+          <Grid item lg={12}>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel shrink={true}>{'Name'}</InputLabel>
+              <Select
+                value={name}
+                label={'Name'}
                 onChange={e => {
                   e.preventDefault();
-                  setName(e.target.value);
+                  setName(e.target.value as string);
                 }}
-                size={'lg'}
                 defaultValue={availableActorGroupNames[0]}
+                input={<OutlinedInput notched label={'Name'} />}
               >
-                {availableActorGroupNames?.map((ag, index) => (
-                  <option value={ag} key={index}>
-                    {replaceAll('_', ' ', ag)}
-                  </option>
+                {availableActorGroupNames.map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {replaceAll('_', ' ', el)}
+                  </MenuItem>
                 ))}
-              </Form.Control>
-            </Form.Group>
-            {/*<TextArea onChange={e => setName(e.target.value)} value={name} rows={2} label={'Name'} />*/}
-          </Col>
-          <Col lg={12}>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item lg={12}>
             <TextArea onChange={onDescriptionInput} value={description} rows={2} label={'Description'} />
-          </Col>
-        </>
-      </Modal.Body>
-      <Modal.Footer>
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
         {loading ? (
           <Loading text={'Creating actor group'} />
         ) : (
-          <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid}>
-            Submit
-          </Button>
+          <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
         )}
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

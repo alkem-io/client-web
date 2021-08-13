@@ -12,11 +12,11 @@ import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({
   tag: {
-    top: -theme.shape.spacing(2),
+    top: -theme.spacing(2),
     left: 0,
   },
   offset: {
-    marginRight: theme.shape.spacing(4),
+    marginRight: theme.spacing(4),
   },
 }));
 
@@ -37,7 +37,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
     <>
       <Section
         classes={{
-          background: theme => theme.palette.positive,
+          background: theme => theme.palette.positive.main,
         }}
         gutters={{
           root: true,

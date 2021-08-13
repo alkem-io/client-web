@@ -1,22 +1,20 @@
-import React, { FC, useMemo, useState } from 'react';
-import { Container, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Box, Container, Grid } from '@material-ui/core';
 import { Formik } from 'formik';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import { PageProps } from './common';
-import Typography from '../components/core/Typography';
+import FormikInputField from '../components/Admin/Common/FormikInputField';
 import Button from '../components/core/Button';
-import { Loading } from '../components/core/Loading/Loading';
-import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
 import ErrorBlock from '../components/core/ErrorBlock';
-import { Required } from '../components/core/Required';
-import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks';
-import { useApolloErrorHandler } from '../hooks';
-import { CreateNvpInput, QuestionTemplate } from '../models/graphql-schema';
-import { useUpdateNavigation } from '../hooks';
 import Image from '../components/core/Image';
+import { Loading } from '../components/core/Loading/Loading';
+import Typography from '../components/core/Typography';
+import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
+import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
+import { createStyles } from '../hooks/useTheme';
+import { CreateNvpInput, QuestionTemplate } from '../models/graphql-schema';
+import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
   thankYouDiv: {
@@ -25,17 +23,17 @@ const useStyles = createStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: theme.shape.spacing(1),
-    marginTop: theme.shape.spacing(2),
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
   logoDiv: {
     display: 'flex',
-    gap: theme.shape.spacing(2),
+    gap: theme.spacing(2),
     justifyContent: 'center',
     alignItems: 'center',
 
     '& > img': {
-      height: theme.shape.spacing(4),
+      height: theme.spacing(4),
     },
   },
 }));
@@ -120,16 +118,16 @@ const ApplyPage: FC<ApplyPageProps> = ({
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
       {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
       {!loading && !hasApplied && (
-        <>
-          <Typography variant={'h2'} className={'mt-4 mb-4'}>
+        <Box marginY={4}>
+          <Typography variant={'h2'}>
             {t('pages.ecoverse.application.title')}
             {communityName}
           </Typography>
-        </>
+        </Box>
       )}
       {!loading && (
         <div className={styles.logoDiv}>
@@ -138,9 +136,9 @@ const ApplyPage: FC<ApplyPageProps> = ({
         </div>
       )}
       {!loading && !hasApplied && (
-        <Typography variant={'h3'} className={'mt-5 mb-5'}>
-          {t('pages.ecoverse.application.subheader')}
-        </Typography>
+        <Box marginY={5}>
+          <Typography variant={'h3'}>{t('pages.ecoverse.application.subheader')}</Typography>
+        </Box>
       )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
@@ -148,9 +146,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
             {t('pages.ecoverse.application.finish')}
             {communityName}
           </Typography>
-          <Button as={Link} to={backUrl}>
-            {t('pages.ecoverse.application.backButton')}
-          </Button>
+          <Button as={Link} to={backUrl} text={t('pages.ecoverse.application.backButton')} />
         </div>
       ) : (
         <>
@@ -160,32 +156,35 @@ const ApplyPage: FC<ApplyPageProps> = ({
             enableReinitialize
             onSubmit={async values => onSubmit(values)}
           >
-            {({ handleSubmit, handleChange, errors }) => {
+            {({ handleSubmit }) => {
               return (
                 <>
-                  {questions.map((x, i) => (
-                    <Form.Group key={i}>
-                      <Form.Label>
-                        {x.question}
-                        {x.required && <Required />}
-                      </Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={2}
-                        name={x.question}
-                        required={x.required}
-                        onChange={handleChange}
-                        autoComplete="on"
-                        autoCapitalize="sentences"
-                        autoCorrect="on"
-                        isInvalid={!!errors[x.question]}
+                  <Grid container spacing={2}>
+                    {questions.map((x, i) => (
+                      <Grid item xs={12}>
+                        <FormikInputField
+                          key={i}
+                          title={x.question}
+                          name={x.question}
+                          rows={2}
+                          multiline
+                          required={x.required}
+                          autoComplete="on"
+                          autoCapitalize="sentences"
+                          autoCorrect="on"
+                        />
+                      </Grid>
+                    ))}
+                    <Grid item>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={isCreationLoading}
+                        onClick={() => handleSubmit()}
+                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
                       />
-                      <Form.Control.Feedback type="invalid">This is required</Form.Control.Feedback>
-                    </Form.Group>
-                  ))}
-                  <Button variant="primary" type="submit" disabled={isCreationLoading} onClick={() => handleSubmit()}>
-                    {isCreationLoading ? 'Processing...' : 'Apply'}
-                  </Button>
+                    </Grid>
+                  </Grid>
                 </>
               );
             }}

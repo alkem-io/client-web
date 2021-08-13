@@ -1,11 +1,12 @@
+import { Grid } from '@material-ui/core';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../../pages';
-import SearchableList, { SearchableListItem } from './SearchableList';
 import Button from '../core/Button';
-import { Link } from 'react-router-dom';
 import Typography from '../core/Typography';
-import { Container } from 'react-bootstrap';
+import SearchableList, { SearchableListItem } from './SearchableList';
 
 interface ListPageProps extends PageProps {
   data: SearchableListItem[];
@@ -15,22 +16,25 @@ interface ListPageProps extends PageProps {
 }
 
 export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete }) => {
+  const { t } = useTranslation();
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <Container>
+    <Grid container spacing={2} justifyContent={'center'}>
       {(title || newLink) && (
-        <div className={'d-flex mb-4'}>
-          {title && <Typography variant={'h3'}>{title}</Typography>}
-          {newLink && (
-            <Button className={'ml-auto'} as={Link} to={newLink}>
-              New
-            </Button>
-          )}
-        </div>
+        <Grid container item xs={10}>
+          <Grid item xs={10}>
+            {title && <Typography variant={'h3'}>{title}</Typography>}
+          </Grid>
+          <Grid container item justifyContent={'flex-end'} xs={2}>
+            {newLink && <Button as={Link} to={newLink} text={t('buttons.new')} />}
+          </Grid>
+        </Grid>
       )}
-      <SearchableList data={data} onDelete={onDelete} />
-    </Container>
+      <Grid item xs={10}>
+        <SearchableList data={data} onDelete={onDelete} />
+      </Grid>
+    </Grid>
   );
 };
 

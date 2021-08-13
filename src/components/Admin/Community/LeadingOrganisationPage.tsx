@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import Grid from '@material-ui/core/Grid';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
@@ -15,6 +15,7 @@ import { useApolloErrorHandler } from '../../../hooks';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
 import { TFunction } from 'i18next';
+import Button from '../../core/Button';
 
 interface Params {
   ecoverseId: string;
@@ -134,32 +135,30 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <>
-      <Row>
-        <Col>
-          <div style={{ height: 400 }}>
-            <DataGrid
-              rows={leading}
-              columns={leadingColumns(t, onRemove)}
-              density="compact"
-              hideFooter={true}
-              loading={isUpdating}
-            />
-          </div>
-        </Col>
-        <Col sm={5}>
-          <div style={{ height: 400 }}>
-            <DataGrid
-              rows={available}
-              columns={availableColumns(t, onAdd)}
-              density="compact"
-              hideFooter={true}
-              loading={isUpdating}
-            />
-          </div>
-        </Col>
-      </Row>
-    </>
+    <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <div style={{ height: 400 }}>
+          <DataGrid
+            rows={leading}
+            columns={leadingColumns(t, onRemove)}
+            density="compact"
+            hideFooter={true}
+            loading={isUpdating}
+          />
+        </div>
+      </Grid>
+      <Grid item xs={6}>
+        <div style={{ height: 400 }}>
+          <DataGrid
+            rows={available}
+            columns={availableColumns(t, onAdd)}
+            density="compact"
+            hideFooter={true}
+            loading={isUpdating}
+          />
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 export default LeadingOrganisationPage;
@@ -185,9 +184,7 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
       filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
-        <Button variant="outline-danger" size="sm" onClick={() => onRemove(params.value as string)}>
-          X
-        </Button>
+        <Button variant="negative" small onClick={() => onRemove(params.value as string)} text="X" />
       ),
       align: 'right',
     },
@@ -200,11 +197,7 @@ const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
       width: 110,
       filterable: false,
       headerName: t('common.add'),
-      renderCell: params => (
-        <Button variant="outline-info" size="sm" onClick={() => onAdd(params.value as string)}>
-          +
-        </Button>
-      ),
+      renderCell: params => <Button variant="default" small onClick={() => onAdd(params.value as string)} text="+" />,
     },
     {
       field: 'avatarSrc',

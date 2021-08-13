@@ -1,12 +1,12 @@
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
-import { Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
 import Icon from '../components/core/Icon';
@@ -39,7 +39,7 @@ import { PageProps } from './common';
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
-    gap: theme.shape.spacing(1),
+    gap: theme.spacing(1),
   },
   ecoverseBannerImg: {
     maxWidth: 320,
@@ -213,7 +213,9 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
       >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
-          <SubHeader text={background} />
+          <SubHeader>
+            <Markdown children={background} />
+          </SubHeader>
           <Body>
             <Markdown children={impact} />
           </Body>
@@ -224,9 +226,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
           />
         )}
         {challengesError ? (
-          <Col xs={12}>
-            <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
-          </Col>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
+            </Grid>
+          </Grid>
         ) : (
           <CardContainer>
             {challenges.map((challenge, i) => (

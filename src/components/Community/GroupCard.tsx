@@ -1,8 +1,6 @@
 import React, { FC, memo, useState } from 'react';
-import { Theme } from '../../context/ThemeProvider';
 import { useGroupCardQuery } from '../../hooks/generated/graphql';
-import { useEcoverse } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
+import { useEcoverse, createStyles } from '../../hooks';
 import { UserGroup } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
@@ -18,7 +16,7 @@ const groupCardStyles = createStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {
-      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral, 0.15)}`,
+      boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral.main, 0.15)}`,
     },
     borderTopRightRadius: 15,
     overflow: 'hidden',
@@ -62,14 +60,14 @@ const GroupCardInner: FC<GroupCardProps> = ({ id, terms }) => {
     <Card
       bodyProps={{
         classes: {
-          background: (theme: Theme) => theme.palette.primary,
+          background: theme => theme.palette.primary.main,
         },
       }}
       primaryTextProps={{
         text: group?.name || '',
         classes: {
           lineHeight: '36px',
-          color: theme => theme.palette.background,
+          color: theme => theme.palette.background.paper,
         },
       }}
       level={{ level, name: parentName }}

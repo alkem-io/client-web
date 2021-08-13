@@ -3,7 +3,7 @@
 exports[`Toolbar - main render correctly Toolbar component 1`] = `
 <DocumentFragment>
   <div
-    class="toolbar-0-2-1 paddingDefault-0-2-2 responsivePadding-0-2-4"
+    class="makeStyles-toolbar-1 makeStyles-paddingDefault-2 makeStyles-responsivePadding-4"
   />
 </DocumentFragment>
 `;
