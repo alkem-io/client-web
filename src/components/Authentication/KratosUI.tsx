@@ -174,7 +174,9 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
           </Grid>
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
-          {resetPasswordComponent}
+          <Grid item xs={12}>
+            {resetPasswordComponent}
+          </Grid>
           {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
           {nodesByGroup.oidc.map(toUiControl)}
           {nodesByGroup.rest.map(toUiControl)}

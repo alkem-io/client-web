@@ -41,7 +41,7 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
   if (!recoveryFlow) return <Loading text={'Loading flow'} />;
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}>
