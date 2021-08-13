@@ -46,7 +46,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   if (!verificationFlow) return <Loading text={'Loading flow'} />;
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Box marginY={3} textAlign={'center'}>

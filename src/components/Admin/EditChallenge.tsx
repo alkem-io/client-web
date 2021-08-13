@@ -75,7 +75,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               displayName: name,
-              parentID: ecoverseId,
+              ecoverseID: ecoverseId,
               context: createContextInput(values),
               tags: tagsets.map(x => x.tags.join()),
             },

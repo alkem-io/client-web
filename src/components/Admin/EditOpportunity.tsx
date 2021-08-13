@@ -27,9 +27,10 @@ interface Props {
   mode: FormMode;
   paths: Path[];
   title: string;
+  challengeId: string;
 }
 
-const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
+const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -81,7 +82,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               context: createContextInput(values),
               displayName: name,
-              challengeID: challengeNameId,
+              challengeID: challengeId,
               tags: tagsets.map(x => x.tags.join()),
             },
           },

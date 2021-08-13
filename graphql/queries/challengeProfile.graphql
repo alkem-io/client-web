@@ -40,6 +40,10 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
             state
           }
         }
+        tagset {
+          name
+          tags
+        }
       }
       leadOrganisations {
         id

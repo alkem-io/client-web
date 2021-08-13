@@ -126,7 +126,7 @@ const ProfileForm: FC<Props> = ({
 
             <VisualSegment />
 
-            <ContextReferenceSegment references={references || []} contextId={context?.id} />
+            {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
             <Divider />
           </>
         );
