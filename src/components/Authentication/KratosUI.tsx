@@ -35,6 +35,7 @@ interface KratosUIProps {
   termsURL?: string;
   privacyURL?: string;
   resetPasswordComponent?: React.ReactChild;
+  hideFields?: string[];
 }
 
 const toAlertVariant = (type: string) => {
@@ -190,21 +191,37 @@ export default KratosUI;
 interface KratosUIContextProps {
   termsURL?: string;
   privacyURL?: string;
+  isHidden: (node: UiNode) => boolean;
 }
 
-export const KratosUIContext = React.createContext<KratosUIContextProps>({});
+export const KratosUIContext = React.createContext<KratosUIContextProps>({ isHidden: (_node: UiNode) => false });
 
 interface KratosUIProviderProps {
   termsURL?: string;
   privacyURL?: string;
+  hideFields?: string[];
 }
 
-export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL, privacyURL }) => {
+export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL, privacyURL, hideFields }) => {
+  const isHidden = useCallback(
+    (node: UiNode) => {
+      if (!hideFields) return false;
+      const name = getNodeName(node);
+
+      if (name === 'method') {
+        const value = getNodeValue(node)?.toString() || '';
+        return hideFields.includes(value);
+      }
+      return hideFields.includes(name);
+    },
+    [hideFields]
+  );
   return (
     <KratosUIContext.Provider
       value={{
         termsURL,
         privacyURL,
+        isHidden,
       }}
     >
       {children}
