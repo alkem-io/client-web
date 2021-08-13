@@ -41,13 +41,15 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
 
   if (!settingsFlow) return <Loading text={'Loading flow'} />;
 
+  const hideFields = ['traits.name.first', 'traits.name.last', 'traits.accepted_terms', 'profile', 'traits.email'];
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Typography variant={'h3'} className={'mt-4 mb-4'}></Typography>
           {t('pages.settings.header')}
-          <KratosUI flow={settingsFlow} />
+          <KratosUI flow={settingsFlow} hideFields={hideFields} />
         </Grid>
       </Grid>
     </Container>
