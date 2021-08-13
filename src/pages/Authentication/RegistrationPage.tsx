@@ -60,7 +60,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
             {t('pages.registration.header')}
           </Typography>
           <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
-          <Delimiter />
+          <Delimiter>OR</Delimiter>
           <Typography variant={'h5'}>{t('pages.registration.login')}</Typography>
           <Button
             variant="primary"

@@ -1,5 +1,5 @@
+import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
-import Grid from '@material-ui/core/Grid';
 import { createStyles } from '../../hooks/useTheme';
 
 interface DelimiterProps {}
@@ -27,11 +27,9 @@ export const Delimiter: FC<DelimiterProps> = ({ children }) => {
   const style = useDelimiterStyle();
 
   return (
-    <Grid container spacing={2}>
-      <Grid item className={'p-0'}>
-        <div className={style.line}>{children && <strong className={style.strong}>{children}</strong>}</div>
-      </Grid>
-    </Grid>
+    <Box padding={0}>
+      <div className={style.line}>{children && <strong className={style.strong}>{children}</strong>}</div>
+    </Box>
   );
 };
 export default Delimiter;
