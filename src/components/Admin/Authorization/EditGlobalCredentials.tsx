@@ -1,8 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import {
   refetchUsersWithCredentialsQuery,
-  useGrantCredentialsMutation,
-  useRevokeCredentialsMutation,
+  useAssignUserAsChallengeAdminMutation,
+  useAssignUserAsEcoverseAdminMutation,
+  useAssignUserAsOrganisationAdminMutation,
+  useRemoveUserAsChallengeAdminMutation,
+  useRemoveUserAsEcoverseAdminMutation,
+  useRemoveUserAsOrganisationAdminMutation,
   useUsersWithCredentialsQuery,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
@@ -10,6 +14,29 @@ import { Member } from '../../../models/User';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Loading } from '../../core';
 import { EditMembers } from '../Community/EditMembers';
+import evictFromCache from '../../../utils/evictFromCache';
+// todo: rework this in #914; too loosely typed
+const getMutationsByCredentialType = (credential: AuthorizationCredential): [Function, Function, string] => {
+  const dict = {
+    [AuthorizationCredential.EcoverseAdmin]: [
+      useAssignUserAsEcoverseAdminMutation,
+      useRemoveUserAsEcoverseAdminMutation,
+      'ecoverseID',
+    ],
+    [AuthorizationCredential.ChallengeAdmin]: [
+      useAssignUserAsChallengeAdminMutation,
+      useRemoveUserAsChallengeAdminMutation,
+      'challengeID',
+    ],
+    [AuthorizationCredential.OrganisationAdmin]: [
+      useAssignUserAsOrganisationAdminMutation,
+      useRemoveUserAsOrganisationAdminMutation,
+      'organisationID',
+    ],
+  } as const;
+
+  return dict[credential];
+};
 
 interface EditGlobalCredentialsProps {
   credential: AuthorizationCredential;
@@ -30,11 +57,11 @@ export const EditGlobalCredentials: FC<EditGlobalCredentialsProps> = ({ credenti
   const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useGrantCredentialsMutation({
+  const [g, r, resourceKey] = getMutationsByCredentialType(credential);
+  const [grant] = g({
     onError: handleError,
   });
-
-  const [revoke] = useRevokeCredentialsMutation({
+  const [revoke] = r({
     onError: handleError,
   });
 
@@ -43,8 +70,7 @@ export const EditGlobalCredentials: FC<EditGlobalCredentialsProps> = ({ credenti
       variables: {
         input: {
           userID: _member.id,
-          type: credential,
-          resourceID: resourceId,
+          [resourceKey]: resourceId,
         },
       },
       refetchQueries: [
@@ -61,16 +87,10 @@ export const EditGlobalCredentials: FC<EditGlobalCredentialsProps> = ({ credenti
       variables: {
         input: {
           userID: _member.id,
-          type: credential,
-          resourceID: resourceId,
+          [resourceKey]: resourceId,
         },
       },
-      refetchQueries: [
-        refetchUsersWithCredentialsQuery({
-          input: { type: credential, resourceID: resourceId },
-        }),
-      ],
-      awaitRefetchQueries: true,
+      update: evictFromCache,
     });
   };
 
