@@ -66,6 +66,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
           autoComplete={autoComplete}
           fullWidth
           InputProps={{ ...InputProps }}
+          InputLabelProps={{ shrink: true }}
         />
       )}
     </Grid>

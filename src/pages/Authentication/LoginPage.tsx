@@ -1,7 +1,7 @@
 import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
@@ -54,13 +54,11 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 
-  // Remove resetpassword until the SMTP server is configured correctly
-  const resetPassword = <></>;
-  // (
-  //    <div className={'text-right'}>
-  //     <Link to={'/auth/recovery'}>Reset password</Link>
-  //    </div>
-  //  );
+  const resetPassword = (
+    <Box display={'flex'} justifyContent={'flex-end'}>
+      <Link to={'/identity/recovery'}>Reset password</Link>
+    </Box>
+  );
 
   return (
     <AuthenticationLayout>
@@ -70,7 +68,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
             <Typography variant={'h3'}>{t('pages.login.title')}</Typography>
           </Box>
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
-          <Delimiter />
+          <Delimiter>OR</Delimiter>
           <Typography variant={'h5'}>{t('pages.login.register')}</Typography>
           <Button
             variant="primary"
