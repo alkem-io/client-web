@@ -896,8 +896,10 @@ export type Mutation = {
   messageUpdateCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
-  /** Removes a User from being an Ecoverse Admin. */
+  /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
+  /** Removes a User from being an Ecoverse Admin. */
+  removeUserAsEcoverseAdmin: User;
   /** Removes a User from being an Organisation Admin. */
   removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
@@ -1125,6 +1127,10 @@ export type MutationMessageUserArgs = {
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
+  membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsEcoverseAdminArgs = {
   membershipData: RemoveEcoverseAdminInput;
 };
 
@@ -1201,7 +1207,7 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Opportunity = {
+export type Opportunity = Searchable & {
   __typename?: 'Opportunity';
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
@@ -1213,7 +1219,6 @@ export type Opportunity = {
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** The lifeycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
@@ -1353,6 +1358,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** A community. If no ID is specified then the first community is returned. */
+  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1385,6 +1392,10 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryCommunityArgs = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -1461,6 +1472,11 @@ export type Relation = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   type: Scalars['String'];
+};
+
+export type RemoveChallengeAdminInput = {
+  challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type RemoveCommunityMemberInput = {
@@ -3861,6 +3877,7 @@ export type SearchQuery = {
             visual?: Maybe<{ __typename?: 'Visual'; avatar: string }>;
           }>;
         }
+      | { __typename?: 'Opportunity' }
       | { __typename?: 'Organisation'; displayName: string; id: string }
       | { __typename?: 'User'; displayName: string; id: string }
       | { __typename?: 'UserGroup'; name: string; id: string }
@@ -3956,3 +3973,33 @@ export type UsersWithCredentialsQuery = {
     email: string;
   }>;
 };
+
+export type CommunityUpdatesQueryVariables = Exact<{
+  communityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CommunityUpdatesQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    updatesRoom: {
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    };
+  };
+};
+
+export type SendCommunityUpdateMutationVariables = Exact<{
+  msgData: CommunitySendMessageInput;
+}>;
+
+export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
