@@ -12,7 +12,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core';
 
-interface EditMembersProps {
+export interface EditMembersProps {
+  deleteExecutor?: boolean;
+  executor?: Member;
   members: Member[];
   availableMembers: Member[];
   onAdd?: (member: Member) => void;
@@ -28,9 +30,19 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
+  disabled: {
+    padding: '3px 9px',
+  },
 }));
 
-export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, onAdd, onRemove }) => {
+export const EditMembers: FC<EditMembersProps> = ({
+  members,
+  availableMembers,
+  deleteExecutor = false,
+  executor,
+  onAdd,
+  onRemove,
+}) => {
   const styles = useStyles();
   return (
     <Grid container spacing={2}>
@@ -52,17 +64,29 @@ export const EditMembers: FC<EditMembersProps> = ({ members, availableMembers, o
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredMembers.map(m => (
-                      <TableRow key={m.email} className={styles.trow}>
-                        <TableCell>{m.displayName}</TableCell>
-                        <TableCell>{m.firstName}</TableCell>
-                        <TableCell>{m.lastName}</TableCell>
-                        <TableCell>{m.email}</TableCell>
-                        <TableCell className={'text-right'}>
-                          {onRemove && <Button variant="negative" size="small" onClick={() => onRemove(m)} text="X" />}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {filteredMembers.map(m => {
+                      const disableExecutor = m.id === executor?.id && !deleteExecutor;
+                      return (
+                        <TableRow key={m.email} className={styles.trow}>
+                          <TableCell>{m.displayName}</TableCell>
+                          <TableCell>{m.firstName}</TableCell>
+                          <TableCell>{m.lastName}</TableCell>
+                          <TableCell>{m.email}</TableCell>
+                          <TableCell className={'text-right'}>
+                            {onRemove && (
+                              <Button
+                                variant="negative"
+                                size="small"
+                                disabled={disableExecutor}
+                                className={disableExecutor ? styles.disabled : undefined}
+                                onClick={() => onRemove(m)}
+                                text="X"
+                              />
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>

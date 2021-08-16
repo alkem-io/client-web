@@ -7,7 +7,7 @@ import { ApolloCache, FetchResult } from '@apollo/client';
  * @param cache
  * @param mutationResult
  */
-function evictFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, mutationResult: FetchResult<T>): void {
+function removeFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, mutationResult: FetchResult<T>): void {
   const data = mutationResult.data;
   if (data) {
     const mutationResultKey = Object.keys(data).filter(x => x !== '__typename');
@@ -36,4 +36,4 @@ function evictFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, mutat
     cache.gc();
   }
 }
-export default evictFromCache;
+export default removeFromCache;

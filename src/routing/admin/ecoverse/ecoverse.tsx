@@ -12,9 +12,9 @@ import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
 import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import AuthorizationRoute from '../authorization';
 import { ChallengesRoute } from '../challenge/challenge';
 import { CommunityRoute } from '../community';
+import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
@@ -82,7 +82,8 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <ChallengesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />
+        {/*<AuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />*/}
+        <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />
       </Route>
       <Route path="*">
         <FourOuFour />
