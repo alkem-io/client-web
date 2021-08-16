@@ -72,7 +72,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                           <TableCell>{m.firstName}</TableCell>
                           <TableCell>{m.lastName}</TableCell>
                           <TableCell>{m.email}</TableCell>
-                          <TableCell className={'text-right'}>
+                          <TableCell align={'right'}>
                             {onRemove && (
                               <Button
                                 variant="negative"

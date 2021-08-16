@@ -1,3 +1,4 @@
+import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import { CommunicationMessageResult } from '../../models/graphql-schema';
@@ -23,12 +24,14 @@ export const Updates: FC<UpdatesProps> = ({ messages }) => {
     messagesComponent = (
       <>
         {messages.map((m, i) => (
-          <div key={i} className={'mb-5'}>
+          <Box key={i} marginBottom={5}>
             <Typography>{m.message}</Typography>
-            <Typography className={'text-right'} color={'neutralMedium'} variant="caption">{`${m.sender} - ${new Date(
-              m.timestamp
-            ).toLocaleString()}`}</Typography>
-          </div>
+            <Box textAlign={'right'}>
+              <Typography color={'neutralMedium'} variant="caption">{`${m.sender} - ${new Date(
+                m.timestamp
+              ).toLocaleString()}`}</Typography>
+            </Box>
+          </Box>
         ))}
       </>
     );

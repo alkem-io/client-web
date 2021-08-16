@@ -20,6 +20,7 @@ import { createStyles } from '../../hooks/useTheme';
 import PendingApplications from './PendingApplications';
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
+import { Box } from '@material-ui/core';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -74,36 +75,40 @@ export const UserProfile: FC = () => {
         </Snackbar>
         <ContactDetails user={user} onEdit={handleEditContactDetails} />
         <PendingApplications user={user} />
-        <Card className={'mt-2'}>
-          {tagsets &&
-            tagsets.map((t, i) => (
-              <div key={i}>
-                <Typography as={'span'} color="primary" weight="boldLight" className={'mt-2'}>
-                  {toFirstCaptitalLetter(t.name)}
-                </Typography>
-                <TagContainer>
-                  {t.tags.map((t, i) => (
-                    <Tag key={i} text={t} color="neutralMedium" />
-                  ))}
-                </TagContainer>
+        <Box marginY={1}>
+          <Card>
+            {tagsets &&
+              tagsets.map((t, i) => (
+                <Box key={i} marginY={1}>
+                  <Typography as={'span'} color="primary" weight="boldLight">
+                    {toFirstCaptitalLetter(t.name)}
+                  </Typography>
+                  <TagContainer>
+                    {t.tags.map((t, i) => (
+                      <Tag key={i} text={t} color="neutralMedium" />
+                    ))}
+                  </TagContainer>
+                </Box>
+              ))}
+          </Card>
+        </Box>
+        <Box marginY={1}>
+          <Card primaryTextProps={{ text: 'References' }}>
+            {references?.map((x, i) => (
+              <div key={i} className={styles.listDetail}>
+                <div style={{ flexDirection: 'column' }}>
+                  <Typography as="a" href={x.uri} target={'_blank'}>
+                    {x.name}
+                  </Typography>
+                  <Typography variant="caption" color="neutralMedium">
+                    {x.uri}
+                  </Typography>
+                </div>
+                <div style={{ flexGrow: 1 }} />
               </div>
             ))}
-        </Card>
-        <Card primaryTextProps={{ text: 'References' }} className={'mt-2'}>
-          {references?.map((x, i) => (
-            <div key={i} className={styles.listDetail}>
-              <div style={{ flexDirection: 'column' }}>
-                <Typography as="a" href={x.uri} target={'_blank'}>
-                  {x.name}
-                </Typography>
-                <Typography variant="caption" color="neutralMedium">
-                  {x.uri}
-                </Typography>
-              </div>
-              <div style={{ flexGrow: 1 }} />
-            </div>
-          ))}
-        </Card>
+          </Card>
+        </Box>
         <MemberOf
           groups={groups}
           challenges={challenges}

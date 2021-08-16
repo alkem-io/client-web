@@ -12,6 +12,7 @@ import { useConfig } from '../../hooks';
 import { useKratosClient } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
+import { Box } from '@material-ui/core';
 
 interface RegisterPageProps {
   flow?: string;
@@ -56,11 +57,11 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
     <AuthenticationLayout>
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
-            {t('pages.registration.header')}
-          </Typography>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.registration.header')}</Typography>
+          </Box>
           <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
-          <Delimiter />
+          <Delimiter>OR</Delimiter>
           <Typography variant={'h5'}>{t('pages.registration.login')}</Typography>
           <Button
             variant="primary"

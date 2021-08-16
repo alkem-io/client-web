@@ -23,15 +23,9 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           const avatars = populated;
           return (
             <>
-              <AvatarContainer className="d-flex" title={''}>
+              <AvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar
-                    className={'d-inline-flex'}
-                    key={i}
-                    src={u.profile?.avatar}
-                    userId={u.id}
-                    name={u.displayName}
-                  />
+                  <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />
@@ -44,7 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && <Button className={'mt-2'} small as={Link} to={editLink} text={t('buttons.edit-members')} />}
+      {editLink && <Button small as={Link} to={editLink} text={t('buttons.edit-members')} />}
     </>
   );
 };

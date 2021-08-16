@@ -2,10 +2,11 @@ import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@material-u
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
 import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icon from '../../core/Icon';
 import IconButton from '../../core/IconButton';
+import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
 
@@ -13,6 +14,7 @@ interface KratosInputProps extends KratosProps, KratosInputExtraProps {}
 
 export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
   const { t } = useTranslation();
+  const { isHidden } = useContext(KratosUIContext);
   const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
   const [value, setValue] = useState(getNodeValue(node));
   const [touched, setTouched] = useState(false);
@@ -48,22 +50,25 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
 
   return (
     <Grid item xs={12}>
-      <TextField
-        name={name}
-        label={getNodeTitle(node)}
-        onBlur={() => setTouched(true)}
-        onChange={e => setValue(e.target.value)}
-        value={value ? String(value) : ''}
-        variant={'outlined'}
-        type={inputType}
-        error={touched && invalid}
-        helperText={helperText}
-        required={required}
-        disabled={attributes.disabled}
-        autoComplete={autoComplete}
-        fullWidth
-        InputProps={{ ...InputProps }}
-      />
+      {!isHidden(node) && (
+        <TextField
+          name={name}
+          label={getNodeTitle(node)}
+          onBlur={() => setTouched(true)}
+          onChange={e => setValue(e.target.value)}
+          value={value ? String(value) : ''}
+          variant={'outlined'}
+          type={inputType}
+          error={touched && invalid}
+          helperText={helperText}
+          required={required}
+          disabled={attributes.disabled}
+          autoComplete={autoComplete}
+          fullWidth
+          InputProps={{ ...InputProps }}
+          InputLabelProps={{ shrink: true }}
+        />
+      )}
     </Grid>
   );
 };

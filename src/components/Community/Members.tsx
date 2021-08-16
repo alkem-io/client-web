@@ -18,15 +18,9 @@ export const Members: FC<MembersProps> = ({ shuffle = false, users }) => {
         const avatars = shuffle ? shuffleCollection(populated) : populated;
         return (
           <>
-            <AvatarContainer className="d-flex" title={'Active community members'}>
+            <AvatarContainer title={'Active community members'}>
               {avatars.map((u, i) => (
-                <Avatar
-                  className={'d-inline-flex'}
-                  key={i}
-                  src={u.profile?.avatar}
-                  userId={u.id}
-                  name={u.displayName}
-                />
+                <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
               ))}
             </AvatarContainer>
             <div style={{ flexBasis: '100%' }} />

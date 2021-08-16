@@ -14,7 +14,7 @@ import { Loading } from '../core';
 import TextInput, { TextArea } from '../core/TextInput';
 import Typography from '../core/Typography';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
-import { OutlinedInput } from '@material-ui/core';
+import { Box, OutlinedInput } from '@material-ui/core';
 
 const useStyles = createStyles(() => ({
   formControl: {
@@ -88,9 +88,9 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
           ) : (
             <>
               <Grid item lg={12}>
-                <Typography variant={'h5'} className={'mb-2'}>
-                  Type of collaboration
-                </Typography>
+                <Box marginBottom={2}>
+                  <Typography variant={'h5'}>Type of collaboration</Typography>
+                </Box>
                 <FormControl variant="outlined" className={styles.formControl}>
                   <InputLabel id="role-select-label">Role</InputLabel>
                   <Select
@@ -109,13 +109,14 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
                   </Select>
                 </FormControl>
                 {role === roles[3] && (
-                  <TextInput
-                    onChange={e => setCustomRole(e.target.value)}
-                    value={customRole}
-                    label={'Describe your role'}
-                    className={'mb-4'}
-                    max={380}
-                  />
+                  <Box marginBottom={4}>
+                    <TextInput
+                      onChange={e => setCustomRole(e.target.value)}
+                      value={customRole}
+                      label={'Describe your role'}
+                      max={380}
+                    />
+                  </Box>
                 )}
               </Grid>
               <Grid item lg={12}>

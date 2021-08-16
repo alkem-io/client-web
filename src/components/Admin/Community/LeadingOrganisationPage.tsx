@@ -136,7 +136,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
   const { t } = useTranslation();
   return (
     <Grid container spacing={2}>
-      <Grid item>
+      <Grid item xs={6}>
         <div style={{ height: 400 }}>
           <DataGrid
             rows={leading}
@@ -147,7 +147,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
           />
         </div>
       </Grid>
-      <Grid item sm={5}>
+      <Grid item xs={6}>
         <div style={{ height: 400 }}>
           <DataGrid
             rows={available}
@@ -184,7 +184,7 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
       filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
-        <Button variant="negative" size="sm" onClick={() => onRemove(params.value as string)} text="X" />
+        <Button variant="negative" small onClick={() => onRemove(params.value as string)} text="X" />
       ),
       align: 'right',
     },
@@ -197,9 +197,7 @@ const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
       width: 110,
       filterable: false,
       headerName: t('common.add'),
-      renderCell: params => (
-        <Button variant="negative" size="sm" onClick={() => onAdd(params.value as string)} text="+" />
-      ),
+      renderCell: params => <Button variant="default" small onClick={() => onAdd(params.value as string)} text="+" />,
     },
     {
       field: 'avatarSrc',

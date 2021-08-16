@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, OutlinedInput } from '@material-ui/core';
+import { Box, Container, OutlinedInput } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -158,7 +158,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('search.header')} />
-        <SubHeader text={t('search.alternativesubheader')} className={'mb-4'} />
+        <Box marginBottom={2}>
+          <SubHeader text={t('search.alternativesubheader')} />
+        </Box>
         <MultipleSelect
           label={'search for skills'}
           onChange={value => setTags(value)}
@@ -171,33 +173,35 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       <Divider />
       {tags.length > 0 && (
         <Container maxWidth="xl">
-          <Grid container spacing={2} className={'justify-content-md-center mb-5'}>
-            <Grid item lg={3}>
-              <FormControl variant="outlined" className={styles.formControl}>
-                <InputLabel id="filter-select-label">Filter</InputLabel>
-                <Select
-                  labelId="filter-select-label"
-                  id="filter-select"
-                  value={typesFilter.typename}
-                  label={typesFilter.title}
-                  onChange={handleFilterChange}
-                  variant={'outlined'}
-                  input={<OutlinedInput notched label={'Filter'} />}
-                >
-                  {Object.keys(filtersConfig).map(x => (
-                    <MenuItem value={filtersConfig[x].typename}>{filtersConfig[x].title}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+          <Box marginBottom={3}>
+            <Grid container spacing={2} justifyContent={'center'}>
+              <Grid item lg={3}>
+                <FormControl variant="outlined" className={styles.formControl}>
+                  <InputLabel id="filter-select-label">Filter</InputLabel>
+                  <Select
+                    labelId="filter-select-label"
+                    id="filter-select"
+                    value={typesFilter.typename}
+                    label={typesFilter.title}
+                    onChange={handleFilterChange}
+                    variant={'outlined'}
+                    input={<OutlinedInput notched label={'Filter'} />}
+                  >
+                    {Object.keys(filtersConfig).map(x => (
+                      <MenuItem value={filtersConfig[x].typename}>{filtersConfig[x].title}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item lg={9}>
+                {community.length > 10 && (
+                  <Typography>
+                    There are more search results. Please use more specific search criteria to narrow down the results
+                  </Typography>
+                )}
+              </Grid>
             </Grid>
-            <Grid item lg={9}>
-              {community.length > 10 && (
-                <Typography>
-                  There are more search results. Please use more specific search criteria to narrow down the results
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
+          </Box>
         </Container>
       )}
       <CardContainer cardHeight={290} xs={12} sm={6} md={6}>

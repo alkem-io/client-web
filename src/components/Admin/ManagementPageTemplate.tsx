@@ -42,11 +42,13 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
                 },
               }}
             >
-              <div className={'d-flex wrap'}>
+              <Grid container spacing={2}>
                 {x.buttons.map((btn, index) => (
-                  <Button key={index} as={Link} to={`${url}${btn.url}`} text={btn.description} className={'mr-2'} />
+                  <Grid key={index} item>
+                    <Button as={Link} to={`${url}${btn.url}`} text={btn.description} />
+                  </Grid>
                 ))}
-              </div>
+              </Grid>
             </Card>
           </Grid>
         ))}

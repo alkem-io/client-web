@@ -7,6 +7,7 @@ import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
+import { Box } from '@material-ui/core';
 
 interface VerificationSuccessPageProps {}
 
@@ -15,19 +16,15 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
 
   return (
     <AuthenticationLayout>
-      <Typography variant={'h2'} className={'text-center'}>
-        <Icon component={CheckCircle} color={'primary'} size={'xl'} />
-      </Typography>
-      <Typography variant={'h2'} className={'text-center'}>
-        {t('pages.verification-success.header')}
-      </Typography>
-      <Typography variant={'h3'} className={'text-center'}>
-        {t('pages.verification-success.subheader')}
-      </Typography>
-      <Markdown children={t('pages.verification-success.message')} />
-      <div className={'mt-4 text-center'}>
+      <Box textAlign={'center'}>
+        <Typography variant={'h2'}>
+          <Icon component={CheckCircle} color={'primary'} size={'xl'} />
+        </Typography>
+        <Typography variant={'h2'}>{t('pages.verification-success.header')}</Typography>
+        <Typography variant={'h3'}>{t('pages.verification-success.subheader')}</Typography>
+        <Markdown children={t('pages.verification-success.message')} />
         <Button as={Link} to={'/'} text={t('buttons.home')} />
-      </div>
+      </Box>
     </AuthenticationLayout>
   );
 };

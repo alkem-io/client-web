@@ -3873,6 +3873,10 @@ export const ChallengeProfileDocument = gql`
               state
             }
           }
+          tagset {
+            name
+            tags
+          }
         }
         leadOrganisations {
           id

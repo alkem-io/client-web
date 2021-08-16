@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Tag, { TagProps } from '../core/Tag';
 import Typography from '../core/Typography';
 import Card from '../core/Card';
+import { Box } from '@material-ui/core';
 
 const useMemberOfStyles = createStyles(theme => ({
   listDetail: {
@@ -46,13 +47,15 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
   };
 
   return (
-    <Card primaryTextProps={{ text: 'Member of' }} className={'mt-2'}>
-      {membershipItems(ecoverses, t('general.ecoverse'), 'primary')}
-      {membershipItems(groups, t('general.group'), 'primary')}
-      {membershipItems(challenges, t('general.challenge'), 'neutral')}
-      {membershipItems(opportunities, t('general.opportunity'), 'primary')}
-      {membershipItems(organizations, t('general.organization'), 'positive')}
-    </Card>
+    <Box marginY={1}>
+      <Card primaryTextProps={{ text: 'Member of' }}>
+        {membershipItems(ecoverses, t('general.ecoverse'), 'primary')}
+        {membershipItems(groups, t('general.group'), 'primary')}
+        {membershipItems(challenges, t('general.challenge'), 'neutral')}
+        {membershipItems(opportunities, t('general.opportunity'), 'primary')}
+        {membershipItems(organizations, t('general.organization'), 'positive')}
+      </Card>
+    </Box>
   );
 };
 export default MemberOf;

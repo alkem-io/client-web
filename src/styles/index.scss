@@ -1,49 +1,9 @@
-@import '~bootstrap/scss/bootstrap.scss';
+// Bootstrap global definitions. Must be romeved when Typography and Cards are migrated to MUI
+@import "functions";
+@import "variables";
+@import "mixins";
+@import "root";
+@import "reboot";
+@import "type";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Source+Sans+Pro:wght@400;900&display=swap');
 // https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL - Open Font License
-
-html,body{
-  height: 100%;
-  overflow-x: hidden;
-}
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-.welcome {
-  margin: 10%;
-}
-
-.logo {
-  height: 30px;
-}
-
-.ct-nav {
-  min-width: 260px;
-}
-
-.avatar-button {
-  &:after {
-    display: none;
-  }
-  &:before {
-    display: none;
-  }
-}
-
-
-.modal-backdrop {
-  z-index: 1300 // sidebar is 1200
-}
-
-.modal {
-  z-index: 1310
-}

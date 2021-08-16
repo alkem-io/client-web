@@ -116,7 +116,7 @@ const WelcomeSection = () => {
             details: false,
           }}
         >
-          <Body className={clsx('d-flex flex-row flex-grow-1', styles.banner)}>
+          <Box component={Body} display={'flex'} flexDirection={'row'} flexGrow={1} className={clsx(styles.banner)}>
             <Box color="white">
               <Typography color="inherit" variant="h5">
                 Interested in learning more about using Alkemio?
@@ -130,7 +130,7 @@ const WelcomeSection = () => {
               as={'a'}
               target="_blank"
             />
-          </Body>
+          </Box>
         </Section>
         <div className={clsx(styles.flexCol, styles.flexGap)}>
           {!isAuthenticated && (
