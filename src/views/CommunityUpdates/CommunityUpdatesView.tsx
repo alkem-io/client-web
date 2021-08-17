@@ -6,13 +6,16 @@ import {
   CardHeader,
   CircularProgress,
   Collapse,
+  Divider,
   Grid,
   GridProps,
   IconButton,
   makeStyles,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { Skeleton } from '@material-ui/lab';
 import MDEditor from '@uiw/react-md-editor';
@@ -21,21 +24,21 @@ import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
 import React, { FC, useEffect, useMemo, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useMarkdownInputField } from '../../components/Admin/Common/useMarkdownInputField';
+import Avatar from '../../components/core/Avatar';
 import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { CommunicationMessageResult, CommunityDetailsFragment } from '../../models/graphql-schema';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useNotification } from '../../hooks';
-import { useTranslation } from 'react-i18next';
+import { CommunicationMessageResult, User } from '../../models/graphql-schema';
 
 export interface CommunityUpdatesViewProps {
   entities: {
     messages: CommunicationMessageResult[];
-    members: CommunityDetailsFragment['members'];
+    members: User[];
   };
   state: {
     loadingMessages: boolean;
@@ -49,6 +52,8 @@ export interface CommunityUpdatesViewProps {
     canCopy?: boolean;
     hideHeaders?: boolean;
     itemsPerRow?: number;
+    disableElevation?: boolean;
+    disableCollapse?: boolean;
   };
 }
 
@@ -80,7 +85,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   // entities
   const { messages, members } = entities;
   const { loadingMessages } = state;
-  const { canEdit, itemsPerRow, hideHeaders, canCopy } = options || {};
+  const { canEdit, itemsPerRow, hideHeaders, canCopy, disableCollapse, disableElevation } = options || {};
   const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
   const initialValues = {
     'community-update': '',
@@ -91,7 +96,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
   const [stubMessageId, setStubMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
-  const memberMap = useMemo(() => keyBy(members, m => m.email), [members]);
+  const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
 
   //effects
   useEffect(() => {
@@ -173,30 +178,43 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
         {orderedMessages.map(m => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
+          const member = memberMap[m.sender];
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
-              <Card elevation={2}>
+              <Card elevation={disableElevation ? 0 : 2}>
                 <CardHeader
-                  title={memberMap[m.sender]?.displayName || m.sender}
+                  avatar={
+                    member && (
+                      <Avatar
+                        key={member?.id}
+                        src={member.profile?.avatar}
+                        userId={member?.id}
+                        name={member?.displayName}
+                      />
+                    )
+                  }
+                  title={member?.displayName || m.sender}
                   subheader={new Date(m.timestamp).toLocaleString()}
                   action={
                     canEdit ? (
-                      <IconButton
-                        onClick={() => {
-                          setReviewedMessageSourceIds(ids =>
-                            reviewed ? ids.filter(id => id !== m.id) : [...ids, m.id]
-                          );
-                        }}
-                      >
-                        {reviewed ? <FontDownloadOffIcon /> : <FontDownloadIcon />}
-                      </IconButton>
+                      <Tooltip title={reviewed ? 'View source text' : 'View markdown'} placement="left">
+                        <IconButton
+                          onClick={() => {
+                            setReviewedMessageSourceIds(ids =>
+                              reviewed ? ids.filter(id => id !== m.id) : [...ids, m.id]
+                            );
+                          }}
+                        >
+                          {reviewed ? <FontDownloadOffIcon /> : <FontDownloadIcon />}
+                        </IconButton>
+                      </Tooltip>
                     ) : (
                       <span />
                     )
                   }
                 />
                 <CardContent className={styles.root}>
-                  <Collapse in={expanded} timeout="auto" collapsedSize={40}>
+                  <Collapse in={expanded || disableCollapse} timeout="auto" collapsedSize={40}>
                     <Box>
                       {!reviewed && <MDEditor.Markdown source={m.message} />}
                       {reviewed && (
@@ -205,29 +223,36 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                         </Typography>
                       )}
                     </Box>
-                    {!expanded && <Box className={styles.rootFade}></Box>}
+                    {!(expanded || disableCollapse) && <Box className={styles.rootFade}></Box>}
                   </Collapse>
                 </CardContent>
                 <CardActions disableSpacing>
                   {canCopy && (
-                    <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                      <IconButton>
-                        <FileCopyIcon />
-                      </IconButton>
-                    </CopyToClipboard>
+                    <Tooltip title="Copy content to clipboard" placement="right">
+                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                        <IconButton>
+                          <FileCopyIcon />
+                        </IconButton>
+                      </CopyToClipboard>
+                    </Tooltip>
                   )}
-                  <IconButton
-                    className={clsx(styles.expand, {
-                      [styles.expandOpen]: expanded,
-                    })}
-                    onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
+                  {!disableCollapse && (
+                    <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
+                      <IconButton
+                        className={clsx(styles.expand, {
+                          [styles.expandOpen]: expanded,
+                        })}
+                        onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                      >
+                        <ExpandMoreIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </CardActions>
               </Card>
+              {disableElevation && <Divider variant="inset" />}
             </Grid>
           );
         })}
