@@ -10,19 +10,27 @@ import {
   GridProps,
   IconButton,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import { Skeleton } from '@material-ui/lab';
 import MDEditor from '@uiw/react-md-editor';
+import clsx from 'clsx';
 import { Form, Formik } from 'formik';
+import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useMarkdownInputField } from '../../components/Admin/Common/useMarkdownInputField';
 import Button from '../../components/core/Button';
+import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
+import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { CommunicationMessageResult, CommunityDetailsFragment } from '../../models/graphql-schema';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import clsx from 'clsx';
-import { keyBy } from 'lodash';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useNotification } from '../../hooks';
+import { useTranslation } from 'react-i18next';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -34,10 +42,12 @@ export interface CommunityUpdatesViewProps {
     submittingMessage: boolean;
   };
   actions: {
-    onSubmit: (value: string) => Promise<void>;
+    onSubmit: (value: string) => Promise<string | undefined>;
   };
   options?: {
-    edit?: boolean;
+    canEdit?: boolean;
+    canCopy?: boolean;
+    hideHeaders?: boolean;
     itemsPerRow?: number;
   };
 }
@@ -70,7 +80,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   // entities
   const { messages, members } = entities;
   const { loadingMessages } = state;
-  const { edit: canEdit, itemsPerRow } = options || {};
+  const { canEdit, itemsPerRow, hideHeaders, canCopy } = options || {};
   const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
   const initialValues = {
     'community-update': '',
@@ -78,24 +88,44 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const validationSchema = yup.object().shape({
     'community-update': yup.string(),
   });
-  const [reviewedMessage, setReviewedMessage] = useState<string | null>(null);
+  const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
+  const [stubMessageId, setStubMessageId] = useState<string | null>(null);
+  const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
   const memberMap = useMemo(() => keyBy(members, m => m.email), [members]);
+
+  //effects
+  useEffect(() => {
+    setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
+  }, [setStubMessageId, orderedMessages]);
 
   // styling
   const styles = useStyles();
   // components
   const getMarkdownInput = useMarkdownInputField();
+  const notify = useNotification();
+  const { t } = useTranslation();
 
   return (
     <>
+      {!hideHeaders && (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4">{t('components.communityUpdates.title')}</Typography>
+          </Grid>
+        </Grid>
+      )}
       {canEdit && (
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={(values, { setSubmitting }) =>
-            actions.onSubmit(values['community-update']).finally(() => setSubmitting(false))
-          }
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            const messageId = await actions.onSubmit(values['community-update']).finally(() => setSubmitting(false));
+            setStubMessageId(messageId || null);
+            resetForm({
+              values: initialValues,
+            });
+          }}
         >
           {({ handleSubmit, isSubmitting }) => {
             return (
@@ -106,7 +136,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
-                      text={'Post update'}
+                      text={t('components.communityUpdates.postAction')}
                       type={'submit'}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
@@ -117,25 +147,75 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           }}
         </Formik>
       )}
+      {!hideHeaders && (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4">{t('components.communityUpdates.updatesTitle')}</Typography>
+          </Grid>
+        </Grid>
+      )}
       <Grid container spacing={2}>
+        {stubMessageId && (
+          <Grid key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
+            <Card elevation={2}>
+              <CardHeader title={<Skeleton />} subheader={<Skeleton />} />
+              <CardContent className={styles.root}>
+                <Skeleton height={40} />
+              </CardContent>
+              <CardActions disableSpacing>
+                <IconButton disabled className={clsx(styles.expand)}>
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+            </Card>
+          </Grid>
+        )}
         {orderedMessages.map(m => {
-          const expanded = reviewedMessage === m.id;
+          const expanded = reviewedMessageId === m.id;
+          const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           return (
-            <Grid item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
-              <Card key={m.id} elevation={2}>
+            <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
+              <Card elevation={2}>
                 <CardHeader
                   title={memberMap[m.sender]?.displayName || m.sender}
-                  subheader={new Date(m.timestamp).toISOString()}
+                  subheader={new Date(m.timestamp).toLocaleString()}
+                  action={
+                    canEdit ? (
+                      <IconButton
+                        onClick={() => {
+                          setReviewedMessageSourceIds(ids =>
+                            reviewed ? ids.filter(id => id !== m.id) : [...ids, m.id]
+                          );
+                        }}
+                      >
+                        {reviewed ? <FontDownloadOffIcon /> : <FontDownloadIcon />}
+                      </IconButton>
+                    ) : (
+                      <span />
+                    )
+                  }
                 />
                 <CardContent className={styles.root}>
                   <Collapse in={expanded} timeout="auto" collapsedSize={40}>
                     <Box>
-                      <MDEditor.Markdown source={m.message} />
+                      {!reviewed && <MDEditor.Markdown source={m.message} />}
+                      {reviewed && (
+                        <Typography component="pre" style={{ whiteSpace: 'pre-line' }}>
+                          {m.message}
+                        </Typography>
+                      )}
                     </Box>
                     {!expanded && <Box className={styles.rootFade}></Box>}
                   </Collapse>
                 </CardContent>
                 <CardActions disableSpacing>
+                  {canCopy && (
+                    <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                      <IconButton>
+                        <FileCopyIcon />
+                      </IconButton>
+                    </CopyToClipboard>
+                  )}
                   <IconButton
                     className={clsx(styles.expand, {
                       [styles.expandOpen]: expanded,

@@ -32,7 +32,8 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
               submittingMessage: loading.sendingUpdateMessage,
             }}
             options={{
-              edit: true,
+              canEdit: true,
+              canCopy: true,
             }}
           />
         )}

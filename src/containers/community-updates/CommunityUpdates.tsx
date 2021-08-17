@@ -1,5 +1,9 @@
 import React, { FC, useCallback } from 'react';
-import { useCommunityUpdatesQuery, useSendCommunityUpdateMutation } from '../../hooks/generated/graphql';
+import {
+  refetchCommunityUpdatesQuery,
+  useCommunityUpdatesQuery,
+  useSendCommunityUpdateMutation,
+} from '../../hooks/generated/graphql';
 import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
 
 export interface CommunityUpdatesContainerProps {
@@ -14,8 +18,8 @@ export interface CommunityUpdatesContainerProps {
 }
 
 export interface CommunityUpdatesActions {
-  onLoadMore: () => void;
-  onSubmit: (message: string, communityId: Community['id']) => Promise<void>;
+  onLoadMore: () => void; // TODO will be implemented in a separate issue
+  onSubmit: (message: string, communityId: Community['id']) => Promise<string | undefined>;
 }
 
 export interface CommunityUpdatesState {
@@ -35,9 +39,13 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async (message, communityId) => {
-      await sendUpdate({ variables: { msgData: { message, communityID: communityId } } });
+      const update = await sendUpdate({
+        variables: { msgData: { message, communityID: communityId } },
+        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+      });
+      return update.data?.messageUpdateCommunity;
     },
-    [sendUpdate]
+    [sendUpdate, communityId]
   );
 
   return (
