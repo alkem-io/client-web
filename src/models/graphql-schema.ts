@@ -2411,6 +2411,60 @@ export type GrantCredentialsMutation = {
   grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
 };
 
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignChallengeAdminInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsEcoverseAdminMutationVariables = Exact<{
+  input: AssignEcoverseAdminInput;
+}>;
+
+export type AssignUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
+  input: AssignOrganisationAdminInput;
+}>;
+
+export type AssignUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveChallengeAdminInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
+  input: RemoveEcoverseAdminInput;
+}>;
+
+export type RemoveUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
+  input: RemoveOrganisationAdminInput;
+}>;
+
+export type RemoveUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type RemoveUserFromCommunityMutationVariables = Exact<{
   input: RemoveCommunityMemberInput;
 }>;
