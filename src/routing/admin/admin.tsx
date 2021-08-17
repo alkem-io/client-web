@@ -6,10 +6,10 @@ import Loading from '../../components/core/Loading/Loading';
 import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
-import AuthorizationRoute from './authorization';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
 import { OrganizationsRoute } from './organisation/organization';
 import { UsersRoute } from './user';
+import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
 export interface AdminParameters {
   challengeId: string;
@@ -36,7 +36,7 @@ export const Admin: FC = () => {
         <UsersRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} />
+        <GlobalAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/ecoverses`}>
         <EcoverseListAdminRoute paths={currentPaths} />
