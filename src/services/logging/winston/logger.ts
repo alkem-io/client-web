@@ -41,9 +41,8 @@ class Console extends TransportStream {
   }
 }
 
-// creating silent loggers with according levels
-// silent by default to be automatically deactivated
-// in production mode
+// Synchronizing the logic on the server where console logging is based on env variable setting
+// LOGGING_CONSOLE_ENABLED is used, same as in Alkemio Server
 export const logger = winston.createLogger({
   transports: [
     new Console({
