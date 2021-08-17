@@ -3,7 +3,7 @@ const dotenvExpand = require('dotenv-expand');
 fs = require('fs');
 path = require('path');
 
-const CONFIG_TEXT = `window._env_ = `;
+const CONFIG_TEXT = 'window._env_ = ';
 const CONFIG_FILE_NAME = 'env-config.js';
 
 function buildConfiguration(cb) {

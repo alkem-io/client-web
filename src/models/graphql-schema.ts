@@ -896,8 +896,10 @@ export type Mutation = {
   messageUpdateCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
-  /** Removes a User from being an Ecoverse Admin. */
+  /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
+  /** Removes a User from being an Ecoverse Admin. */
+  removeUserAsEcoverseAdmin: User;
   /** Removes a User from being an Organisation Admin. */
   removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
@@ -1125,6 +1127,10 @@ export type MutationMessageUserArgs = {
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
+  membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsEcoverseAdminArgs = {
   membershipData: RemoveEcoverseAdminInput;
 };
 
@@ -1461,6 +1467,11 @@ export type Relation = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   type: Scalars['String'];
+};
+
+export type RemoveChallengeAdminInput = {
+  challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type RemoveCommunityMemberInput = {
@@ -2393,6 +2404,60 @@ export type GrantCredentialsMutationVariables = Exact<{
 export type GrantCredentialsMutation = {
   __typename?: 'Mutation';
   grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
+};
+
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignChallengeAdminInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsEcoverseAdminMutationVariables = Exact<{
+  input: AssignEcoverseAdminInput;
+}>;
+
+export type AssignUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
+  input: AssignOrganisationAdminInput;
+}>;
+
+export type AssignUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveChallengeAdminInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
+  input: RemoveEcoverseAdminInput;
+}>;
+
+export type RemoveUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
+  input: RemoveOrganisationAdminInput;
+}>;
+
+export type RemoveUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
