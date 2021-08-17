@@ -13,6 +13,7 @@ import { useUpdateNavigation } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
 import { Box } from '@material-ui/core';
+import { logger } from '../../services/logging/winston/logger';
 
 interface LoginPageProps {
   flow?: string;
@@ -33,7 +34,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
         .getSelfServiceLoginFlow(flow)
         .then(({ status, data: flow }) => {
           if (status !== 200) {
-            console.error(flow);
+            logger.error(flow);
           }
           setLoginFlow(flow);
         })

@@ -13,6 +13,7 @@ import { useKratosClient } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
 import { Box } from '@material-ui/core';
+import { logger } from '../../services/logging/winston/logger';
 
 interface RegisterPageProps {
   flow?: string;
@@ -30,7 +31,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
         .getSelfServiceRegistrationFlow(flow)
         .then(({ status, data: flow, ..._response }) => {
           if (status !== 200) {
-            console.error(flow);
+            logger.error(flow);
           }
           setRegistrationFlow(flow);
         })
