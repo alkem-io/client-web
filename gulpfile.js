@@ -1,4 +1,3 @@
-const logger = require('winston');
 const dotenvFlow = require('dotenv-flow');
 const dotenvExpand = require('dotenv-expand');
 fs = require('fs');
@@ -18,12 +17,12 @@ function buildConfiguration(cb) {
   let configuration = {};
   const nodeEnv = env.NODE_ENV ? env.NODE_ENV : 'development';
 
-  logger.info(`Building for : '${nodeEnv}'`);
+  console.info(`Building for : '${nodeEnv}'`);
 
   Object.keys(env).forEach(function (key) {
     if (key.startsWith('REACT_APP')) {
       configuration[key] = env[key];
-      logger.info(`${key}: ${env[key]}`);
+      console.info(`${key}: ${env[key]}`);
     }
   });
 
@@ -36,11 +35,11 @@ function buildConfiguration(cb) {
     envBase.write(`${k}=${configuration[k]}\n`);
   });
   envBase.end();
-  logger.info(`Write in: ${envBasePath}`);
+  console.info(`Write in: ${envBasePath}`);
 
   const envConfigPath = path.join(__dirname, '/public', CONFIG_FILE_NAME);
   fs.writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, () => {
-    logger.info(`Write in: ${envConfigPath}`);
+    console.info(`Write in: ${envConfigPath}`);
     cb();
   });
 }
