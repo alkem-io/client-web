@@ -24,6 +24,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
+import { ActorWhiteboard } from '../components/Opportunity/ActorWhiteboard';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
@@ -195,6 +196,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
+
+  const flatActors = actorGroups
+    ?.filter(ag => ag.name !== 'collaborators')
+    .flatMap(actorGroup => actorGroup.actors || []);
   return (
     <>
       <Section
@@ -388,6 +393,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
           );
         })}
 
+      <ActorWhiteboard actors={flatActors}></ActorWhiteboard>
       <Divider />
 
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
