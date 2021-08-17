@@ -46,7 +46,7 @@ class Console extends TransportStream {
 export const logger = winston.createLogger({
   transports: [
     new Console({
-      silent: process.env.LOGGING_CONSOLE_ENABLED === 'false' ?? true,
+      silent: process.env.REACT_APP_LOGGING_CONSOLE_ENABLED === 'false' ?? true,
       level: 'info',
     }),
   ],
