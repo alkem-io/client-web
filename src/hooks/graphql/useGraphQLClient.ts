@@ -6,6 +6,7 @@ import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
 import { typePolicies } from '../../config/graphql/typePolicies';
 import { ErrorStatus } from '../../models/constants/erros.constants';
+import { logger } from '../../services/logging/winston/logger';
 import { env } from '../../types/env';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
@@ -33,17 +34,16 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    errors.forEach(e => enableErrorLogging && console.error(e));
+    errors.forEach(e => enableErrorLogging && logger.error(e));
   });
 
   const consoleLink = new ApolloLink((operation, forward) => {
     if (enableQueryDebug) {
-      // TODO [ATS]: Logger required
-      console.log(`starting request for ${operation.operationName}`);
+      logger.info(`starting request for ${operation.operationName}`);
     }
     return forward(operation).map(data => {
       if (enableQueryDebug) {
-        console.log(`ending request for ${operation.operationName}`);
+        logger.info(`ending request for ${operation.operationName}`);
       }
       return data;
     });

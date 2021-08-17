@@ -4,6 +4,7 @@ import { Container } from '@material-ui/core';
 import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
+import { logger } from '../../services/logging/winston/logger';
 
 export const ErrorRoute: FC = () => {
   const params = useQueryParams();
@@ -15,7 +16,7 @@ export const ErrorRoute: FC = () => {
     if (errorCode && kratos) {
       kratos.getSelfServiceError(errorCode).then(({ status, data: errorContainer, ..._response }) => {
         if (status !== 200) {
-          console.error(errorContainer);
+          logger.error(errorContainer);
         }
         setErrorContainer(errorContainer);
       });
