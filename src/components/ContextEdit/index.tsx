@@ -19,6 +19,7 @@ import {
 import Button from '../core/Button';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import { logger } from '../../services/logging/winston/logger';
 
 interface Props {
   variant: 'challenge' | 'opportunity';
@@ -91,7 +92,7 @@ const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
       });
     } else {
       // This should not happen. It is for development purposes
-      console.error('no handler found');
+      logger.error('no handler found');
     }
   };
 

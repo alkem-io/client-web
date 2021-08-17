@@ -34,7 +34,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
       errors.push(new Error(newMessage));
     }
 
-    errors.forEach(e => enableErrorLogging && console.error(e));
+    errors.forEach(e => enableErrorLogging && logger.error(e));
   });
 
   const consoleLink = new ApolloLink((operation, forward) => {
