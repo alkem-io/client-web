@@ -47,17 +47,8 @@ class Console extends TransportStream {
 export const logger = winston.createLogger({
   transports: [
     new Console({
-      silent: false,
+      silent: process.env.LOGGING_CONSOLE_ENABLED === 'false' ?? true,
       level: 'info',
     }),
   ],
 });
-
-// don't log anything in production mode
-// probably should go further and return non
-// working logger function to reduce
-// execution time and improve speed results
-// on application
-if (process.env.NODE_ENV !== 'production') {
-  logger.transports.forEach(transport => (transport.silent = true));
-}
