@@ -1,0 +1,6 @@
+mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
+  assignUserAsChallengeAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
