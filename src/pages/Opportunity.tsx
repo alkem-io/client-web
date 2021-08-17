@@ -34,13 +34,7 @@ import {
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks/useTheme';
 import { SEARCH_PAGE } from '../models/constants';
-import {
-  AuthorizationCredential,
-  Context,
-  Opportunity as OpportunityType,
-  Project,
-  User,
-} from '../models/graphql-schema';
+import { Context, Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
@@ -76,14 +70,14 @@ interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
-  permissions: { projectWrite: boolean };
+  permissions: { projectWrite: boolean; addActorGroup: boolean; addAspect: boolean };
 }
 
-const Opportunity: FC<OpportunityPageProps> = ({
+const OpportunityPage: FC<OpportunityPageProps> = ({
   paths,
   opportunity,
   users = [],
-  permissions,
+  permissions = { projectWrite: false, addActorGroup: false, addAspect: false },
   onProjectTransition,
 }): React.ReactElement => {
   const { t } = useTranslation();
@@ -93,6 +87,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
   const history = useHistory();
+  const { ecoverseId } = useEcoverse();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -100,15 +95,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { user } = useUserContext();
   const userName = user?.user.displayName;
 
-  const isAdmin =
-    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
-
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
-
-  const { ecoverseId } = useEcoverse();
 
   const { data: _activity } = useOpportunityActivityQuery({
     variables: { ecoverseId, opportunityId: opportunity?.id },
@@ -138,7 +127,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
-  const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
+  const isAspectAddAllowed = permissions.addAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
@@ -173,7 +162,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
       ...projects.map(p => ({
         title: p.displayName,
         description: p.description,
-        // tag: { status: 'positive', text: p.state || 'archive' },
         type: 'display',
         onSelect: () => onProjectTransition(p),
       })),
@@ -350,7 +338,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
-          {isAdmin && availableActorGroupNames.length > 0 && (
+          {permissions.addActorGroup && availableActorGroupNames.length > 0 && (
             <Box marginLeft={3}>
               <Button
                 text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
@@ -508,4 +496,4 @@ const Opportunity: FC<OpportunityPageProps> = ({
   );
 };
 
-export { Opportunity };
+export { OpportunityPage };
