@@ -1213,6 +1213,8 @@ export type Opportunity = Searchable & {
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The parent Challenge of the Opportunity */
+  challenge?: Maybe<Challenge>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
@@ -1358,7 +1360,7 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** A community. If no ID is specified then the first community is returned. */
+  /** A community. A valid community ID needs to be specified. */
   community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
@@ -1395,7 +1397,7 @@ export type Query = {
 };
 
 export type QueryCommunityArgs = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -4029,7 +4031,7 @@ export type UsersWithCredentialsQuery = {
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{
-  communityId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
 }>;
 
 export type CommunityUpdatesQuery = {

@@ -7547,7 +7547,7 @@ export function refetchUsersWithCredentialsQuery(variables?: SchemaTypes.UsersWi
   return { query: UsersWithCredentialsDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($communityId: UUID_NAMEID!) {
+  query communityUpdates($communityId: UUID!) {
     community(ID: $communityId) {
       id
       displayName

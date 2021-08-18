@@ -1,4 +1,4 @@
-query communityUpdates($communityId: UUID_NAMEID!) {
+query communityUpdates($communityId: UUID!) {
   community(ID: $communityId) {
     id
     displayName
