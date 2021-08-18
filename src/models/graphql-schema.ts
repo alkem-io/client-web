@@ -4059,3 +4059,21 @@ export type SendCommunityUpdateMutationVariables = Exact<{
 }>;
 
 export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
+
+export type AssignUserToOrganisationMutationVariables = Exact<{
+  input: AssignOrganisationMemberInput;
+}>;
+
+export type AssignUserToOrganisationMutation = {
+  __typename?: 'Mutation';
+  assignUserToOrganisation: { __typename?: 'Organisation'; id: string };
+};
+
+export type RemoveUserFromOrganisationMutationVariables = Exact<{
+  input: RemoveOrganisationMemberInput;
+}>;
+
+export type RemoveUserFromOrganisationMutation = {
+  __typename?: 'Mutation';
+  removeUserFromOrganisation: { __typename?: 'Organisation'; id: string };
+};

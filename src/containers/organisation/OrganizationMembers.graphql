@@ -1,0 +1,11 @@
+mutation assignUserToOrganisation($input: AssignOrganisationMemberInput!) {
+  assignUserToOrganisation(membershipData: $input) {
+    id
+  }
+}
+
+mutation removeUserFromOrganisation($input: RemoveOrganisationMemberInput!) {
+  removeUserFromOrganisation(membershipData: $input) {
+    id
+  }
+}

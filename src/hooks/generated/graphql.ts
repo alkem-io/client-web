@@ -7652,3 +7652,97 @@ export type SendCommunityUpdateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendCommunityUpdateMutation,
   SchemaTypes.SendCommunityUpdateMutationVariables
 >;
+export const AssignUserToOrganisationDocument = gql`
+  mutation assignUserToOrganisation($input: AssignOrganisationMemberInput!) {
+    assignUserToOrganisation(membershipData: $input) {
+      id
+    }
+  }
+`;
+export type AssignUserToOrganisationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserToOrganisationMutation,
+  SchemaTypes.AssignUserToOrganisationMutationVariables
+>;
+
+/**
+ * __useAssignUserToOrganisationMutation__
+ *
+ * To run a mutation, you first call `useAssignUserToOrganisationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserToOrganisationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserToOrganisationMutation, { data, loading, error }] = useAssignUserToOrganisationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserToOrganisationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserToOrganisationMutation,
+    SchemaTypes.AssignUserToOrganisationMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserToOrganisationMutation,
+    SchemaTypes.AssignUserToOrganisationMutationVariables
+  >(AssignUserToOrganisationDocument, baseOptions);
+}
+export type AssignUserToOrganisationMutationHookResult = ReturnType<typeof useAssignUserToOrganisationMutation>;
+export type AssignUserToOrganisationMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignUserToOrganisationMutation>;
+export type AssignUserToOrganisationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserToOrganisationMutation,
+  SchemaTypes.AssignUserToOrganisationMutationVariables
+>;
+export const RemoveUserFromOrganisationDocument = gql`
+  mutation removeUserFromOrganisation($input: RemoveOrganisationMemberInput!) {
+    removeUserFromOrganisation(membershipData: $input) {
+      id
+    }
+  }
+`;
+export type RemoveUserFromOrganisationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserFromOrganisationMutation,
+  SchemaTypes.RemoveUserFromOrganisationMutationVariables
+>;
+
+/**
+ * __useRemoveUserFromOrganisationMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromOrganisationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromOrganisationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromOrganisationMutation, { data, loading, error }] = useRemoveUserFromOrganisationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserFromOrganisationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserFromOrganisationMutation,
+    SchemaTypes.RemoveUserFromOrganisationMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserFromOrganisationMutation,
+    SchemaTypes.RemoveUserFromOrganisationMutationVariables
+  >(RemoveUserFromOrganisationDocument, baseOptions);
+}
+export type RemoveUserFromOrganisationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganisationMutation>;
+export type RemoveUserFromOrganisationMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserFromOrganisationMutation>;
+export type RemoveUserFromOrganisationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserFromOrganisationMutation,
+  SchemaTypes.RemoveUserFromOrganisationMutationVariables
+>;
