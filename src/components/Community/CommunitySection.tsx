@@ -95,11 +95,6 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
                             members: detailedUsers,
                             messages: updates,
                           }}
-                          actions={{
-                            onSubmit: (_: string) => {
-                              return Promise.resolve(undefined);
-                            },
-                          }}
                           options={{
                             hideHeaders: true,
                             itemsPerRow: 1,

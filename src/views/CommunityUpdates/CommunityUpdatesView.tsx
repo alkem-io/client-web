@@ -44,8 +44,8 @@ export interface CommunityUpdatesViewProps {
     loadingMessages: boolean;
     submittingMessage: boolean;
   };
-  actions: {
-    onSubmit: (value: string) => Promise<string | undefined>;
+  actions?: {
+    onSubmit?: (value: string) => Promise<string | undefined>;
   };
   options?: {
     canEdit?: boolean;
@@ -125,8 +125,11 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           validationSchema={validationSchema}
           enableReinitialize
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            const messageId = await actions.onSubmit(values['community-update']).finally(() => setSubmitting(false));
-            setStubMessageId(messageId || null);
+            const onSubmit = actions?.onSubmit;
+            if (onSubmit) {
+              const messageId = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
+              setStubMessageId(messageId || null);
+            }
             resetForm({
               values: initialValues,
             });
