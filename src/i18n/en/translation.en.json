@@ -243,6 +243,11 @@
     },
     "filter": {
       "placeholder": "Search"
+    },
+    "communityUpdates": {
+      "title": "Let your community know what's next",
+      "postAction": "Post Update",
+      "updatesTitle": "Published updates"
     }
   },
   "navigation": {

@@ -1207,19 +1207,20 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Opportunity = {
+export type Opportunity = Searchable & {
   __typename?: 'Opportunity';
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The parent Challenge of the Opportunity */
+  challenge?: Maybe<Challenge>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** The lifeycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
@@ -1359,6 +1360,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** A community. A valid community ID needs to be specified. */
+  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1391,6 +1394,10 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryCommunityArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -3926,6 +3933,7 @@ export type SearchQuery = {
             visual?: Maybe<{ __typename?: 'Visual'; avatar: string }>;
           }>;
         }
+      | { __typename?: 'Opportunity' }
       | { __typename?: 'Organisation'; displayName: string; id: string }
       | { __typename?: 'User'; displayName: string; id: string }
       | { __typename?: 'UserGroup'; name: string; id: string }
@@ -4021,3 +4029,33 @@ export type UsersWithCredentialsQuery = {
     email: string;
   }>;
 };
+
+export type CommunityUpdatesQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUpdatesQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    updatesRoom: {
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    };
+  };
+};
+
+export type SendCommunityUpdateMutationVariables = Exact<{
+  msgData: CommunitySendMessageInput;
+}>;
+
+export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };

@@ -7546,3 +7546,109 @@ export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
 export function refetchUsersWithCredentialsQuery(variables?: SchemaTypes.UsersWithCredentialsQueryVariables) {
   return { query: UsersWithCredentialsDocument, variables: variables };
 }
+export const CommunityUpdatesDocument = gql`
+  query communityUpdates($communityId: UUID!) {
+    community(ID: $communityId) {
+      id
+      displayName
+      updatesRoom {
+        id
+        messages {
+          id
+          message
+          sender
+          timestamp
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCommunityUpdatesQuery__
+ *
+ * To run a query within a React component, call `useCommunityUpdatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityUpdatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityUpdatesQuery({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityUpdatesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>(
+    CommunityUpdatesDocument,
+    baseOptions
+  );
+}
+export function useCommunityUpdatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityUpdatesQuery,
+    SchemaTypes.CommunityUpdatesQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>(
+    CommunityUpdatesDocument,
+    baseOptions
+  );
+}
+export type CommunityUpdatesQueryHookResult = ReturnType<typeof useCommunityUpdatesQuery>;
+export type CommunityUpdatesLazyQueryHookResult = ReturnType<typeof useCommunityUpdatesLazyQuery>;
+export type CommunityUpdatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityUpdatesQuery,
+  SchemaTypes.CommunityUpdatesQueryVariables
+>;
+export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUpdatesQueryVariables) {
+  return { query: CommunityUpdatesDocument, variables: variables };
+}
+export const SendCommunityUpdateDocument = gql`
+  mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
+    messageUpdateCommunity(msgData: $msgData)
+  }
+`;
+export type SendCommunityUpdateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendCommunityUpdateMutation,
+  SchemaTypes.SendCommunityUpdateMutationVariables
+>;
+
+/**
+ * __useSendCommunityUpdateMutation__
+ *
+ * To run a mutation, you first call `useSendCommunityUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendCommunityUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendCommunityUpdateMutation, { data, loading, error }] = useSendCommunityUpdateMutation({
+ *   variables: {
+ *      msgData: // value for 'msgData'
+ *   },
+ * });
+ */
+export function useSendCommunityUpdateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendCommunityUpdateMutation,
+    SchemaTypes.SendCommunityUpdateMutationVariables
+  >
+) {
+  return Apollo.useMutation<SchemaTypes.SendCommunityUpdateMutation, SchemaTypes.SendCommunityUpdateMutationVariables>(
+    SendCommunityUpdateDocument,
+    baseOptions
+  );
+}
+export type SendCommunityUpdateMutationHookResult = ReturnType<typeof useSendCommunityUpdateMutation>;
+export type SendCommunityUpdateMutationResult = Apollo.MutationResult<SchemaTypes.SendCommunityUpdateMutation>;
+export type SendCommunityUpdateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendCommunityUpdateMutation,
+  SchemaTypes.SendCommunityUpdateMutationVariables
+>;
