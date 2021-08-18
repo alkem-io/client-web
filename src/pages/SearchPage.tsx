@@ -8,10 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { GroupCard } from '../components/Community/GroupCard';
-import { OrganizationCard } from '../components/Community/OrganizationCard';
-import { ChallengeCard } from '../components/Community/ChallengeCard';
-import { UserCard } from '../components/Community/UserCard';
+import { OrganizationSearchCard, ChallengeSearchCard, UserCard, OpportunitySearchCard } from '../components/search';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
@@ -20,7 +17,7 @@ import Section, { Header as SectionHeader, SubHeader } from '../components/core/
 import Typography from '../components/core/Typography';
 import { SearchDocument } from '../hooks/generated/graphql';
 import { createStyles, useUpdateNavigation } from '../hooks';
-import { Challenge, Organisation, User, UserGroup } from '../models/graphql-schema';
+import { Challenge, Opportunity, Organisation, User, UserGroup } from '../models/graphql-schema';
 import { PageProps } from './common';
 
 const useStyles = createStyles(() => ({
@@ -55,9 +52,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       typename: 'User',
     },
     group: {
-      title: 'Groups only',
-      value: 'group',
-      typename: 'UserGroup',
+      title: 'Opportunites only',
+      value: 'opportunity',
+      typename: 'Opportunity',
     },
     organization: {
       title: 'Organizations only',
@@ -101,7 +98,8 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   ];
 
-  const [community, setCommunity] = useState<Array<User | UserGroup | Organisation | Challenge>>([]);
+  type CommunityType = (User | UserGroup | Organisation | Challenge | Opportunity) & { score: number; terms: string[] };
+  const [community, setCommunity] = useState<Array<CommunityType>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
 
@@ -114,7 +112,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [search] = useLazyQuery(SearchDocument, {
     onCompleted: data => {
       const searchData = data?.search || [];
-      const updatedCommunity = searchData
+      const updatedCommunity: CommunityType[] = searchData
         .reduce((acc, curr) => {
           return [...acc, { score: curr.score, ...curr.result, terms: curr.terms }];
         }, [])
@@ -204,12 +202,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           </Box>
         </Container>
       )}
-      <CardContainer cardHeight={290} xs={12} sm={6} md={6}>
+      <CardContainer cardHeight={320} xs={12} sm={6} md={6}>
         {community.slice(0, 12).map(el => {
           if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
-          if (el.__typename === 'UserGroup') return <GroupCard key={el.id} {...el} />;
-          if (el.__typename === 'Organisation') return <OrganizationCard key={el.id} {...el} />;
-          if (el.__typename === 'Challenge') return <ChallengeCard key={(el.id, el.ecoverseID)} {...el} />;
+          if (el.__typename === 'Opportunity')
+            return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
+          if (el.__typename === 'Organisation')
+            return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
+          if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
           return null;
         })}
       </CardContainer>

@@ -1,19 +1,14 @@
 import React, { FC, memo, useMemo, useState } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
-import { useOrganizationCardQuery } from '../../hooks/generated/graphql';
-import { Organisation } from '../../models/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
-import { Loading } from '../core';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import Tooltip from '@material-ui/core/Tooltip';
-
-interface OrganizationCardStylesProps extends Organisation {
-  terms?: Array<string>;
-}
+import { OrganisationSearchResultFragment } from '../../models/graphql-schema';
+import EntitySearchCardProps from './EntitySearchCardProps';
 
 const OrganizationCardStyles = createStyles(theme => ({
   card: {
@@ -52,23 +47,20 @@ const OrganizationCardStyles = createStyles(theme => ({
   },
 }));
 
-const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) => {
+const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganisationSearchResultFragment>> = ({
+  terms,
+  entity: organisation,
+}) => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
-  const { data, loading } = useOrganizationCardQuery({
-    variables: { id },
-  });
 
   const tagProps = { text: 'Organization' };
 
-  const org = data?.organisation;
-  const displayName = org?.displayName || '';
-  const avatar = org?.profile?.avatar || '';
+  const displayName = organisation?.displayName || '';
+  const avatar = organisation?.profile?.avatar || '';
 
-  const tags = (org?.profile?.tagsets || []).flatMap(x => x.tags);
+  const tags = (organisation?.profile?.tagsets || []).flatMap(x => x.tags);
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
-
-  if (loading) return <Loading text={''} />;
 
   return (
     <div className={styles.relative}>
@@ -114,10 +106,12 @@ const OrganizationCardInner: FC<OrganizationCardStylesProps> = ({ id, terms }) =
           !isModalOpened && setIsModalOpened(true);
         }}
       >
-        {isModalOpened && org && <OrganizationPopUp id={org?.id} onHide={() => setIsModalOpened(false)} />}
+        {isModalOpened && organisation && (
+          <OrganizationPopUp id={organisation?.id} onHide={() => setIsModalOpened(false)} />
+        )}
       </Card>
     </div>
   );
 };
 
-export const OrganizationCard = memo(OrganizationCardInner);
+export const OrganizationSearchCard = memo(OrganizationSearchCardInner);

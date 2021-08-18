@@ -896,8 +896,10 @@ export type Mutation = {
   messageUpdateCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
-  /** Removes a User from being an Ecoverse Admin. */
+  /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
+  /** Removes a User from being an Ecoverse Admin. */
+  removeUserAsEcoverseAdmin: User;
   /** Removes a User from being an Organisation Admin. */
   removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
@@ -1125,6 +1127,10 @@ export type MutationMessageUserArgs = {
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
+  membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsEcoverseAdminArgs = {
   membershipData: RemoveEcoverseAdminInput;
 };
 
@@ -1201,19 +1207,20 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Opportunity = {
+export type Opportunity = Searchable & {
   __typename?: 'Opportunity';
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The parent Challenge of the Opportunity */
+  challenge?: Maybe<Challenge>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** The lifeycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
@@ -1461,6 +1468,11 @@ export type Relation = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   type: Scalars['String'];
+};
+
+export type RemoveChallengeAdminInput = {
+  challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type RemoveCommunityMemberInput = {
@@ -1945,6 +1957,8 @@ export type EcoverseDetailsFragment = {
   context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
 };
 
+export type EcoverseNameFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
 
 export type GroupInfoFragment = {
@@ -2018,6 +2032,52 @@ export type ReferenceDetailsFragment = {
   uri: string;
   description: string;
 };
+
+export type ChallengeSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  ecoverseID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>;
+};
+
+export type OpportunitySearchResultFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>;
+  challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string; displayName: string; ecoverseID: string }>;
+};
+
+export type OrganisationSearchResultFragment = {
+  __typename?: 'Organisation';
+  id: string;
+  displayName: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+  };
+};
+
+export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
 export type UserAgentFragment = {
   __typename?: 'User';
@@ -2609,86 +2669,6 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
-export type ChallengeCardQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeCardQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    displayName: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      displayName: string;
-      nameID: string;
-      ecoverseID: string;
-      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-      tagset?: Maybe<{ __typename?: 'Tagset'; tags: Array<string> }>;
-      context?: Maybe<{
-        __typename?: 'Context';
-        tagline?: Maybe<string>;
-        visual?: Maybe<{ __typename?: 'Visual'; avatar: string; background: string; banner: string }>;
-      }>;
-    };
-  };
-};
-
-export type GroupCardQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupCardQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    group: {
-      __typename: 'UserGroup';
-      name: string;
-      parent?: Maybe<
-        { __typename: 'Community'; displayName: string } | { __typename: 'Organisation'; displayName: string }
-      >;
-      members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
-      profile?: Maybe<{
-        __typename?: 'Profile';
-        id: string;
-        avatar?: Maybe<string>;
-        description?: Maybe<string>;
-        references?: Maybe<Array<{ __typename?: 'Reference'; name: string; description: string }>>;
-        tagsets?: Maybe<Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>>;
-      }>;
-    };
-  };
-};
-
-export type OrganizationCardQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationCardQuery = {
-  __typename?: 'Query';
-  organisation: {
-    __typename?: 'Organisation';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      description?: Maybe<string>;
-      avatar?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>>;
-      references?: Maybe<Array<{ __typename?: 'Reference'; name: string; uri: string }>>;
-    };
-  };
-};
-
 export type UserCardQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -3232,6 +3212,12 @@ export type EcoverseInfoQuery = {
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   } & EcoverseDetailsFragment;
 };
+
+export type EcoverseNameQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseNameQuery = { __typename?: 'Query'; ecoverse: { __typename?: 'Ecoverse' } & EcoverseNameFragment };
 
 export type EcoverseUserIdsQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
@@ -3850,20 +3836,11 @@ export type SearchQuery = {
     score?: Maybe<number>;
     terms?: Maybe<Array<string>>;
     result?: Maybe<
-      | {
-          __typename?: 'Challenge';
-          displayName: string;
-          id: string;
-          ecoverseID: string;
-          context?: Maybe<{
-            __typename?: 'Context';
-            tagline?: Maybe<string>;
-            visual?: Maybe<{ __typename?: 'Visual'; avatar: string }>;
-          }>;
-        }
-      | { __typename?: 'Organisation'; displayName: string; id: string }
+      | ({ __typename?: 'Challenge' } & ChallengeSearchResultFragment)
+      | ({ __typename?: 'Opportunity' } & OpportunitySearchResultFragment)
+      | ({ __typename?: 'Organisation' } & OrganisationSearchResultFragment)
       | { __typename?: 'User'; displayName: string; id: string }
-      | { __typename?: 'UserGroup'; name: string; id: string }
+      | ({ __typename?: 'UserGroup' } & UserSearchResultFragment)
     >;
   }>;
 };

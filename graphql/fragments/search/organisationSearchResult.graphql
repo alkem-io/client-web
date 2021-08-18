@@ -1,0 +1,13 @@
+fragment OrganisationSearchResult on Organisation {
+  id
+  displayName
+  profile {
+    id
+    avatar
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}
