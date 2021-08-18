@@ -8,6 +8,7 @@ import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCom
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
 import { useDeleteUserGroup } from '../../hooks';
 import { FourOuFour } from '../../pages';
+import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
@@ -47,6 +48,9 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       <Route path={`${path}/applications`}>
         {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
         {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
+      </Route>
+      <Route path={`${path}/updates`}>
+        <CommunityUpdatesPage paths={paths} community={community} />
       </Route>
       <Route path={`${path}/lead`}>
         <LeadingOrganisationPage paths={paths} />
