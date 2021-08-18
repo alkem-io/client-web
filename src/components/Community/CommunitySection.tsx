@@ -62,7 +62,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     { name: 'updates', label: `Updates ${updatesCountLabel}`, enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
     {
       name: 'discussion',
-      label: 'Discussion (Comming soon)',
+      label: 'Discussion (Coming soon)',
       enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
       showOnly: true,
     },
