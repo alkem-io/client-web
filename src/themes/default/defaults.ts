@@ -1,4 +1,4 @@
-import { createTheme, ThemeOptions } from '@material-ui/core';
+import { createTheme, SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
 import { buttonOverrides } from './overrides/button';
@@ -35,6 +35,12 @@ export const theme: ThemeOptions = {
 theme.overrides = {
   ...theme.overrides,
   ...buttonOverrides(theme),
+  MuiDialogContent: {
+    dividers: {
+      borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
+      borderBottomColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
+    },
+  },
 };
 
 declare module '@material-ui/core/styles/createTheme' {
@@ -60,4 +66,4 @@ declare module '@material-ui/core/styles/createTheme' {
   }
 }
 
-export const defaultMuiTheme = createTheme(theme);
+export const defaultTheme = createTheme(theme);

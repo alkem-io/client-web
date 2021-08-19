@@ -120,7 +120,6 @@ const Button: FC<ButtonProps> = ({
   disabled = false,
   children,
   as: Component = 'button',
-  to,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onClick = () => {},
   text,
@@ -128,15 +127,13 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const styles = useStyles(classes);
 
-  const props = disabled
-    ? {}
-    : {
-        type: 'button',
-        onClick,
-        ...rest,
-      };
+  const props = {
+    type: 'button',
+    onClick,
+    ...rest,
+  };
 
-  const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
+  // const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
 
   return (
     <MuiButton
@@ -145,10 +142,11 @@ const Button: FC<ButtonProps> = ({
         outlined: styles[variant],
         ...classOverrides,
       }}
-      component={Link}
+      component={Component as any}
       variant="outlined"
       color={variant === 'primary' ? 'primary' : 'default'}
       startIcon={startIcon}
+      disabled={disabled}
       {...props}
     >
       {text}

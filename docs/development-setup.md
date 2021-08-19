@@ -247,3 +247,7 @@ TBD
 ## Themes
 
 TBD
+
+## Translation (i18)
+
+Translation should happen in the container components. The presentational components shouldn't know about translation.

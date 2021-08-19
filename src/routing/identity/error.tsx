@@ -1,9 +1,10 @@
 import { SelfServiceErrorContainer } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container } from '@material-ui/core';
 import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
+import { logger } from '../../services/logging/winston/logger';
 
 export const ErrorRoute: FC = () => {
   const params = useQueryParams();
@@ -15,7 +16,7 @@ export const ErrorRoute: FC = () => {
     if (errorCode && kratos) {
       kratos.getSelfServiceError(errorCode).then(({ status, data: errorContainer, ..._response }) => {
         if (status !== 200) {
-          console.error(errorContainer);
+          logger.error(errorContainer);
         }
         setErrorContainer(errorContainer);
       });
@@ -27,7 +28,7 @@ export const ErrorRoute: FC = () => {
   }
 
   return (
-    <Container fluid={'sm'}>
+    <Container maxWidth="sm">
       {errorContainer.errors.map((e, i) => (
         <p key={i}>{`${e['code']} - ${e['message']} (${e['reason']})`}</p>
       ))}

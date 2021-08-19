@@ -1,5 +1,5 @@
+import { Grid } from '@material-ui/core';
 import React, { FC } from 'react';
-import Container from './Container';
 
 const Divider: FC<{ noPadding?: boolean }> = ({ noPadding }) => {
   const svg = (
@@ -55,9 +55,9 @@ const Divider: FC<{ noPadding?: boolean }> = ({ noPadding }) => {
     return <div style={{ width: '100%', maxWidth: '100%' }}>{svg}</div>;
   }
   return (
-    <Container>
+    <Grid container item spacing={2}>
       <div style={{ width: '100%', maxWidth: '100%' }}>{svg}</div>
-    </Container>
+    </Grid>
   );
 };
 

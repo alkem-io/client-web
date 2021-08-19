@@ -1,21 +1,17 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Image as BootstrapImage, ImageProps, Spinner } from 'react-bootstrap';
-import { createStyles } from '../../hooks/useTheme';
+import Spinner from './Spinner';
 
-const useStyles = createStyles(theme => ({
-  spinner: {
-    color: theme.palette.primary.main,
-  },
-}));
-
-export const Image: FC<ImageProps> = ({ src, alt, ...props }) => {
+export const Image: FC<React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>> = ({
+  src,
+  alt,
+  ...props
+}) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const styles = useStyles();
 
   return (
     <>
-      {!isLoaded && <Spinner animation="grow" className={styles.spinner} />}
-      <BootstrapImage
+      {!isLoaded && <Spinner />}
+      <img
         onLoad={() => setIsLoaded(true)}
         onError={() => setIsLoaded(true)}
         className="image full"
@@ -29,26 +25,27 @@ export const Image: FC<ImageProps> = ({ src, alt, ...props }) => {
 };
 export default Image;
 
-export const LazyImage: FC<ImageProps> = props => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+export const LazyImage: FC<React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>> =
+  props => {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
-  useIntersectionObserver({
-    target: ref,
-    onIntersect: ([{ isIntersecting }], observerElement) => {
-      if (isIntersecting) {
-        setIsVisible(true);
-        observerElement.unobserve(ref.current);
-      }
-    },
-  });
+    useIntersectionObserver({
+      target: ref,
+      onIntersect: ([{ isIntersecting }], observerElement) => {
+        if (isIntersecting) {
+          setIsVisible(true);
+          observerElement.unobserve(ref.current);
+        }
+      },
+    });
 
-  return (
-    <div ref={ref} className={'image'}>
-      {isVisible && <Image {...props} />}
-    </div>
-  );
-};
+    return (
+      <div ref={ref} className={'image'}>
+        {isVisible && <Image {...props} />}
+      </div>
+    );
+  };
 
 const useIntersectionObserver = ({ target, onIntersect, threshold = 0.1, rootMargin = '0px' }) => {
   useEffect(() => {

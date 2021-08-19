@@ -1,3 +1,6 @@
+import { Box, Container } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
@@ -7,47 +10,36 @@ import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
-import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';
-import Container, { CardContainer } from '../components/core/Container';
+import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-// import Tag from '../components/core/Tag';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
 import { ActorWhiteboard } from '../components/Opportunity/ActorWhiteboard';
+import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
 } from '../hooks/generated/graphql';
-import { useAuthenticationContext } from '../hooks';
-import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks';
-import {
-  AuthorizationCredential,
-  Context,
-  Opportunity as OpportunityType,
-  Project,
-  User,
-} from '../models/graphql-schema';
+import { SEARCH_PAGE } from '../models/constants';
+import { Context, Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
+import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
 import { PageProps } from './common';
-import getActivityCount from '../utils/get-activity-count';
-import { useEcoverse } from '../hooks';
-import { SEARCH_PAGE } from '../models/constants';
-import Markdown from '../components/core/Markdown';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -79,14 +71,26 @@ interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
-  permissions: { projectWrite: boolean };
+  permissions: {
+    projectWrite: boolean;
+    editActorGroup: boolean;
+    editAspect: boolean;
+    editActors: boolean;
+    removeRelations: boolean;
+  };
 }
 
-const Opportunity: FC<OpportunityPageProps> = ({
+const OpportunityPage: FC<OpportunityPageProps> = ({
   paths,
   opportunity,
   users = [],
-  permissions,
+  permissions = {
+    projectWrite: false,
+    editActorGroup: false,
+    editAspect: false,
+    editActors: false,
+    removeRelations: false,
+  },
   onProjectTransition,
 }): React.ReactElement => {
   const { t } = useTranslation();
@@ -96,6 +100,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
   const history = useHistory();
+  const { ecoverseId } = useEcoverse();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -103,15 +108,9 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const { user } = useUserContext();
   const userName = user?.user.displayName;
 
-  const isAdmin =
-    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
-
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
-
-  const { ecoverseId } = useEcoverse();
 
   const { data: _activity } = useOpportunityActivityQuery({
     variables: { ecoverseId, opportunityId: opportunity?.id },
@@ -141,7 +140,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
-  const isAspectAddAllowed = isAdmin && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
+  const isAspectAddAllowed = permissions.editAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
@@ -176,7 +175,6 @@ const Opportunity: FC<OpportunityPageProps> = ({
       ...projects.map(p => ({
         title: p.displayName,
         description: p.description,
-        // tag: { status: 'positive', text: p.state || 'archive' },
         type: 'display',
         onSelect: () => onProjectTransition(p),
       })),
@@ -223,8 +221,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
           />
         }
       >
-        <Body className="d-flex flex-column flex-grow-1">
-          <div className="d-flex align-items-center flex-grow-1">
+        <Box component={Body} display={'flex'} flexDirection={'column'} flexGrow={1}>
+          <Box display={'flex'} alignItems={'center'} flexGrow={1}>
             <SectionHeader
               text={name}
               className={clsx('flex-grow-1', styles.title)}
@@ -234,13 +232,10 @@ const Opportunity: FC<OpportunityPageProps> = ({
             />
             {user?.isAdmin && (
               <>
-                <OverlayTrigger
+                <Tooltip
                   placement={'bottom'}
-                  overlay={
-                    <Tooltip id={'Edit opportunity context'}>
-                      {t('pages.opportunity.sections.header.buttons.edit.tooltip')}
-                    </Tooltip>
-                  }
+                  id={'Edit opportunity context'}
+                  title={t('pages.opportunity.sections.header.buttons.edit.tooltip') || ''}
                 >
                   <Edit
                     color={'white'}
@@ -249,7 +244,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
                     className={styles.edit}
                     onClick={() => setIsEditOpened(true)}
                   />
-                </OverlayTrigger>
+                </Tooltip>
                 <ContextEdit
                   variant={'opportunity'}
                   show={isEditOpened}
@@ -259,8 +254,8 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 />
               </>
             )}
-          </div>
-          <div className="flex-row">
+          </Box>
+          <Box flexDirection={'row'}>
             <Button
               className={styles.offset}
               inset
@@ -282,90 +277,91 @@ const Opportunity: FC<OpportunityPageProps> = ({
                 />
               ))}
             </>
-          </div>
-        </Body>
+          </Box>
+        </Box>
         {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
-      <Container className={'p-4'}>
-        {tagline && (
-          <Row>
-            <Col md={12}>
+      <Container maxWidth="xl" className={'p-4'}>
+        <Grid container spacing={2}>
+          {tagline && (
+            <Grid item md={12}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
                 <SubHeader text={tagline} className={styles.tagline} />
               </Section>
-            </Col>
-          </Row>
-        )}
-        <Row>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
-              <Body>
-                <Markdown children={background} />
-              </Body>
-            </Section>
-          </Col>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
-              <Body>
-                <Markdown children={vision} />
-              </Body>
-            </Section>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.who.header')} />
-              <Body>
-                <Markdown children={who} />
-              </Body>
-            </Section>
-          </Col>
-          <Col sm={12} md={6}>
-            <Section hideAvatar hideDetails gutters={{ content: true }}>
-              <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
-              <Body>
-                <Markdown children={impact} />
-              </Body>
-            </Section>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={12} md={6} />
-          {!hideMeme && (
-            <Col sm={12} md={6}>
+            </Grid>
+          )}
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6}>
               <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
                 <Body>
-                  {meme && (
-                    <div>
-                      <img
-                        src={meme?.uri}
-                        alt={meme?.description}
-                        onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
-                          ev.currentTarget.style.display = 'none';
-                          setHideMeme(true);
-                        }}
-                        height={240}
-                      />
-                    </div>
-                  )}
+                  <Markdown children={background} />
                 </Body>
               </Section>
-            </Col>
-          )}
-        </Row>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
+                <Body>
+                  <Markdown children={vision} />
+                </Body>
+              </Section>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.who.header')} />
+                <Body>
+                  <Markdown children={who} />
+                </Body>
+              </Section>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Section hideAvatar hideDetails gutters={{ content: true }}>
+                <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
+                <Body>
+                  <Markdown children={impact} />
+                </Body>
+              </Section>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item sm={12} md={6} />
+            {!hideMeme && (
+              <Grid item sm={12} md={6}>
+                <Section hideAvatar hideDetails gutters={{ content: true }}>
+                  <Body>
+                    {meme && (
+                      <div>
+                        <img
+                          src={meme?.uri}
+                          alt={meme?.description}
+                          onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
+                            ev.currentTarget.style.display = 'none';
+                            setHideMeme(true);
+                          }}
+                          height={240}
+                        />
+                      </div>
+                    )}
+                  </Body>
+                </Section>
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
       </Container>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
-          {isAdmin && availableActorGroupNames.length > 0 && (
-            <Button
-              text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
-              onClick={() => setShowActorGroupModal(true)}
-              className={'ml-4'}
-            />
+          {permissions.editActorGroup && availableActorGroupNames.length > 0 && (
+            <Box marginLeft={3}>
+              <Button
+                text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
+                onClick={() => setShowActorGroupModal(true)}
+              />
+            </Box>
           )}
         </SectionHeader>
         <SubHeader text={t('pages.opportunity.sections.adoption-ecosystem.subheader')} />
@@ -387,7 +383,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               withCreate={<NewActorCard opportunityId={id} text={`Add ${_name}`} actorGroupId={actorGroupId} />}
             >
               {actors?.map((props, i) => (
-                <ActorCard key={i} opportunityId={id} {...props} />
+                <ActorCard key={i} opportunityId={id} isAdmin={permissions.editActors} {...props} />
               ))}
             </CardContainer>
           );
@@ -399,11 +395,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
           {isAuthenticated && !isMemberOfOpportunity && (
-            <Button
-              text={t('pages.opportunity.sections.potential.buttons.apply.text')}
-              onClick={() => setShowInterestModal(true)}
-              className={'ml-4'}
-            />
+            <Box marginLeft={4}>
+              <Button
+                text={t('pages.opportunity.sections.potential.buttons.apply.text')}
+                onClick={() => setShowInterestModal(true)}
+              />
+            </Box>
           )}
         </SectionHeader>
         <SubHeader text={t('pages.opportunity.sections.potential.subheader')} />
@@ -411,12 +408,12 @@ const Opportunity: FC<OpportunityPageProps> = ({
 
       <Divider />
       {isNoRelations ? (
-        <div className={'d-flex justify-content-lg-center align-items-lg-center'}>
+        <Box display={'flex'} justifyContent={{ lg: 'center' }} alignItems={{ lg: 'center' }}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
           <Typography variant={'h3'} color={'neutralMedium'}>
             {t('pages.opportunity.sections.collaborators.missing-collaborators')}
           </Typography>
-        </div>
+        </Box>
       ) : (
         <>
           {incoming && incoming.length > 0 && (
@@ -428,7 +425,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {incoming?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} {...props} />
+                <RelationCard key={i} opportunityId={id} isAdmin={permissions.removeRelations} {...props} />
               ))}
             </CardContainer>
           )}
@@ -441,7 +438,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {outgoing?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} {...props} />
+                <RelationCard key={i} opportunityId={id} isAdmin={permissions.removeRelations} {...props} />
               ))}
             </CardContainer>
           )}
@@ -484,7 +481,7 @@ const Opportunity: FC<OpportunityPageProps> = ({
           }
         >
           {aspects?.map((props, i) => (
-            <AspectCard key={i} opportunityId={id} {...props} />
+            <AspectCard key={i} opportunityId={id} isAdmin={permissions.editAspect} {...props} />
           ))}
         </CardContainer>
       )}
@@ -517,4 +514,4 @@ const Opportunity: FC<OpportunityPageProps> = ({
   );
 };
 
-export { Opportunity };
+export { OpportunityPage };

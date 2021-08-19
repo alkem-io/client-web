@@ -91,7 +91,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
 
   return (
     <div className={styles.container}>
-      <Button onClick={showNewActorModalF}>New Actor</Button>
+      <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button>
       <Excalidraw
         ref={excalidrawRef}
         onChange={onChange}

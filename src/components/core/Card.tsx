@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Theme } from '@material-ui/core/styles';
 import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
 import { createStyles } from '../../hooks/useTheme';
@@ -8,6 +7,7 @@ import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
+import Tooltip from '@material-ui/core/Tooltip';
 
 interface HeaderProps {
   text: string | React.ReactNode;
@@ -68,7 +68,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
 
   if (tooltip) {
     return (
-      <OverlayTrigger placement="right" overlay={<Tooltip id={`challenge-${text}-tooltip`}>{text}</Tooltip>}>
+      <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''}>
         <div className={styles.primaryTextWrapper}>
           <Typography
             as="h4"
@@ -81,7 +81,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
             {text}
           </Typography>
         </div>
-      </OverlayTrigger>
+      </Tooltip>
     );
   }
 

@@ -1,13 +1,13 @@
+import { Box } from '@material-ui/core';
 import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
-import clsx from 'clsx';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createStyles } from '../../hooks/useTheme';
 import Button from '../core/Button';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import Typography from '../core/Typography';
-import { useTranslation } from 'react-i18next';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -105,15 +105,16 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               <span>{tag.text}</span>
             </Typography>
           )}
-          <div className={clsx('d-flex', 'flex-column', 'flex-grow-1')}>
+          <Box display={'flex'} flexDirection={'column'} flexGrow={1}>
             <Typography as={'p'} clamp={3}>
               {description}
             </Typography>
-            <div className="flex-grow-1"></div>
+
+            <Box flexGrow={1}></Box>
             <div>
               <Button text={t('buttons.details')} onClick={onSelect} />
             </div>
-          </div>
+          </Box>
         </>
       )}
       {blank && <>{children}</>}
@@ -142,9 +143,9 @@ const useAdditionalCardStyles = createStyles(theme => ({
 export const MoreProjectsCard: FC<ProjectCardProps> = ({ title }) => {
   return (
     <ProjectCard title={title} blank>
-      <div className={clsx('d-flex')} style={{ flexGrow: 1, flexDirection: 'column-reverse' }}>
+      <Box display={'flex'} flexGrow={1} flexDirection={'column-reverse'}>
         <Icon component={HourglassIcon} color="primary" size="xl" />
-      </div>
+      </Box>
     </ProjectCard>
   );
 };
@@ -154,9 +155,9 @@ export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
 
   return (
     <ProjectCard title={title} blank onClick={onSelect} className={styles.activeCard}>
-      <div className={clsx('d-flex')} style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Box display={'flex'} flexGrow={1} alignItems={'center'} justifyContent={'center'}>
         <Icon component={PlusIcon} color="inherit" size="xxl" />
-      </div>
+      </Box>
     </ProjectCard>
   );
 };

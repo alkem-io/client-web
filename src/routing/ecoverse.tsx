@@ -9,13 +9,7 @@ import {
 } from '../hooks/generated/graphql';
 import { useEcoverse } from '../hooks';
 import { useUserContext } from '../hooks';
-import {
-  Challenge as ChallengePage,
-  Ecoverse as EcoversePage,
-  FourOuFour,
-  Opportunity as OpportunityPage,
-  PageProps,
-} from '../pages';
+import { Challenge as ChallengePage, Ecoverse as EcoversePage, FourOuFour, OpportunityPage, PageProps } from '../pages';
 import {
   AuthorizationCredential,
   Challenge as ChallengeType,
@@ -109,7 +103,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   return (
     <Switch>
       <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} />
+        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
       </Route>
       <Route exact path={path}>
         {!loading && <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} />}
@@ -126,14 +120,15 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
 interface OpportunityRootProps extends PageProps {
   opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
+  challengeUUID: string;
 }
 
-const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) => {
+const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { user } = useUserContext();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseId, toEcoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
@@ -156,6 +151,15 @@ const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) =>
     [paths, id, opportunity]
   );
 
+  const isAdmin = useMemo(
+    () =>
+      user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
+      user?.isChallengeAdmin(challengeUUID) ||
+      false,
+    [user, ecoverseId, challengeUUID]
+  );
+
   const loading = opportunityLoading || usersLoading;
 
   if (loading) {
@@ -176,8 +180,13 @@ const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [] }) =>
           onProjectTransition={project => {
             history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
           }}
+          // TODO [ATS]: More generic way of controlling the UI based on user credentials must be implemented
           permissions={{
-            projectWrite: user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || false,
+            projectWrite: isAdmin,
+            editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
           }}
         />
       </Route>

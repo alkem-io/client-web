@@ -6,7 +6,7 @@ export const useNotification = () => {
   const { notificationsService } = useGlobalState();
 
   return useCallback(
-    (message: string, severity: Severity = 'information') => {
+    (message: string, severity: Severity = 'info') => {
       notificationsService.send({
         type: PUSH_NOTIFICATION,
         payload: {

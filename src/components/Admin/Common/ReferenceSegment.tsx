@@ -1,6 +1,7 @@
+import { Grid } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
-import { Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { PushFunc, RemoveFunc } from '../../../hooks';
@@ -50,91 +51,78 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
     <FieldArray name={'references'}>
       {({ push, remove }) => (
         <>
-          <Form.Row>
-            <Form.Group as={Col} xs={11} className={'d-flex mb-4 align-items-center'}>
+          <Grid container item xs={12} spacing={2}>
+            <Grid item xs={11}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.referenceSegment.title')}
               </Typography>
-            </Form.Group>
-            <Form.Group as={Col} className={'d-flex flex-row-reverse'}>
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id={'Add a reference'} placement={'bottom'}>
-                    {t('components.referenceSegment.tooltips.add-reference')}
-                  </Tooltip>
-                }
-              >
-                <Button
-                  type={'button'}
-                  onClick={e => {
-                    e.preventDefault();
-                    handleAdd(push);
-                  }}
-                  disabled={disabled || adding}
-                  text="+"
-                />
-              </OverlayTrigger>
-            </Form.Group>
-          </Form.Row>
+            </Grid>
+            <Grid container item xs={1} justifyContent={'flex-end'}>
+              <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
+                <span>
+                  <Button
+                    type={'button'}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleAdd(push);
+                    }}
+                    disabled={disabled || adding}
+                    text="+"
+                  />
+                </span>
+              </Tooltip>
+            </Grid>
+          </Grid>
           {references?.length === 0 ? (
-            <Form.Row className={'mb-2'}>
-              <Form.Control
-                type={'text'}
-                placeholder={t('components.referenceSegment.missing-refreneces')}
-                readOnly={true}
-                disabled={true}
-              />
-            </Form.Row>
+            <Grid item xs={12}>
+              <Typography variant={'caption'}>{t('components.referenceSegment.missing-refreneces')}</Typography>
+            </Grid>
           ) : (
             references?.map((ref, index) => (
-              <Form.Row key={index} className={'align-items-sm-end'}>
-                <Form.Group as={Col} xs={4}>
+              <Grid key={index} container item alignItems={'flex-end'} xs={12} spacing={2}>
+                <Grid item xs={4}>
                   <FormikInputField
                     name={`references.${index}.name`}
                     title={'Name'}
                     readOnly={readOnly}
                     disabled={disabled || index === removing}
                   />
-                </Form.Group>
-                <Form.Group as={Col}>
+                </Grid>
+                <Grid item xs={7}>
                   <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
                     readOnly={readOnly}
                     disabled={disabled || index === removing}
                   />
-                </Form.Group>
-                {!readOnly && (
-                  <Form.Group as={Col} xs={1} className={'d-flex flex-row-reverse align-items-end'}>
-                    <OverlayTrigger
-                      overlay={
-                        <Tooltip id={'remove a reference'} placement={'bottom'}>
-                          {t('components.referenceSegment.tooltips.remove-reference')}
-                        </Tooltip>
-                      }
-                    >
-                      <Button
-                        type={'button'}
-                        onClick={e => {
-                          e.preventDefault();
-                          if (onRemove) {
-                            setRemoving(index);
-                            onRemove(ref, (success: boolean) => {
-                              if (success) remove(index);
-                              setRemoving(undefined);
-                            });
-                          } else {
-                            remove(index);
-                          }
-                        }}
-                        variant={'negative'}
-                        disabled={disabled || index === removing}
-                        text="-"
-                      />
-                    </OverlayTrigger>
-                  </Form.Group>
-                )}
-              </Form.Row>
+                </Grid>
+                <Grid container item xs={1} justifyContent={'flex-end'} spacing={0}>
+                  <Tooltip
+                    title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                    id={'remove a reference'}
+                    placement={'bottom'}
+                  >
+                    <Button
+                      type={'button'}
+                      onClick={e => {
+                        e.preventDefault();
+                        if (onRemove) {
+                          setRemoving(index);
+                          onRemove(ref, (success: boolean) => {
+                            if (success) remove(index);
+                            setRemoving(undefined);
+                          });
+                        } else {
+                          remove(index);
+                        }
+                      }}
+                      variant={'negative'}
+                      disabled={disabled || index === removing}
+                      text="-"
+                    />
+                  </Tooltip>
+                </Grid>
+              </Grid>
             ))
           )}
         </>

@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dialog from '@material-ui/core/Dialog';
 import * as yup from 'yup';
 import {
   refetchOpportunityActorGroupsQuery,
@@ -13,7 +14,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Actor } from '../../models/graphql-schema';
 import Button from '../core/Button';
 import TextInput, { TextArea } from '../core/TextInput';
-import { useTranslation } from 'react-i18next';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
 interface Props {
   show: boolean;
@@ -106,11 +107,11 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   let submitWired;
 
   return (
-    <Modal show={show} onHide={onHide} centered size={'xl'}>
-      <Modal.Header closeButton>
-        <Modal.Title>{!id ? 'Create' : 'Edit'} Actor</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className={styles.body}>
+    <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="actor-edit-dialog-title">
+      <DialogTitle id="actor-edit-dialog-title" onClose={onHide}>
+        {!id ? 'Create' : 'Edit'} Actor
+      </DialogTitle>
+      <DialogContent dividers className={styles.body}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -157,17 +158,16 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
             );
           }}
         </Formik>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="negative" onClick={onHide} className={'mr-2'} text={t('buttons.cancel')} />
+      </DialogContent>
+      <DialogActions>
         <Button
           type={'submit'}
           variant="primary"
           onClick={() => submitWired()}
           text={t(`buttons.${!id ? 'create' : 'save'}`)}
         />
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

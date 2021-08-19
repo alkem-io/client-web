@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Container } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
@@ -10,7 +10,7 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
-import { useTranslation } from 'react-i18next';
+import { Box, Container } from '@material-ui/core';
 
 interface EcoverseEditProps extends PageProps {}
 
@@ -61,10 +61,10 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   let submitWired;
   return (
-    <Container>
-      <Typography variant={'h2'} className={'mt-4 mb-4'}>
-        {'Edit Ecoverse'}
-      </Typography>
+    <Container maxWidth="xl">
+      <Box marginY={4}>
+        <Typography variant={'h2'}>{'Edit Ecoverse'}</Typography>
+      </Box>
       <EcoverseEditForm
         isEdit={true}
         name={profile?.displayName}
@@ -77,15 +77,14 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
-      <div className={'d-flex mt-4 mb-4'}>
+      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
         <Button
           disabled={isLoading}
-          className={'ml-auto'}
           variant="primary"
           onClick={() => submitWired()}
           text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
         />
-      </div>
+      </Box>
     </Container>
   );
 };

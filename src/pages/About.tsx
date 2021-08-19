@@ -1,15 +1,13 @@
 import React from 'react';
-import { Col } from 'react-bootstrap';
+import Grid from '@material-ui/core/Grid';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
 import { createStyles } from '../hooks/useTheme';
 import { useServerMetadataQuery } from '../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 const useAboutStyles = createStyles(theme => ({
-  row: {
-    display: 'flex',
-  },
   content: {
     padding: `${theme.spacing(4)}px`,
     [theme.breakpoints.down('md')]: {
@@ -56,34 +54,40 @@ const AboutPage = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className={styles.row}>
-        <Col lg={3} className={styles.mdHidden} />
-        <Col xs={12} lg={6}>
+      <Grid container spacing={2}>
+        <Grid item lg={3} className={styles.mdHidden} />
+        <Grid item xs={12} lg={6}>
           <div className={styles.content}>
             <div className={styles.version}>
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
             {data && (
-              <Typography color={'neutralMedium'} className={'mb-4'}>
-                {t('pages.about.powered-by', {
-                  name: data?.metadata.services[0].name,
-                  version: data?.metadata.services[0].version,
-                })}
-              </Typography>
+              <Box marginBottom={4}>
+                <Typography color={'neutralMedium'}>
+                  {t('pages.about.powered-by', {
+                    name: data?.metadata.services[0].name,
+                    version: data?.metadata.services[0].version,
+                  })}
+                </Typography>
+              </Box>
             )}
 
-            <Typography variant={'h3'} color={'neutralMedium'} className={'mb-4'}>
-              {t('pages.about.title')}
-            </Typography>
-            <Typography className={'mb-4'}>{t('pages.about.description')}</Typography>
+            <Box marginBottom={4}>
+              <Typography variant={'h3'} color={'neutralMedium'}>
+                {t('pages.about.title')}
+              </Typography>
+            </Box>
+            <Box marginBottom={4}>
+              <Typography>{t('pages.about.description')}</Typography>
+            </Box>
             <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
               <Button text={t('buttons.learn-more')} />
             </a>
           </div>
-        </Col>
-        <Col lg={3} className={styles.mdHidden} />
-      </div>
+        </Grid>
+        <Grid item lg={3} className={styles.mdHidden} />
+      </Grid>
       <div className={styles.ring} />
     </>
   );

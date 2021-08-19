@@ -21,6 +21,7 @@ import {
 } from '../../../models/graphql-schema';
 import { urlStrip } from '../../../utils/urlStrip';
 import GroupForm from './GroupForm';
+import { logger } from '../../../services/logging/winston/logger';
 
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
@@ -70,7 +71,11 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
     onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
   });
 
-  const [createTagset] = useCreateTagsetOnProfileMutation({ onError: handleError });
+  const [createTagset] = useCreateTagsetOnProfileMutation({
+    // Just log the error. Do not send it to the notification hanlder.
+    // there is an issue handling multiple snackbars.
+    onError: error => logger.error(error.message),
+  });
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
 
@@ -81,7 +86,6 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
 
     for (const tagset of tagsetsToAdd) {
-      debugger;
       await createTagset({
         variables: {
           input: {

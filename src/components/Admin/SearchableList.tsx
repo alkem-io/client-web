@@ -1,12 +1,12 @@
+import { FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, OutlinedInput } from '@material-ui/core';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
-import React, { FC, Fragment, useMemo, useState } from 'react';
-import { FormControl, FormGroup, FormLabel, ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { FC, ReactElement, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 import RemoveModal from '../core/RemoveModal';
-import { useTranslation } from 'react-i18next';
 
 interface SearchableListProps {
   data: SearchableListItem[];
@@ -23,13 +23,39 @@ export const searchableListItemMapper =
     url: `${url}/${item.nameID ?? item.id}${editSuffix ?? ''}`,
   });
 
+interface ListItemLinkProps {
+  icon?: ReactElement;
+  primary: string;
+  to: string;
+}
+
+const ListItemLink = (props: ListItemLinkProps) => {
+  const { icon, primary, to } = props;
+
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
+        <RouterLink to={to} ref={ref} {...itemProps} />
+      )),
+    [to]
+  );
+
+  return (
+    <li>
+      <ListItem button component={renderLink}>
+        <ListItemText primary={primary} />
+        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+      </ListItem>
+    </li>
+  );
+};
 export interface SearchableListItem {
   id: string;
   value: string;
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, active, onDelete }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, onDelete }) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -69,45 +95,33 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
 
   return (
     <>
-      <FormGroup style={{ flexDirection: 'column' }} className={'justify-content-end'}>
-        <FormControl placeholder="Search" arial-label="Search" onChange={handleSearch} />
-        <FormLabel> {`Showing ${slicedData.length} of ${data.length}`}</FormLabel>
-      </FormGroup>
+      <FormControl fullWidth size={'small'}>
+        <OutlinedInput placeholder={t('components.searchableList.placeholder')} onChange={handleSearch} />
+      </FormControl>
+      <InputLabel> {t('components.searchableList.info', { count: slicedData.length, total: data.length })}</InputLabel>
       <hr />
-      <ListGroup>
+      <List>
         {slicedData.map(item => (
-          <Fragment key={item.id}>
-            <ListGroup.Item
-              as={Link}
-              action
-              to={`${item.url}${editSuffix}`}
-              active={active !== undefined && item.id === active}
-              className={'d-flex'}
-            >
-              {item.value}
-              <div className={'flex-grow-1'} />
-              {onDelete && (
-                <IconButton onClick={e => openModal(e, item)}>
-                  <Icon component={Trash} color="negative" size={'sm'} />
-                </IconButton>
-              )}
-            </ListGroup.Item>
-          </Fragment>
+          <ListItemLink
+            key={item.id}
+            to={`${item.url}${editSuffix}`}
+            primary={item.value}
+            icon={
+              <IconButton onClick={e => openModal(e, item)}>
+                <Icon component={Trash} color="negative" size={'sm'} />
+              </IconButton>
+            }
+          />
         ))}
-      </ListGroup>
+      </List>
       <RemoveModal
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveItem}
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
-        //loading={loading}
       />
       {filteredData.length > limit && limit < 50 && (
-        <Button
-          className={'mt-4'}
-          onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}
-          text={t('components.searchableList.load-more')}
-        />
+        <Button onClick={() => setLimit(x => (x >= 50 ? x : x + 10))} text={t('components.searchableList.load-more')} />
       )}
     </>
   );

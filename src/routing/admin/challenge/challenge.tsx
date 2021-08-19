@@ -12,10 +12,10 @@ import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditChallenge from '../../../components/Admin/EditChallenge';
 import FormMode from '../../../components/Admin/FormMode';
 import { AdminParameters } from '../admin';
-import AuthorizationRoute from '../authorization';
 import { CommunityRoute } from '../community';
 import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
+import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -80,10 +80,10 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route path={`${path}/opportunities`}>
-        <OpportunitiesRoutes paths={currentPaths} />
+        <OpportunitiesRoutes paths={currentPaths} challengeId={challengeUUID} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
+        <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
       </Route>
       <Route path={`${path}/lifecycle`}>
         <ChallengeLifecycleRoute paths={currentPaths} />

@@ -8,6 +8,7 @@ import Typography from '../../components/core/Typography';
 import { useQueryParams } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
+import { Box } from '@material-ui/core';
 
 interface AuthRequiredPageProps {}
 
@@ -22,17 +23,14 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
 
   return (
     <AuthenticationLayout>
-      <Typography variant={'h2'} className={'text-center'}>
-        <Icon component={CheckCircle} color={'primary'} size={'xl'} />
-      </Typography>
-      <Typography variant={'h2'} className={'text-center'}>
-        {t('pages.authentication-required.header')}
-      </Typography>
-      <Typography variant={'h3'} className={'text-center'}>
-        {t('pages.authentication-required.subheader')}
-      </Typography>
-
-      <div className={'mt-4 text-center'}>
+      <Box textAlign={'center'}>
+        <Typography variant={'h2'}>
+          <Icon component={CheckCircle} color={'primary'} size={'xl'} />
+        </Typography>
+        <Typography variant={'h2'}>{t('pages.authentication-required.header')}</Typography>
+        <Typography variant={'h3'}>{t('pages.authentication-required.subheader')}</Typography>
+      </Box>
+      <Box marginTop={4} textAlign={'center'}>
         <Button
           as={Link}
           to={AUTH_LOGIN_PATH}
@@ -41,7 +39,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
           text={t('authentication.sign-in')}
         />
         <Button as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
-      </div>
+      </Box>
     </AuthenticationLayout>
   );
 };

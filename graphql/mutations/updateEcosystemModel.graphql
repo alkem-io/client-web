@@ -1,0 +1,6 @@
+mutation updateEcosystemModel($ecosystemModelData: UpdateEcosystemModelInput!) {
+  updateEcosystemModel(ecosystemModelData: $ecosystemModelData)
+  {
+    id
+  }
+}

@@ -7,6 +7,7 @@ import Avatar, { AvatarProps, useAvatarStyles } from './core/Avatar';
 import { Spinner } from './core/Spinner';
 import UploadButton from './core/UploadButton';
 import { useTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 const useEditableAvatarStyles = createStyles(() => ({
   outerEditableAvatarWrapper: {
@@ -50,14 +51,17 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
 
   return (
     <div className={clsx(styles.outerEditableAvatarWrapper)}>
-      {loading ? (
-        <div className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}>
-          <Spinner />
-        </div>
-      ) : (
-        <Avatar {...props} />
-      )}
-
+      <Box marginY={1}>
+        {loading ? (
+          <div
+            className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}
+          >
+            <Spinner />
+          </div>
+        ) : (
+          <Avatar {...props} />
+        )}
+      </Box>
       {profileId && (
         <div className={clsx(styles.upload)}>
           <UploadButton

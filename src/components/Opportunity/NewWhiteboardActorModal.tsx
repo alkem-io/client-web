@@ -233,6 +233,7 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
     console.log('Values in onsubmit', values);
     // Call whiteboard callback
     onSubmit(createActor(values.actor));
+    onHide();
   };
   const onChangeWithLog = (e, setFieldValue) => {
     console.log('On change', e.target.value);
@@ -255,9 +256,7 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
                 ))}
               </Form.Control>
               <Divider />
-              <Button type="submit" disabled={isSubmitting}>
-                Create Whiteboard
-              </Button>
+              <Button variant="primary" type="submit" disabled={isSubmitting} text="Add Actor"></Button>
             </Form>
           )}
         </Formik>

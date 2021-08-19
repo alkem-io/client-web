@@ -1,12 +1,12 @@
-import clsx from 'clsx';
+import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
-import { Lifecycle } from '../../models/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
 import { useRouteMatch } from 'react-router';
-import { PageProps } from '../../pages';
 import { useUpdateNavigation } from '../../hooks';
-import LifecycleButton from '../core/LifecycleButton';
+import { createStyles } from '../../hooks/useTheme';
+import { Lifecycle } from '../../models/graphql-schema';
+import { PageProps } from '../../pages';
 import LifecycleVisualizer from '../core/Lifecycle';
+import LifecycleButton from '../core/LifecycleButton';
 
 const useStyles = createStyles(theme => ({
   wrapper: {
@@ -39,11 +39,13 @@ const EditLifecycle: FC<Props> = ({ paths, data, id, onSetNewState }) => {
     <div className={styles.wrapper}>
       {data && <LifecycleVisualizer lifecycle={data} />}
       {nextEvents && (
-        <div className={clsx(styles.buttonsWrapper, 'col-7')}>
+        <Grid container spacing={1} justifyContent={'flex-end'}>
           {nextEvents.map((x, i) => (
-            <LifecycleButton key={i} stateName={x} onClick={() => onSetNewState(id, x)} />
+            <Grid item key={i}>
+              <LifecycleButton stateName={x} onClick={() => onSetNewState(id, x)} />
+            </Grid>
           ))}
-        </div>
+        </Grid>
       )}
     </div>
   );

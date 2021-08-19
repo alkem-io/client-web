@@ -1,3 +1,4 @@
+import { CountryType } from './constants';
 import { Organisation } from './graphql-schema';
 import { Reference, Tagset } from './Profile';
 
@@ -68,7 +69,7 @@ export interface UserFromGenerated {
   avatar: string;
   tagsets: Tagset[];
   references: Reference[];
-  country: string;
+  country: CountryType | null;
   phone: string;
   lastName: string;
   city: string;

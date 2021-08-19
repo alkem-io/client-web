@@ -1,5 +1,5 @@
+import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
-import { Col } from 'react-bootstrap';
 import { createStyles } from '../../hooks/useTheme';
 
 interface DelimiterProps {}
@@ -27,9 +27,9 @@ export const Delimiter: FC<DelimiterProps> = ({ children }) => {
   const style = useDelimiterStyle();
 
   return (
-    <Col className={'p-0'}>
+    <Box padding={0}>
       <div className={style.line}>{children && <strong className={style.strong}>{children}</strong>}</div>
-    </Col>
+    </Box>
   );
 };
 export default Delimiter;

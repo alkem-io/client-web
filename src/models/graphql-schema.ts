@@ -118,8 +118,23 @@ export type Aspect = {
   title: Scalars['String'];
 };
 
+export type AssignChallengeAdminInput = {
+  challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignCommunityMemberInput = {
   communityID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignEcoverseAdminInput = {
+  ecoverseID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignOrganisationAdminInput = {
+  organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -250,6 +265,14 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type CommunicationMessageReceived = {
+  __typename?: 'CommunicationMessageReceived';
+  /** The update message that has been sent. */
+  message: CommunicationMessageResult;
+  /** The identifier of the room */
+  roomId: Scalars['String'];
+};
+
 export type CommunicationMessageResult = {
   __typename?: 'CommunicationMessageResult';
   /** The id for the message event (Matrix) */
@@ -360,7 +383,8 @@ export type CreateAspectInput = {
   title: Scalars['String'];
 };
 
-export type CreateChallengeInput = {
+export type CreateChallengeOnChallengeInput = {
+  challengeID: Scalars['UUID'];
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -369,7 +393,19 @@ export type CreateChallengeInput = {
   lifecycleTemplate?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
-  parentID: Scalars['UUID_NAMEID'];
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type CreateChallengeOnEcoverseInput = {
+  context?: Maybe<CreateContextInput>;
+  /** The display name for the entity. */
+  displayName?: Maybe<Scalars['String']>;
+  ecoverseID: Scalars['UUID_NAMEID'];
+  /** Set lead Organisations for the Challenge. */
+  leadOrganisations?: Maybe<Array<Scalars['UUID_NAMEID']>>;
+  lifecycleTemplate?: Maybe<Scalars['String']>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -403,7 +439,7 @@ export type CreateNvpInput = {
 };
 
 export type CreateOpportunityInput = {
-  challengeID: Scalars['UUID_NAMEID'];
+  challengeID: Scalars['UUID'];
   context?: Maybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
@@ -752,15 +788,6 @@ export type MembershipUserResultEntryOrganisation = {
   userGroups: Array<MembershipResultEntry>;
 };
 
-export type Message = {
-  __typename?: 'Message';
-  id: Scalars['ID'];
-  message: Scalars['String'];
-  reciever: Scalars['String'];
-  sender: Scalars['String'];
-  timestamp: Scalars['Float'];
-};
-
 export type Metadata = {
   __typename?: 'Metadata';
   /** Metrics about the activity on the platform */
@@ -771,6 +798,12 @@ export type Metadata = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Assigns a User as an Challenge Admin. */
+  assignUserAsChallengeAdmin: User;
+  /** Assigns a User as an Ecoverse Admin. */
+  assignUserAsEcoverseAdmin: User;
+  /** Assigns a User as an Organisation Admin. */
+  assignUserAsOrganisationAdmin: User;
   /** Assigns a User as a member of the specified Community. */
   assignUserToCommunity: Community;
   /** Assigns a User as a member of the specified User Group. */
@@ -863,6 +896,12 @@ export type Mutation = {
   messageUpdateCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
+  /** Removes a User from being an Challenge Admin. */
+  removeUserAsChallengeAdmin: User;
+  /** Removes a User from being an Ecoverse Admin. */
+  removeUserAsEcoverseAdmin: User;
+  /** Removes a User from being an Organisation Admin. */
+  removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
   removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
@@ -893,6 +932,18 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
+};
+
+export type MutationAssignUserAsChallengeAdminArgs = {
+  membershipData: AssignChallengeAdminInput;
+};
+
+export type MutationAssignUserAsEcoverseAdminArgs = {
+  membershipData: AssignEcoverseAdminInput;
+};
+
+export type MutationAssignUserAsOrganisationAdminArgs = {
+  membershipData: AssignOrganisationAdminInput;
 };
 
 export type MutationAssignUserToCommunityArgs = {
@@ -940,11 +991,11 @@ export type MutationCreateAspectArgs = {
 };
 
 export type MutationCreateChallengeArgs = {
-  challengeData: CreateChallengeInput;
+  challengeData: CreateChallengeOnEcoverseInput;
 };
 
 export type MutationCreateChildChallengeArgs = {
-  challengeData: CreateChallengeInput;
+  challengeData: CreateChallengeOnChallengeInput;
 };
 
 export type MutationCreateEcoverseArgs = {
@@ -1075,6 +1126,18 @@ export type MutationMessageUserArgs = {
   msgData: UserSendMessageInput;
 };
 
+export type MutationRemoveUserAsChallengeAdminArgs = {
+  membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsEcoverseAdminArgs = {
+  membershipData: RemoveEcoverseAdminInput;
+};
+
+export type MutationRemoveUserAsOrganisationAdminArgs = {
+  membershipData: RemoveOrganisationAdminInput;
+};
+
 export type MutationRemoveUserFromCommunityArgs = {
   membershipData: RemoveCommunityMemberInput;
 };
@@ -1144,19 +1207,20 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Opportunity = {
+export type Opportunity = Searchable & {
   __typename?: 'Opportunity';
   /** The activity within this Opportunity. */
   activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The parent Challenge of the Opportunity */
+  challenge?: Maybe<Challenge>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** The lifeycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
@@ -1296,6 +1360,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** A community. A valid community ID needs to be specified. */
+  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1310,7 +1376,6 @@ export type Query = {
   membershipOrganisation: OrganisationMembership;
   /** Search the ecoverse for terms supplied */
   membershipUser: UserMembership;
-  messages: Array<Message>;
   /** Alkemio Services Metadata */
   metadata: Metadata;
   /** A particular Organisation */
@@ -1329,6 +1394,10 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryCommunityArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -1407,8 +1476,23 @@ export type Relation = {
   type: Scalars['String'];
 };
 
+export type RemoveChallengeAdminInput = {
+  challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type RemoveCommunityMemberInput = {
   communityID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveEcoverseAdminInput = {
+  ecoverseID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveOrganisationAdminInput = {
+  organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -1428,6 +1512,12 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RoomInvitationReceived = {
+  __typename?: 'RoomInvitationReceived';
+  /** The roomId that the user has been added to */
+  roomId?: Maybe<Scalars['String']>;
 };
 
 export type SearchInput = {
@@ -1466,7 +1556,8 @@ export type ServiceMetadata = {
 export type Subscription = {
   __typename?: 'Subscription';
   avatarUploaded: Profile;
-  messageReceived: Message;
+  messageReceived: CommunicationMessageReceived;
+  roomNotificationReceived: RoomInvitationReceived;
 };
 
 export type Tagset = {
@@ -1872,6 +1963,8 @@ export type EcoverseDetailsFragment = {
   context?: Maybe<{ __typename?: 'Context' } & ContextDetailsFragment>;
 };
 
+export type EcoverseNameFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
 
 export type GroupInfoFragment = {
@@ -1945,6 +2038,52 @@ export type ReferenceDetailsFragment = {
   uri: string;
   description: string;
 };
+
+export type ChallengeSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  ecoverseID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>;
+};
+
+export type OpportunitySearchResultFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>;
+  challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string; displayName: string; ecoverseID: string }>;
+};
+
+export type OrganisationSearchResultFragment = {
+  __typename?: 'Organisation';
+  id: string;
+  displayName: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+  };
+};
+
+export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
 export type UserAgentFragment = {
   __typename?: 'User';
@@ -2063,7 +2202,7 @@ export type CreateAspectMutation = {
 };
 
 export type CreateChallengeMutationVariables = Exact<{
-  input: CreateChallengeInput;
+  input: CreateChallengeOnEcoverseInput;
 }>;
 
 export type CreateChallengeMutation = {
@@ -2322,6 +2461,42 @@ export type GrantCredentialsMutation = {
   grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
 };
 
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignChallengeAdminInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsEcoverseAdminMutationVariables = Exact<{
+  input: AssignEcoverseAdminInput;
+}>;
+
+export type AssignUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveChallengeAdminInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
+  input: RemoveEcoverseAdminInput;
+}>;
+
+export type RemoveUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type RemoveUserFromCommunityMutationVariables = Exact<{
   input: RemoveCommunityMemberInput;
 }>;
@@ -2536,86 +2711,6 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
-export type ChallengeCardQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeCardQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    displayName: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      displayName: string;
-      nameID: string;
-      ecoverseID: string;
-      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-      tagset?: Maybe<{ __typename?: 'Tagset'; tags: Array<string> }>;
-      context?: Maybe<{
-        __typename?: 'Context';
-        tagline?: Maybe<string>;
-        visual?: Maybe<{ __typename?: 'Visual'; avatar: string; background: string; banner: string }>;
-      }>;
-    };
-  };
-};
-
-export type GroupCardQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupCardQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    group: {
-      __typename: 'UserGroup';
-      name: string;
-      parent?: Maybe<
-        { __typename: 'Community'; displayName: string } | { __typename: 'Organisation'; displayName: string }
-      >;
-      members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
-      profile?: Maybe<{
-        __typename?: 'Profile';
-        id: string;
-        avatar?: Maybe<string>;
-        description?: Maybe<string>;
-        references?: Maybe<Array<{ __typename?: 'Reference'; name: string; description: string }>>;
-        tagsets?: Maybe<Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>>;
-      }>;
-    };
-  };
-};
-
-export type OrganizationCardQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationCardQuery = {
-  __typename?: 'Query';
-  organisation: {
-    __typename?: 'Organisation';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      description?: Maybe<string>;
-      avatar?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>>;
-      references?: Maybe<Array<{ __typename?: 'Reference'; name: string; uri: string }>>;
-    };
-  };
-};
-
 export type UserCardQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -2814,6 +2909,7 @@ export type ChallengeProfileQuery = {
               lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
             }>
           >;
+          tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
         }>
       >;
       leadOrganisations: Array<{
@@ -3158,6 +3254,38 @@ export type EcoverseInfoQuery = {
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   } & EcoverseDetailsFragment;
 };
+
+export type EcoverseMembersQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseMembersQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
+          id: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+        }>
+      >;
+    }>;
+  };
+};
+
+export type EcoverseNameQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseNameQuery = { __typename?: 'Query'; ecoverse: { __typename?: 'Ecoverse' } & EcoverseNameFragment };
 
 export type EcoverseUserIdsQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
@@ -3611,6 +3739,7 @@ export type OrganisationGroupQuery = {
   organisation: {
     __typename?: 'Organisation';
     id: string;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     group?: Maybe<{ __typename?: 'UserGroup' } & GroupInfoFragment>;
   };
 };
@@ -3776,20 +3905,11 @@ export type SearchQuery = {
     score?: Maybe<number>;
     terms?: Maybe<Array<string>>;
     result?: Maybe<
-      | {
-          __typename?: 'Challenge';
-          displayName: string;
-          id: string;
-          ecoverseID: string;
-          context?: Maybe<{
-            __typename?: 'Context';
-            tagline?: Maybe<string>;
-            visual?: Maybe<{ __typename?: 'Visual'; avatar: string }>;
-          }>;
-        }
-      | { __typename?: 'Organisation'; displayName: string; id: string }
+      | ({ __typename?: 'Challenge' } & ChallengeSearchResultFragment)
+      | ({ __typename?: 'Opportunity' } & OpportunitySearchResultFragment)
+      | ({ __typename?: 'Organisation' } & OrganisationSearchResultFragment)
       | { __typename?: 'User'; displayName: string; id: string }
-      | { __typename?: 'UserGroup'; name: string; id: string }
+      | ({ __typename?: 'UserGroup' } & UserSearchResultFragment)
     >;
   }>;
 };
@@ -3881,4 +4001,83 @@ export type UsersWithCredentialsQuery = {
     lastName: string;
     email: string;
   }>;
+};
+
+export type CommunityUpdatesQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUpdatesQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    updatesRoom: {
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    };
+  };
+};
+
+export type SendCommunityUpdateMutationVariables = Exact<{
+  msgData: CommunitySendMessageInput;
+}>;
+
+export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
+
+export type AssignUserToOrganisationMutationVariables = Exact<{
+  input: AssignOrganisationMemberInput;
+}>;
+
+export type AssignUserToOrganisationMutation = {
+  __typename?: 'Mutation';
+  assignUserToOrganisation: { __typename?: 'Organisation'; id: string; displayName: string };
+};
+
+export type RemoveUserFromOrganisationMutationVariables = Exact<{
+  input: RemoveOrganisationMemberInput;
+}>;
+
+export type RemoveUserFromOrganisationMutation = {
+  __typename?: 'Mutation';
+  removeUserFromOrganisation: { __typename?: 'Organisation'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
+  input: AssignOrganisationAdminInput;
+}>;
+
+export type AssignUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
+  input: RemoveOrganisationAdminInput;
+}>;
+
+export type RemoveUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type OrganisationMembersQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganisationMembersQuery = {
+  __typename?: 'Query';
+  organisation: {
+    __typename?: 'Organisation';
+    id: string;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+  };
 };

@@ -6,6 +6,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
+import { createStyles, useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsQuery,
@@ -14,17 +15,15 @@ import {
   useDeleteAspectMutation,
   useDeleteRelationMutation,
 } from '../../hooks/generated/graphql';
-import { useEcoverse, createStyles, useApolloErrorHandler, useUserContext } from '../../hooks';
-import { AuthorizationCredential } from '../../models/graphql-schema';
+import hexToRGBA from '../../utils/hexToRGBA';
 import { replaceAll } from '../../utils/replaceAll';
 import Card from '../core/Card';
 import Icon from '../core/Icon';
 import RemoveModal from '../core/RemoveModal';
-import Typography from '../core/Typography';
 import { Spacer } from '../core/Spacer';
+import Typography from '../core/Typography';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
-import hexToRGBA from '../../utils/hexToRGBA';
 
 const useCardStyles = createStyles(theme => ({
   item: {
@@ -65,17 +64,22 @@ interface RelationCardProps {
   type: string;
   id: string;
   opportunityId: string;
+  isAdmin: boolean;
 }
 
-export const RelationCard: FC<RelationCardProps> = ({ actorName, actorRole, description, type, id, opportunityId }) => {
+export const RelationCard: FC<RelationCardProps> = ({
+  actorName,
+  actorRole,
+  description,
+  type,
+  id,
+  opportunityId,
+  isAdmin,
+}) => {
   const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [showRemove, setShowRemove] = useState<boolean>(false);
-  const { user } = useUserContext();
-  const isAdmin =
-    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const [removeRelation] = useDeleteRelationMutation({
     variables: {
@@ -132,18 +136,15 @@ interface ActorCardProps {
   impact?: string;
   type?: 'stakeholder' | 'key user' | string;
   opportunityId: string;
+  isAdmin: boolean;
 }
 
-export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId }) => {
+export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId, isAdmin }) => {
   const { ecoverseId } = useEcoverse();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
-  const { user } = useUserContext();
-  const isAdmin =
-    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   const [removeActor] = useDeleteActorMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
@@ -276,9 +277,10 @@ interface AspectCardProps {
   framing?: string;
   explanation?: string;
   opportunityId: string;
+  isAdmin: boolean;
 }
 
-export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId }) => {
+export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId, isAdmin }) => {
   const { ecoverseId } = useEcoverse();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
@@ -293,10 +295,6 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
   const onRemove = () => removeAspect({ variables: { input: { ID: id } } });
 
   const styles = useCardStyles();
-  const { user } = useUserContext();
-  const isAdmin =
-    user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-    user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity);
 
   return (
     <div className={styles.relative}>

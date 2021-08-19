@@ -1,0 +1,28 @@
+fragment OpportunitySearchResult on Opportunity {
+  id
+  displayName
+  nameID
+  activity {
+    name
+    value
+  }
+  context {
+    id
+    tagline
+    visual {
+      id
+      avatar
+      background
+    }
+  }
+  tagset {
+    id
+    tags
+  }
+  challenge {
+    id
+    nameID
+    displayName
+    ecoverseID
+  }
+}

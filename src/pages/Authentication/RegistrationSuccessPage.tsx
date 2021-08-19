@@ -7,6 +7,7 @@ import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
+import { Box } from '@material-ui/core';
 
 interface RegistrationSuccessPageProps {}
 
@@ -15,16 +16,14 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
 
   return (
     <AuthenticationLayout>
-      <Typography variant={'h2'} className={'text-center'}>
-        <Icon component={CheckCircle} color={'primary'} size={'xl'} />
-      </Typography>
-      <Typography variant={'h2'} className={'text-center'}>
-        {t('pages.registration-success.header')}
-      </Typography>
-      <Typography variant={'h3'} className={'text-center'}>
-        {t('pages.registration-success.subheader')}
-      </Typography>
-      <Markdown children={t('pages.registration-success.message')} />
+      <Box textAlign={'center'}>
+        <Typography variant={'h2'}>
+          <Icon component={CheckCircle} color={'primary'} size={'xl'} />
+        </Typography>
+        <Typography variant={'h2'}>{t('pages.registration-success.header')}</Typography>
+        <Typography variant={'h3'}>{t('pages.registration-success.subheader')}</Typography>
+        <Markdown children={t('pages.registration-success.message')} />
+      </Box>
       <Typography>
         <ul>
           <li>
@@ -71,9 +70,9 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
 
       <Typography>As with any community, the more everyone brings in the more everyone gets out!</Typography>
       <Typography>We really hope you enjoy engaging!</Typography>
-      <div className={'mt-4 text-center'}>
+      <Box marginTop={4} textAlign={'center'}>
         <Button as={Link} to={'/'} text={t('buttons.home')} />
-      </div>
+      </Box>
     </AuthenticationLayout>
   );
 };

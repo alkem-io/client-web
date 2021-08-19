@@ -1,8 +1,8 @@
 import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
@@ -12,6 +12,8 @@ import { useKratosClient } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
+import { Box } from '@material-ui/core';
+import { logger } from '../../services/logging/winston/logger';
 
 interface LoginPageProps {
   flow?: string;
@@ -32,7 +34,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
         .getSelfServiceLoginFlow(flow)
         .then(({ status, data: flow }) => {
           if (status !== 200) {
-            console.error(flow);
+            logger.error(flow);
           }
           setLoginFlow(flow);
         })
@@ -53,26 +55,22 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
 
   if (!loginFlow) return <Loading text={'Loading flow'} />;
 
-  // Remove resetpassword until the SMTP server is configured correctly
-  const resetPassword = <></>;
-  // (
-  //    <div className={'text-right'}>
-  //     <Link to={'/auth/recovery'}>Reset password</Link>
-  //    </div>
-  //  );
+  const resetPassword = (
+    <Box display={'flex'} justifyContent={'flex-end'}>
+      <Link to={'/identity/recovery'}>Reset password</Link>
+    </Box>
+  );
 
   return (
     <AuthenticationLayout>
-      <Row className={'d-flex justify-content-center'}>
-        <Col sm={4}>
-          <Typography variant={'h3'} className={'mt-4 mb-4 text-center'}>
-            {t('pages.login.title')}
-          </Typography>
+      <Grid container spacing={2} justifyContent={'center'}>
+        <Grid item sm={4}>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h3'}>{t('pages.login.title')}</Typography>
+          </Box>
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
-          <Delimiter />
-          <Typography variant={'h5'} className={'mb-2'}>
-            {t('pages.login.register')}
-          </Typography>
+          <Delimiter>OR</Delimiter>
+          <Typography variant={'h5'}>{t('pages.login.register')}</Typography>
           <Button
             variant="primary"
             type={'submit'}
@@ -81,8 +79,8 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
             onClick={() => history.push(AUTH_REGISTER_PATH)}
             text={t('authentication.sign-up')}
           />
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </AuthenticationLayout>
   );
 };

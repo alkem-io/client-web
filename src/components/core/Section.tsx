@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import Grid, { GridSize } from '@material-ui/core/Grid';
 import { Theme } from '@material-ui/core/styles';
+import { Box, Container, makeStyles } from '@material-ui/core';
 import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
-import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import Container from './Container';
 import Tag from './Tag';
 import Typography from './Typography';
+import { createStyles } from '../../hooks/useTheme';
 
 interface HeaderProps {
   text?: string;
@@ -43,14 +43,16 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
       {tagText && <Tag className={styles.tagOffset} text={tagText} />}
       {icon && (
         <>
-          <div className={'flex-grow-1'} />
+          <Box flexGrow={1} />
           {icon}
         </>
       )}
       {children && (
-        <Col lg={4} md={6} xs={12}>
-          {children}
-        </Col>
+        <Grid container spacing={2}>
+          <Grid item lg={4} md={6} xs={12}>
+            {children}
+          </Grid>
+        </Grid>
       )}
     </Typography>
   );
@@ -63,13 +65,18 @@ const useSubHeaderStyles = createStyles(theme => ({
   },
 }));
 
-export const SubHeader: FC<HeaderProps> = ({ text, svg, className, classes = {} }) => {
+export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, classes = {} }) => {
   const styles = useSubHeaderStyles(classes);
 
   return (
-    <Typography as="h3" variant="h3" color="inherit" weight="regular" className={clsx(styles.header, className)}>
-      {text || svg}
-    </Typography>
+    <>
+      {(text || svg) && (
+        <Typography as="h3" variant="h3" color="inherit" weight="regular" className={clsx(styles.header, className)}>
+          {text || svg}
+        </Typography>
+      )}
+      {children}
+    </>
   );
 };
 
@@ -141,25 +148,13 @@ interface SectionClassProps extends ClassProps {
   coverBackground?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
 }
 
-const useSectionStyles = createStyles(theme => ({
+const useSectionStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     background: (props: SectionClassProps) =>
       agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
     position: 'relative',
-  },
-  cover: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: (props: SectionClassProps) => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
-    zIndex: 0,
-  },
-  row: {
-    zIndex: 1,
   },
   avatar: {
     display: 'flex',
@@ -198,28 +193,29 @@ const Section: FC<SectionProps> = ({
   const styles = useSectionStyles(classes);
 
   return (
-    <Container disableGutters={!gutters.root} className={clsx(styles.root, className)}>
-      <div className={clsx(styles.cover, 'section-cover')} />
-      <Row className={styles.row}>
+    <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
+      <Grid container spacing={2}>
         {!hideAvatar && (
-          <Col md={12} lg={3}>
+          <Grid item md={12} lg={3}>
             <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
-          </Col>
+          </Grid>
         )}
-        <Col
-          className={'d-flex flex-column position-relative'}
+        <Grid
+          item
+          container
+          direction={'column'}
           xs={12}
-          md={8 + (hideDetails || !details ? 4 : 0)}
-          lg={6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)}
+          md={(8 + (hideDetails || !details ? 4 : 0)) as GridSize}
+          lg={(6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)) as GridSize}
         >
           <Content gutters={gutters.content}>{children}</Content>
-        </Col>
+        </Grid>
         {!hideDetails && details && (
-          <Col xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={4} lg={3}>
             <div className={clsx(gutters.details && styles.gutter)}>{details}</div>
-          </Col>
+          </Grid>
         )}
-      </Row>
+      </Grid>
     </Container>
   );
 };

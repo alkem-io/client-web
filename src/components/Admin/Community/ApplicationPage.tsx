@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
+import Dialog from '@material-ui/core/Dialog';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
@@ -12,6 +12,7 @@ import Typography from '../../core/Typography';
 import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import LifecycleButton from '../../core/LifecycleButton';
+import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 
 interface ApplicationViewmodel {
   id: string;
@@ -75,7 +76,7 @@ export const ApplicationPage: FC<ApplicationPageProps> = ({ paths, applications 
           }}
         />
       </div>
-      <ApplicationModal
+      <ApplicationDialog
         appChosen={appChosen}
         onHide={() => setAppChosen(undefined)}
         onSetNewState={setNewStateHandler}
@@ -143,7 +144,7 @@ interface ApplicationModalProps {
   onSetNewState: (appId: string, newState: string) => void;
 }
 
-const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetNewState }) => {
+const ApplicationDialog: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetNewState }) => {
   const styles = appStyles();
 
   const appId = appChosen?.id || '';
@@ -156,9 +157,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
   const avatarSrc = user?.profile?.avatar || '';
 
   return (
-    <Modal show={!!appChosen} size="lg" onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter" className={styles.title}>
+    <Dialog open={!!appChosen} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">
+      <DialogTitle id="org-dialog-title" onClose={onHide}>
+        <div className={styles.title}>
           <div className={styles.header}>
             <div className={styles.profile}>
               <Avatar src={avatarSrc} size={'lg'} />
@@ -167,22 +168,22 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
               </div>
             </div>
           </div>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+        </div>
+      </DialogTitle>
+      <DialogContent dividers>
         <div className={styles.body}>
           <div className={styles.questions}>
             {questions.map(x => (
-              <div className={styles.question}>
+              <div key={x.id} className={styles.question}>
                 <label>{x.name}</label>
-                <textarea readOnly>{x.value}</textarea>
+                <Typography weight={'boldLight'}>{x.value}</Typography>
               </div>
             ))}
           </div>
         </div>
-      </Modal.Body>
+      </DialogContent>
       {nextEvents.length > 0 && (
-        <Modal.Footer>
+        <DialogActions>
           {nextEvents.map((x, i) => (
             <LifecycleButton
               key={i}
@@ -193,9 +194,9 @@ const ApplicationModal: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetN
               }}
             />
           ))}
-        </Modal.Footer>
+        </DialogActions>
       )}
-    </Modal>
+    </Dialog>
   );
 };
 
