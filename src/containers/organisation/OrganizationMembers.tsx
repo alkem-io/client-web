@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
+import { useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganisationAdminMutation,
@@ -46,9 +47,12 @@ export interface OrganizationMembersState {
 export interface OrganizationMembersEntities {
   availableMembers: Member[];
   allMembers: Member[];
+  currentMember?: Member;
 }
 
 export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, entities }) => {
+  const { user } = useUserContext();
+
   const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
     variables: {
       input: {
@@ -182,10 +186,21 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     [data]
   );
 
+  const currentMember = useMemo<Member | undefined>(() => {
+    if (user)
+      return {
+        id: user.user.id,
+        displayName: user.user.displayName,
+        firstName: user.user.firstName,
+        lastName: user.user.lastName,
+        email: user.user.email,
+      };
+  }, [user]);
+
   return (
     <>
       {children(
-        { availableMembers, allMembers },
+        { availableMembers, allMembers, currentMember },
         { handleAssignMember, handleRemoveMember, handleAssignAdmin, handleRemoveAdmin },
         { addingUser, removingUser, addingAdmin, removingAdmin, loading: loadingMembers || loadingOrganisationMembers }
       )}

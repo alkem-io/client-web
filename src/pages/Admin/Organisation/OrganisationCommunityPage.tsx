@@ -30,6 +30,7 @@ export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ 
             availableMembers={entities.availableMembers}
             addingMember={state.addingUser}
             removingMember={state.removingUser}
+            executor={entities.currentMember}
             onAdd={actions.handleAssignMember}
             onRemove={actions.handleRemoveMember}
           />
