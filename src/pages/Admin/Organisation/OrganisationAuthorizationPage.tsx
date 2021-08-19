@@ -41,8 +41,8 @@ export const OrganisationAuthorizationPage: FC<OrganisationAuthorizationPageProp
           <EditMembers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
-            addingUser={state.addingAdmin}
-            removingUser={state.removingAdmin}
+            addingMember={state.addingAdmin}
+            removingMember={state.removingAdmin}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
           />

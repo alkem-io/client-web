@@ -18,8 +18,8 @@ export interface EditMembersProps {
   executor?: Member;
   members: Member[];
   availableMembers: Member[];
-  addingUser?: boolean;
-  removingUser?: boolean;
+  addingMember?: boolean;
+  removingMember?: boolean;
   onAdd?: (member: Member) => void;
   onRemove?: (member: Member) => void;
 }
@@ -43,8 +43,8 @@ export const EditMembers: FC<EditMembersProps> = ({
   availableMembers,
   deleteExecutor = false,
   executor,
-  addingUser = false,
-  removingUser = false,
+  addingMember = false,
+  removingMember = false,
   onAdd,
   onRemove,
 }) => {
@@ -82,7 +82,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                               <Button
                                 variant="negative"
                                 size="small"
-                                disabled={disableExecutor || addingUser || removingUser}
+                                disabled={disableExecutor || addingMember || removingMember}
                                 className={disableExecutor ? styles.disabled : undefined}
                                 onClick={() => onRemove(m)}
                                 text="X"
@@ -124,7 +124,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                                   size="small"
                                   onClick={() => onAdd(m)}
                                   text="+"
-                                  disabled={addingUser || removingUser}
+                                  disabled={addingMember || removingMember}
                                 />
                               )}
                             </TableCell>
