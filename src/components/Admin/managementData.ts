@@ -42,6 +42,7 @@ export const managementData = {
         { description: 'Members', url: '/community/members' },
         { description: 'Groups', url: '/community/groups' },
         { description: 'Applications', url: '/community/applications' },
+        { description: 'Updates', url: '/community/updates' },
       ],
     },
     {
@@ -71,6 +72,7 @@ export const managementData = {
         { description: 'Groups', url: '/community/groups' },
         { description: 'Applications', url: '/community/applications' },
         { description: 'Lead Organisations', url: '/community/lead' },
+        { description: 'Updates', url: '/community/updates' },
       ],
     },
     {
@@ -99,6 +101,7 @@ export const managementData = {
         { description: 'Members', url: '/community/members' },
         { description: 'Groups', url: '/community/groups' },
         { description: 'Applications', url: '/community/applications' },
+        { description: 'Updates', url: '/community/updates' },
       ],
     },
   ],
@@ -108,10 +111,16 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
-      name: 'Groups',
+      name: 'Community',
       buttons: [
-        { description: 'Manage', url: '/groups' },
-        { description: 'New', url: '/groups/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+      ],
+    },
+    {
+      name: 'Authorization',
+      buttons: [
+        { description: 'Organisation admins', url: `/authorization/${AuthorizationCredential.OrganisationAdmin}` },
       ],
     },
   ],

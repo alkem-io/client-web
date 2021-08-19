@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Redirect } from 'react-router-dom';
 import { LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
+import { logger } from '../../services/logging/winston/logger';
 
 interface LoginSuccessPageProps {}
 
@@ -11,7 +12,7 @@ export const LoginSuccessPage: FC<LoginSuccessPageProps> = () => {
     try {
       localStorage.removeItem(LOCAL_STORAGE_RETURN_URL_KEY);
     } catch {
-      console.error('Can not remove key!');
+      logger.error('Can not remove key!');
     }
     return <Redirect to={redirectUrl} />;
   }

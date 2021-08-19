@@ -1,0 +1,23 @@
+fragment ChallengeSearchResult on Challenge {
+  id
+  displayName
+  nameID
+  ecoverseID
+  activity {
+    name
+    value
+  }
+  context {
+    id
+    tagline
+    visual {
+      id
+      avatar
+      background
+    }
+  }
+  tagset {
+    id
+    tags
+  }
+}

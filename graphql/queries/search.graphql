@@ -7,26 +7,10 @@ query search($searchData: SearchInput!) {
         displayName
         id
       }
-      ... on UserGroup {
-        name
-        id
-      }
-      ... on Organisation {
-        displayName
-        id
-      }
-
-      ... on Challenge {
-        displayName
-        id
-        ecoverseID
-        context {
-          tagline
-          visual {
-            avatar
-          }
-        }
-      }
+      ...UserSearchResult
+      ...OrganisationSearchResult
+      ...ChallengeSearchResult
+      ...OpportunitySearchResult
     }
   }
 }
