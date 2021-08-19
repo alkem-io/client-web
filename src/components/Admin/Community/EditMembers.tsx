@@ -1,22 +1,25 @@
-import React, { FC } from 'react';
+import { Box, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { Member } from '../../../models/User';
-import Button from '../../core/Button';
-import { Filter } from '../Common/Filter';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core';
+import React, { FC } from 'react';
+import { Member } from '../../../models/User';
+import Button from '../../core/Button';
+import { Filter } from '../Common/Filter';
+
+const TABLE_HEIGHT = 600;
 
 export interface EditMembersProps {
   deleteExecutor?: boolean;
   executor?: Member;
   members: Member[];
   availableMembers: Member[];
+  addingMember?: boolean;
+  removingMember?: boolean;
   onAdd?: (member: Member) => void;
   onRemove?: (member: Member) => void;
 }
@@ -40,19 +43,21 @@ export const EditMembers: FC<EditMembersProps> = ({
   availableMembers,
   deleteExecutor = false,
   executor,
+  addingMember = false,
+  removingMember = false,
   onAdd,
   onRemove,
 }) => {
   const styles = useStyles();
   return (
     <Grid container spacing={2}>
-      <Grid item>
+      <Grid item xs={8}>
         Group members:
         <Filter data={members}>
           {filteredMembers => (
             <>
               <hr />
-              <div style={{ position: 'relative', height: 600, overflow: 'hidden', overflowY: 'auto' }}>
+              <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
                 <Table size="small">
                   <TableHead className={styles.thead}>
                     <TableRow>
@@ -77,7 +82,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                               <Button
                                 variant="negative"
                                 size="small"
-                                disabled={disableExecutor}
+                                disabled={disableExecutor || addingMember || removingMember}
                                 className={disableExecutor ? styles.disabled : undefined}
                                 onClick={() => onRemove(m)}
                                 text="X"
@@ -89,7 +94,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                     })}
                   </TableBody>
                 </Table>
-              </div>
+              </Box>
             </>
           )}
         </Filter>
@@ -101,8 +106,8 @@ export const EditMembers: FC<EditMembersProps> = ({
             return (
               <>
                 <hr />
-                <div style={{ height: 600, overflow: 'hidden', overflowY: 'auto' }}>
-                  <TableContainer component={Paper}>
+                <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
+                  <TableContainer>
                     <Table size="small" style={{ position: 'relative' }}>
                       <TableHead className={styles.thead}>
                         <TableRow>
@@ -113,14 +118,23 @@ export const EditMembers: FC<EditMembersProps> = ({
                       <TableBody>
                         {filteredData.map(m => (
                           <TableRow key={m.email} className={styles.trow}>
-                            <TableCell>{onAdd && <Button size="small" onClick={() => onAdd(m)} text="+" />}</TableCell>
+                            <TableCell>
+                              {onAdd && (
+                                <Button
+                                  size="small"
+                                  onClick={() => onAdd(m)}
+                                  text="+"
+                                  disabled={addingMember || removingMember}
+                                />
+                              )}
+                            </TableCell>
                             <TableCell>{m.displayName}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </div>
+                </Box>
               </>
             );
           }}

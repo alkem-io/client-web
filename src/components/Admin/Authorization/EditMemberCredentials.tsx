@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import { useUsersQuery, useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
+import { useEcoverseMembersQuery, useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
 import { Loading } from '../../core';
 import { EditMembers, EditMembersProps } from '../Community/EditMembers';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { useUserContext } from '../../../hooks';
+import { useEcoverse, useUserContext } from '../../../hooks';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
@@ -23,19 +23,22 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({ onAdd, on
         resourceID: resourceId,
       },
     },
+    skip: !Boolean(resourceId),
   });
-
-  const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
-  // todo: allMembers should be members of the editing entity only
-  const allMembers = useMemo(() => usersInfo?.users || [], [usersInfo]);
-
   const members = useMemo(() => usersWithCredentials?.usersWithAuthorizationCredential || [], [usersWithCredentials]);
+
+  const { ecoverseId } = useEcoverse();
+  const { data: membersQuery, loading: loadingEcoMembers } = useEcoverseMembersQuery({
+    variables: { ecoverseId: ecoverseId },
+  });
+  const ecoMembers = membersQuery?.ecoverse?.community?.members || [];
+
   const availableMembers = useMemo(
-    () => allMembers.filter(p => members.findIndex(m => m.id === p.id) === -1),
-    [allMembers, usersWithCredentials]
+    () => ecoMembers.filter(p => members.findIndex(m => m.id === p.id) === -1),
+    [ecoMembers, usersWithCredentials]
   );
 
-  if (loadingMembers || loadingUsers) {
+  if (loadingMembers || loadingEcoMembers) {
     return <Loading />;
   }
 

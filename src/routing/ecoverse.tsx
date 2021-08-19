@@ -180,10 +180,13 @@ const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], chal
           onProjectTransition={project => {
             history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
           }}
+          // TODO [ATS]: More generic way of controlling the UI based on user credentials must be implemented
           permissions={{
             projectWrite: isAdmin,
-            addAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-            addActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+            removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
           }}
         />
       </Route>

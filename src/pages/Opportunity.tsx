@@ -70,14 +70,26 @@ interface OpportunityPageProps extends PageProps {
   opportunity: OpportunityType;
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
-  permissions: { projectWrite: boolean; addActorGroup: boolean; addAspect: boolean };
+  permissions: {
+    projectWrite: boolean;
+    editActorGroup: boolean;
+    editAspect: boolean;
+    editActors: boolean;
+    removeRelations: boolean;
+  };
 }
 
 const OpportunityPage: FC<OpportunityPageProps> = ({
   paths,
   opportunity,
   users = [],
-  permissions = { projectWrite: false, addActorGroup: false, addAspect: false },
+  permissions = {
+    projectWrite: false,
+    editActorGroup: false,
+    editAspect: false,
+    editActors: false,
+    removeRelations: false,
+  },
   onProjectTransition,
 }): React.ReactElement => {
   const { t } = useTranslation();
@@ -127,7 +139,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
-  const isAspectAddAllowed = permissions.addAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
+  const isAspectAddAllowed = permissions.editAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
@@ -338,7 +350,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
-          {permissions.addActorGroup && availableActorGroupNames.length > 0 && (
+          {permissions.editActorGroup && availableActorGroupNames.length > 0 && (
             <Box marginLeft={3}>
               <Button
                 text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
@@ -366,7 +378,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               withCreate={<NewActorCard opportunityId={id} text={`Add ${_name}`} actorGroupId={actorGroupId} />}
             >
               {actors?.map((props, i) => (
-                <ActorCard key={i} opportunityId={id} {...props} />
+                <ActorCard key={i} opportunityId={id} isAdmin={permissions.editActors} {...props} />
               ))}
             </CardContainer>
           );
@@ -407,7 +419,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {incoming?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} {...props} />
+                <RelationCard key={i} opportunityId={id} isAdmin={permissions.removeRelations} {...props} />
               ))}
             </CardContainer>
           )}
@@ -420,7 +432,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               xl={3}
             >
               {outgoing?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} {...props} />
+                <RelationCard key={i} opportunityId={id} isAdmin={permissions.removeRelations} {...props} />
               ))}
             </CardContainer>
           )}
@@ -463,7 +475,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
           }
         >
           {aspects?.map((props, i) => (
-            <AspectCard key={i} opportunityId={id} {...props} />
+            <AspectCard key={i} opportunityId={id} isAdmin={permissions.editAspect} {...props} />
           ))}
         </CardContainer>
       )}
