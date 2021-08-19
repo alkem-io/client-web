@@ -165,6 +165,13 @@ export const EcoverseDetailsFragmentDoc = gql`
   }
   ${ContextDetailsFragmentDoc}
 `;
+export const EcoverseNameFragmentDoc = gql`
+  fragment EcoverseName on Ecoverse {
+    id
+    nameID
+    displayName
+  }
+`;
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
@@ -263,6 +270,82 @@ export const ReferenceDetailsFragmentDoc = gql`
     name
     uri
     description
+  }
+`;
+export const ChallengeSearchResultFragmentDoc = gql`
+  fragment ChallengeSearchResult on Challenge {
+    id
+    displayName
+    nameID
+    ecoverseID
+    activity {
+      name
+      value
+    }
+    context {
+      id
+      tagline
+      visual {
+        id
+        avatar
+        background
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+`;
+export const OpportunitySearchResultFragmentDoc = gql`
+  fragment OpportunitySearchResult on Opportunity {
+    id
+    displayName
+    nameID
+    activity {
+      name
+      value
+    }
+    context {
+      id
+      tagline
+      visual {
+        id
+        avatar
+        background
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+    challenge {
+      id
+      nameID
+      displayName
+      ecoverseID
+    }
+  }
+`;
+export const OrganisationSearchResultFragmentDoc = gql`
+  fragment OrganisationSearchResult on Organisation {
+    id
+    displayName
+    profile {
+      id
+      avatar
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+`;
+export const UserSearchResultFragmentDoc = gql`
+  fragment UserSearchResult on UserGroup {
+    name
+    id
   }
 `;
 export const UserAgentFragmentDoc = gql`
@@ -3027,223 +3110,6 @@ export type EcoverseApplicationsQueryResult = Apollo.QueryResult<
 export function refetchEcoverseApplicationsQuery(variables?: SchemaTypes.EcoverseApplicationsQueryVariables) {
   return { query: EcoverseApplicationsDocument, variables: variables };
 }
-export const ChallengeCardDocument = gql`
-  query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      displayName
-      nameID
-      challenge(ID: $challengeId) {
-        id
-        displayName
-        nameID
-        ecoverseID
-        activity {
-          name
-          value
-        }
-        tagset {
-          tags
-        }
-        context {
-          tagline
-          visual {
-            avatar
-            background
-            banner
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeCardQuery__
- *
- * To run a query within a React component, call `useChallengeCardQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeCardQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeCardQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeCardQuery, SchemaTypes.ChallengeCardQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.ChallengeCardQuery, SchemaTypes.ChallengeCardQueryVariables>(
-    ChallengeCardDocument,
-    baseOptions
-  );
-}
-export function useChallengeCardLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeCardQuery, SchemaTypes.ChallengeCardQueryVariables>
-) {
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeCardQuery, SchemaTypes.ChallengeCardQueryVariables>(
-    ChallengeCardDocument,
-    baseOptions
-  );
-}
-export type ChallengeCardQueryHookResult = ReturnType<typeof useChallengeCardQuery>;
-export type ChallengeCardLazyQueryHookResult = ReturnType<typeof useChallengeCardLazyQuery>;
-export type ChallengeCardQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeCardQuery,
-  SchemaTypes.ChallengeCardQueryVariables
->;
-export function refetchChallengeCardQuery(variables?: SchemaTypes.ChallengeCardQueryVariables) {
-  return { query: ChallengeCardDocument, variables: variables };
-}
-export const GroupCardDocument = gql`
-  query groupCard($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      group(ID: $groupId) {
-        __typename
-        name
-        parent {
-          __typename
-          ... on Community {
-            displayName
-          }
-          ... on Organisation {
-            displayName
-          }
-        }
-        members {
-          id
-          displayName
-        }
-        profile {
-          id
-          avatar
-          description
-          references {
-            name
-            description
-          }
-          tagsets {
-            name
-            tags
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGroupCardQuery__
- *
- * To run a query within a React component, call `useGroupCardQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupCardQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export function useGroupCardQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>(
-    GroupCardDocument,
-    baseOptions
-  );
-}
-export function useGroupCardLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>
-) {
-  return Apollo.useLazyQuery<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>(
-    GroupCardDocument,
-    baseOptions
-  );
-}
-export type GroupCardQueryHookResult = ReturnType<typeof useGroupCardQuery>;
-export type GroupCardLazyQueryHookResult = ReturnType<typeof useGroupCardLazyQuery>;
-export type GroupCardQueryResult = Apollo.QueryResult<SchemaTypes.GroupCardQuery, SchemaTypes.GroupCardQueryVariables>;
-export function refetchGroupCardQuery(variables?: SchemaTypes.GroupCardQueryVariables) {
-  return { query: GroupCardDocument, variables: variables };
-}
-export const OrganizationCardDocument = gql`
-  query organizationCard($id: UUID_NAMEID!) {
-    organisation(ID: $id) {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        description
-        avatar
-        tagsets {
-          name
-          tags
-        }
-        references {
-          name
-          uri
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganizationCardQuery__
- *
- * To run a query within a React component, call `useOrganizationCardQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationCardQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOrganizationCardQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationCardQuery, SchemaTypes.OrganizationCardQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.OrganizationCardQuery, SchemaTypes.OrganizationCardQueryVariables>(
-    OrganizationCardDocument,
-    baseOptions
-  );
-}
-export function useOrganizationCardLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationCardQuery,
-    SchemaTypes.OrganizationCardQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationCardQuery, SchemaTypes.OrganizationCardQueryVariables>(
-    OrganizationCardDocument,
-    baseOptions
-  );
-}
-export type OrganizationCardQueryHookResult = ReturnType<typeof useOrganizationCardQuery>;
-export type OrganizationCardLazyQueryHookResult = ReturnType<typeof useOrganizationCardLazyQuery>;
-export type OrganizationCardQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationCardQuery,
-  SchemaTypes.OrganizationCardQueryVariables
->;
-export function refetchOrganizationCardQuery(variables?: SchemaTypes.OrganizationCardQueryVariables) {
-  return { query: OrganizationCardDocument, variables: variables };
-}
 export const UserCardDocument = gql`
   query userCard($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
@@ -5013,6 +4879,56 @@ export type EcoverseInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchEcoverseInfoQuery(variables?: SchemaTypes.EcoverseInfoQueryVariables) {
   return { query: EcoverseInfoDocument, variables: variables };
+}
+export const EcoverseNameDocument = gql`
+  query ecoverseName($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      ...EcoverseName
+    }
+  }
+  ${EcoverseNameFragmentDoc}
+`;
+
+/**
+ * __useEcoverseNameQuery__
+ *
+ * To run a query within a React component, call `useEcoverseNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseNameQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoverseNameQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
+    EcoverseNameDocument,
+    baseOptions
+  );
+}
+export function useEcoverseNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
+    EcoverseNameDocument,
+    baseOptions
+  );
+}
+export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
+export type EcoverseNameLazyQueryHookResult = ReturnType<typeof useEcoverseNameLazyQuery>;
+export type EcoverseNameQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseNameQuery,
+  SchemaTypes.EcoverseNameQueryVariables
+>;
+export function refetchEcoverseNameQuery(variables?: SchemaTypes.EcoverseNameQueryVariables) {
+  return { query: EcoverseNameDocument, variables: variables };
 }
 export const EcoverseUserIdsDocument = gql`
   query ecoverseUserIds($ecoverseId: UUID_NAMEID!) {
@@ -7035,28 +6951,17 @@ export const SearchDocument = gql`
           displayName
           id
         }
-        ... on UserGroup {
-          name
-          id
-        }
-        ... on Organisation {
-          displayName
-          id
-        }
-        ... on Challenge {
-          displayName
-          id
-          ecoverseID
-          context {
-            tagline
-            visual {
-              avatar
-            }
-          }
-        }
+        ...UserSearchResult
+        ...OrganisationSearchResult
+        ...ChallengeSearchResult
+        ...OpportunitySearchResult
       }
     }
   }
+  ${UserSearchResultFragmentDoc}
+  ${OrganisationSearchResultFragmentDoc}
+  ${ChallengeSearchResultFragmentDoc}
+  ${OpportunitySearchResultFragmentDoc}
 `;
 
 /**
