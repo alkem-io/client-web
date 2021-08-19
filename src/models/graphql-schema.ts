@@ -2431,15 +2431,6 @@ export type AssignUserAsEcoverseAdminMutation = {
   assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
-  input: AssignOrganisationAdminInput;
-}>;
-
-export type AssignUserAsOrganisationAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
 export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
   input: RemoveChallengeAdminInput;
 }>;
@@ -2456,15 +2447,6 @@ export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
 export type RemoveUserAsEcoverseAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
-  input: RemoveOrganisationAdminInput;
-}>;
-
-export type RemoveUserAsOrganisationAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -3757,6 +3739,7 @@ export type OrganisationGroupQuery = {
   organisation: {
     __typename?: 'Organisation';
     id: string;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
     group?: Maybe<{ __typename?: 'UserGroup' } & GroupInfoFragment>;
   };
 };
@@ -4066,7 +4049,7 @@ export type AssignUserToOrganisationMutationVariables = Exact<{
 
 export type AssignUserToOrganisationMutation = {
   __typename?: 'Mutation';
-  assignUserToOrganisation: { __typename?: 'Organisation'; id: string };
+  assignUserToOrganisation: { __typename?: 'Organisation'; id: string; displayName: string };
 };
 
 export type RemoveUserFromOrganisationMutationVariables = Exact<{
@@ -4075,5 +4058,36 @@ export type RemoveUserFromOrganisationMutationVariables = Exact<{
 
 export type RemoveUserFromOrganisationMutation = {
   __typename?: 'Mutation';
-  removeUserFromOrganisation: { __typename?: 'Organisation'; id: string };
+  removeUserFromOrganisation: { __typename?: 'Organisation'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
+  input: AssignOrganisationAdminInput;
+}>;
+
+export type AssignUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
+  input: RemoveOrganisationAdminInput;
+}>;
+
+export type RemoveUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type OrganisationMembersQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganisationMembersQuery = {
+  __typename?: 'Query';
+  organisation: {
+    __typename?: 'Organisation';
+    id: string;
+    members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
+  };
 };
