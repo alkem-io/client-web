@@ -1,15 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../hooks';
 import {
   refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useUpdateOrganizationMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { useNotification } from '../../../hooks';
-import { PageProps } from '../../../pages';
+import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import {
   CreateOrganisationInput,
   Organisation,
@@ -17,6 +14,7 @@ import {
   Tagset,
   UpdateOrganisationInput,
 } from '../../../models/graphql-schema';
+import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
 import OrganizationForm from './OrganizationForm';
 interface Props extends PageProps {
@@ -31,9 +29,8 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     [paths]
   );
   const notify = useNotification();
+  const navigateToEdit = useNavigateToEdit();
   const [createTagset] = useCreateTagsetOnProfileMutation();
-  const history = useHistory();
-  const { url } = useRouteMatch();
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
@@ -43,8 +40,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       const organizationId = data.createOrganisation.nameID;
       if (organizationId) {
         notify('Organization created successfully', 'success');
-        const newEcoverseUrl = url.replace('/new', `/${organizationId}/edit`);
-        history.replace(newEcoverseUrl);
+        navigateToEdit(organizationId);
       }
     },
     onError: handleError,
