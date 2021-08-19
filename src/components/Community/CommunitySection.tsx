@@ -1,18 +1,20 @@
 import { makeStyles } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Section';
 import Discussions from './Discussions';
 import Members from './Members';
-import Updates from './Updates';
-import { useTranslation } from 'react-i18next';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -54,10 +56,16 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     setTabValue(newValue);
   };
 
+  const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
   const tabList = [
     { name: 'members', label: 'Members', enabled: true },
-    { name: 'updates', label: 'Updates', enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
-    { name: 'discussion', label: 'Discussion', enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
+    { name: 'updates', label: `Updates ${updatesCountLabel}`, enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
+    {
+      name: 'discussion',
+      label: 'Discussion (Coming soon)',
+      enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
+      showOnly: true,
+    },
   ].filter(x => x.enabled);
 
   return (
@@ -68,7 +76,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
         <TabContext value={tabValue}>
           <TabList value={tabValue} onChange={handleChange} indicatorColor="primary" textColor="primary">
             {tabList.map((t, i) => (
-              <Tab key={`${t.name}-${i}`} label={t.label} value={t.name} />
+              <Tab key={`${t.name}-${i}`} label={t.label} value={t.name} disabled={t.showOnly} />
             ))}
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
@@ -78,7 +86,30 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
-                <Updates messages={updates} />
+                <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
+                  {updates && (
+                    <AvatarsProvider users={users}>
+                      {detailedUsers => (
+                        <CommunityUpdatesView
+                          entities={{
+                            members: detailedUsers,
+                            messages: updates,
+                          }}
+                          options={{
+                            hideHeaders: true,
+                            itemsPerRow: 1,
+                            disableElevation: true,
+                            disableCollapse: true,
+                          }}
+                          state={{
+                            loadingMessages: false,
+                            submittingMessage: false,
+                          }}
+                        />
+                      )}
+                    </AvatarsProvider>
+                  )}
+                </Box>
               </TabPanel>
 
               <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>

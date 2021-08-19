@@ -1360,6 +1360,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** A community. A valid community ID needs to be specified. */
+  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1392,6 +1394,10 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryCommunityArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -2453,6 +2459,60 @@ export type GrantCredentialsMutationVariables = Exact<{
 export type GrantCredentialsMutation = {
   __typename?: 'Mutation';
   grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
+};
+
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignChallengeAdminInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsEcoverseAdminMutationVariables = Exact<{
+  input: AssignEcoverseAdminInput;
+}>;
+
+export type AssignUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganisationAdminMutationVariables = Exact<{
+  input: AssignOrganisationAdminInput;
+}>;
+
+export type AssignUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveChallengeAdminInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
+  input: RemoveEcoverseAdminInput;
+}>;
+
+export type RemoveUserAsEcoverseAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationAdminMutationVariables = Exact<{
+  input: RemoveOrganisationAdminInput;
+}>;
+
+export type RemoveUserAsOrganisationAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -3933,3 +3993,33 @@ export type UsersWithCredentialsQuery = {
     email: string;
   }>;
 };
+
+export type CommunityUpdatesQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUpdatesQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    updatesRoom: {
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    };
+  };
+};
+
+export type SendCommunityUpdateMutationVariables = Exact<{
+  msgData: CommunitySendMessageInput;
+}>;
+
+export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };

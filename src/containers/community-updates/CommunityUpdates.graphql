@@ -1,0 +1,19 @@
+query communityUpdates($communityId: UUID!) {
+  community(ID: $communityId) {
+    id
+    displayName
+    updatesRoom {
+      id
+      messages {
+        id
+        message
+        sender
+        timestamp
+      }
+    }
+  }
+}
+
+mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
+  messageUpdateCommunity(msgData: $msgData)
+}

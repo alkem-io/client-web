@@ -1,0 +1,6 @@
+mutation removeUserAsOrganisationAdmin($input: RemoveOrganisationAdminInput!) {
+  removeUserAsOrganisationAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}

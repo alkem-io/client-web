@@ -96,7 +96,7 @@ export const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
         '&$disabled': {
           color: (theme?.palette?.background as TypeBackground)?.paper,
           borderColor: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
-          background: (theme?.palette?.neutralMedium as SimplePaletteColorOptions)?.main,
+          background: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
           opacity: 0.8,
           cursor: 'default',
 

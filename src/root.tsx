@@ -14,8 +14,10 @@ import { createStyles, useGraphQLClient } from './hooks';
 import './i18n/config';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
-import sentryBootstrap from './services/sentry/bootstrap';
+import sentryBootstrap from './services/logging/sentry/bootstrap';
 import { env } from './types/env';
+import { WinstonProvider } from 'winston-react';
+import { logger } from './services/logging/winston/logger';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -65,27 +67,29 @@ const Root: FC = () => {
         return <ErrorPage error={error} />;
       }}
     >
-      <ThemeProvider>
-        <GlobalStateProvider>
-          <BrowserRouter>
-            <ConfigProvider apiUrl={graphQLEndpoint}>
-              <AuthenticationProvider>
-                <CTApolloProvider>
-                  <NavigationProvider>
-                    <EcoversesProvider>
-                      <UserProvider>
-                        <App>
-                          <Routing />
-                        </App>
-                      </UserProvider>
-                    </EcoversesProvider>
-                  </NavigationProvider>
-                </CTApolloProvider>
-              </AuthenticationProvider>
-            </ConfigProvider>
-          </BrowserRouter>
-        </GlobalStateProvider>
-      </ThemeProvider>
+      <WinstonProvider logger={logger}>
+        <ThemeProvider>
+          <GlobalStateProvider>
+            <BrowserRouter>
+              <ConfigProvider apiUrl={graphQLEndpoint}>
+                <AuthenticationProvider>
+                  <CTApolloProvider>
+                    <NavigationProvider>
+                      <EcoversesProvider>
+                        <UserProvider>
+                          <App>
+                            <Routing />
+                          </App>
+                        </UserProvider>
+                      </EcoversesProvider>
+                    </NavigationProvider>
+                  </CTApolloProvider>
+                </AuthenticationProvider>
+              </ConfigProvider>
+            </BrowserRouter>
+          </GlobalStateProvider>
+        </ThemeProvider>
+      </WinstonProvider>
     </Sentry.ErrorBoundary>
   );
 };
