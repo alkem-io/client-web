@@ -6,7 +6,7 @@ import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
 import Card from '../core/Card';
 import { Loading } from '../core';
-import UserPopUp from './UserPopUp';
+import UserPopUp from '../Community/UserPopUp';
 import Tag from '../core/Tag';
 import TagContainer from '../core/TagContainer';
 import Tooltip from '@material-ui/core/Tooltip';
