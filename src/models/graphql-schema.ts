@@ -3255,6 +3255,32 @@ export type EcoverseInfoQuery = {
   } & EcoverseDetailsFragment;
 };
 
+export type EcoverseMembersQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseMembersQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
+          id: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+        }>
+      >;
+    }>;
+  };
+};
+
 export type EcoverseNameQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
