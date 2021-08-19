@@ -185,8 +185,10 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                     variant={'outlined'}
                     input={<OutlinedInput notched label={'Filter'} />}
                   >
-                    {Object.keys(filtersConfig).map(x => (
-                      <MenuItem value={filtersConfig[x].typename}>{filtersConfig[x].title}</MenuItem>
+                    {Object.keys(filtersConfig).map((x, i) => (
+                      <MenuItem key={`menu-item-${i}`} value={filtersConfig[x].typename}>
+                        {filtersConfig[x].title}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
