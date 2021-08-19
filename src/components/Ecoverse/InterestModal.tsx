@@ -127,7 +127,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.cancel')} />}
+        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.close')} />}
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
