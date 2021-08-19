@@ -111,10 +111,16 @@ export const managementData = {
       buttons: [{ description: 'Edit', url: '/edit' }],
     },
     {
-      name: 'Groups',
+      name: 'Community',
       buttons: [
-        { description: 'Manage', url: '/groups' },
-        { description: 'New', url: '/groups/new' },
+        { description: 'Members', url: '/community/members' },
+        { description: 'Groups', url: '/community/groups' },
+      ],
+    },
+    {
+      name: 'Authorization',
+      buttons: [
+        { description: 'Organisation admins', url: `/authorization/${AuthorizationCredential.OrganisationAdmin}` },
       ],
     },
   ],

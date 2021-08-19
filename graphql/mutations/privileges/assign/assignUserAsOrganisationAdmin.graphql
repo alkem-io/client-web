@@ -1,6 +1,0 @@
-mutation assignUserAsOrganisationAdmin($input: AssignOrganisationAdminInput!) {
-  assignUserAsOrganisationAdmin(membershipData: $input) {
-    id
-    displayName
-  }
-}
