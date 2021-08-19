@@ -8,6 +8,7 @@ import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { EditMode } from '../../utils/editMode';
 import { Loading } from '../core';
 import { UserForm } from './UserForm';
+import { logger } from '../../services/logging/winston/logger';
 
 interface EditUserProfileProps {}
 
@@ -32,7 +33,11 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
   const history = useHistory();
   const { data, loading } = useMeQuery({ fetchPolicy: 'network-only' });
   const notify = useNotification();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation({
+    // Just log the error. Do not send it to the notification hanlder.
+    // there is an issue handling multiple snackbars.
+    onError: error => logger.error(error.message),
+  });
   const handleError = useApolloErrorHandler();
 
   const [updateUser] = useUpdateUserMutation({
