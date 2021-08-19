@@ -4880,6 +4880,65 @@ export type EcoverseInfoQueryResult = Apollo.QueryResult<
 export function refetchEcoverseInfoQuery(variables?: SchemaTypes.EcoverseInfoQueryVariables) {
   return { query: EcoverseInfoDocument, variables: variables };
 }
+export const EcoverseMembersDocument = gql`
+  query ecoverseMembers($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      community {
+        id
+        members {
+          id
+          displayName
+          firstName
+          lastName
+          email
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useEcoverseMembersQuery__
+ *
+ * To run a query within a React component, call `useEcoverseMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseMembersQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoverseMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
+) {
+  return Apollo.useQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
+    EcoverseMembersDocument,
+    baseOptions
+  );
+}
+export function useEcoverseMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
+) {
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
+    EcoverseMembersDocument,
+    baseOptions
+  );
+}
+export type EcoverseMembersQueryHookResult = ReturnType<typeof useEcoverseMembersQuery>;
+export type EcoverseMembersLazyQueryHookResult = ReturnType<typeof useEcoverseMembersLazyQuery>;
+export type EcoverseMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseMembersQuery,
+  SchemaTypes.EcoverseMembersQueryVariables
+>;
+export function refetchEcoverseMembersQuery(variables?: SchemaTypes.EcoverseMembersQueryVariables) {
+  return { query: EcoverseMembersDocument, variables: variables };
+}
 export const EcoverseNameDocument = gql`
   query ecoverseName($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {

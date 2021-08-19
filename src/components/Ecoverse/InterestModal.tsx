@@ -76,7 +76,9 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
 
   return (
     <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="interest-dialog-title">
-      <DialogTitle id="interest-dialog-title">Describe your relation</DialogTitle>
+      <DialogTitle id="interest-dialog-title" onClose={onHide}>
+        Describe your relation
+      </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2}>
           {data?.createRelation.id ? (
@@ -127,7 +129,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.cancel')} />}
+        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.close')} />}
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
