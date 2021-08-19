@@ -76,7 +76,9 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
 
   return (
     <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="interest-dialog-title">
-      <DialogTitle id="interest-dialog-title">Describe your relation</DialogTitle>
+      <DialogTitle id="interest-dialog-title" onClose={onHide}>
+        Describe your relation
+      </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2}>
           {data?.createRelation.id ? (
