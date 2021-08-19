@@ -127,13 +127,11 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const styles = useStyles(classes);
 
-  const props = disabled
-    ? {}
-    : {
-        type: 'button',
-        onClick,
-        ...rest,
-      };
+  const props = {
+    type: 'button',
+    onClick,
+    ...rest,
+  };
 
   // const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
 
