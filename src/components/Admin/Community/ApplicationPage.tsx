@@ -174,11 +174,9 @@ const ApplicationDialog: FC<ApplicationModalProps> = ({ appChosen, onHide, onSet
         <div className={styles.body}>
           <div className={styles.questions}>
             {questions.map(x => (
-              <div className={styles.question}>
+              <div key={x.id} className={styles.question}>
                 <label>{x.name}</label>
-                <Typography key={x.id} weight={'boldLight'}>
-                  {x.value}
-                </Typography>
+                <Typography weight={'boldLight'}>{x.value}</Typography>
               </div>
             ))}
           </div>

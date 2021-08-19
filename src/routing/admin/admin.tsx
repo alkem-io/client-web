@@ -6,10 +6,10 @@ import Loading from '../../components/core/Loading/Loading';
 import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
-import AuthorizationRoute from './authorization';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
 import { OrganizationsRoute } from './organisation/organization';
 import { UsersRoute } from './user';
+import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
 export interface AdminParameters {
   challengeId: string;
@@ -22,6 +22,8 @@ export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
+  // todo parentMembers should not be fetched on this level probably setup an organisation provider
+  // to fetch them when necessary in organisation admin tree
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
   const parentMembers = usersInfo?.users || [];
 
@@ -36,7 +38,7 @@ export const Admin: FC = () => {
         <UsersRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <AuthorizationRoute paths={currentPaths} />
+        <GlobalAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/ecoverses`}>
         <EcoverseListAdminRoute paths={currentPaths} />

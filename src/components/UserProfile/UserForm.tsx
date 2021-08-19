@@ -8,6 +8,7 @@ import { COUNTRIES } from '../../models/constants';
 import { TagsetTemplate } from '../../models/graphql-schema';
 import { Tagset } from '../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
+import { logger } from '../../services/logging/winston/logger';
 import { EditMode } from '../../utils/editMode';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
 import FormikSelect from '../Admin/Common/FormikSelect';
@@ -148,7 +149,7 @@ export const UserForm: FC<UserProps> = ({
       }}
     >
       {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, isValid, errors }) => {
-        console.log(errors);
+        logger.info(errors);
         return (
           <form noValidate onSubmit={handleSubmit}>
             <Section

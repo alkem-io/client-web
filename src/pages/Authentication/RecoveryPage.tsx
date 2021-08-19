@@ -7,6 +7,7 @@ import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useKratosClient } from '../../hooks';
+import { logger } from '../../services/logging/winston/logger';
 interface RegisterPageProps {
   flow: string;
 }
@@ -23,7 +24,7 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
         .getSelfServiceRecoveryFlow(flow)
         .then(({ status, data: flow, ..._response }) => {
           if (status !== 200) {
-            console.error(flow);
+            logger.error(flow);
           }
           setRecoveryFlow(flow);
         })
