@@ -249,7 +249,9 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
               <label htmlFor="actor">Acctor: </label>
               <Form.Control id="actor" name="actor" as="select" onChange={e => onChangeWithLog(e, setFieldValue)}>
                 {actors.map(actor => (
-                  <option value={actor.id}>{actor.name}</option>
+                  <option value={actor.id} key={actor.id}>
+                    {actor.name}
+                  </option>
                 ))}
               </Form.Control>
               <Divider />

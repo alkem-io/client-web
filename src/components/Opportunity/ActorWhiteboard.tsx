@@ -4,7 +4,9 @@ import { createStyles } from '../../hooks/useTheme';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
 import Button from '../core/Button';
+import { useApolloErrorHandler } from '../../hooks';
 import { Actor } from '../../models/graphql-schema';
+import { useUpdateActorMutation } from '../../hooks/generated/graphql';
 
 interface ActorWhiteboardProps {
   actors: Actor[];
@@ -53,10 +55,38 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
       .filter(element => element.type === 'text')
       .filter(element => actorIds.includes(element.text))
       .forEach(element => {
-        updateIdentifierMap(element.id, element.text);
-        element.text = actors.filter(actor => actor.id === element.text).map(actor => actor.name)[0];
+        const actorName = actors.filter(actor => actor.id === element.text).map(actor => actor.name)[0];
+        updateIdentifierMap(element.id, { actorId: element.text, originalText: actorName });
+        element.text = actorName;
       });
     excalidraw?.updateScene({ elements });
+  };
+
+  const handleError = useApolloErrorHandler();
+  const [updateActor] = useUpdateActorMutation({
+    onError: handleError,
+  });
+
+  const onChange = async (elements, _state) => {
+    const elementsThatNeedUpdating = elements.filter(element => {
+      console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
+      return identifierMap.has(element.id) && element.text !== identifierMap.get(element.id)?.originalText;
+    });
+    console.log('Elements that need updating', elementsThatNeedUpdating);
+    console.log('IdentifierMap', identifierMap);
+    elementsThatNeedUpdating.forEach(element => {
+      const queryInput = {
+        variables: {
+          input: {
+            ID: identifierMap.get(element.id).actorId,
+            name: element.text,
+          },
+        },
+      };
+      console.log('QueryInput', queryInput);
+      updateActor(queryInput);
+      updateIdentifierMap(element.id, { actorId: identifierMap.get(element.id).actorId, originalText: element.text });
+    });
   };
 
   return (
@@ -64,7 +94,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
       <Button onClick={showNewActorModalF}>New Actor</Button>
       <Excalidraw
         ref={excalidrawRef}
-        onChange={(elements, state) => console.log('Elements :', elements, 'State : ', state)}
+        onChange={onChange}
         onCollabButtonClick={() => window.alert('You clicked on collab button')}
       />
 
