@@ -92,4 +92,5 @@ export const AdminRoles = [
   AuthorizationCredential.GlobalAdminCommunity,
   AuthorizationCredential.ChallengeAdmin,
   AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.OrganisationAdmin,
 ];
