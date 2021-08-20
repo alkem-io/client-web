@@ -11,6 +11,7 @@ import {
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
 } from '../../hooks/generated/graphql';
+import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
@@ -30,6 +31,7 @@ interface Props {
 
 const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
+  const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
@@ -37,7 +39,10 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   const { challengeId: challengeNameId = '', ecoverseId = '' } = useParams<Params>();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
-    onCompleted: () => onSuccess('Successfully created'),
+    onCompleted: data => {
+      onSuccess('Successfully created');
+      navigateToEdit(data.createChallenge.nameID);
+    },
     onError: handleError,
     refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
     awaitRefetchQueries: true,
