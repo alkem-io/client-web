@@ -3538,6 +3538,48 @@ export type OpportunityAspectsQuery = {
   };
 };
 
+export type OpportunityEcosystemDetailsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityEcosystemDetailsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      context?: Maybe<{
+        __typename?: 'Context';
+        ecosystemModel?: Maybe<{
+          __typename?: 'EcosystemModel';
+          id: string;
+          actorGroups?: Maybe<
+            Array<{
+              __typename?: 'ActorGroup';
+              id: string;
+              name: string;
+              description?: Maybe<string>;
+              actors?: Maybe<
+                Array<{
+                  __typename?: 'Actor';
+                  id: string;
+                  name: string;
+                  description?: Maybe<string>;
+                  value?: Maybe<string>;
+                  impact?: Maybe<string>;
+                }>
+              >;
+            }>
+          >;
+          canvas?: Maybe<{ __typename?: 'Canvas'; id: string; name: string; value: string }>;
+        }>;
+      }>;
+    };
+  };
+};
+
 export type OpportunityGroupsQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];

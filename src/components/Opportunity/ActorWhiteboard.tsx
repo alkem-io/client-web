@@ -1,5 +1,5 @@
 import React, { FC, useRef, useEffect, useState } from 'react';
-import Excalidraw from '@excalidraw/excalidraw';
+import Excalidraw, { serializeAsJSON } from '@excalidraw/excalidraw';
 import { createStyles } from '../../hooks/useTheme';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
@@ -72,7 +72,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
     onError: handleError,
   });
 
-  const onChange = async (elements, _state) => {
+  const onChange = async (elements, appstate) => {
     const elementsThatNeedUpdating = elements.filter(element => {
       console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
       return identifierMap.has(element.id) && element.text !== identifierMap.get(element.id)?.originalText;
@@ -92,26 +92,39 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
       updateActor(queryInput);
       updateIdentifierMap(element.id, { actorId: identifierMap.get(element.id).actorId, originalText: element.text });
     });
-    if (ecosystemModel) {
+
+    saveToBackend(elements, appstate);
+  };
+
+  const saveToBackend = (elements, appState) => {
+    if (ecosystemModel && elements.length > 0) {
+      const canvasValue = serializeAsJSON(elements, appState);
+      const newecosystemModel = JSON.stringify({ value: canvasValue, identifierMap: identifierMap });
+      console.log('New ecosystem model', newecosystemModel);
       updateEcosystemModelMutation({
         variables: {
           ecosystemModelData: {
             ID: ecosystemModel.id,
             canvas: {
-              value: JSON.stringify({ elements: elements, identifierMap: identifierMap }),
+              value: newecosystemModel,
             },
           },
         },
       });
     }
   };
+  const UIOptions = {
+    canvasActions: {
+      export: {
+        onExportToBackend: saveToBackend,
+      },
+    },
+  };
 
   console.log('Initial ecosystemModel', ecosystemModel);
-  const initialElements = ecosystemModel ? JSON.parse(ecosystemModel.canvas?.value || '{}').elements : [];
-  console.log('initial Elements', initialElements);
-  const initialData = {
-    elements: initialElements,
-  };
+  const initialData = ecosystemModel ? JSON.parse(JSON.parse(ecosystemModel.canvas?.value || '{}').value) : {};
+  console.log('initial ecosystemModel data', initialData);
+  console.log('initial ecosystemModel data', typeof initialData);
   return (
     <div className={styles.container}>
       <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button>
@@ -120,6 +133,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
         initialData={initialData}
         onChange={onChange}
         onCollabButtonClick={() => window.alert('You clicked on collab button')}
+        UIOptions={UIOptions}
       />
 
       <NewWhiteboardActorModal

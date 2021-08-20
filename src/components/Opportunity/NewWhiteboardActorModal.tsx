@@ -228,7 +228,7 @@ interface NewWhiteboardActorParameters {
 
 const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHide, actors = [], onSubmit }) => {
   const initialValues: NewWhiteboardActorParameters = {
-    actor: actors[0].id || '',
+    actor: actors[0] ? actors[0].id : '',
   };
 
   const onSubmitAction = async values => {

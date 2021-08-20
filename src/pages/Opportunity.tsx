@@ -32,6 +32,7 @@ import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
+  useOpportunityEcosystemDetailsQuery,
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks/useTheme';
 import { SEARCH_PAGE } from '../models/constants';
@@ -113,6 +114,9 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
   const { data: _activity } = useOpportunityActivityQuery({
+    variables: { ecoverseId, opportunityId: opportunity?.id },
+  });
+  const { data: ecosystem } = useOpportunityEcosystemDetailsQuery({
     variables: { ecoverseId, opportunityId: opportunity?.id },
   });
   const activity = _activity?.ecoverse?.opportunity?.activity || [];
@@ -389,7 +393,10 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
           );
         })}
 
-      <ActorWhiteboard ecosystemModel={opportunity.context?.ecosystemModel} actors={flatActors}></ActorWhiteboard>
+      <ActorWhiteboard
+        ecosystemModel={ecosystem?.ecoverse.opportunity.context?.ecosystemModel}
+        actors={flatActors}
+      ></ActorWhiteboard>
       <Divider />
 
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>

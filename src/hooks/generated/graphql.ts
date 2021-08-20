@@ -5837,6 +5837,88 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectsQuery(variables?: SchemaTypes.OpportunityAspectsQueryVariables) {
   return { query: OpportunityAspectsDocument, variables: variables };
 }
+export const OpportunityEcosystemDetailsDocument = gql`
+  query opportunityEcosystemDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        context {
+          ecosystemModel {
+            id
+            actorGroups {
+              id
+              name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
+            }
+            canvas {
+              id
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityEcosystemDetailsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityEcosystemDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityEcosystemDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityEcosystemDetailsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityEcosystemDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >
+) {
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >(OpportunityEcosystemDetailsDocument, baseOptions);
+}
+export function useOpportunityEcosystemDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >(OpportunityEcosystemDetailsDocument, baseOptions);
+}
+export type OpportunityEcosystemDetailsQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsQuery>;
+export type OpportunityEcosystemDetailsLazyQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsLazyQuery>;
+export type OpportunityEcosystemDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityEcosystemDetailsQuery,
+  SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+>;
+export function refetchOpportunityEcosystemDetailsQuery(
+  variables?: SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+) {
+  return { query: OpportunityEcosystemDetailsDocument, variables: variables };
+}
 export const OpportunityGroupsDocument = gql`
   query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
