@@ -1,10 +1,12 @@
 import { nanoid } from 'nanoid';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
-import { Form, Modal } from 'react-bootstrap';
 import Divider from '../core/Divider';
 import Button from '../core/Button';
 import { Actor } from '../../models/graphql-schema';
+import { FormikSelect } from '../../components/Admin/Common/FormikSelect';
+import { DialogContent, DialogTitle } from '../core/dialog';
+import { Dialog } from '@material-ui/core';
 
 const template = {
   type: 'excalidraw',
@@ -235,33 +237,25 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
     onSubmit(createActor(values.actor));
     onHide();
   };
-  const onChangeWithLog = (e, setFieldValue) => {
-    console.log('On change', e.target.value);
-    setFieldValue('actor', e.target.value);
-  };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>New Whiteboard</Modal.Header>
-      <Modal.Body>
+    <Dialog open={show}>
+      <DialogTitle id="add-actor-whiteboard" onClose={onHide}>
+        New Whiteboard
+      </DialogTitle>
+      <DialogContent>
         <Formik initialValues={initialValues} onSubmit={onSubmitAction} enableReinitialize validator={() => ({})}>
-          {({ isSubmitting, handleSubmit, setFieldValue }) => (
+          {({ isSubmitting, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <label htmlFor="actor">Acctor: </label>
-              <Form.Control id="actor" name="actor" as="select" onChange={e => onChangeWithLog(e, setFieldValue)}>
-                {actors.map(actor => (
-                  <option value={actor.id} key={actor.id}>
-                    {actor.name}
-                  </option>
-                ))}
-              </Form.Control>
+              <FormikSelect title="Actor" name="actor" values={actors}></FormikSelect>
               <Divider />
               <Button variant="primary" type="submit" disabled={isSubmitting} text="Add Actor"></Button>
             </Form>
           )}
         </Formik>
-      </Modal.Body>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 
