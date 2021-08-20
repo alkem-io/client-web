@@ -11,6 +11,7 @@ import {
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
+import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
@@ -32,6 +33,7 @@ interface Props {
 
 const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const { t } = useTranslation();
+  const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
@@ -45,7 +47,10 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
     refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
-    onCompleted: () => onSuccess('Successfully created'),
+    onCompleted: data => {
+      onSuccess('Successfully created');
+      navigateToEdit(data.createOpportunity.nameID);
+    },
     onError: handleError,
   });
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
