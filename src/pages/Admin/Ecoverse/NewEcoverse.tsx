@@ -1,20 +1,18 @@
-import React, { FC, useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Box, Container } from '@material-ui/core';
+import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../hooks';
 import {
   EcoverseDetailsFragmentDoc,
   useCreateEcoverseMutation,
   useOrganizationsListQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { useNotification } from '../../../hooks';
-import { PageProps } from '../../common';
+import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput } from '../../../utils/buildContext';
-import { useTranslation } from 'react-i18next';
+import { PageProps } from '../../common';
 
 interface NewEcoverseProps extends PageProps {}
 
@@ -22,8 +20,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
@@ -35,8 +32,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
       const ecoverseId = data.createEcoverse.nameID;
       if (ecoverseId) {
         notify('Ecoverse created successfuly!', 'success');
-        const newEcoverseUrl = url.replace('/new', `/${ecoverseId}/edit`);
-        history.replace(newEcoverseUrl);
+        navigateToEdit(ecoverseId);
       }
     },
     update: (cache, { data }) => {

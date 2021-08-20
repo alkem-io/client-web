@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import Typography from '../core/Typography';
+import { Box } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import { createStyles } from '../../hooks/useTheme';
 import { User } from '../../models/graphql-schema';
 import Card from '../core/Card';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
-import Tooltip from '@material-ui/core/Tooltip';
 import { COUNTRIES } from '../../models/constants';
-import { Box } from '@material-ui/core';
+import Typography from '../core/Typography';
 
 const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
@@ -57,7 +58,9 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
           <Box display={'flex'} alignItems={'end'} flexDirection={'column'}>
             <Tooltip placement={'bottom'} id={'Edit profile'} title={'Edit profile'}>
               <span>
-                <Edit color={'white'} width={20} height={20} className={styles.edit} onClick={onEdit} />
+                <IconButton aria-label="Edit" size="small" onClick={onEdit}>
+                  <Edit />
+                </IconButton>
               </span>
             </Tooltip>
           </Box>
