@@ -1,4 +1,3 @@
-import { useLazyQuery } from '@apollo/client';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +14,7 @@ import Icon from '../components/core/Icon';
 import MultipleSelect from '../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { SearchDocument } from '../hooks/generated/graphql';
+import { useSearchLazyQuery } from '../hooks/generated/graphql';
 import { createStyles, useUpdateNavigation } from '../hooks';
 import { Challenge, Opportunity, Organisation, User, UserGroup } from '../models/graphql-schema';
 import { PageProps } from './common';
@@ -28,7 +27,7 @@ const useStyles = createStyles(() => ({
 
 interface Filter {
   title: string;
-  value: string;
+  value: string[];
   typename: string;
 }
 
@@ -43,27 +42,27 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const filtersConfig: FilterConfig = {
     all: {
       title: 'All',
-      value: '',
+      value: ['user', 'opportunity', 'organisation', 'challenge'],
       typename: 'all',
     },
     user: {
       title: 'Users only',
-      value: 'user',
+      value: ['user'],
       typename: 'User',
     },
     group: {
-      title: 'Opportunites only',
-      value: 'opportunity',
+      title: 'Opportunities only',
+      value: ['opportunity'],
       typename: 'Opportunity',
     },
     organization: {
       title: 'Organizations only',
-      value: 'organisation',
+      value: ['organisation'],
       typename: 'Organisation',
     },
     challenge: {
       title: 'Challenges only',
-      value: 'challenge',
+      value: ['challenge'],
       typename: 'Challenge',
     },
   };
@@ -109,13 +108,13 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   useEffect(() => handleSearch(), [typesFilter.value]);
   useUpdateNavigation({ currentPaths: paths });
 
-  const [search] = useLazyQuery(SearchDocument, {
+  const [search] = useSearchLazyQuery({
     onCompleted: data => {
       const searchData = data?.search || [];
       const updatedCommunity: CommunityType[] = searchData
         .reduce((acc, curr) => {
-          return [...acc, { score: curr.score, ...curr.result, terms: curr.terms }];
-        }, [])
+          return [...acc, { score: curr.score, ...curr.result, terms: curr.terms } as CommunityType];
+        }, [] as CommunityType[])
         .sort((a, b) => {
           if (a.score > b.score) {
             return -1;
@@ -136,7 +135,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         searchData: {
           terms: searchTerm === '' ? tagNames : [searchTerm, ...tagNames],
           tagsetNames: ['skills', 'keywords'],
-          ...(typesFilter.value && { typesFilter: [typesFilter.value] }),
+          ...(typesFilter.value && { typesFilter: typesFilter.value }),
         },
       },
     });
@@ -213,6 +212,8 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
             if (el.__typename === 'Organisation')
               return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
             if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
+
+            return undefined;
           })}
         </CardContainer>
       )}
