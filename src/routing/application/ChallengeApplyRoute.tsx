@@ -52,6 +52,7 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
       communityId={communityId}
       questions={questions}
       backUrl={backUrl}
+      type={'challenge'}
     />
   );
 };
