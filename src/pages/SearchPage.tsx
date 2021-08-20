@@ -204,17 +204,18 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           </Box>
         </Container>
       )}
-      <CardContainer cardHeight={320} xs={12} sm={6} md={6}>
-        {community.slice(0, 12).map(el => {
-          if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
-          if (el.__typename === 'Opportunity')
-            return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
-          if (el.__typename === 'Organisation')
-            return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
-          if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
-          return null;
-        })}
-      </CardContainer>
+      {community.length > 0 && (
+        <CardContainer cardHeight={320} xs={12} sm={6} md={6}>
+          {community.slice(0, 12).map(el => {
+            if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
+            if (el.__typename === 'Opportunity')
+              return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
+            if (el.__typename === 'Organisation')
+              return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
+            if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
+          })}
+        </CardContainer>
+      )}
     </>
   );
 };

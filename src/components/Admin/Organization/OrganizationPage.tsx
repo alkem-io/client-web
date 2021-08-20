@@ -17,6 +17,7 @@ import {
 import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
 import OrganizationForm from './OrganizationForm';
+import { logger } from '../../../services/logging/winston/logger';
 interface Props extends PageProps {
   organization?: Organisation;
   title?: string;
@@ -24,16 +25,19 @@ interface Props extends PageProps {
 }
 
 const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
+  const handleError = useApolloErrorHandler();
   const currentPaths = useMemo(
     () => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }],
     [paths]
   );
   const notify = useNotification();
   const navigateToEdit = useNavigateToEdit();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation({
+    // Just log the error. Do not send it to the notification hanlder.
+    // there is an issue handling multiple snackbars.
+    onError: error => logger.error(error.message),
+  });
   useUpdateNavigation({ currentPaths });
-
-  const handleError = useApolloErrorHandler();
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {

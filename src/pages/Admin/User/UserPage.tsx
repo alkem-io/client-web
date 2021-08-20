@@ -19,6 +19,7 @@ import { Loading } from '../../../components/core/Loading/Loading';
 import { getUpdateUserInput } from '../../../components/UserProfile';
 import UserForm from '../../../components/UserProfile/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
+import { logger } from '../../../services/logging/winston/logger';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
@@ -90,7 +91,11 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     },
   });
 
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation({
+    // Just log the error. Do not send it to the notification hanlder.
+    // there is an issue handling multiple snackbars.
+    onError: error => logger.error(error.message),
+  });
 
   const isSaving = updateMutationLoading || createMutationLoading;
 
