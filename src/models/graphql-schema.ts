@@ -2539,7 +2539,14 @@ export type UpdateActorMutationVariables = Exact<{
 
 export type UpdateActorMutation = {
   __typename?: 'Mutation';
-  updateActor: { __typename?: 'Actor'; id: string; name: string };
+  updateActor: {
+    __typename?: 'Actor';
+    id: string;
+    name: string;
+    description?: Maybe<string>;
+    impact?: Maybe<string>;
+    value?: Maybe<string>;
+  };
 };
 
 export type UpdateAspectMutationVariables = Exact<{
@@ -2548,7 +2555,7 @@ export type UpdateAspectMutationVariables = Exact<{
 
 export type UpdateAspectMutation = {
   __typename?: 'Mutation';
-  updateAspect: { __typename?: 'Aspect'; id: string; title: string };
+  updateAspect: { __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string };
 };
 
 export type UpdateChallengeMutationVariables = Exact<{

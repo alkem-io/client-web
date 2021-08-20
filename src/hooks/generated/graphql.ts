@@ -2375,6 +2375,9 @@ export const UpdateActorDocument = gql`
     updateActor(actorData: $input) {
       id
       name
+      description
+      impact
+      value
     }
   }
 `;
@@ -2419,6 +2422,8 @@ export const UpdateAspectDocument = gql`
     updateAspect(aspectData: $input) {
       id
       title
+      explanation
+      framing
     }
   }
 `;
