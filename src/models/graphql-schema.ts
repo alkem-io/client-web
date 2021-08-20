@@ -215,6 +215,14 @@ export type AuthorizationRuleCredential = {
   type: Scalars['String'];
 };
 
+export type Canvas = {
+  __typename?: 'Canvas';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
@@ -618,6 +626,8 @@ export type EcosystemModel = {
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Canvas for visualizing this EcosystemModel. */
+  canvas?: Maybe<Canvas>;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -916,6 +926,8 @@ export type Mutation = {
   updateAspect: Aspect;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
+  /** Updates the specified EcosystemModel. */
+  updateEcosystemModel: EcosystemModel;
   /** Updates the Ecoverse. */
   updateEcoverse: Ecoverse;
   /** Updates the specified Opportunity. */
@@ -1164,6 +1176,10 @@ export type MutationUpdateAspectArgs = {
 
 export type MutationUpdateChallengeArgs = {
   challengeData: UpdateChallengeInput;
+};
+
+export type MutationUpdateEcosystemModelArgs = {
+  ecosystemModelData: UpdateEcosystemModelInput;
 };
 
 export type MutationUpdateEcoverseArgs = {
@@ -1613,6 +1629,11 @@ export type UpdateAuthorizationPolicyInput = {
   anonymousReadAccess: Scalars['Boolean'];
 };
 
+export type UpdateCanvasInput = {
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 export type UpdateChallengeInput = {
   ID: Scalars['UUID'];
   /** Update the contained Context entity. */
@@ -1637,6 +1658,13 @@ export type UpdateContextInput = {
   /** Update the Visual assets for the new Context. */
   visual?: Maybe<UpdateVisualInput>;
   who?: Maybe<Scalars['Markdown']>;
+};
+
+export type UpdateEcosystemModelInput = {
+  ID: Scalars['UUID'];
+  /** Update the Canvas for this Ecosystem Model. */
+  canvas?: Maybe<UpdateCanvasInput>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type UpdateEcoverseInput = {
@@ -2558,6 +2586,19 @@ export type UpdateChallengeMutationVariables = Exact<{
 export type UpdateChallengeMutation = {
   __typename?: 'Mutation';
   updateChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+};
+
+export type UpdateEcosystemModelMutationVariables = Exact<{
+  ecosystemModelData: UpdateEcosystemModelInput;
+}>;
+
+export type UpdateEcosystemModelMutation = {
+  __typename?: 'Mutation';
+  updateEcosystemModel: {
+    __typename?: 'EcosystemModel';
+    id: string;
+    canvas?: Maybe<{ __typename?: 'Canvas'; value: string }>;
+  };
 };
 
 export type UpdateEcoverseMutationVariables = Exact<{

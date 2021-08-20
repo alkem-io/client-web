@@ -5,11 +5,12 @@ import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
 import Button from '../core/Button';
 import { useApolloErrorHandler } from '../../hooks';
-import { Actor } from '../../models/graphql-schema';
-import { useUpdateActorMutation } from '../../hooks/generated/graphql';
+import { Actor, EcosystemModel, Maybe } from '../../models/graphql-schema';
+import { useUpdateActorMutation, useUpdateEcosystemModelMutation } from '../../hooks/generated/graphql';
 
 interface ActorWhiteboardProps {
   actors: Actor[];
+  ecosystemModel: Maybe<EcosystemModel>;
 }
 
 const useActorWhiteboardStyles = createStyles(_theme => ({
@@ -19,7 +20,7 @@ const useActorWhiteboardStyles = createStyles(_theme => ({
   },
 }));
 
-const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
+const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel }) => {
   const excalidrawRef = useRef<ExcalidrawAPIRefValue>(null);
   const styles = useActorWhiteboardStyles();
   const [offsetHeight, setOffsetHeight] = useState(0);
@@ -67,6 +68,10 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
     onError: handleError,
   });
 
+  const [updateEcosystemModelMutation] = useUpdateEcosystemModelMutation({
+    onError: handleError,
+  });
+
   const onChange = async (elements, _state) => {
     const elementsThatNeedUpdating = elements.filter(element => {
       console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
@@ -87,13 +92,32 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [] }) => {
       updateActor(queryInput);
       updateIdentifierMap(element.id, { actorId: identifierMap.get(element.id).actorId, originalText: element.text });
     });
+    if (ecosystemModel) {
+      updateEcosystemModelMutation({
+        variables: {
+          ecosystemModelData: {
+            ID: ecosystemModel.id,
+            canvas: {
+              value: JSON.stringify({ elements: elements, identifierMap: identifierMap }),
+            },
+          },
+        },
+      });
+    }
   };
 
+  console.log('Initial ecosystemModel', ecosystemModel);
+  const initialElements = ecosystemModel ? JSON.parse(ecosystemModel.canvas?.value || '{}').elements : [];
+  console.log('initial Elements', initialElements);
+  const initialData = {
+    elements: initialElements,
+  };
   return (
     <div className={styles.container}>
       <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button>
       <Excalidraw
         ref={excalidrawRef}
+        initialData={initialData}
         onChange={onChange}
         onCollabButtonClick={() => window.alert('You clicked on collab button')}
       />

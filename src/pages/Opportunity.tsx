@@ -389,7 +389,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
           );
         })}
 
-      <ActorWhiteboard actors={flatActors}></ActorWhiteboard>
+      <ActorWhiteboard ecosystemModel={opportunity.context?.ecosystemModel} actors={flatActors}></ActorWhiteboard>
       <Divider />
 
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>

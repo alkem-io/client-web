@@ -2506,6 +2506,55 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
 >;
+export const UpdateEcosystemModelDocument = gql`
+  mutation updateEcosystemModel($ecosystemModelData: UpdateEcosystemModelInput!) {
+    updateEcosystemModel(ecosystemModelData: $ecosystemModelData) {
+      id
+      canvas {
+        value
+      }
+    }
+  }
+`;
+export type UpdateEcosystemModelMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateEcosystemModelMutation,
+  SchemaTypes.UpdateEcosystemModelMutationVariables
+>;
+
+/**
+ * __useUpdateEcosystemModelMutation__
+ *
+ * To run a mutation, you first call `useUpdateEcosystemModelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEcosystemModelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEcosystemModelMutation, { data, loading, error }] = useUpdateEcosystemModelMutation({
+ *   variables: {
+ *      ecosystemModelData: // value for 'ecosystemModelData'
+ *   },
+ * });
+ */
+export function useUpdateEcosystemModelMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateEcosystemModelMutation,
+    SchemaTypes.UpdateEcosystemModelMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    SchemaTypes.UpdateEcosystemModelMutation,
+    SchemaTypes.UpdateEcosystemModelMutationVariables
+  >(UpdateEcosystemModelDocument, baseOptions);
+}
+export type UpdateEcosystemModelMutationHookResult = ReturnType<typeof useUpdateEcosystemModelMutation>;
+export type UpdateEcosystemModelMutationResult = Apollo.MutationResult<SchemaTypes.UpdateEcosystemModelMutation>;
+export type UpdateEcosystemModelMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateEcosystemModelMutation,
+  SchemaTypes.UpdateEcosystemModelMutationVariables
+>;
 export const UpdateEcoverseDocument = gql`
   mutation updateEcoverse($input: UpdateEcoverseInput!) {
     updateEcoverse(ecoverseData: $input) {

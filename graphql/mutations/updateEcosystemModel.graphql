@@ -2,5 +2,8 @@ mutation updateEcosystemModel($ecosystemModelData: UpdateEcosystemModelInput!) {
   updateEcosystemModel(ecosystemModelData: $ecosystemModelData)
   {
     id
+    canvas {
+      value
+    }
   }
 }
