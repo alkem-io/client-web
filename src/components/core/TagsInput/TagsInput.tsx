@@ -1,16 +1,17 @@
-import { Chip, createStyles, makeStyles, OutlinedTextFieldProps, Paper, TextField, Theme } from '@material-ui/core';
+import { Box, Chip, createStyles, makeStyles, OutlinedTextFieldProps, TextField, Theme } from '@material-ui/core';
 import React, { FC, forwardRef, useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-      flexWrap: 'wrap',
-      listStyle: 'none',
-      padding: theme.spacing(0.5),
-      margin: 0,
-    },
+    // root: {
+    //   display: 'flex',
+    //   justifyContent: 'flex-start',
+    //   flexWrap: 'wrap',
+    //   flexDirection: 'row',
+    //   listStyle: 'none',
+    //   padding: theme.spacing(0.5),
+    //   margin: 0,
+    // },
     chip: {
       margin: theme.spacing(0.5),
     },
@@ -71,43 +72,34 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
 
     const _inputProps = {
       ...InputProps,
-      startAdornment: (
-        <Paper elevation={0} className={classes.root}>
-          <>
-            {selectedItems.map((x, i) => (
-              // <ListItem key={i}>
-              <Chip
-                key={i}
-                variant={'outlined'}
-                tabIndex={-1}
-                label={x}
-                onDelete={handleDelete(x)}
-                color={'primary'}
-                size={'small'}
-                className={classes.chip}
-              />
-              // </ListItem>
-            ))}
-          </>
-        </Paper>
-      ),
-      // </div>
+      startAdornment: selectedItems.map((x, i) => (
+        <Chip
+          key={i}
+          variant={'outlined'}
+          tabIndex={-1}
+          label={x}
+          onDelete={handleDelete(x)}
+          color={'primary'}
+          size={'small'}
+          className={classes.chip}
+        />
+      )),
     };
     return (
-      <TextField
-        ref={ref}
-        variant={variant}
-        value={inputValue}
-        InputProps={_inputProps}
-        onKeyDown={handleKeyDown}
-        onChange={event => {
-          handleInputChange(event);
-        }}
-        placeholder={selectedItems.length ? undefined : placeholder}
-        {...rest}
-        multiline={true}
-        rows={4}
-      />
+      <Box display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
+        <TextField
+          ref={ref}
+          variant={variant}
+          value={inputValue}
+          InputProps={_inputProps}
+          onKeyDown={handleKeyDown}
+          onChange={event => {
+            handleInputChange(event);
+          }}
+          placeholder={selectedItems.length ? undefined : placeholder}
+          {...rest}
+        />
+      </Box>
     );
   }
 );
