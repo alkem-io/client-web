@@ -45,6 +45,7 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
       avatar={avatar}
       questions={questions}
       backUrl={backUrl}
+      type={'ecoverse'}
     />
   );
 };

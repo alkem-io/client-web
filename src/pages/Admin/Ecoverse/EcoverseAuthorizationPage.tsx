@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import { useApolloErrorHandler, useUpdateNavigation } from '../../../hooks';
+import { useApolloErrorHandler, useEcoverse, useUpdateNavigation } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsEcoverseAdminMutation,
+  useEcoverseMembersQuery,
   useRemoveUserAsEcoverseAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
@@ -11,6 +12,7 @@ import { useParams, useRouteMatch } from 'react-router';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Container } from '@material-ui/core';
+import { Loading } from '../../../components/core';
 
 interface Params {
   role: AuthorizationCredential;
@@ -66,6 +68,16 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     });
   };
 
+  const { ecoverseId } = useEcoverse();
+  const { data, loading } = useEcoverseMembersQuery({
+    variables: { ecoverseId: ecoverseId },
+  });
+  const ecoMembers = data?.ecoverse?.community?.members || [];
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <Container maxWidth="xl">
       <EditMemberCredentials
@@ -73,6 +85,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
         onRemove={handleRemove}
         resourceId={resourceId}
         credential={credential}
+        memberList={ecoMembers}
       />
     </Container>
   );
