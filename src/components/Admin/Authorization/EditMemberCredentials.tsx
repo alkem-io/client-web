@@ -1,44 +1,45 @@
 import React, { FC, useMemo } from 'react';
-import { useEcoverseMembersQuery, useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
+import { useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
 import { Loading } from '../../core';
 import { EditMembers, EditMembersProps } from '../Community/EditMembers';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { useEcoverse, useUserContext } from '../../../hooks';
+import { useUserContext } from '../../../hooks';
+import { Member } from '../../../models/User';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
     Pick<EditMembersProps, 'onAdd' | 'onRemove'> {
   credential: AuthorizationCredential;
+  /** Members of the edited entity */
+  memberList: Member[];
 }
 
-export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({ onAdd, onRemove, credential, resourceId }) => {
+export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
+  onAdd,
+  onRemove,
+  credential,
+  resourceId,
+  memberList,
+}) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data: usersWithCredentials, loading: loadingMembers } = useUsersWithCredentialsQuery({
+  const { data, loading } = useUsersWithCredentialsQuery({
     variables: {
       input: {
         type: credential,
         resourceID: resourceId,
       },
     },
-    skip: !Boolean(resourceId),
   });
-  const members = useMemo(() => usersWithCredentials?.usersWithAuthorizationCredential || [], [usersWithCredentials]);
-
-  const { ecoverseId } = useEcoverse();
-  const { data: membersQuery, loading: loadingEcoMembers } = useEcoverseMembersQuery({
-    variables: { ecoverseId: ecoverseId },
-  });
-  const ecoMembers = membersQuery?.ecoverse?.community?.members || [];
-
+  const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
   const availableMembers = useMemo(
-    () => ecoMembers.filter(p => members.findIndex(m => m.id === p.id) === -1),
-    [ecoMembers, usersWithCredentials]
+    () => memberList.filter(p => members.findIndex(m => m.id === p.id) === -1),
+    [memberList]
   );
 
-  if (loadingMembers || loadingEcoMembers) {
+  if (loading) {
     return <Loading />;
   }
 
