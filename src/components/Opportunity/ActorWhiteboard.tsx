@@ -25,6 +25,10 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   const styles = useActorWhiteboardStyles();
   const [offsetHeight, setOffsetHeight] = useState(0);
   const [showNewActorModal, setShowNewActorModal] = useState(false);
+
+  // const initialIdentifierMap : Map<String, any> = ecosystemModel?.canvas?.value ? JSON.parse(ecosystemModel.canvas.value).identifierMap: [];
+  // console.log("Initial Identifier Source", JSON.parse(ecosystemModel?.canvas?.value || '{}'))
+  // console.log("Initial Identifier Map", initialIdentifierMap)
   const [identifierMap, setIdentifierMap] = useState(new Map());
   const updateIdentifierMap = (k, v) => {
     setIdentifierMap(new Map(identifierMap.set(k, v)));
@@ -60,7 +64,9 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
         updateIdentifierMap(element.id, { actorId: element.text, originalText: actorName });
         element.text = actorName;
       });
-    excalidraw?.updateScene({ elements });
+
+    const newScene = elements.concat(excalidraw?.getSceneElements());
+    excalidraw?.updateScene({ elements: newScene });
   };
 
   const handleError = useApolloErrorHandler();
@@ -73,8 +79,9 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   });
 
   const onChange = async (elements, appstate) => {
+    console.log('Identifier arra', Array.from(identifierMap.entries()));
     const elementsThatNeedUpdating = elements.filter(element => {
-      console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
+      // console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
       return identifierMap.has(element.id) && element.text !== identifierMap.get(element.id)?.originalText;
     });
     console.log('Elements that need updating', elementsThatNeedUpdating);
@@ -99,8 +106,11 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   const saveToBackend = (elements, appState) => {
     if (ecosystemModel && elements.length > 0) {
       const canvasValue = serializeAsJSON(elements, appState);
-      const newecosystemModel = JSON.stringify({ value: canvasValue, identifierMap: identifierMap });
-      console.log('New ecosystem model', newecosystemModel);
+      const newecosystemModel = JSON.stringify({
+        value: canvasValue,
+        identifierMap: Array.from(identifierMap.entries()),
+      });
+      //console.log('New ecosystem model', { value: canvasValue, identifierMap: identifierMap });
       updateEcosystemModelMutation({
         variables: {
           ecosystemModelData: {
@@ -125,16 +135,21 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   const initialData = ecosystemModel ? JSON.parse(JSON.parse(ecosystemModel.canvas?.value || '{}').value) : {};
   console.log('initial ecosystemModel data', initialData);
   console.log('initial ecosystemModel data', typeof initialData);
+
   return (
     <div className={styles.container}>
       <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button>
-      <Excalidraw
-        ref={excalidrawRef}
-        initialData={initialData}
-        onChange={onChange}
-        onCollabButtonClick={() => window.alert('You clicked on collab button')}
-        UIOptions={UIOptions}
-      />
+      {initialData.elements ? (
+        <Excalidraw
+          ref={excalidrawRef}
+          initialData={initialData}
+          onChange={onChange}
+          onCollabButtonClick={() => window.alert('You clicked on collab button')}
+          UIOptions={UIOptions}
+        />
+      ) : (
+        <div></div>
+      )}
 
       <NewWhiteboardActorModal
         show={showNewActorModal}
