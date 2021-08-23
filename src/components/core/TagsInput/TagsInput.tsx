@@ -1,19 +1,21 @@
-import { Chip, InputAdornment, OutlinedTextFieldProps, TextField } from '@material-ui/core';
+import { Chip, createStyles, makeStyles, OutlinedTextFieldProps, Paper, TextField, Theme } from '@material-ui/core';
 import React, { FC, forwardRef, useEffect, useState } from 'react';
 
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       display: 'flex',
-//       width: '100%',
-//       justifyContent: 'flex-start',
-//       flexWrap: 'wrap',
-//       '& > *': {
-//         margin: theme.spacing(0.25),
-//       },
-//     },
-//   })
-// );
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
+  })
+);
 
 type TagsInputProps = OutlinedTextFieldProps & {
   onTagsChange?: (tags: string[]) => void;
@@ -22,7 +24,7 @@ type TagsInputProps = OutlinedTextFieldProps & {
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
   ({ InputProps, variant = 'outlined', onTagsChange, value, placeholder, ...rest }, ref) => {
-    // const classes = useStyles();
+    const classes = useStyles();
     const [inputValue, setInputValue] = React.useState('');
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
@@ -70,19 +72,24 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
     const _inputProps = {
       ...InputProps,
       startAdornment: (
-        <InputAdornment position={'start'}>
-          {selectedItems.map((x, i) => (
-            <Chip
-              key={i}
-              variant={'outlined'}
-              tabIndex={-1}
-              label={x}
-              onDelete={handleDelete(x)}
-              color={'primary'}
-              size={'small'}
-            />
-          ))}
-        </InputAdornment>
+        <Paper elevation={0} className={classes.root}>
+          <>
+            {selectedItems.map((x, i) => (
+              // <ListItem key={i}>
+              <Chip
+                key={i}
+                variant={'outlined'}
+                tabIndex={-1}
+                label={x}
+                onDelete={handleDelete(x)}
+                color={'primary'}
+                size={'small'}
+                className={classes.chip}
+              />
+              // </ListItem>
+            ))}
+          </>
+        </Paper>
       ),
       // </div>
     };
@@ -98,6 +105,8 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
         }}
         placeholder={selectedItems.length ? undefined : placeholder}
         {...rest}
+        multiline={true}
+        rows={4}
       />
     );
   }
