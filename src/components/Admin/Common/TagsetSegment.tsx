@@ -83,8 +83,14 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         className={styles.field}
         required={required}
         disabled={disabled}
-        onTagsChange={items => {
-          helper.setValue(items);
+        onAdd={item => {
+          helper.setValue([...field.value, item]);
+        }}
+        onDelete={item => {
+          const index = (field.value as string[]).indexOf(item);
+          if (index > -1) {
+            helper.setValue([...field.value.slice(0, index), ...field.value.slice(index + 1)]);
+          }
         }}
         InputProps={{
           readOnly,

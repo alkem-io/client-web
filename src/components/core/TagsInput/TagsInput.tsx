@@ -1,69 +1,173 @@
-import { Box, Chip, createStyles, makeStyles, OutlinedTextFieldProps, TextField, Theme } from '@material-ui/core';
+import { Chip, createStyles, makeStyles, OutlinedTextFieldProps, TextField, Theme } from '@material-ui/core';
+import clsx from 'clsx';
 import React, { FC, forwardRef, useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // root: {
-    //   display: 'flex',
-    //   justifyContent: 'flex-start',
-    //   flexWrap: 'wrap',
-    //   flexDirection: 'row',
-    //   listStyle: 'none',
-    //   padding: theme.spacing(0.5),
-    //   margin: 0,
-    // },
+    root: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+    },
+    inputRoot: {
+      flexWrap: 'wrap',
+      '$hasPopupIcon &, $hasClearIcon &': {
+        paddingRight: 26 + 4,
+      },
+      '$hasPopupIcon$hasClearIcon &': {
+        paddingRight: 52 + 4,
+      },
+      '& $input': {
+        width: 0,
+        minWidth: 30,
+      },
+      '&[class*="MuiInput-root"]': {
+        paddingBottom: 1,
+        '& $input': {
+          padding: 4,
+        },
+        '& $input:first-child': {
+          padding: '6px 0',
+        },
+      },
+      '&[class*="MuiInput-root"][class*="MuiInput-marginDense"]': {
+        '& $input': {
+          padding: '4px 4px 5px',
+        },
+        '& $input:first-child': {
+          padding: '3px 0 6px',
+        },
+      },
+      '&[class*="MuiOutlinedInput-root"]': {
+        padding: 9,
+        '$hasPopupIcon &, $hasClearIcon &': {
+          paddingRight: 26 + 4 + 9,
+        },
+        '$hasPopupIcon$hasClearIcon &': {
+          paddingRight: 52 + 4 + 9,
+        },
+        '& $input': {
+          padding: '9.5px 4px',
+        },
+        '& $input:first-child': {
+          paddingLeft: 6,
+        },
+        '& $endAdornment': {
+          right: 9,
+        },
+      },
+      '&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"]': {
+        padding: 6,
+        '& $input': {
+          padding: '4.5px 4px',
+        },
+      },
+      '&[class*="MuiFilledInput-root"]': {
+        paddingTop: 19,
+        paddingLeft: 8,
+        '$hasPopupIcon &, $hasClearIcon &': {
+          paddingRight: 26 + 4 + 9,
+        },
+        '$hasPopupIcon$hasClearIcon &': {
+          paddingRight: 52 + 4 + 9,
+        },
+        '& $input': {
+          padding: '9px 4px',
+        },
+        '& $endAdornment': {
+          right: 9,
+        },
+      },
+      '&[class*="MuiFilledInput-root"][class*="MuiFilledInput-marginDense"]': {
+        paddingBottom: 1,
+        '& $input': {
+          padding: '4.5px 4px',
+        },
+      },
+    },
+    input: {
+      flexGrow: 1,
+      textOverflow: 'ellipsis',
+    },
     chip: {
       margin: theme.spacing(0.5),
     },
   })
 );
 
-type TagsInputProps = OutlinedTextFieldProps & {
-  onTagsChange?: (tags: string[]) => void;
+type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
+  onChange?: (tags: string[]) => void;
+  onAdd?: (item: string) => void;
+  onDelete?: (item: string) => void;
   value: string[];
+  allowDuplicates?: boolean;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
-  ({ InputProps, variant = 'outlined', onTagsChange, value, placeholder, ...rest }, ref) => {
+  (
+    {
+      allowDuplicates = false,
+      InputProps,
+      variant = 'outlined',
+      onChange,
+      onAdd,
+      onDelete,
+      value,
+      placeholder,
+      ...rest
+    },
+    ref
+  ) => {
     const classes = useStyles();
     const [inputValue, setInputValue] = React.useState('');
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [chips, setChips] = useState<string[]>([]);
 
     useEffect(() => {
-      setSelectedItems(value);
+      setChips(value);
     }, [value]);
 
     const handleKeyDown = (event: any) => {
       if (event.key === 'Enter' || event.key === ',') {
         event.preventDefault();
-
-        const newSelectedItems = [...selectedItems];
-        const duplicatedValues = newSelectedItems.indexOf(event.target.value.trim());
-
-        if (duplicatedValues !== -1) {
-          setInputValue('');
-          return;
-        }
         if (!event.target.value.replace(/\s/g, '').length) return;
-
-        newSelectedItems.push(event.target.value.trim());
-        setSelectedItems(newSelectedItems);
+        const newChip = event.target.value.trim();
         setInputValue('');
-        onTagsChange && onTagsChange(newSelectedItems);
+
+        if (allowDuplicates || chips.indexOf(newChip) === -1)
+          if (value && onAdd) {
+            onAdd(event.target.value.trim());
+          } else {
+            const newSelectedItems = [...chips];
+
+            newSelectedItems.push();
+            setChips(newSelectedItems);
+
+            onChange && onChange(newSelectedItems);
+          }
       }
-      // Turn Off backspace delition.
-      // if (selectedItems && selectedItems.length && !inputValue.length && event.key === 'Backspace') {
-      //   const newSelectedItems = selectedItems.slice(0, selectedItems.length - 1);
-      //   setSelectedItems(newSelectedItems);
-      //   onTagsChange && onTagsChange(newSelectedItems);
-      // }
+
+      if (chips && chips.length && !inputValue.length && event.key === 'Backspace') {
+        if (!value) {
+          const newSelectedItems = chips.slice(0, chips.length - 1);
+          setChips(newSelectedItems);
+          onChange && onChange(newSelectedItems);
+        } else {
+          const itemToDelete = value[value.length - 1];
+          if (itemToDelete && onDelete) onDelete(itemToDelete);
+        }
+      }
     };
 
     const handleDelete = item => () => {
-      const newSelectedItems = [...selectedItems];
-      newSelectedItems.splice(newSelectedItems.indexOf(item), 1);
-      setSelectedItems(newSelectedItems);
-      onTagsChange && onTagsChange(newSelectedItems);
+      if (value && onDelete) {
+        onDelete(item);
+      } else {
+        const newSelectedItems = [...chips];
+        newSelectedItems.splice(newSelectedItems.indexOf(item), 1);
+        setChips(newSelectedItems);
+        onChange && onChange(newSelectedItems);
+      }
     };
 
     const handleInputChange = event => {
@@ -71,8 +175,12 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
     };
 
     const _inputProps = {
+      className: classes.inputRoot,
+      inputProps: {
+        className: clsx(classes.input),
+      },
       ...InputProps,
-      startAdornment: selectedItems.map((x, i) => (
+      startAdornment: chips.map((x, i) => (
         <Chip
           key={i}
           variant={'outlined'}
@@ -86,20 +194,18 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
       )),
     };
     return (
-      <Box display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
-        <TextField
-          ref={ref}
-          variant={variant}
-          value={inputValue}
-          InputProps={_inputProps}
-          onKeyDown={handleKeyDown}
-          onChange={event => {
-            handleInputChange(event);
-          }}
-          placeholder={selectedItems.length ? undefined : placeholder}
-          {...rest}
-        />
-      </Box>
+      <TextField
+        ref={ref}
+        variant={variant}
+        value={inputValue}
+        InputProps={_inputProps}
+        onKeyDown={handleKeyDown}
+        onChange={event => {
+          handleInputChange(event);
+        }}
+        placeholder={chips.length ? undefined : placeholder}
+        {...rest}
+      />
     );
   }
 );
