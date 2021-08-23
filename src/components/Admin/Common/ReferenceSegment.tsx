@@ -69,7 +69,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                 {t('components.referenceSegment.title')}
               </Typography>
             </Grid>
-            <Grid container item xs={1} justifyContent={'flex-end'}>
+            <Grid container item xs={1}>
               <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
                 <span>
                   <IconButton
@@ -93,7 +93,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             </Grid>
           ) : (
             references?.map((ref, index) => (
-              <Grid key={index} container item alignItems={'flex-end'} xs={12} spacing={2}>
+              <Grid key={index} container item xs={12} spacing={2}>
                 <Grid item xs={4}>
                   <FormikInputField
                     name={`references.${index}.name`}
@@ -110,7 +110,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     disabled={disabled || index === removing}
                   />
                 </Grid>
-                <Grid container item xs={1} justifyContent={'flex-end'} spacing={0}>
+                <Grid item xs={1} spacing={0}>
                   <Tooltip
                     title={t('components.referenceSegment.tooltips.remove-reference') || ''}
                     id={'remove a reference'}
