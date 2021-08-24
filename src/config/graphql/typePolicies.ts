@@ -1,4 +1,6 @@
-export const typePolicies = {
+import { TypePolicies } from '@apollo/client';
+
+export const typePolicies: TypePolicies = {
   UserGroup: {
     fields: {
       members: {
@@ -26,5 +28,12 @@ export const typePolicies = {
   },
   Metadata: {
     merge: true,
+  },
+  Query: {
+    fields: {
+      usersWithAuthorizationCredential: {
+        merge: false,
+      },
+    },
   },
 };
