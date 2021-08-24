@@ -51,7 +51,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   return (
     <>
       {children(
-        { messages: data?.community.updatesRoom.messages || [] },
+        { messages: data?.community.updatesRoom?.messages || [] },
         { onLoadMore: () => {}, onSubmit },
         {
           retrievingUpdateMessages: loading,
