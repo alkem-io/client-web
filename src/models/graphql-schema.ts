@@ -288,11 +288,11 @@ export type CommunicationMessageResult = {
 export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
-  applications: Array<Application>;
+  applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** Room with messages for this community. */
-  discussionRoom: CommunityRoom;
+  discussionRoom?: Maybe<CommunityRoom>;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -302,7 +302,7 @@ export type Community = Groupable & {
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
   /** Room with messages for this community. */
-  updatesRoom: CommunityRoom;
+  updatesRoom?: Maybe<CommunityRoom>;
 };
 
 export type CommunityRoom = {
@@ -1871,7 +1871,7 @@ export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
   displayName: string;
-  applications: Array<{ __typename?: 'Application'; id: string }>;
+  applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
   members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
   groups?: Maybe<
     Array<{
@@ -1886,16 +1886,16 @@ export type CommunityDetailsFragment = {
 export type CommunityMessagesFragment = {
   __typename?: 'Community';
   id: string;
-  updatesRoom: {
+  updatesRoom?: Maybe<{
     __typename?: 'CommunityRoom';
     id: string;
     messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
-  };
-  discussionRoom: {
+  }>;
+  discussionRoom?: Maybe<{
     __typename?: 'CommunityRoom';
     id: string;
     messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
-  };
+  }>;
 };
 
 export type MessageDetailsFragment = {
@@ -2680,7 +2680,7 @@ export type ChallengeApplicationsQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
-        applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+        applications?: Maybe<Array<{ __typename?: 'Application' } & ApplicationInfoFragment>>;
       }>;
     };
   };
@@ -2713,7 +2713,7 @@ export type EcoverseApplicationsQuery = {
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
-      applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+      applications?: Maybe<Array<{ __typename?: 'Application' } & ApplicationInfoFragment>>;
     }>;
   };
 };
@@ -4021,7 +4021,7 @@ export type CommunityUpdatesQuery = {
     __typename?: 'Community';
     id: string;
     displayName: string;
-    updatesRoom: {
+    updatesRoom?: Maybe<{
       __typename?: 'CommunityRoom';
       id: string;
       messages: Array<{
@@ -4031,7 +4031,7 @@ export type CommunityUpdatesQuery = {
         sender: string;
         timestamp: number;
       }>;
-    };
+    }>;
   };
 };
 

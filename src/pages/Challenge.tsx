@@ -6,6 +6,8 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@material-ui/core';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
@@ -30,8 +32,7 @@ import { Challenge as ChallengeType, Context, Organisation } from '../models/gra
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import Tooltip from '@material-ui/core/Tooltip';
-import { Box } from '@material-ui/core';
+import CardFilter from '../components/core/CardFilter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -140,7 +141,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities, leadOrganisations, id } = challenge;
+  const { displayName: name, context, opportunities = [], leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
   const { references, background = '', tagline, who = '', visual } = context || {};
   const bannerImg = visual?.banner;
@@ -151,7 +152,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
 
   const projects = useMemo(
     () =>
-      opportunities?.flatMap(o =>
+      opportunities.flatMap(o =>
         o?.projects?.flatMap(p => ({
           caption: o.displayName,
           url: `${url}/opportunities/${o.nameID}/projects/${p.nameID}`,
@@ -314,22 +315,26 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
       {opportunities && (
-        <CardContainer>
-          {opportunities?.map((opp, i) => (
-            <OpportunityCard
-              key={i}
-              displayName={opp.displayName}
-              activity={opp.activity || []}
-              url={`${url}/opportunities/${opp.nameID}`}
-              lifecycle={{ state: opp?.lifecycle?.state || '' }}
-              context={{
-                tagline: opp?.context?.tagline || '',
-                visual: { background: opp?.context?.visual?.background || '' },
-              }}
-              tags={opp?.tagset?.tags || []}
-            />
-          ))}
-        </CardContainer>
+        <CardFilter data={opportunities}>
+          {filteredData => (
+            <CardContainer>
+              {filteredData.map((opp, i) => (
+                <OpportunityCard
+                  key={i}
+                  displayName={opp.displayName}
+                  activity={opp.activity || []}
+                  url={`${url}/opportunities/${opp.nameID}`}
+                  lifecycle={{ state: opp?.lifecycle?.state || '' }}
+                  context={{
+                    tagline: opp?.context?.tagline || '',
+                    visual: { background: opp?.context?.visual?.background || '' },
+                  }}
+                  tags={opp?.tagset?.tags || []}
+                />
+              ))}
+            </CardContainer>
+          )}
+        </CardFilter>
       )}
       <Divider />
       <BackdropWithMessage

@@ -1,7 +1,13 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import { makeStyles } from '@material-ui/core';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
@@ -14,8 +20,15 @@ import {
 import { useApolloErrorHandler } from '../../../hooks';
 import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
-import { TFunction } from 'i18next';
-import Button from '../../core/Button';
+
+const useStyles = makeStyles(theme => ({
+  iconButtonSuccess: {
+    color: theme.palette.success.main,
+  },
+  iconButtonNegative: {
+    color: theme.palette.negative.main,
+  },
+}));
 
 interface Params {
   ecoverseId: string;
@@ -133,6 +146,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
   onRemove,
   isUpdating = false,
 }) => {
+  const styles = useStyles();
   const { t } = useTranslation();
   return (
     <Grid container spacing={2}>
@@ -140,7 +154,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
         <div style={{ height: 400 }}>
           <DataGrid
             rows={leading}
-            columns={leadingColumns(t, onRemove)}
+            columns={leadingColumns(t, styles, onRemove)}
             density="compact"
             hideFooter={true}
             loading={isUpdating}
@@ -151,7 +165,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
         <div style={{ height: 400 }}>
           <DataGrid
             rows={available}
-            columns={availableColumns(t, onAdd)}
+            columns={availableColumns(t, styles, onAdd)}
             density="compact"
             hideFooter={true}
             loading={isUpdating}
@@ -163,7 +177,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
 };
 export default LeadingOrganisationPage;
 
-const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
+const leadingColumns = (t: TFunction, styles: ClassNameMap<string>, onRemove: (orgId: string) => void) =>
   [
     {
       field: 'avatarSrc',
@@ -184,20 +198,36 @@ const leadingColumns = (t: TFunction, onRemove: (orgId: string) => void) =>
       filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
-        <Button variant="negative" small onClick={() => onRemove(params.value as string)} text="X" />
+        <IconButton
+          aria-label="Remove"
+          className={styles.iconButtonNegative}
+          size="small"
+          onClick={() => onRemove(params.value as string)}
+        >
+          <RemoveIcon />
+        </IconButton>
       ),
       align: 'right',
     },
   ] as GridColDef[];
 
-const availableColumns = (t: TFunction, onAdd: (orgId: string) => void) =>
+const availableColumns = (t: TFunction, styles: ClassNameMap<string>, onAdd: (orgId: string) => void) =>
   [
     {
       field: 'id',
       width: 110,
       filterable: false,
       headerName: t('common.add'),
-      renderCell: params => <Button variant="default" small onClick={() => onAdd(params.value as string)} text="+" />,
+      renderCell: params => (
+        <IconButton
+          aria-label="Add"
+          className={styles.iconButtonSuccess}
+          size="small"
+          onClick={() => onAdd(params.value as string)}
+        >
+          <AddIcon />
+        </IconButton>
+      ),
     },
     {
       field: 'avatarSrc',

@@ -16,6 +16,7 @@ export const ChallengeApplicationRoute: FC<Props> = ({ paths }) => {
   const { ecoverseId, challengeId } = useParams<Params>();
   const { data, loading } = useChallengeApplicationsQuery({
     variables: { ecoverseId: ecoverseId, challengeId: challengeId },
+    errorPolicy: 'all',
   });
 
   const applications = data?.ecoverse?.challenge?.community?.applications || [];
