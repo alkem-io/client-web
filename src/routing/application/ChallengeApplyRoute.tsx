@@ -26,6 +26,7 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
       ecoverseId: ecoverseId,
       challengeId: challengeId,
     },
+    errorPolicy: 'all',
   });
   const communityId = challengeData?.ecoverse.challenge.community?.id || '';
   const ecoverseName = challengeData?.ecoverse.challenge.displayName || '';
