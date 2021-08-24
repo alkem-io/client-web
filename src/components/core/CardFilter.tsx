@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -21,6 +22,7 @@ export interface CardFilterProps<T> {
 }
 
 const CardFilter = <T extends Tagsetwise>({ data, children }: CardFilterProps<T>) => {
+  const { t } = useTranslation();
   const [tags, setTags] = useState<string[]>([]);
 
   const mostCommonTags: TagInfo[] = useMemo(() => {
@@ -64,20 +66,21 @@ const CardFilter = <T extends Tagsetwise>({ data, children }: CardFilterProps<T>
     <Grid container spacing={2} direction="column" alignItems="center">
       <Grid container item xs={10}>
         <Autocomplete
+          aria-label="Filter"
+          id="card-filter"
           multiple
-          disableCloseOnSelect
           fullWidth
-          aria-label="Filter by tags"
-          id="card-filter-tags"
+          disableCloseOnSelect
           options={mostCommonTags}
           getOptionLabel={option => option?.tag}
           getOptionSelected={(option, value) => option.tag === value.tag}
+          groupBy={() => 'Tags'}
           onChange={handleChange}
           ChipProps={{
             color: 'primary',
             variant: 'outlined',
           }}
-          renderInput={params => <TextField {...params} variant="outlined" label="Filter by tags" />}
+          renderInput={params => <TextField {...params} variant="outlined" label={t('components.card-filter.title')} />}
         />
       </Grid>
       <Grid container>{children(filteredData)}</Grid>
