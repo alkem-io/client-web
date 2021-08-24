@@ -1979,55 +1979,6 @@ export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnOpportunityMutation,
   SchemaTypes.EventOnOpportunityMutationVariables
 >;
-export const GrantCredentialsDocument = gql`
-  mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
-    grantCredentialToUser(grantCredentialData: $input) {
-      id
-      displayName
-      ...UserAgent
-    }
-  }
-  ${UserAgentFragmentDoc}
-`;
-export type GrantCredentialsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.GrantCredentialsMutation,
-  SchemaTypes.GrantCredentialsMutationVariables
->;
-
-/**
- * __useGrantCredentialsMutation__
- *
- * To run a mutation, you first call `useGrantCredentialsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useGrantCredentialsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [grantCredentialsMutation, { data, loading, error }] = useGrantCredentialsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGrantCredentialsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.GrantCredentialsMutation,
-    SchemaTypes.GrantCredentialsMutationVariables
-  >
-) {
-  return Apollo.useMutation<SchemaTypes.GrantCredentialsMutation, SchemaTypes.GrantCredentialsMutationVariables>(
-    GrantCredentialsDocument,
-    baseOptions
-  );
-}
-export type GrantCredentialsMutationHookResult = ReturnType<typeof useGrantCredentialsMutation>;
-export type GrantCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.GrantCredentialsMutation>;
-export type GrantCredentialsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.GrantCredentialsMutation,
-  SchemaTypes.GrantCredentialsMutationVariables
->;
 export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
     assignUserAsChallengeAdmin(membershipData: $input) {
@@ -2514,55 +2465,6 @@ export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaType
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
->;
-export const RevokeCredentialsDocument = gql`
-  mutation revokeCredentials($input: RevokeAuthorizationCredentialInput!) {
-    revokeCredentialFromUser(revokeCredentialData: $input) {
-      id
-      displayName
-      ...UserAgent
-    }
-  }
-  ${UserAgentFragmentDoc}
-`;
-export type RevokeCredentialsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RevokeCredentialsMutation,
-  SchemaTypes.RevokeCredentialsMutationVariables
->;
-
-/**
- * __useRevokeCredentialsMutation__
- *
- * To run a mutation, you first call `useRevokeCredentialsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRevokeCredentialsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [revokeCredentialsMutation, { data, loading, error }] = useRevokeCredentialsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRevokeCredentialsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RevokeCredentialsMutation,
-    SchemaTypes.RevokeCredentialsMutationVariables
-  >
-) {
-  return Apollo.useMutation<SchemaTypes.RevokeCredentialsMutation, SchemaTypes.RevokeCredentialsMutationVariables>(
-    RevokeCredentialsDocument,
-    baseOptions
-  );
-}
-export type RevokeCredentialsMutationHookResult = ReturnType<typeof useRevokeCredentialsMutation>;
-export type RevokeCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.RevokeCredentialsMutation>;
-export type RevokeCredentialsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RevokeCredentialsMutation,
-  SchemaTypes.RevokeCredentialsMutationVariables
 >;
 export const UpdateActorDocument = gql`
   mutation updateActor($input: UpdateActorInput!) {

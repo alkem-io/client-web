@@ -2492,15 +2492,6 @@ export type EventOnOpportunityMutation = {
   };
 };
 
-export type GrantCredentialsMutationVariables = Exact<{
-  input: GrantAuthorizationCredentialInput;
-}>;
-
-export type GrantCredentialsMutation = {
-  __typename?: 'Mutation';
-  grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
-};
-
 export type AssignUserAsChallengeAdminMutationVariables = Exact<{
   input: AssignChallengeAdminInput;
 }>;
@@ -2598,15 +2589,6 @@ export type RemoveUserFromGroupMutation = {
     name: string;
     members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
   };
-};
-
-export type RevokeCredentialsMutationVariables = Exact<{
-  input: RevokeAuthorizationCredentialInput;
-}>;
-
-export type RevokeCredentialsMutation = {
-  __typename?: 'Mutation';
-  revokeCredentialFromUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
 };
 
 export type UpdateActorMutationVariables = Exact<{

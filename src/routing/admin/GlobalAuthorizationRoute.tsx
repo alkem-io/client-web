@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import AuthorizationRouteProps from './AuthorizationRouteProps';
-import GlobalAuthorizationPage from '../../pages/Admin/GlobalAuthorizationPage';
 import { FourOuFour } from '../../pages';
+import GlobalAuthorizationPage from '../../pages/Admin/GlobalAuthorizationPage';
+import GlobalCommunityAuthorizationPage from '../../pages/Admin/GlobalCommunityAuthorizationPage';
+import AuthorizationRouteProps from './AuthorizationRouteProps';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -12,6 +13,9 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
     <Switch>
       <Route exact path={`${path}/:role`}>
         <GlobalAuthorizationPage paths={currentPaths} />
+      </Route>
+      <Route exact path={`${path}/community/:role`}>
+        <GlobalCommunityAuthorizationPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

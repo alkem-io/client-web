@@ -36,7 +36,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
   const availableMembers = useMemo(
     () => memberList.filter(p => members.findIndex(m => m.id === p.id) === -1),
-    [memberList]
+    [memberList, members]
   );
 
   if (loading) {
