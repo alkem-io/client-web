@@ -164,7 +164,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                 <>
                   <Grid container spacing={2}>
                     {questions.map((x, i) => (
-                      <Grid item xs={12}>
+                      <Grid item key={i} xs={12}>
                         <FormikInputField
                           key={i}
                           title={x.question}

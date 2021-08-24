@@ -5157,6 +5157,7 @@ export const EcoversesWithActivityDocument = gql`
       displayName
       nameID
       authorization {
+        id
         anonymousReadAccess
       }
       activity {
@@ -5164,12 +5165,15 @@ export const EcoversesWithActivityDocument = gql`
         value
       }
       context {
+        id
         visual {
+          id
           background
         }
         tagline
       }
       tagset {
+        id
         name
         tags
       }
