@@ -2519,6 +2519,24 @@ export type AssignUserAsEcoverseAdminMutation = {
   assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsGlobalAdminMutationVariables = Exact<{
+  input: AssignGlobalAdminInput;
+}>;
+
+export type AssignUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: AssignGlobalCommunityAdminInput;
+}>;
+
+export type AssignUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
   input: RemoveChallengeAdminInput;
 }>;
@@ -2535,6 +2553,24 @@ export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
 export type RemoveUserAsEcoverseAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
+  input: RemoveGlobalAdminInput;
+}>;
+
+export type RemoveUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: RemoveGlobalCommunityAdminInput;
+}>;
+
+export type RemoveUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
