@@ -1,4 +1,4 @@
-import { createTheme, SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
+import { createTheme, emphasize, SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
 import { buttonOverrides } from './overrides/button';
@@ -39,6 +39,20 @@ theme.overrides = {
     dividers: {
       borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
       borderBottomColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
+    },
+  },
+  MuiChip: {
+    colorPrimary: {
+      color: (theme?.palette?.neutralLight as SimplePaletteColorOptions).main,
+      fontWeight: 'bold',
+    },
+    deleteIconColorPrimary: {
+      color: (theme?.palette?.neutralLight as SimplePaletteColorOptions).main,
+
+      '&:hover': {
+        // coefficient from material UI code base for hover effects
+        color: emphasize((theme?.palette?.neutralLight as SimplePaletteColorOptions).main, 0.08),
+      },
     },
   },
 };
