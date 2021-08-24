@@ -187,7 +187,6 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
           tabIndex={-1}
           label={x}
           onDelete={handleDelete(x)}
-          color={'primary'}
           size={'small'}
           className={classes.chip}
         />
