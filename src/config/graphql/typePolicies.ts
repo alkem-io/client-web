@@ -21,4 +21,10 @@ export const typePolicies = {
       },
     },
   },
+  UserMembership: {
+    merge: true,
+  },
+  Metadata: {
+    merge: true,
+  },
 };

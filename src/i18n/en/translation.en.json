@@ -173,6 +173,9 @@
     }
   },
   "components": {
+    "card-filter": {
+      "title": "Filter"
+    },
     "backdrop": {
       "private": "{{blockName}} are only visible for members.",
       "authentication": "Please sign in to check out the {{blockName}}."
