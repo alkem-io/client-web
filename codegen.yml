@@ -35,3 +35,6 @@ generates:
     config:
       withHooks: true
       withRefetchFn: true
+  src/models/apollo-helpers.ts:
+    plugins:
+      - typescript-apollo-client-helpers

@@ -133,6 +133,14 @@ export type AssignEcoverseAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignGlobalAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignOrganisationAdminInput = {
   organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -772,6 +780,8 @@ export type MembershipUserResultEntryEcoverse = {
   nameID: Scalars['NameID'];
   /** Details of the Opportunities the user is a member of */
   opportunities: Array<MembershipResultEntry>;
+  /** Parent ID (User ID) */
+  parentID: Scalars['String'];
   /** Details of the UserGroups the user is a member of */
   userGroups: Array<MembershipResultEntry>;
 };
@@ -802,6 +812,10 @@ export type Mutation = {
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
   assignUserAsEcoverseAdmin: User;
+  /** Assigns a User as a Global Admin. */
+  assignUserAsGlobalAdmin: User;
+  /** Assigns a User as a Global Community Admin. */
+  assignUserAsGlobalCommunityAdmin: User;
   /** Assigns a User as an Organisation Admin. */
   assignUserAsOrganisationAdmin: User;
   /** Assigns a User as a member of the specified Community. */
@@ -900,6 +914,10 @@ export type Mutation = {
   removeUserAsChallengeAdmin: User;
   /** Removes a User from being an Ecoverse Admin. */
   removeUserAsEcoverseAdmin: User;
+  /** Removes a User from being a Global Admin. */
+  removeUserAsGlobalAdmin: User;
+  /** Removes a User from being a Global Community Admin. */
+  removeUserAsGlobalCommunityAdmin: User;
   /** Removes a User from being an Organisation Admin. */
   removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
@@ -940,6 +958,14 @@ export type MutationAssignUserAsChallengeAdminArgs = {
 
 export type MutationAssignUserAsEcoverseAdminArgs = {
   membershipData: AssignEcoverseAdminInput;
+};
+
+export type MutationAssignUserAsGlobalAdminArgs = {
+  membershipData: AssignGlobalAdminInput;
+};
+
+export type MutationAssignUserAsGlobalCommunityAdminArgs = {
+  membershipData: AssignGlobalCommunityAdminInput;
 };
 
 export type MutationAssignUserAsOrganisationAdminArgs = {
@@ -1132,6 +1158,14 @@ export type MutationRemoveUserAsChallengeAdminArgs = {
 
 export type MutationRemoveUserAsEcoverseAdminArgs = {
   membershipData: RemoveEcoverseAdminInput;
+};
+
+export type MutationRemoveUserAsGlobalAdminArgs = {
+  membershipData: RemoveGlobalAdminInput;
+};
+
+export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
+  membershipData: RemoveGlobalCommunityAdminInput;
 };
 
 export type MutationRemoveUserAsOrganisationAdminArgs = {
@@ -1491,6 +1525,14 @@ export type RemoveEcoverseAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type RemoveGlobalAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type RemoveOrganisationAdminInput = {
   organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -1801,8 +1843,13 @@ export type UserMembership = {
   __typename?: 'UserMembership';
   /** Open applications for this user. */
   applications?: Maybe<Array<ApplicationResultEntry>>;
+  /** The display name. */
+  displayName: Scalars['String'];
   /** Details of Ecoverses the user is a member of, with child memberships */
   ecoverses: Array<MembershipUserResultEntryEcoverse>;
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
   /** Details of the Organisations the user is a member of, with child memberships. */
   organisations: Array<MembershipUserResultEntryOrganisation>;
 };
@@ -2130,6 +2177,7 @@ export type UserMembershipDetailsFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    parentID: string;
     challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     opportunities: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
@@ -3405,7 +3453,12 @@ export type MembershipUserQueryVariables = Exact<{
 
 export type MembershipUserQuery = {
   __typename?: 'Query';
-  membershipUser: { __typename?: 'UserMembership' } & UserMembershipDetailsFragment;
+  membershipUser: {
+    __typename?: 'UserMembership';
+    id: string;
+    nameID: string;
+    displayName: string;
+  } & UserMembershipDetailsFragment;
 };
 
 export type OpportunitiesQueryVariables = Exact<{

@@ -1,5 +1,8 @@
 query membershipUser($input: MembershipUserInput!) {
   membershipUser(membershipData: $input) {
+    id
+    nameID
+    displayName
     ...UserMembershipDetails
   }
 }

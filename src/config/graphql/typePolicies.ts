@@ -1,4 +1,6 @@
-export const typePolicies = {
+import { TypedTypePolicies } from '../../models/apollo-helpers';
+
+export const typePolicies: TypedTypePolicies = {
   UserGroup: {
     fields: {
       members: {
@@ -21,8 +23,8 @@ export const typePolicies = {
       },
     },
   },
-  UserMembership: {
-    merge: true,
+  MembershipUserResultEntryEcoverse: {
+    keyFields: ['id', 'parentID'],
   },
   Metadata: {
     merge: true,

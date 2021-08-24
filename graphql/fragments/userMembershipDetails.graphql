@@ -3,6 +3,7 @@ fragment UserMembershipDetails on UserMembership {
     id
     nameID
     displayName
+    parentID
     challenges {
       id
       nameID

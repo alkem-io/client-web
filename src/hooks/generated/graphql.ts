@@ -402,6 +402,7 @@ export const UserMembershipDetailsFragmentDoc = gql`
       id
       nameID
       displayName
+      parentID
       challenges {
         id
         nameID
@@ -5489,6 +5490,9 @@ export function refetchMembershipOrganisationQuery(variables?: SchemaTypes.Membe
 export const MembershipUserDocument = gql`
   query membershipUser($input: MembershipUserInput!) {
     membershipUser(membershipData: $input) {
+      id
+      nameID
+      displayName
       ...UserMembershipDetails
     }
   }
