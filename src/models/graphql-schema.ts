@@ -3340,14 +3340,15 @@ export type EcoversesWithActivityQuery = {
     id: string;
     displayName: string;
     nameID: string;
-    authorization?: Maybe<{ __typename?: 'Authorization'; anonymousReadAccess: boolean }>;
+    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
     context?: Maybe<{
       __typename?: 'Context';
+      id: string;
       tagline?: Maybe<string>;
-      visual?: Maybe<{ __typename?: 'Visual'; background: string }>;
+      visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
     }>;
-    tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+    tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   }>;
 };
 
