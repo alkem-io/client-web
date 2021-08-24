@@ -4,6 +4,7 @@ query ecoversesWithActivity {
     displayName
     nameID
     authorization {
+      id
       anonymousReadAccess
     }
     activity {
@@ -11,12 +12,15 @@ query ecoversesWithActivity {
       value
     }
     context {
+      id
       visual {
+        id
         background
       }
       tagline
     }
     tagset {
+      id
       name
       tags
     }
