@@ -133,6 +133,14 @@ export type AssignEcoverseAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignGlobalAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignOrganisationAdminInput = {
   organisationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -288,11 +296,11 @@ export type CommunicationMessageResult = {
 export type Community = Groupable & {
   __typename?: 'Community';
   /** Application available for this community. */
-  applications: Array<Application>;
+  applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** Room with messages for this community. */
-  discussionRoom: CommunityRoom;
+  discussionRoom?: Maybe<CommunityRoom>;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -302,7 +310,7 @@ export type Community = Groupable & {
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
   /** Room with messages for this community. */
-  updatesRoom: CommunityRoom;
+  updatesRoom?: Maybe<CommunityRoom>;
 };
 
 export type CommunityRoom = {
@@ -802,6 +810,10 @@ export type Mutation = {
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
   assignUserAsEcoverseAdmin: User;
+  /** Assigns a User as a Global Admin. */
+  assignUserAsGlobalAdmin: User;
+  /** Assigns a User as a Global Community Admin. */
+  assignUserAsGlobalCommunityAdmin: User;
   /** Assigns a User as an Organisation Admin. */
   assignUserAsOrganisationAdmin: User;
   /** Assigns a User as a member of the specified Community. */
@@ -900,6 +912,10 @@ export type Mutation = {
   removeUserAsChallengeAdmin: User;
   /** Removes a User from being an Ecoverse Admin. */
   removeUserAsEcoverseAdmin: User;
+  /** Removes a User from being a Global Admin. */
+  removeUserAsGlobalAdmin: User;
+  /** Removes a User from being a Global Community Admin. */
+  removeUserAsGlobalCommunityAdmin: User;
   /** Removes a User from being an Organisation Admin. */
   removeUserAsOrganisationAdmin: User;
   /** Removes a User as a member of the specified Community. */
@@ -940,6 +956,14 @@ export type MutationAssignUserAsChallengeAdminArgs = {
 
 export type MutationAssignUserAsEcoverseAdminArgs = {
   membershipData: AssignEcoverseAdminInput;
+};
+
+export type MutationAssignUserAsGlobalAdminArgs = {
+  membershipData: AssignGlobalAdminInput;
+};
+
+export type MutationAssignUserAsGlobalCommunityAdminArgs = {
+  membershipData: AssignGlobalCommunityAdminInput;
 };
 
 export type MutationAssignUserAsOrganisationAdminArgs = {
@@ -1132,6 +1156,14 @@ export type MutationRemoveUserAsChallengeAdminArgs = {
 
 export type MutationRemoveUserAsEcoverseAdminArgs = {
   membershipData: RemoveEcoverseAdminInput;
+};
+
+export type MutationRemoveUserAsGlobalAdminArgs = {
+  membershipData: RemoveGlobalAdminInput;
+};
+
+export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
+  membershipData: RemoveGlobalCommunityAdminInput;
 };
 
 export type MutationRemoveUserAsOrganisationAdminArgs = {
@@ -1488,6 +1520,14 @@ export type RemoveCommunityMemberInput = {
 
 export type RemoveEcoverseAdminInput = {
   ecoverseID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveGlobalAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveGlobalCommunityAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -1871,7 +1911,7 @@ export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
   displayName: string;
-  applications: Array<{ __typename?: 'Application'; id: string }>;
+  applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
   members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
   groups?: Maybe<
     Array<{
@@ -1886,16 +1926,16 @@ export type CommunityDetailsFragment = {
 export type CommunityMessagesFragment = {
   __typename?: 'Community';
   id: string;
-  updatesRoom: {
+  updatesRoom?: Maybe<{
     __typename?: 'CommunityRoom';
     id: string;
     messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
-  };
-  discussionRoom: {
+  }>;
+  discussionRoom?: Maybe<{
     __typename?: 'CommunityRoom';
     id: string;
     messages: Array<{ __typename?: 'CommunicationMessageResult' } & MessageDetailsFragment>;
-  };
+  }>;
 };
 
 export type MessageDetailsFragment = {
@@ -2680,7 +2720,7 @@ export type ChallengeApplicationsQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
-        applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+        applications?: Maybe<Array<{ __typename?: 'Application' } & ApplicationInfoFragment>>;
       }>;
     };
   };
@@ -2713,7 +2753,7 @@ export type EcoverseApplicationsQuery = {
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
-      applications: Array<{ __typename?: 'Application' } & ApplicationInfoFragment>;
+      applications?: Maybe<Array<{ __typename?: 'Application' } & ApplicationInfoFragment>>;
     }>;
   };
 };
@@ -4020,7 +4060,7 @@ export type CommunityUpdatesQuery = {
     __typename?: 'Community';
     id: string;
     displayName: string;
-    updatesRoom: {
+    updatesRoom?: Maybe<{
       __typename?: 'CommunityRoom';
       id: string;
       messages: Array<{
@@ -4030,7 +4070,7 @@ export type CommunityUpdatesQuery = {
         sender: string;
         timestamp: number;
       }>;
-    };
+    }>;
   };
 };
 
