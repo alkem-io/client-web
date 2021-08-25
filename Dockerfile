@@ -6,6 +6,8 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
+ARG ARG_GRAPHQL_ENDPOINT=/graphql
+ENV REACT_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
 
 # set build version, date and revision
 ARG ARG_BUILD_VERSION=dev

@@ -17,8 +17,9 @@ import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
 import sentryBootstrap from './services/logging/sentry/bootstrap';
 import { logger } from './services/logging/winston/logger';
+import { env } from './types/env';
 
-const graphQLEndpoint = '/graphql';
+const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
 sentryBootstrap();
 

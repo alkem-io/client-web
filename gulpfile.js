@@ -26,6 +26,8 @@ function buildConfiguration(cb) {
     }
   });
 
+  configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
+
   const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
   let envBase = fs.createWriteStream(envBasePath, { flags: 'w' });
 
