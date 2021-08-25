@@ -2,6 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { WinstonProvider } from 'winston-react';
 import App from './components/composite/layout/App/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
@@ -15,9 +16,8 @@ import './i18n/config';
 import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
 import sentryBootstrap from './services/logging/sentry/bootstrap';
-import { env } from './types/env';
-import { WinstonProvider } from 'winston-react';
 import { logger } from './services/logging/winston/logger';
+import { env } from './types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
