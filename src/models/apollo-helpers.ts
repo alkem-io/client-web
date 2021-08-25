@@ -363,7 +363,6 @@ export type MembershipUserResultEntryEcoverseKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'userGroups'
-  | 'userID'
   | MembershipUserResultEntryEcoverseKeySpecifier
 )[];
 export type MembershipUserResultEntryEcoverseFieldPolicy = {
@@ -374,12 +373,12 @@ export type MembershipUserResultEntryEcoverseFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
-  userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MembershipUserResultEntryOrganisationKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
+  | 'organisationID'
   | 'userGroups'
   | MembershipUserResultEntryOrganisationKeySpecifier
 )[];
@@ -387,6 +386,7 @@ export type MembershipUserResultEntryOrganisationFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  organisationID?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('activity' | 'services' | MetadataKeySpecifier)[];

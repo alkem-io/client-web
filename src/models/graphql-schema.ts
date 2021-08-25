@@ -784,8 +784,6 @@ export type MembershipUserResultEntryEcoverse = {
   opportunities: Array<MembershipResultEntry>;
   /** Details of the UserGroups the user is a member of */
   userGroups: Array<MembershipResultEntry>;
-  /** The Parent User ID */
-  userID: Scalars['String'];
 };
 
 export type MembershipUserResultEntryOrganisation = {
@@ -796,6 +794,8 @@ export type MembershipUserResultEntryOrganisation = {
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
+  /** The Organisation ID. */
+  organisationID: Scalars['String'];
   /** Details of the Organisations the user is a member of */
   userGroups: Array<MembershipResultEntry>;
 };
@@ -2176,7 +2176,6 @@ export type UserMembershipDetailsFragment = {
     id: string;
     nameID: string;
     ecoverseID: string;
-    userID: string;
     displayName: string;
     challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     opportunities: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;

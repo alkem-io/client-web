@@ -402,7 +402,6 @@ export const UserMembershipDetailsFragmentDoc = gql`
       id
       nameID
       ecoverseID
-      userID
       displayName
       challenges {
         id

@@ -3,7 +3,6 @@ fragment UserMembershipDetails on UserMembership {
     id
     nameID
     ecoverseID
-    userID
     displayName
     challenges {
       id
