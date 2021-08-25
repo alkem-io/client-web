@@ -110,7 +110,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     disabled={disabled || index === removing}
                   />
                 </Grid>
-                <Grid item xs={1} spacing={0}>
+                <Grid item xs={1}>
                   <Tooltip
                     title={t('components.referenceSegment.tooltips.remove-reference') || ''}
                     id={'remove a reference'}
