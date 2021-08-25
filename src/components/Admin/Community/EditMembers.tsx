@@ -107,7 +107,7 @@ export const EditMembers: FC<EditMembersProps> = ({
       </Grid>
       <Grid item sm={4}>
         Available users:
-        <Filter data={availableMembers}>
+        <Filter data={availableMembers} limitKeys={['displayName', 'firstName', 'lastName']}>
           {filteredData => {
             return (
               <>
