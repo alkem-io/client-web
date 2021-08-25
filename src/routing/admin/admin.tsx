@@ -24,7 +24,7 @@ export const Admin: FC = () => {
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
   // todo parentMembers should not be fetched on this level probably setup an organisation provider
   // to fetch them when necessary in organisation admin tree
-  const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
+  const { data: usersInfo, loading: loadingUsers } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
   const parentMembers = usersInfo?.users || [];
 
   if (loadingUsers) return <Loading text={'Loading'} />;
