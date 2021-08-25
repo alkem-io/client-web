@@ -3,8 +3,8 @@ import { useParams, useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobalAdminMutation,
-  useRemoveUserAsGlobalAdminMutation,
+  useAssignUserAsGlobalCommunityAdminMutation,
+  useRemoveUserAsGlobalCommunityAdminMutation,
   useUsersQuery,
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential } from '../../models/graphql-schema';
@@ -18,7 +18,7 @@ interface Params {
   role: AuthorizationCredential;
 }
 
-const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
+const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { role: credential } = useParams<Params>();
   const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
@@ -26,11 +26,11 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsGlobalAdminMutation({
+  const [grant] = useAssignUserAsGlobalCommunityAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsGlobalAdminMutation({
+  const [revoke] = useRemoveUserAsGlobalCommunityAdminMutation({
     onError: handleError,
   });
 
@@ -79,4 +79,4 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     </Container>
   );
 };
-export default GlobalAuthorizationPage;
+export default GlobalCommunityAuthorizationPage;

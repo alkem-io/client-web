@@ -26,7 +26,7 @@ export const managementData = {
         { description: 'Global admins', url: `/authorization/${AuthorizationCredential.GlobalAdmin}` },
         {
           description: 'Global community admins',
-          url: `/authorization/${AuthorizationCredential.GlobalAdminCommunity}`,
+          url: `/authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
         },
       ],
     },
