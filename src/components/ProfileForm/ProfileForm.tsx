@@ -1,3 +1,4 @@
+import { Grid } from '@material-ui/core';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +36,7 @@ interface Props {
   contextOnly?: boolean;
   isEdit: boolean;
 }
-
+// TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileForm: FC<Props> = ({
   context,
   name,
@@ -113,16 +114,19 @@ const ProfileForm: FC<Props> = ({
 
             {!contextOnly && (
               <>
-                <Typography variant={'h4'} color={'primary'}>
-                  {t('components.tagsSegment.title')}
-                </Typography>
+                <Grid item xs={12}>
+                  <Typography variant={'h4'} color={'primary'}>
+                    {t('components.tagsSegment.title')}
+                  </Typography>
+                </Grid>
                 <TagsetSegment tagsets={tagsets} />
               </>
             )}
-
-            <Typography variant={'h4'} color={'primary'}>
-              {t('components.visualSegment.title')}
-            </Typography>
+            <Grid item xs={12}>
+              <Typography variant={'h4'} color={'primary'}>
+                {t('components.visualSegment.title')}
+              </Typography>
+            </Grid>
 
             <VisualSegment />
 
