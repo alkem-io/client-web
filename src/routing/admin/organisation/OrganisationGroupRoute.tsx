@@ -15,7 +15,10 @@ export const OrganisationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { groupId, organizationId } = useParams<OrgRouteParams>();
 
-  const { data, loading } = useOrganisationGroupQuery({ variables: { organisationId: organizationId, groupId } });
+  const { data, loading } = useOrganisationGroupQuery({
+    variables: { organisationId: organizationId, groupId },
+    fetchPolicy: 'cache-and-network',
+  });
   const parentMembers = useMemo(() => data?.organisation.members || [], [data]);
 
   return (

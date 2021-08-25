@@ -60,6 +60,7 @@ export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID
   });
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { ecoverseId, challengeId },
+    fetchPolicy: 'cache-and-network',
   });
 
   const currentPaths = useMemo(
