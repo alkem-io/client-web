@@ -10,7 +10,7 @@ import { useEcoversesWithActivityQuery } from '../../hooks/generated/graphql';
 
 const EcoversesSection = () => {
   const { user } = useUserContext();
-  const { data, loading, error } = useEcoversesWithActivityQuery();
+  const { data, loading, error } = useEcoversesWithActivityQuery({ fetchPolicy: 'cache-and-network' });
   const ecoverses = data?.ecoverses || [];
 
   const currentPaths = useMemo(() => [], []);
