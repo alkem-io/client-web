@@ -2499,15 +2499,6 @@ export type EventOnOpportunityMutation = {
   };
 };
 
-export type GrantCredentialsMutationVariables = Exact<{
-  input: GrantAuthorizationCredentialInput;
-}>;
-
-export type GrantCredentialsMutation = {
-  __typename?: 'Mutation';
-  grantCredentialToUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
-};
-
 export type AssignUserAsChallengeAdminMutationVariables = Exact<{
   input: AssignChallengeAdminInput;
 }>;
@@ -2526,6 +2517,24 @@ export type AssignUserAsEcoverseAdminMutation = {
   assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsGlobalAdminMutationVariables = Exact<{
+  input: AssignGlobalAdminInput;
+}>;
+
+export type AssignUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: AssignGlobalCommunityAdminInput;
+}>;
+
+export type AssignUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
   input: RemoveChallengeAdminInput;
 }>;
@@ -2542,6 +2551,24 @@ export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
 export type RemoveUserAsEcoverseAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
+  input: RemoveGlobalAdminInput;
+}>;
+
+export type RemoveUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: RemoveGlobalCommunityAdminInput;
+}>;
+
+export type RemoveUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -2569,15 +2596,6 @@ export type RemoveUserFromGroupMutation = {
     name: string;
     members?: Maybe<Array<{ __typename?: 'User' } & GroupMembersFragment>>;
   };
-};
-
-export type RevokeCredentialsMutationVariables = Exact<{
-  input: RevokeAuthorizationCredentialInput;
-}>;
-
-export type RevokeCredentialsMutation = {
-  __typename?: 'Mutation';
-  revokeCredentialFromUser: { __typename?: 'User'; id: string; displayName: string } & UserAgentFragment;
 };
 
 export type UpdateActorMutationVariables = Exact<{
