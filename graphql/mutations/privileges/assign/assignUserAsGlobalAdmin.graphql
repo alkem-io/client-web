@@ -1,0 +1,6 @@
+mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
+  assignUserAsGlobalAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
