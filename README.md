@@ -17,10 +17,6 @@ While this client is a fully self-contained single page application, it also has
 
 ## Configuration
 
-The primary configuration needed is the location of the Alkemio server.
-
-The endpoint url is configured via the `REACT_APP_GRAPHQL_ENDPOINT` environment variable. Add an .env.local file in project's root folder and set the variable to point to the graphql server.
-
 All further configuration is obtained from the server configuration graphql schema.
 
 ## Launching the client

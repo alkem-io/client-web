@@ -8,7 +8,7 @@ const CONFIG_FILE_NAME = 'env-config.js';
 
 function buildConfiguration(cb) {
   const initialConfig = dotenvFlow.config({
-    silent: true
+    silent: true,
   });
   dotenvExpand(initialConfig);
 
@@ -26,9 +26,7 @@ function buildConfiguration(cb) {
     }
   });
 
-  configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
-
-  const envBasePath = path.join(__dirname, '.env.deployment', '.env.base');
+  const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
   let envBase = fs.createWriteStream(envBasePath, { flags: 'w' });
 
   Object.keys(configuration).forEach(k => {

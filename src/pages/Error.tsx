@@ -3,11 +3,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import Button from '../components/core/Button';
 import Section from '../components/core/Section';
 import Typography from '../components/core/Typography';
-import { env } from '../types/env';
 
-const graphQLEndpoint =
-  (env && env.REACT_APP_GRAPHQL_ENDPOINT) ||
-  (process.env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:4000/graphql');
+const graphQLEndpoint = '/graphql';
 
 export const Error: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();
