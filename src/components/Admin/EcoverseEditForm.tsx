@@ -139,19 +139,15 @@ const EcoverseEditForm: FC<Props> = ({
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
               </Typography>
-              <TagsetSegment tagsets={tagsets} />
             </Grid>
+            <TagsetSegment tagsets={tagsets} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
-              <VisualSegment />
             </Grid>
-            {isEdit && (
-              <Grid item xs={12}>
-                <ContextReferenceSegment references={references || []} contextId={contextId} />
-              </Grid>
-            )}
+            <VisualSegment />
+            {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.editEcoverseForm.read-access-title')}
