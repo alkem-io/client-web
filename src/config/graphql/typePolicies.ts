@@ -23,9 +23,6 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
-  MembershipUserResultEntryEcoverse: {
-    keyFields: ['id', 'parentID'],
-  },
   Metadata: {
     merge: true,
   },

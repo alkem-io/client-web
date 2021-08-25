@@ -358,21 +358,23 @@ export type MembershipResultEntryFieldPolicy = {
 export type MembershipUserResultEntryEcoverseKeySpecifier = (
   | 'challenges'
   | 'displayName'
+  | 'ecoverseID'
   | 'id'
   | 'nameID'
   | 'opportunities'
-  | 'parentID'
   | 'userGroups'
+  | 'userID'
   | MembershipUserResultEntryEcoverseKeySpecifier
 )[];
 export type MembershipUserResultEntryEcoverseFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentID?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+  userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MembershipUserResultEntryOrganisationKeySpecifier = (
   | 'displayName'
@@ -615,11 +617,13 @@ export type OrganisationFieldPolicy = {
 export type OrganisationMembershipKeySpecifier = (
   | 'challengesLeading'
   | 'ecoversesHosting'
+  | 'id'
   | OrganisationMembershipKeySpecifier
 )[];
 export type OrganisationMembershipFieldPolicy = {
   challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OryConfigKeySpecifier = ('issuer' | 'kratosPublicBaseURL' | OryConfigKeySpecifier)[];
 export type OryConfigFieldPolicy = {
@@ -873,19 +877,15 @@ export type UserGroupFieldPolicy = {
 };
 export type UserMembershipKeySpecifier = (
   | 'applications'
-  | 'displayName'
   | 'ecoverses'
   | 'id'
-  | 'nameID'
   | 'organisations'
   | UserMembershipKeySpecifier
 )[];
 export type UserMembershipFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   organisations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserTemplateKeySpecifier = ('name' | 'tagsets' | UserTemplateKeySpecifier)[];
