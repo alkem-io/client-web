@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useEcoversesQuery } from '../hooks/generated/graphql';
-import { EcoverseDetailsFragment } from '../models/graphql-schema';
+import { EcoverseDetailsProviderFragment } from '../models/graphql-schema';
 import { ApolloError } from '@apollo/client';
 
 interface EcoversesContextProps {
-  ecoverses: EcoverseDetailsFragment[];
+  ecoverses: EcoverseDetailsProviderFragment[];
   loading: boolean;
   error?: ApolloError;
   toEcoversesId: (nameID: string) => string;
@@ -20,7 +20,14 @@ const EcoversesContext = React.createContext<EcoversesContextProps>({
 });
 
 const EcoversesProvider: FC<{}> = ({ children }) => {
-  const { data, loading: ecoverseLoading, error } = useEcoversesQuery({ errorPolicy: 'all' });
+  const {
+    data,
+    loading: ecoverseLoading,
+    error,
+  } = useEcoversesQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+  });
   const loading = ecoverseLoading;
 
   const ecoverses = data?.ecoverses || [];

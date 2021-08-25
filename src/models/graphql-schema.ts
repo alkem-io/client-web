@@ -2005,6 +2005,28 @@ export type EcoverseDetailsFragment = {
 
 export type EcoverseNameFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
 
+export type ContextDetailsProviderFragment = {
+  __typename?: 'Context';
+  id: string;
+  tagline?: Maybe<string>;
+  background?: Maybe<string>;
+  vision?: Maybe<string>;
+  impact?: Maybe<string>;
+  who?: Maybe<string>;
+  visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment>;
+};
+
+export type EcoverseDetailsProviderFragment = {
+  __typename?: 'Ecoverse';
+  id: string;
+  nameID: string;
+  displayName: string;
+  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+  context?: Maybe<{ __typename?: 'Context' } & ContextDetailsProviderFragment>;
+};
+
 export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
 
 export type GroupInfoFragment = {
@@ -3229,6 +3251,13 @@ export type ConfigurationQuery = {
   configuration: { __typename?: 'Config' } & ConfigurationFragment;
 };
 
+export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EcoversesQuery = {
+  __typename?: 'Query';
+  ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsProviderFragment>;
+};
+
 export type EcoverseActivityQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -3380,34 +3409,6 @@ export type EcoverseVisualQuery = {
     id: string;
     context?: Maybe<{ __typename?: 'Context'; visual?: Maybe<{ __typename?: 'Visual' } & ContextVisualFragment> }>;
   };
-};
-
-export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EcoversesQuery = {
-  __typename?: 'Query';
-  ecoverses: Array<{ __typename?: 'Ecoverse' } & EcoverseDetailsFragment>;
-};
-
-export type EcoversesWithActivityQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EcoversesWithActivityQuery = {
-  __typename?: 'Query';
-  ecoverses: Array<{
-    __typename?: 'Ecoverse';
-    id: string;
-    displayName: string;
-    nameID: string;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
-    activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-    context?: Maybe<{
-      __typename?: 'Context';
-      id: string;
-      tagline?: Maybe<string>;
-      visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
-    }>;
-    tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  }>;
 };
 
 export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;

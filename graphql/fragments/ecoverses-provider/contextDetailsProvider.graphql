@@ -1,0 +1,11 @@
+fragment ContextDetailsProvider on Context {
+  id
+  tagline
+  background
+  vision
+  impact
+  who
+  visual {
+    ...ContextVisual
+  }
+}
