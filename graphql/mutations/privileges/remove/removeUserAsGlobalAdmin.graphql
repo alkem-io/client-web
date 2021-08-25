@@ -1,0 +1,6 @@
+mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
+  removeUserAsGlobalAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}

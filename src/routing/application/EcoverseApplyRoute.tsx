@@ -19,6 +19,7 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
     variables: {
       ecoverseId: ecoverseId,
     },
+    errorPolicy: 'all',
   });
   const communityId = ecoverseInfoData?.ecoverse.community?.id || '';
   const ecoverseName = ecoverseInfoData?.ecoverse.displayName || '';
