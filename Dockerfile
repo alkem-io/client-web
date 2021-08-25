@@ -6,7 +6,7 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-ARG ARG_GRAPHQL_ENDPOINT=http://localhost:4000/graphql
+ARG ARG_GRAPHQL_ENDPOINT=/graphql
 ENV REACT_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
 
 # set build version, date and revision
@@ -40,8 +40,8 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
-COPY ./.env.deployment/env.sh .
-COPY --from=builder /app/.env.deployment/.env.base .
+COPY --from=builder /app/.build/docker/env.sh .
+COPY --from=builder /app/.build/docker/.env.base .
 RUN chmod +x env.sh
 
 EXPOSE 80
