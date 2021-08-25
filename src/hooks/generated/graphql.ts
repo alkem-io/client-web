@@ -439,6 +439,7 @@ export const UserMembershipDetailsFragmentDoc = gql`
     ecoverses {
       id
       nameID
+      ecoverseID
       displayName
       challenges {
         id
@@ -5482,6 +5483,7 @@ export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQue
 export const MembershipOrganisationDocument = gql`
   query membershipOrganisation($input: MembershipOrganisationInput!) {
     membershipOrganisation(membershipData: $input) {
+      id
       ecoversesHosting {
         id
         nameID
@@ -5546,6 +5548,7 @@ export function refetchMembershipOrganisationQuery(variables?: SchemaTypes.Membe
 export const MembershipUserDocument = gql`
   query membershipUser($input: MembershipUserInput!) {
     membershipUser(membershipData: $input) {
+      id
       ...UserMembershipDetails
     }
   }

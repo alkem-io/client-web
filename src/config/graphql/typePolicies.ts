@@ -1,6 +1,6 @@
-import { TypePolicies } from '@apollo/client';
+import { TypedTypePolicies } from '../../models/apollo-helpers';
 
-export const typePolicies: TypePolicies = {
+export const typePolicies: TypedTypePolicies = {
   UserGroup: {
     fields: {
       members: {
@@ -22,9 +22,6 @@ export const typePolicies: TypePolicies = {
         merge: false,
       },
     },
-  },
-  UserMembership: {
-    merge: true,
   },
   Metadata: {
     merge: true,

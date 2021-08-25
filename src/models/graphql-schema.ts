@@ -774,6 +774,8 @@ export type MembershipUserResultEntryEcoverse = {
   challenges: Array<MembershipResultEntry>;
   /** Display name of the entity */
   displayName: Scalars['String'];
+  /** The Ecoverse ID */
+  ecoverseID: Scalars['String'];
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
@@ -792,6 +794,8 @@ export type MembershipUserResultEntryOrganisation = {
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
+  /** The Organisation ID. */
+  organisationID: Scalars['String'];
   /** Details of the Organisations the user is a member of */
   userGroups: Array<MembershipResultEntry>;
 };
@@ -1322,6 +1326,7 @@ export type OrganisationMembership = {
   challengesLeading: Array<MembershipResultEntry>;
   /** Details of Ecoverses the Organisation is hosting. */
   ecoversesHosting: Array<MembershipResultEntry>;
+  id: Scalars['UUID'];
 };
 
 export type OryConfig = {
@@ -1843,6 +1848,7 @@ export type UserMembership = {
   applications?: Maybe<Array<ApplicationResultEntry>>;
   /** Details of Ecoverses the user is a member of, with child memberships */
   ecoverses: Array<MembershipUserResultEntryEcoverse>;
+  id: Scalars['UUID'];
   /** Details of the Organisations the user is a member of, with child memberships. */
   organisations: Array<MembershipUserResultEntryOrganisation>;
 };
@@ -2191,6 +2197,7 @@ export type UserMembershipDetailsFragment = {
     __typename?: 'MembershipUserResultEntryEcoverse';
     id: string;
     nameID: string;
+    ecoverseID: string;
     displayName: string;
     challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     opportunities: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
@@ -3453,6 +3460,7 @@ export type MembershipOrganisationQuery = {
   __typename?: 'Query';
   membershipOrganisation: {
     __typename?: 'OrganisationMembership';
+    id: string;
     ecoversesHosting: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     challengesLeading: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
   };
@@ -3464,7 +3472,7 @@ export type MembershipUserQueryVariables = Exact<{
 
 export type MembershipUserQuery = {
   __typename?: 'Query';
-  membershipUser: { __typename?: 'UserMembership' } & UserMembershipDetailsFragment;
+  membershipUser: { __typename?: 'UserMembership'; id: string } & UserMembershipDetailsFragment;
 };
 
 export type OpportunitiesQueryVariables = Exact<{

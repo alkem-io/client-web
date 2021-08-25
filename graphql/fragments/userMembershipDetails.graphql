@@ -2,6 +2,7 @@ fragment UserMembershipDetails on UserMembership {
   ecoverses {
     id
     nameID
+    ecoverseID
     displayName
     challenges {
       id
