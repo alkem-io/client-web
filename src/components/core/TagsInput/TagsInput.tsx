@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'wrap',
       flexDirection: 'row',
     },
+    hasPopupIcon: {},
+    hasClearIcon: {},
     inputRoot: {
       flexWrap: 'wrap',
       '$hasPopupIcon &, $hasClearIcon &': {
@@ -86,6 +88,12 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    endAdornment: {
+      // We use a position absolute to support wrapping tags.
+      position: 'absolute',
+      right: 0,
+      top: 'calc(50% - 14px)', // Center vertically
+    },
     input: {
       flexGrow: 1,
       textOverflow: 'ellipsis',
@@ -119,7 +127,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
     },
     ref
   ) => {
-    const classes = useStyles();
+    const classes = useStyles(rest);
     const [inputValue, setInputValue] = React.useState('');
     const [chips, setChips] = useState<string[]>([]);
 
