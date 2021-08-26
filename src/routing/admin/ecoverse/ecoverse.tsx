@@ -50,6 +50,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({
     variables: { ecoverseId },
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   });
   const { data: usersInfo, loading: loadingUsers } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
   const currentPaths = useMemo(

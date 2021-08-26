@@ -171,11 +171,6 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
             target: '_blank',
           }}
         />
-        {/* <Box className={styles.copyright}>
-          <Typography variant="caption" color="neutralMedium" weight="boldLight">
-            © 2021 Cherrytwist Foundation
-          </Typography>
-        </Box> */}
       </div>
     </Drawer>
   );
