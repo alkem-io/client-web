@@ -1,6 +1,6 @@
 import React, { FC, memo, useMemo, useState } from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import { useUserCardMetadata } from '../../hooks';
+import { useUserMetadata } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Avatar from '../core/Avatar';
@@ -45,7 +45,7 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
   const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
 
-  const { user: userMetadata, loading } = useUserCardMetadata(id);
+  const { user: userMetadata, loading } = useUserMetadata(id);
 
   const roleName = userMetadata?.roles[0]?.name;
   const tagProps = userMetadata?.roles[0]?.hidden ? undefined : { text: roleName };
