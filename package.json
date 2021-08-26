@@ -9,7 +9,7 @@
   },
   "license": "EUPL-1.2",
   "dependencies": {
-    "@apollo/client": "^3.4.8",
+    "@apollo/client": "^3.4.9",
     "@material-ui/core": "^4.12.2",
     "@material-ui/data-grid": "4.0.0-alpha.33",
     "@material-ui/icons": "^4.11.2",
@@ -30,7 +30,7 @@
     "@uiw/react-md-editor": "^3.4.10",
     "@xstate/graph": "^1.3.0",
     "@xstate/react": "^1.5.1",
-    "apollo-upload-client": "^14.1.3",
+    "apollo-upload-client": "^16.0.0",
     "axios": "^0.21.1",
     "bootstrap-icons": "1.1.0",
     "clamp-js": "^0.7.0",
