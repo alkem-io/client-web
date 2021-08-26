@@ -1,4 +1,3 @@
-export * from './user/useUserCardMetadata';
 export * from './user/useUserContext';
 export * from './user/useUserMetadata';
 export * from './user/useUserMetadataWrapper';
@@ -15,7 +14,6 @@ export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 export * from './useEcoverse';
-export * from './useEcoversesContext';
 export * from './operations/useEditReference';
 export * from './useNavigation';
 export * from './useNotification';

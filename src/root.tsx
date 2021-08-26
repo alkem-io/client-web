@@ -6,7 +6,6 @@ import { WinstonProvider } from 'winston-react';
 import App from './components/composite/layout/App/App';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
-import { EcoversesProvider } from './context/EcoversesProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import { ThemeProvider } from './context/ThemeProvider';
@@ -75,13 +74,11 @@ const Root: FC = () => {
                 <AuthenticationProvider>
                   <CTApolloProvider>
                     <NavigationProvider>
-                      <EcoversesProvider>
-                        <UserProvider>
-                          <App>
-                            <Routing />
-                          </App>
-                        </UserProvider>
-                      </EcoversesProvider>
+                      <UserProvider>
+                        <App>
+                          <Routing />
+                        </App>
+                      </UserProvider>
                     </NavigationProvider>
                   </CTApolloProvider>
                 </AuthenticationProvider>

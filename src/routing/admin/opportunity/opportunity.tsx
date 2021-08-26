@@ -57,6 +57,7 @@ export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID
   const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({
     variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   });
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { ecoverseId, challengeId },
