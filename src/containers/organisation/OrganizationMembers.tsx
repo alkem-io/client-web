@@ -60,6 +60,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         resourceID: entities.organisationId,
       },
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: membersData, loading: loadingOrganisationMembers } = useOrganisationMembersQuery({
@@ -67,6 +68,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       id: entities.organisationId,
     },
     skip: entities.credential !== AuthorizationCredential.OrganisationAdmin,
+    fetchPolicy: 'cache-and-network',
   });
 
   const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);

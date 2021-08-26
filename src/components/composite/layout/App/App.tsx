@@ -8,15 +8,8 @@ import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import {
-  useAuthenticationContext,
-  useConfig,
-  useEcoversesContext,
-  useNavigation,
-  useUserContext,
-  useUserScope,
-} from '../../../../hooks';
-import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
+import { useAuthenticationContext, useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useEcoversesQuery, useServerMetadataQuery } from '../../../../hooks/generated/graphql';
 import { useGlobalState } from '../../../../hooks/useGlobalState';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
 import Breadcrumbs from '../../../core/Breadcrumbs';
@@ -34,7 +27,7 @@ import Main from './Main';
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
-  const { ecoverses } = useEcoversesContext();
+  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading } = useConfig();
@@ -72,7 +65,7 @@ const App = ({ children }): React.ReactElement => {
     },
   });
 
-  if (loading || configLoading) {
+  if (loading || configLoading || loadingEcoverses) {
     return <Loading text={'Loading Application ...'} />;
   }
 
@@ -80,7 +73,7 @@ const App = ({ children }): React.ReactElement => {
     <div id="app">
       <Sidebar
         isUserAuth={Boolean(user)}
-        ecoverses={ecoverses}
+        ecoverses={ecoversesData?.ecoverses || []}
         userMetadata={user}
         drawerProps={{ open: drawerOpen, onClose: () => setDrawerOpen(false) }}
       />

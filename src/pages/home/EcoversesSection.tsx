@@ -4,14 +4,17 @@ import { CardContainer } from '../../components/core/CardContainer';
 import Loading from '../../components/core/Loading/Loading';
 import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import { useEcoversesContext, useUserContext } from '../../hooks';
+import { useUserContext } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
 import { useTranslation } from 'react-i18next';
+import { useEcoversesQuery } from '../../hooks/generated/graphql';
 
 const EcoversesSection = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { ecoverses, loading, error } = useEcoversesContext();
+  const { data: ecoversesData, loading, error } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+
+  const ecoverses = useMemo(() => ecoversesData?.ecoverses || [], [ecoversesData]);
 
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });

@@ -48,7 +48,10 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
 
-  const { data } = useOrganizationProfileInfoQuery({ variables: { id: organizationId } });
+  const { data } = useOrganizationProfileInfoQuery({
+    variables: { id: organizationId },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: data?.organisation?.displayName || '', real: true }],
