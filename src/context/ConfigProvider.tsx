@@ -5,27 +5,28 @@ import Loading from '../components/core/Loading/Loading';
 import { ConfigurationDocument } from '../hooks/generated/graphql';
 import { Error } from '../pages/Error';
 import { ConfigurationFragment, ConfigurationQuery } from '../models/graphql-schema';
+
 export interface ConfigContext {
   config?: ConfigurationFragment;
   loading: boolean;
+}
+
+interface Props {
+  apiUrl: string;
 }
 
 const configContext = React.createContext<ConfigContext>({
   loading: true,
 });
 
-interface ConfigProviderProps {
-  apiUrl: string;
-}
-
-const ConfigProvider: FC<ConfigProviderProps> = ({ children, apiUrl }) => {
+const ConfigProvider: FC<Props> = ({ children, apiUrl }) => {
   const [config, setConfig] = useState<ConfigurationFragment>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
     setLoading(true);
-
+    // graphql client is not initialized
     const queryConfig = async (url: string) => {
       const result = await axios.post<{ data: ConfigurationQuery }>(
         url,

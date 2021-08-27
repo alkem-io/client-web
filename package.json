@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "Alkemio client, responsible for managing the ecoverses on the platform",
   "author": "Cherrytwist Foundation",
   "repository": {
