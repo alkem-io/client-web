@@ -3,7 +3,7 @@ import Loading from './Loading';
 import Typography from '../Typography';
 import { render, screen } from '@testing-library/react';
 
-describe('Loading component', () => {
+describe.skip('Loading component', () => {
   test('render correctly Typography component', () => {
     // arrange
     const { asFragment } = render(<Typography variant="caption" color="primary" />);

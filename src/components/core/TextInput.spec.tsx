@@ -2,7 +2,7 @@ import TextInput, { TextArea } from './TextInput';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-describe('TextIpnut component', () => {
+describe.skip('TextIpnut component', () => {
   // arrange
   const value = 'test value';
   const onChange = jest.fn();

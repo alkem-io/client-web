@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import RemoveModal from './RemoveModal';
 import userEvent from '@testing-library/user-event';
 
-describe('RemoveModal - main', () => {
+describe.skip('RemoveModal - main', () => {
   const show = true;
   const text = 'text';
   const title = 'confirm';
@@ -63,7 +63,7 @@ describe('RemoveModal - main', () => {
   });
 });
 
-describe('RemoveModal - negative', () => {
+describe.skip('RemoveModal - negative', () => {
   test('modal is not loaded', () => {
     // arrange
     const show = false;
