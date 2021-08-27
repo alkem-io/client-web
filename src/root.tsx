@@ -58,14 +58,14 @@ const useGlobalStyles = createStyles(theme => ({
 const Root: FC = () => {
   useGlobalStyles();
   return (
-    <ConfigProvider>
-      <Sentry.ErrorBoundary
-        fallback={({ error }) => {
-          return <ErrorPage error={error} />;
-        }}
-      >
-        <WinstonProvider logger={logger}>
-          <ThemeProvider>
+    <ThemeProvider>
+      <ConfigProvider>
+        <Sentry.ErrorBoundary
+          fallback={({ error }) => {
+            return <ErrorPage error={error} />;
+          }}
+        >
+          <WinstonProvider logger={logger}>
             <GlobalStateProvider>
               <BrowserRouter>
                 <AuthenticationProvider>
@@ -81,10 +81,10 @@ const Root: FC = () => {
                 </AuthenticationProvider>
               </BrowserRouter>
             </GlobalStateProvider>
-          </ThemeProvider>
-        </WinstonProvider>
-      </Sentry.ErrorBoundary>
-    </ConfigProvider>
+          </WinstonProvider>
+        </Sentry.ErrorBoundary>
+      </ConfigProvider>
+    </ThemeProvider>
   );
 };
 export default Root;
