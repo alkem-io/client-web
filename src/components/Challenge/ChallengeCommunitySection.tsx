@@ -30,8 +30,8 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
   return (
     <CommunitySection
       users={(usersQuery?.ecoverse.challenge.community?.members as User[]) || []}
-      updates={data?.ecoverse.challenge.community?.updatesRoom.messages}
-      discussions={data?.ecoverse.challenge.community?.discussionRoom.messages}
+      updates={data?.ecoverse.challenge.community?.updatesRoom?.messages}
+      discussions={data?.ecoverse.challenge.community?.discussionRoom?.messages}
       {...rest}
     />
   );

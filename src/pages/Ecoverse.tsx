@@ -32,9 +32,10 @@ import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
 import { useUserContext } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
-import { Context, EcoverseInfoQuery } from '../models/graphql-schema';
+import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
+import CardFilter from '../components/core/card-filter/CardFilter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -75,7 +76,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
   } = useChallengesWithActivityQuery({
     variables: { ecoverseId },
   });
-  const challenges = _challenges?.ecoverse?.challenges || [];
+  const challenges = (_challenges?.ecoverse?.challenges || []) as Challenge[];
 
   const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
   const projects = _projects?.ecoverse?.projects || [];
@@ -232,23 +233,27 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
             </Grid>
           </Grid>
         ) : (
-          <CardContainer>
-            {challenges.map((challenge, i) => (
-              <ChallengeCard
-                key={i}
-                id={challenge.id}
-                displayName={challenge.displayName}
-                activity={challenge?.activity || []}
-                context={{
-                  tagline: challenge?.context?.tagline || '',
-                  visual: { background: challenge?.context?.visual?.background || '' },
-                }}
-                isMember={user?.ofChallenge(challenge.id) || false}
-                tags={challenge?.tagset?.tags || []}
-                url={`${url}/challenges/${challenge.nameID}`}
-              />
-            ))}
-          </CardContainer>
+          <CardFilter data={challenges}>
+            {filteredData => (
+              <CardContainer>
+                {filteredData.map((challenge, i) => (
+                  <ChallengeCard
+                    key={i}
+                    id={challenge.id}
+                    displayName={challenge.displayName}
+                    activity={challenge?.activity || []}
+                    context={{
+                      tagline: challenge?.context?.tagline || '',
+                      visual: { background: challenge?.context?.visual?.background || '' },
+                    }}
+                    isMember={user?.ofChallenge(challenge.id) || false}
+                    tags={challenge?.tagset?.tags || []}
+                    url={`${url}/challenges/${challenge.nameID}`}
+                  />
+                ))}
+              </CardContainer>
+            )}
+          </CardFilter>
         )}
       </MembershipBackdrop>
 

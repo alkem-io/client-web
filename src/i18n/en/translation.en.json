@@ -173,6 +173,9 @@
     }
   },
   "components": {
+    "card-filter": {
+      "title": "Filter"
+    },
     "backdrop": {
       "private": "{{blockName}} are only visible for members.",
       "authentication": "Please sign in to check out the {{blockName}}."
@@ -292,7 +295,7 @@
     "ecoverse": {
       "title": "Ecoverse",
       "application": {
-        "title": "Application to join Ecoverse ",
+        "title": "Application to join $t(general.{{entity}}) \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",

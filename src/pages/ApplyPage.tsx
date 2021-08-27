@@ -38,6 +38,8 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
+export type ApplyPageType = 'ecoverse' | 'challenge';
+
 interface ApplyPageProps extends PageProps {
   loading: boolean;
   error: boolean;
@@ -47,6 +49,7 @@ interface ApplyPageProps extends PageProps {
   avatar: string;
   questions: QuestionTemplate[];
   backUrl: string;
+  type: ApplyPageType;
 }
 
 const ApplyPage: FC<ApplyPageProps> = ({
@@ -59,6 +62,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
   loading,
   error,
   backUrl,
+  type,
 }): React.ReactElement => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'apply', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
@@ -124,8 +128,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
       {!loading && !hasApplied && (
         <Box marginY={4}>
           <Typography variant={'h2'}>
-            {t('pages.ecoverse.application.title')}
-            {communityName}
+            {t('pages.ecoverse.application.title', { name: communityName, entity: type })}
           </Typography>
         </Box>
       )}
@@ -161,7 +164,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                 <>
                   <Grid container spacing={2}>
                     {questions.map((x, i) => (
-                      <Grid item xs={12}>
+                      <Grid item key={i} xs={12}>
                         <FormikInputField
                           key={i}
                           title={x.question}

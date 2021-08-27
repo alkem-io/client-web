@@ -1,44 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Loading component render correctly Spinner component 1`] = `
-<DocumentFragment>
-  <div
-    class="spinner-grow"
-  />
-</DocumentFragment>
-`;
-
 exports[`Loading component render correctly Typography component 1`] = `
 <DocumentFragment>
   <div
-    class="caption-0-2-6 primary-0-2-9"
+    class="makeStyles-caption-6 makeStyles-primary-9"
     style="font-weight: 500;"
   />
 </DocumentFragment>
 `;
 
 exports[`Loading component render correctly loading component 1`] = `
-<div
-  className="container-0-2-20"
->
+<DocumentFragment>
   <div
-    className="spinner-0-2-18 spinner-grow"
-  />
-  <div
-    className="caption-0-2-26 primary-0-2-29 text-0-2-19"
-    style={
-      Object {
-        "fontWeight": 500,
-      }
-    }
+    class="makeStyles-container-20"
   >
-    <span
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "Please wait",
-        }
-      }
-    />
+    <div
+      class="MuiCircularProgress-root makeStyles-spinner-18 MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate"
+      role="progressbar"
+      style="width: 40px; height: 40px;"
+    >
+      <svg
+        class="MuiCircularProgress-svg"
+        viewBox="22 22 44 44"
+      >
+        <circle
+          class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate"
+          cx="44"
+          cy="44"
+          fill="none"
+          r="20.2"
+          stroke-width="3.6"
+        />
+      </svg>
+    </div>
+    <div
+      class="makeStyles-caption-26 makeStyles-primary-29 makeStyles-text-19"
+      style="font-weight: 500;"
+    >
+      <span>
+        Please wait
+      </span>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;

@@ -25,8 +25,8 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
 
   return (
     <CommunitySection
-      updates={data?.ecoverse.community?.updatesRoom.messages}
-      discussions={data?.ecoverse.community?.discussionRoom.messages}
+      updates={data?.ecoverse.community?.updatesRoom?.messages}
+      discussions={data?.ecoverse.community?.discussionRoom?.messages}
       users={(usersQuery?.ecoverse.community?.members as User[]) || []}
       {...rest}
     />

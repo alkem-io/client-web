@@ -1,5 +1,6 @@
 query membershipOrganisation($input: MembershipOrganisationInput!) {
   membershipOrganisation(membershipData: $input) {
+    id
     ecoversesHosting {
       id
       nameID

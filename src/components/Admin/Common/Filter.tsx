@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 type FilterProps<T> = {
   data: T[];
+  limitKeys?: Array<keyof T>;
   children: (filteredData: T[]) => void;
 };
 
-export function Filter<T>({ data, children }: FilterProps<T>): React.ReactElement {
+export function Filter<T>({ data, limitKeys = [], children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
 
@@ -15,6 +16,9 @@ export function Filter<T>({ data, children }: FilterProps<T>): React.ReactElemen
     return data.filter(item => {
       if (!filterBy) return true;
       for (const key in item) {
+        if (limitKeys.length) {
+          if (!limitKeys.includes(key)) continue;
+        }
         const value = item[key];
         if (typeof value === 'string') {
           if (value.toLowerCase().includes(filterBy.toLowerCase())) {

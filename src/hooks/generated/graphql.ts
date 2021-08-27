@@ -2,6 +2,7 @@ import * as SchemaTypes from '../../models/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+const defaultOptions = {};
 export const ApplicationInfoFragmentDoc = gql`
   fragment ApplicationInfo on Application {
     id
@@ -111,6 +112,11 @@ export const ConfigurationFragmentDoc = gql`
         name
       }
     }
+    sentry {
+      enabled
+      endpoint
+      submitPII
+    }
   }
 `;
 export const ContextVisualFragmentDoc = gql`
@@ -171,6 +177,44 @@ export const EcoverseNameFragmentDoc = gql`
     nameID
     displayName
   }
+`;
+export const ContextDetailsProviderFragmentDoc = gql`
+  fragment ContextDetailsProvider on Context {
+    id
+    tagline
+    background
+    vision
+    impact
+    who
+    visual {
+      ...ContextVisual
+    }
+  }
+  ${ContextVisualFragmentDoc}
+`;
+export const EcoverseDetailsProviderFragmentDoc = gql`
+  fragment EcoverseDetailsProvider on Ecoverse {
+    id
+    nameID
+    displayName
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    activity {
+      name
+      value
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    context {
+      ...ContextDetailsProvider
+    }
+  }
+  ${ContextDetailsProviderFragmentDoc}
 `;
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
@@ -401,6 +445,7 @@ export const UserMembershipDetailsFragmentDoc = gql`
     ecoverses {
       id
       nameID
+      ecoverseID
       displayName
       challenges {
         id
@@ -472,10 +517,11 @@ export function useAssignUserToCommunityMutation(
     SchemaTypes.AssignUserToCommunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.AssignUserToCommunityMutation,
     SchemaTypes.AssignUserToCommunityMutationVariables
-  >(AssignUserToCommunityDocument, baseOptions);
+  >(AssignUserToCommunityDocument, options);
 }
 export type AssignUserToCommunityMutationHookResult = ReturnType<typeof useAssignUserToCommunityMutation>;
 export type AssignUserToCommunityMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToCommunityMutation>;
@@ -522,9 +568,10 @@ export function useAssignUserToGroupMutation(
     SchemaTypes.AssignUserToGroupMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.AssignUserToGroupMutation, SchemaTypes.AssignUserToGroupMutationVariables>(
     AssignUserToGroupDocument,
-    baseOptions
+    options
   );
 }
 export type AssignUserToGroupMutationHookResult = ReturnType<typeof useAssignUserToGroupMutation>;
@@ -566,9 +613,10 @@ export type CreateActorMutationFn = Apollo.MutationFunction<
 export function useCreateActorMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateActorMutation, SchemaTypes.CreateActorMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateActorMutation, SchemaTypes.CreateActorMutationVariables>(
     CreateActorDocument,
-    baseOptions
+    options
   );
 }
 export type CreateActorMutationHookResult = ReturnType<typeof useCreateActorMutation>;
@@ -613,9 +661,10 @@ export function useCreateActorGroupMutation(
     SchemaTypes.CreateActorGroupMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateActorGroupMutation, SchemaTypes.CreateActorGroupMutationVariables>(
     CreateActorGroupDocument,
-    baseOptions
+    options
   );
 }
 export type CreateActorGroupMutationHookResult = ReturnType<typeof useCreateActorGroupMutation>;
@@ -659,9 +708,10 @@ export function useCreateApplicationMutation(
     SchemaTypes.CreateApplicationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateApplicationMutation, SchemaTypes.CreateApplicationMutationVariables>(
     CreateApplicationDocument,
-    baseOptions
+    options
   );
 }
 export type CreateApplicationMutationHookResult = ReturnType<typeof useCreateApplicationMutation>;
@@ -703,9 +753,10 @@ export type CreateAspectMutationFn = Apollo.MutationFunction<
 export function useCreateAspectMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateAspectMutation, SchemaTypes.CreateAspectMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateAspectMutation, SchemaTypes.CreateAspectMutationVariables>(
     CreateAspectDocument,
-    baseOptions
+    options
   );
 }
 export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
@@ -750,9 +801,10 @@ export function useCreateChallengeMutation(
     SchemaTypes.CreateChallengeMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateChallengeMutation, SchemaTypes.CreateChallengeMutationVariables>(
     CreateChallengeDocument,
-    baseOptions
+    options
   );
 }
 export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
@@ -797,9 +849,10 @@ export function useCreateEcoverseMutation(
     SchemaTypes.CreateEcoverseMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateEcoverseMutation, SchemaTypes.CreateEcoverseMutationVariables>(
     CreateEcoverseDocument,
-    baseOptions
+    options
   );
 }
 export type CreateEcoverseMutationHookResult = ReturnType<typeof useCreateEcoverseMutation>;
@@ -844,10 +897,11 @@ export function useCreateGroupOnCommunityMutation(
     SchemaTypes.CreateGroupOnCommunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateGroupOnCommunityMutation,
     SchemaTypes.CreateGroupOnCommunityMutationVariables
-  >(CreateGroupOnCommunityDocument, baseOptions);
+  >(CreateGroupOnCommunityDocument, options);
 }
 export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
 export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnCommunityMutation>;
@@ -891,10 +945,11 @@ export function useCreateGroupOnOrganizationMutation(
     SchemaTypes.CreateGroupOnOrganizationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateGroupOnOrganizationMutation,
     SchemaTypes.CreateGroupOnOrganizationMutationVariables
-  >(CreateGroupOnOrganizationDocument, baseOptions);
+  >(CreateGroupOnOrganizationDocument, options);
 }
 export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationResult =
@@ -939,9 +994,10 @@ export function useCreateOpportunityMutation(
     SchemaTypes.CreateOpportunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateOpportunityMutation, SchemaTypes.CreateOpportunityMutationVariables>(
     CreateOpportunityDocument,
-    baseOptions
+    options
   );
 }
 export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
@@ -987,9 +1043,10 @@ export function useCreateOrganizationMutation(
     SchemaTypes.CreateOrganizationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateOrganizationMutation, SchemaTypes.CreateOrganizationMutationVariables>(
     CreateOrganizationDocument,
-    baseOptions
+    options
   );
 }
 export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
@@ -1034,9 +1091,10 @@ export function useCreateProjectMutation(
     SchemaTypes.CreateProjectMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateProjectMutation, SchemaTypes.CreateProjectMutationVariables>(
     CreateProjectDocument,
-    baseOptions
+    options
   );
 }
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
@@ -1081,10 +1139,11 @@ export function useCreateReferenceOnContextMutation(
     SchemaTypes.CreateReferenceOnContextMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateReferenceOnContextMutation,
     SchemaTypes.CreateReferenceOnContextMutationVariables
-  >(CreateReferenceOnContextDocument, baseOptions);
+  >(CreateReferenceOnContextDocument, options);
 }
 export type CreateReferenceOnContextMutationHookResult = ReturnType<typeof useCreateReferenceOnContextMutation>;
 export type CreateReferenceOnContextMutationResult =
@@ -1131,10 +1190,11 @@ export function useCreateReferenceOnProfileMutation(
     SchemaTypes.CreateReferenceOnProfileMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateReferenceOnProfileMutation,
     SchemaTypes.CreateReferenceOnProfileMutationVariables
-  >(CreateReferenceOnProfileDocument, baseOptions);
+  >(CreateReferenceOnProfileDocument, options);
 }
 export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationResult =
@@ -1178,9 +1238,10 @@ export function useCreateRelationMutation(
     SchemaTypes.CreateRelationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateRelationMutation, SchemaTypes.CreateRelationMutationVariables>(
     CreateRelationDocument,
-    baseOptions
+    options
   );
 }
 export type CreateRelationMutationHookResult = ReturnType<typeof useCreateRelationMutation>;
@@ -1226,10 +1287,11 @@ export function useCreateTagsetOnProfileMutation(
     SchemaTypes.CreateTagsetOnProfileMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateTagsetOnProfileMutation,
     SchemaTypes.CreateTagsetOnProfileMutationVariables
-  >(CreateTagsetOnProfileDocument, baseOptions);
+  >(CreateTagsetOnProfileDocument, options);
 }
 export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
@@ -1270,9 +1332,10 @@ export type CreateUserMutationFn = Apollo.MutationFunction<
 export function useCreateUserMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateUserMutation, SchemaTypes.CreateUserMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.CreateUserMutation, SchemaTypes.CreateUserMutationVariables>(
     CreateUserDocument,
-    baseOptions
+    options
   );
 }
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
@@ -1316,10 +1379,11 @@ export function useCreateUserNewRegistrationMutation(
     SchemaTypes.CreateUserNewRegistrationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.CreateUserNewRegistrationMutation,
     SchemaTypes.CreateUserNewRegistrationMutationVariables
-  >(CreateUserNewRegistrationDocument, baseOptions);
+  >(CreateUserNewRegistrationDocument, options);
 }
 export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationResult =
@@ -1360,9 +1424,10 @@ export type DeleteActorMutationFn = Apollo.MutationFunction<
 export function useDeleteActorMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteActorMutation, SchemaTypes.DeleteActorMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteActorMutation, SchemaTypes.DeleteActorMutationVariables>(
     DeleteActorDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteActorMutationHookResult = ReturnType<typeof useDeleteActorMutation>;
@@ -1403,9 +1468,10 @@ export type DeleteAspectMutationFn = Apollo.MutationFunction<
 export function useDeleteAspectMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteAspectMutation, SchemaTypes.DeleteAspectMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteAspectMutation, SchemaTypes.DeleteAspectMutationVariables>(
     DeleteAspectDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteAspectMutationHookResult = ReturnType<typeof useDeleteAspectMutation>;
@@ -1450,9 +1516,10 @@ export function useDeleteChallengeMutation(
     SchemaTypes.DeleteChallengeMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteChallengeMutation, SchemaTypes.DeleteChallengeMutationVariables>(
     DeleteChallengeDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
@@ -1497,9 +1564,10 @@ export function useDeleteEcoverseMutation(
     SchemaTypes.DeleteEcoverseMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteEcoverseMutation, SchemaTypes.DeleteEcoverseMutationVariables>(
     DeleteEcoverseDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteEcoverseMutationHookResult = ReturnType<typeof useDeleteEcoverseMutation>;
@@ -1541,9 +1609,10 @@ export type DeleteGroupMutationFn = Apollo.MutationFunction<
 export function useDeleteGroupMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>(
     DeleteGroupDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
@@ -1588,9 +1657,10 @@ export function useDeleteOpportunityMutation(
     SchemaTypes.DeleteOpportunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteOpportunityMutation, SchemaTypes.DeleteOpportunityMutationVariables>(
     DeleteOpportunityDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteOpportunityMutationHookResult = ReturnType<typeof useDeleteOpportunityMutation>;
@@ -1634,9 +1704,10 @@ export function useDeleteOrganizationMutation(
     SchemaTypes.DeleteOrganizationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteOrganizationMutation, SchemaTypes.DeleteOrganizationMutationVariables>(
     DeleteOrganizationDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
@@ -1680,9 +1751,10 @@ export function useDeleteReferenceMutation(
     SchemaTypes.DeleteReferenceMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteReferenceMutation, SchemaTypes.DeleteReferenceMutationVariables>(
     DeleteReferenceDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteReferenceMutationHookResult = ReturnType<typeof useDeleteReferenceMutation>;
@@ -1726,9 +1798,10 @@ export function useDeleteRelationMutation(
     SchemaTypes.DeleteRelationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteRelationMutation, SchemaTypes.DeleteRelationMutationVariables>(
     DeleteRelationDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteRelationMutationHookResult = ReturnType<typeof useDeleteRelationMutation>;
@@ -1769,9 +1842,10 @@ export type DeleteUserMutationFn = Apollo.MutationFunction<
 export function useDeleteUserMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteUserMutation, SchemaTypes.DeleteUserMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.DeleteUserMutation, SchemaTypes.DeleteUserMutationVariables>(
     DeleteUserDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
@@ -1815,10 +1889,11 @@ export function useDeleteUserApplicationMutation(
     SchemaTypes.DeleteUserApplicationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.DeleteUserApplicationMutation,
     SchemaTypes.DeleteUserApplicationMutationVariables
-  >(DeleteUserApplicationDocument, baseOptions);
+  >(DeleteUserApplicationDocument, options);
 }
 export type DeleteUserApplicationMutationHookResult = ReturnType<typeof useDeleteUserApplicationMutation>;
 export type DeleteUserApplicationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserApplicationMutation>;
@@ -1866,9 +1941,10 @@ export function useEventOnApplicationMutation(
     SchemaTypes.EventOnApplicationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.EventOnApplicationMutation, SchemaTypes.EventOnApplicationMutationVariables>(
     EventOnApplicationDocument,
-    baseOptions
+    options
   );
 }
 export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
@@ -1917,9 +1993,10 @@ export function useEventOnChallengeMutation(
     SchemaTypes.EventOnChallengeMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.EventOnChallengeMutation, SchemaTypes.EventOnChallengeMutationVariables>(
     EventOnChallengeDocument,
-    baseOptions
+    options
   );
 }
 export type EventOnChallengeMutationHookResult = ReturnType<typeof useEventOnChallengeMutation>;
@@ -1968,9 +2045,10 @@ export function useEventOnOpportunityMutation(
     SchemaTypes.EventOnOpportunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.EventOnOpportunityMutation, SchemaTypes.EventOnOpportunityMutationVariables>(
     EventOnOpportunityDocument,
-    baseOptions
+    options
   );
 }
 export type EventOnOpportunityMutationHookResult = ReturnType<typeof useEventOnOpportunityMutation>;
@@ -1978,55 +2056,6 @@ export type EventOnOpportunityMutationResult = Apollo.MutationResult<SchemaTypes
 export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnOpportunityMutation,
   SchemaTypes.EventOnOpportunityMutationVariables
->;
-export const GrantCredentialsDocument = gql`
-  mutation grantCredentials($input: GrantAuthorizationCredentialInput!) {
-    grantCredentialToUser(grantCredentialData: $input) {
-      id
-      displayName
-      ...UserAgent
-    }
-  }
-  ${UserAgentFragmentDoc}
-`;
-export type GrantCredentialsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.GrantCredentialsMutation,
-  SchemaTypes.GrantCredentialsMutationVariables
->;
-
-/**
- * __useGrantCredentialsMutation__
- *
- * To run a mutation, you first call `useGrantCredentialsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useGrantCredentialsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [grantCredentialsMutation, { data, loading, error }] = useGrantCredentialsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGrantCredentialsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.GrantCredentialsMutation,
-    SchemaTypes.GrantCredentialsMutationVariables
-  >
-) {
-  return Apollo.useMutation<SchemaTypes.GrantCredentialsMutation, SchemaTypes.GrantCredentialsMutationVariables>(
-    GrantCredentialsDocument,
-    baseOptions
-  );
-}
-export type GrantCredentialsMutationHookResult = ReturnType<typeof useGrantCredentialsMutation>;
-export type GrantCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.GrantCredentialsMutation>;
-export type GrantCredentialsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.GrantCredentialsMutation,
-  SchemaTypes.GrantCredentialsMutationVariables
 >;
 export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
@@ -2064,10 +2093,11 @@ export function useAssignUserAsChallengeAdminMutation(
     SchemaTypes.AssignUserAsChallengeAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.AssignUserAsChallengeAdminMutation,
     SchemaTypes.AssignUserAsChallengeAdminMutationVariables
-  >(AssignUserAsChallengeAdminDocument, baseOptions);
+  >(AssignUserAsChallengeAdminDocument, options);
 }
 export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
 export type AssignUserAsChallengeAdminMutationResult =
@@ -2112,10 +2142,11 @@ export function useAssignUserAsEcoverseAdminMutation(
     SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.AssignUserAsEcoverseAdminMutation,
     SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
-  >(AssignUserAsEcoverseAdminDocument, baseOptions);
+  >(AssignUserAsEcoverseAdminDocument, options);
 }
 export type AssignUserAsEcoverseAdminMutationHookResult = ReturnType<typeof useAssignUserAsEcoverseAdminMutation>;
 export type AssignUserAsEcoverseAdminMutationResult =
@@ -2123,6 +2154,105 @@ export type AssignUserAsEcoverseAdminMutationResult =
 export type AssignUserAsEcoverseAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsEcoverseAdminMutation,
   SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
+>;
+export const AssignUserAsGlobalAdminDocument = gql`
+  mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
+    assignUserAsGlobalAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type AssignUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsGlobalAdminMutation,
+  SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsGlobalAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsGlobalAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsGlobalAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsGlobalAdminMutation, { data, loading, error }] = useAssignUserAsGlobalAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsGlobalAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsGlobalAdminMutation,
+    SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsGlobalAdminMutation,
+    SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+  >(AssignUserAsGlobalAdminDocument, options);
+}
+export type AssignUserAsGlobalAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalAdminMutation>;
+export type AssignUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalAdminMutation>;
+export type AssignUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsGlobalAdminMutation,
+  SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+>;
+export const AssignUserAsGlobalCommunityAdminDocument = gql`
+  mutation assignUserAsGlobalCommunityAdmin($input: AssignGlobalCommunityAdminInput!) {
+    assignUserAsGlobalCommunityAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type AssignUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
+  SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsGlobalCommunityAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsGlobalCommunityAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsGlobalCommunityAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsGlobalCommunityAdminMutation, { data, loading, error }] = useAssignUserAsGlobalCommunityAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsGlobalCommunityAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
+    SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
+    SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+  >(AssignUserAsGlobalCommunityAdminDocument, options);
+}
+export type AssignUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
+  typeof useAssignUserAsGlobalCommunityAdminMutation
+>;
+export type AssignUserAsGlobalCommunityAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalCommunityAdminMutation>;
+export type AssignUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
+  SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
 >;
 export const RemoveUserAsChallengeAdminDocument = gql`
   mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
@@ -2160,10 +2290,11 @@ export function useRemoveUserAsChallengeAdminMutation(
     SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.RemoveUserAsChallengeAdminMutation,
     SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
-  >(RemoveUserAsChallengeAdminDocument, baseOptions);
+  >(RemoveUserAsChallengeAdminDocument, options);
 }
 export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
 export type RemoveUserAsChallengeAdminMutationResult =
@@ -2208,10 +2339,11 @@ export function useRemoveUserAsEcoverseAdminMutation(
     SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.RemoveUserAsEcoverseAdminMutation,
     SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
-  >(RemoveUserAsEcoverseAdminDocument, baseOptions);
+  >(RemoveUserAsEcoverseAdminDocument, options);
 }
 export type RemoveUserAsEcoverseAdminMutationHookResult = ReturnType<typeof useRemoveUserAsEcoverseAdminMutation>;
 export type RemoveUserAsEcoverseAdminMutationResult =
@@ -2219,6 +2351,105 @@ export type RemoveUserAsEcoverseAdminMutationResult =
 export type RemoveUserAsEcoverseAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsEcoverseAdminMutation,
   SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
+>;
+export const RemoveUserAsGlobalAdminDocument = gql`
+  mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
+    removeUserAsGlobalAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type RemoveUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsGlobalAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsGlobalAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsGlobalAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsGlobalAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsGlobalAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsGlobalAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsGlobalAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsGlobalAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
+  >(RemoveUserAsGlobalAdminDocument, options);
+}
+export type RemoveUserAsGlobalAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalAdminMutation>;
+export type RemoveUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalAdminMutation>;
+export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsGlobalAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
+>;
+export const RemoveUserAsGlobalCommunityAdminDocument = gql`
+  mutation removeUserAsGlobalCommunityAdmin($input: RemoveGlobalCommunityAdminInput!) {
+    removeUserAsGlobalCommunityAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type RemoveUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsGlobalCommunityAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsGlobalCommunityAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsGlobalCommunityAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsGlobalCommunityAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalCommunityAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsGlobalCommunityAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
+  >(RemoveUserAsGlobalCommunityAdminDocument, options);
+}
+export type RemoveUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
+  typeof useRemoveUserAsGlobalCommunityAdminMutation
+>;
+export type RemoveUserAsGlobalCommunityAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation>;
+export type RemoveUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
 >;
 export const RemoveUserFromCommunityDocument = gql`
   mutation removeUserFromCommunity($input: RemoveCommunityMemberInput!) {
@@ -2259,10 +2490,11 @@ export function useRemoveUserFromCommunityMutation(
     SchemaTypes.RemoveUserFromCommunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.RemoveUserFromCommunityMutation,
     SchemaTypes.RemoveUserFromCommunityMutationVariables
-  >(RemoveUserFromCommunityDocument, baseOptions);
+  >(RemoveUserFromCommunityDocument, options);
 }
 export type RemoveUserFromCommunityMutationHookResult = ReturnType<typeof useRemoveUserFromCommunityMutation>;
 export type RemoveUserFromCommunityMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromCommunityMutation>;
@@ -2310,9 +2542,10 @@ export function useRemoveUserFromGroupMutation(
     SchemaTypes.RemoveUserFromGroupMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.RemoveUserFromGroupMutation, SchemaTypes.RemoveUserFromGroupMutationVariables>(
     RemoveUserFromGroupDocument,
-    baseOptions
+    options
   );
 }
 export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
@@ -2321,60 +2554,14 @@ export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
 >;
-export const RevokeCredentialsDocument = gql`
-  mutation revokeCredentials($input: RevokeAuthorizationCredentialInput!) {
-    revokeCredentialFromUser(revokeCredentialData: $input) {
-      id
-      displayName
-      ...UserAgent
-    }
-  }
-  ${UserAgentFragmentDoc}
-`;
-export type RevokeCredentialsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RevokeCredentialsMutation,
-  SchemaTypes.RevokeCredentialsMutationVariables
->;
-
-/**
- * __useRevokeCredentialsMutation__
- *
- * To run a mutation, you first call `useRevokeCredentialsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRevokeCredentialsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [revokeCredentialsMutation, { data, loading, error }] = useRevokeCredentialsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRevokeCredentialsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RevokeCredentialsMutation,
-    SchemaTypes.RevokeCredentialsMutationVariables
-  >
-) {
-  return Apollo.useMutation<SchemaTypes.RevokeCredentialsMutation, SchemaTypes.RevokeCredentialsMutationVariables>(
-    RevokeCredentialsDocument,
-    baseOptions
-  );
-}
-export type RevokeCredentialsMutationHookResult = ReturnType<typeof useRevokeCredentialsMutation>;
-export type RevokeCredentialsMutationResult = Apollo.MutationResult<SchemaTypes.RevokeCredentialsMutation>;
-export type RevokeCredentialsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RevokeCredentialsMutation,
-  SchemaTypes.RevokeCredentialsMutationVariables
->;
 export const UpdateActorDocument = gql`
   mutation updateActor($input: UpdateActorInput!) {
     updateActor(actorData: $input) {
       id
       name
+      description
+      impact
+      value
     }
   }
 `;
@@ -2403,9 +2590,10 @@ export type UpdateActorMutationFn = Apollo.MutationFunction<
 export function useUpdateActorMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateActorMutation, SchemaTypes.UpdateActorMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateActorMutation, SchemaTypes.UpdateActorMutationVariables>(
     UpdateActorDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateActorMutationHookResult = ReturnType<typeof useUpdateActorMutation>;
@@ -2419,6 +2607,8 @@ export const UpdateAspectDocument = gql`
     updateAspect(aspectData: $input) {
       id
       title
+      explanation
+      framing
     }
   }
 `;
@@ -2447,9 +2637,10 @@ export type UpdateAspectMutationFn = Apollo.MutationFunction<
 export function useUpdateAspectMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>(
     UpdateAspectDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
@@ -2495,9 +2686,10 @@ export function useUpdateChallengeMutation(
     SchemaTypes.UpdateChallengeMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateChallengeMutation, SchemaTypes.UpdateChallengeMutationVariables>(
     UpdateChallengeDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
@@ -2542,9 +2734,10 @@ export function useUpdateEcoverseMutation(
     SchemaTypes.UpdateEcoverseMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateEcoverseMutation, SchemaTypes.UpdateEcoverseMutationVariables>(
     UpdateEcoverseDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateEcoverseMutationHookResult = ReturnType<typeof useUpdateEcoverseMutation>;
@@ -2600,9 +2793,10 @@ export type UpdateGroupMutationFn = Apollo.MutationFunction<
 export function useUpdateGroupMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>(
     UpdateGroupDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
@@ -2647,9 +2841,10 @@ export function useUpdateOpportunityMutation(
     SchemaTypes.UpdateOpportunityMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateOpportunityMutation, SchemaTypes.UpdateOpportunityMutationVariables>(
     UpdateOpportunityDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
@@ -2694,9 +2889,10 @@ export function useUpdateOrganizationMutation(
     SchemaTypes.UpdateOrganizationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateOrganizationMutation, SchemaTypes.UpdateOrganizationMutationVariables>(
     UpdateOrganizationDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
@@ -2738,9 +2934,10 @@ export type UpdateUserMutationFn = Apollo.MutationFunction<
 export function useUpdateUserMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>(
     UpdateUserDocument,
-    baseOptions
+    options
   );
 }
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
@@ -2783,9 +2980,10 @@ export type UploadAvatarMutationFn = Apollo.MutationFunction<
 export function useUploadAvatarMutation(
   baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadAvatarMutation, SchemaTypes.UploadAvatarMutationVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.UploadAvatarMutation, SchemaTypes.UploadAvatarMutationVariables>(
     UploadAvatarDocument,
-    baseOptions
+    options
   );
 }
 export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
@@ -2825,9 +3023,10 @@ export const AllOpportunitiesDocument = gql`
 export function useAllOpportunitiesQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>(
     AllOpportunitiesDocument,
-    baseOptions
+    options
   );
 }
 export function useAllOpportunitiesLazyQuery(
@@ -2836,9 +3035,10 @@ export function useAllOpportunitiesLazyQuery(
     SchemaTypes.AllOpportunitiesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.AllOpportunitiesQuery, SchemaTypes.AllOpportunitiesQueryVariables>(
     AllOpportunitiesDocument,
-    baseOptions
+    options
   );
 }
 export type AllOpportunitiesQueryHookResult = ReturnType<typeof useAllOpportunitiesQuery>;
@@ -2893,9 +3093,10 @@ export function useChallengeApplicationQuery(
     SchemaTypes.ChallengeApplicationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
     ChallengeApplicationDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeApplicationLazyQuery(
@@ -2904,9 +3105,10 @@ export function useChallengeApplicationLazyQuery(
     SchemaTypes.ChallengeApplicationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
     ChallengeApplicationDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeApplicationQueryHookResult = ReturnType<typeof useChallengeApplicationQuery>;
@@ -2959,9 +3161,10 @@ export function useChallengeApplicationsQuery(
     SchemaTypes.ChallengeApplicationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeApplicationsQuery, SchemaTypes.ChallengeApplicationsQueryVariables>(
     ChallengeApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeApplicationsLazyQuery(
@@ -2970,9 +3173,10 @@ export function useChallengeApplicationsLazyQuery(
     SchemaTypes.ChallengeApplicationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeApplicationsQuery, SchemaTypes.ChallengeApplicationsQueryVariables>(
     ChallengeApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeApplicationsQueryHookResult = ReturnType<typeof useChallengeApplicationsQuery>;
@@ -3023,9 +3227,10 @@ export function useEcoverseApplicationQuery(
     SchemaTypes.EcoverseApplicationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseApplicationQuery, SchemaTypes.EcoverseApplicationQueryVariables>(
     EcoverseApplicationDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseApplicationLazyQuery(
@@ -3034,9 +3239,10 @@ export function useEcoverseApplicationLazyQuery(
     SchemaTypes.EcoverseApplicationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseApplicationQuery, SchemaTypes.EcoverseApplicationQueryVariables>(
     EcoverseApplicationDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseApplicationQueryHookResult = ReturnType<typeof useEcoverseApplicationQuery>;
@@ -3085,9 +3291,10 @@ export function useEcoverseApplicationsQuery(
     SchemaTypes.EcoverseApplicationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseApplicationsQuery, SchemaTypes.EcoverseApplicationsQueryVariables>(
     EcoverseApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseApplicationsLazyQuery(
@@ -3096,9 +3303,10 @@ export function useEcoverseApplicationsLazyQuery(
     SchemaTypes.EcoverseApplicationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseApplicationsQuery, SchemaTypes.EcoverseApplicationsQueryVariables>(
     EcoverseApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseApplicationsQueryHookResult = ReturnType<typeof useEcoverseApplicationsQuery>;
@@ -3139,15 +3347,14 @@ export const UserCardDocument = gql`
 export function useUserCardQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>(UserCardDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>(UserCardDocument, options);
 }
 export function useUserCardLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>(
-    UserCardDocument,
-    baseOptions
-  );
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>(UserCardDocument, options);
 }
 export type UserCardQueryHookResult = ReturnType<typeof useUserCardQuery>;
 export type UserCardLazyQueryHookResult = ReturnType<typeof useUserCardLazyQuery>;
@@ -3190,9 +3397,10 @@ export const ChallengeActivityDocument = gql`
 export function useChallengeActivityQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeActivityQuery, SchemaTypes.ChallengeActivityQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeActivityQuery, SchemaTypes.ChallengeActivityQueryVariables>(
     ChallengeActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeActivityLazyQuery(
@@ -3201,9 +3409,10 @@ export function useChallengeActivityLazyQuery(
     SchemaTypes.ChallengeActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeActivityQuery, SchemaTypes.ChallengeActivityQueryVariables>(
     ChallengeActivityDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeActivityQueryHookResult = ReturnType<typeof useChallengeActivityQuery>;
@@ -3255,10 +3464,11 @@ export function useChallengeApplicationTemplateQuery(
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
     SchemaTypes.ChallengeApplicationTemplateQuery,
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
-  >(ChallengeApplicationTemplateDocument, baseOptions);
+  >(ChallengeApplicationTemplateDocument, options);
 }
 export function useChallengeApplicationTemplateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
@@ -3266,10 +3476,11 @@ export function useChallengeApplicationTemplateLazyQuery(
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.ChallengeApplicationTemplateQuery,
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
-  >(ChallengeApplicationTemplateDocument, baseOptions);
+  >(ChallengeApplicationTemplateDocument, options);
 }
 export type ChallengeApplicationTemplateQueryHookResult = ReturnType<typeof useChallengeApplicationTemplateQuery>;
 export type ChallengeApplicationTemplateLazyQueryHookResult = ReturnType<
@@ -3320,17 +3531,19 @@ export const ChallengeGroupsDocument = gql`
 export function useChallengeGroupsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeGroupsQuery, SchemaTypes.ChallengeGroupsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeGroupsQuery, SchemaTypes.ChallengeGroupsQueryVariables>(
     ChallengeGroupsDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeGroupsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeGroupsQuery, SchemaTypes.ChallengeGroupsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeGroupsQuery, SchemaTypes.ChallengeGroupsQueryVariables>(
     ChallengeGroupsDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
@@ -3383,10 +3596,11 @@ export function useChallengeLeadOrganisationsQuery(
     SchemaTypes.ChallengeLeadOrganisationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
     SchemaTypes.ChallengeLeadOrganisationsQuery,
     SchemaTypes.ChallengeLeadOrganisationsQueryVariables
-  >(ChallengeLeadOrganisationsDocument, baseOptions);
+  >(ChallengeLeadOrganisationsDocument, options);
 }
 export function useChallengeLeadOrganisationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
@@ -3394,10 +3608,11 @@ export function useChallengeLeadOrganisationsLazyQuery(
     SchemaTypes.ChallengeLeadOrganisationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.ChallengeLeadOrganisationsQuery,
     SchemaTypes.ChallengeLeadOrganisationsQueryVariables
-  >(ChallengeLeadOrganisationsDocument, baseOptions);
+  >(ChallengeLeadOrganisationsDocument, options);
 }
 export type ChallengeLeadOrganisationsQueryHookResult = ReturnType<typeof useChallengeLeadOrganisationsQuery>;
 export type ChallengeLeadOrganisationsLazyQueryHookResult = ReturnType<typeof useChallengeLeadOrganisationsLazyQuery>;
@@ -3450,9 +3665,10 @@ export function useChallengeLifecycleQuery(
     SchemaTypes.ChallengeLifecycleQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
     ChallengeLifecycleDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeLifecycleLazyQuery(
@@ -3461,9 +3677,10 @@ export function useChallengeLifecycleLazyQuery(
     SchemaTypes.ChallengeLifecycleQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
     ChallengeLifecycleDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeLifecycleQueryHookResult = ReturnType<typeof useChallengeLifecycleQuery>;
@@ -3514,9 +3731,10 @@ export const ChallengeMembersDocument = gql`
 export function useChallengeMembersQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeMembersQuery, SchemaTypes.ChallengeMembersQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeMembersQuery, SchemaTypes.ChallengeMembersQueryVariables>(
     ChallengeMembersDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeMembersLazyQuery(
@@ -3525,9 +3743,10 @@ export function useChallengeMembersLazyQuery(
     SchemaTypes.ChallengeMembersQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeMembersQuery, SchemaTypes.ChallengeMembersQueryVariables>(
     ChallengeMembersDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeMembersQueryHookResult = ReturnType<typeof useChallengeMembersQuery>;
@@ -3575,17 +3794,19 @@ export const ChallengeNameDocument = gql`
 export function useChallengeNameQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>(
     ChallengeNameDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeNameLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>(
     ChallengeNameDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQuery>;
@@ -3678,9 +3899,10 @@ export const ChallengeProfileDocument = gql`
 export function useChallengeProfileQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeProfileQuery, SchemaTypes.ChallengeProfileQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeProfileQuery, SchemaTypes.ChallengeProfileQueryVariables>(
     ChallengeProfileDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeProfileLazyQuery(
@@ -3689,9 +3911,10 @@ export function useChallengeProfileLazyQuery(
     SchemaTypes.ChallengeProfileQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeProfileQuery, SchemaTypes.ChallengeProfileQueryVariables>(
     ChallengeProfileDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeProfileQueryHookResult = ReturnType<typeof useChallengeProfileQuery>;
@@ -3751,9 +3974,10 @@ export function useChallengeProfileInfoQuery(
     SchemaTypes.ChallengeProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeProfileInfoQuery, SchemaTypes.ChallengeProfileInfoQueryVariables>(
     ChallengeProfileInfoDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeProfileInfoLazyQuery(
@@ -3762,9 +3986,10 @@ export function useChallengeProfileInfoLazyQuery(
     SchemaTypes.ChallengeProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeProfileInfoQuery, SchemaTypes.ChallengeProfileInfoQueryVariables>(
     ChallengeProfileInfoDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeProfileInfoQueryHookResult = ReturnType<typeof useChallengeProfileInfoQuery>;
@@ -3811,9 +4036,10 @@ export const ChallengeUserIdsDocument = gql`
 export function useChallengeUserIdsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeUserIdsQuery, SchemaTypes.ChallengeUserIdsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeUserIdsQuery, SchemaTypes.ChallengeUserIdsQueryVariables>(
     ChallengeUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeUserIdsLazyQuery(
@@ -3822,9 +4048,10 @@ export function useChallengeUserIdsLazyQuery(
     SchemaTypes.ChallengeUserIdsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeUserIdsQuery, SchemaTypes.ChallengeUserIdsQueryVariables>(
     ChallengeUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeUserIdsQueryHookResult = ReturnType<typeof useChallengeUserIdsQuery>;
@@ -3880,17 +4107,19 @@ export const ChallengesDocument = gql`
 export function useChallengesQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>(
     ChallengesDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengesQuery, SchemaTypes.ChallengesQueryVariables>(
     ChallengesDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengesQueryHookResult = ReturnType<typeof useChallengesQuery>;
@@ -3952,9 +4181,10 @@ export function useChallengesWithActivityQuery(
     SchemaTypes.ChallengesWithActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengesWithActivityQuery, SchemaTypes.ChallengesWithActivityQueryVariables>(
     ChallengesWithActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengesWithActivityLazyQuery(
@@ -3963,9 +4193,10 @@ export function useChallengesWithActivityLazyQuery(
     SchemaTypes.ChallengesWithActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengesWithActivityQuery, SchemaTypes.ChallengesWithActivityQueryVariables>(
     ChallengesWithActivityDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengesWithActivityQueryHookResult = ReturnType<typeof useChallengesWithActivityQuery>;
@@ -4017,17 +4248,19 @@ export const AllCommunitiesDocument = gql`
 export function useAllCommunitiesQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
     AllCommunitiesDocument,
-    baseOptions
+    options
   );
 }
 export function useAllCommunitiesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.AllCommunitiesQuery, SchemaTypes.AllCommunitiesQueryVariables>(
     AllCommunitiesDocument,
-    baseOptions
+    options
   );
 }
 export type AllCommunitiesQueryHookResult = ReturnType<typeof useAllCommunitiesQuery>;
@@ -4078,9 +4311,10 @@ export function useChallengeCommunityQuery(
     SchemaTypes.ChallengeCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengeCommunityQuery, SchemaTypes.ChallengeCommunityQueryVariables>(
     ChallengeCommunityDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengeCommunityLazyQuery(
@@ -4089,9 +4323,10 @@ export function useChallengeCommunityLazyQuery(
     SchemaTypes.ChallengeCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ChallengeCommunityQuery, SchemaTypes.ChallengeCommunityQueryVariables>(
     ChallengeCommunityDocument,
-    baseOptions
+    options
   );
 }
 export type ChallengeCommunityQueryHookResult = ReturnType<typeof useChallengeCommunityQuery>;
@@ -4142,9 +4377,10 @@ export function useChallengesWithCommunityQuery(
     SchemaTypes.ChallengesWithCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ChallengesWithCommunityQuery, SchemaTypes.ChallengesWithCommunityQueryVariables>(
     ChallengesWithCommunityDocument,
-    baseOptions
+    options
   );
 }
 export function useChallengesWithCommunityLazyQuery(
@@ -4153,10 +4389,11 @@ export function useChallengesWithCommunityLazyQuery(
     SchemaTypes.ChallengesWithCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.ChallengesWithCommunityQuery,
     SchemaTypes.ChallengesWithCommunityQueryVariables
-  >(ChallengesWithCommunityDocument, baseOptions);
+  >(ChallengesWithCommunityDocument, options);
 }
 export type ChallengesWithCommunityQueryHookResult = ReturnType<typeof useChallengesWithCommunityQuery>;
 export type ChallengesWithCommunityLazyQueryHookResult = ReturnType<typeof useChallengesWithCommunityLazyQuery>;
@@ -4198,9 +4435,10 @@ export const EcoverseCommunityDocument = gql`
 export function useEcoverseCommunityQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
     EcoverseCommunityDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseCommunityLazyQuery(
@@ -4209,9 +4447,10 @@ export function useEcoverseCommunityLazyQuery(
     SchemaTypes.EcoverseCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
     EcoverseCommunityDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseCommunityQueryHookResult = ReturnType<typeof useEcoverseCommunityQuery>;
@@ -4260,10 +4499,11 @@ export function useChallengeCommunityMessagesQuery(
     SchemaTypes.ChallengeCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
     SchemaTypes.ChallengeCommunityMessagesQuery,
     SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >(ChallengeCommunityMessagesDocument, baseOptions);
+  >(ChallengeCommunityMessagesDocument, options);
 }
 export function useChallengeCommunityMessagesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
@@ -4271,10 +4511,11 @@ export function useChallengeCommunityMessagesLazyQuery(
     SchemaTypes.ChallengeCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.ChallengeCommunityMessagesQuery,
     SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >(ChallengeCommunityMessagesDocument, baseOptions);
+  >(ChallengeCommunityMessagesDocument, options);
 }
 export type ChallengeCommunityMessagesQueryHookResult = ReturnType<typeof useChallengeCommunityMessagesQuery>;
 export type ChallengeCommunityMessagesLazyQueryHookResult = ReturnType<typeof useChallengeCommunityMessagesLazyQuery>;
@@ -4322,9 +4563,10 @@ export function useEcoversCommunityMessagesQuery(
     SchemaTypes.EcoversCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoversCommunityMessagesQuery, SchemaTypes.EcoversCommunityMessagesQueryVariables>(
     EcoversCommunityMessagesDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoversCommunityMessagesLazyQuery(
@@ -4333,10 +4575,11 @@ export function useEcoversCommunityMessagesLazyQuery(
     SchemaTypes.EcoversCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.EcoversCommunityMessagesQuery,
     SchemaTypes.EcoversCommunityMessagesQueryVariables
-  >(EcoversCommunityMessagesDocument, baseOptions);
+  >(EcoversCommunityMessagesDocument, options);
 }
 export type EcoversCommunityMessagesQueryHookResult = ReturnType<typeof useEcoversCommunityMessagesQuery>;
 export type EcoversCommunityMessagesLazyQueryHookResult = ReturnType<typeof useEcoversCommunityMessagesLazyQuery>;
@@ -4384,10 +4627,11 @@ export function useOpportunityCommunityMessagesQuery(
     SchemaTypes.OpportunityCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
     SchemaTypes.OpportunityCommunityMessagesQuery,
     SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >(OpportunityCommunityMessagesDocument, baseOptions);
+  >(OpportunityCommunityMessagesDocument, options);
 }
 export function useOpportunityCommunityMessagesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
@@ -4395,10 +4639,11 @@ export function useOpportunityCommunityMessagesLazyQuery(
     SchemaTypes.OpportunityCommunityMessagesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.OpportunityCommunityMessagesQuery,
     SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >(OpportunityCommunityMessagesDocument, baseOptions);
+  >(OpportunityCommunityMessagesDocument, options);
 }
 export type OpportunityCommunityMessagesQueryHookResult = ReturnType<typeof useOpportunityCommunityMessagesQuery>;
 export type OpportunityCommunityMessagesLazyQueryHookResult = ReturnType<
@@ -4452,9 +4697,10 @@ export function useOpportunityCommunityQuery(
     SchemaTypes.OpportunityCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityCommunityQuery, SchemaTypes.OpportunityCommunityQueryVariables>(
     OpportunityCommunityDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityCommunityLazyQuery(
@@ -4463,9 +4709,10 @@ export function useOpportunityCommunityLazyQuery(
     SchemaTypes.OpportunityCommunityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityCommunityQuery, SchemaTypes.OpportunityCommunityQueryVariables>(
     OpportunityCommunityDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityCommunityQueryHookResult = ReturnType<typeof useOpportunityCommunityQuery>;
@@ -4504,17 +4751,19 @@ export const ConfigurationDocument = gql`
 export function useConfigurationQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>(
     ConfigurationDocument,
-    baseOptions
+    options
   );
 }
 export function useConfigurationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>(
     ConfigurationDocument,
-    baseOptions
+    options
   );
 }
 export type ConfigurationQueryHookResult = ReturnType<typeof useConfigurationQuery>;
@@ -4525,6 +4774,51 @@ export type ConfigurationQueryResult = Apollo.QueryResult<
 >;
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
+}
+export const EcoversesDocument = gql`
+  query ecoverses {
+    ecoverses {
+      ...EcoverseDetailsProvider
+    }
+  }
+  ${EcoverseDetailsProviderFragmentDoc}
+`;
+
+/**
+ * __useEcoversesQuery__
+ *
+ * To run a query within a React component, call `useEcoversesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEcoversesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(EcoversesDocument, options);
+}
+export function useEcoversesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
+    EcoversesDocument,
+    options
+  );
+}
+export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
+export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
+export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
+export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
+  return { query: EcoversesDocument, variables: variables };
 }
 export const EcoverseActivityDocument = gql`
   query ecoverseActivity($ecoverseId: UUID_NAMEID!) {
@@ -4557,9 +4851,10 @@ export const EcoverseActivityDocument = gql`
 export function useEcoverseActivityQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>(
     EcoverseActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseActivityLazyQuery(
@@ -4568,9 +4863,10 @@ export function useEcoverseActivityLazyQuery(
     SchemaTypes.EcoverseActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>(
     EcoverseActivityDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseActivityQueryHookResult = ReturnType<typeof useEcoverseActivityQuery>;
@@ -4622,10 +4918,11 @@ export function useEcoverseApplicationTemplateQuery(
     SchemaTypes.EcoverseApplicationTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
     SchemaTypes.EcoverseApplicationTemplateQuery,
     SchemaTypes.EcoverseApplicationTemplateQueryVariables
-  >(EcoverseApplicationTemplateDocument, baseOptions);
+  >(EcoverseApplicationTemplateDocument, options);
 }
 export function useEcoverseApplicationTemplateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
@@ -4633,10 +4930,11 @@ export function useEcoverseApplicationTemplateLazyQuery(
     SchemaTypes.EcoverseApplicationTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.EcoverseApplicationTemplateQuery,
     SchemaTypes.EcoverseApplicationTemplateQueryVariables
-  >(EcoverseApplicationTemplateDocument, baseOptions);
+  >(EcoverseApplicationTemplateDocument, options);
 }
 export type EcoverseApplicationTemplateQueryHookResult = ReturnType<typeof useEcoverseApplicationTemplateQuery>;
 export type EcoverseApplicationTemplateLazyQueryHookResult = ReturnType<typeof useEcoverseApplicationTemplateLazyQuery>;
@@ -4681,17 +4979,19 @@ export const EcoverseGroupDocument = gql`
 export function useEcoverseGroupQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
     EcoverseGroupDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseGroupLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
     EcoverseGroupDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseGroupQueryHookResult = ReturnType<typeof useEcoverseGroupQuery>;
@@ -4737,9 +5037,10 @@ export function useEcoverseGroupsListQuery(
     SchemaTypes.EcoverseGroupsListQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseGroupsListQuery, SchemaTypes.EcoverseGroupsListQueryVariables>(
     EcoverseGroupsListDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseGroupsListLazyQuery(
@@ -4748,9 +5049,10 @@ export function useEcoverseGroupsListLazyQuery(
     SchemaTypes.EcoverseGroupsListQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseGroupsListQuery, SchemaTypes.EcoverseGroupsListQueryVariables>(
     EcoverseGroupsListDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseGroupsListQueryHookResult = ReturnType<typeof useEcoverseGroupsListQuery>;
@@ -4801,9 +5103,10 @@ export function useEcoverseHostReferencesQuery(
     SchemaTypes.EcoverseHostReferencesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseHostReferencesQuery, SchemaTypes.EcoverseHostReferencesQueryVariables>(
     EcoverseHostReferencesDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseHostReferencesLazyQuery(
@@ -4812,9 +5115,10 @@ export function useEcoverseHostReferencesLazyQuery(
     SchemaTypes.EcoverseHostReferencesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseHostReferencesQuery, SchemaTypes.EcoverseHostReferencesQueryVariables>(
     EcoverseHostReferencesDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseHostReferencesQueryHookResult = ReturnType<typeof useEcoverseHostReferencesQuery>;
@@ -4858,17 +5162,19 @@ export const EcoverseInfoDocument = gql`
 export function useEcoverseInfoQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
     EcoverseInfoDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseInfoLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
     EcoverseInfoDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseInfoQueryHookResult = ReturnType<typeof useEcoverseInfoQuery>;
@@ -4917,17 +5223,19 @@ export const EcoverseMembersDocument = gql`
 export function useEcoverseMembersQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
     EcoverseMembersDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseMembersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
     EcoverseMembersDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseMembersQueryHookResult = ReturnType<typeof useEcoverseMembersQuery>;
@@ -4967,17 +5275,19 @@ export const EcoverseNameDocument = gql`
 export function useEcoverseNameQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
     EcoverseNameDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseNameLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
     EcoverseNameDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
@@ -5022,17 +5332,19 @@ export const EcoverseUserIdsDocument = gql`
 export function useEcoverseUserIdsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>(
     EcoverseUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseUserIdsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>(
     EcoverseUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseUserIdsQueryHookResult = ReturnType<typeof useEcoverseUserIdsQuery>;
@@ -5077,17 +5389,19 @@ export const EcoverseVisualDocument = gql`
 export function useEcoverseVisualQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
     EcoverseVisualDocument,
-    baseOptions
+    options
   );
 }
 export function useEcoverseVisualLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
     EcoverseVisualDocument,
-    baseOptions
+    options
   );
 }
 export type EcoverseVisualQueryHookResult = ReturnType<typeof useEcoverseVisualQuery>;
@@ -5098,125 +5412,6 @@ export type EcoverseVisualQueryResult = Apollo.QueryResult<
 >;
 export function refetchEcoverseVisualQuery(variables?: SchemaTypes.EcoverseVisualQueryVariables) {
   return { query: EcoverseVisualDocument, variables: variables };
-}
-export const EcoversesDocument = gql`
-  query ecoverses {
-    ecoverses {
-      ...EcoverseDetails
-    }
-  }
-  ${EcoverseDetailsFragmentDoc}
-`;
-
-/**
- * __useEcoversesQuery__
- *
- * To run a query within a React component, call `useEcoversesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEcoversesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEcoversesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
-) {
-  return Apollo.useQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
-    EcoversesDocument,
-    baseOptions
-  );
-}
-export function useEcoversesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
-) {
-  return Apollo.useLazyQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
-    EcoversesDocument,
-    baseOptions
-  );
-}
-export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
-export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
-export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
-export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
-  return { query: EcoversesDocument, variables: variables };
-}
-export const EcoversesWithActivityDocument = gql`
-  query ecoversesWithActivity {
-    ecoverses {
-      id
-      displayName
-      nameID
-      authorization {
-        anonymousReadAccess
-      }
-      activity {
-        name
-        value
-      }
-      context {
-        visual {
-          background
-        }
-        tagline
-      }
-      tagset {
-        name
-        tags
-      }
-    }
-  }
-`;
-
-/**
- * __useEcoversesWithActivityQuery__
- *
- * To run a query within a React component, call `useEcoversesWithActivityQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversesWithActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEcoversesWithActivityQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEcoversesWithActivityQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.EcoversesWithActivityQuery,
-    SchemaTypes.EcoversesWithActivityQueryVariables
-  >
-) {
-  return Apollo.useQuery<SchemaTypes.EcoversesWithActivityQuery, SchemaTypes.EcoversesWithActivityQueryVariables>(
-    EcoversesWithActivityDocument,
-    baseOptions
-  );
-}
-export function useEcoversesWithActivityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoversesWithActivityQuery,
-    SchemaTypes.EcoversesWithActivityQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<SchemaTypes.EcoversesWithActivityQuery, SchemaTypes.EcoversesWithActivityQueryVariables>(
-    EcoversesWithActivityDocument,
-    baseOptions
-  );
-}
-export type EcoversesWithActivityQueryHookResult = ReturnType<typeof useEcoversesWithActivityQuery>;
-export type EcoversesWithActivityLazyQueryHookResult = ReturnType<typeof useEcoversesWithActivityLazyQuery>;
-export type EcoversesWithActivityQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoversesWithActivityQuery,
-  SchemaTypes.EcoversesWithActivityQueryVariables
->;
-export function refetchEcoversesWithActivityQuery(variables?: SchemaTypes.EcoversesWithActivityQueryVariables) {
-  return { query: EcoversesWithActivityDocument, variables: variables };
 }
 export const GlobalActivityDocument = gql`
   query globalActivity {
@@ -5247,17 +5442,19 @@ export const GlobalActivityDocument = gql`
 export function useGlobalActivityQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
     GlobalActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useGlobalActivityLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
     GlobalActivityDocument,
-    baseOptions
+    options
   );
 }
 export type GlobalActivityQueryHookResult = ReturnType<typeof useGlobalActivityQuery>;
@@ -5305,17 +5502,19 @@ export const GroupMembersDocument = gql`
 export function useGroupMembersQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
     GroupMembersDocument,
-    baseOptions
+    options
   );
 }
 export function useGroupMembersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
     GroupMembersDocument,
-    baseOptions
+    options
   );
 }
 export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
@@ -5354,12 +5553,14 @@ export const MeDocument = gql`
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>) {
-  return Apollo.useQuery<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>(MeDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>(MeDocument, options);
 }
 export function useMeLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>(MeDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>(MeDocument, options);
 }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
@@ -5391,17 +5592,19 @@ export const MeHasProfileDocument = gql`
 export function useMeHasProfileQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
     MeHasProfileDocument,
-    baseOptions
+    options
   );
 }
 export function useMeHasProfileLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
     MeHasProfileDocument,
-    baseOptions
+    options
   );
 }
 export type MeHasProfileQueryHookResult = ReturnType<typeof useMeHasProfileQuery>;
@@ -5416,6 +5619,7 @@ export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQue
 export const MembershipOrganisationDocument = gql`
   query membershipOrganisation($input: MembershipOrganisationInput!) {
     membershipOrganisation(membershipData: $input) {
+      id
       ecoversesHosting {
         id
         nameID
@@ -5452,9 +5656,10 @@ export function useMembershipOrganisationQuery(
     SchemaTypes.MembershipOrganisationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.MembershipOrganisationQuery, SchemaTypes.MembershipOrganisationQueryVariables>(
     MembershipOrganisationDocument,
-    baseOptions
+    options
   );
 }
 export function useMembershipOrganisationLazyQuery(
@@ -5463,9 +5668,10 @@ export function useMembershipOrganisationLazyQuery(
     SchemaTypes.MembershipOrganisationQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.MembershipOrganisationQuery, SchemaTypes.MembershipOrganisationQueryVariables>(
     MembershipOrganisationDocument,
-    baseOptions
+    options
   );
 }
 export type MembershipOrganisationQueryHookResult = ReturnType<typeof useMembershipOrganisationQuery>;
@@ -5480,6 +5686,7 @@ export function refetchMembershipOrganisationQuery(variables?: SchemaTypes.Membe
 export const MembershipUserDocument = gql`
   query membershipUser($input: MembershipUserInput!) {
     membershipUser(membershipData: $input) {
+      id
       ...UserMembershipDetails
     }
   }
@@ -5505,17 +5712,19 @@ export const MembershipUserDocument = gql`
 export function useMembershipUserQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>(
     MembershipUserDocument,
-    baseOptions
+    options
   );
 }
 export function useMembershipUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>(
     MembershipUserDocument,
-    baseOptions
+    options
   );
 }
 export type MembershipUserQueryHookResult = ReturnType<typeof useMembershipUserQuery>;
@@ -5563,17 +5772,19 @@ export const OpportunitiesDocument = gql`
 export function useOpportunitiesQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunitiesQuery, SchemaTypes.OpportunitiesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunitiesQuery, SchemaTypes.OpportunitiesQueryVariables>(
     OpportunitiesDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunitiesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunitiesQuery, SchemaTypes.OpportunitiesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunitiesQuery, SchemaTypes.OpportunitiesQueryVariables>(
     OpportunitiesDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunitiesQueryHookResult = ReturnType<typeof useOpportunitiesQuery>;
@@ -5623,9 +5834,10 @@ export function useOpportunityActivityQuery(
     SchemaTypes.OpportunityActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityActivityQuery, SchemaTypes.OpportunityActivityQueryVariables>(
     OpportunityActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityActivityLazyQuery(
@@ -5634,9 +5846,10 @@ export function useOpportunityActivityLazyQuery(
     SchemaTypes.OpportunityActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityActivityQuery, SchemaTypes.OpportunityActivityQueryVariables>(
     OpportunityActivityDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityActivityQueryHookResult = ReturnType<typeof useOpportunityActivityQuery>;
@@ -5698,9 +5911,10 @@ export function useOpportunityActorGroupsQuery(
     SchemaTypes.OpportunityActorGroupsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityActorGroupsQuery, SchemaTypes.OpportunityActorGroupsQueryVariables>(
     OpportunityActorGroupsDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityActorGroupsLazyQuery(
@@ -5709,9 +5923,10 @@ export function useOpportunityActorGroupsLazyQuery(
     SchemaTypes.OpportunityActorGroupsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityActorGroupsQuery, SchemaTypes.OpportunityActorGroupsQueryVariables>(
     OpportunityActorGroupsDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityActorGroupsQueryHookResult = ReturnType<typeof useOpportunityActorGroupsQuery>;
@@ -5763,9 +5978,10 @@ export function useOpportunityAspectsQuery(
     SchemaTypes.OpportunityAspectsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityAspectsQuery, SchemaTypes.OpportunityAspectsQueryVariables>(
     OpportunityAspectsDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityAspectsLazyQuery(
@@ -5774,9 +5990,10 @@ export function useOpportunityAspectsLazyQuery(
     SchemaTypes.OpportunityAspectsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityAspectsQuery, SchemaTypes.OpportunityAspectsQueryVariables>(
     OpportunityAspectsDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityAspectsQueryHookResult = ReturnType<typeof useOpportunityAspectsQuery>;
@@ -5824,9 +6041,10 @@ export const OpportunityGroupsDocument = gql`
 export function useOpportunityGroupsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityGroupsQuery, SchemaTypes.OpportunityGroupsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityGroupsQuery, SchemaTypes.OpportunityGroupsQueryVariables>(
     OpportunityGroupsDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityGroupsLazyQuery(
@@ -5835,9 +6053,10 @@ export function useOpportunityGroupsLazyQuery(
     SchemaTypes.OpportunityGroupsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityGroupsQuery, SchemaTypes.OpportunityGroupsQueryVariables>(
     OpportunityGroupsDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityGroupsQueryHookResult = ReturnType<typeof useOpportunityGroupsQuery>;
@@ -5889,9 +6108,10 @@ export function useOpportunityLifecycleQuery(
     SchemaTypes.OpportunityLifecycleQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
     OpportunityLifecycleDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityLifecycleLazyQuery(
@@ -5900,9 +6120,10 @@ export function useOpportunityLifecycleLazyQuery(
     SchemaTypes.OpportunityLifecycleQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
     OpportunityLifecycleDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityLifecycleQueryHookResult = ReturnType<typeof useOpportunityLifecycleQuery>;
@@ -5946,17 +6167,19 @@ export const OpportunityNameDocument = gql`
 export function useOpportunityNameQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>(
     OpportunityNameDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityNameLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>(
     OpportunityNameDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
@@ -6057,9 +6280,10 @@ export function useOpportunityProfileQuery(
     SchemaTypes.OpportunityProfileQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
     OpportunityProfileDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityProfileLazyQuery(
@@ -6068,9 +6292,10 @@ export function useOpportunityProfileLazyQuery(
     SchemaTypes.OpportunityProfileQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
     OpportunityProfileDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityProfileQueryHookResult = ReturnType<typeof useOpportunityProfileQuery>;
@@ -6127,9 +6352,10 @@ export function useOpportunityProfileInfoQuery(
     SchemaTypes.OpportunityProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityProfileInfoQuery, SchemaTypes.OpportunityProfileInfoQueryVariables>(
     OpportunityProfileInfoDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityProfileInfoLazyQuery(
@@ -6138,9 +6364,10 @@ export function useOpportunityProfileInfoLazyQuery(
     SchemaTypes.OpportunityProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityProfileInfoQuery, SchemaTypes.OpportunityProfileInfoQueryVariables>(
     OpportunityProfileInfoDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityProfileInfoQueryHookResult = ReturnType<typeof useOpportunityProfileInfoQuery>;
@@ -6192,9 +6419,10 @@ export function useOpportunityRelationsQuery(
     SchemaTypes.OpportunityRelationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityRelationsQuery, SchemaTypes.OpportunityRelationsQueryVariables>(
     OpportunityRelationsDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityRelationsLazyQuery(
@@ -6203,9 +6431,10 @@ export function useOpportunityRelationsLazyQuery(
     SchemaTypes.OpportunityRelationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityRelationsQuery, SchemaTypes.OpportunityRelationsQueryVariables>(
     OpportunityRelationsDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityRelationsQueryHookResult = ReturnType<typeof useOpportunityRelationsQuery>;
@@ -6251,9 +6480,10 @@ export function useOpportunityTemplateQuery(
     SchemaTypes.OpportunityTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
     OpportunityTemplateDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityTemplateLazyQuery(
@@ -6262,9 +6492,10 @@ export function useOpportunityTemplateLazyQuery(
     SchemaTypes.OpportunityTemplateQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
     OpportunityTemplateDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityTemplateQueryHookResult = ReturnType<typeof useOpportunityTemplateQuery>;
@@ -6314,9 +6545,10 @@ export function useOpportunityUserIdsQuery(
     SchemaTypes.OpportunityUserIdsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityUserIdsQuery, SchemaTypes.OpportunityUserIdsQueryVariables>(
     OpportunityUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityUserIdsLazyQuery(
@@ -6325,9 +6557,10 @@ export function useOpportunityUserIdsLazyQuery(
     SchemaTypes.OpportunityUserIdsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OpportunityUserIdsQuery, SchemaTypes.OpportunityUserIdsQueryVariables>(
     OpportunityUserIdsDocument,
-    baseOptions
+    options
   );
 }
 export type OpportunityUserIdsQueryHookResult = ReturnType<typeof useOpportunityUserIdsQuery>;
@@ -6388,9 +6621,10 @@ export function useOpportunityWithActivityQuery(
     SchemaTypes.OpportunityWithActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OpportunityWithActivityQuery, SchemaTypes.OpportunityWithActivityQueryVariables>(
     OpportunityWithActivityDocument,
-    baseOptions
+    options
   );
 }
 export function useOpportunityWithActivityLazyQuery(
@@ -6399,10 +6633,11 @@ export function useOpportunityWithActivityLazyQuery(
     SchemaTypes.OpportunityWithActivityQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.OpportunityWithActivityQuery,
     SchemaTypes.OpportunityWithActivityQueryVariables
-  >(OpportunityWithActivityDocument, baseOptions);
+  >(OpportunityWithActivityDocument, options);
 }
 export type OpportunityWithActivityQueryHookResult = ReturnType<typeof useOpportunityWithActivityQuery>;
 export type OpportunityWithActivityLazyQueryHookResult = ReturnType<typeof useOpportunityWithActivityLazyQuery>;
@@ -6449,9 +6684,10 @@ export const OrganisationGroupDocument = gql`
 export function useOrganisationGroupQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>(
     OrganisationGroupDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganisationGroupLazyQuery(
@@ -6460,9 +6696,10 @@ export function useOrganisationGroupLazyQuery(
     SchemaTypes.OrganisationGroupQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganisationGroupQuery, SchemaTypes.OrganisationGroupQueryVariables>(
     OrganisationGroupDocument,
-    baseOptions
+    options
   );
 }
 export type OrganisationGroupQueryHookResult = ReturnType<typeof useOrganisationGroupQuery>;
@@ -6527,9 +6764,10 @@ export function useOrganizationDetailsQuery(
     SchemaTypes.OrganizationDetailsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganizationDetailsQuery, SchemaTypes.OrganizationDetailsQueryVariables>(
     OrganizationDetailsDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganizationDetailsLazyQuery(
@@ -6538,9 +6776,10 @@ export function useOrganizationDetailsLazyQuery(
     SchemaTypes.OrganizationDetailsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganizationDetailsQuery, SchemaTypes.OrganizationDetailsQueryVariables>(
     OrganizationDetailsDocument,
-    baseOptions
+    options
   );
 }
 export type OrganizationDetailsQueryHookResult = ReturnType<typeof useOrganizationDetailsQuery>;
@@ -6586,9 +6825,10 @@ export function useOrganizationGroupsQuery(
     SchemaTypes.OrganizationGroupsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganizationGroupsQuery, SchemaTypes.OrganizationGroupsQueryVariables>(
     OrganizationGroupsDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganizationGroupsLazyQuery(
@@ -6597,9 +6837,10 @@ export function useOrganizationGroupsLazyQuery(
     SchemaTypes.OrganizationGroupsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganizationGroupsQuery, SchemaTypes.OrganizationGroupsQueryVariables>(
     OrganizationGroupsDocument,
-    baseOptions
+    options
   );
 }
 export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
@@ -6639,9 +6880,10 @@ export const OrganizationNameDocument = gql`
 export function useOrganizationNameQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationNameQuery, SchemaTypes.OrganizationNameQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganizationNameQuery, SchemaTypes.OrganizationNameQueryVariables>(
     OrganizationNameDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganizationNameLazyQuery(
@@ -6650,9 +6892,10 @@ export function useOrganizationNameLazyQuery(
     SchemaTypes.OrganizationNameQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganizationNameQuery, SchemaTypes.OrganizationNameQueryVariables>(
     OrganizationNameDocument,
-    baseOptions
+    options
   );
 }
 export type OrganizationNameQueryHookResult = ReturnType<typeof useOrganizationNameQuery>;
@@ -6695,9 +6938,10 @@ export function useOrganizationProfileInfoQuery(
     SchemaTypes.OrganizationProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
     OrganizationProfileInfoDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganizationProfileInfoLazyQuery(
@@ -6706,10 +6950,11 @@ export function useOrganizationProfileInfoLazyQuery(
     SchemaTypes.OrganizationProfileInfoQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
     SchemaTypes.OrganizationProfileInfoQuery,
     SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, baseOptions);
+  >(OrganizationProfileInfoDocument, options);
 }
 export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
 export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
@@ -6747,9 +6992,10 @@ export const OrganizationsListDocument = gql`
 export function useOrganizationsListQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>(
     OrganizationsListDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganizationsListLazyQuery(
@@ -6758,9 +7004,10 @@ export function useOrganizationsListLazyQuery(
     SchemaTypes.OrganizationsListQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>(
     OrganizationsListDocument,
-    baseOptions
+    options
   );
 }
 export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
@@ -6804,17 +7051,19 @@ export const ProjectProfileDocument = gql`
 export function useProjectProfileQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ProjectProfileQuery, SchemaTypes.ProjectProfileQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ProjectProfileQuery, SchemaTypes.ProjectProfileQueryVariables>(
     ProjectProfileDocument,
-    baseOptions
+    options
   );
 }
 export function useProjectProfileLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ProjectProfileQuery, SchemaTypes.ProjectProfileQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ProjectProfileQuery, SchemaTypes.ProjectProfileQueryVariables>(
     ProjectProfileDocument,
-    baseOptions
+    options
   );
 }
 export type ProjectProfileQueryHookResult = ReturnType<typeof useProjectProfileQuery>;
@@ -6862,15 +7111,14 @@ export const ProjectsDocument = gql`
 export function useProjectsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(ProjectsDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(ProjectsDocument, options);
 }
 export function useProjectsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(
-    ProjectsDocument,
-    baseOptions
-  );
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>(ProjectsDocument, options);
 }
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
@@ -6918,9 +7166,10 @@ export function useProjectsChainHistoryQuery(
     SchemaTypes.ProjectsChainHistoryQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ProjectsChainHistoryQuery, SchemaTypes.ProjectsChainHistoryQueryVariables>(
     ProjectsChainHistoryDocument,
-    baseOptions
+    options
   );
 }
 export function useProjectsChainHistoryLazyQuery(
@@ -6929,9 +7178,10 @@ export function useProjectsChainHistoryLazyQuery(
     SchemaTypes.ProjectsChainHistoryQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ProjectsChainHistoryQuery, SchemaTypes.ProjectsChainHistoryQueryVariables>(
     ProjectsChainHistoryDocument,
-    baseOptions
+    options
   );
 }
 export type ProjectsChainHistoryQueryHookResult = ReturnType<typeof useProjectsChainHistoryQuery>;
@@ -6981,17 +7231,16 @@ export const RelationsDocument = gql`
 export function useRelationsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>(
-    RelationsDocument,
-    baseOptions
-  );
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>(RelationsDocument, options);
 }
 export function useRelationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>(
     RelationsDocument,
-    baseOptions
+    options
   );
 }
 export type RelationsQueryHookResult = ReturnType<typeof useRelationsQuery>;
@@ -7042,12 +7291,14 @@ export const SearchDocument = gql`
 export function useSearchQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
 export function useSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
@@ -7084,17 +7335,19 @@ export const ServerMetadataDocument = gql`
 export function useServerMetadataQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>(
     ServerMetadataDocument,
-    baseOptions
+    options
   );
 }
 export function useServerMetadataLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>(
     ServerMetadataDocument,
-    baseOptions
+    options
   );
 }
 export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
@@ -7139,17 +7392,19 @@ export const TagsetsTemplateDocument = gql`
 export function useTagsetsTemplateQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>(
     TagsetsTemplateDocument,
-    baseOptions
+    options
   );
 }
 export function useTagsetsTemplateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>(
     TagsetsTemplateDocument,
-    baseOptions
+    options
   );
 }
 export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
@@ -7191,12 +7446,14 @@ export const UserDocument = gql`
 export function useUserQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
 export function useUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
@@ -7236,9 +7493,10 @@ export const UserApplicationsDocument = gql`
 export function useUserApplicationsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>(
     UserApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export function useUserApplicationsLazyQuery(
@@ -7247,9 +7505,10 @@ export function useUserApplicationsLazyQuery(
     SchemaTypes.UserApplicationsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>(
     UserApplicationsDocument,
-    baseOptions
+    options
   );
 }
 export type UserApplicationsQueryHookResult = ReturnType<typeof useUserApplicationsQuery>;
@@ -7293,17 +7552,19 @@ export const UserAvatarsDocument = gql`
 export function useUserAvatarsQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>(
     UserAvatarsDocument,
-    baseOptions
+    options
   );
 }
 export function useUserAvatarsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>(
     UserAvatarsDocument,
-    baseOptions
+    options
   );
 }
 export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
@@ -7342,12 +7603,14 @@ export const UsersDocument = gql`
 export function useUsersQuery(
   baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>
 ) {
-  return Apollo.useQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, options);
 }
 export function useUsersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>
 ) {
-  return Apollo.useLazyQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, options);
 }
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
@@ -7389,9 +7652,10 @@ export function useUsersWithCredentialsQuery(
     SchemaTypes.UsersWithCredentialsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
     UsersWithCredentialsDocument,
-    baseOptions
+    options
   );
 }
 export function useUsersWithCredentialsLazyQuery(
@@ -7400,9 +7664,10 @@ export function useUsersWithCredentialsLazyQuery(
     SchemaTypes.UsersWithCredentialsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
     UsersWithCredentialsDocument,
-    baseOptions
+    options
   );
 }
 export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
@@ -7451,9 +7716,10 @@ export const CommunityUpdatesDocument = gql`
 export function useCommunityUpdatesQuery(
   baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>(
     CommunityUpdatesDocument,
-    baseOptions
+    options
   );
 }
 export function useCommunityUpdatesLazyQuery(
@@ -7462,9 +7728,10 @@ export function useCommunityUpdatesLazyQuery(
     SchemaTypes.CommunityUpdatesQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.CommunityUpdatesQuery, SchemaTypes.CommunityUpdatesQueryVariables>(
     CommunityUpdatesDocument,
-    baseOptions
+    options
   );
 }
 export type CommunityUpdatesQueryHookResult = ReturnType<typeof useCommunityUpdatesQuery>;
@@ -7509,9 +7776,10 @@ export function useSendCommunityUpdateMutation(
     SchemaTypes.SendCommunityUpdateMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<SchemaTypes.SendCommunityUpdateMutation, SchemaTypes.SendCommunityUpdateMutationVariables>(
     SendCommunityUpdateDocument,
-    baseOptions
+    options
   );
 }
 export type SendCommunityUpdateMutationHookResult = ReturnType<typeof useSendCommunityUpdateMutation>;
@@ -7556,10 +7824,11 @@ export function useAssignUserToOrganisationMutation(
     SchemaTypes.AssignUserToOrganisationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.AssignUserToOrganisationMutation,
     SchemaTypes.AssignUserToOrganisationMutationVariables
-  >(AssignUserToOrganisationDocument, baseOptions);
+  >(AssignUserToOrganisationDocument, options);
 }
 export type AssignUserToOrganisationMutationHookResult = ReturnType<typeof useAssignUserToOrganisationMutation>;
 export type AssignUserToOrganisationMutationResult =
@@ -7604,10 +7873,11 @@ export function useRemoveUserFromOrganisationMutation(
     SchemaTypes.RemoveUserFromOrganisationMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.RemoveUserFromOrganisationMutation,
     SchemaTypes.RemoveUserFromOrganisationMutationVariables
-  >(RemoveUserFromOrganisationDocument, baseOptions);
+  >(RemoveUserFromOrganisationDocument, options);
 }
 export type RemoveUserFromOrganisationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganisationMutation>;
 export type RemoveUserFromOrganisationMutationResult =
@@ -7652,10 +7922,11 @@ export function useAssignUserAsOrganisationAdminMutation(
     SchemaTypes.AssignUserAsOrganisationAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.AssignUserAsOrganisationAdminMutation,
     SchemaTypes.AssignUserAsOrganisationAdminMutationVariables
-  >(AssignUserAsOrganisationAdminDocument, baseOptions);
+  >(AssignUserAsOrganisationAdminDocument, options);
 }
 export type AssignUserAsOrganisationAdminMutationHookResult = ReturnType<
   typeof useAssignUserAsOrganisationAdminMutation
@@ -7702,10 +7973,11 @@ export function useRemoveUserAsOrganisationAdminMutation(
     SchemaTypes.RemoveUserAsOrganisationAdminMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.RemoveUserAsOrganisationAdminMutation,
     SchemaTypes.RemoveUserAsOrganisationAdminMutationVariables
-  >(RemoveUserAsOrganisationAdminDocument, baseOptions);
+  >(RemoveUserAsOrganisationAdminDocument, options);
 }
 export type RemoveUserAsOrganisationAdminMutationHookResult = ReturnType<
   typeof useRemoveUserAsOrganisationAdminMutation
@@ -7750,9 +8022,10 @@ export function useOrganisationMembersQuery(
     SchemaTypes.OrganisationMembersQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.OrganisationMembersQuery, SchemaTypes.OrganisationMembersQueryVariables>(
     OrganisationMembersDocument,
-    baseOptions
+    options
   );
 }
 export function useOrganisationMembersLazyQuery(
@@ -7761,9 +8034,10 @@ export function useOrganisationMembersLazyQuery(
     SchemaTypes.OrganisationMembersQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.OrganisationMembersQuery, SchemaTypes.OrganisationMembersQueryVariables>(
     OrganisationMembersDocument,
-    baseOptions
+    options
   );
 }
 export type OrganisationMembersQueryHookResult = ReturnType<typeof useOrganisationMembersQuery>;

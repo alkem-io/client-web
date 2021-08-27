@@ -7,9 +7,8 @@ import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { env } from '../../types/env';
+import { useAuthenticationContext, useConfig } from '../../hooks';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
-import { useAuthenticationContext } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
@@ -46,13 +45,15 @@ const useStyles = createStyles(theme => ({
 
 const WelcomeSection = () => {
   const styles = useStyles();
+  const { platform } = useConfig();
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
   const globalActivity = activity?.metadata?.activity || [];
-  const [ecoverseCount, challengeCount, userCount, orgCount] = [
+  const [ecoverseCount, challengeCount, opportunityCount, userCount, orgCount] = [
     getActivityCount(globalActivity, 'ecoverses') || 0,
     getActivityCount(globalActivity, 'challenges') || 0,
+    getActivityCount(globalActivity, 'opportunities') || 0,
     getActivityCount(globalActivity, 'users') || 0,
     getActivityCount(globalActivity, 'organisations') || 0,
   ];
@@ -62,6 +63,11 @@ const WelcomeSection = () => {
       {
         name: t('pages.activity.challenges'),
         digit: challengeCount,
+        color: 'primary',
+      },
+      {
+        name: t('pages.activity.opportunities'),
+        digit: opportunityCount,
         color: 'primary',
       },
       {
@@ -126,7 +132,7 @@ const WelcomeSection = () => {
               inset
               variant="primary"
               text="contact us"
-              href={env?.REACT_APP_FEEDBACK_URL || ''}
+              href={platform?.feedback || ''}
               as={'a'}
               target="_blank"
             />

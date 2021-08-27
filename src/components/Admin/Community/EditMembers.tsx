@@ -1,3 +1,4 @@
+import React, { FC } from 'react';
 import { Box, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -6,9 +7,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { FC } from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 import { Member } from '../../../models/User';
-import Button from '../../core/Button';
 import { Filter } from '../Common/Filter';
 
 const TABLE_HEIGHT = 600;
@@ -33,8 +35,11 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
-  disabled: {
-    padding: '3px 9px',
+  iconButtonSuccess: {
+    color: theme.palette.success.main,
+  },
+  iconButtonNegative: {
+    color: theme.palette.negative.main,
   },
 }));
 
@@ -79,14 +84,15 @@ export const EditMembers: FC<EditMembersProps> = ({
                           <TableCell>{m.email}</TableCell>
                           <TableCell align={'right'}>
                             {onRemove && (
-                              <Button
-                                variant="negative"
+                              <IconButton
+                                aria-label="Remove"
                                 size="small"
                                 disabled={disableExecutor || addingMember || removingMember}
-                                className={disableExecutor ? styles.disabled : undefined}
+                                className={styles.iconButtonNegative}
                                 onClick={() => onRemove(m)}
-                                text="X"
-                              />
+                              >
+                                <RemoveIcon />
+                              </IconButton>
                             )}
                           </TableCell>
                         </TableRow>
@@ -101,7 +107,7 @@ export const EditMembers: FC<EditMembersProps> = ({
       </Grid>
       <Grid item sm={4}>
         Available users:
-        <Filter data={availableMembers}>
+        <Filter data={availableMembers} limitKeys={['displayName', 'firstName', 'lastName']}>
           {filteredData => {
             return (
               <>
@@ -120,12 +126,15 @@ export const EditMembers: FC<EditMembersProps> = ({
                           <TableRow key={m.email} className={styles.trow}>
                             <TableCell>
                               {onAdd && (
-                                <Button
+                                <IconButton
+                                  aria-label="Add"
                                   size="small"
                                   onClick={() => onAdd(m)}
-                                  text="+"
+                                  className={styles.iconButtonSuccess}
                                   disabled={addingMember || removingMember}
-                                />
+                                >
+                                  <AddIcon />
+                                </IconButton>
                               )}
                             </TableCell>
                             <TableCell>{m.displayName}</TableCell>

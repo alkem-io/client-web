@@ -33,8 +33,8 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
   return (
     <CommunitySection
       users={(usersQuery?.ecoverse.opportunity.community?.members as User[]) || []}
-      updates={data?.ecoverse.opportunity.community?.updatesRoom.messages}
-      discussions={data?.ecoverse.opportunity.community?.discussionRoom.messages}
+      updates={data?.ecoverse.opportunity.community?.updatesRoom?.messages}
+      discussions={data?.ecoverse.opportunity.community?.discussionRoom?.messages}
       {...rest}
     />
   );
