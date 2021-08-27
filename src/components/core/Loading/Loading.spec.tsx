@@ -1,7 +1,6 @@
-import renderer from 'react-test-renderer';
 import Loading from './Loading';
 import Typography from '../Typography';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../utils/test/test-utils';
 
 describe('Loading component', () => {
   test('render correctly Typography component', () => {
@@ -20,10 +19,10 @@ describe('Loading component', () => {
     const text = 'Please wait';
 
     // act
-    const TextComponent = renderer.create(<Loading text={text} />).toJSON();
+    const { asFragment } = render(<Loading text={text} />);
 
     // assert
-    expect(TextComponent).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   test('check loading with message', async () => {

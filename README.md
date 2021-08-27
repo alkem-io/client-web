@@ -80,7 +80,6 @@ We have automated the creation and deployment of containers to docker hub via a 
 
 - [VS Code](https://code.visualstudio.com/) - development environment
 - [Jest](https://jestjs.io/) - component testing
-- [Enzyme](https://enzymejs.github.io/enzyme/) - component testing
 
 ### Test levels
 
