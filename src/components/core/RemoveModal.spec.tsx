@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import RemoveModal from './RemoveModal';
 import userEvent from '@testing-library/user-event';
+import { render, screen } from '../../utils/test/test-utils';
+import RemoveModal from './RemoveModal';
 
-describe.skip('RemoveModal - main', () => {
+describe('RemoveModal - main', () => {
   const show = true;
   const text = 'text';
   const title = 'confirm';
@@ -43,11 +43,11 @@ describe.skip('RemoveModal - main', () => {
     render(<RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} />);
 
     // act
-    userEvent.click(screen.getByText('Cancel'));
+    userEvent.click(screen.getByText('Remove'));
 
     // assert
-    expect(onCancel).toHaveBeenCalledTimes(1);
-    expect(onConfirm).toHaveBeenCalledTimes(0);
+    expect(onCancel).toHaveBeenCalledTimes(0);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
   test('calls modal remove button', () => {
@@ -63,7 +63,7 @@ describe.skip('RemoveModal - main', () => {
   });
 });
 
-describe.skip('RemoveModal - negative', () => {
+describe('RemoveModal - negative', () => {
   test('modal is not loaded', () => {
     // arrange
     const show = false;

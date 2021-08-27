@@ -1,8 +1,8 @@
+import { cleanup, render } from '../../utils/test/test-utils';
 import Toolbar from './Toolbar';
-import { cleanup, render } from '@testing-library/react';
 
 afterEach(cleanup);
-describe.skip('Toolbar - main', () => {
+describe('Toolbar - main', () => {
   test('render correctly Toolbar component', () => {
     // arrange
     const { asFragment } = render(<Toolbar />);
