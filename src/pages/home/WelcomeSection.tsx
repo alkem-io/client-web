@@ -50,9 +50,10 @@ const WelcomeSection = () => {
   const { isAuthenticated } = useAuthenticationContext();
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
   const globalActivity = activity?.metadata?.activity || [];
-  const [ecoverseCount, challengeCount, userCount, orgCount] = [
+  const [ecoverseCount, challengeCount, opportunityCount, userCount, orgCount] = [
     getActivityCount(globalActivity, 'ecoverses') || 0,
     getActivityCount(globalActivity, 'challenges') || 0,
+    getActivityCount(globalActivity, 'opportunities') || 0,
     getActivityCount(globalActivity, 'users') || 0,
     getActivityCount(globalActivity, 'organisations') || 0,
   ];
@@ -62,6 +63,11 @@ const WelcomeSection = () => {
       {
         name: t('pages.activity.challenges'),
         digit: challengeCount,
+        color: 'primary',
+      },
+      {
+        name: t('pages.activity.opportunities'),
+        digit: opportunityCount,
         color: 'primary',
       },
       {
