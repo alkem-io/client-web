@@ -5,20 +5,21 @@ import Loading from '../components/core/Loading/Loading';
 import { ConfigurationDocument } from '../hooks/generated/graphql';
 import { Error } from '../pages/Error';
 import { ConfigurationFragment, ConfigurationQuery } from '../models/graphql-schema';
-import { env } from '../types/env';
-
-const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
 export interface ConfigContext {
   config?: ConfigurationFragment;
   loading: boolean;
 }
 
+interface Props {
+  apiUrl: string;
+}
+
 const configContext = React.createContext<ConfigContext>({
   loading: true,
 });
 
-const ConfigProvider: FC = ({ children }) => {
+const ConfigProvider: FC<Props> = ({ children, apiUrl }) => {
   const [config, setConfig] = useState<ConfigurationFragment>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
@@ -42,8 +43,8 @@ const ConfigProvider: FC = ({ children }) => {
       }
     };
 
-    if (graphQLEndpoint) {
-      queryConfig(graphQLEndpoint)
+    if (apiUrl) {
+      queryConfig(apiUrl)
         .then(result => {
           if (result) {
             setConfig(result);
@@ -56,7 +57,7 @@ const ConfigProvider: FC = ({ children }) => {
           setLoading(false);
         });
     }
-  }, [graphQLEndpoint]);
+  }, [apiUrl]);
 
   return (
     <configContext.Provider

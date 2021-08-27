@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { WinstonProvider } from 'winston-react';
@@ -12,12 +11,12 @@ import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import { createStyles } from './hooks';
 import './i18n/config';
-import { Error as ErrorPage } from './pages/Error';
 import { Routing } from './routing/routing';
-import sentryBootstrap from './services/logging/sentry/bootstrap';
 import { logger } from './services/logging/winston/logger';
+import { env } from './types/env';
+import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 
-sentryBootstrap();
+const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -59,17 +58,13 @@ const Root: FC = () => {
   useGlobalStyles();
   return (
     <ThemeProvider>
-      <ConfigProvider>
-        <Sentry.ErrorBoundary
-          fallback={({ error }) => {
-            return <ErrorPage error={error} />;
-          }}
-        >
+      <ConfigProvider apiUrl={graphQLEndpoint}>
+        <SentryErrorBoundaryProvider>
           <WinstonProvider logger={logger}>
             <GlobalStateProvider>
               <BrowserRouter>
                 <AuthenticationProvider>
-                  <AlkemioApolloProvider>
+                  <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
                     <NavigationProvider>
                       <UserProvider>
                         <App>
@@ -82,7 +77,7 @@ const Root: FC = () => {
               </BrowserRouter>
             </GlobalStateProvider>
           </WinstonProvider>
-        </Sentry.ErrorBoundary>
+        </SentryErrorBoundaryProvider>
       </ConfigProvider>
     </ThemeProvider>
   );
