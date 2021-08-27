@@ -10,7 +10,7 @@ import { EditMode } from '../../utils/editMode';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { data, loading } = useUsersQuery();
+  const { data, loading } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
@@ -47,7 +47,7 @@ interface UserProps extends PageProps {
 
 export const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
   const { userId } = useParams<{ userId: string }>();
-  const { data, loading } = useUserQuery({ variables: { id: userId } });
+  const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
 
   if (loading) return <Loading text={'Loading user...'} />;
   const user = data?.user as UserModel;

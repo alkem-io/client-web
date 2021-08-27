@@ -32,7 +32,7 @@ import { Challenge as ChallengeType, Context, Organisation } from '../models/gra
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
-import CardFilter from '../components/core/CardFilter';
+import CardFilter from '../components/core/card-filter/CardFilter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
