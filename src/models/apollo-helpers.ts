@@ -217,10 +217,11 @@ export type CommunityRoomFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ConfigKeySpecifier = ('authentication' | 'platform' | 'template' | ConfigKeySpecifier)[];
+export type ConfigKeySpecifier = ('authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
 export type ConfigFieldPolicy = {
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContextKeySpecifier = (
@@ -400,6 +401,7 @@ export type MutationKeySpecifier = (
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
   | 'assignUserAsOrganisationAdmin'
+  | 'assignUserAsOrganisationOwner'
   | 'assignUserToCommunity'
   | 'assignUserToGroup'
   | 'assignUserToOrganisation'
@@ -451,6 +453,7 @@ export type MutationKeySpecifier = (
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
   | 'removeUserAsOrganisationAdmin'
+  | 'removeUserAsOrganisationOwner'
   | 'removeUserFromCommunity'
   | 'removeUserFromGroup'
   | 'removeUserFromOrganisation'
@@ -458,6 +461,7 @@ export type MutationKeySpecifier = (
   | 'updateActor'
   | 'updateAspect'
   | 'updateChallenge'
+  | 'updateEcosystemModel'
   | 'updateEcoverse'
   | 'updateOpportunity'
   | 'updateOrganisation'
@@ -474,6 +478,7 @@ export type MutationFieldPolicy = {
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganisationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsOrganisationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -525,6 +530,7 @@ export type MutationFieldPolicy = {
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganisationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsOrganisationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -532,6 +538,7 @@ export type MutationFieldPolicy = {
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -775,6 +782,12 @@ export type SearchResultEntryFieldPolicy = {
 export type SearchableKeySpecifier = ('id' | SearchableKeySpecifier)[];
 export type SearchableFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'submitPII' | SentryKeySpecifier)[];
+export type SentryFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
+  submitPII?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataKeySpecifier)[];
 export type ServiceMetadataFieldPolicy = {
@@ -1127,6 +1140,10 @@ export type StrictTypedTypePolicies = {
   Searchable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchableKeySpecifier | (() => undefined | SearchableKeySpecifier);
     fields?: SearchableFieldPolicy;
+  };
+  Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);
+    fields?: SentryFieldPolicy;
   };
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
