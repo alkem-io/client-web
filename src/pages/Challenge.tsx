@@ -7,7 +7,8 @@ import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Box } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
@@ -107,10 +108,6 @@ interface ChallengePageProps extends PageProps {
 }
 
 const useChallengeStyles = createStyles(theme => ({
-  divNav: {
-    display: 'flex',
-    gap: theme.spacing(4),
-  },
   edit: {
     '&:hover': {
       cursor: 'pointer',
@@ -200,9 +197,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
     ];
   }, [activity]);
 
-  const challengeRefs = challenge?.context?.references
-    ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')
-    ?.slice(0, 3);
+  const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
 
   return (
     <>
@@ -259,17 +254,21 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             )}
           </Box>
 
-          <div className={styles.divNav}>
-            <Button
-              inset
-              variant="semiTransparent"
-              text={t('common.opportunities')}
-              onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            />
+          <Grid container spacing={1}>
+            <Grid item>
+              <Button
+                inset
+                variant="semiTransparent"
+                text={t('common.opportunities')}
+                onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              />
+            </Grid>
             {challengeRefs?.map((l, i) => (
-              <Button key={i} as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
+              <Grid item key={i}>
+                <Button as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </Body>
       </Section>
       <Section
