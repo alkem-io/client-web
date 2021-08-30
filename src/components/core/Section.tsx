@@ -58,10 +58,9 @@ export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, c
   );
 };
 
-const useSubHeaderStyles = createStyles(theme => ({
+const useSubHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
   header: {
-    color: (props: ClassProps) =>
-      `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
+    color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
   },
 }));
 
@@ -148,7 +147,7 @@ interface SectionClassProps extends ClassProps {
   coverBackground?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
 }
 
-const useSectionStyles = makeStyles(theme => ({
+const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
   root: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
@@ -173,6 +172,18 @@ const useSectionStyles = makeStyles(theme => ({
   gutter: {
     paddingTop: theme.spacing(4),
   },
+  cover: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+    background: props => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
+  },
+  content: {
+    zIndex: 1,
+  },
 }));
 
 const Section: FC<SectionProps> = ({
@@ -194,6 +205,7 @@ const Section: FC<SectionProps> = ({
 
   return (
     <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
+      <div className={styles.cover} />
       <Grid container spacing={2}>
         {!hideAvatar && (
           <Grid item md={12} lg={3}>
@@ -204,6 +216,7 @@ const Section: FC<SectionProps> = ({
           item
           container
           direction={'column'}
+          className={styles.content}
           xs={12}
           md={(8 + (hideDetails || !details ? 4 : 0)) as GridSize}
           lg={(6 + (hideAvatar ? 3 : 0) + (hideDetails ? 3 : 0)) as GridSize}
@@ -211,7 +224,7 @@ const Section: FC<SectionProps> = ({
           <Content gutters={gutters.content}>{children}</Content>
         </Grid>
         {!hideDetails && details && (
-          <Grid item xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={4} lg={3} className={styles.content}>
             <div className={clsx(gutters.details && styles.gutter)}>{details}</div>
           </Grid>
         )}

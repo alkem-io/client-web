@@ -7,7 +7,8 @@ import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Box } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
@@ -107,10 +108,6 @@ interface ChallengePageProps extends PageProps {
 }
 
 const useChallengeStyles = createStyles(theme => ({
-  divNav: {
-    display: 'flex',
-    gap: theme.spacing(4),
-  },
   edit: {
     '&:hover': {
       cursor: 'pointer',
@@ -143,7 +140,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities = [], leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
-  const { references, background = '', tagline, who = '', visual } = context || {};
+  const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
 
@@ -200,9 +197,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
     ];
   }, [activity]);
 
-  const challengeRefs = challenge?.context?.references
-    ?.filter(r => !r.name.includes('visual') || r.uri === '' || r.uri === '""')
-    ?.slice(0, 3);
+  const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
 
   return (
     <>
@@ -259,17 +254,21 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
             )}
           </Box>
 
-          <div className={styles.divNav}>
-            <Button
-              inset
-              variant="semiTransparent"
-              text={t('common.opportunities')}
-              onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            />
+          <Grid container spacing={1}>
+            <Grid item>
+              <Button
+                inset
+                variant="semiTransparent"
+                text={t('common.opportunities')}
+                onClick={() => opportunityRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              />
+            </Grid>
             {challengeRefs?.map((l, i) => (
-              <Button key={i} as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
+              <Grid item key={i}>
+                <Button as="a" inset variant="semiTransparent" text={l.name} href={l.uri} target="_blank" />
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </Body>
       </Section>
       <Section
@@ -279,7 +278,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
         <Body>
-          <Markdown children={background} />
+          <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
             {user?.ofChallenge(challenge?.id) ? (
@@ -291,26 +290,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
         </Body>
       </Section>
       <Divider />
-      <BackdropWithMessage
-        message={t('components.backdrop.authentication', {
-          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
-        })}
-        show={!!user}
-      >
-        <ChallengeCommunitySection
-          challengeId={challenge.id}
-          ecoverseId={ecoverseId}
-          title={t('pages.challenge.sections.community.header')}
-          subTitle={t('pages.challenge.sections.community.subheader')}
-          body={who}
-          onExplore={() => history.push(SEARCH_PAGE)}
-        />
-      </BackdropWithMessage>
-      <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.challenge.sections.opportunities.header')} />
-        <SubHeader text={t('pages.challenge.sections.opportunities.subheader')} />
+        <SubHeader text={t('pages.challenge.sections.opportunities.subheader')}>
+          <Markdown children={background} />
+        </SubHeader>
+        <Body>
+          <Markdown children={impact} />
+        </Body>
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
@@ -336,6 +324,22 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           )}
         </CardFilter>
       )}
+      <Divider />
+      <BackdropWithMessage
+        message={t('components.backdrop.authentication', {
+          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
+        })}
+        show={!!user}
+      >
+        <ChallengeCommunitySection
+          challengeId={challenge.id}
+          ecoverseId={ecoverseId}
+          title={t('pages.challenge.sections.community.header')}
+          subTitle={t('pages.challenge.sections.community.subheader')}
+          body={who}
+          onExplore={() => history.push(SEARCH_PAGE)}
+        />
+      </BackdropWithMessage>
       <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}

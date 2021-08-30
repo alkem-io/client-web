@@ -262,7 +262,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
         <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
-          body={t('pages.ecoverse.sections.community.body')}
+          body={context?.who}
           shuffle={true}
           onExplore={() => history.push(SEARCH_PAGE)}
         />
