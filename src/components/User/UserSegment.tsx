@@ -1,16 +1,16 @@
-import React, { FC, useMemo, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Popover } from '@material-ui/core';
-import { createStyles } from '../../hooks/useTheme';
-import { UserMetadata } from '../../hooks';
-import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
+import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
+import React, { FC, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { UserMetadata } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
-import Typography from '../core/Typography';
-import User from './User';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
+import Typography from '../core/Typography';
+import User from './User';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -26,9 +26,10 @@ interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
   emailVerified: boolean;
+  logoutUrl?: string;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified, logoutUrl: _logoutUrl }) => {
   const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -90,18 +91,19 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
               />
             </Box>
-            <Box>
+            <Box display="flex" textAlign="center">
               <Button
+                as={'a'}
+                href={_logoutUrl}
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push('/identity/logout');
                 }}
                 variant="transparent"
                 inset
                 block
                 small
+                text={t('authentication.sign-out')}
                 startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
-                text={t('buttons.sign-out')}
               />
             </Box>
           </Box>

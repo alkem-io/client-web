@@ -26,8 +26,8 @@ import Main from './Main';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthenticationContext();
   const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
+  const { isAuthenticated, logoutUrl } = useAuthenticationContext();
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading } = useConfig();
@@ -116,6 +116,7 @@ const App = ({ children }): React.ReactElement => {
                   userMetadata={user}
                   orientation={isVisible ? 'vertical' : 'horizontal'}
                   emailVerified={verified}
+                  logoutUrl={logoutUrl}
                 />
               )}
             </div>
