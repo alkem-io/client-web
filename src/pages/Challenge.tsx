@@ -143,7 +143,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
   useUpdateNavigation({ currentPaths: paths });
   const { displayName: name, context, opportunities = [], leadOrganisations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
-  const { references, background = '', tagline, who = '', visual } = context || {};
+  const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
 
@@ -279,7 +279,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
         <Body>
-          <Markdown children={background} />
+          <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
             {user?.ofChallenge(challenge?.id) ? (
@@ -291,26 +291,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
         </Body>
       </Section>
       <Divider />
-      <BackdropWithMessage
-        message={t('components.backdrop.authentication', {
-          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
-        })}
-        show={!!user}
-      >
-        <ChallengeCommunitySection
-          challengeId={challenge.id}
-          ecoverseId={ecoverseId}
-          title={t('pages.challenge.sections.community.header')}
-          subTitle={t('pages.challenge.sections.community.subheader')}
-          body={who}
-          onExplore={() => history.push(SEARCH_PAGE)}
-        />
-      </BackdropWithMessage>
-      <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.challenge.sections.opportunities.header')} />
-        <SubHeader text={t('pages.challenge.sections.opportunities.subheader')} />
+        <SubHeader text={t('pages.challenge.sections.opportunities.subheader')}>
+          <Markdown children={background} />
+        </SubHeader>
+        <Body>
+          <Markdown children={impact} />
+        </Body>
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
@@ -336,6 +325,22 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
           )}
         </CardFilter>
       )}
+      <Divider />
+      <BackdropWithMessage
+        message={t('components.backdrop.authentication', {
+          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
+        })}
+        show={!!user}
+      >
+        <ChallengeCommunitySection
+          challengeId={challenge.id}
+          ecoverseId={ecoverseId}
+          title={t('pages.challenge.sections.community.header')}
+          subTitle={t('pages.challenge.sections.community.subheader')}
+          body={who}
+          onExplore={() => history.push(SEARCH_PAGE)}
+        />
+      </BackdropWithMessage>
       <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}
