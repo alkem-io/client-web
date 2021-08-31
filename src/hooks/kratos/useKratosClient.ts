@@ -20,6 +20,7 @@ export const useKratosClient = () => {
   const { authentication } = useConfig();
 
   return useMemo(() => {
+    if (!authentication) return undefined;
     const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
     return new V0alpha1Api(new Configuration({ basePath: config?.kratosPublicBaseURL }));
   }, [authentication]);

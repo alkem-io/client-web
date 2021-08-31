@@ -102,7 +102,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 inset
                 block
                 small
-                text={t('authentication.sign-out')}
+                text={t('buttons.sign-out')}
                 startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
               />
             </Box>

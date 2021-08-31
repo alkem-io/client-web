@@ -12,44 +12,46 @@ export const useWhoami = () => {
   const kratosClient = useKratosClient();
 
   useEffect(() => {
-    kratosClient
-      .toSession()
-      .then(result => {
-        if (result.status === 200) {
-          setSession(result.data);
-          setIsAuthenticated(true);
-        } else if (result.status === 401) {
+    if (kratosClient)
+      kratosClient
+        .toSession()
+        .then(result => {
+          if (result.status === 200) {
+            setSession(result.data);
+            setIsAuthenticated(true);
+          } else if (result.status === 401) {
+            setIsAuthenticated(false);
+          } else {
+            setIsAuthenticated(false);
+            setError(`${result.status} - ${DEFAULT_ERROR_MESSAGE}`);
+          }
+        })
+        .catch(err => {
           setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(false);
-          setError(`${result.status} - ${DEFAULT_ERROR_MESSAGE}`);
-        }
-      })
-      .catch(err => {
-        setIsAuthenticated(false);
-        if (err.request && err.request.status === 401) {
-          setError(`${err.request.status} - Unauthenticated`);
-          return;
-        }
-        setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE);
-      })
-      .finally(() => setLoading(false));
+          if (err.request && err.request.status === 401) {
+            setError(`${err.request.status} - Unauthenticated`);
+            return;
+          }
+          setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE);
+        })
+        .finally(() => setLoading(false));
   }, [kratosClient]);
 
   useEffect(() => {
     if (!isAuthenticated) setLogoutUrl('');
     else if (isAuthenticated) {
       setLoading(true);
-      kratosClient
-        .createSelfServiceLogoutFlowUrlForBrowsers()
-        .then(({ status, data }) => {
-          if (status !== 200) {
-            console.error(data);
-          }
-          setLogoutUrl(data.logout_url);
-        })
-        .catch(err => setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE))
-        .finally(() => setLoading(false));
+      if (kratosClient)
+        kratosClient
+          .createSelfServiceLogoutFlowUrlForBrowsers()
+          .then(({ status, data }) => {
+            if (status !== 200) {
+              console.error(data);
+            }
+            setLogoutUrl(data.logout_url);
+          })
+          .catch(err => setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE))
+          .finally(() => setLoading(false));
     }
   }, [kratosClient, isAuthenticated]);
 
