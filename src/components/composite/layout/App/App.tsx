@@ -26,8 +26,8 @@ import Main from './Main';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
   const { isAuthenticated } = useAuthenticationContext();
+  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading } = useConfig();
