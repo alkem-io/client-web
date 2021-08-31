@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
@@ -6,6 +6,7 @@ import { createStyles } from '../hooks/useTheme';
 import { useServerMetadataQuery } from '../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@material-ui/core';
+import { useUpdateNavigation } from '../hooks';
 
 const useAboutStyles = createStyles(theme => ({
   content: {
@@ -52,6 +53,10 @@ const AboutPage = () => {
   const styles = useAboutStyles();
   const { data } = useServerMetadataQuery();
   const { t } = useTranslation();
+
+  const currentPaths = useMemo(() => [], []);
+  useUpdateNavigation({ currentPaths });
+
   return (
     <>
       <Grid container spacing={2}>
@@ -88,7 +93,6 @@ const AboutPage = () => {
         </Grid>
         <Grid item lg={3} className={styles.mdHidden} />
       </Grid>
-      <div className={styles.ring} />
     </>
   );
 };
