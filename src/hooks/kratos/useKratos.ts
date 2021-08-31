@@ -23,7 +23,6 @@ export const useKratos = () => {
   const [loading, setLoading] = useState<boolean>();
 
   const handleFlowError = err => {
-    debugger;
     const response = err && err.response;
     if (response) {
       if (response.status === 410) {
@@ -153,11 +152,6 @@ export const useKratos = () => {
     verificationFlow: flow as SelfServiceVerificationFlow,
     error,
     loading,
-    // initializeLoginFlow,
-    // initializeRegistrationFlow,
-    // initializeRecoveryFlow,
-    // initializeVerificationFlow,
-    // initializeSettingsFlow,
     getLoginFlow: getSelfServiceLoginFlow,
     getRecoveryFlow: getSelfServiceRecoveryFlow,
     getRegistrationFlow: getSelfServiceRegistrationFlow,
