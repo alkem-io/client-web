@@ -1,14 +1,14 @@
 import { Session } from '@ory/kratos-client';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
 
 export const useWhoami = () => {
+  const { t } = useTranslation();
   const [session, setSession] = useState<Session>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [logoutUrl, setLogoutUrl] = useState<string>();
-  const DEFAULT_ERROR_MESSAGE = "Can't get session information!";
   const kratosClient = useKratosClient();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const useWhoami = () => {
             setIsAuthenticated(false);
           } else {
             setIsAuthenticated(false);
-            setError(`${result.status} - ${DEFAULT_ERROR_MESSAGE}`);
+            setError(`${result.status} - ${t('kratos.errors.session.default')}`);
           }
         })
         .catch(err => {
@@ -32,32 +32,14 @@ export const useWhoami = () => {
             setError(`${err.request.status} - Unauthenticated`);
             return;
           }
-          setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE);
+          setError(err.message ? err.message : t('kratos.errors.session.default'));
         })
         .finally(() => setLoading(false));
   }, [kratosClient]);
-
-  useEffect(() => {
-    if (!isAuthenticated) setLogoutUrl('');
-    else if (isAuthenticated) {
-      setLoading(true);
-      if (kratosClient)
-        kratosClient
-          .createSelfServiceLogoutFlowUrlForBrowsers()
-          .then(({ status, data }) => {
-            if (status !== 200) {
-              console.error(data);
-            }
-            setLogoutUrl(data.logout_url);
-          })
-          .catch(err => setError(err.message ? err.message : DEFAULT_ERROR_MESSAGE))
-          .finally(() => setLoading(false));
-    }
-  }, [kratosClient, isAuthenticated]);
 
   const verified = useMemo(() => {
     return session?.identity.verifiable_addresses?.[0].verified || false;
   }, [session]);
 
-  return { session, loading, error, isAuthenticated, verified, logoutUrl };
+  return { session, loading, error, isAuthenticated, verified };
 };

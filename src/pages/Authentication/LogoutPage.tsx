@@ -1,9 +1,8 @@
-import axios from 'axios';
+import { Typography } from '@material-ui/core';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { useAuthenticationContext, useUpdateNavigation } from '../../hooks';
+import { useKratos, useUpdateNavigation } from '../../hooks';
 
 interface LogoutPageProps {}
 
@@ -11,38 +10,35 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
-  const { logoutUrl } = useAuthenticationContext();
-  const history = useHistory();
-  // const client = useKratosClient();
+  const { getLogoutUrl, logoutUrl, error } = useKratos();
 
-  // TODO [ATS]: Implement logout .... after kratos team answer questions
   useEffect(() => {
-    // kratos.createSelfServiceLogoutFlowUrlForBrowsers().then(({ data }) => {
-    //   if (data.logout_url) {
-    //     console.log(data.logout_url);
-    //     window.location.replace(data.logout_url);
-    //   }
-    // });
-
     if (logoutUrl) {
-      // const token = logoutUrl.split('token=')[1];
-      //  client
-      //    .submitSelfServiceLogoutFlow(token)
-      axios
-        .get(logoutUrl, {
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(data => {
-          console.log(data);
-          history.replace('/');
-        });
+      window.location.replace(logoutUrl);
+      // For when the AJAX logout redirects to configured path.
+      // until then use the logoutUrl.
+      // axios
+      //   .get(logoutUrl, {
+      //     headers: {
+      //       accept: 'application/json',
+      //       'Content-Type': 'application/json',
+      //     },
+      //   })
+      //   .then(_data => {
+      //     window.location.replace('/');
+      //   })
+      //   .catch(() => {
+      //     // Should not hit this. When error occur the page should be redirected to the error page.
+      //     logger.error('This should not be hit!');
+      //     window.location.replace('/');
+      //   });
+    } else {
+      getLogoutUrl();
     }
     return () => {};
-  }, []);
+  }, [logoutUrl]);
 
+  if (error) return <Typography>{error}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;
 };
 

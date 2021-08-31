@@ -7,6 +7,7 @@ import {
 } from '@ory/kratos-client';
 import { AxiosResponse } from 'axios';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
 
 type FlowTypes =
@@ -17,10 +18,12 @@ type FlowTypes =
   | SelfServiceRecoveryFlow;
 
 export const useKratos = () => {
+  const { t } = useTranslation();
   const client = useKratosClient();
   const [flow, setFlow] = useState<FlowTypes>();
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>();
+  const [logoutUrl, setLogoutUrl] = useState<string>();
 
   const handleFlowError = err => {
     const response = err && err.response;
@@ -144,12 +147,27 @@ export const useKratos = () => {
     [client]
   );
 
+  const getLogoutUrl = useCallback(() => {
+    if (client)
+      client
+        .createSelfServiceLogoutFlowUrlForBrowsers()
+        .then(({ status, data }) => {
+          if (status !== 200) {
+            console.error(data);
+          }
+          setLogoutUrl(data.logout_url);
+        })
+        .catch(err => setError(err.message ? err.message : t('kratos.errors.session.default')))
+        .finally(() => setLoading(false));
+  }, [client]);
+
   return {
     loginFlow: flow as SelfServiceLoginFlow,
     registrationFlow: flow as SelfServiceRegistrationFlow,
     recoveryFlow: flow as SelfServiceRecoveryFlow,
     settingsFlow: flow as SelfServiceSettingsFlow,
     verificationFlow: flow as SelfServiceVerificationFlow,
+    logoutUrl,
     error,
     loading,
     getLoginFlow: getSelfServiceLoginFlow,
@@ -157,5 +175,6 @@ export const useKratos = () => {
     getRegistrationFlow: getSelfServiceRegistrationFlow,
     getSettingsFlow: getSelfServiceSettingsFlow,
     getVerificationFlow: getSelfServiceVerificationFlow,
+    getLogoutUrl,
   };
 };

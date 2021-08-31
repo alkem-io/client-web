@@ -3,7 +3,7 @@ import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserMetadata } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
@@ -26,16 +26,14 @@ interface UserSegmentProps {
   orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
   emailVerified: boolean;
-  logoutUrl?: string;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified, logoutUrl: _logoutUrl }) => {
+const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
   const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
   const styles = useStyles();
-  const history = useHistory();
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -77,11 +75,12 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 {role}
               </Typography>
             </Box>
-            <Box display="flex">
+            <Box display="flex" textAlign="center">
               <Button
+                as={Link}
+                to={'/profile'}
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push('/profile');
                 }}
                 variant="transparent"
                 inset
@@ -93,8 +92,8 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
             </Box>
             <Box display="flex" textAlign="center">
               <Button
-                as={'a'}
-                href={_logoutUrl}
+                as={Link}
+                to={'/identity/logout'}
                 onClick={() => {
                   setDropdownOpen(false);
                 }}
