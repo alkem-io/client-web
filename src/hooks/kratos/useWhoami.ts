@@ -16,23 +16,23 @@ export const useWhoami = () => {
       kratosClient
         .toSession()
         .then(result => {
+          setIsAuthenticated(result.status === 200);
+
           if (result.status === 200) {
             setSession(result.data);
-            setIsAuthenticated(true);
           } else if (result.status === 401) {
-            setIsAuthenticated(false);
+            setError(`${result.status} - ${t('kratos.errors.401')}`);
           } else {
-            setIsAuthenticated(false);
             setError(`${result.status} - ${t('kratos.errors.session.default')}`);
           }
         })
         .catch(err => {
           setIsAuthenticated(false);
           if (err.request && err.request.status === 401) {
-            setError(`${err.request.status} - Unauthenticated`);
-            return;
+            setError(`${err.request.status} - ${t('kratos.errors.401')}`);
+          } else {
+            setError(err.message ? err.message : t('kratos.errors.session.default'));
           }
-          setError(err.message ? err.message : t('kratos.errors.session.default'));
         })
         .finally(() => setLoading(false));
   }, [kratosClient]);

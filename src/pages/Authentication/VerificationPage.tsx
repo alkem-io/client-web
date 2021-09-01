@@ -19,7 +19,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     getVerificationFlow(flow);
   }, [getVerificationFlow, flow]);
 
-  if (loading) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   return (
     <Container maxWidth="lg">

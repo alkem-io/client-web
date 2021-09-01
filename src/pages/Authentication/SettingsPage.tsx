@@ -24,7 +24,7 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
     getSettingsFlow(flow);
   }, [getSettingsFlow, flow]);
 
-  if (loading) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   return (
     <Container maxWidth="lg">

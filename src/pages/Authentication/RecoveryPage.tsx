@@ -18,7 +18,7 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
     getRecoveryFlow(flow);
   }, [getRecoveryFlow, flow]);
 
-  if (loading) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   return (
     <Container maxWidth="lg">

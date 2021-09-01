@@ -8,6 +8,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { logger } from '../../services/logging/winston/logger';
 import { useKratosClient } from './useKratosClient';
 
 type FlowTypes =
@@ -41,7 +42,7 @@ export const useKratos = () => {
     promise
       .then(({ status, data }) => {
         if (status !== 200) {
-          console.error(data);
+          logger.error(data);
           setError(new Error('Error loading flow!'));
         }
         setFlow(data);
@@ -153,7 +154,7 @@ export const useKratos = () => {
         .createSelfServiceLogoutFlowUrlForBrowsers()
         .then(({ status, data }) => {
           if (status !== 200) {
-            console.error(data);
+            logger.error(data);
           }
           setLogoutUrl(data.logout_url);
         })

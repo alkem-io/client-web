@@ -5,8 +5,10 @@ import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
 import { logger } from '../../services/logging/winston/logger';
+import { useTranslation } from 'react-i18next';
 
 export const ErrorRoute: FC = () => {
+  const { t } = useTranslation();
   const params = useQueryParams();
   const errorCode = params.get('id');
   const [error, setError] = useState<SelfServiceError>();
@@ -24,7 +26,7 @@ export const ErrorRoute: FC = () => {
   }, [errorCode, kratos]);
 
   if (!error) {
-    return <Loading text={'Loading config'} />;
+    return <Loading text={t('kratos.loading-error')} />;
   }
 
   return (

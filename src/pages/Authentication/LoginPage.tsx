@@ -29,7 +29,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     getLoginFlow(flow);
   }, [getLoginFlow, flow]);
 
-  if (loading) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   const resetPassword = (
     <Box display={'flex'} justifyContent={'flex-end'}>

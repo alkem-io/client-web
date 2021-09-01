@@ -28,7 +28,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   const { platform, loading: loadingPlatform } = useConfig();
 
-  if (loadingPlatform || loading) return <Loading text={'Loading flow'} />;
+  if (loadingPlatform || loading) return <Loading text={t('kratos.loading-flow')} />;
 
   return (
     <AuthenticationLayout>

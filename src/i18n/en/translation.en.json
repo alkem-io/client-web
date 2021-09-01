@@ -547,7 +547,10 @@
     "errors": {
       "session": {
         "default": "Can't get session information!"
-      }
-    }
+      },
+      "401": "Unauthenticated"
+    },
+    "loading-flow": "Loading flow",
+    "loading-error": "Loading error"
   }
 }
