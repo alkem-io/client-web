@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Icon from '../Icon';
 import IconButton from '../IconButton';
 
+const SCROLL_OFFSET = 36;
+
 const ScrollButton = () => {
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
@@ -19,11 +21,7 @@ const ScrollButton = () => {
   useEffect(() => {
     const toggleVisible = () => {
       const scrolled = document.documentElement.scrollTop;
-      if (scrolled > 30) {
-        setVisible(true);
-      } else if (scrolled <= 30) {
-        setVisible(false);
-      }
+      setVisible(scrolled > SCROLL_OFFSET);
     };
     window.addEventListener('scroll', toggleVisible);
     return () => window.removeEventListener('scroll', toggleVisible);
