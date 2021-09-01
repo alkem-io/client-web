@@ -50,9 +50,16 @@ const useStyles = createStyles(theme => ({
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
+  permissions: {
+    edit: boolean;
+  };
 }
 
-const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({
+  permissions = { edit: false },
+  paths,
+  ecoverse,
+}): React.ReactElement => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -199,11 +206,13 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
         <SectionHeader
           text={name}
           editComponent={
-            <SettingsButton
-              color={'primary'}
-              to={`/admin/ecoverses/${ecoverseId}`}
-              tooltip={t('pages.ecoverse.sections.header.buttons.edit.tooltip')}
-            />
+            permissions.edit && (
+              <SettingsButton
+                color={'primary'}
+                to={`/admin/ecoverses/${ecoverseId}`}
+                tooltip={t('pages.ecoverse.sections.header.buttons.edit.tooltip')}
+              />
+            )
           }
         >
           {/* {user?.isAdmin && <Box display="fixed" top={0}></Box>} */}

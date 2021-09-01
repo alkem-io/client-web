@@ -70,6 +70,7 @@ interface OpportunityPageProps extends PageProps {
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
   permissions: {
+    edit: boolean;
     projectWrite: boolean;
     editActorGroup: boolean;
     editAspect: boolean;
@@ -84,6 +85,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   opportunity,
   users = [],
   permissions = {
+    edit: false,
     projectWrite: false,
     editActorGroup: false,
     editAspect: false,
@@ -224,7 +226,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
                 color: theme => theme.palette.neutralLight.main,
               }}
               editComponent={
-                user?.isAdmin && (
+                permissions.edit && (
                   <SettingsButton
                     to={`/admin/ecoverses/${ecoverseId}/challenges/${challengeId}/opportunities/${opportunity.nameID}`}
                     tooltip={t('pages.opportunity.sections.header.buttons.edit.tooltip')}

@@ -102,6 +102,9 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
+  permissions: {
+    edit: boolean;
+  };
 }
 
 const useChallengeStyles = createStyles(theme => ({
@@ -117,7 +120,7 @@ interface Params {
   ecoverseId?: string;
 }
 
-const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactElement => {
+const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { edit: false } }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -218,7 +221,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
               className="flex-grow-1"
               classes={{ color: theme => theme.palette.neutralLight.main }}
               editComponent={
-                user?.isAdmin && (
+                permissions.edit && (
                   <SettingsButton
                     to={`/admin/ecoverses/${ecoverseId}/challenges/${challenge.nameID}`}
                     tooltip={t('pages.challenge.sections.header.buttons.edit.tooltip')}
