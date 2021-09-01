@@ -303,6 +303,13 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "header": {
+          "buttons": {
+            "edit": {
+              "tooltip": "Edit ecoverse"
+            }
+          }
+        },
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
@@ -329,7 +336,7 @@
         "header": {
           "buttons": {
             "edit": {
-              "tooltip": "Edit challenge context"
+              "tooltip": "Edit challenge"
             }
           }
         },
@@ -363,7 +370,7 @@
         "header": {
           "buttons": {
             "edit": {
-              "tooltip": "Edit opportunity context"
+              "tooltip": "Edit opportunity"
             },
             "projects": {
               "text": "Projects"

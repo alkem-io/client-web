@@ -86,7 +86,7 @@ services:
       - 4456
     environment:
       - LOG_LEVEL=debug
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - alkemio_client_net
     volumes:
