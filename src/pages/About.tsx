@@ -1,11 +1,12 @@
-import React from 'react';
+import { Box } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from '../components/core/Button';
 import Typography from '../components/core/Typography';
-import { createStyles } from '../hooks/useTheme';
+import { useUpdateNavigation } from '../hooks';
 import { useServerMetadataQuery } from '../hooks/generated/graphql';
-import { useTranslation } from 'react-i18next';
-import { Box } from '@material-ui/core';
+import { createStyles } from '../hooks/useTheme';
 
 const useAboutStyles = createStyles(theme => ({
   content: {
@@ -48,10 +49,14 @@ const useAboutStyles = createStyles(theme => ({
   },
 }));
 
+const currentPaths = [];
 const AboutPage = () => {
   const styles = useAboutStyles();
   const { data } = useServerMetadataQuery();
   const { t } = useTranslation();
+
+  useUpdateNavigation({ currentPaths });
+
   return (
     <>
       <Grid container spacing={2}>
@@ -88,7 +93,6 @@ const AboutPage = () => {
         </Grid>
         <Grid item lg={3} className={styles.mdHidden} />
       </Grid>
-      <div className={styles.ring} />
     </>
   );
 };
