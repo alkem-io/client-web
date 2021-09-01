@@ -6,12 +6,15 @@ import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import { useUserContext } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
-import { useEcoversesWithActivityQuery } from '../../hooks/generated/graphql';
+import { useTranslation } from 'react-i18next';
+import { useEcoversesQuery } from '../../hooks/generated/graphql';
 
 const EcoversesSection = () => {
+  const { t } = useTranslation();
   const { user } = useUserContext();
-  const { data, loading, error } = useEcoversesWithActivityQuery();
-  const ecoverses = data?.ecoverses || [];
+  const { data: ecoversesData, loading, error } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+
+  const ecoverses = useMemo(() => ecoversesData?.ecoverses || [], [ecoversesData]);
 
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
@@ -19,11 +22,11 @@ const EcoversesSection = () => {
   return (
     <>
       {loading ? (
-        <Loading text={'Loading ecoverses'} />
+        <Loading text={t('loading.message', { blockName: t('common.ecoverses') })} />
       ) : error ? (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <ErrorBlock blockName="Ecoverses" />
+            <ErrorBlock blockName={t('common.ecoverse')} />
           </Grid>
         </Grid>
       ) : (

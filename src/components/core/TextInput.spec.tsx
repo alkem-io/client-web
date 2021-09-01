@@ -1,5 +1,5 @@
 import TextInput, { TextArea } from './TextInput';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../utils/test/test-utils';
 import userEvent from '@testing-library/user-event';
 
 describe('TextIpnut component', () => {

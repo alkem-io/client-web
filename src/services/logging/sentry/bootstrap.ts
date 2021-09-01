@@ -1,12 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { env } from '../../../types/env';
 
-const sentryEndpoint = env && env.REACT_APP_SENTRY_ENDPOINT;
-const sentryEnabled =
-  env && env.REACT_APP_SENTRY_ENABLED && env.REACT_APP_SENTRY_ENABLED.toLocaleLowerCase() === 'true';
-
-const bootstrap = () => {
+const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string) => {
   if (sentryEnabled && sentryEndpoint) {
     Sentry.init({
       dsn: sentryEndpoint,

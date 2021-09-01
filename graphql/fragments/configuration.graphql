@@ -27,4 +27,9 @@ fragment Configuration on Config {
       name
     }
   }
+  sentry {
+    enabled
+    endpoint
+    submitPII
+  }
 }

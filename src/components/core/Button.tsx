@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, forwardRef } from 'react';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@material-ui/core';
 import hexToRGBA from '../../utils/hexToRGBA';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -108,50 +108,56 @@ export interface ButtonProps extends Record<string, unknown> {
   disabled?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({
-  className,
-  classes = {},
-  classOverrides = {},
-  variant = 'default',
-  startIcon,
-  inset = false,
-  small = false,
-  block = false,
-  disabled = false,
-  children,
-  as: Component = 'button',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onClick = () => {},
-  text,
-  ...rest
-}) => {
-  const styles = useStyles(classes);
+const Button: FC<ButtonProps> = forwardRef(
+  (
+    {
+      className,
+      classes = {},
+      classOverrides = {},
+      variant = 'default',
+      startIcon,
+      inset = false,
+      small = false,
+      block = false,
+      disabled = false,
+      children,
+      as: Component = 'button',
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onClick = () => {},
+      text,
+      ...rest
+    },
+    ref
+  ) => {
+    const styles = useStyles(classes);
 
-  const props = {
-    type: 'button',
-    onClick,
-    ...rest,
-  };
+    const props = {
+      type: 'button',
+      onClick,
+      ...rest,
+    };
 
-  // const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
+    // const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
 
-  return (
-    <MuiButton
-      className={clsx(className, inset && 'inset', small && 'small', block && 'block')}
-      classes={{
-        outlined: styles[variant],
-        ...classOverrides,
-      }}
-      component={Component as any}
-      variant="outlined"
-      color={variant === 'primary' ? 'primary' : 'default'}
-      startIcon={startIcon}
-      disabled={disabled}
-      {...props}
-    >
-      {text}
-    </MuiButton>
-  );
-};
+    return (
+      <MuiButton
+        ref={ref}
+        className={clsx(className, inset && 'inset', small && 'small', block && 'block')}
+        classes={{
+          outlined: styles[variant],
+          ...classOverrides,
+        }}
+        component={Component as any}
+        variant="outlined"
+        color={variant === 'primary' ? 'primary' : 'default'}
+        startIcon={startIcon}
+        disabled={disabled}
+        {...props}
+      >
+        {text}
+      </MuiButton>
+    );
+  }
+);
 
 export default Button;

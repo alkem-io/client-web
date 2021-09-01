@@ -47,8 +47,12 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverse, loading: loadingEcoverse } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({ variables: { ecoverseId } });
-  const { data: usersInfo, loading: loadingUsers } = useUsersQuery();
+  const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({
+    variables: { ecoverseId },
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+  });
+  const { data: usersInfo, loading: loadingUsers } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.ecoverse.displayName || '', real: true }],
     [paths, ecoverse]

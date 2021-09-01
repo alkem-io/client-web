@@ -94,7 +94,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
       link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
-      cache: new InMemoryCache({ addTypename: true, typePolicies: typePolicies }),
+      cache: new InMemoryCache({ addTypename: true, typePolicies }),
     });
   }, []);
 };

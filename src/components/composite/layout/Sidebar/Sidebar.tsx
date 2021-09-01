@@ -8,9 +8,8 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { env } from '../../../../types/env';
+import { useConfig, UserMetadata } from '../../../../hooks';
 import { createStyles } from '../../../../hooks/useTheme';
-import { UserMetadata } from '../../../../hooks';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
 import { Image } from '../../../core/Image';
 import Tag from '../../../core/Tag';
@@ -75,6 +74,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
   const theme = useTheme();
   const upSm = useMediaQuery(theme.breakpoints.up('sm'));
   const upMd = useMediaQuery(theme.breakpoints.up('md'));
+  const { platform } = useConfig();
 
   const { open } = drawerProps || { open: upSm };
   const iconSize = 'md'; //upMd ? 'md' : upSm ? 'md' : 'sm';
@@ -164,18 +164,13 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
           centerLabel={upSm && !upMd}
           hideLabel={upSm && !upMd}
           tooltip="Contact us"
-          to={env?.REACT_APP_FEEDBACK_URL || ''}
+          to={platform?.feedback || ''}
           buttonProps={{
             as: 'a',
-            href: env?.REACT_APP_FEEDBACK_URL,
+            href: platform?.feedback,
             target: '_blank',
           }}
         />
-        {/* <Box className={styles.copyright}>
-          <Typography variant="caption" color="neutralMedium" weight="boldLight">
-            © 2021 Cherrytwist Foundation
-          </Typography>
-        </Box> */}
       </div>
     </Drawer>
   );

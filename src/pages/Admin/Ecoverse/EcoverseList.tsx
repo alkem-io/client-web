@@ -12,8 +12,11 @@ interface EcoverseListProps extends PageProps {}
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
-  const { data, loading } = useEcoversesQuery();
-  const ecoverseList = useMemo(() => data?.ecoverses.map(searchableListItemMapper(url)) || [], [data]);
+  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
+  const ecoverseList = useMemo(
+    () => ecoversesData?.ecoverses.map(searchableListItemMapper(url)) || [],
+    [ecoversesData]
+  );
 
   const [deleteEcoverse] = useDeleteEcoverseMutation({
     refetchQueries: [refetchEcoversesQuery()],
@@ -31,7 +34,7 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading ecoverses'} />;
+  if (loadingEcoverses) return <Loading text={'Loading ecoverses'} />;
 
   return (
     <ListPage

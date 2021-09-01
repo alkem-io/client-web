@@ -3,14 +3,16 @@ import { useParams, useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
 import {
   refetchUsersWithCredentialsQuery,
-  useGrantCredentialsMutation,
-  useRevokeCredentialsMutation,
+  useAssignUserAsGlobalAdminMutation,
+  useRemoveUserAsGlobalAdminMutation,
+  useUsersQuery,
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { useApolloErrorHandler, useUpdateNavigation } from '../../hooks';
 import { Member } from '../../models/User';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
+import { Loading } from '../../components/core';
 
 interface Params {
   role: AuthorizationCredential;
@@ -24,11 +26,11 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useGrantCredentialsMutation({
+  const [grant] = useAssignUserAsGlobalAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRevokeCredentialsMutation({
+  const [revoke] = useRemoveUserAsGlobalAdminMutation({
     onError: handleError,
   });
 
@@ -37,7 +39,6 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
       variables: {
         input: {
           userID: member.id,
-          type: credential,
         },
       },
       refetchQueries: [
@@ -54,7 +55,6 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
       variables: {
         input: {
           userID: member.id,
-          type: credential,
         },
       },
       refetchQueries: [
@@ -66,9 +66,16 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     });
   };
 
+  const { data, loading } = useUsersQuery();
+  const members = data?.users || [];
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <Container maxWidth="xl">
-      <EditMemberCredentials onAdd={handleAdd} onRemove={handleRemove} credential={credential} />
+      <EditMemberCredentials onAdd={handleAdd} onRemove={handleRemove} credential={credential} memberList={members} />
     </Container>
   );
 };

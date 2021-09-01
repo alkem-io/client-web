@@ -7,6 +7,7 @@ import Button from '../core/Button';
 import { useApolloErrorHandler } from '../../hooks';
 import { Actor, EcosystemModel, Maybe } from '../../models/graphql-schema';
 import { useUpdateActorMutation, useUpdateEcosystemModelMutation } from '../../hooks/generated/graphql';
+import { isNil } from 'lodash';
 
 interface ActorWhiteboardProps {
   actors: Actor[];
@@ -132,7 +133,8 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   };
 
   console.log('Initial ecosystemModel', ecosystemModel);
-  const initialData = ecosystemModel ? JSON.parse(JSON.parse(ecosystemModel.canvas?.value || '{}').value) : {};
+  const canvasJson = ecosystemModel?.canvas?.value;
+  const initialData = isNil(canvasJson) || canvasJson === '' ? {} : JSON.parse(JSON.parse(canvasJson).value);
   console.log('initial ecosystemModel data', initialData);
   console.log('initial ecosystemModel data', typeof initialData);
 

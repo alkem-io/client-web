@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { FourOuFour } from '../../pages';
 import { QuestionTemplate } from '../../models/graphql-schema';
 import { Path } from '../../context/NavigationProvider';
-import ApplyPage from '../../pages/ApplyPage';
+import ApplyPage, { ApplyPageType } from '../../pages/ApplyPage';
 import RestrictedRoute from '../route.extensions';
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
   loading: boolean;
   error: boolean;
   backUrl: string;
+  type: ApplyPageType;
 }
 
 const ApplyRoute: FC<Props> = ({
@@ -30,6 +31,7 @@ const ApplyRoute: FC<Props> = ({
   loading,
   error,
   backUrl,
+  type,
 }) => {
   return (
     <Switch>
@@ -44,6 +46,7 @@ const ApplyRoute: FC<Props> = ({
           backUrl={backUrl}
           loading={loading}
           error={error}
+          type={type}
         />
       </RestrictedRoute>
       <Route path="*">

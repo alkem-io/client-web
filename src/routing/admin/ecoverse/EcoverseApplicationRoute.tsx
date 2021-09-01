@@ -13,7 +13,10 @@ interface Props extends PageProps {}
 
 export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
   const { ecoverseId } = useParams<Params>();
-  const { data, loading } = useEcoverseApplicationsQuery({ variables: { ecoverseId: ecoverseId } });
+  const { data, loading } = useEcoverseApplicationsQuery({
+    variables: { ecoverseId: ecoverseId },
+    fetchPolicy: 'cache-and-network',
+  });
   const applications = data?.ecoverse?.community?.applications || [];
 
   if (loading) {

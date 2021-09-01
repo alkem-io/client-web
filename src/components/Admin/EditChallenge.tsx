@@ -108,7 +108,9 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   let submitWired;
   return (
     <Grid container spacing={2}>
-      <Typography variant={'h2'}>{title}</Typography>
+      <Grid item>
+        <Typography variant={'h2'}>{title}</Typography>
+      </Grid>
       <ProfileForm
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}

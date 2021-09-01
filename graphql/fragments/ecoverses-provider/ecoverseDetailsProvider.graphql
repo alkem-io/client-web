@@ -1,0 +1,21 @@
+fragment EcoverseDetailsProvider on Ecoverse {
+  id
+  nameID
+  displayName
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  activity {
+    name
+    value
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  context {
+    ...ContextDetailsProvider
+  }
+}
