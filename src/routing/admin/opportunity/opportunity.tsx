@@ -77,7 +77,12 @@ export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.opportunityLvl} paths={currentPaths} />
+        <ManagementPageTemplate
+          data={managementData.opportunityLvl}
+          paths={currentPaths}
+          title={data?.ecoverse.opportunity.displayName}
+          returnUrl={`/${ecoverseId}/challenges/${challengeId}/opportunities/${opportunityId}`}
+        />
       </Route>
       <Route exact path={`${path}/edit`}>
         <EditOpportunity

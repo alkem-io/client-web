@@ -71,7 +71,12 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
+        <ManagementPageTemplate
+          data={managementData.challengeLvl}
+          paths={currentPaths}
+          title={data?.ecoverse.challenge.displayName}
+          returnUrl={`/${ecoverseId}/challenges/${challengeId}`}
+        />
       </Route>
       <Route path={`${path}/edit`}>
         <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
