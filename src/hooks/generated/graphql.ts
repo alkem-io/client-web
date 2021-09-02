@@ -4146,6 +4146,10 @@ export const ChallengesWithActivityDocument = gql`
         context {
           id
           tagline
+          background
+          vision
+          impact
+          who
           visual {
             background
           }
