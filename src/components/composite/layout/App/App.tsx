@@ -1,7 +1,6 @@
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useSelector } from '@xstate/react';
-import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
 import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
 import React, { useRef, useState } from 'react';
 import CookieConsent from 'react-cookie-consent';
@@ -12,6 +11,7 @@ import { useAuthenticationContext, useConfig, useNavigation, useUserContext, use
 import { useEcoversesQuery, useServerMetadataQuery } from '../../../../hooks/generated/graphql';
 import { useGlobalState } from '../../../../hooks/useGlobalState';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
+import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Button from '../../../core/Button';
 import Icon from '../../../core/Icon';
@@ -135,11 +135,7 @@ const App = ({ children }): React.ReactElement => {
           )}
           {children}
         </Main>
-        <Footer>
-          <IconButton onClick={() => headerRef.current?.scrollIntoView({ behavior: 'smooth' })}>
-            <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
-          </IconButton>
-        </Footer>
+        <Footer />
       </div>
       <CookieConsent
         location="bottom"
@@ -151,6 +147,7 @@ const App = ({ children }): React.ReactElement => {
       >
         {t('cookie.consent')}
       </CookieConsent>
+      <ScrollButton />
       <NotificationHandler />
     </div>
   );
