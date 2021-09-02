@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ct-web-service
+  name: alkemio-web-service
 
 spec:
   ports:
@@ -9,5 +9,4 @@ spec:
       name: web
       port: 80
   selector:
-    app: ct-web
-
+    app: alkemio-web
