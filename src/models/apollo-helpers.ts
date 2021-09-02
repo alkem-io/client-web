@@ -131,6 +131,12 @@ export type AuthorizationRuleCredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CanvasKeySpecifier = ('id' | 'name' | 'value' | CanvasKeySpecifier)[];
+export type CanvasFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ChallengeKeySpecifier = (
   | 'activity'
   | 'agent'
@@ -266,6 +272,7 @@ export type DirectRoomFieldPolicy = {
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
   | 'authorization'
+  | 'canvas'
   | 'description'
   | 'id'
   | EcosystemModelKeySpecifier
@@ -273,6 +280,7 @@ export type EcosystemModelKeySpecifier = (
 export type EcosystemModelFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvas?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -976,6 +984,10 @@ export type StrictTypedTypePolicies = {
       | AuthorizationRuleCredentialKeySpecifier
       | (() => undefined | AuthorizationRuleCredentialKeySpecifier);
     fields?: AuthorizationRuleCredentialFieldPolicy;
+  };
+  Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
+    fields?: CanvasFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);

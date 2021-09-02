@@ -17,3 +17,15 @@ query communityUpdates($communityId: UUID!) {
 mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
   messageUpdateCommunity(msgData: $msgData)
 }
+
+subscription onMessageReceived {
+  messageReceived {
+    roomId
+    message {
+      id
+      message
+      sender
+      timestamp
+    }
+  }
+}

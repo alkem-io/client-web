@@ -1,6 +1,11 @@
+import { get, merge, setWith } from 'lodash';
 import React, { FC } from 'react';
-import { useChallengeCommunityMessagesQuery, useChallengeUserIdsQuery } from '../../hooks/generated/graphql';
-import { User } from '../../models/graphql-schema';
+import {
+  useChallengeCommunityMessagesQuery,
+  useChallengeUserIdsQuery,
+  useOnMessageReceivedSubscription,
+} from '../../hooks/generated/graphql';
+import { ChallengeCommunityMessagesQuery, User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import { Loading } from '../core';
 
@@ -17,12 +22,45 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
     },
     errorPolicy: 'all',
   });
-  const { data, loading } = useChallengeCommunityMessagesQuery({
+  const { data, loading, updateQuery } = useChallengeCommunityMessagesQuery({
     variables: {
       ecoverseId: ecoverseId,
       challengeId: challengeId,
     },
     errorPolicy: 'ignore',
+  });
+
+  useOnMessageReceivedSubscription({
+    shouldResubscribe: true,
+    onSubscriptionData: options => {
+      const subData = options.subscriptionData.data?.messageReceived;
+      if (!subData) return;
+
+      const discussionKey = 'discussionRoom';
+      const updatesKey = 'updatesRoom';
+
+      const update = (previous: ChallengeCommunityMessagesQuery, key: string) => {
+        const room = get(previous, ['ecoverse', 'challenge', 'community', key]);
+        if (room?.id === subData.roomId) {
+          const result = {};
+          setWith(
+            result,
+            ['ecoverse', 'challenge', 'community', key],
+            {
+              ...room,
+              messages: [...room.messages, subData.message],
+            },
+            Object
+          );
+
+          return merge({}, previous, result);
+        }
+
+        return previous;
+      };
+
+      updateQuery(prev => (data ? update(update(data, discussionKey), updatesKey) : prev));
+    },
   });
 
   if (loading || usersLoading) return <Loading text={'Loading community data'} />;

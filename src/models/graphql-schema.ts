@@ -229,6 +229,16 @@ export type AuthorizationRuleCredential = {
   type: Scalars['String'];
 };
 
+export type Canvas = {
+  __typename?: 'Canvas';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The name of the Canvas. */
+  name: Scalars['String'];
+  /** The JSON representation of the Canvas. */
+  value: Scalars['JSON'];
+};
+
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
@@ -634,6 +644,8 @@ export type EcosystemModel = {
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Canvas for visualizing this Ecosystem Model. */
+  canvas?: Maybe<Canvas>;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -5040,6 +5052,23 @@ export type SendCommunityUpdateMutationVariables = Exact<{
 }>;
 
 export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
+
+export type OnMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type OnMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  messageReceived: {
+    __typename?: 'CommunicationMessageReceived';
+    roomId: string;
+    message: {
+      __typename?: 'CommunicationMessageResult';
+      id: string;
+      message: string;
+      sender: string;
+      timestamp: number;
+    };
+  };
+};
 
 export type AssignUserToOrganisationMutationVariables = Exact<{
   input: AssignOrganisationMemberInput;

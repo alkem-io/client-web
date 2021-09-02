@@ -7788,6 +7788,49 @@ export type SendCommunityUpdateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendCommunityUpdateMutation,
   SchemaTypes.SendCommunityUpdateMutationVariables
 >;
+export const OnMessageReceivedDocument = gql`
+  subscription onMessageReceived {
+    messageReceived {
+      roomId
+      message {
+        id
+        message
+        sender
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useOnMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useOnMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnMessageReceivedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnMessageReceivedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.OnMessageReceivedSubscription,
+    SchemaTypes.OnMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.OnMessageReceivedSubscription,
+    SchemaTypes.OnMessageReceivedSubscriptionVariables
+  >(OnMessageReceivedDocument, options);
+}
+export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
+export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
 export const AssignUserToOrganisationDocument = gql`
   mutation assignUserToOrganisation($input: AssignOrganisationMemberInput!) {
     assignUserToOrganisation(membershipData: $input) {

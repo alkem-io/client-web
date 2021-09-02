@@ -17,6 +17,7 @@ import { env } from './types/env';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
+const subscriptionsEndpoint = (env && env.REACT_APP_SUBSCRIPTIONS_ENDPOINT) || '/subscriptions';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -64,7 +65,7 @@ const Root: FC = () => {
             <GlobalStateProvider>
               <BrowserRouter>
                 <AuthenticationProvider>
-                  <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                  <AlkemioApolloProvider apiUrl={graphQLEndpoint} subscriptionsUrl={subscriptionsEndpoint}>
                     <NavigationProvider>
                       <UserProvider>
                         <App>
