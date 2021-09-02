@@ -75,7 +75,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           data={managementData.challengeLvl}
           paths={currentPaths}
           title={data?.ecoverse.challenge.displayName}
-          returnUrl={`/${ecoverseId}/challenges/${challengeId}`}
+          entityUrl={`/${ecoverseId}/challenges/${challengeId}`}
         />
       </Route>
       <Route path={`${path}/edit`}>

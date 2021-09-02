@@ -71,7 +71,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           data={managementData.ecoverseLvl}
           paths={currentPaths}
           title={ecoverse?.ecoverse.displayName}
-          returnUrl={`/${ecoverseId}`}
+          entityUrl={`/${ecoverseId}`}
         />
       </Route>
       <Route path={`${path}/edit`}>

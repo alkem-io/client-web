@@ -214,9 +214,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
               />
             )
           }
-        >
-          {/* {user?.isAdmin && <Box display="fixed" top={0}></Box>} */}
-        </SectionHeader>
+        />
+
         <SubHeader text={tagline} />
         <Body>
           <Markdown children={vision} />

@@ -18,10 +18,10 @@ interface Props extends PageProps {
     }>;
   }>;
   title?: string;
-  returnUrl?: string;
+  entityUrl?: string;
 }
 
-export const ManagementPageTemplate: FC<Props> = ({ title, returnUrl, data, paths }) => {
+export const ManagementPageTemplate: FC<Props> = ({ title, entityUrl: returnUrl, data, paths }) => {
   const { url } = useRouteMatch();
 
   useUpdateNavigation({ currentPaths: paths });
