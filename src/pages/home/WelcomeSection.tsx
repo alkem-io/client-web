@@ -116,7 +116,7 @@ const WelcomeSection = () => {
           hideDetails
           classes={{
             background: () => `url("${banner}") no-repeat center center / cover`,
-            coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
+            coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.6),
           }}
           gutters={{
             root: false,
