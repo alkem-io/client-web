@@ -2,29 +2,28 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   namespace: default
-  name: ct-web-deployment
+  name: alkemio-web-deployment
   labels:
-    app: ct-web
+    app: alkemio-web
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ct-web
+      app: alkemio-web
   template:
     metadata:
       labels:
-        app: ct-web
+        app: alkemio-web
     spec:
       containers:
-        - name: ct-web
-          image: ctdev.azurecr.io/ct-web:latest
+        - name: alkemio-web
+          image: ctdev.azurecr.io/alkemio-web:latest
           envFrom:
             - secretRef:
-                name: ct-secrets
+                name: alkemio-secrets
             - configMapRef:
-                name: ct-config
+                name: alkemio-config
           ports:
             - name: web
               containerPort: 80
-
