@@ -15,6 +15,7 @@ import { Routing } from './routing/routing';
 import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
+import ScrollToTop from './routing/ScrollToTop';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 const subscriptionsEndpoint = (env && env.REACT_APP_SUBSCRIPTIONS_ENDPOINT) || '/subscriptions';
@@ -69,6 +70,7 @@ const Root: FC = () => {
                     <NavigationProvider>
                       <UserProvider>
                         <App>
+                          <ScrollToTop />
                           <Routing />
                         </App>
                       </UserProvider>

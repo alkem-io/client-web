@@ -51,7 +51,7 @@ const useButtonStyles = createStyles(theme => ({
   primary: {
     color: theme.palette.primary.main,
 
-    '& > .ct-input,.ct-textarea': {
+    '& > .alkemio-input,.alkemio-textarea': {
       '&:hover': {
         borderColor: theme.palette.primary.main,
       },
@@ -67,7 +67,7 @@ const useButtonStyles = createStyles(theme => ({
   error: {
     color: theme.palette.negative.main,
 
-    '& > .ct-input,.ct-textarea': {
+    '& > .alkemio-input,.alkemio-textarea': {
       borderColor: theme.palette.negative.main,
 
       '&:hover': {
@@ -122,7 +122,7 @@ const TextInput: FC<TextInputProps> = ({
       <input
         type="text"
         disabled={disabled}
-        className={clsx(styles.input, inset && 'inset', small && 'small', 'ct-input', className)}
+        className={clsx(styles.input, inset && 'inset', small && 'small', 'alkemio-input', className)}
         onChange={onChange}
         value={value}
         {...rest}
@@ -162,7 +162,7 @@ const TextArea: FC<TextAreaProps> = ({
       <textarea
         rows={rows}
         disabled={disabled}
-        className={clsx(styles.textArea, inset && 'inset', small && 'small', 'ct-textarea', className)}
+        className={clsx(styles.textArea, inset && 'inset', small && 'small', 'alkemio-textarea', className)}
         onChange={onChange}
         value={value}
         {...rest}

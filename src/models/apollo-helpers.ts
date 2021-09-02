@@ -609,25 +609,35 @@ export type OpportunityTemplateFieldPolicy = {
 export type OrganisationKeySpecifier = (
   | 'agent'
   | 'authorization'
+  | 'contactEmail'
   | 'displayName'
+  | 'domain'
   | 'group'
   | 'groups'
   | 'id'
+  | 'legalEntityName'
   | 'members'
   | 'nameID'
   | 'profile'
+  | 'verified'
+  | 'website'
   | OrganisationKeySpecifier
 )[];
 export type OrganisationFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  verified?: FieldPolicy<any> | FieldReadFunction<any>;
+  website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganisationMembershipKeySpecifier = (
   | 'challengesLeading'

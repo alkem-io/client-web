@@ -476,11 +476,15 @@ export type CreateOpportunityInput = {
 };
 
 export type CreateOrganisationInput = {
+  contactEmail?: Maybe<Scalars['String']>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
+  domain?: Maybe<Scalars['String']>;
+  legalEntityName?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData?: Maybe<CreateProfileInput>;
+  website?: Maybe<Scalars['String']>;
 };
 
 export type CreateProfileInput = {
@@ -1334,19 +1338,29 @@ export type Organisation = Groupable &
     agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
     authorization?: Maybe<Authorization>;
+    /** Organisation contact email */
+    contactEmail?: Maybe<Scalars['String']>;
     /** The display name. */
     displayName: Scalars['String'];
+    /** Domain name; what is verified, eg. alkem.io */
+    domain?: Maybe<Scalars['String']>;
     /** Group defined on this organisation. */
     group?: Maybe<UserGroup>;
     /** Groups defined on this organisation. */
     groups?: Maybe<Array<UserGroup>>;
     id: Scalars['UUID'];
+    /** Legal name - required if hosting an Ecoverse */
+    legalEntityName?: Maybe<Scalars['String']>;
     /** All users that are members of this Organisation. */
     members?: Maybe<Array<User>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID'];
     /** The profile for this organisation. */
     profile: Profile;
+    /** Organisation verification type */
+    verified: OrganizationVerificationEnum;
+    /** Organisation website */
+    website?: Maybe<Scalars['String']>;
   };
 
 export type OrganisationGroupArgs = {
@@ -1366,6 +1380,11 @@ export type OrganisationMembership = {
   ecoversesHosting: Array<MembershipResultEntry>;
   id: Scalars['UUID'];
 };
+
+export enum OrganizationVerificationEnum {
+  ManualAttestation = 'MANUAL_ATTESTATION',
+  NotVerified = 'NOT_VERIFIED',
+}
 
 export type OryConfig = {
   __typename?: 'OryConfig';
@@ -1781,11 +1800,15 @@ export type UpdateOpportunityInput = {
 export type UpdateOrganisationInput = {
   /** The ID or NameID of the Organisation to update. */
   ID: Scalars['UUID_NAMEID'];
+  contactEmail?: Maybe<Scalars['String']>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
+  domain?: Maybe<Scalars['String']>;
+  legalEntityName?: Maybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: Maybe<Scalars['NameID']>;
   profileData?: Maybe<UpdateProfileInput>;
+  website?: Maybe<Scalars['String']>;
 };
 
 export type UpdateProfileInput = {
