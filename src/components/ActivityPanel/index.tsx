@@ -1,13 +1,11 @@
+import { Grid } from '@material-ui/core';
 import React, { FC } from 'react';
-
+import { Lifecycle, Maybe } from '../../models/graphql-schema';
 import Card, { CardProps } from '../core/Card';
-import Typography from '../core/Typography';
 import CircleTag from '../core/CircleTag';
-
-import { createStyles } from '../../hooks/useTheme';
-import activitiesMock from './tempMockActivities';
+import Typography from '../core/Typography';
 import StateActivityCardItem from './StateActivityCardItem';
-import { Maybe, Lifecycle } from '../../models/graphql-schema';
+import activitiesMock from './tempMockActivities';
 
 export interface ActivityCardItem {
   name: string;
@@ -20,24 +18,24 @@ interface ActivityCardProps extends CardProps {
   lifecycle?: Maybe<Lifecycle>;
 }
 
-const useCardStyles = createStyles(theme => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(2),
-  },
-  item: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexGrow: 1,
-    alignItems: 'center',
+// const useCardStyles = createStyles(theme => ({
+//   wrapper: {
+//     display: 'flex',
+//     flexDirection: 'column',
+//     gap: theme.spacing(2),
+//   },
+//   item: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     flexGrow: 1,
+//     alignItems: 'center',
 
-    '& > p': {
-      marginBottom: 0,
-      textTransform: 'capitalize',
-    },
-  },
-}));
+//     '& > p': {
+//       marginBottom: 0,
+//       textTransform: 'capitalize',
+//     },
+//   },
+// }));
 
 const ActivityCard: FC<ActivityCardProps> = ({
   title = 'Activity Panel',
@@ -45,8 +43,6 @@ const ActivityCard: FC<ActivityCardProps> = ({
   lifecycle = null,
   classes = {},
 }) => {
-  const styles = useCardStyles(classes);
-
   return (
     <Card
       bodyProps={{
@@ -61,31 +57,28 @@ const ActivityCard: FC<ActivityCardProps> = ({
       }}
       primaryTextProps={{ text: title }}
     >
-      <div className={styles.wrapper}>
-        {items.map(({ name, digit, color }, i) => (
-          <div className={styles.item} key={i}>
-            <Typography as={'p'}>{name}</Typography>
-            <CircleTag text={`${digit}`} color={color || 'neutral'} />
-          </div>
-        ))}
+      <Activities items={items}>
         <StateActivityCardItem lifecycle={lifecycle || undefined} />
-      </div>
+      </Activities>
     </Card>
   );
 };
 
-export const Activities: FC<{ items: ActivityCardItem[] }> = ({ items }) => {
-  const styles = useCardStyles();
-
+export const Activities: FC<{ items: ActivityCardItem[] }> = ({ items, children }) => {
   return (
-    <div className={styles.wrapper}>
+    <Grid container spacing={1}>
       {items.map(({ name, digit, color }, i) => (
-        <div className={styles.item} key={i}>
-          <Typography as={'p'}>{name}:</Typography>
-          <CircleTag text={`${digit}`} color={color || 'neutral'} />
-        </div>
+        <Grid item container key={i} xs={12} justifyContent={'space-between'} alignItems={'center'}>
+          <Grid item alignContent={'center'}>
+            <Typography>{name}</Typography>
+          </Grid>
+          <Grid item>
+            <CircleTag text={`${digit}`} color={color || 'neutral'} />
+          </Grid>
+        </Grid>
       ))}
-    </div>
+      {children}
+    </Grid>
   );
 };
 

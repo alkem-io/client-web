@@ -13,6 +13,7 @@ import Tag from '../core/Tag';
 import getActivityCount from '../../utils/get-activity-count';
 import { Nvp } from '../../models/graphql-schema';
 import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@material-ui/core';
 
 // todo: unify in one card props
 interface EcoverseCardProps {
@@ -42,10 +43,10 @@ const useCardStyles = createStyles(theme => ({
   card: {
     marginTop: 0,
     border: `1px solid ${theme.palette.neutralMedium.main}`,
-    height: 400,
+    height: 470,
   },
   content: {
-    height: '225px',
+    height: '270px',
     background: theme.palette.background.paper,
     padding: theme.spacing(2),
   },
@@ -111,16 +112,33 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         }}
         sectionProps={{
           children: (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Box display={'flex'} flexDirection={'column'}>
               <Activities
                 items={[
-                  { name: 'Challenges', digit: getActivityCount(activity, 'challenges') || 0, color: 'primary' },
-                  { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
+                  {
+                    name: t('pages.activity.challenges'),
+                    digit: getActivityCount(activity, 'challenges') || 0,
+                    color: 'primary',
+                  },
+                  {
+                    name: t('pages.activity.opportunities'),
+                    digit: getActivityCount(activity, 'opportunities') || 0,
+                    color: 'primary',
+                  },
+                  {
+                    name: t('pages.activity.members'),
+                    digit: getActivityCount(activity, 'members') || 0,
+                    color: 'positive',
+                  },
                 ]}
               />
               <TagContainer>
                 {truncatedTags.map((t, i) => (
-                  <Tag key={i} text={t} color="neutralMedium" />
+                  // with maxWidth limit long tags to 2 per line. so no more than 2 lines of tags.
+                  // 45% was the break point.
+                  <Box key={i} overflow={'hidden'} maxWidth={'45%'}>
+                    <Tag key={i} text={t} color="neutralMedium" />
+                  </Box>
                 ))}
                 {tags.length > 3 && (
                   <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
@@ -130,7 +148,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
                   </Tooltip>
                 )}
               </TagContainer>
-            </div>
+            </Box>
           ),
           className: styles.content,
         }}
