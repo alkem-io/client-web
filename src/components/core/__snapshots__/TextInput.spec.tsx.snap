@@ -14,7 +14,7 @@ exports[`TextIpnut component render correctly TextArea/Input component 1`] = `
       </span>
     </div>
     <textarea
-      class="makeStyles-textArea-27 inset small ct-textarea"
+      class="makeStyles-textArea-27 inset small alkemio-textarea"
       disabled=""
       rows="4"
     >
@@ -38,7 +38,7 @@ exports[`TextIpnut component render correctly TextInput/Input component 1`] = `
       </span>
     </div>
     <input
-      class="makeStyles-input-2 inset small ct-input"
+      class="makeStyles-input-2 inset small alkemio-input"
       disabled=""
       type="text"
       value="test value"
