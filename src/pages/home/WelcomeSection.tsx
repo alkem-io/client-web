@@ -2,6 +2,7 @@ import { Box, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import Grid from '@material-ui/core/Grid';
 import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel';
 import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
@@ -12,6 +13,7 @@ import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -34,9 +36,10 @@ const useStyles = createStyles(theme => ({
     },
   },
   banner: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: theme.spacing(1),
+    padding: `${theme.spacing(2)}px 0`,
+  },
+  bannerText: {
+    color: theme.palette.background.paper,
   },
   bannerBtn: {
     margin: 0,
@@ -113,8 +116,7 @@ const WelcomeSection = () => {
           hideDetails
           classes={{
             background: () => `url("${banner}") no-repeat center center / cover`,
-            coverBackground: () =>
-              'linear-gradient(90deg, rgba(0,0,0,0.5326505602240896) 11%, rgba(0,226,255,0.10127801120448177) 91%)',
+            coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
           }}
           gutters={{
             root: false,
@@ -122,21 +124,30 @@ const WelcomeSection = () => {
             details: false,
           }}
         >
-          <Box component={Body} display={'flex'} flexDirection={'row'} flexGrow={1} className={clsx(styles.banner)}>
-            <Box color="white">
-              <Typography color="inherit" variant="h5">
+          <Grid
+            container
+            component={Body}
+            direction={'row'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+            className={styles.banner}
+          >
+            <Grid item xs={9}>
+              <Typography variant="h4" className={styles.bannerText}>
                 Interested in learning more about using Alkemio?
               </Typography>
-            </Box>
-            <Button
-              inset
-              variant="primary"
-              text="contact us"
-              href={platform?.feedback || ''}
-              as={'a'}
-              target="_blank"
-            />
-          </Box>
+            </Grid>
+            <Grid container item justifyContent={'flex-end'} xs={3}>
+              <Button
+                inset
+                variant="primary"
+                text="contact us"
+                href={platform?.feedback || ''}
+                as={'a'}
+                target="_blank"
+              />
+            </Grid>
+          </Grid>
         </Section>
         <div className={clsx(styles.flexCol, styles.flexGap)}>
           {!isAuthenticated && (
