@@ -132,7 +132,7 @@ const useAdditionalCardStyles = createStyles(theme => ({
       background: theme.palette.primary.main,
       color: theme.palette.background.paper,
 
-      '& > .ct-card-body': {
+      '& > .alkemio-card-body': {
         background: 'transparent',
         color: theme.palette.background.paper,
       },
