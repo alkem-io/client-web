@@ -9,7 +9,7 @@ import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel/ActivityCard';
+import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';
@@ -34,6 +34,7 @@ import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { PageProps } from './common';
 import CardFilter from '../components/core/card-filter/CardFilter';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -177,7 +178,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
     [projects]
   );
 
-  const activitySummary: ActivityCardItem[] = useMemo(() => {
+  const activitySummary: ActivityItem[] = useMemo(() => {
     return [
       {
         name: t('pages.activity.opportunities'),

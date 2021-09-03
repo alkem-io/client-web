@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel/ActivityCard';
+import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
@@ -36,6 +36,7 @@ import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema'
 import getActivityCount from '../utils/get-activity-count';
 import { PageProps } from './common';
 import CardFilter from '../components/core/card-filter/CardFilter';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -140,7 +141,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
 
   const more = references?.find(x => x.name === 'website');
 
-  const activitySummary: ActivityCardItem[] = useMemo(
+  const activitySummary: ActivityItem[] = useMemo(
     () => [
       {
         name: t('pages.activity.challenges'),

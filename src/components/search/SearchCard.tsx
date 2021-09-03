@@ -2,7 +2,7 @@ import React, { FC, memo, ReactElement, useState } from 'react';
 import { default as CoreCard } from '../core/Card';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { Activities, ActivityCardItem } from '../ActivityPanel/ActivityCard';
+import { Activities, ActivityItem } from '../ActivityPanel/Activities';
 
 const getStyles = createStyles(theme => ({
   card: {
@@ -27,7 +27,7 @@ const getStyles = createStyles(theme => ({
 
 interface Props {
   terms: Array<string>;
-  activity: ActivityCardItem[];
+  activity: ActivityItem[];
   title: string;
   backgroundImg: string;
   tag: string;

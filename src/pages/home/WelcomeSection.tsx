@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
-import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel/ActivityCard';
+import ActivityCard from '../../components/ActivityPanel/ActivityCard';
 import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';
@@ -14,6 +14,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
+import { ActivityItem } from '../../components/ActivityPanel/Activities';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
@@ -60,7 +61,7 @@ const WelcomeSection = () => {
     getActivityCount(globalActivity, 'users') || 0,
     getActivityCount(globalActivity, 'organisations') || 0,
   ];
-  const summary: ActivityCardItem[] = useMemo(
+  const summary: ActivityItem[] = useMemo(
     () => [
       { name: t('pages.activity.ecoverses'), digit: ecoverseCount, color: 'neutral' },
       {
