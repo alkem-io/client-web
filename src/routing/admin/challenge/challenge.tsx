@@ -16,6 +16,7 @@ import { CommunityRoute } from '../community';
 import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
+import { buildChallengeUrl } from '../../../utils/urlBuilders';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -75,7 +76,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           data={managementData.challengeLvl}
           paths={currentPaths}
           title={data?.ecoverse.challenge.displayName}
-          entityUrl={`/${ecoverseId}/challenges/${challengeId}`}
+          entityUrl={buildChallengeUrl(ecoverseId, challengeId)}
         />
       </Route>
       <Route path={`${path}/edit`}>

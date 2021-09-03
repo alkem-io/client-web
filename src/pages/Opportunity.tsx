@@ -36,6 +36,7 @@ import { Opportunity as OpportunityType, Project, User } from '../models/graphql
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
@@ -228,8 +229,8 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={`/admin/ecoverses/${ecoverseId}/challenges/${challengeId}/opportunities/${opportunity.nameID}`}
-                    tooltip={t('pages.opportunity.sections.header.buttons.edit.tooltip')}
+                    to={buildAdminOpportunityUrl(ecoverseId, challengeId, opportunity.nameID)}
+                    tooltip={t('pages.opportunity.sections.header.buttons.settings.tooltip')}
                   />
                 )
               }

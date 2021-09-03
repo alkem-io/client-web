@@ -305,8 +305,8 @@
       "sections": {
         "header": {
           "buttons": {
-            "edit": {
-              "tooltip": "Edit ecoverse"
+            "settigns": {
+              "tooltip": "Ecoverse settings"
             }
           }
         },
@@ -335,8 +335,8 @@
       "sections": {
         "header": {
           "buttons": {
-            "edit": {
-              "tooltip": "Edit challenge"
+            "settings": {
+              "tooltip": "Challenge settings"
             }
           }
         },
@@ -369,8 +369,8 @@
       "sections": {
         "header": {
           "buttons": {
-            "edit": {
-              "tooltip": "Edit opportunity"
+            "settings": {
+              "tooltip": "Opportunity settings"
             },
             "projects": {
               "text": "Projects"

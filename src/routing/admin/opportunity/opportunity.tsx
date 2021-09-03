@@ -14,6 +14,7 @@ import { CommunityRoute } from '../community';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
+import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 
 interface Props extends PageProps {
   challengeId: string;
@@ -81,7 +82,7 @@ export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID
           data={managementData.opportunityLvl}
           paths={currentPaths}
           title={data?.ecoverse.opportunity.displayName}
-          entityUrl={`/${ecoverseId}/challenges/${challengeId}/opportunities/${opportunityId}`}
+          entityUrl={buildOpportunityUrl(ecoverseId, challengeId, opportunityId)}
         />
       </Route>
       <Route exact path={`${path}/edit`}>

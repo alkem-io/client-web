@@ -15,6 +15,7 @@ import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { ChallengesRoute } from '../challenge/challenge';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
+import { buildEcoverseUrl } from '../../../utils/urlBuilders';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
@@ -71,7 +72,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           data={managementData.ecoverseLvl}
           paths={currentPaths}
           title={ecoverse?.ecoverse.displayName}
-          entityUrl={`/${ecoverseId}`}
+          entityUrl={buildEcoverseUrl(ecoverseId)}
         />
       </Route>
       <Route path={`${path}/edit`}>

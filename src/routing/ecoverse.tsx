@@ -21,6 +21,12 @@ import ChallengeApplyRoute from './application/ChallengeApplyRoute';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import { Project } from './project';
 
+export interface RouteParameters {
+  ecoverseId: string;
+  challengeId: string;
+  opportunityId: string;
+}
+
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
@@ -58,9 +64,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        {!loading && <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />}
+        <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
-      <Route path={`${path}/challenges/:id`}>
+      <Route path={`${path}/challenges/:challengeId`}>
         <Challenge paths={currentPaths} challenges={challenges} />
       </Route>
       <Route path={path}>
@@ -80,7 +86,7 @@ interface ChallengeRootProps extends PageProps {
 const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { ecoverseId, toEcoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { id } = useParams<{ id: string }>();
+  const { challengeId: id } = useParams<RouteParameters>();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { user } = useUserContext();
@@ -122,13 +128,11 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
-      <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
+      <Route path={`${path}/opportunities/:opportunityId`}>
+        <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
       </Route>
       <Route exact path={path}>
-        {!loading && (
-          <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} permissions={{ edit: isAdmin }} />
-        )}
+        <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
@@ -145,10 +149,10 @@ interface OpportunityRootProps extends PageProps {
   challengeUUID: string;
 }
 
-const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
+const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
-  const { id, challengeId } = useParams<{ id: string; challengeId: string }>();
+  const { opportunityId: id, challengeId } = useParams<RouteParameters>();
   const { user } = useUserContext();
   const { ecoverseId, toEcoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';

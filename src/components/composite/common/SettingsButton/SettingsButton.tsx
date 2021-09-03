@@ -24,8 +24,8 @@ export const SettingsButton: FC<SettingsButtonProps> = ({ color, htmlColor = 'wh
   return (
     <Tooltip placement={'bottom'} id={'settings-button'} title={tooltip || ''}>
       <RouterLink to={to}>
-        <IconButton>
-          <Settings color={color} htmlColor={htmlColor} width={20} height={20} className={styles.edit} />
+        <IconButton size={'small'}>
+          <Settings color={color} htmlColor={htmlColor} className={styles.edit} fontSize={'large'} />
         </IconButton>
       </RouterLink>
     </Tooltip>

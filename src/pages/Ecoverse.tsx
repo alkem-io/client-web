@@ -34,6 +34,7 @@ import { createStyles } from '../hooks/useTheme';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
 import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
+import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
@@ -209,8 +210,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
             permissions.edit && (
               <SettingsButton
                 color={'primary'}
-                to={`/admin/ecoverses/${ecoverseId}`}
-                tooltip={t('pages.ecoverse.sections.header.buttons.edit.tooltip')}
+                to={buildAdminEcoverseUrl(ecoverseId)}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
               />
             )
           }

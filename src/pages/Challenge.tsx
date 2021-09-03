@@ -30,6 +30,7 @@ import { SEARCH_PAGE } from '../models/constants';
 import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
+import { buildAdminChallengeUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useOrganizationStyles = createStyles(theme => ({
@@ -223,8 +224,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={`/admin/ecoverses/${ecoverseId}/challenges/${challenge.nameID}`}
-                    tooltip={t('pages.challenge.sections.header.buttons.edit.tooltip')}
+                    to={buildAdminChallengeUrl(ecoverseId, challenge.nameID)}
+                    tooltip={t('pages.challenge.sections.header.buttons.settigns.tooltip')}
                   />
                 )
               }
