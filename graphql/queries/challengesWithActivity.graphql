@@ -12,6 +12,10 @@ query challengesWithActivity($ecoverseId: UUID_NAMEID!) {
       context {
         id
         tagline
+        background
+        vision
+        impact
+        who
         visual {
           background
         }

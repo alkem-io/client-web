@@ -52,7 +52,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         {!loading && <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} />}
       </Route>
       <Route path={`${path}/challenges/:id`}>
-        <Challenge paths={currentPaths} challenges={challenges} />
+        <ChallengeRoute paths={currentPaths} challenges={challenges} />
       </Route>
       <Route path={path}>
         <EcoverseApplyRoute paths={currentPaths} />
@@ -68,7 +68,7 @@ interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
 }
 
-const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
+const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { ecoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
@@ -103,7 +103,7 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   return (
     <Switch>
       <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
+        <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
       </Route>
       <Route exact path={path}>
         {!loading && <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} />}
@@ -123,7 +123,7 @@ interface OpportunityRootProps extends PageProps {
   challengeUUID: string;
 }
 
-const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
+const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
