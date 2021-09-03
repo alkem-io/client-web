@@ -13,7 +13,7 @@ export const Activities: FC<{ items: ActivityItem[] }> = ({ items, children }) =
     <Grid container spacing={1}>
       {items.map(({ name, digit, color }, i) => (
         <Grid item container key={i} xs={12} justifyContent={'space-between'} alignItems={'center'}>
-          <Grid item alignContent={'center'}>
+          <Grid item>
             <Typography>{name}</Typography>
           </Grid>
           <Grid item>
