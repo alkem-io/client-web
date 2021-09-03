@@ -42,7 +42,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
     const { name, host, tagsets, anonymousReadAccess } = values;
-
+    debugger;
     updateEcoverse({
       variables: {
         input: {
@@ -50,7 +50,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
           displayName: name,
           ID: ecoverseId,
           hostID: host,
-          tags: tagsets.map(x => x.tags.join()),
+          tags: tagsets.flatMap(x => x.tags),
           authorizationPolicy: {
             anonymousReadAccess: anonymousReadAccess,
           },

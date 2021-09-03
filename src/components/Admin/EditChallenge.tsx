@@ -82,7 +82,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
               displayName: name,
               ecoverseID: ecoverseId,
               context: createContextInput(values),
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
@@ -95,7 +95,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               displayName: name,
               context: updateContextInput(values),
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
