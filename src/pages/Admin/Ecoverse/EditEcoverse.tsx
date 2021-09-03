@@ -42,7 +42,6 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
 
   const onSubmit = async (values: EcoverseEditFormValuesType) => {
     const { name, host, tagsets, anonymousReadAccess } = values;
-    debugger;
     updateEcoverse({
       variables: {
         input: {
