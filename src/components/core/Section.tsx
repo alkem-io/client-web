@@ -16,6 +16,7 @@ interface HeaderProps {
   tagText?: string;
   className?: string;
   classes?: ClassProps;
+  editComponent?: React.ReactNode;
 }
 
 const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
@@ -34,27 +35,45 @@ const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
   },
 }));
 
-export const Header: FC<HeaderProps> = ({ text, svg, icon, tagText, className, classes = {}, children }) => {
+export const Header: FC<HeaderProps> = ({
+  text,
+  svg,
+  icon,
+  tagText,
+  className,
+  classes = {},
+  editComponent,
+  children,
+}) => {
   const styles = useHeaderStyles(classes);
 
   return (
-    <Typography as="h2" variant="h2" color="inherit" weight="bold" className={clsx(styles.header, className)}>
-      {text || svg}
-      {tagText && <Tag className={styles.tagOffset} text={tagText} />}
-      {icon && (
-        <>
-          <Box flexGrow={1} />
-          {icon}
-        </>
-      )}
-      {children && (
-        <Grid container spacing={2}>
-          <Grid item lg={4} md={6} xs={12}>
-            {children}
-          </Grid>
+    <Grid container>
+      <Grid item xs={editComponent ? 11 : 12}>
+        <Typography as="h2" variant="h2" color="inherit" weight="bold" className={clsx(styles.header, className)}>
+          {text || svg}
+          {tagText && <Tag className={styles.tagOffset} text={tagText} />}
+          {icon && (
+            <>
+              <Box flexGrow={1} />
+              {icon}
+            </>
+          )}
+          {children && (
+            <Grid container spacing={2}>
+              <Grid item lg={4} md={6} xs={12}>
+                {children}
+              </Grid>
+            </Grid>
+          )}
+        </Typography>
+      </Grid>
+      {editComponent && (
+        <Grid item xs={1}>
+          {editComponent}
         </Grid>
       )}
-    </Typography>
+    </Grid>
   );
 };
 

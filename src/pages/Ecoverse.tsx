@@ -1,11 +1,15 @@
+import Grid from '@material-ui/core/Grid';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
+import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
+import { SettingsButton } from '../components/composite';
 import Button from '../components/core/Button';
+import CardFilter from '../components/core/card-filter/CardFilter';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import ErrorBlock from '../components/core/ErrorBlock';
@@ -17,8 +21,8 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
-import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
 import MembershipBackdrop from '../components/MembershipBackdrop';
+import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
 import {
   useChallengesWithActivityQuery,
   useEcoverseActivityQuery,
@@ -27,16 +31,12 @@ import {
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { useAuthenticationContext } from '../hooks';
-import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
 import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
+import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
-import CardFilter from '../components/core/card-filter/CardFilter';
-import { ActivityItem } from '../components/ActivityPanel/Activities';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -52,9 +52,16 @@ const useStyles = createStyles(theme => ({
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoQuery;
+  permissions: {
+    edit: boolean;
+  };
 }
 
-const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({
+  permissions = { edit: false },
+  paths,
+  ecoverse,
+}): React.ReactElement => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -198,7 +205,19 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
           />
         }
       >
-        <SectionHeader text={name} />
+        <SectionHeader
+          text={name}
+          editComponent={
+            permissions.edit && (
+              <SettingsButton
+                color={'primary'}
+                to={buildAdminEcoverseUrl(ecoverseId)}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
+              />
+            )
+          }
+        />
+
         <SubHeader text={tagline} />
         <Body>
           <Markdown children={vision} />
