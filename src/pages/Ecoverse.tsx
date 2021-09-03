@@ -4,7 +4,8 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
+import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
 import { SettingsButton } from '../components/composite';
 import Button from '../components/core/Button';
@@ -147,7 +148,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
 
   const more = references?.find(x => x.name === 'website');
 
-  const activitySummary: ActivityCardItem[] = useMemo(
+  const activitySummary: ActivityItem[] = useMemo(
     () => [
       {
         name: t('pages.activity.challenges'),
