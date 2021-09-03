@@ -1,19 +1,20 @@
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import Tooltip from '@material-ui/core/Tooltip';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import BackdropWithMessage from '../components/BackdropWithMessage';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
-import ContextEdit from '../components/ContextEdit';
+import SettingsButton from '../components/composite/common/SettingsButton/SettingsButton';
 import Button from '../components/core/Button';
+import CardFilter from '../components/core/card-filter/CardFilter';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
@@ -21,19 +22,16 @@ import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import BackdropWithMessage from '../components/BackdropWithMessage';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
+import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
-import { useAuthenticationContext } from '../hooks';
-import { useUpdateNavigation } from '../hooks';
 import { createStyles } from '../hooks/useTheme';
-import { useUserContext } from '../hooks';
 import { SEARCH_PAGE } from '../models/constants';
-import { Challenge as ChallengeType, Context, Organisation } from '../models/graphql-schema';
+import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
+import { buildAdminChallengeUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
-import CardFilter from '../components/core/card-filter/CardFilter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -105,14 +103,12 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
 
 interface ChallengePageProps extends PageProps {
   challenge: ChallengeType;
+  permissions: {
+    edit: boolean;
+  };
 }
 
 const useChallengeStyles = createStyles(theme => ({
-  edit: {
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(1),
@@ -125,7 +121,7 @@ interface Params {
   ecoverseId?: string;
 }
 
-const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactElement => {
+const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { edit: false } }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -133,8 +129,6 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
   const { ecoverseId = '' } = useParams<Params>();
-
-  const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
@@ -227,31 +221,15 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge }): React.ReactEle
               text={name}
               className="flex-grow-1"
               classes={{ color: theme => theme.palette.neutralLight.main }}
-            />
-            {user?.isAdmin && (
-              <>
-                <Tooltip
-                  placement={'bottom'}
-                  id={'Edit challenge context'}
-                  title={t('pages.challenge.sections.header.buttons.edit.tooltip') || ''}
-                >
-                  <Edit
-                    color={'white'}
-                    width={20}
-                    height={20}
-                    className={styles.edit}
-                    onClick={() => setIsEditOpened(true)}
+              editComponent={
+                permissions.edit && (
+                  <SettingsButton
+                    to={buildAdminChallengeUrl(ecoverseId, challenge.nameID)}
+                    tooltip={t('pages.challenge.sections.header.buttons.settigns.tooltip')}
                   />
-                </Tooltip>
-                <ContextEdit
-                  variant={'challenge'}
-                  show={isEditOpened}
-                  onHide={() => setIsEditOpened(false)}
-                  data={challenge.context as Context}
-                  id={id}
-                />
-              </>
-            )}
+                )
+              }
+            />
           </Box>
 
           <Grid container spacing={1}>
