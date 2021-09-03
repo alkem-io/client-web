@@ -280,28 +280,26 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
-      {opportunities && (
-        <CardFilter data={opportunities}>
-          {filteredData => (
-            <CardContainer>
-              {filteredData.map((opp, i) => (
-                <OpportunityCard
-                  key={i}
-                  displayName={opp.displayName}
-                  activity={opp.activity || []}
-                  url={`${url}/opportunities/${opp.nameID}`}
-                  lifecycle={{ state: opp?.lifecycle?.state || '' }}
-                  context={{
-                    tagline: opp?.context?.tagline || '',
-                    visual: { background: opp?.context?.visual?.background || '' },
-                  }}
-                  tags={opp?.tagset?.tags || []}
-                />
-              ))}
-            </CardContainer>
-          )}
-        </CardFilter>
-      )}
+      <CardFilter data={opportunities}>
+        {filteredData => (
+          <CardContainer>
+            {filteredData.map((opp, i) => (
+              <OpportunityCard
+                key={i}
+                displayName={opp.displayName}
+                activity={opp.activity || []}
+                url={`${url}/opportunities/${opp.nameID}`}
+                lifecycle={{ state: opp?.lifecycle?.state || '' }}
+                context={{
+                  tagline: opp?.context?.tagline || '',
+                  visual: { background: opp?.context?.visual?.background || '' },
+                }}
+                tags={opp?.tagset?.tags || []}
+              />
+            ))}
+          </CardContainer>
+        )}
+      </CardFilter>
       <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', {

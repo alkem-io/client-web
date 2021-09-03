@@ -67,7 +67,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path={`${path}/challenges/:challengeId`}>
-        <Challenge paths={currentPaths} challenges={challenges} />
+        <ChallengeRoute paths={currentPaths} challenges={challenges} />
       </Route>
       <Route path={path}>
         <EcoverseApplyRoute paths={currentPaths} />
@@ -83,7 +83,7 @@ interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
 }
 
-const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
+const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { ecoverseId, toEcoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { challengeId: id } = useParams<RouteParameters>();
