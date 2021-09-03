@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel/ActivityCard';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import ContextEdit from '../components/ContextEdit';
 import Button from '../components/core/Button';

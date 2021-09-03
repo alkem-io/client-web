@@ -4,7 +4,7 @@ import { useEcoverseNameQuery } from '../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import ChallengePopUp from '../Challenge/ChallengePopUp';
 import getActivityCount from '../../utils/get-activity-count';
-import { ActivityCardItem } from '../ActivityPanel';
+import { ActivityCardItem } from '../ActivityPanel/ActivityCard';
 import EntitySearchCardProps from './EntitySearchCardProps';
 
 const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFragment>> = ({

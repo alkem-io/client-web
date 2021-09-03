@@ -18,25 +18,6 @@ interface ActivityCardProps extends CardProps {
   lifecycle?: Maybe<Lifecycle>;
 }
 
-// const useCardStyles = createStyles(theme => ({
-//   wrapper: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     gap: theme.spacing(2),
-//   },
-//   item: {
-//     display: 'flex',
-//     justifyContent: 'space-between',
-//     flexGrow: 1,
-//     alignItems: 'center',
-
-//     '& > p': {
-//       marginBottom: 0,
-//       textTransform: 'capitalize',
-//     },
-//   },
-// }));
-
 const ActivityCard: FC<ActivityCardProps> = ({
   title = 'Activity Panel',
   items = activitiesMock,

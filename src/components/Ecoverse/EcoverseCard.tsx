@@ -7,7 +7,7 @@ import hexToRGBA from '../../utils/hexToRGBA';
 import Typography from '../core/Typography';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
-import { Activities } from '../ActivityPanel';
+import { Activities } from '../ActivityPanel/ActivityCard';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
 import getActivityCount from '../../utils/get-activity-count';

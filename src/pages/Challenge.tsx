@@ -9,7 +9,7 @@ import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel/ActivityCard';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
 import ContextEdit from '../components/ContextEdit';

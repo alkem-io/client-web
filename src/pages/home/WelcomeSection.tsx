@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
-import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../../components/ActivityPanel/ActivityCard';
 import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';

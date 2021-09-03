@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../core/Card';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { Activities } from '../ActivityPanel';
+import { Activities } from '../ActivityPanel/ActivityCard';
 import getActivityCount from '../../utils/get-activity-count';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';

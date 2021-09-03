@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel/ActivityCard';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';

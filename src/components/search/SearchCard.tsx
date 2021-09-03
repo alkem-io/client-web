@@ -2,7 +2,7 @@ import React, { FC, memo, ReactElement, useState } from 'react';
 import { default as CoreCard } from '../core/Card';
 import { createStyles } from '../../hooks/useTheme';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { Activities, ActivityCardItem } from '../ActivityPanel';
+import { Activities, ActivityCardItem } from '../ActivityPanel/ActivityCard';
 
 const getStyles = createStyles(theme => ({
   card: {
