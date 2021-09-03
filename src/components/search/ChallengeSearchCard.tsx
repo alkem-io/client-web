@@ -4,7 +4,7 @@ import { useEcoverseNameQuery } from '../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import ChallengePopUp from '../Challenge/ChallengePopUp';
 import getActivityCount from '../../utils/get-activity-count';
-import { ActivityCardItem } from '../ActivityPanel';
+import { ActivityItem } from '../ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
 
 const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFragment>> = ({
@@ -24,7 +24,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
   const displayName = challenge.displayName || '';
 
   const _activity = challenge?.activity || [];
-  const activity: ActivityCardItem[] = [
+  const activity: ActivityItem[] = [
     { name: 'Opportunities', digit: getActivityCount(_activity, 'opportunities') || 0, color: 'primary' },
     { name: 'Members', digit: getActivityCount(_activity, 'members') || 0, color: 'positive' },
   ];

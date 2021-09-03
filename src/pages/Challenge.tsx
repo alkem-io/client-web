@@ -8,7 +8,8 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
+import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import BackdropWithMessage from '../components/BackdropWithMessage';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
@@ -171,7 +172,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
     [projects]
   );
 
-  const activitySummary: ActivityCardItem[] = useMemo(() => {
+  const activitySummary: ActivityItem[] = useMemo(() => {
     return [
       {
         name: t('pages.activity.opportunities'),
