@@ -2193,6 +2193,19 @@ export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameI
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 
+export type OrganisationInfoFragment = {
+  __typename?: 'Organisation';
+  id: string;
+  nameID: string;
+  displayName: string;
+  legalEntityName?: Maybe<string>;
+  domain?: Maybe<string>;
+  website?: Maybe<string>;
+  verified: OrganizationVerificationEnum;
+  contactEmail?: Maybe<string>;
+  profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+};
+
 export type OrganisationDetailsFragment = {
   __typename?: 'Organisation';
   id: string;
@@ -4622,6 +4635,26 @@ export type OpportunityWithActivityQuery = {
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
     }>;
+  };
+};
+
+export type OrganisationInfoQueryVariables = Exact<{
+  organisationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganisationInfoQuery = {
+  __typename?: 'Query';
+  organisation: {
+    __typename?: 'Organisation';
+    id: string;
+    nameID: string;
+    displayName: string;
+    legalEntityName?: Maybe<string>;
+    domain?: Maybe<string>;
+    website?: Maybe<string>;
+    verified: OrganizationVerificationEnum;
+    contactEmail?: Maybe<string>;
+    profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
   };
 };
 
