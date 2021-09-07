@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import React, { FC, useMemo } from 'react';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
+import { Container, Link, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 
 import Button from '../core/Button';
@@ -17,16 +17,33 @@ interface Props extends PageProps {
       url: string;
     }>;
   }>;
+  title?: string;
+  entityUrl?: string;
 }
 
-export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
+export const ManagementPageTemplate: FC<Props> = ({ title, entityUrl: returnUrl, data, paths }) => {
   const { url } = useRouteMatch();
 
   useUpdateNavigation({ currentPaths: paths });
 
+  const titleElement = useMemo(
+    () =>
+      returnUrl ? (
+        <Link component={RouterLink} to={returnUrl}>
+          {title}
+        </Link>
+      ) : (
+        title
+      ),
+    [returnUrl, title]
+  );
+
   return (
     <Container maxWidth="xl">
       <Grid container spacing={2} direction="column">
+        <Grid item>
+          <Typography variant="h2">{titleElement}</Typography>
+        </Grid>
         {data.map((x, i) => (
           <Grid item key={i}>
             <Card
@@ -45,7 +62,7 @@ export const ManagementPageTemplate: FC<Props> = ({ data, paths }) => {
               <Grid container spacing={2}>
                 {x.buttons.map((btn, index) => (
                   <Grid key={index} item>
-                    <Button as={Link} to={`${url}${btn.url}`} text={btn.description} />
+                    <Button as={RouterLink} to={`${url}${btn.url}`} text={btn.description} />
                   </Grid>
                 ))}
               </Grid>

@@ -73,7 +73,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
           hostID: host,
           context: createContextInput(values),
           displayName: name,
-          tags: tagsets.map(x => x.tags.join()),
+          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });

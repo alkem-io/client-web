@@ -88,7 +88,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
               context: createContextInput(values),
               displayName: name,
               challengeID: challengeId,
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
@@ -101,7 +101,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
               context: updateContextInput(values),
               displayName: name,
               ID: opportunityId,
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });

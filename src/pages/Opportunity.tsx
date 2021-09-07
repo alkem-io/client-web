@@ -1,10 +1,8 @@
 import { Box, Container } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
@@ -12,9 +10,10 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import ActivityCard, { ActivityCardItem } from '../components/ActivityPanel';
+import { ActivityItem } from '../components/ActivityPanel/Activities';
+import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import { CommunitySection } from '../components/Community/CommunitySection';
-import ContextEdit from '../components/ContextEdit';
+import { SettingsButton } from '../components/composite';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
@@ -34,10 +33,11 @@ import {
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks/useTheme';
 import { SEARCH_PAGE } from '../models/constants';
-import { Context, Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
+import { Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
@@ -67,10 +67,12 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface OpportunityPageProps extends PageProps {
+  challengeId: string;
   opportunity: OpportunityType;
   users: User[] | undefined;
   onProjectTransition: (project: Project | undefined) => void;
   permissions: {
+    edit: boolean;
     projectWrite: boolean;
     editActorGroup: boolean;
     editAspect: boolean;
@@ -81,9 +83,11 @@ interface OpportunityPageProps extends PageProps {
 
 const OpportunityPage: FC<OpportunityPageProps> = ({
   paths,
+  challengeId,
   opportunity,
   users = [],
   permissions = {
+    edit: false,
     projectWrite: false,
     editActorGroup: false,
     editAspect: false,
@@ -97,7 +101,6 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const [isEditOpened, setIsEditOpened] = useState<boolean>(false);
   const history = useHistory();
   const { ecoverseId } = useEcoverse();
 
@@ -149,7 +152,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
 
   const projectRef = useRef<HTMLDivElement>(null);
 
-  const activitySummary: ActivityCardItem[] = useMemo(() => {
+  const activitySummary: ActivityItem[] = useMemo(() => {
     return [
       {
         name: t('pages.activity.projects'),
@@ -224,31 +227,15 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               classes={{
                 color: theme => theme.palette.neutralLight.main,
               }}
-            />
-            {user?.isAdmin && (
-              <>
-                <Tooltip
-                  placement={'bottom'}
-                  id={'Edit opportunity context'}
-                  title={t('pages.opportunity.sections.header.buttons.edit.tooltip') || ''}
-                >
-                  <Edit
-                    color={'white'}
-                    width={20}
-                    height={20}
-                    className={styles.edit}
-                    onClick={() => setIsEditOpened(true)}
+              editComponent={
+                permissions.edit && (
+                  <SettingsButton
+                    to={buildAdminOpportunityUrl(ecoverseId, challengeId, opportunity.nameID)}
+                    tooltip={t('pages.opportunity.sections.header.buttons.settings.tooltip')}
                   />
-                </Tooltip>
-                <ContextEdit
-                  variant={'opportunity'}
-                  show={isEditOpened}
-                  onHide={() => setIsEditOpened(false)}
-                  data={opportunity.context as Context}
-                  id={id}
-                />
-              </>
-            )}
+                )
+              }
+            />
           </Box>
           <Box flexDirection={'row'}>
             <Button

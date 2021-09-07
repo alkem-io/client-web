@@ -229,16 +229,6 @@ export type AuthorizationRuleCredential = {
   type: Scalars['String'];
 };
 
-export type Canvas = {
-  __typename?: 'Canvas';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The name of the Canvas. */
-  name: Scalars['String'];
-  /** The JSON representation of the Canvas. */
-  value: Scalars['JSON'];
-};
-
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
   /** The activity within this Challenge. */
@@ -476,15 +466,11 @@ export type CreateOpportunityInput = {
 };
 
 export type CreateOrganisationInput = {
-  contactEmail?: Maybe<Scalars['String']>;
   /** The display name for the entity. */
   displayName?: Maybe<Scalars['String']>;
-  domain?: Maybe<Scalars['String']>;
-  legalEntityName?: Maybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData?: Maybe<CreateProfileInput>;
-  website?: Maybe<Scalars['String']>;
 };
 
 export type CreateProfileInput = {
@@ -648,8 +634,6 @@ export type EcosystemModel = {
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Canvas for visualizing this Ecosystem Model. */
-  canvas?: Maybe<Canvas>;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -1338,29 +1322,19 @@ export type Organisation = Groupable &
     agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
     authorization?: Maybe<Authorization>;
-    /** Organisation contact email */
-    contactEmail?: Maybe<Scalars['String']>;
     /** The display name. */
     displayName: Scalars['String'];
-    /** Domain name; what is verified, eg. alkem.io */
-    domain?: Maybe<Scalars['String']>;
     /** Group defined on this organisation. */
     group?: Maybe<UserGroup>;
     /** Groups defined on this organisation. */
     groups?: Maybe<Array<UserGroup>>;
     id: Scalars['UUID'];
-    /** Legal name - required if hosting an Ecoverse */
-    legalEntityName?: Maybe<Scalars['String']>;
     /** All users that are members of this Organisation. */
     members?: Maybe<Array<User>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID'];
     /** The profile for this organisation. */
     profile: Profile;
-    /** Organisation verification type */
-    verified: OrganizationVerificationEnum;
-    /** Organisation website */
-    website?: Maybe<Scalars['String']>;
   };
 
 export type OrganisationGroupArgs = {
@@ -1380,11 +1354,6 @@ export type OrganisationMembership = {
   ecoversesHosting: Array<MembershipResultEntry>;
   id: Scalars['UUID'];
 };
-
-export enum OrganizationVerificationEnum {
-  ManualAttestation = 'MANUAL_ATTESTATION',
-  NotVerified = 'NOT_VERIFIED',
-}
 
 export type OryConfig = {
   __typename?: 'OryConfig';
@@ -1800,15 +1769,11 @@ export type UpdateOpportunityInput = {
 export type UpdateOrganisationInput = {
   /** The ID or NameID of the Organisation to update. */
   ID: Scalars['UUID_NAMEID'];
-  contactEmail?: Maybe<Scalars['String']>;
   /** The display name for this entity. */
   displayName?: Maybe<Scalars['String']>;
-  domain?: Maybe<Scalars['String']>;
-  legalEntityName?: Maybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: Maybe<Scalars['NameID']>;
   profileData?: Maybe<UpdateProfileInput>;
-  website?: Maybe<Scalars['String']>;
 };
 
 export type UpdateProfileInput = {
@@ -3426,7 +3391,7 @@ export type ChallengeProfileQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
@@ -3442,9 +3407,9 @@ export type ChallengeProfileQuery = {
       }>;
       community?: Maybe<{
         __typename?: 'Community';
-        members?: Maybe<Array<{ __typename?: 'User'; displayName: string }>>;
+        members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
       }>;
-      tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       opportunities?: Maybe<
         Array<{
           __typename?: 'Opportunity';
@@ -3472,7 +3437,7 @@ export type ChallengeProfileQuery = {
               nameID: string;
               displayName: string;
               description?: Maybe<string>;
-              lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+              lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
             }>
           >;
           tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
@@ -3586,6 +3551,10 @@ export type ChallengesWithActivityQuery = {
           __typename?: 'Context';
           id: string;
           tagline?: Maybe<string>;
+          background?: Maybe<string>;
+          vision?: Maybe<string>;
+          impact?: Maybe<string>;
+          who?: Maybe<string>;
           visual?: Maybe<{ __typename?: 'Visual'; background: string }>;
         }>;
         tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
