@@ -2,13 +2,6 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
-  "general": {
-    "ecoverse": "Ecoverse",
-    "challenge": "Challenge",
-    "opportunity": "Opportunity",
-    "group": "Group",
-    "organization": "Organization"
-  },
   "search": {
     "header": "Search",
     "subheader": "Find relevant users, organisations, groups and not least Challenges!",
@@ -75,8 +68,13 @@
     "challenges": "Challenges",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
+    "organisation": "Organisation",
+    "organisations": "Organisations",
     "project": "Project",
     "projects": "Projects",
+    "group": "Group",
+    "groups": "Groups",
+    "membership": "Membership",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -292,10 +290,15 @@
         }
       }
     },
+    "organisation": {
+      "hosted-ecoverses": "Ecoverses hosted",
+      "leading-challenges": "Challenges being lead",
+      "no-rows": "None"
+    },
     "ecoverse": {
       "title": "Ecoverse",
       "application": {
-        "title": "Application to join $t(general.{{entity}}) \"{{name}}\"",
+        "title": "Application to join $t(common.{{entity}}) \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",
