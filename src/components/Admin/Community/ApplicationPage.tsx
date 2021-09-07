@@ -1,18 +1,17 @@
+import Dialog from '@material-ui/core/Dialog';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
-import Dialog from '@material-ui/core/Dialog';
-import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import { useUpdateNavigation } from '../../../hooks';
-import { PageProps } from '../../../pages';
-import { ApplicationInfoFragment } from '../../../models/graphql-schema';
-import Avatar from '../../core/Avatar';
-import { createStyles } from '../../../hooks/useTheme';
-import Typography from '../../core/Typography';
+import { useApolloErrorHandler, useUpdateNavigation } from '../../../hooks';
 import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import LifecycleButton from '../../core/LifecycleButton';
+import { createStyles } from '../../../hooks/useTheme';
+import { ApplicationInfoFragment } from '../../../models/graphql-schema';
+import { PageProps } from '../../../pages';
+import Avatar from '../../core/Avatar';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
+import LifecycleButton from '../../core/LifecycleButton';
+import Typography from '../../core/Typography';
 
 interface ApplicationViewmodel {
   id: string;

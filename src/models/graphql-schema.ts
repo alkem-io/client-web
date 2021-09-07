@@ -3378,7 +3378,7 @@ export type ChallengeProfileQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
@@ -3394,9 +3394,9 @@ export type ChallengeProfileQuery = {
       }>;
       community?: Maybe<{
         __typename?: 'Community';
-        members?: Maybe<Array<{ __typename?: 'User'; displayName: string }>>;
+        members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
       }>;
-      tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       opportunities?: Maybe<
         Array<{
           __typename?: 'Opportunity';
@@ -3424,7 +3424,7 @@ export type ChallengeProfileQuery = {
               nameID: string;
               displayName: string;
               description?: Maybe<string>;
-              lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+              lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
             }>
           >;
           tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
@@ -3538,6 +3538,10 @@ export type ChallengesWithActivityQuery = {
           __typename?: 'Context';
           id: string;
           tagline?: Maybe<string>;
+          background?: Maybe<string>;
+          vision?: Maybe<string>;
+          impact?: Maybe<string>;
+          who?: Maybe<string>;
           visual?: Maybe<{ __typename?: 'Visual'; background: string }>;
         }>;
         tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;

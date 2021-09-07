@@ -16,6 +16,7 @@ import { CommunityRoute } from '../community';
 import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
+import { buildChallengeUrl } from '../../../utils/urlBuilders';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -71,7 +72,12 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.challengeLvl} paths={currentPaths} />
+        <ManagementPageTemplate
+          data={managementData.challengeLvl}
+          paths={currentPaths}
+          title={data?.ecoverse.challenge.displayName}
+          entityUrl={buildChallengeUrl(ecoverseId, challengeId)}
+        />
       </Route>
       <Route path={`${path}/edit`}>
         <EditChallenge mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
