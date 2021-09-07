@@ -75,40 +75,42 @@ const MembershipSection: FC<Props> = ({
         </Grid>
       )}
       {!loading && !error && (
-        <Grid container justifyContent={'center'}>
-          <Grid item xs={10}>
-            <Table size="small" className={styles.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell component="th">{tableTitle}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {entities.length > 0 &&
-                  entities.map(x => (
-                    <TableRow key={`tr-${x.id}`}>
-                      <TableCell key={`td-${x.id}`}>
-                        <Grid container justifyContent={'space-between'} alignItems={'center'}>
-                          <Grid item>{x.displayName}</Grid>
-                          {link && (
-                            <Grid item>
-                              <Tooltip title={`Visit ${x.displayName}`}>
-                                <IconButton aria-label="Visit" href={buildEcoverseUrl(x.nameID)} size={'small'}>
-                                  <LinkIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </Grid>
-                          )}
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+        <>
+          <Grid container justifyContent={'center'}>
+            <Grid item xs={10}>
+              <Table size="small" className={styles.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell component="th">{tableTitle}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {entities.length > 0 &&
+                    entities.map(x => (
+                      <TableRow key={`tr-${x.id}`}>
+                        <TableCell key={`td-${x.id}`}>
+                          <Grid container justifyContent={'space-between'} alignItems={'center'}>
+                            <Grid item>{x.displayName}</Grid>
+                            {link && (
+                              <Grid item>
+                                <Tooltip title={`Visit ${x.displayName}`}>
+                                  <IconButton aria-label="Visit" href={buildEcoverseUrl(x.nameID)} size={'small'}>
+                                    <LinkIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </Grid>
+                            )}
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </Grid>
           </Grid>
-        </Grid>
+          {entities.length === 0 && <Typography className={styles.noRows}>{noDataText}</Typography>}
+        </>
       )}
-      {entities.length === 0 && <Typography className={styles.noRows}>{noDataText}</Typography>}
     </>
   );
 };

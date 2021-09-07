@@ -14,7 +14,10 @@ import { Loading } from '../core';
 import Typography from '../core/Typography';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { DialogContent, DialogTitle } from '../core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
+import Button from '../core/Button';
+import { Link } from 'react-router-dom';
+import { buildOrganisationUrl } from '../../utils/urlBuilders';
 
 const groupPopUpStyles = createStyles(theme => ({
   header: {
@@ -100,6 +103,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
   const { data, loading: loadingOrg } = useOrganizationDetailsQuery({ variables: { id } });
   const profile = data?.organisation?.profile;
   const name = data?.organisation?.displayName;
+  const nameID = data?.organisation?.nameID;
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
 
   const { data: membership, loading: loadingMembership } = useMembershipOrganisationQuery({
@@ -191,6 +195,11 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
           </div>
         )}
       </DialogContent>
+      {nameID && (
+        <DialogActions>
+          <Button variant="primary" text={t('buttons.explore')} as={Link} to={buildOrganisationUrl(nameID)} />
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

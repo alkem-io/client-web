@@ -9,8 +9,8 @@ import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
 import { useMembershipOrganisationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
-import MembershipSection from './MembershipSection';
 import Icon from '../../components/core/Icon';
+import MembershipSection from './MembershipSection';
 import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 
@@ -89,6 +89,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         tableTitle={t('pages.organisation.leading-challenges')}
         noDataText={t('pages.organisation.no-rows')}
       />
+      <Divider />
     </>
   );
 };

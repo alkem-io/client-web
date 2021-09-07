@@ -164,6 +164,7 @@ export const EcoverseDetailsFragmentDoc = gql`
     host {
       id
       displayName
+      nameID
     }
     context {
       ...ContextDetails
@@ -3889,6 +3890,7 @@ export const ChallengeProfileDocument = gql`
         leadOrganisations {
           id
           displayName
+          nameID
           profile {
             id
             avatar
@@ -6796,6 +6798,7 @@ export const OrganizationDetailsDocument = gql`
     organisation(ID: $id) {
       id
       displayName
+      nameID
       profile {
         id
         avatar

@@ -14,6 +14,8 @@ const buildAdminChallengeUrl = (ecoverseNameId: string, challengeNameId: string)
 const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
   buildAdminChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
+const buildOrganisationUrl = (organisationNameId: string) => `/organisation/${organisationNameId}`;
+
 export {
   buildEcoverseUrl,
   buildChallengeUrl,
@@ -21,4 +23,5 @@ export {
   buildAdminEcoverseUrl,
   buildAdminChallengeUrl,
   buildAdminOpportunityUrl,
+  buildOrganisationUrl,
 };
