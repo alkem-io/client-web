@@ -297,7 +297,11 @@
     "organisation": {
       "hosted-ecoverses": "Ecoverses hosted",
       "leading-challenges": "Challenges being lead",
-      "no-rows": "None"
+      "no-rows": "None",
+      "owners": {
+        "title": "Owners",
+        "no-owners": "None"
+      }
     },
     "ecoverse": {
       "title": "Ecoverse",

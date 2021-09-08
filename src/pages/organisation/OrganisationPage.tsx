@@ -3,21 +3,17 @@ import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import LinkIcon from '@material-ui/icons/Link';
-import EmailIcon from '@material-ui/icons/MailOutline';
 import { PageProps } from '../common';
 import { createStyles, useUpdateNavigation, useOrganisation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
-import { useMembershipOrganisationQuery } from '../../hooks/generated/graphql';
+import { useMembershipOrganisationQuery, useUsersWithCredentialsQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { OrganizationVerificationEnum } from '../../models/graphql-schema';
-import { OrganisationVerifiedState } from '../../components/composite';
+import { AuthorizationCredential, User } from '../../models/graphql-schema';
+import InfoSection from './InfoSection';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -38,13 +34,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   );
   useUpdateNavigation({ currentPaths });
 
-  const {
-    profile,
-    displayName,
-    contactEmail,
-    website,
-    verified = OrganizationVerificationEnum.NotVerified,
-  } = organisation || {};
+  const { profile, displayName } = organisation || {};
   const { avatar, description } = profile || {};
 
   const {
@@ -57,8 +47,20 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         organisationID: organisationId,
       },
     },
+    skip: !organisation,
   });
   const { ecoversesHosting = [], challengesLeading = [] } = data?.membershipOrganisation || {};
+
+  const { data: _orgOwners } = useUsersWithCredentialsQuery({
+    variables: {
+      input: {
+        resourceID: organisation?.id,
+        type: AuthorizationCredential.OrganisationOwner,
+      },
+    },
+    skip: !organisation,
+  });
+  const orgOwners = (_orgOwners?.usersWithAuthorizationCredential || []) as User[];
 
   if (orgLoading) {
     return <Loading text={t('loading.message', { blockName: t('common.organisation') })} />;
@@ -70,23 +72,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         <SectionHeader text={displayName} />
         <SubHeader text={description} />
         <Body>
-          <Grid container spacing={1}>
-            <Grid item>
-              <LinkIcon fontSize={'small'} />
-              <Typography component={'a'} href={website}>
-                {website}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <EmailIcon fontSize={'small'} />
-              <Typography component={'a'} href={`mailto:${contactEmail}`}>
-                {contactEmail}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <OrganisationVerifiedState state={verified} />
-            </Grid>
-          </Grid>
+          <InfoSection organisation={organisation} owners={orgOwners} />
         </Body>
       </Section>
       <Divider />
