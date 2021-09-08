@@ -171,6 +171,10 @@
     }
   },
   "components": {
+    "organisation-verified": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "card-filter": {
       "title": "Filter"
     },

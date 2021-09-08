@@ -2198,11 +2198,9 @@ export type OrganisationInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  legalEntityName?: Maybe<string>;
-  domain?: Maybe<string>;
-  website?: Maybe<string>;
-  verified: OrganizationVerificationEnum;
   contactEmail?: Maybe<string>;
+  verified: OrganizationVerificationEnum;
+  website?: Maybe<string>;
   profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
 };
 
@@ -4654,11 +4652,9 @@ export type OrganisationInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    legalEntityName?: Maybe<string>;
-    domain?: Maybe<string>;
-    website?: Maybe<string>;
-    verified: OrganizationVerificationEnum;
     contactEmail?: Maybe<string>;
+    verified: OrganizationVerificationEnum;
+    website?: Maybe<string>;
     profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
   };
 };

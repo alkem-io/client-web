@@ -2,11 +2,9 @@ fragment OrganisationInfo on Organisation {
   id
   nameID
   displayName
-  legalEntityName
-  domain
-  website
-  verified
   contactEmail
+  verified
+  website
   profile {
     id
     avatar

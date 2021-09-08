@@ -1,7 +1,12 @@
+import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
+import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import LinkIcon from '@material-ui/icons/Link';
+import EmailIcon from '@material-ui/icons/MailOutline';
 import { PageProps } from '../common';
 import { createStyles, useUpdateNavigation, useOrganisation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -11,8 +16,8 @@ import { useMembershipOrganisationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
-import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
+import { OrganizationVerificationEnum } from '../../models/graphql-schema';
+import { OrganisationVerifiedState } from '../../components/composite';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -33,7 +38,13 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   );
   useUpdateNavigation({ currentPaths });
 
-  const { profile, displayName, legalEntityName, contactEmail } = organisation || {};
+  const {
+    profile,
+    displayName,
+    contactEmail,
+    website,
+    verified = OrganizationVerificationEnum.NotVerified,
+  } = organisation || {};
   const { avatar, description } = profile || {};
 
   const {
@@ -59,10 +70,23 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         <SectionHeader text={displayName} />
         <SubHeader text={description} />
         <Body>
-          <Typography variant={'h5'}>{legalEntityName}</Typography>
-          <Typography component={'a'} href={`mailto:${contactEmail}`}>
-            {contactEmail}
-          </Typography>
+          <Grid container spacing={1}>
+            <Grid item>
+              <LinkIcon fontSize={'small'} />
+              <Typography component={'a'} href={website}>
+                {website}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <EmailIcon fontSize={'small'} />
+              <Typography component={'a'} href={`mailto:${contactEmail}`}>
+                {contactEmail}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <OrganisationVerifiedState state={verified} />
+            </Grid>
+          </Grid>
         </Body>
       </Section>
       <Divider />
