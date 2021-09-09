@@ -14,6 +14,8 @@ import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
 import { AuthorizationCredential, User } from '../../models/graphql-schema';
 import InfoSection from './InfoSection';
+import HostedEcoverseCard from './HostedEcoverseCard';
+import LeadingChallengeCard from './LeadingChallengeCard';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -37,11 +39,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   const { profile, displayName } = organisation || {};
   const { avatar, description } = profile || {};
 
-  const {
-    data,
-    loading: membershipLoading,
-    error: membershipError,
-  } = useMembershipOrganisationQuery({
+  const { data } = useMembershipOrganisationQuery({
     variables: {
       input: {
         organisationID: organisationId,
@@ -77,27 +75,18 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
       </Section>
       <Divider />
       <MembershipSection
-        icon={<Icon component={Globe} color="primary" size="xl" />}
         entities={ecoversesHosting}
-        entityName={t('common.ecoverses')}
-        link={true}
-        loading={membershipLoading}
-        error={!!membershipError}
+        icon={<Icon component={Globe} color="primary" size="xl" />}
+        cardComponent={HostedEcoverseCard}
+        cardHeight={520}
         title={t('common.ecoverses')}
-        tableTitle={t('pages.organisation.hosted-ecoverses')}
-        noDataText={t('pages.organisation.no-rows')}
       />
       <Divider />
       <MembershipSection
-        icon={<Icon component={CompassIcon} color="primary" size="xl" />}
         entities={challengesLeading}
-        entityName={t('common.challenges')}
-        link={false}
-        loading={membershipLoading}
-        error={!!membershipError}
+        icon={<Icon component={CompassIcon} color="primary" size="xl" />}
+        cardComponent={LeadingChallengeCard}
         title={t('common.challenges')}
-        tableTitle={t('pages.organisation.leading-challenges')}
-        noDataText={t('pages.organisation.no-rows')}
       />
       <Divider />
     </>

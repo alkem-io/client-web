@@ -1,0 +1,8 @@
+query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      ...ChallengeCard
+    }
+  }
+}

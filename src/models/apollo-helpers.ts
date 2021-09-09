@@ -358,9 +358,16 @@ export type LifecycleFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipResultEntryKeySpecifier = ('displayName' | 'id' | 'nameID' | MembershipResultEntryKeySpecifier)[];
+export type MembershipResultEntryKeySpecifier = (
+  | 'displayName'
+  | 'ecoverseID'
+  | 'id'
+  | 'nameID'
+  | MembershipResultEntryKeySpecifier
+)[];
 export type MembershipResultEntryFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -385,6 +392,7 @@ export type MembershipUserResultEntryEcoverseFieldPolicy = {
 };
 export type MembershipUserResultEntryOrganisationKeySpecifier = (
   | 'displayName'
+  | 'ecoverseID'
   | 'id'
   | 'nameID'
   | 'organisationID'
@@ -393,6 +401,7 @@ export type MembershipUserResultEntryOrganisationKeySpecifier = (
 )[];
 export type MembershipUserResultEntryOrganisationFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   organisationID?: FieldPolicy<any> | FieldReadFunction<any>;

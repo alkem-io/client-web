@@ -27,18 +27,22 @@ const InfoSection: FC<Props> = ({ organisation, owners = [] }) => {
   return (
     <Grid container spacing={1}>
       <Grid container item spacing={1}>
-        <Grid item>
-          <LinkIcon fontSize={'small'} />
-          <Typography component={'a'} href={website}>
-            {website}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <EmailIcon fontSize={'small'} />
-          <Typography component={'a'} href={`mailto:${contactEmail}`}>
-            {contactEmail}
-          </Typography>
-        </Grid>
+        {website && (
+          <Grid item>
+            <LinkIcon fontSize={'small'} />
+            <Typography component={'a'} href={website}>
+              {website}
+            </Typography>
+          </Grid>
+        )}
+        {contactEmail && (
+          <Grid item>
+            <EmailIcon fontSize={'small'} />
+            <Typography component={'a'} href={`mailto:${contactEmail}`}>
+              {contactEmail}
+            </Typography>
+          </Grid>
+        )}
         <Grid item>
           <OrganisationVerifiedState state={verified} />
         </Grid>

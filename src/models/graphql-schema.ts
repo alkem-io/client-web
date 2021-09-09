@@ -781,6 +781,8 @@ export type MembershipResultEntry = {
   __typename?: 'MembershipResultEntry';
   /** Display name of the entity */
   displayName: Scalars['String'];
+  /** The ID of the ecoverse of the entity. */
+  ecoverseID?: Maybe<Scalars['UUID']>;
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
@@ -814,6 +816,8 @@ export type MembershipUserResultEntryOrganisation = {
   __typename?: 'MembershipUserResultEntryOrganisation';
   /** Display name of the entity */
   displayName: Scalars['String'];
+  /** The ID of the ecoverse of the entity. */
+  ecoverseID?: Maybe<Scalars['UUID']>;
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
   /** Name Identifier of the entity */
@@ -1999,6 +2003,25 @@ export type ApplicationInfoFragment = {
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   };
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+};
+
+export type ChallengeCardFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    background?: Maybe<string>;
+    vision?: Maybe<string>;
+    impact?: Maybe<string>;
+    who?: Maybe<string>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
 };
 
 export type CommunityDetailsFragment = {
@@ -3204,6 +3227,96 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
+export type ChallengeCardQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCardQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      displayName: string;
+      nameID: string;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        tagline?: Maybe<string>;
+        background?: Maybe<string>;
+        vision?: Maybe<string>;
+        impact?: Maybe<string>;
+        who?: Maybe<string>;
+        visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
+      }>;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+    };
+  };
+};
+
+export type ChallengeCardsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCardsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenges?: Maybe<
+      Array<{
+        __typename?: 'Challenge';
+        id: string;
+        displayName: string;
+        nameID: string;
+        activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+        context?: Maybe<{
+          __typename?: 'Context';
+          id: string;
+          tagline?: Maybe<string>;
+          background?: Maybe<string>;
+          vision?: Maybe<string>;
+          impact?: Maybe<string>;
+          who?: Maybe<string>;
+          visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
+        }>;
+        tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+      }>
+    >;
+  };
+};
+
+export type EcoverseCardQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseCardQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
+    activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+    tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+    context?: Maybe<{
+      __typename?: 'Context';
+      id: string;
+      tagline?: Maybe<string>;
+      background?: Maybe<string>;
+      vision?: Maybe<string>;
+      impact?: Maybe<string>;
+      who?: Maybe<string>;
+      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    }>;
+  };
+};
+
 export type UserCardQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -3560,38 +3673,6 @@ export type ChallengesQuery = {
           references?: Maybe<Array<{ __typename?: 'Reference'; name: string; uri: string }>>;
           visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
         }>;
-      }>
-    >;
-  };
-};
-
-export type ChallengesWithActivityQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengesWithActivityQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    challenges?: Maybe<
-      Array<{
-        __typename?: 'Challenge';
-        id: string;
-        displayName: string;
-        nameID: string;
-        activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-        context?: Maybe<{
-          __typename?: 'Context';
-          id: string;
-          tagline?: Maybe<string>;
-          background?: Maybe<string>;
-          vision?: Maybe<string>;
-          impact?: Maybe<string>;
-          who?: Maybe<string>;
-          visual?: Maybe<{ __typename?: 'Visual'; background: string }>;
-        }>;
-        tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
       }>
     >;
   };
@@ -4249,7 +4330,13 @@ export type MembershipOrganisationQuery = {
     __typename?: 'OrganisationMembership';
     id: string;
     ecoversesHosting: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
-    challengesLeading: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
+    challengesLeading: Array<{
+      __typename?: 'MembershipResultEntry';
+      id: string;
+      nameID: string;
+      displayName: string;
+      ecoverseID?: Maybe<string>;
+    }>;
   };
 };
 

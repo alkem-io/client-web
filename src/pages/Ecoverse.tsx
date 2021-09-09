@@ -25,7 +25,7 @@ import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySe
 import MembershipBackdrop from '../components/MembershipBackdrop';
 import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
 import {
-  useChallengesWithActivityQuery,
+  useChallengeCardsQuery,
   useEcoverseActivityQuery,
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
@@ -82,7 +82,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
     data: _challenges,
     error: challengesError,
     loading: isChallengeLoading,
-  } = useChallengesWithActivityQuery({
+  } = useChallengeCardsQuery({
     variables: { ecoverseId },
   });
   const challenges = (_challenges?.ecoverse?.challenges || []) as Challenge[];
