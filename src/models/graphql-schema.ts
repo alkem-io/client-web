@@ -2224,7 +2224,13 @@ export type OrganisationInfoFragment = {
   contactEmail?: Maybe<string>;
   verified: OrganizationVerificationEnum;
   website?: Maybe<string>;
-  profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    description?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+  };
 };
 
 export type OrganisationDetailsFragment = {
@@ -4742,7 +4748,13 @@ export type OrganisationInfoQuery = {
     contactEmail?: Maybe<string>;
     verified: OrganizationVerificationEnum;
     website?: Maybe<string>;
-    profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    };
   };
 };
 

@@ -1,8 +1,6 @@
 import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
-import CardTravelOutlinedIcon from '@material-ui/icons/CardTravelOutlined';
-import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
-import PeopleOutlineOutlinedIcon from '@material-ui/icons/PeopleOutlineOutlined';
+import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +87,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
       <UserSection
         organisationId={organisation?.id}
         credential={AuthorizationCredential.OrganisationOwner}
-        icon={<CardTravelOutlinedIcon color={'primary'} fontSize={'large'} />}
+        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
         title={t('pages.organisation.users.owners.title')}
         subtitle={t('pages.organisation.users.owners.subtitle')}
         noDataText={t('pages.organisation.users.owners.no-data')}
@@ -98,7 +96,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
       <UserSection
         organisationId={organisation?.id}
         credential={AuthorizationCredential.OrganisationAdmin}
-        icon={<SupervisorAccountOutlinedIcon color={'primary'} fontSize={'large'} />}
+        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
         title={t('pages.organisation.users.admins.title')}
         subtitle={t('pages.organisation.users.admins.subtitle')}
         noDataText={t('pages.organisation.users.admins.no-data')}
@@ -107,7 +105,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
       <UserSection
         organisationId={organisation?.id}
         credential={AuthorizationCredential.OrganisationMember}
-        icon={<PeopleOutlineOutlinedIcon color={'primary'} fontSize={'large'} />}
+        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
         title={t('pages.organisation.users.members.title')}
         subtitle={t('pages.organisation.users.members.subtitle')}
         noDataText={t('pages.organisation.users.members.no-data')}

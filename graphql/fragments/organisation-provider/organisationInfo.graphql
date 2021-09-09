@@ -9,5 +9,9 @@ fragment OrganisationInfo on Organisation {
     id
     avatar
     description
+    tagsets {
+      id
+      tags
+    }
   }
 }

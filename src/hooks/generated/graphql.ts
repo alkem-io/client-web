@@ -299,6 +299,10 @@ export const OrganisationInfoFragmentDoc = gql`
       id
       avatar
       description
+      tagsets {
+        id
+        tags
+      }
     }
   }
 `;

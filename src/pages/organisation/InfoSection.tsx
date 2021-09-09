@@ -3,12 +3,14 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 import EmailIcon from '@material-ui/icons/MailOutline';
-import { Organisation, OrganizationVerificationEnum } from '../../models/graphql-schema';
+import { OrganisationInfoFragment, OrganizationVerificationEnum } from '../../models/graphql-schema';
 import { OrganisationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';
+import TagContainer from '../../components/core/TagContainer';
+import Tag from '../../components/core/Tag';
 
 interface Props {
-  organisation?: Organisation;
+  organisation?: OrganisationInfoFragment;
 }
 
 const InfoSection: FC<Props> = ({ organisation }) => {
@@ -16,7 +18,8 @@ const InfoSection: FC<Props> = ({ organisation }) => {
     return <Loading text={''} />;
   }
 
-  const { contactEmail, website, verified = OrganizationVerificationEnum.NotVerified } = organisation;
+  const { contactEmail, website, verified = OrganizationVerificationEnum.NotVerified, profile } = organisation;
+  const tags = profile?.tagsets?.flatMap(x => x.tags) || [];
 
   return (
     <Grid container spacing={1}>
@@ -40,6 +43,17 @@ const InfoSection: FC<Props> = ({ organisation }) => {
         <Grid item>
           <OrganisationVerifiedState state={verified} />
         </Grid>
+      </Grid>
+      <Grid container item>
+        {tags.length > 0 ? (
+          <TagContainer>
+            {tags.map((t, i) => (
+              <Tag key={i} text={t} color="neutralMedium" />
+            ))}
+          </TagContainer>
+        ) : (
+          <span>No tags available</span>
+        )}
       </Grid>
     </Grid>
   );
