@@ -79,14 +79,18 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         icon={<Icon component={Globe} color="primary" size="xl" />}
         cardComponent={HostedEcoverseCard}
         cardHeight={520}
-        title={t('common.ecoverses')}
+        title={t('pages.organisation.ecoverses.title')}
+        subtitle={t('pages.organisation.ecoverses.subtitle')}
+        noDataText={t('pages.organisation.ecoverses.no-data')}
       />
       <Divider />
       <MembershipSection
         entities={challengesLeading}
         icon={<Icon component={CompassIcon} color="primary" size="xl" />}
         cardComponent={LeadingChallengeCard}
-        title={t('common.challenges')}
+        title={t('pages.organisation.challenges.title')}
+        subtitle={t('pages.organisation.challenges.subtitle')}
+        noDataText={t('pages.organisation.challenges.no-data')}
       />
       <Divider />
     </>

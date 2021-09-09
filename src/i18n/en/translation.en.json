@@ -295,12 +295,30 @@
       }
     },
     "organisation": {
-      "hosted-ecoverses": "Ecoverses hosted",
-      "leading-challenges": "Challenges being lead",
-      "no-rows": "None",
+      "ecoverses": {
+        "title": "Hosted ecoverses",
+        "subtitle": "Ecoverses which this organisation is hosting",
+        "no-data": "No ecoverses are hosted at the moment"
+      },
+      "challenges": {
+        "title": "Challenges leading",
+        "subtitle": "Challenges which this organisation is leading",
+        "no-data": "No challenges are being led at the moment"
+      },
       "owners": {
         "title": "Owners",
-        "no-owners": "None"
+        "subtitle": "Owners",
+        "no-data": "None"
+      },
+      "admins": {
+        "title": "Admins",
+        "subtitle": "Owners",
+        "no-data": "None"
+      },
+      "members": {
+        "title": "Members",
+        "subtitle": "Owners",
+        "no-data": "None"
       }
     },
     "ecoverse": {
