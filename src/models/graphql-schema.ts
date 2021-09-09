@@ -781,7 +781,7 @@ export type MembershipResultEntry = {
   __typename?: 'MembershipResultEntry';
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The ID of the ecoverse of the entity. */
+  /** The ID of the parent ecoverse if applicable. */
   ecoverseID?: Maybe<Scalars['UUID']>;
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
@@ -816,7 +816,7 @@ export type MembershipUserResultEntryOrganisation = {
   __typename?: 'MembershipUserResultEntryOrganisation';
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The ID of the ecoverse of the entity. */
+  /** The ID of the parent ecoverse if applicable. */
   ecoverseID?: Maybe<Scalars['UUID']>;
   /** The ID of the entry the user is a member of. */
   id: Scalars['UUID'];
@@ -5165,6 +5165,7 @@ export type UsersWithCredentialsQuery = {
     firstName: string;
     lastName: string;
     email: string;
+    profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   }>;
 };
 

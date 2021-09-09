@@ -7818,6 +7818,10 @@ export const UsersWithCredentialsDocument = gql`
       firstName
       lastName
       email
+      profile {
+        id
+        avatar
+      }
     }
   }
 `;

@@ -305,20 +305,22 @@
         "subtitle": "Challenges which this organisation is leading",
         "no-data": "No challenges are being led at the moment"
       },
-      "owners": {
-        "title": "Owners",
-        "subtitle": "Owners",
-        "no-data": "None"
-      },
-      "admins": {
-        "title": "Admins",
-        "subtitle": "Owners",
-        "no-data": "None"
-      },
-      "members": {
-        "title": "Members",
-        "subtitle": "Owners",
-        "no-data": "None"
+      "users": {
+        "owners": {
+          "title": "Owners",
+          "subtitle": "Owners of this organisation",
+          "no-data": "None"
+        },
+        "admins": {
+          "title": "Admins",
+          "subtitle": "Admins of this organisation",
+          "no-data": "None"
+        },
+        "members": {
+          "title": "Members",
+          "subtitle": "Members of this organisation",
+          "no-data": "None"
+        }
       }
     },
     "ecoverse": {

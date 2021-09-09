@@ -3,21 +3,15 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 import EmailIcon from '@material-ui/icons/MailOutline';
-import { Organisation, OrganizationVerificationEnum, User } from '../../models/graphql-schema';
+import { Organisation, OrganizationVerificationEnum } from '../../models/graphql-schema';
 import { OrganisationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';
-import AvatarContainer from '../../components/core/AvatarContainer';
-import Avatar from '../../components/core/Avatar';
-import { useTranslation } from 'react-i18next';
 
 interface Props {
   organisation?: Organisation;
-  owners?: User[];
 }
 
-const InfoSection: FC<Props> = ({ organisation, owners = [] }) => {
-  const { t } = useTranslation();
-
+const InfoSection: FC<Props> = ({ organisation }) => {
   if (!organisation) {
     return <Loading text={''} />;
   }
@@ -46,14 +40,6 @@ const InfoSection: FC<Props> = ({ organisation, owners = [] }) => {
         <Grid item>
           <OrganisationVerifiedState state={verified} />
         </Grid>
-      </Grid>
-      <Grid container item>
-        <AvatarContainer title={t('pages.organisation.owners.title')}>
-          {owners.map(({ id, profile, displayName }, i) => (
-            <Avatar key={i} src={profile?.avatar} name={displayName} userId={id} />
-          ))}
-          {!owners.length && <Typography>{t('pages.organisation.owners.no-owners')}</Typography>}
-        </AvatarContainer>
       </Grid>
     </Grid>
   );

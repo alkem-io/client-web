@@ -1,21 +1,25 @@
 import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
+import CardTravelOutlinedIcon from '@material-ui/icons/CardTravelOutlined';
+import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
+import PeopleOutlineOutlinedIcon from '@material-ui/icons/PeopleOutlineOutlined';
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { createStyles, useUpdateNavigation, useOrganisation } from '../../hooks';
+import { createStyles, useOrganisation, useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
-import { useMembershipOrganisationQuery, useUsersWithCredentialsQuery } from '../../hooks/generated/graphql';
+import { useMembershipOrganisationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { AuthorizationCredential, User } from '../../models/graphql-schema';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 import InfoSection from './InfoSection';
 import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
+import UserSection from './UserSection';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -39,7 +43,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   const { profile, displayName } = organisation || {};
   const { avatar, description } = profile || {};
 
-  const { data } = useMembershipOrganisationQuery({
+  const { data, loading: orgMembershipLoading } = useMembershipOrganisationQuery({
     variables: {
       input: {
         organisationID: organisationId,
@@ -49,19 +53,8 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   });
   const { ecoversesHosting = [], challengesLeading = [] } = data?.membershipOrganisation || {};
 
-  const { data: _orgOwners } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        resourceID: organisation?.id,
-        type: AuthorizationCredential.OrganisationOwner,
-      },
-    },
-    skip: !organisation,
-  });
-  const orgOwners = (_orgOwners?.usersWithAuthorizationCredential || []) as User[];
-
-  if (orgLoading) {
-    return <Loading text={t('loading.message', { blockName: t('common.organisation') })} />;
+  if (orgLoading || orgMembershipLoading) {
+    return <Loading />;
   }
 
   return (
@@ -70,7 +63,7 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         <SectionHeader text={displayName} />
         <SubHeader text={description} />
         <Body>
-          <InfoSection organisation={organisation} owners={orgOwners} />
+          <InfoSection organisation={organisation} />
         </Body>
       </Section>
       <Divider />
@@ -91,6 +84,33 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
         title={t('pages.organisation.challenges.title')}
         subtitle={t('pages.organisation.challenges.subtitle')}
         noDataText={t('pages.organisation.challenges.no-data')}
+      />
+      <Divider />
+      <UserSection
+        organisationId={organisation?.id}
+        credential={AuthorizationCredential.OrganisationOwner}
+        icon={<CardTravelOutlinedIcon color={'primary'} fontSize={'large'} />}
+        title={t('pages.organisation.users.owners.title')}
+        subtitle={t('pages.organisation.users.owners.subtitle')}
+        noDataText={t('pages.organisation.users.owners.no-data')}
+      />
+      <Divider />
+      <UserSection
+        organisationId={organisation?.id}
+        credential={AuthorizationCredential.OrganisationAdmin}
+        icon={<SupervisorAccountOutlinedIcon color={'primary'} fontSize={'large'} />}
+        title={t('pages.organisation.users.admins.title')}
+        subtitle={t('pages.organisation.users.admins.subtitle')}
+        noDataText={t('pages.organisation.users.admins.no-data')}
+      />
+      <Divider />
+      <UserSection
+        organisationId={organisation?.id}
+        credential={AuthorizationCredential.OrganisationMember}
+        icon={<PeopleOutlineOutlinedIcon color={'primary'} fontSize={'large'} />}
+        title={t('pages.organisation.users.members.title')}
+        subtitle={t('pages.organisation.users.members.subtitle')}
+        noDataText={t('pages.organisation.users.members.no-data')}
       />
       <Divider />
     </>
