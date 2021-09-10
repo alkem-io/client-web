@@ -204,7 +204,7 @@
       "read-access": "Allow read access for non-ecoverse members to challenges",
       "read-access-title": "Visibility"
     },
-    "profileSegment": {
+    "nameSegment": {
       "name": "Name",
       "nameID": {
         "title": "NameID",
@@ -226,6 +226,37 @@
     },
     "tagsSegment": {
       "title": "Tags"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Enter an avatar URL..."
+      },
+      "description": {
+        "name": "Description",
+        "placeholder": "Enter a description"
+      }
+    },
+    "organisationSegment": {
+      "contactEmail": {
+        "name": "Contact email",
+        "placeholder": "Enter a contact email"
+      },
+      "domain": {
+        "name": "Domain",
+        "placeholder": "Enter the domain"
+      },
+      "legalEntityName": {
+        "name": "Legal entity name",
+        "placeholder": "Enter the legal name of this organisation"
+      },
+      "website": {
+        "name": "Website",
+        "placeholder": "Enter a website"
+      },
+      "verified": {
+        "name": "Verified status"
+      }
     },
     "card": {
       "member": "Member",

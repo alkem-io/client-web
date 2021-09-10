@@ -2258,6 +2258,10 @@ export type OrganizationProfileInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  contactEmail?: Maybe<string>;
+  domain?: Maybe<string>;
+  legalEntityName?: Maybe<string>;
+  website?: Maybe<string>;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -3011,6 +3015,10 @@ export type UpdateOrganizationMutation = {
     id: string;
     nameID: string;
     displayName: string;
+    contactEmail?: Maybe<string>;
+    domain?: Maybe<string>;
+    legalEntityName?: Maybe<string>;
+    website?: Maybe<string>;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -4867,6 +4875,10 @@ export type OrganizationProfileInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    contactEmail?: Maybe<string>;
+    domain?: Maybe<string>;
+    legalEntityName?: Maybe<string>;
+    website?: Maybe<string>;
     profile: {
       __typename?: 'Profile';
       id: string;

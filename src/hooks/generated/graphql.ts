@@ -324,6 +324,10 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     id
     nameID
     displayName
+    contactEmail
+    domain
+    legalEntityName
+    website
     profile {
       id
       avatar
