@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { WithParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
+import { WithMaybeParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
 import { useEcoverseGroupQuery } from '../../../hooks/generated/graphql';
 import { GroupRoute } from '../GroupRoute';
 
-interface GroupRouteProps extends WithParentMembersProps {}
+interface GroupRouteProps extends WithMaybeParentMembersProps {}
 
 interface EcoverseGroupParams {
   groupId: string;

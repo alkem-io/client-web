@@ -4,17 +4,14 @@ import { Route, Switch } from 'react-router-dom';
 import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import { FourOuFour } from '../../pages';
 import { UserGroup } from '../../models/graphql-schema';
-import { Member } from '../../models/User';
-import { Path } from '../../context/NavigationProvider';
 import GroupPage from '../../components/Admin/Group/GroupPage';
+import { WithMaybeParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
 
-interface Props {
-  paths: Path[];
+interface Props extends WithMaybeParentMembersProps {
   path: string;
   url: string;
   group?: UserGroup;
   loading?: boolean;
-  parentMembers: Member[];
 }
 
 export const GroupRoute: FC<Props> = ({ paths, path, url, group, loading, parentMembers }) => {

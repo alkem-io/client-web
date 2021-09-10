@@ -3,6 +3,7 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
+  useUsersQuery,
   useUsersWithCredentialsQuery,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
@@ -14,7 +15,7 @@ import { EditMembers } from '../Community/EditMembers';
 interface EditCredentialsProps {
   credential: GroupCredentials;
   resourceId: string;
-  parentMembers: Member[];
+  parentMembers?: Member[];
 }
 
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
@@ -39,6 +40,12 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
   const [revoke] = useRemoveUserFromGroupMutation({
     onError: handleError,
   });
+
+  const { data: usersInfo, loading: loadingUsers } = useUsersQuery({
+    fetchPolicy: 'cache-and-network',
+    skip: parentMembers != null,
+  });
+  const allUsers = usersInfo?.users || [];
 
   const handleAdd = (_member: Member) => {
     grant({
@@ -75,10 +82,10 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
   };
 
   const availableMembers = useMemo(() => {
-    return parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
+    return (parentMembers || allUsers).filter(p => members.findIndex(m => m.id === p.id) < 0);
   }, [parentMembers, data]);
 
-  if (loadingMembers) {
+  if (loadingMembers || loadingUsers) {
     return <Loading />;
   }
 

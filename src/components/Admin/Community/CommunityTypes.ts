@@ -9,3 +9,7 @@ export interface WithCommunity {
 export interface WithParentMembersProps extends PageProps {
   parentMembers: Member[];
 }
+
+export interface WithMaybeParentMembersProps extends PageProps {
+  parentMembers?: Member[];
+}

@@ -174,7 +174,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   const availableMembers = useMemo(() => {
     if (entities.parentMembers) return entities.parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
     return membersData?.organisation.members?.filter(p => members.findIndex(m => m.id === p.id) < 0) || [];
-  }, [entities, data, membersData]);
+  }, [entities, membersData]);
 
   const allMembers = useMemo(
     () =>
