@@ -777,14 +777,24 @@ export type MembershipOrganisationInput = {
   organisationID: Scalars['UUID_NAMEID'];
 };
 
+export type MembershipOrganisationResultEntryChallenge = {
+  __typename?: 'MembershipOrganisationResultEntryChallenge';
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** The ID of the Ecoverse hosting this Challenge. */
+  ecoverseID: Scalars['String'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+};
+
 export type MembershipResultEntry = {
   __typename?: 'MembershipResultEntry';
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The ID of the parent ecoverse if applicable. */
-  ecoverseID?: Maybe<Scalars['UUID']>;
-  /** The ID of the entry the user is a member of. */
-  id: Scalars['UUID'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
 };
@@ -802,8 +812,8 @@ export type MembershipUserResultEntryEcoverse = {
   displayName: Scalars['String'];
   /** The Ecoverse ID */
   ecoverseID: Scalars['String'];
-  /** The ID of the entry the user is a member of. */
-  id: Scalars['UUID'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** Details of the Opportunities the user is a member of */
@@ -816,10 +826,8 @@ export type MembershipUserResultEntryOrganisation = {
   __typename?: 'MembershipUserResultEntryOrganisation';
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The ID of the parent ecoverse if applicable. */
-  ecoverseID?: Maybe<Scalars['UUID']>;
-  /** The ID of the entry the user is a member of. */
-  id: Scalars['UUID'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The Organisation ID. */
@@ -1379,7 +1387,7 @@ export type OrganisationAuthorizationResetInput = {
 export type OrganisationMembership = {
   __typename?: 'OrganisationMembership';
   /** Details of the Challenges the Organisation is leading. */
-  challengesLeading: Array<MembershipResultEntry>;
+  challengesLeading: Array<MembershipOrganisationResultEntryChallenge>;
   /** Details of Ecoverses the Organisation is hosting. */
   ecoversesHosting: Array<MembershipResultEntry>;
   id: Scalars['UUID'];
@@ -4337,11 +4345,11 @@ export type MembershipOrganisationQuery = {
     id: string;
     ecoversesHosting: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     challengesLeading: Array<{
-      __typename?: 'MembershipResultEntry';
+      __typename?: 'MembershipOrganisationResultEntryChallenge';
       id: string;
       nameID: string;
       displayName: string;
-      ecoverseID?: Maybe<string>;
+      ecoverseID: string;
     }>;
   };
 };

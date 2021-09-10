@@ -1,14 +1,16 @@
 import React, { FC } from 'react';
 import { Typography } from '@material-ui/core';
-import { MembershipResultEntry } from '../../models/graphql-schema';
+import { MembershipOrganisationResultEntryChallenge, MembershipResultEntry } from '../../models/graphql-schema';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { CardContainer } from '../../components/core/CardContainer';
 import CardProps from './CardProps';
 
 type ComponentCard = React.ComponentType<CardProps>;
 
+type OrgMembershipResult = MembershipResultEntry | MembershipOrganisationResultEntryChallenge;
+
 interface Props {
-  entities: MembershipResultEntry[];
+  entities: OrgMembershipResult[];
   cardHeight?: number;
   cardComponent: ComponentCard;
   title: string;
@@ -16,6 +18,11 @@ interface Props {
   noDataText: string;
   icon: React.ReactElement;
 }
+
+const isMembershipOrganisationResultEntryChallenge = (
+  entities: OrgMembershipResult[]
+): entities is MembershipOrganisationResultEntryChallenge[] =>
+  (entities[0] as MembershipOrganisationResultEntryChallenge)?.ecoverseID != null;
 
 const MembershipSection: FC<Props> = ({
   entities,
@@ -26,6 +33,17 @@ const MembershipSection: FC<Props> = ({
   cardHeight,
   cardComponent: CardComponent,
 }) => {
+  const toCardComponent = (entities: OrgMembershipResult[]) => {
+    let cards: React.ReactElement[];
+    if (isMembershipOrganisationResultEntryChallenge(entities)) {
+      cards = entities.map(({ id, ecoverseID }, i) => <CardComponent key={i} id={id} ecoverseID={ecoverseID} />);
+    } else {
+      cards = (entities as MembershipResultEntry[]).map(({ id }, i) => <CardComponent key={i} id={id} />);
+    }
+
+    return cards;
+  };
+
   return (
     <>
       <Section avatar={icon}>
@@ -37,11 +55,7 @@ const MembershipSection: FC<Props> = ({
           {noDataText}
         </Typography>
       )}
-      <CardContainer cardHeight={cardHeight}>
-        {entities.map(({ id, ecoverseID }, i) => (
-          <CardComponent key={i} id={id} ecoverseID={ecoverseID} />
-        ))}
-      </CardContainer>
+      <CardContainer cardHeight={cardHeight}>{toCardComponent(entities)}</CardContainer>
     </>
   );
 };
