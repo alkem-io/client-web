@@ -18,6 +18,8 @@ import InfoSection from './InfoSection';
 import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
 import UserSection from './UserSection';
+import { SettingsButton } from '../../components/composite';
+import { buildAdminOrganisationUrl } from '../../utils/urlBuilders';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -27,7 +29,13 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-const OrganisationPage: FC<PageProps> = ({ paths }) => {
+interface OrganisationPageProps extends PageProps {
+  permissions: {
+    edit: boolean;
+  };
+}
+
+const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -58,7 +66,18 @@ const OrganisationPage: FC<PageProps> = ({ paths }) => {
   return (
     <>
       <Section avatar={avatar ? <Image src={avatar} alt={`${displayName} logo`} className={styles.banner} /> : <div />}>
-        <SectionHeader text={displayName} />
+        <SectionHeader
+          text={displayName}
+          editComponent={
+            permissions.edit && (
+              <SettingsButton
+                color={'primary'}
+                to={buildAdminOrganisationUrl(organisation?.id || '')}
+                tooltip={t('components.settingsButton.tooltip')}
+              />
+            )
+          }
+        />
         <SubHeader text={description} />
         <Body>
           <InfoSection organisation={organisation} />
