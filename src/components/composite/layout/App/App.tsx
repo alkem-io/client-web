@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useUpdateSubscription } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
 import { useAuthenticationContext, useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { useEcoversesQuery, useServerMetadataQuery } from '../../../../hooks/generated/graphql';
@@ -27,6 +28,7 @@ import Main from './Main';
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
+  useUpdateSubscription();
   const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
 
   const { user, loading, verified } = useUserContext();

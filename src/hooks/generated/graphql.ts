@@ -473,6 +473,10 @@ export const UserMembershipDetailsFragmentDoc = gql`
         displayName
       }
     }
+    communities {
+      id
+      displayName
+    }
   }
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
@@ -7792,6 +7796,7 @@ export const OnMessageReceivedDocument = gql`
   subscription onMessageReceived {
     messageReceived {
       roomId
+      communityId
       message {
         id
         message

@@ -59,6 +59,7 @@ export const useGraphQLClient = (
     credentials: 'include',
   });
 
+  // TODO - fix build uri if correct protocol not provided
   const wsLink = new WebSocketLink({
     uri: subscriptionsEndpoint,
     options: {

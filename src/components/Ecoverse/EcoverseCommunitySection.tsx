@@ -4,6 +4,7 @@ import { useEcoverse } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import { Loading } from '../core';
+import { useCommunityUpdateSubscriptionSelector } from '../../containers/community-updates/CommunityUpdates';
 
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
@@ -21,11 +22,13 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
     },
   });
 
+  const updateMessages = useCommunityUpdateSubscriptionSelector(data?.ecoverse.community);
+
   if (usersLoading || loading) return <Loading text={'Loading community data'} />;
 
   return (
     <CommunitySection
-      updates={data?.ecoverse.community?.updatesRoom?.messages}
+      updates={updateMessages}
       discussions={data?.ecoverse.community?.discussionRoom?.messages}
       users={(usersQuery?.ecoverse.community?.members as User[]) || []}
       {...rest}

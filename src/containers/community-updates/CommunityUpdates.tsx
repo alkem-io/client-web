@@ -1,10 +1,15 @@
-import React, { FC, useCallback } from 'react';
+import { useSelector } from '@xstate/react/lib/useSelector';
+import { unionWith, uniqBy } from 'lodash';
+import React, { FC, useCallback, useMemo } from 'react';
+import { useApolloErrorHandler, useGlobalState, useNotification, useUserContext } from '../../hooks';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
+  useOnMessageReceivedSubscription,
   useSendCommunityUpdateMutation,
 } from '../../hooks/generated/graphql';
 import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
+import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -61,3 +66,57 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     </>
   );
 };
+
+export function useUpdateSubscription() {
+  const handleError = useApolloErrorHandler();
+  const { entities } = useGlobalState();
+  const { communityUpdateService } = entities;
+  const notify = useNotification();
+  const { user } = useUserContext();
+
+  return useOnMessageReceivedSubscription({
+    shouldResubscribe: true,
+    onSubscriptionData: options => {
+      if (options.subscriptionData.error) {
+        handleError(options.subscriptionData.error);
+        return;
+      }
+
+      const subData = options.subscriptionData.data?.messageReceived;
+      if (!subData) return;
+
+      communityUpdateService.send({
+        type: ADD_MESSAGE,
+        payload: subData,
+      });
+
+      const communityId = subData.communityId;
+      if (communityId) {
+        const communityName = user?.communities[communityId];
+        communityName && notify(`You just received an update in ${communityName}`);
+      }
+    },
+  });
+}
+
+export function useCommunityUpdateSubscriptionSelector(community?: Partial<Community>) {
+  const { entities } = useGlobalState();
+  const { communityUpdateService } = entities;
+
+  const roomId = community?.updatesRoom?.id;
+  const initialMessages = community?.updatesRoom?.messages;
+  const messages =
+    useSelector(communityUpdateService, state => {
+      return state.context.messagesByRoom[roomId || ''];
+    }) || [];
+
+  const zippedMessages = useMemo(() => {
+    // merge them based on timestamp... unfortunately there is an ID mismatch when
+    // an event is reported live against an event retrieved from a room api
+    const mergedMessages = unionWith(messages, initialMessages, (x1, x2) => x1.timestamp === x2.timestamp);
+    const uniqMessages = uniqBy(mergedMessages, x => x.timestamp);
+    return uniqMessages;
+  }, [initialMessages, messages]);
+
+  return zippedMessages;
+}

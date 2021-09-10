@@ -87,6 +87,16 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
+export type ApplicationReceived = {
+  __typename?: 'ApplicationReceived';
+  /** The identifier of the application */
+  applicationId: Scalars['String'];
+  /** The community that was applied to */
+  communityID: Scalars['String'];
+  /** The nameID of the user that applied. */
+  userNameID: Scalars['String'];
+};
+
 export type ApplicationResultEntry = {
   __typename?: 'ApplicationResultEntry';
   /** ID for the community */
@@ -291,10 +301,14 @@ export type ChallengeTemplate = {
 
 export type CommunicationMessageReceived = {
   __typename?: 'CommunicationMessageReceived';
+  /** The community to which this message corresponds */
+  communityId?: Maybe<Scalars['String']>;
   /** The update message that has been sent. */
   message: CommunicationMessageResult;
   /** The identifier of the room */
   roomId: Scalars['String'];
+  /** The user email that should receive the message */
+  userEmail: Scalars['String'];
 };
 
 export type CommunicationMessageResult = {
@@ -772,6 +786,14 @@ export type Lifecycle = {
   templateName?: Maybe<Scalars['String']>;
 };
 
+export type MembershipCommunityResultEntry = {
+  __typename?: 'MembershipCommunityResultEntry';
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** The ID of the community the user is a member of. */
+  id: Scalars['UUID'];
+};
+
 export type MembershipOrganisationInput = {
   /** The ID of the organisation to retrieve the membership of. */
   organisationID: Scalars['UUID_NAMEID'];
@@ -796,6 +818,8 @@ export type MembershipUserResultEntryEcoverse = {
   __typename?: 'MembershipUserResultEntryEcoverse';
   /** Details of the Challenges the user is a member of */
   challenges: Array<MembershipResultEntry>;
+  /** The community that represents this ecoverse */
+  community: MembershipCommunityResultEntry;
   /** Display name of the entity */
   displayName: Scalars['String'];
   /** The Ecoverse ID */
@@ -1672,9 +1696,17 @@ export type ServiceMetadata = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  /** Receive new applications with filtering. */
+  applicationReceived: ApplicationReceived;
   avatarUploaded: Profile;
+  /** Receive new messages for rooms the currently authenticated User is a member of. */
   messageReceived: CommunicationMessageReceived;
+  /** Receive new room invitations. */
   roomNotificationReceived: RoomInvitationReceived;
+};
+
+export type SubscriptionApplicationReceivedArgs = {
+  communityID: Scalars['String'];
 };
 
 export type Tagset = {
@@ -1934,6 +1966,8 @@ export type UserMembership = {
   __typename?: 'UserMembership';
   /** Open applications for this user. */
   applications?: Maybe<Array<ApplicationResultEntry>>;
+  /** All the communitites the user is a part of. */
+  communities: Array<MembershipCommunityResultEntry>;
   /** Details of Ecoverses the user is a member of, with child memberships */
   ecoverses: Array<MembershipUserResultEntryEcoverse>;
   id: Scalars['UUID'];
@@ -2341,6 +2375,7 @@ export type UserMembershipDetailsFragment = {
     displayName: string;
     userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
   }>;
+  communities: Array<{ __typename?: 'MembershipCommunityResultEntry'; id: string; displayName: string }>;
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -4263,6 +4298,7 @@ export type MembershipUserQuery = {
       displayName: string;
       userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     }>;
+    communities: Array<{ __typename?: 'MembershipCommunityResultEntry'; id: string; displayName: string }>;
   };
 };
 
@@ -5083,6 +5119,7 @@ export type OnMessageReceivedSubscription = {
   messageReceived: {
     __typename?: 'CommunicationMessageReceived';
     roomId: string;
+    communityId?: Maybe<string>;
     message: {
       __typename?: 'CommunicationMessageResult';
       id: string;

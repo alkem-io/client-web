@@ -21,6 +21,7 @@ mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
 subscription onMessageReceived {
   messageReceived {
     roomId
+    communityId
     message {
       id
       message

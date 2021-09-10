@@ -61,6 +61,17 @@ export type ApplicationFieldPolicy = {
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ApplicationReceivedKeySpecifier = (
+  | 'applicationId'
+  | 'communityID'
+  | 'userNameID'
+  | ApplicationReceivedKeySpecifier
+)[];
+export type ApplicationReceivedFieldPolicy = {
+  applicationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  userNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ApplicationResultEntryKeySpecifier = (
   | 'communityID'
   | 'displayName'
@@ -176,13 +187,17 @@ export type ChallengeTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationMessageReceivedKeySpecifier = (
+  | 'communityId'
   | 'message'
   | 'roomId'
+  | 'userEmail'
   | CommunicationMessageReceivedKeySpecifier
 )[];
 export type CommunicationMessageReceivedFieldPolicy = {
+  communityId?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   roomId?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationMessageResultKeySpecifier = (
   | 'id'
@@ -358,6 +373,15 @@ export type LifecycleFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MembershipCommunityResultEntryKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | MembershipCommunityResultEntryKeySpecifier
+)[];
+export type MembershipCommunityResultEntryFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MembershipResultEntryKeySpecifier = ('displayName' | 'id' | 'nameID' | MembershipResultEntryKeySpecifier)[];
 export type MembershipResultEntryFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -366,6 +390,7 @@ export type MembershipResultEntryFieldPolicy = {
 };
 export type MembershipUserResultEntryEcoverseKeySpecifier = (
   | 'challenges'
+  | 'community'
   | 'displayName'
   | 'ecoverseID'
   | 'id'
@@ -376,6 +401,7 @@ export type MembershipUserResultEntryEcoverseKeySpecifier = (
 )[];
 export type MembershipUserResultEntryEcoverseFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -813,12 +839,14 @@ export type ServiceMetadataFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
+  | 'applicationReceived'
   | 'avatarUploaded'
   | 'messageReceived'
   | 'roomNotificationReceived'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
+  applicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   avatarUploaded?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   roomNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -908,6 +936,7 @@ export type UserGroupFieldPolicy = {
 };
 export type UserMembershipKeySpecifier = (
   | 'applications'
+  | 'communities'
   | 'ecoverses'
   | 'id'
   | 'organisations'
@@ -915,6 +944,7 @@ export type UserMembershipKeySpecifier = (
 )[];
 export type UserMembershipFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  communities?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organisations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -960,6 +990,10 @@ export type StrictTypedTypePolicies = {
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
+  };
+  ApplicationReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ApplicationReceivedKeySpecifier | (() => undefined | ApplicationReceivedKeySpecifier);
+    fields?: ApplicationReceivedFieldPolicy;
   };
   ApplicationResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationResultEntryKeySpecifier | (() => undefined | ApplicationResultEntryKeySpecifier);
@@ -1068,6 +1102,13 @@ export type StrictTypedTypePolicies = {
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
+  };
+  MembershipCommunityResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MembershipCommunityResultEntryKeySpecifier
+      | (() => undefined | MembershipCommunityResultEntryKeySpecifier);
+    fields?: MembershipCommunityResultEntryFieldPolicy;
   };
   MembershipResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MembershipResultEntryKeySpecifier | (() => undefined | MembershipResultEntryKeySpecifier);

@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useCommunityUpdateSubscriptionSelector } from '../../containers/community-updates/CommunityUpdates';
 import { useOpportunityCommunityMessagesQuery, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
 import { User } from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
@@ -28,12 +29,14 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
     },
   });
 
+  const updateMessages = useCommunityUpdateSubscriptionSelector(data?.ecoverse.opportunity?.community);
+
   if (loading || usersLoading) return <Loading text={'Loading community data'} />;
 
   return (
     <CommunitySection
       users={(usersQuery?.ecoverse.opportunity.community?.members as User[]) || []}
-      updates={data?.ecoverse.opportunity.community?.updatesRoom?.messages}
+      updates={updateMessages}
       discussions={data?.ecoverse.opportunity.community?.discussionRoom?.messages}
       {...rest}
     />

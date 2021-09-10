@@ -30,4 +30,8 @@ fragment UserMembershipDetails on UserMembership {
       displayName
     }
   }
+  communities {
+    id
+    displayName
+  }
 }
