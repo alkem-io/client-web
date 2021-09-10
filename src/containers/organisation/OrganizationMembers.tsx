@@ -3,9 +3,11 @@ import { useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganisationAdminMutation,
+  useAssignUserAsOrganisationOwnerMutation,
   useAssignUserToOrganisationMutation,
   useOrganisationMembersQuery,
   useRemoveUserAsOrganisationAdminMutation,
+  useRemoveUserAsOrganisationOwnerMutation,
   useRemoveUserFromOrganisationMutation,
   useUsersWithCredentialsQuery,
 } from '../../hooks/generated/graphql';
@@ -15,12 +17,18 @@ import { Member } from '../../models/User';
 
 const organisationMemberCredential = AuthorizationCredential.OrganisationMember;
 const organisationAdminCredential = AuthorizationCredential.OrganisationAdmin;
+const organisationOwnerCredential = AuthorizationCredential.OrganisationOwner;
+
+export type AuthorizationCredentials =
+  | AuthorizationCredential.OrganisationMember
+  | AuthorizationCredential.OrganisationAdmin
+  | AuthorizationCredential.OrganisationOwner;
 
 export interface OrganizationMembersProps {
   entities: {
     organisationId: Organisation['id'];
     parentMembers?: Member[];
-    credential: AuthorizationCredential.OrganisationMember | AuthorizationCredential.OrganisationAdmin;
+    credential: AuthorizationCredentials;
   };
   children: (
     entities: OrganizationMembersEntities,
@@ -34,6 +42,8 @@ export interface OrganizationMembersActions {
   handleRemoveMember: (member: Member) => void;
   handleAssignAdmin: (member: Member) => void;
   handleRemoveAdmin: (member: Member) => void;
+  handleAssignOwner: (member: Member) => void;
+  handleRemoveOwner: (member: Member) => void;
 }
 
 export interface OrganizationMembersState {
@@ -41,6 +51,8 @@ export interface OrganizationMembersState {
   removingUser: boolean;
   addingAdmin: boolean;
   removingAdmin: boolean;
+  addingOwner: boolean;
+  removingOwner: boolean;
   loading: boolean;
 }
 
@@ -67,7 +79,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     variables: {
       id: entities.organisationId,
     },
-    skip: entities.credential !== AuthorizationCredential.OrganisationAdmin,
+    skip: entities.credential === AuthorizationCredential.OrganisationMember,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -87,6 +99,14 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   });
 
   const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganisationAdminMutation({
+    onError: handleError,
+  });
+
+  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganisationOwnerMutation({
+    onError: handleError,
+  });
+
+  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganisationOwnerMutation({
     onError: handleError,
   });
 
@@ -170,6 +190,46 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     [entities]
   );
 
+  const handleAssignOwner = useCallback(
+    (_member: Member) => {
+      grantOwner({
+        variables: {
+          input: {
+            organisationID: entities.organisationId,
+            userID: _member.id,
+          },
+        },
+        refetchQueries: [
+          refetchUsersWithCredentialsQuery({
+            input: { type: organisationOwnerCredential, resourceID: entities.organisationId },
+          }),
+        ],
+        awaitRefetchQueries: true,
+      });
+    },
+    [entities]
+  );
+
+  const handleRemoveOwner = useCallback(
+    (_member: Member) => {
+      revokeOwner({
+        variables: {
+          input: {
+            userID: _member.id,
+            organisationID: entities.organisationId,
+          },
+        },
+        refetchQueries: [
+          refetchUsersWithCredentialsQuery({
+            input: { type: organisationOwnerCredential, resourceID: entities.organisationId },
+          }),
+        ],
+        awaitRefetchQueries: true,
+      });
+    },
+    [entities]
+  );
+
   // TODO [ATS]: Extract into hook to be reused.
   const availableMembers = useMemo(() => {
     if (entities.parentMembers) return entities.parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
@@ -203,8 +263,23 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     <>
       {children(
         { availableMembers, allMembers, currentMember },
-        { handleAssignMember, handleRemoveMember, handleAssignAdmin, handleRemoveAdmin },
-        { addingUser, removingUser, addingAdmin, removingAdmin, loading: loadingMembers || loadingOrganisationMembers }
+        {
+          handleAssignMember,
+          handleRemoveMember,
+          handleAssignAdmin,
+          handleRemoveAdmin,
+          handleAssignOwner,
+          handleRemoveOwner,
+        },
+        {
+          addingUser,
+          removingUser,
+          addingAdmin,
+          removingAdmin,
+          addingOwner,
+          removingOwner,
+          loading: loadingMembers || loadingOrganisationMembers,
+        }
       )}
     </>
   );

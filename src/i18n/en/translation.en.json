@@ -137,29 +137,34 @@
           "order": 9,
           "hidden": true
         },
+        "OrganisationOwner": {
+          "name": "Organisation Owner",
+          "order": 10,
+          "hidden": false
+        },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 10,
+          "order": 11,
           "hidden": false
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 11,
+          "order": 12,
           "hidden": true
         },
         "UserSelfManagement": {
           "name": "User Self Management",
-          "order": 12,
+          "order": 13,
           "hidden": true
         },
         "CommunityMember": {
           "name": "Community Member",
-          "order": 13,
+          "order": 14,
           "hidden": true
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 14,
+          "order": 15,
           "hidden": true
         }
       }

@@ -7,11 +7,9 @@ import OrganizationMembers from '../../../containers/organisation/OrganizationMe
 import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
-import { PageProps } from '../../common';
+import OrganisationAuthorizationPageProps from './OrganisationAuthorizationPageProps';
 
-interface OrganisationAuthorizationPageProps extends PageProps {}
-
-export const OrganisationAuthorizationPage: FC<OrganisationAuthorizationPageProps> = ({ paths }) => {
+export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
 
   const currentPaths = useMemo(
@@ -53,4 +51,4 @@ export const OrganisationAuthorizationPage: FC<OrganisationAuthorizationPageProp
   );
 };
 
-export default OrganisationAuthorizationPage;
+export default OrganisationAdminAuthorizationPage;
