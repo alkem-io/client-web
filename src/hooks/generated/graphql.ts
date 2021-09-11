@@ -3831,6 +3831,7 @@ export const ChallengeProfileDocument = gql`
         nameID
         displayName
         lifecycle {
+          id
           state
         }
         context {
@@ -3838,10 +3839,12 @@ export const ChallengeProfileDocument = gql`
         }
         community {
           members {
+            id
             displayName
           }
         }
         tagset {
+          id
           name
           tags
         }
@@ -3861,6 +3864,7 @@ export const ChallengeProfileDocument = gql`
             displayName
             description
             lifecycle {
+              id
               state
             }
           }
@@ -4150,6 +4154,10 @@ export const ChallengesWithActivityDocument = gql`
         context {
           id
           tagline
+          background
+          vision
+          impact
+          who
           visual {
             background
           }

@@ -1,12 +1,13 @@
+import { Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import Typography from './Typography';
 
-const useIconStyles = createStyles(theme => ({
+const useTagStyles = createStyles(theme => ({
   tag: {
     padding: `${theme.spacing(0.7)}px ${theme.spacing(1.4)}px`,
     display: 'inline-flex',
+    maxWidth: '100%',
   },
   primary: {
     background: theme.palette.primary.main,
@@ -43,14 +44,14 @@ export interface TagProps extends React.SVGProps<SVGSVGElement> {
 }
 
 const Tag: React.FC<TagProps> = ({ text, className, color = 'positive' }): JSX.Element | null => {
-  const styles = useIconStyles();
+  const styles = useTagStyles();
 
   return (
-    <span className={clsx(styles.tag, styles[color], className)}>
-      <Typography variant="caption" color="inherit" clamp={1}>
+    <div className={clsx(styles.tag, styles[color], className)}>
+      <Typography display={'block'} variant={'caption'} noWrap>
         {text}
       </Typography>
-    </span>
+    </div>
   );
 };
 
