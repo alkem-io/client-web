@@ -10,6 +10,6 @@ export interface WithParentMembersProps extends PageProps {
   parentMembers: Member[];
 }
 
-export interface WithMaybeParentMembersProps extends PageProps {
+export interface WithOptionalMembersProps extends PageProps {
   parentMembers?: Member[];
 }

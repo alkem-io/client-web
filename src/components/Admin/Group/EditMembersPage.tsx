@@ -4,9 +4,9 @@ import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
 
-import { WithCommunity, WithMaybeParentMembersProps } from '../Community/CommunityTypes';
+import { WithCommunity, WithOptionalMembersProps } from '../Community/CommunityTypes';
 
-interface EditMembersPageProps extends WithMaybeParentMembersProps, WithCommunity {
+interface EditMembersPageProps extends WithOptionalMembersProps, WithCommunity {
   groupId: string;
 }
 

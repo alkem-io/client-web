@@ -5,9 +5,9 @@ import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import { FourOuFour } from '../../pages';
 import { UserGroup } from '../../models/graphql-schema';
 import GroupPage from '../../components/Admin/Group/GroupPage';
-import { WithMaybeParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 
-interface Props extends WithMaybeParentMembersProps {
+interface Props extends WithOptionalMembersProps {
   path: string;
   url: string;
   group?: UserGroup;

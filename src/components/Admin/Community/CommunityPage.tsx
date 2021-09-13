@@ -3,9 +3,9 @@ import { Container } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import EditCommunityCredentials, { CommunityCredentials } from '../Authorization/EditCommunityCredentials';
-import { WithCommunity, WithMaybeParentMembersProps } from './CommunityTypes';
+import { WithCommunity, WithOptionalMembersProps } from './CommunityTypes';
 
-interface CommunityPageProps extends WithMaybeParentMembersProps, WithCommunity {
+interface CommunityPageProps extends WithOptionalMembersProps, WithCommunity {
   credential: CommunityCredentials;
   resourceId: string;
 }

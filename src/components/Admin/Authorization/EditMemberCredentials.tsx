@@ -1,10 +1,8 @@
-import React, { FC, useMemo } from 'react';
-import { useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
-import { Loading } from '../../core';
+import React, { FC } from 'react';
 import { EditMembers, EditMembersProps } from '../Community/EditMembers';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { useUserContext } from '../../../hooks';
+import { useUserContext, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
 
 interface EditAdminCredentialsProps
@@ -19,37 +17,23 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,
   credential,
-  resourceId,
+  resourceId = '',
   memberList,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data, loading } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: credential,
-        resourceID: resourceId,
-      },
-    },
-  });
-  const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
-  const availableMembers = useMemo(
-    () => memberList.filter(p => members.findIndex(m => m.id === p.id) === -1),
-    [memberList, members]
-  );
-
-  if (loading) {
-    return <Loading />;
-  }
+  const { available = [], current = [], loading } = useAvailableMembers(credential, resourceId, memberList);
 
   return (
     <EditMembers
-      members={members}
-      availableMembers={availableMembers}
+      members={current}
+      availableMembers={available}
       executor={user}
       onAdd={onAdd}
       onRemove={onRemove}
+      addingMember={loading}
+      removingMember={loading}
     />
   );
 };
