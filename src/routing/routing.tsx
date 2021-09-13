@@ -42,9 +42,9 @@ export const Routing: FC = () => {
         <Search />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
-        <div>User Page: Comming Soon!</div>
+        <div>User Page: Coming Soon!</div>
       </RestrictedRoute>
-      <Route path="/organisation/:organisationId">
+      <Route path="/organization/:organisationId">
         <OrganisationProvider>
           <OrganisationRoute paths={[]} />
         </OrganisationProvider>

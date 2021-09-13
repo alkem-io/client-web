@@ -8,12 +8,15 @@ import { OrganisationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';
 import TagContainer from '../../components/core/TagContainer';
 import Tag from '../../components/core/Tag';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   organisation?: OrganisationInfoFragment;
 }
 
 const InfoSection: FC<Props> = ({ organisation }) => {
+  const { t } = useTranslation();
+
   if (!organisation) {
     return <Loading text={''} />;
   }
@@ -52,7 +55,7 @@ const InfoSection: FC<Props> = ({ organisation }) => {
             ))}
           </TagContainer>
         ) : (
-          <span>No tags available</span>
+          <span>{t('common.no-tags')}</span>
         )}
       </Grid>
     </Grid>
