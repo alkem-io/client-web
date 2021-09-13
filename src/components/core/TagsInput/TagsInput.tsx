@@ -1,16 +1,17 @@
 import { Chip, OutlinedTextFieldProps, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import React, { FC, forwardRef } from 'react';
+import React, { ChangeEvent, FC, forwardRef } from 'react';
 
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
-  onChange?: (tags: string[]) => void;
+  onChange?: (tags: (string | string[])[]) => void;
   value: string[];
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
   ({ InputProps, onChange, value, placeholder, ...rest }, ref) => {
-    const handleChange = (e, newValue) => {
-      onChange && onChange(newValue);
+    const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
+      const changedValues = newValue.filter(x => x.length >= 2);
+      onChange && onChange(changedValues);
     };
 
     return (
