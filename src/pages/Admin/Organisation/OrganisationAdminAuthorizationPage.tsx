@@ -31,7 +31,7 @@ export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPag
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organisationId: organizationId,
+          organizationId: organizationId,
           credential: AuthorizationCredential.OrganisationAdmin,
         }}
       >

@@ -22,7 +22,7 @@ export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ 
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organisationId: organizationId,
+          organizationId: organizationId,
           parentMembers: allUsers,
           credential: AuthorizationCredential.OrganisationMember,
         }}

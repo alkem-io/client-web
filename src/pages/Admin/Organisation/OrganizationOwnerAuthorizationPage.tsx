@@ -7,9 +7,9 @@ import OrganizationMembers from '../../../containers/organisation/OrganizationMe
 import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
-import OrganisationAuthorizationPageProps from './OrganisationAuthorizationPageProps';
+import OrganizationAuthorizationPageProps from './OrganisationAuthorizationPageProps';
 
-export const OrganisationOwnerAuthorizationPage: FC<OrganisationAuthorizationPageProps> = ({ paths }) => {
+export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
 
   const currentPaths = useMemo(
@@ -31,7 +31,7 @@ export const OrganisationOwnerAuthorizationPage: FC<OrganisationAuthorizationPag
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organisationId: organizationId,
+          organizationId: organizationId,
           credential: AuthorizationCredential.OrganisationOwner,
         }}
       >
@@ -42,8 +42,8 @@ export const OrganisationOwnerAuthorizationPage: FC<OrganisationAuthorizationPag
             addingMember={state.addingOwner}
             removingMember={state.removingOwner}
             executor={entities.currentMember}
-            onAdd={actions.handleAssignAdmin}
-            onRemove={actions.handleRemoveAdmin}
+            onAdd={actions.handleAssignOwner}
+            onRemove={actions.handleRemoveOwner}
           />
         )}
       </OrganizationMembers>
@@ -51,4 +51,4 @@ export const OrganisationOwnerAuthorizationPage: FC<OrganisationAuthorizationPag
   );
 };
 
-export default OrganisationOwnerAuthorizationPage;
+export default OrganizationOwnerAuthorizationPage;

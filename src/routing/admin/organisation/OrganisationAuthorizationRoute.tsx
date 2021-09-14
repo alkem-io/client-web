@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../../pages';
 import OrganisationAdminAuthorizationPage from '../../../pages/Admin/Organisation/OrganisationAdminAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
-import OrganisationOwnerAuthorizationPage from '../../../pages/Admin/Organisation/OrganisationOwnerAuthorizationPage';
+import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organisation/OrganizationOwnerAuthorizationPage';
 
 interface OrganisationAuthorizationRouteProps extends AuthorizationRouteProps {}
 
@@ -13,11 +13,11 @@ const OrganisationAuthorizationRoute: FC<OrganisationAuthorizationRouteProps> = 
 
   return (
     <Switch>
-      <Route exact path={`${path}/admins/:role`}>
+      <Route exact path={`${path}/admins`}>
         <OrganisationAdminAuthorizationPage paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/owners/:role`}>
-        <OrganisationOwnerAuthorizationPage paths={currentPaths} />
+      <Route exact path={`${path}/owners`}>
+        <OrganizationOwnerAuthorizationPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
