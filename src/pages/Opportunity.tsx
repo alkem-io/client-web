@@ -9,7 +9,6 @@ import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import { CommunitySection } from '../components/Community/CommunitySection';
@@ -32,7 +31,6 @@ import {
   useOpportunityTemplateQuery,
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks/useTheme';
-import { SEARCH_PAGE } from '../models/constants';
 import { Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
@@ -101,7 +99,6 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const history = useHistory();
   const { ecoverseId } = useEcoverse();
 
   useUpdateNavigation({ currentPaths: paths });
@@ -472,7 +469,6 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
         subTitle={t('pages.opportunity.sections.community.subtitle')}
         users={users}
         shuffle={true}
-        onExplore={() => history.push(SEARCH_PAGE)}
       />
       <Divider />
       <div ref={projectRef} />

@@ -20,6 +20,7 @@ import {
 import ChallengeApplyRoute from './application/ChallengeApplyRoute';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import { Project } from './project';
+import CommunityRoute from './community';
 
 export interface RouteParameters {
   ecoverseId: string;
@@ -68,6 +69,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges/:challengeId`}>
         <ChallengeRoute paths={currentPaths} challenges={challenges} />
+      </Route>
+      <Route path={`${path}/community`}>
+        <CommunityRoute paths={currentPaths} />
       </Route>
       <Route path={path}>
         <EcoverseApplyRoute paths={currentPaths} />
@@ -133,6 +137,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
       </Route>
       <Route exact path={path}>
         <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} permissions={{ edit: isAdmin }} />
+      </Route>
+      <Route path={`${path}/community`}>
+        <CommunityRoute paths={currentPaths} />
       </Route>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
@@ -217,6 +224,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
             removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
           }}
         />
+      </Route>
+      <Route path={`${path}/community`}>
+        <CommunityRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/projects`}>
         <Project paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />

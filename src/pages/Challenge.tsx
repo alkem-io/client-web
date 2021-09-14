@@ -28,7 +28,6 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
-import { SEARCH_PAGE } from '../models/constants';
 import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
@@ -321,7 +320,6 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
-          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </BackdropWithMessage>
       <Divider />

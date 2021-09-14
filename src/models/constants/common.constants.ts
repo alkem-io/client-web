@@ -1,5 +1,4 @@
 export const TOKEN_KEY = 'accessToken';
-export const SEARCH_PAGE = '/search';
 
 export const LOGO_REFERENCE_NAME = 'logo';
 

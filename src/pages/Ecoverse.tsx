@@ -33,7 +33,7 @@ import {
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../models/constants';
 import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
@@ -285,7 +285,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
           subTitle={t('pages.ecoverse.sections.community.subheader')}
           body={context?.who}
           shuffle={true}
-          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </AuthenticationBackdrop>
       <Divider />
