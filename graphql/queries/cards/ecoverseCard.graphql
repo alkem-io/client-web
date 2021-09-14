@@ -1,0 +1,5 @@
+query ecoverseCard($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    ...EcoverseDetailsProvider
+  }
+}

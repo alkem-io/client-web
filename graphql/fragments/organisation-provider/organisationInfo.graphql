@@ -1,0 +1,17 @@
+fragment OrganisationInfo on Organisation {
+  id
+  nameID
+  displayName
+  contactEmail
+  verified
+  website
+  profile {
+    id
+    avatar
+    description
+    tagsets {
+      id
+      tags
+    }
+  }
+}

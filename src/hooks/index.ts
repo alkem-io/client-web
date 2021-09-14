@@ -14,6 +14,7 @@ export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 export * from './useEcoverse';
+export * from './useOrganisation';
 export * from './operations/useEditReference';
 export * from './useNavigation';
 export * from './useNotification';
