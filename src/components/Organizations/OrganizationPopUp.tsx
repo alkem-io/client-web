@@ -149,7 +149,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                   ))}
                 </TagContainer>
               ) : (
-                <span>{t('search.organization.no-tags')}</span>
+                <span>{t('common.no-tags')}</span>
               )}
             </div>
             <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
