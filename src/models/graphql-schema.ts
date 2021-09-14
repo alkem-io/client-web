@@ -3277,6 +3277,7 @@ export type ChallengeCardQuery = {
   ecoverse: {
     __typename?: 'Ecoverse';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;

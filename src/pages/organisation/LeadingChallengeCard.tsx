@@ -16,6 +16,7 @@ const LeadingChallengeCard: FC<CardProps> = ({ id, ecoverseID }) => {
   });
 
   const challenge = data?.ecoverse?.challenge;
+  const ecoverseNameID = data?.ecoverse.nameID || '';
 
   if (!challenge) {
     return <Loading text="" />;
@@ -32,7 +33,7 @@ const LeadingChallengeCard: FC<CardProps> = ({ id, ecoverseID }) => {
       }}
       isMember={user?.ofChallenge(challenge.id) || false}
       tags={challenge?.tagset?.tags || []}
-      url={buildChallengeUrl('', challenge.nameID)}
+      url={buildChallengeUrl(ecoverseNameID, challenge.nameID)}
     />
   );
 };

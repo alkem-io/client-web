@@ -3476,6 +3476,7 @@ export const ChallengeCardDocument = gql`
   query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         ...ChallengeCard
       }
