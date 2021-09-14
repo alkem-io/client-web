@@ -1,0 +1,5 @@
+query organisationInfo($organisationId: UUID_NAMEID!) {
+  organisation(ID: $organisationId) {
+    ...OrganisationInfo
+  }
+}

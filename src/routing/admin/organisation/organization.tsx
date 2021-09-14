@@ -16,6 +16,7 @@ import { EditMode } from '../../../utils/editMode';
 import { AdminParameters } from '../admin';
 import OrganisationAuthorizationRoute from './OrganisationAuthorizationRoute';
 import { OrganisationGroupRoute } from './OrganisationGroupRoute';
+import { buildOrganisationUrl } from '../../../utils/urlBuilders';
 
 export interface OrganizationRouteParams {
   organizationId: string;
@@ -63,7 +64,12 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.organizationLvl} paths={currentPaths} />
+        <ManagementPageTemplate
+          data={managementData.organizationLvl}
+          paths={currentPaths}
+          title={data?.organisation?.displayName}
+          entityUrl={buildOrganisationUrl(data?.organisation?.nameID || '')}
+        />
       </Route>
       <Route exact path={`${path}/edit`}>
         <OrganizationPage organization={data?.organisation as Organisation} mode={EditMode.edit} paths={currentPaths} />
