@@ -49,11 +49,11 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
   return (
     <Box marginY={1}>
       <Card primaryTextProps={{ text: 'Member of' }}>
-        {membershipItems(ecoverses, t('general.ecoverse'), 'primary')}
-        {membershipItems(groups, t('general.group'), 'primary')}
-        {membershipItems(challenges, t('general.challenge'), 'neutral')}
-        {membershipItems(opportunities, t('general.opportunity'), 'primary')}
-        {membershipItems(organizations, t('general.organization'), 'positive')}
+        {membershipItems(ecoverses, t('common.ecoverse'), 'primary')}
+        {membershipItems(groups, t('common.group'), 'primary')}
+        {membershipItems(challenges, t('common.challenge'), 'neutral')}
+        {membershipItems(opportunities, t('common.opportunity'), 'primary')}
+        {membershipItems(organizations, t('common.organisation'), 'positive')}
       </Card>
     </Box>
   );

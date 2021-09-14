@@ -2,20 +2,12 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
-  "general": {
-    "ecoverse": "Ecoverse",
-    "challenge": "Challenge",
-    "opportunity": "Opportunity",
-    "group": "Group",
-    "organization": "Organization"
-  },
   "search": {
     "header": "Search",
     "subheader": "Find relevant users, organisations, groups and not least Challenges!",
     "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
     "body": "",
     "organization": {
-      "no-tags": "No tags available",
       "no-hosted": "None",
       "no-leading": "None"
     }
@@ -75,8 +67,14 @@
     "challenges": "Challenges",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
+    "organisation": "Organisation",
+    "organisations": "Organisations",
     "project": "Project",
     "projects": "Projects",
+    "group": "Group",
+    "groups": "Groups",
+    "no-tags": "No tags available",
+    "membership": "Membership",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -139,29 +137,34 @@
           "order": 9,
           "hidden": true
         },
+        "OrganisationOwner": {
+          "name": "Organisation Owner",
+          "order": 10,
+          "hidden": false
+        },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 10,
+          "order": 11,
           "hidden": false
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 11,
+          "order": 12,
           "hidden": true
         },
         "UserSelfManagement": {
           "name": "User Self Management",
-          "order": 12,
+          "order": 13,
           "hidden": true
         },
         "CommunityMember": {
           "name": "Community Member",
-          "order": 13,
+          "order": 14,
           "hidden": true
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 14,
+          "order": 15,
           "hidden": true
         }
       }
@@ -173,6 +176,10 @@
     }
   },
   "components": {
+    "organisation-verified": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "card-filter": {
       "title": "Filter"
     },
@@ -202,7 +209,7 @@
       "read-access": "Allow read access for non-ecoverse members to challenges",
       "read-access-title": "Visibility"
     },
-    "profileSegment": {
+    "nameSegment": {
       "name": "Name",
       "nameID": {
         "title": "NameID",
@@ -224,6 +231,37 @@
     },
     "tagsSegment": {
       "title": "Tags"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Enter an avatar URL..."
+      },
+      "description": {
+        "name": "Description",
+        "placeholder": "Enter a description"
+      }
+    },
+    "organisationSegment": {
+      "contactEmail": {
+        "name": "Contact email",
+        "placeholder": "Enter a contact email"
+      },
+      "domain": {
+        "name": "Domain",
+        "placeholder": "Enter the domain"
+      },
+      "legalEntityName": {
+        "name": "Legal entity name",
+        "placeholder": "Enter the legal name of this organisation"
+      },
+      "website": {
+        "name": "Website",
+        "placeholder": "Enter a website"
+      },
+      "verified": {
+        "name": "Verified status"
+      }
     },
     "card": {
       "member": "Member",
@@ -251,6 +289,9 @@
       "title": "Let your community know what's next",
       "postAction": "Post Update",
       "updatesTitle": "Published updates"
+    },
+    "settingsButton": {
+      "tooltip": "Settings"
     }
   },
   "navigation": {
@@ -292,10 +333,39 @@
         }
       }
     },
+    "organisation": {
+      "ecoverses": {
+        "title": "Hosted ecoverses",
+        "subtitle": "Ecoverses which this organisation is hosting",
+        "no-data": "No ecoverses are hosted at the moment"
+      },
+      "challenges": {
+        "title": "Challenges leading",
+        "subtitle": "Challenges which this organisation is leading",
+        "no-data": "No challenges are being led at the moment"
+      },
+      "users": {
+        "owners": {
+          "title": "Owners",
+          "subtitle": "Owners of this organisation",
+          "no-data": "None"
+        },
+        "admins": {
+          "title": "Admins",
+          "subtitle": "Admins of this organisation",
+          "no-data": "None"
+        },
+        "members": {
+          "title": "Members",
+          "subtitle": "Members of this organisation",
+          "no-data": "None"
+        }
+      }
+    },
     "ecoverse": {
       "title": "Ecoverse",
       "application": {
-        "title": "Application to join $t(general.{{entity}}) \"{{name}}\"",
+        "title": "Application to join $t(common.{{entity}}) \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",
@@ -305,7 +375,7 @@
       "sections": {
         "header": {
           "buttons": {
-            "settigns": {
+            "settings": {
               "tooltip": "Ecoverse settings"
             }
           }

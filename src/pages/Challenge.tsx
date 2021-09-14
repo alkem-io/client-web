@@ -7,7 +7,8 @@ import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/jou
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import BackdropWithMessage from '../components/BackdropWithMessage';
@@ -19,19 +20,19 @@ import CardFilter from '../components/core/card-filter/CardFilter';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
+import { Image } from '../components/core/Image';
 import Markdown from '../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
+import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
 import { SEARCH_PAGE } from '../models/constants';
 import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
-import { buildAdminChallengeUrl } from '../utils/urlBuilders';
+import { buildAdminChallengeUrl, buildOrganisationUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useOrganizationStyles = createStyles(theme => ({
@@ -65,7 +66,11 @@ const useOrganizationStyles = createStyles(theme => ({
   },
 }));
 
-const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizations }) => {
+interface Props {
+  organizations: Organisation[];
+}
+
+const OrganisationBanners: FC<Props> = ({ organizations }) => {
   const { t } = useTranslation();
   const styles = useOrganizationStyles();
   const [modalId, setModalId] = useState<string | null>(null);
@@ -77,8 +82,10 @@ const OrganisationBanners: FC<{ organizations: Organisation[] }> = ({ organizati
           if (index > 4) return null;
           return (
             <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
-              <div className={styles.imgContainer} onClick={() => setModalId(org.id)}>
-                <img src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
+              <div className={styles.imgContainer}>
+                <Link component={RouterLink} to={buildOrganisationUrl(org.nameID)}>
+                  <Image src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
+                </Link>
               </div>
             </Tooltip>
           );

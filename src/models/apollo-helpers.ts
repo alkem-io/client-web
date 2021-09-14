@@ -131,6 +131,12 @@ export type AuthorizationRuleCredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CanvasKeySpecifier = ('id' | 'name' | 'value' | CanvasKeySpecifier)[];
+export type CanvasFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ChallengeKeySpecifier = (
   | 'activity'
   | 'agent'
@@ -266,6 +272,7 @@ export type DirectRoomFieldPolicy = {
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
   | 'authorization'
+  | 'canvas'
   | 'description'
   | 'id'
   | EcosystemModelKeySpecifier
@@ -273,6 +280,7 @@ export type EcosystemModelKeySpecifier = (
 export type EcosystemModelFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvas?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -349,6 +357,19 @@ export type LifecycleFieldPolicy = {
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MembershipOrganisationResultEntryChallengeKeySpecifier = (
+  | 'displayName'
+  | 'ecoverseID'
+  | 'id'
+  | 'nameID'
+  | MembershipOrganisationResultEntryChallengeKeySpecifier
+)[];
+export type MembershipOrganisationResultEntryChallengeFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MembershipResultEntryKeySpecifier = ('displayName' | 'id' | 'nameID' | MembershipResultEntryKeySpecifier)[];
 export type MembershipResultEntryFieldPolicy = {
@@ -601,25 +622,35 @@ export type OpportunityTemplateFieldPolicy = {
 export type OrganisationKeySpecifier = (
   | 'agent'
   | 'authorization'
+  | 'contactEmail'
   | 'displayName'
+  | 'domain'
   | 'group'
   | 'groups'
   | 'id'
+  | 'legalEntityName'
   | 'members'
   | 'nameID'
   | 'profile'
+  | 'verified'
+  | 'website'
   | OrganisationKeySpecifier
 )[];
 export type OrganisationFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  verified?: FieldPolicy<any> | FieldReadFunction<any>;
+  website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganisationMembershipKeySpecifier = (
   | 'challengesLeading'
@@ -977,6 +1008,10 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | AuthorizationRuleCredentialKeySpecifier);
     fields?: AuthorizationRuleCredentialFieldPolicy;
   };
+  Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
+    fields?: CanvasFieldPolicy;
+  };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);
     fields?: ChallengeFieldPolicy;
@@ -1046,6 +1081,13 @@ export type StrictTypedTypePolicies = {
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
+  };
+  MembershipOrganisationResultEntryChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MembershipOrganisationResultEntryChallengeKeySpecifier
+      | (() => undefined | MembershipOrganisationResultEntryChallengeKeySpecifier);
+    fields?: MembershipOrganisationResultEntryChallengeFieldPolicy;
   };
   MembershipResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MembershipResultEntryKeySpecifier | (() => undefined | MembershipResultEntryKeySpecifier);

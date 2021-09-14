@@ -227,7 +227,7 @@ const Section: FC<SectionProps> = ({
       <div className={styles.cover} />
       <Grid container spacing={2}>
         {!hideAvatar && (
-          <Grid item md={12} lg={3}>
+          <Grid item md={12} lg={3} className={styles.content}>
             <div className={clsx(styles.avatar, gutters.avatar && styles.gutter)}>{avatar}</div>
           </Grid>
         )}
