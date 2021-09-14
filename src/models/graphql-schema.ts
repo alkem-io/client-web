@@ -2258,6 +2258,10 @@ export type OrganizationProfileInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  contactEmail?: Maybe<string>;
+  domain?: Maybe<string>;
+  legalEntityName?: Maybe<string>;
+  website?: Maybe<string>;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -2825,6 +2829,15 @@ export type AssignUserAsGlobalCommunityAdminMutation = {
   assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsOrganisationOwnerMutationVariables = Exact<{
+  input: AssignOrganisationOwnerInput;
+}>;
+
+export type AssignUserAsOrganisationOwnerMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganisationOwner: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
   input: RemoveChallengeAdminInput;
 }>;
@@ -2859,6 +2872,15 @@ export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
 export type RemoveUserAsGlobalCommunityAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganisationOwnerMutationVariables = Exact<{
+  input: RemoveOrganisationOwnerInput;
+}>;
+
+export type RemoveUserAsOrganisationOwnerMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganisationOwner: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -3011,6 +3033,10 @@ export type UpdateOrganizationMutation = {
     id: string;
     nameID: string;
     displayName: string;
+    contactEmail?: Maybe<string>;
+    domain?: Maybe<string>;
+    legalEntityName?: Maybe<string>;
+    website?: Maybe<string>;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -4867,6 +4893,10 @@ export type OrganizationProfileInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    contactEmail?: Maybe<string>;
+    domain?: Maybe<string>;
+    legalEntityName?: Maybe<string>;
+    website?: Maybe<string>;
     profile: {
       __typename?: 'Profile';
       id: string;

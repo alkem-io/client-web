@@ -137,29 +137,34 @@
           "order": 9,
           "hidden": true
         },
+        "OrganisationOwner": {
+          "name": "Organisation Owner",
+          "order": 10,
+          "hidden": false
+        },
         "OrganisationAdmin": {
           "name": "Organisation Admin",
-          "order": 10,
+          "order": 11,
           "hidden": false
         },
         "OrganisationMember": {
           "name": "Organisation Member",
-          "order": 11,
+          "order": 12,
           "hidden": true
         },
         "UserSelfManagement": {
           "name": "User Self Management",
-          "order": 12,
+          "order": 13,
           "hidden": true
         },
         "CommunityMember": {
           "name": "Community Member",
-          "order": 13,
+          "order": 14,
           "hidden": true
         },
         "UserGroupMember": {
           "name": "User Group Member",
-          "order": 14,
+          "order": 15,
           "hidden": true
         }
       }
@@ -204,7 +209,7 @@
       "read-access": "Allow read access for non-ecoverse members to challenges",
       "read-access-title": "Visibility"
     },
-    "profileSegment": {
+    "nameSegment": {
       "name": "Name",
       "nameID": {
         "title": "NameID",
@@ -226,6 +231,37 @@
     },
     "tagsSegment": {
       "title": "Tags"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Enter an avatar URL..."
+      },
+      "description": {
+        "name": "Description",
+        "placeholder": "Enter a description"
+      }
+    },
+    "organisationSegment": {
+      "contactEmail": {
+        "name": "Contact email",
+        "placeholder": "Enter a contact email"
+      },
+      "domain": {
+        "name": "Domain",
+        "placeholder": "Enter the domain"
+      },
+      "legalEntityName": {
+        "name": "Legal entity name",
+        "placeholder": "Enter the legal name of this organisation"
+      },
+      "website": {
+        "name": "Website",
+        "placeholder": "Enter a website"
+      },
+      "verified": {
+        "name": "Verified status"
+      }
     },
     "card": {
       "member": "Member",
