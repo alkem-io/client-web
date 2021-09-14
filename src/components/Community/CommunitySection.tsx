@@ -69,7 +69,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   ].filter(x => x.enabled);
 
   return (
-    <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+    <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />} hideDetails>
       <SectionHeader text={title} />
       <SubHeader text={subTitle} />
       <Body text={body}>
@@ -86,7 +86,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
-                <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
+                <Box>
                   {updates && (
                     <AvatarsProvider users={users}>
                       {detailedUsers => (

@@ -7804,6 +7804,7 @@ export const OnMessageReceivedDocument = gql`
   subscription onMessageReceived {
     messageReceived {
       roomId
+      roomName
       communityId
       message {
         id

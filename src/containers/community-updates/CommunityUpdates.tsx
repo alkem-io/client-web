@@ -91,10 +91,12 @@ export function useUpdateSubscription() {
       });
 
       const communityId = subData.communityId;
+      let communityName = subData.roomName;
       if (communityId) {
-        const communityName = user?.communities[communityId];
-        communityName && notify(`You just received an update in ${communityName}`);
+        communityName = user?.communities[communityId] || communityName;
       }
+
+      notify(`You just received an update in ${communityName}`);
     },
   });
 }
