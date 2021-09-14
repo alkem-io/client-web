@@ -8,7 +8,6 @@
     "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
     "body": "",
     "organization": {
-      "no-tags": "No tags available",
       "no-hosted": "None",
       "no-leading": "None"
     }
@@ -74,6 +73,7 @@
     "projects": "Projects",
     "group": "Group",
     "groups": "Groups",
+    "no-tags": "No tags available",
     "membership": "Membership",
     "genders": {
       "notSpecified": "not specified",

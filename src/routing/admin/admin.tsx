@@ -2,8 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
-import Loading from '../../components/core/Loading/Loading';
-import { useUsersQuery } from '../../hooks/generated/graphql';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
@@ -22,12 +20,6 @@ export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
-  // todo parentMembers should not be fetched on this level probably setup an organisation provider
-  // to fetch them when necessary in organisation admin tree
-  const { data: usersInfo, loading: loadingUsers } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
-  const parentMembers = usersInfo?.users || [];
-
-  if (loadingUsers) return <Loading text={'Loading'} />;
 
   return (
     <Switch>
@@ -44,7 +36,7 @@ export const Admin: FC = () => {
         <EcoverseListAdminRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/organizations`}>
-        <OrganizationsRoute paths={currentPaths} parentMembers={parentMembers} />
+        <OrganizationsRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
