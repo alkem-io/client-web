@@ -149,8 +149,8 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const {
-    available: availableMembers = [],
-    current: allMembers = [],
+    available: availableMembers,
+    current: allMembers,
     loading,
   } = useAvailableMembers(entities.credential, entities.organisationId, entities.parentMembers);
 

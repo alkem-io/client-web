@@ -4,8 +4,8 @@ import { useUsersQuery, useUsersWithCredentialsQuery } from './generated/graphql
 import { Member } from '../models/User';
 
 export interface AvailableMembersResults {
-  available?: Member[];
-  current?: Member[];
+  available: Member[];
+  current: Member[];
   loading: boolean;
   error: boolean;
 }

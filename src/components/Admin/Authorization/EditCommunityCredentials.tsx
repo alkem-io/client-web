@@ -67,7 +67,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, crede
     });
   };
 
-  const { available = [], current = [], loading } = useAvailableMembers(credential, resourceId, parentMembers);
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentMembers);
 
   return (
     <EditMembers

@@ -23,7 +23,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { available = [], current = [], loading } = useAvailableMembers(credential, resourceId, memberList);
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, memberList);
 
   return (
     <EditMembers
