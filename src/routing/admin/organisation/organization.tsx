@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../../components/Admin';
-import { WithParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
@@ -22,7 +21,7 @@ export interface OrganizationRouteParams {
   organizationId: string;
 }
 
-export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
+export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
@@ -36,7 +35,7 @@ export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMe
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:organizationId`}>
-        <OrganizationRoutes paths={currentPaths} parentMembers={parentMembers} />
+        <OrganizationRoutes paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -45,7 +44,7 @@ export const OrganizationsRoute: FC<WithParentMembersProps> = ({ paths, parentMe
   );
 };
 
-export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
+export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { organizationId } = useParams<AdminParameters>();
 
@@ -75,7 +74,7 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
         <OrganizationPage organization={data?.organisation as Organisation} mode={EditMode.edit} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
-        <OrganizationCommunityRoute paths={currentPaths} parentMembers={parentMembers} />
+        <OrganizationCommunityRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
         <OrganisationAuthorizationRoute paths={currentPaths} />
@@ -87,7 +86,7 @@ export const OrganizationRoutes: FC<WithParentMembersProps> = ({ paths, parentMe
   );
 };
 
-export const OrganizationCommunityRoute: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
+export const OrganizationCommunityRoute: FC<PageProps> = ({ paths }) => {
   const { path } = useRouteMatch();
 
   return (
@@ -96,7 +95,7 @@ export const OrganizationCommunityRoute: FC<WithParentMembersProps> = ({ paths, 
         <OrganizationGroupRoutes paths={paths} />
       </Route>
       <Route path={`${path}/members`}>
-        <OrganizationMemberRoutes paths={paths} parentMembers={parentMembers} />
+        <OrganizationMemberRoutes paths={paths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -129,14 +128,14 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
   );
 };
 
-const OrganizationMemberRoutes: FC<WithParentMembersProps> = ({ paths, parentMembers }) => {
+const OrganizationMemberRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: true }], [paths, url]);
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <OrganisationCommunityPage paths={currentPaths} parentMembers={parentMembers} />
+        <OrganisationCommunityPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />

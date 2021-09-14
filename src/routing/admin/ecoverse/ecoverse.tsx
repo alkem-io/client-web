@@ -4,7 +4,7 @@ import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading/Loading';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
-import { useEcoverseCommunityQuery, useUsersQuery } from '../../../hooks/generated/graphql';
+import { useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../hooks';
 import { useTransactionScope } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';
@@ -53,17 +53,15 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
-  const { data: usersInfo, loading: loadingUsers } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.ecoverse.displayName || '', real: true }],
     [paths, ecoverse]
   );
 
   const community = data?.ecoverse.community;
-  const parentMembers = usersInfo?.users || [];
   const ecoverseUUID = ecoverse?.ecoverse.id || '';
 
-  if (loadingEcoverse || loadingUsers || loadingEcoverseCommunity) return <Loading text={'Loading'} />;
+  if (loadingEcoverse || loadingEcoverseCommunity) return <Loading text={'Loading'} />;
 
   return (
     <Switch>
@@ -82,7 +80,6 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <CommunityRoute
           paths={currentPaths}
           community={community}
-          parentMembers={parentMembers}
           credential={AuthorizationCredential.EcoverseMember}
           resourceId={ecoverseUUID}
           accessedFrom="ecoverse"

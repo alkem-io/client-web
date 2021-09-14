@@ -4,12 +4,10 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganisationAdminMutation,
   useAssignUserToOrganisationMutation,
-  useOrganisationMembersQuery,
   useRemoveUserAsOrganisationAdminMutation,
   useRemoveUserFromOrganisationMutation,
-  useUsersWithCredentialsQuery,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks/graphql/useApolloErrorHandler';
+import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
 import { AuthorizationCredential, Organisation } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
@@ -51,28 +49,8 @@ export interface OrganizationMembersEntities {
 }
 
 export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, entities }) => {
-  const { user } = useUserContext();
-
-  const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: entities.credential,
-        resourceID: entities.organisationId,
-      },
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const { data: membersData, loading: loadingOrganisationMembers } = useOrganisationMembersQuery({
-    variables: {
-      id: entities.organisationId,
-    },
-    skip: entities.credential !== AuthorizationCredential.OrganisationAdmin,
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
   const handleError = useApolloErrorHandler();
+  const { user } = useUserContext();
 
   const [grantMember, { loading: addingUser }] = useAssignUserToOrganisationMutation({
     onError: handleError,
@@ -170,23 +148,11 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     [entities]
   );
 
-  // TODO [ATS]: Extract into hook to be reused.
-  const availableMembers = useMemo(() => {
-    if (entities.parentMembers) return entities.parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
-    return membersData?.organisation.members?.filter(p => members.findIndex(m => m.id === p.id) < 0) || [];
-  }, [entities, data, membersData]);
-
-  const allMembers = useMemo(
-    () =>
-      data?.usersWithAuthorizationCredential.map<Member>(x => ({
-        id: x.id,
-        displayName: x.displayName,
-        email: x.email,
-        firstName: x.firstName,
-        lastName: x.lastName,
-      })) || [],
-    [data]
-  );
+  const {
+    available: availableMembers,
+    current: allMembers,
+    loading,
+  } = useAvailableMembers(entities.credential, entities.organisationId, entities.parentMembers);
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -204,7 +170,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       {children(
         { availableMembers, allMembers, currentMember },
         { handleAssignMember, handleRemoveMember, handleAssignAdmin, handleRemoveAdmin },
-        { addingUser, removingUser, addingAdmin, removingAdmin, loading: loadingMembers || loadingOrganisationMembers }
+        { addingUser, removingUser, addingAdmin, removingAdmin, loading }
       )}
     </>
   );
