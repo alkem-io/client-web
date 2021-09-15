@@ -6,6 +6,7 @@ import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
   useOnMessageReceivedSubscription,
+  useRemoveUpdateCommunityMutation,
   useSendCommunityUpdateMutation,
 } from '../../hooks/generated/graphql';
 import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
@@ -25,11 +26,13 @@ export interface CommunityUpdatesContainerProps {
 export interface CommunityUpdatesActions {
   onLoadMore: () => void; // TODO will be implemented in a separate issue
   onSubmit: (message: string, communityId: Community['id']) => Promise<string | undefined>;
+  onRemove: (messageId: string, communityId: Community['id']) => Promise<string | undefined>;
 }
 
 export interface CommunityUpdatesState {
   retrievingUpdateMessages: boolean;
   sendingUpdateMessage: boolean;
+  removingUpdateMessage: boolean;
 }
 
 export interface CommunityUpdatesEntities {
@@ -43,7 +46,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendCommunityUpdateMutation();
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
-    async (message, communityId) => {
+    async message => {
       const update = await sendUpdate({
         variables: { msgData: { message, communityID: communityId } },
         refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
@@ -53,14 +56,28 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     [sendUpdate, communityId]
   );
 
+  const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveUpdateCommunityMutation();
+
+  const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
+    async messageId => {
+      const update = await removeUpdate({
+        variables: { msgData: { messageId, communityID: communityId } },
+        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+      });
+      return update.data?.removeUpdateCommunity;
+    },
+    [sendUpdate, communityId]
+  );
+
   return (
     <>
       {children(
         { messages: data?.community.updatesRoom?.messages || [] },
-        { onLoadMore: () => {}, onSubmit },
+        { onLoadMore: () => {}, onSubmit, onRemove },
         {
           retrievingUpdateMessages: loading,
           sendingUpdateMessage: loadingSendUpdate,
+          removingUpdateMessage: loadingRemoveUpdate,
         }
       )}
     </>

@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Card,
   CardActions,
@@ -14,6 +15,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -43,13 +45,16 @@ export interface CommunityUpdatesViewProps {
   state: {
     loadingMessages: boolean;
     submittingMessage: boolean;
+    removingMessage: boolean;
   };
   actions?: {
     onSubmit?: (value: string) => Promise<string | undefined>;
+    onRemove?: (messageId: string) => Promise<string | undefined>;
   };
   options?: {
     canEdit?: boolean;
     canCopy?: boolean;
+    canRemove?: boolean;
     hideHeaders?: boolean;
     itemsPerRow?: number;
     disableElevation?: boolean;
@@ -84,8 +89,8 @@ const useStyles = makeStyles(theme => ({
 export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
   // entities
   const { messages, members } = entities;
-  const { loadingMessages } = state;
-  const { canEdit, itemsPerRow, hideHeaders, canCopy, disableCollapse, disableElevation } = options || {};
+  const { loadingMessages, removingMessage } = state;
+  const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
   const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
   const initialValues = {
     'community-update': '',
@@ -95,6 +100,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   });
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
   const [stubMessageId, setStubMessageId] = useState<string | null>(null);
+  const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
   const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
 
@@ -102,6 +108,10 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   useEffect(() => {
     setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
   }, [setStubMessageId, orderedMessages]);
+
+  useEffect(() => {
+    setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
+  }, [setRemovedMessageId, orderedMessages]);
 
   // styling
   const styles = useStyles();
@@ -146,6 +156,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     <Button
                       text={t('components.communityUpdates.postAction')}
                       type={'submit'}
+                      disabled={isSubmitting || removingMessage}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
                   </Grid>
@@ -181,10 +192,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
         {orderedMessages.map(m => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
+          const removed = removedMessageId === m.id;
           const member = memberMap[m.sender];
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
-              <Card elevation={disableElevation ? 0 : 2}>
+              <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
+                <Backdrop open={removed} style={{ position: 'absolute', zIndex: 1 }} />
                 <CardHeader
                   avatar={
                     member && (
@@ -237,6 +250,20 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                           <FileCopyIcon />
                         </IconButton>
                       </CopyToClipboard>
+                    </Tooltip>
+                  )}
+                  {canRemove && (
+                    <Tooltip title="Remove community update" placement="right">
+                      <IconButton
+                        onClick={async () => {
+                          if (actions?.onRemove) {
+                            setRemovedMessageId(m.id);
+                            await actions?.onRemove(m.id);
+                          }
+                        }}
+                      >
+                        <DeleteOutlineIcon />
+                      </IconButton>
                     </Tooltip>
                   )}
                   {!disableCollapse && (

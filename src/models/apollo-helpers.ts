@@ -495,6 +495,8 @@ export type MutationKeySpecifier = (
   | 'messageDiscussionCommunity'
   | 'messageUpdateCommunity'
   | 'messageUser'
+  | 'removeDiscussionCommunity'
+  | 'removeUpdateCommunity'
   | 'removeUserAsChallengeAdmin'
   | 'removeUserAsEcoverseAdmin'
   | 'removeUserAsGlobalAdmin'
@@ -572,6 +574,8 @@ export type MutationFieldPolicy = {
   messageDiscussionCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUpdateCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeDiscussionCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUpdateCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;

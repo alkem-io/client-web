@@ -18,6 +18,10 @@ mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
   messageUpdateCommunity(msgData: $msgData)
 }
 
+mutation removeUpdateCommunity($msgData: CommunityRemoveMessageInput!) {
+  removeUpdateCommunity(msgData: $msgData)
+}
+
 subscription onMessageReceived {
   messageReceived {
     roomId

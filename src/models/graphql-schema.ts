@@ -345,6 +345,13 @@ export type Community = Groupable & {
   updatesRoom?: Maybe<CommunityRoom>;
 };
 
+export type CommunityRemoveMessageInput = {
+  /** The community the message is being sent to */
+  communityID: Scalars['String'];
+  /** The message id that should be removed */
+  messageId: Scalars['String'];
+};
+
 export type CommunityRoom = {
   __typename?: 'CommunityRoom';
   /** The identifier of the room */
@@ -974,6 +981,10 @@ export type Mutation = {
   messageUpdateCommunity: Scalars['String'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
+  /** Removes a discussion message from the specified community */
+  removeDiscussionCommunity: Scalars['String'];
+  /** Removes an update message from the specified community */
+  removeUpdateCommunity: Scalars['String'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
   /** Removes a User from being an Ecoverse Admin. */
@@ -1222,6 +1233,14 @@ export type MutationMessageUpdateCommunityArgs = {
 
 export type MutationMessageUserArgs = {
   msgData: UserSendMessageInput;
+};
+
+export type MutationRemoveDiscussionCommunityArgs = {
+  msgData: CommunityRemoveMessageInput;
+};
+
+export type MutationRemoveUpdateCommunityArgs = {
+  msgData: CommunityRemoveMessageInput;
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
@@ -5132,6 +5151,12 @@ export type SendCommunityUpdateMutationVariables = Exact<{
 }>;
 
 export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
+
+export type RemoveUpdateCommunityMutationVariables = Exact<{
+  msgData: CommunityRemoveMessageInput;
+}>;
+
+export type RemoveUpdateCommunityMutation = { __typename?: 'Mutation'; removeUpdateCommunity: string };
 
 export type OnMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
 

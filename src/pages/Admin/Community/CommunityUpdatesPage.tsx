@@ -30,14 +30,17 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
                 entities={{ ...entities, members: populatedUsers }}
                 actions={{
                   onSubmit: message => actions.onSubmit(message, community.id),
+                  onRemove: messageId => actions.onRemove(messageId, community.id),
                 }}
                 state={{
                   loadingMessages: loading.retrievingUpdateMessages,
                   submittingMessage: loading.sendingUpdateMessage,
+                  removingMessage: loading.removingUpdateMessage,
                 }}
                 options={{
                   canEdit: true,
                   canCopy: true,
+                  canRemove: true,
                 }}
               />
             )}

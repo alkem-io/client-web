@@ -104,6 +104,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
                           state={{
                             loadingMessages: false,
                             submittingMessage: false,
+                            removingMessage: false,
                           }}
                         />
                       )}
