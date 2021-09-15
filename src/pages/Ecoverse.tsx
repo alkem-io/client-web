@@ -2,7 +2,7 @@ import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
@@ -184,7 +184,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
           return <Button text={t('buttons.apply-pending')} disabled />;
         }
       } else {
-        return <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />;
+        return <Button text={t('buttons.apply')} as={RouterLink} to={`${url}/apply`} />;
       }
     }
   }, [user, userApplication]);

@@ -270,7 +270,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
             {user?.ofChallenge(challenge?.id) ? (
               <></>
             ) : (
-              <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />
+              <Button text={t('buttons.apply')} as={RouterLink} to={`${url}/apply`} />
             )}
           </div>
         </Body>
