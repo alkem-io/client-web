@@ -5,10 +5,12 @@ import { useEcoverse, useUserContext } from '../hooks';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router';
 import { useChallengeProfileQuery } from '../hooks/generated/graphql';
 import Loading from '../components/core/Loading/Loading';
-import CommunityRoute from './community';
 import ChallengeApplyRoute from './application/ChallengeApplyRoute';
-import { RouteParameters } from './ecoverse';
+import { RouteParameters } from './ecoverse.route';
 import OpportunityRoute from './opportunity.route';
+import ChallengeCommunityPage from '../pages/community/ChallengeCommunityPage';
+import RestrictedRoute from './route.extensions';
+import { OpportunityProvider } from '../context/OpportunityProvider';
 
 interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
@@ -23,7 +25,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { user } = useUserContext();
 
   // todo: you don't need opportunities selected here
-  const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
+  const { data: query, loading } = useChallengeProfileQuery({
     variables: {
       ecoverseId,
       challengeId,
@@ -47,8 +49,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
     [user, ecoverseId, challenge]
   );
 
-  const loading = challengeLoading;
-
   if (loading) {
     return <Loading text={'Loading challenge'} />;
   }
@@ -60,14 +60,16 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   return (
     <Switch>
       <Route path={`${path}/opportunities/:opportunityId`}>
-        <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
+        <OpportunityProvider>
+          <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
+        </OpportunityProvider>
       </Route>
       <Route exact path={path}>
         <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
-      <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} />
-      </Route>
+      <RestrictedRoute path={`${path}/community`}>
+        <ChallengeCommunityPage paths={currentPaths} />
+      </RestrictedRoute>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
       </Route>

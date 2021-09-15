@@ -15,6 +15,7 @@ import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
+import { OpportunityProvider } from '../../../context/OpportunityProvider';
 
 interface Props extends PageProps {
   challengeId: string;
@@ -40,7 +41,9 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths, challengeId }) => {
         />
       </Route>
       <Route path={`${path}/:opportunityId`}>
-        <OpportunityRoutes paths={currentPaths} challengeId={challengeId} />
+        <OpportunityProvider>
+          <OpportunityRoutes paths={currentPaths} challengeId={challengeId} />
+        </OpportunityProvider>
       </Route>
       <Route path="*">
         <FourOuFour />

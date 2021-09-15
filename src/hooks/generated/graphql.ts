@@ -55,6 +55,37 @@ export const ChallengeCardFragmentDoc = gql`
     }
   }
 `;
+export const ContextVisualFragmentDoc = gql`
+  fragment ContextVisual on Visual {
+    id
+    avatar
+    background
+    banner
+  }
+`;
+export const ChallengeInfoFragmentDoc = gql`
+  fragment ChallengeInfo on Challenge {
+    id
+    displayName
+    nameID
+    community {
+      id
+    }
+    context {
+      id
+      tagline
+      references {
+        id
+        name
+        uri
+      }
+      visual {
+        ...ContextVisual
+      }
+    }
+  }
+  ${ContextVisualFragmentDoc}
+`;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -147,14 +178,6 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
-export const ContextVisualFragmentDoc = gql`
-  fragment ContextVisual on Visual {
-    id
-    avatar
-    background
-    banner
-  }
-`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -234,6 +257,9 @@ export const EcoverseDetailsProviderFragmentDoc = gql`
       name
       value
     }
+    community {
+      id
+    }
     tagset {
       id
       name
@@ -286,6 +312,87 @@ export const NewOpportunityFragmentDoc = gql`
     nameID
     displayName
   }
+`;
+export const ProjectDetailsFragmentDoc = gql`
+  fragment ProjectDetails on Project {
+    id
+    nameID
+    displayName
+    description
+    lifecycle {
+      id
+      state
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+`;
+export const OpportunityInfoFragmentDoc = gql`
+  fragment OpportunityInfo on Opportunity {
+    id
+    nameID
+    displayName
+    lifecycle {
+      id
+      state
+    }
+    context {
+      ...ContextDetails
+      aspects {
+        id
+        title
+        framing
+        explanation
+      }
+      ecosystemModel {
+        id
+        actorGroups {
+          id
+          name
+          description
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
+        }
+      }
+    }
+    community {
+      id
+      members {
+        id
+        displayName
+      }
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    projects {
+      ...ProjectDetails
+    }
+    relations {
+      id
+      type
+      actorRole
+      actorName
+      actorType
+      description
+    }
+    activity {
+      name
+      value
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+  ${ProjectDetailsFragmentDoc}
 `;
 export const OrganisationInfoFragmentDoc = gql`
   fragment OrganisationInfo on Organisation {
@@ -342,21 +449,6 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         name
         tags
       }
-    }
-  }
-`;
-export const ProjectDetailsFragmentDoc = gql`
-  fragment ProjectDetails on Project {
-    id
-    nameID
-    displayName
-    description
-    lifecycle {
-      state
-    }
-    tagset {
-      name
-      tags
     }
   }
 `;
@@ -3679,6 +3771,62 @@ export type UserCardQueryResult = Apollo.QueryResult<SchemaTypes.UserCardQuery, 
 export function refetchUserCardQuery(variables?: SchemaTypes.UserCardQueryVariables) {
   return { query: UserCardDocument, variables: variables };
 }
+export const ChallengeInfoDocument = gql`
+  query challengeInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        ...ChallengeInfo
+      }
+    }
+  }
+  ${ChallengeInfoFragmentDoc}
+`;
+
+/**
+ * __useChallengeInfoQuery__
+ *
+ * To run a query within a React component, call `useChallengeInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeInfoQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
+    ChallengeInfoDocument,
+    options
+  );
+}
+export function useChallengeInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
+    ChallengeInfoDocument,
+    options
+  );
+}
+export type ChallengeInfoQueryHookResult = ReturnType<typeof useChallengeInfoQuery>;
+export type ChallengeInfoLazyQueryHookResult = ReturnType<typeof useChallengeInfoLazyQuery>;
+export type ChallengeInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeInfoQuery,
+  SchemaTypes.ChallengeInfoQueryVariables
+>;
+export function refetchChallengeInfoQuery(variables?: SchemaTypes.ChallengeInfoQueryVariables) {
+  return { query: ChallengeInfoDocument, variables: variables };
+}
 export const ChallengeActivityDocument = gql`
   query challengeActivity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -6041,6 +6189,62 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunitiesQuery(variables?: SchemaTypes.OpportunitiesQueryVariables) {
   return { query: OpportunitiesDocument, variables: variables };
+}
+export const OpportunityInfoDocument = gql`
+  query opportunityInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        ...OpportunityInfo
+      }
+    }
+  }
+  ${OpportunityInfoFragmentDoc}
+`;
+
+/**
+ * __useOpportunityInfoQuery__
+ *
+ * To run a query within a React component, call `useOpportunityInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityInfoQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>(
+    OpportunityInfoDocument,
+    options
+  );
+}
+export function useOpportunityInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>(
+    OpportunityInfoDocument,
+    options
+  );
+}
+export type OpportunityInfoQueryHookResult = ReturnType<typeof useOpportunityInfoQuery>;
+export type OpportunityInfoLazyQueryHookResult = ReturnType<typeof useOpportunityInfoLazyQuery>;
+export type OpportunityInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityInfoQuery,
+  SchemaTypes.OpportunityInfoQueryVariables
+>;
+export function refetchOpportunityInfoQuery(variables?: SchemaTypes.OpportunityInfoQueryVariables) {
+  return { query: OpportunityInfoDocument, variables: variables };
 }
 export const OpportunityActivityDocument = gql`
   query opportunityActivity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {

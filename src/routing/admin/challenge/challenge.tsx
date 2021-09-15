@@ -17,6 +17,7 @@ import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
+import { ChallengeProvider } from '../../../context/ChallengeProvider';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -33,7 +34,9 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
       <Route path={`${path}/:challengeId`}>
-        <ChallengeRoutes paths={currentPaths} />
+        <ChallengeProvider>
+          <ChallengeRoutes paths={currentPaths} />
+        </ChallengeProvider>
       </Route>
       <Route path="*">
         <FourOuFour />

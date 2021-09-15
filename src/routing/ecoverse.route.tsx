@@ -7,8 +7,10 @@ import { useUserContext } from '../hooks';
 import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../pages';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
-import CommunityRoute from './community';
 import ChallengeRoute from './challenge.route';
+import EcoverseCommunityPage from '../pages/community/EcoverseCommunityPage';
+import RestrictedRoute from './route.extensions';
+import { ChallengeProvider } from '../context/ChallengeProvider';
 
 export interface RouteParameters {
   ecoverseId: string;
@@ -56,11 +58,13 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path={`${path}/challenges/:challengeId`}>
-        <ChallengeRoute paths={currentPaths} challenges={challenges} />
+        <ChallengeProvider>
+          <ChallengeRoute paths={currentPaths} challenges={challenges} />
+        </ChallengeProvider>
       </Route>
-      <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} />
-      </Route>
+      <RestrictedRoute path={`${path}/community`}>
+        <EcoverseCommunityPage paths={currentPaths} />
+      </RestrictedRoute>
       <Route path={path}>
         <EcoverseApplyRoute paths={currentPaths} />
       </Route>

@@ -5,9 +5,10 @@ import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-route
 import { useEcoverse, useUserContext } from '../hooks';
 import { useOpportunityProfileQuery, useOpportunityUserIdsQuery } from '../hooks/generated/graphql';
 import Loading from '../components/core/Loading/Loading';
-import CommunityRoute from './community';
 import { Project } from './project';
-import { RouteParameters } from './ecoverse';
+import { RouteParameters } from './ecoverse.route';
+import OpportunityCommunityPage from '../pages/community/OpportunityCommunityPage';
+import RestrictedRoute from './route.extensions';
 
 interface OpportunityRootProps extends PageProps {
   opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
@@ -83,9 +84,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
           }}
         />
       </Route>
-      <Route path={`${path}/community`}>
-        <CommunityRoute paths={currentPaths} />
-      </Route>
+      <RestrictedRoute path={`${path}/community`}>
+        <OpportunityCommunityPage paths={currentPaths} />
+      </RestrictedRoute>
       <Route path={`${path}/projects`}>
         <Project paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
       </Route>

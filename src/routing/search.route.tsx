@@ -4,7 +4,7 @@ import { useTransactionScope } from '../hooks';
 import { FourOuFour } from '../pages';
 import { SearchPage } from '../pages/SearchPage';
 
-export const Search: FC = () => {
+export const SearchRoute: FC = () => {
   // const { t } = useTranslation();
 
   useTransactionScope({ type: 'connect(search)' });
