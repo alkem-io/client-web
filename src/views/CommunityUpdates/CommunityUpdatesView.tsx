@@ -30,6 +30,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useMarkdownInputField } from '../../components/Admin/Common/useMarkdownInputField';
+import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../components/core/Avatar';
 import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
@@ -98,6 +99,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const validationSchema = yup.object().shape({
     'community-update': yup.string(),
   });
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
   const [stubMessageId, setStubMessageId] = useState<string | null>(null);
   const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
@@ -154,7 +156,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
-                      text={t('components.communityUpdates.postAction')}
+                      text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
                       disabled={isSubmitting || removingMessage}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
@@ -192,7 +194,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
         {orderedMessages.map(m => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
-          const removed = removedMessageId === m.id;
+          const removed = removedMessageId === m.id && state.removingMessage;
           const member = memberMap[m.sender];
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
@@ -255,11 +257,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   {canRemove && (
                     <Tooltip title="Remove community update" placement="right">
                       <IconButton
-                        onClick={async () => {
-                          if (actions?.onRemove) {
-                            setRemovedMessageId(m.id);
-                            await actions?.onRemove(m.id);
-                          }
+                        onClick={() => {
+                          setRemovedMessageId(m.id);
+                          setShowConfirmationDialog(true);
                         }}
                       >
                         <DeleteOutlineIcon />
@@ -291,6 +291,23 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             <CircularProgress />
           </Grid>
         )}
+        <ConfirmationDialog
+          options={{ show: showConfirmationDialog }}
+          entities={{
+            titleId: 'components.communityUpdates.actions.remove.confirmationTitle',
+            contentId: 'components.communityUpdates.actions.remove.confirmationContent',
+            confirmButtonTextId: 'components.communityUpdates.actions.remove.confirmationButtonTitle',
+          }}
+          actions={{
+            onCancel: () => setShowConfirmationDialog(false),
+            onConfirm: () => {
+              setShowConfirmationDialog(false);
+              if (actions?.onRemove && removedMessageId) {
+                actions?.onRemove(removedMessageId);
+              }
+            },
+          }}
+        />
       </Grid>
     </>
   );
