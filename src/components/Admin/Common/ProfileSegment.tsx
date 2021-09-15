@@ -1,34 +1,36 @@
-import i18next from 'i18next';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useInputField } from './useInputField';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 
 export const profileSegmentSchema = yup.object().shape({
-  name: yup.string().required(i18next.t('forms.validations.required')),
-  nameID: yup
-    .string()
-    .required(i18next.t('forms.validations.required'))
-    .min(3, 'NameID should be at least 3 symbols long')
-    .max(25, 'Exceeded the limit of 25 characters')
-    .matches(/^\S*$/, 'nameID cannot contain spaces'),
+  avatar: yup.string().max(MID_TEXT_LENGTH),
+  description: yup.string().max(LONG_TEXT_LENGTH),
 });
 
 interface ProfileSegmentProps {
-  disabled: boolean;
-  required: boolean;
+  disabled?: boolean;
+  required?: boolean;
 }
 
-export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled, required }) => {
+export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, required = false }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
   return (
     <>
-      {getInputField({ name: 'name', label: t('components.profileSegment.name'), required: true })}
       {getInputField({
-        name: 'nameID',
-        label: t('components.profileSegment.nameID.title'),
-        placeholder: t('components.profileSegment.nameID.placeholder'),
+        name: 'avatar',
+        label: t('components.profileSegment.avatar.name'),
+        placeholder: t('components.profileSegment.avatar.placeholder'),
+        disabled: disabled,
+        required: required,
+      })}
+      {getInputField({
+        name: 'description',
+        label: t('components.profileSegment.description.name'),
+        placeholder: t('components.profileSegment.description.placeholder'),
+        rows: 3,
         disabled: disabled,
         required: required,
       })}

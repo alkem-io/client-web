@@ -1,0 +1,26 @@
+fragment ChallengeCard on Challenge {
+  id
+  displayName
+  nameID
+  activity {
+    name
+    value
+  }
+  context {
+    id
+    tagline
+    background
+    vision
+    impact
+    who
+    visual {
+      id
+      background
+    }
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+}

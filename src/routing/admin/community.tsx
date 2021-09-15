@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
-import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
 import { useDeleteUserGroup } from '../../hooks';
@@ -15,7 +15,7 @@ import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
-interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
+interface CommunityRouteProps extends WithOptionalMembersProps, WithCommunity {
   credential: CommunityCredentials;
   resourceId: string;
   accessedFrom: AccessedFrom;
@@ -62,7 +62,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   );
 };
 
-interface CommunityGroupsRouteProps extends WithParentMembersProps, WithCommunity {}
+interface CommunityGroupsRouteProps extends WithOptionalMembersProps, WithCommunity {}
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, community, parentMembers }) => {
   const { path, url } = useRouteMatch();

@@ -1,9 +1,10 @@
-import Grid from '@material-ui/core/Grid';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
+import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
@@ -24,14 +25,14 @@ import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySe
 import MembershipBackdrop from '../components/MembershipBackdrop';
 import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
 import {
-  useChallengesWithActivityQuery,
+  useChallengeCardsQuery,
   useEcoverseActivityQuery,
   useEcoverseVisualQuery,
   useProjectsChainHistoryQuery,
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
 import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
@@ -81,7 +82,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
     data: _challenges,
     error: challengesError,
     loading: isChallengeLoading,
-  } = useChallengesWithActivityQuery({
+  } = useChallengeCardsQuery({
     variables: { ecoverseId },
   });
   const challenges = (_challenges?.ecoverse?.challenges || []) as Challenge[];

@@ -40,25 +40,21 @@ interface ClassProps {
 interface AvatarContainerProps {
   className?: string;
   classes?: ClassProps;
-  title: string;
+  title?: string;
   itemsPerLine?: number;
   children: React.ReactNode[];
 }
 
-const AvatarContainer: FC<AvatarContainerProps> = ({
-  title = 'community members',
-  classes = {},
-  className,
-  children,
-  itemsPerLine = 10,
-}) => {
+const AvatarContainer: FC<AvatarContainerProps> = ({ title, classes = {}, className, children, itemsPerLine = 10 }) => {
   const styles = useAvatarStyles(classes);
 
   return (
     <div className={clsx(styles.container, className)}>
-      <Typography variant="caption" as="h4">
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="caption" as="h4">
+          {title}
+        </Typography>
+      )}
       <div className={clsx(styles.avatarContainer)}>
         {children.map((x, i) =>
           i + 1 === itemsPerLine ? (

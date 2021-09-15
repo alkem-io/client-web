@@ -33,7 +33,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   const notify = useNotification();
   const navigateToEdit = useNavigateToEdit();
   const [createTagset] = useCreateTagsetOnProfileMutation({
-    // Just log the error. Do not send it to the notification hanlder.
+    // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
     onError: error => logger.error(error.message),
   });
@@ -60,12 +60,25 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
   });
 
   const handleSubmit = async (editedOrganization: Organisation) => {
-    const { id: orgID, nameID, profile, ...rest } = editedOrganization;
+    const {
+      id: orgID,
+      nameID,
+      profile,
+      contactEmail,
+      displayName,
+      domain,
+      legalEntityName,
+      website,
+    } = editedOrganization;
 
     if (mode === EditMode.new) {
-      const organisationInput: CreateOrganisationInput = {
-        ...rest,
+      const input: CreateOrganisationInput = {
         nameID,
+        contactEmail: contactEmail,
+        displayName: displayName,
+        domain: domain,
+        legalEntityName: legalEntityName,
+        website: website,
         profileData: {
           avatar: profile.avatar,
           description: profile.description || '',
@@ -76,7 +89,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
       createOrganization({
         variables: {
-          input: organisationInput,
+          input: input,
         },
       });
     }
@@ -100,7 +113,12 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
       const organisationInput: UpdateOrganisationInput = {
         ID: orgID,
-        ...rest,
+        nameID,
+        contactEmail: contactEmail,
+        displayName: displayName,
+        domain: domain,
+        legalEntityName: legalEntityName,
+        website: website,
         profileData: {
           ID: profileId || '',
           avatar: profile.avatar,

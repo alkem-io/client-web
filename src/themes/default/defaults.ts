@@ -1,7 +1,10 @@
-import { createTheme, emphasize, SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
+import { createTheme, ThemeOptions } from '@material-ui/core';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
-import { buttonOverrides } from './overrides/button';
+import buttonOverrides from './overrides/button';
+import dialogOverrides from './overrides/dialog';
+import chipOverrides from './overrides/chip';
+import iconOverrides from './overrides/icon';
 
 const space = 10;
 
@@ -35,26 +38,9 @@ export const theme: ThemeOptions = {
 theme.overrides = {
   ...theme.overrides,
   ...buttonOverrides(theme),
-  MuiDialogContent: {
-    dividers: {
-      borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
-      borderBottomColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
-    },
-  },
-  MuiChip: {
-    colorPrimary: {
-      color: (theme?.palette?.neutralLight as SimplePaletteColorOptions).main,
-      fontWeight: 'bold',
-    },
-    deleteIconColorPrimary: {
-      color: (theme?.palette?.neutralLight as SimplePaletteColorOptions).main,
-
-      '&:hover': {
-        // coefficient from material UI code base for hover effects
-        color: emphasize((theme?.palette?.neutralLight as SimplePaletteColorOptions).main, 0.08),
-      },
-    },
-  },
+  ...dialogOverrides(theme),
+  ...chipOverrides(theme),
+  ...iconOverrides(theme),
 };
 
 declare module '@material-ui/core/styles/createTheme' {

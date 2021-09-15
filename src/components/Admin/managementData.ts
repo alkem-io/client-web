@@ -120,7 +120,8 @@ export const managementData = {
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Organisation admins', url: `/authorization/${AuthorizationCredential.OrganisationAdmin}` },
+        { description: 'Admins', url: '/authorization/admins' },
+        { description: 'Owners', url: '/authorization/owners' },
       ],
     },
   ],
