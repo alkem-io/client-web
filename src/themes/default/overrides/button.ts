@@ -3,7 +3,7 @@ import { SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
 import { TypeBackground } from '@material-ui/core/styles/createPalette';
 import hexToRGBA from '../../../utils/hexToRGBA';
 
-export const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
+const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
   if (!theme) {
     return undefined;
   }
@@ -116,3 +116,4 @@ export const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
     },
   };
 };
+export default buttonOverrides;

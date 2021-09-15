@@ -33,7 +33,7 @@ interface ClassProps {
 
 const useCardContainerStyles = createStyles<Theme, ClassProps>(theme => ({
   root: {
-    '& .ct-card': {
+    '& .alkemio-card': {
       height: (props: CardContainerProps) => {
         if (props.fullHeight) return '100%';
         return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.spacing(1.5)}px)`;

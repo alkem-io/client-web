@@ -253,7 +253,7 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.body, 'ct-card-body', className)}>{children}</div>;
+  return <div className={clsx(styles.body, 'alkemio-card-body', className)}>{children}</div>;
 };
 
 interface SectionProps {
@@ -263,7 +263,7 @@ interface SectionProps {
 }
 
 export const Section: FC<SectionProps> = ({ children, className }) => {
-  return <div className={clsx('ct-card-section', className)}>{children}</div>;
+  return <div className={clsx('alkemio-card-section', className)}>{children}</div>;
 };
 
 interface FooterProps {
@@ -273,7 +273,7 @@ interface FooterProps {
 }
 
 export const Footer: FC<FooterProps> = ({ children, className }) => {
-  return <div className={clsx('ct-card-footer', className)}>{children}</div>;
+  return <div className={clsx('alkemio-card-footer', className)}>{children}</div>;
 };
 
 export interface CardProps extends Record<string, unknown> {
@@ -345,7 +345,11 @@ const Card: FC<CardProps> = ({
   const isEcoverseLevel = level?.level === 'Ecoverse';
 
   return (
-    <div className={clsx(styles.root, onClick && styles.clickable, className, 'ct-card')} onClick={onClick} {...rest}>
+    <div
+      className={clsx(styles.root, onClick && styles.clickable, className, 'alkemio-card')}
+      onClick={onClick}
+      {...rest}
+    >
       {headerProps && <HeaderCaption {...headerProps} />}
 
       <Body {...bodyProps}>

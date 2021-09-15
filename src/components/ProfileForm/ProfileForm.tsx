@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
 import ContextReferenceSegment from '../Admin/Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from '../Admin/Common/ContextSegment';
-import { ProfileSegment, profileSegmentSchema } from '../Admin/Common/ProfileSegment';
+import { NameSegment, nameSegmentSchema } from '../Admin/Common/NameSegment';
 import { referenceSegmentSchema } from '../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Admin/Common/TagsetSegment';
 import { VisualSegment, visualSegmentSchema } from '../Admin/Common/VisualSegment';
@@ -77,8 +77,8 @@ const ProfileForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: contextOnly ? yup.string() : profileSegmentSchema.fields?.name || yup.string(),
-    nameID: contextOnly ? yup.string() : profileSegmentSchema.fields?.nameID || yup.string(),
+    name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
+    nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     background: contextSegmentSchema.fields?.background || yup.string(),
     impact: contextSegmentSchema.fields?.impact || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
@@ -109,7 +109,7 @@ const ProfileForm: FC<Props> = ({
 
         return (
           <>
-            {!contextOnly && <ProfileSegment disabled={isEdit} required={!isEdit} />}
+            {!contextOnly && <NameSegment disabled={isEdit} required={!isEdit} />}
             <ContextSegment />
 
             {!contextOnly && (

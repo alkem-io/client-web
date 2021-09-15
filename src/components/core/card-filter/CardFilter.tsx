@@ -33,6 +33,10 @@ const CardFilter = <T extends RequiredFields>({ data, children }: CardFilterProp
     setTerms(trimmedValues);
   };
 
+  if (!data.length) {
+    return <>{children(data)}</>;
+  }
+
   return (
     <Grid container spacing={2} direction="column" alignItems="center">
       <Grid container item xs={10}>

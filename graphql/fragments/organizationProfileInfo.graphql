@@ -2,6 +2,10 @@ fragment OrganizationProfileInfo on Organisation {
   id
   nameID
   displayName
+  contactEmail
+  domain
+  legalEntityName
+  website
   profile {
     id
     avatar

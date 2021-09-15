@@ -13,6 +13,8 @@ import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
+import OrganisationRoute from './organisation';
+import { OrganisationProvider } from '../context/OrganisationProvider';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -40,11 +42,13 @@ export const Routing: FC = () => {
         <Search />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
-        <div>User Page: Comming Soon!</div>
+        <div>User Page: Coming Soon!</div>
       </RestrictedRoute>
-      <RestrictedRoute path="/organisation">
-        <div>Organisation Page: Comming Soon!</div>
-      </RestrictedRoute>
+      <Route path="/organization/:organisationId">
+        <OrganisationProvider>
+          <OrganisationRoute paths={[]} />
+        </OrganisationProvider>
+      </Route>
       <RestrictedRoute exact path="/messages">
         <Messages />
       </RestrictedRoute>

@@ -6,6 +6,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       nameID
       displayName
       lifecycle {
+        id
         state
       }
       context {
@@ -13,11 +14,13 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       }
       community {
         members {
+          id
           displayName
         }
       }
 
       tagset {
+        id
         name
         tags
       }
@@ -37,6 +40,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           displayName
           description
           lifecycle {
+            id
             state
           }
         }
@@ -48,6 +52,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       leadOrganisations {
         id
         displayName
+        nameID
         profile {
           id
           avatar

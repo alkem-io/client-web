@@ -21,10 +21,16 @@ import ChallengeApplyRoute from './application/ChallengeApplyRoute';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import { Project } from './project';
 
+export interface RouteParameters {
+  ecoverseId: string;
+  challengeId: string;
+  opportunityId: string;
+}
+
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading, toEcoverseId } = useEcoverse();
 
   const { data: challenges, loading: challengesLoading } = useChallengesQuery({
     variables: { ecoverseId },
@@ -34,6 +40,15 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(
     () => (ecoverseInfo ? [...paths, { value: url, name: ecoverseInfo.ecoverse.displayName, real: true }] : paths),
     [paths, ecoverseInfo]
+  );
+  const { user } = useUserContext();
+
+  const isAdmin = useMemo(
+    () =>
+      user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
+      false,
+    [user, ecoverseId]
   );
 
   const loading = ecoverseLoading || challengesLoading;
@@ -49,10 +64,10 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        {!loading && <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} />}
+        <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
-      <Route path={`${path}/challenges/:id`}>
-        <Challenge paths={currentPaths} challenges={challenges} />
+      <Route path={`${path}/challenges/:challengeId`}>
+        <ChallengeRoute paths={currentPaths} challenges={challenges} />
       </Route>
       <Route path={path}>
         <EcoverseApplyRoute paths={currentPaths} />
@@ -68,11 +83,13 @@ interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
 }
 
-const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
-  const { ecoverseId } = useEcoverse();
+const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
+  const { ecoverseId, toEcoverseId } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { id } = useParams<{ id: string }>();
+  const { challengeId: id } = useParams<RouteParameters>();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
+
+  const { user } = useUserContext();
 
   // todo: you don't need opportunities selected here
   const { data: query, loading: challengeLoading } = useChallengeProfileQuery({
@@ -90,6 +107,15 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
     [paths, id, challenge]
   );
 
+  const isAdmin = useMemo(
+    () =>
+      user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
+      user?.isChallengeAdmin(challenge?.id || '') ||
+      false,
+    [user, ecoverseId, challenge]
+  );
+
   const loading = challengeLoading;
 
   if (loading) {
@@ -102,11 +128,11 @@ const Challenge: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
-      <Route path={`${path}/opportunities/:id`}>
-        <Opportunity opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
+      <Route path={`${path}/opportunities/:opportunityId`}>
+        <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
       </Route>
       <Route exact path={path}>
-        {!loading && <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} />}
+        <ChallengePage challenge={challenge as ChallengeType} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path={path}>
         <ChallengeApplyRoute paths={currentPaths} />
@@ -123,10 +149,10 @@ interface OpportunityRootProps extends PageProps {
   challengeUUID: string;
 }
 
-const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
+const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
-  const { id } = useParams<{ id: string }>();
+  const { opportunityId: id, challengeId } = useParams<RouteParameters>();
   const { user } = useUserContext();
   const { ecoverseId, toEcoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
@@ -174,6 +200,7 @@ const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], chal
     <Switch>
       <Route exact path={path}>
         <OpportunityPage
+          challengeId={challengeId}
           opportunity={opportunity as OpportunityType}
           users={users as User[] | undefined}
           paths={currentPaths}
@@ -182,6 +209,7 @@ const Opportunity: FC<OpportunityRootProps> = ({ paths, opportunities = [], chal
           }}
           // TODO [ATS]: More generic way of controlling the UI based on user credentials must be implemented
           permissions={{
+            edit: isAdmin,
             projectWrite: isAdmin,
             editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
             editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
