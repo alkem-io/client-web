@@ -460,6 +460,7 @@ export const UserAgentFragmentDoc = gql`
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
+    nameID
     displayName
     firstName
     lastName
@@ -7878,6 +7879,65 @@ export type UserAvatarsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserAvatarsQuery(variables?: SchemaTypes.UserAvatarsQueryVariables) {
   return { query: UserAvatarsDocument, variables: variables };
+}
+export const UserProfileDocument = gql`
+  query userProfile($input: UUID_NAMEID_EMAIL!) {
+    user(ID: $input) {
+      ...UserDetails
+      ...UserAgent
+    }
+    membershipUser(membershipData: { userID: $input }) {
+      id
+      ...UserMembershipDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+  ${UserAgentFragmentDoc}
+  ${UserMembershipDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUserProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserProfileQuery, SchemaTypes.UserProfileQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserProfileQuery, SchemaTypes.UserProfileQueryVariables>(
+    UserProfileDocument,
+    options
+  );
+}
+export function useUserProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserProfileQuery, SchemaTypes.UserProfileQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserProfileQuery, SchemaTypes.UserProfileQueryVariables>(
+    UserProfileDocument,
+    options
+  );
+}
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
+export type UserProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserProfileQuery,
+  SchemaTypes.UserProfileQueryVariables
+>;
+export function refetchUserProfileQuery(variables?: SchemaTypes.UserProfileQueryVariables) {
+  return { query: UserProfileDocument, variables: variables };
 }
 export const UsersDocument = gql`
   query users {

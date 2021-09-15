@@ -80,7 +80,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
               <Button
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push('/profile');
+                  history.push(`/user/${user.nameID}`);
                 }}
                 variant="transparent"
                 inset
