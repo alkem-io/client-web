@@ -14,10 +14,7 @@ import { getMainDefinition } from '@apollo/client/utilities';
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
-export const useGraphQLClient = (
-  graphQLEndpoint: string,
-  subscriptionsEndpoint: string
-): ApolloClient<NormalizedCacheObject> => {
+export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
     if (graphQLErrors) {
@@ -59,9 +56,9 @@ export const useGraphQLClient = (
     credentials: 'include',
   });
 
-  // TODO - fix build uri if correct protocol not provided
+  const wsUri = new URL(graphQLEndpoint, `ws://${window.location.hostname}:${window.location.port}`);
   const wsLink = new WebSocketLink({
-    uri: subscriptionsEndpoint,
+    uri: wsUri.toString(),
     options: {
       reconnect: true,
     },

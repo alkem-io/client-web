@@ -18,7 +18,6 @@ import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ScrollToTop from './routing/ScrollToTop';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
-const subscriptionsEndpoint = (env && env.REACT_APP_SUBSCRIPTIONS_ENDPOINT) || '/subscriptions';
 
 const useGlobalStyles = createStyles(theme => ({
   '@global': {
@@ -66,7 +65,7 @@ const Root: FC = () => {
             <GlobalStateProvider>
               <BrowserRouter>
                 <AuthenticationProvider>
-                  <AlkemioApolloProvider apiUrl={graphQLEndpoint} subscriptionsUrl={subscriptionsEndpoint}>
+                  <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
                     <NavigationProvider>
                       <UserProvider>
                         <App>
