@@ -18,7 +18,7 @@ export const typePolicies: TypedTypePolicies = {
   },
   Challenge: {
     fields: {
-      leadOrganisations: {
+      leadOrganizations: {
         merge: false,
       },
     },

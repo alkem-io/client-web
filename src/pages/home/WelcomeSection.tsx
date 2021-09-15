@@ -59,7 +59,7 @@ const WelcomeSection = () => {
     getActivityCount(globalActivity, 'challenges') || 0,
     getActivityCount(globalActivity, 'opportunities') || 0,
     getActivityCount(globalActivity, 'users') || 0,
-    getActivityCount(globalActivity, 'organisations') || 0,
+    getActivityCount(globalActivity, 'organizations') || 0,
   ];
   const summary: ActivityItem[] = useMemo(
     () => [
@@ -80,7 +80,7 @@ const WelcomeSection = () => {
         color: 'positive',
       },
       {
-        name: t('pages.activity.organisations'),
+        name: t('pages.activity.organizations'),
         digit: orgCount,
         color: 'positive',
       },

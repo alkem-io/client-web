@@ -13,8 +13,8 @@ import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
-import OrganisationRoute from './organisation';
-import { OrganisationProvider } from '../context/OrganisationProvider';
+import OrganizationRoute from './organization';
+import { OrganizationProvider } from '../context/OrganizationProvider';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -27,7 +27,7 @@ export const Routing: FC = () => {
         requiredCredentials={[
           AuthorizationCredential.GlobalAdmin,
           AuthorizationCredential.EcoverseAdmin,
-          AuthorizationCredential.OrganisationAdmin,
+          AuthorizationCredential.OrganizationAdmin,
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
         ]}
@@ -44,10 +44,10 @@ export const Routing: FC = () => {
       <RestrictedRoute path="/user">
         <div>User Page: Coming Soon!</div>
       </RestrictedRoute>
-      <Route path="/organization/:organisationId">
-        <OrganisationProvider>
-          <OrganisationRoute paths={[]} />
-        </OrganisationProvider>
+      <Route path="/organization/:organizationId">
+        <OrganizationProvider>
+          <OrganizationRoute paths={[]} />
+        </OrganizationProvider>
       </Route>
       <RestrictedRoute exact path="/messages">
         <Messages />

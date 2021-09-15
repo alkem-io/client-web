@@ -1,5 +1,5 @@
-mutation removeUserAsOrganisationOwner($input: RemoveOrganisationOwnerInput!) {
-  removeUserAsOrganisationOwner(membershipData: $input) {
+mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
+  removeUserAsOrganizationOwner(membershipData: $input) {
     id
     displayName
   }

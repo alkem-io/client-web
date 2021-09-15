@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Dialog from '@material-ui/core/Dialog';
-import { useMembershipOrganisationQuery, useOrganizationDetailsQuery } from '../../hooks/generated/graphql';
+import { useMembershipOrganizationQuery, useOrganizationDetailsQuery } from '../../hooks/generated/graphql';
 import { createStyles } from '../../hooks/useTheme';
 import Avatar from '../core/Avatar';
 import { Loading } from '../core';
@@ -17,7 +17,7 @@ import Tag from '../core/Tag';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 import Button from '../core/Button';
 import { Link } from 'react-router-dom';
-import { buildOrganisationUrl } from '../../utils/urlBuilders';
+import { buildOrganizationUrl } from '../../utils/urlBuilders';
 
 const groupPopUpStyles = createStyles(theme => ({
   header: {
@@ -101,21 +101,21 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
   const styles = groupPopUpStyles();
 
   const { data, loading: loadingOrg } = useOrganizationDetailsQuery({ variables: { id } });
-  const profile = data?.organisation?.profile;
-  const name = data?.organisation?.displayName;
-  const nameID = data?.organisation?.nameID;
+  const profile = data?.organization?.profile;
+  const name = data?.organization?.displayName;
+  const nameID = data?.organization?.nameID;
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
 
-  const { data: membership, loading: loadingMembership } = useMembershipOrganisationQuery({
+  const { data: membership, loading: loadingMembership } = useMembershipOrganizationQuery({
     variables: {
       input: {
-        organisationID: id,
+        organizationID: id,
       },
     },
   });
 
-  const ecoversesHosting = membership?.membershipOrganisation?.ecoversesHosting || [];
-  const challengesLeading = membership?.membershipOrganisation?.challengesLeading || [];
+  const ecoversesHosting = membership?.membershipOrganization?.ecoversesHosting || [];
+  const challengesLeading = membership?.membershipOrganization?.challengesLeading || [];
 
   return (
     <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">
@@ -197,7 +197,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
       </DialogContent>
       {nameID && (
         <DialogActions>
-          <Button variant="primary" text={t('buttons.explore')} as={Link} to={buildOrganisationUrl(nameID)} />
+          <Button variant="primary" text={t('buttons.explore')} as={Link} to={buildOrganizationUrl(nameID)} />
         </DialogActions>
       )}
     </Dialog>
