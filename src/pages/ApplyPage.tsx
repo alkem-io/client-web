@@ -168,7 +168,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                         <FormikInputField
                           key={i}
                           title={x.question}
-                          name={x.question}
+                          name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
                           rows={2}
                           multiline
                           required={x.required}

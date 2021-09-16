@@ -3216,13 +3216,12 @@ export const ChallengeApplicationDocument = gql`
           ...ContextDetails
         }
         community {
-          ...CommunityDetails
+          id
         }
       }
     }
   }
   ${ContextDetailsFragmentDoc}
-  ${CommunityDetailsFragmentDoc}
 `;
 
 /**

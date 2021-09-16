@@ -3,18 +3,19 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import { useChallengeApplicationQuery, useChallengeApplicationTemplateQuery } from '../../hooks/generated/graphql';
 import ApplyRoute from './ApplyRoute';
 import { PageProps } from '../../pages';
+import { buildChallengeUrl } from '../../utils/urlBuilders';
 
 interface Params {
   ecoverseId: string;
-  id: string;
+  challengeId: string;
 }
 
 interface Props extends PageProps {}
 
 const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
   const { path } = useRouteMatch();
-  const { ecoverseId, id: challengeId } = useParams<Params>();
-  const backUrl = `/${ecoverseId}/challenges/${challengeId}`;
+  const { ecoverseId, challengeId } = useParams<Params>();
+  const backUrl = buildChallengeUrl(ecoverseId, challengeId);
 
   /* todo: only community ID is needed */
   const {

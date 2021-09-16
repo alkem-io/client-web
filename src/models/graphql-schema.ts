@@ -3135,39 +3135,7 @@ export type ChallengeApplicationQuery = {
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
       }>;
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        displayName: string;
-        applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
-        members?: Maybe<
-          Array<{
-            __typename?: 'User';
-            id: string;
-            displayName: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-          }>
-        >;
-        groups?: Maybe<
-          Array<{
-            __typename?: 'UserGroup';
-            id: string;
-            name: string;
-            members?: Maybe<
-              Array<{
-                __typename?: 'User';
-                id: string;
-                displayName: string;
-                firstName: string;
-                lastName: string;
-                email: string;
-              }>
-            >;
-          }>
-        >;
-      }>;
+      community?: Maybe<{ __typename?: 'Community'; id: string }>;
     };
   };
 };

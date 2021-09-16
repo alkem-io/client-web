@@ -39,7 +39,8 @@
     "cancel-project": "Cancel project",
     "create-project": "Create project",
     "processing": "Processing...",
-    "details": "Details"
+    "details": "Details",
+    "member": "Member"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -180,6 +181,12 @@
     }
   },
   "components": {
+    "application-button": {
+      "dialog": {
+        "title": "Want to join the parent Ecoverse?",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> ecoverse first. Please add the challenge you want to join in the ecoverse's application form."
+      }
+    },
     "organisation-verified": {
       "verified": "Verified",
       "not-verified": "Not verified"

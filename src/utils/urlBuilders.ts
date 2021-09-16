@@ -1,3 +1,5 @@
+import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH } from '../models/constants';
+
 export const buildEcoverseUrl = (ecoverseNameId: string) => `/${ecoverseNameId}`;
 
 export const buildChallengeUrl = (ecoverseNameId: string, challengeNameId: string) =>
@@ -19,3 +21,14 @@ export const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId
 export const buildAdminOrganisationUrl = (organisationNameId: string) => `/admin/organizations/${organisationNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+
+export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
+  returnUrl ? `${AUTH_REQUIRED_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_REQUIRED_PATH;
+
+export const buildLoginUrl = (returnUrl?: string) =>
+  returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+
+export const buildEcoverseApplyUrl = (ecoverseNameId: string) => `${buildEcoverseUrl(ecoverseNameId)}/apply`;
+
+export const buildChallengeApplyUrl = (ecoverseNameId: string, challengeNameId) =>
+  `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/apply`;
