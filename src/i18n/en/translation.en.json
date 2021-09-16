@@ -39,7 +39,8 @@
     "cancel-project": "Cancel project",
     "create-project": "Create project",
     "processing": "Processing...",
-    "details": "Details"
+    "details": "Details",
+    "settings": "Settings"
   },
   "authentication": {
     "sign-in": "Sign in",

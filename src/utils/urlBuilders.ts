@@ -18,6 +18,13 @@ const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId: strin
 
 const buildAdminOrganisationUrl = (organisationNameId: string) => `/admin/organizations/${organisationNameId}`;
 
+const COMMUNITY_ROUTE = '/community';
+const buildEcoverseCommunityUrl = (ecoverseNameId: string) => buildEcoverseUrl(ecoverseNameId).concat(COMMUNITY_ROUTE);
+const buildChallengeCommunityUrl = (ecoverseNameId: string, challengeNameId: string) =>
+  buildChallengeUrl(ecoverseNameId, challengeNameId).concat(COMMUNITY_ROUTE);
+const buildOpportunityCommunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
+  buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
+
 export {
   buildEcoverseUrl,
   buildChallengeUrl,
@@ -27,4 +34,7 @@ export {
   buildAdminOpportunityUrl,
   buildOrganisationUrl,
   buildAdminOrganisationUrl,
+  buildEcoverseCommunityUrl,
+  buildChallengeCommunityUrl,
+  buildOpportunityCommunityUrl,
 };

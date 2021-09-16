@@ -1,0 +1,19 @@
+query community($communityId: UUID!) {
+  community(ID: $communityId) {
+    id
+    displayName
+    groups {
+      id
+      name
+    }
+    updatesRoom {
+      id
+      messages {
+        id
+        message
+        sender
+        timestamp
+      }
+    }
+  }
+}

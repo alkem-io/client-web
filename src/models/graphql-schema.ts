@@ -3833,6 +3833,31 @@ export type ChallengesQuery = {
   };
 };
 
+export type CommunityQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    groups?: Maybe<Array<{ __typename?: 'UserGroup'; id: string; name: string }>>;
+    updatesRoom?: Maybe<{
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    }>;
+  };
+};
+
 export type AllCommunitiesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
