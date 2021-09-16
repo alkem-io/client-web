@@ -37,14 +37,6 @@ const useUserProfileViewStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  verified: {
-    color: theme.palette.success.main,
-    borderColor: theme.palette.success.main,
-  },
-  notVerified: {
-    color: theme.palette.warning.main,
-    borderColor: theme.palette.warning.main,
-  },
 }));
 
 const defaultOptions: UserProfileViewProps['options'] = {
