@@ -25,7 +25,7 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
   if (!userMetadata) return <FourOuFour />;
 
   const options: UserProfileViewProps['options'] = {
-    isCurrentUser: currentUser?.user.nameID === userId,
+    isCurrentUser: currentUser?.user.id === userMetadata.user.id,
   };
 
   return <UserProfileView entities={{ userMetadata, verified }} options={options} />;

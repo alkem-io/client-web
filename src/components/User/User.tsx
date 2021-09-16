@@ -72,7 +72,6 @@ const User = forwardRef<unknown, UserProps>(
         onClick={onClick}
         className={clsx(styles.flex, styles.center, styles.horizontal, reverseLayout && styles.reversedLayout)}
         style={{ cursor: 'pointer' }}
-        // to="/profile"
       >
         <Avatar size={size} src={src} ref={ref as any} />
         <div

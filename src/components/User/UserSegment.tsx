@@ -11,6 +11,7 @@ import Typography from '../core/Typography';
 import User from './User';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -80,7 +81,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
               <Button
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push(`/user/${user.nameID}`);
+                  history.push(buildUserProfileUrl(user.nameID));
                 }}
                 variant="transparent"
                 inset
