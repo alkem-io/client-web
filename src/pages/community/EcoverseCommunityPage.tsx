@@ -3,7 +3,7 @@ import { PageProps } from '../common';
 import CommunityPage from './CommunityPage';
 import { useEcoverse, useUserContext } from '../../hooks';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
-import { AuthorizationCredential, Organisation } from '../../models/graphql-schema';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 
 const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
   const { user: userMetadata } = useUserContext();
@@ -29,7 +29,7 @@ const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
   );
 
   const membershipTitle = 'Ecoverse host';
-  const ecoverseHost = ecoverse?.host as Organisation | undefined;
+  const ecoverseHostId = ecoverse?.host?.id;
 
   return (
     <CommunityPage
@@ -37,7 +37,7 @@ const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
       parentDisplayName={displayName}
       parentTagline={tagline}
       membershipTitle={membershipTitle}
-      ecoverseHost={ecoverseHost}
+      ecoverseHostId={ecoverseHostId}
       permissions={{ edit: isAdmin }}
       settingsUrl={settingsUrl}
       paths={paths}

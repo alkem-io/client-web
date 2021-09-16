@@ -3,7 +3,7 @@ import { ReactComponent as BuildingIcon } from 'bootstrap-icons/icons/building.s
 import { ReactComponent as PersonBoundingBoxIcon } from 'bootstrap-icons/icons/person-bounding-box.svg';
 import { ReactComponent as ChatDotsIcon } from 'bootstrap-icons/icons/chat-dots.svg';
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
+import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
@@ -12,20 +12,32 @@ import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
 import { Organisation, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
-import { useCommunityQuery } from '../../hooks/generated/graphql';
+import { useCommunityQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import UserGroupCard from '../../components/composite/common/user-group-card/UserGroupCard';
 import { CardContainer } from '../../components/core/CardContainer';
 import { Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
+import { buildOrganisationUrl } from '../../utils/urlBuilders';
+import { Image } from '../../components/core/Image';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
+const useStyles = makeStyles(() => ({
+  bannerImg: {
+    maxWidth: 200,
+    height: 'initial',
+    margin: '0 auto',
+  },
+}));
 
 interface Props extends PageProps {
   communityId?: string;
   parentDisplayName?: string;
   parentTagline?: string;
   membershipTitle?: string;
-  ecoverseHost?: Organisation;
+  ecoverseHostId?: string;
   leadingOrganizations?: Organisation[];
   settingsUrl?: string;
   permissions: {
@@ -39,9 +51,11 @@ const CommunityPage: FC<Props> = ({
   membershipTitle,
   parentDisplayName,
   parentTagline,
+  ecoverseHostId = '',
   settingsUrl = '',
   permissions,
 }) => {
+  const styles = useStyles();
   const { url } = useRouteMatch();
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
@@ -56,6 +70,12 @@ const CommunityPage: FC<Props> = ({
   const updates = community?.updatesRoom?.messages || [];
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as User[];
+
+  const { data: _orgProfile } = useOrganizationProfileInfoQuery({
+    variables: { id: ecoverseHostId },
+    skip: !ecoverseHostId,
+  });
+  const hostOrganization = _orgProfile?.organisation;
 
   if (loading) {
     return <Loading />;
@@ -73,9 +93,29 @@ const CommunityPage: FC<Props> = ({
         <SubHeader text={parentTagline} />
       </Section>
       <Divider />
-      <Section avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}>
+      <Section
+        avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
+        details={
+          hostOrganization ? (
+            <Link component={RouterLink} to={buildOrganisationUrl(hostOrganization.nameID)}>
+              <Image
+                src={hostOrganization.profile?.avatar}
+                alt={`${hostOrganization.displayName} logo`}
+                className={styles.bannerImg}
+              />
+            </Link>
+          ) : (
+            <div />
+          )
+        }
+      >
         <SectionHeader text={membershipTitle} />
-        <Body>{/*todo eco host & challenge leads here*/}</Body>
+        {hostOrganization && (
+          <>
+            <SubHeader text={hostOrganization.displayName} />
+            <Body>{hostOrganization.profile?.description}</Body>
+          </>
+        )}
       </Section>
       <Divider />
       <Section avatar={<Icon component={PersonBoundingBoxIcon} color="primary" size="xl" />}>
