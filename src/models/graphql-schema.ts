@@ -2332,11 +2332,13 @@ export type OrganisationDetailsFragment = {
   __typename?: 'Organisation';
   id: string;
   displayName: string;
+  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
     avatar?: Maybe<string>;
-    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; tags: Array<string> }>>;
+    description?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
   };
 };
 
@@ -3589,11 +3591,13 @@ export type ChallengeLeadOrganisationsQuery = {
         __typename?: 'Organisation';
         id: string;
         displayName: string;
+        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           avatar?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; tags: Array<string> }>>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
         };
       }>;
     };
@@ -3602,11 +3606,13 @@ export type ChallengeLeadOrganisationsQuery = {
     __typename?: 'Organisation';
     id: string;
     displayName: string;
+    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
       avatar?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; tags: Array<string> }>>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
     };
   }>;
 };

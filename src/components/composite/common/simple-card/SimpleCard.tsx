@@ -3,12 +3,12 @@ import React, { FC, useMemo } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import { Box } from '@material-ui/core';
-import Card from '../../../core/Card';
 import hexToRGBA from '../../../../utils/hexToRGBA';
-import TagContainer from '../../../core/TagContainer';
+import ConditionalLink from '../../../core/ConditionalLink';
+import Card from '../../../core/Card';
 import Tag from '../../../core/Tag';
 import Typography from '../../../core/Typography';
-import ConditionalLink from '../../../core/ConditionalLink';
+import TagContainer from '../../../core/TagContainer';
 
 const useStyles = makeStyles(theme => ({
   relative: {
@@ -46,7 +46,9 @@ interface Props {
   url?: string;
 }
 
-const UserGroupCard: FC<Props> = ({ title, description, tags = [], url = '' }) => {
+export const RECOMMENDED_HEIGHT = 290;
+
+const SimpleCard: FC<Props> = ({ title, description, tags = [], url = '' }) => {
   const styles = useStyles();
 
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
@@ -101,4 +103,4 @@ const UserGroupCard: FC<Props> = ({ title, description, tags = [], url = '' }) =
     </div>
   );
 };
-export default UserGroupCard;
+export default SimpleCard;

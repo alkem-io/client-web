@@ -10,11 +10,10 @@ import { useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { Organisation, User } from '../../models/graphql-schema';
+import { OrganisationDetailsFragment, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
 import { useCommunityQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
-import UserGroupCard from '../../components/composite/common/user-group-card/UserGroupCard';
 import { CardContainer } from '../../components/core/CardContainer';
 import { Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
@@ -23,6 +22,7 @@ import Link from '@material-ui/core/Link';
 import { buildOrganisationUrl } from '../../utils/urlBuilders';
 import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -38,7 +38,7 @@ interface Props extends PageProps {
   parentTagline?: string;
   membershipTitle?: string;
   ecoverseHostId?: string;
-  leadingOrganizations?: Organisation[];
+  leadingOrganizations?: OrganisationDetailsFragment[];
   settingsUrl?: string;
   permissions: {
     edit: boolean;
@@ -52,6 +52,7 @@ const CommunityPage: FC<Props> = ({
   parentDisplayName,
   parentTagline,
   ecoverseHostId = '',
+  leadingOrganizations,
   settingsUrl = '',
   permissions,
 }) => {
@@ -92,31 +93,49 @@ const CommunityPage: FC<Props> = ({
         />
         <SubHeader text={parentTagline} />
       </Section>
-      <Divider />
-      <Section
-        avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
-        details={
-          hostOrganization ? (
-            <Link component={RouterLink} to={buildOrganisationUrl(hostOrganization.nameID)}>
-              <Image
-                src={hostOrganization.profile?.avatar}
-                alt={`${hostOrganization.displayName} logo`}
-                className={styles.bannerImg}
-              />
-            </Link>
-          ) : (
-            <div />
-          )
-        }
-      >
-        <SectionHeader text={membershipTitle} />
-        {hostOrganization && (
-          <>
-            <SubHeader text={hostOrganization.displayName} />
-            <Body>{hostOrganization.profile?.description}</Body>
-          </>
-        )}
-      </Section>
+      {(hostOrganization || leadingOrganizations) && (
+        <>
+          <Divider />
+          <Section
+            avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
+            details={
+              hostOrganization ? (
+                <Link component={RouterLink} to={buildOrganisationUrl(hostOrganization.nameID)}>
+                  <Image
+                    src={hostOrganization.profile?.avatar}
+                    alt={`${hostOrganization.displayName} logo`}
+                    className={styles.bannerImg}
+                  />
+                </Link>
+              ) : (
+                <div />
+              )
+            }
+          >
+            <SectionHeader text={membershipTitle} />
+            {hostOrganization && (
+              <>
+                <SubHeader text={hostOrganization.displayName} />
+                <Body>{hostOrganization.profile?.description}</Body>
+              </>
+            )}
+          </Section>
+        </>
+      )}
+      {leadingOrganizations && (
+        <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
+          {leadingOrganizations.map(({ displayName, nameID, profile }, i) => (
+            <SimpleCard
+              key={i}
+              title={displayName}
+              avatar={profile?.avatar}
+              description={profile?.description}
+              tags={profile?.tagsets?.flatMap(y => y.tags)}
+              url={buildOrganisationUrl(nameID)}
+            />
+          ))}
+        </CardContainer>
+      )}
       <Divider />
       <Section avatar={<Icon component={PersonBoundingBoxIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.user-groups')} />
@@ -126,9 +145,9 @@ const CommunityPage: FC<Props> = ({
           {t('pages.community.no-user-groups')}
         </Typography>
       )}
-      <CardContainer cardHeight={290}>
+      <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
         {groups.map(({ id, name, profile }, i) => (
-          <UserGroupCard
+          <SimpleCard
             key={i}
             title={name}
             avatar={profile?.avatar}

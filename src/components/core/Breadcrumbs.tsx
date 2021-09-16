@@ -1,7 +1,7 @@
 import React, { FC, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Path } from '../../context/NavigationProvider';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import Typography from './Typography';
 
 const useBreadcrumbStyles = createStyles(theme => ({
@@ -10,6 +10,7 @@ const useBreadcrumbStyles = createStyles(theme => ({
       textDecoration: 'none',
       color: theme.palette.primary.main,
     },
+    textDecoration: 'none',
   },
   spacer: {
     paddingLeft: theme.spacing(1),

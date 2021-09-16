@@ -417,10 +417,13 @@ export const OrganisationDetailsFragmentDoc = gql`
   fragment OrganisationDetails on Organisation {
     id
     displayName
+    nameID
     profile {
       id
       avatar
+      description
       tagsets {
+        id
         tags
       }
     }
