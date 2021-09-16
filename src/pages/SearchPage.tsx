@@ -154,9 +154,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('search.route.tsx.header')} />
+        <SectionHeader text={t('search.header')} />
         <Box marginBottom={2}>
-          <SubHeader text={t('search.route.tsx.alternativesubheader')} />
+          <SubHeader text={t('search.alternativesubheader')} />
         </Box>
         <MultipleSelect
           label={'search for skills'}
