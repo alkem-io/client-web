@@ -16,6 +16,14 @@ query community($communityId: UUID!) {
         }
       }
     }
+    members {
+      id
+      displayName
+      profile {
+        id
+        avatar
+      }
+    }
     updatesRoom {
       id
       messages {

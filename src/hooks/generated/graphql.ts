@@ -4622,6 +4622,14 @@ export const CommunityDocument = gql`
           }
         }
       }
+      members {
+        id
+        displayName
+        profile {
+          id
+          avatar
+        }
+      }
       updatesRoom {
         id
         messages {

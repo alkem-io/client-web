@@ -3863,6 +3863,14 @@ export type CommunityQuery = {
         }>;
       }>
     >;
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
+      }>
+    >;
     updatesRoom?: Maybe<{
       __typename?: 'CommunityRoom';
       id: string;

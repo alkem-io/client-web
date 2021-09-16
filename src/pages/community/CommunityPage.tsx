@@ -10,13 +10,15 @@ import { useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { Organisation } from '../../models/graphql-schema';
+import { Organisation, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
 import { useCommunityQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import UserGroupCard from '../../components/composite/common/user-group-card/UserGroupCard';
 import { CardContainer } from '../../components/core/CardContainer';
 import { Typography } from '@material-ui/core';
+import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
+import Box from '@material-ui/core/Box';
 
 interface Props extends PageProps {
   communityId?: string;
@@ -51,7 +53,9 @@ const CommunityPage: FC<Props> = ({
   });
   const community = data?.community;
   const groups = community?.groups || [];
-  // const updates = community?.updatesRoom?.messages || [];
+  const updates = community?.updatesRoom?.messages || [];
+  const hasUpdates = updates && updates.length > 0;
+  const members = (community?.members || []) as User[];
 
   if (loading) {
     return <Loading />;
@@ -97,8 +101,32 @@ const CommunityPage: FC<Props> = ({
       <Divider />
       <Section avatar={<Icon component={ChatDotsIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.updates')} />
-        <Body>{/*todo updates*/}</Body>
       </Section>
+      {!hasUpdates && (
+        <Typography align={'center'} variant={'subtitle1'}>
+          {t('pages.community.no-updates')}
+        </Typography>
+      )}
+      {hasUpdates && (
+        <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
+          <CommunityUpdatesView
+            entities={{
+              members: members,
+              messages: updates,
+            }}
+            options={{
+              hideHeaders: true,
+              itemsPerRow: 1,
+              disableElevation: true,
+              disableCollapse: true,
+            }}
+            state={{
+              loadingMessages: false,
+              submittingMessage: false,
+            }}
+          />
+        </Box>
+      )}
       <Divider />
     </>
   );
