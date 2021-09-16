@@ -85,6 +85,10 @@
       "male": "male",
       "female": "female"
     },
+    "verified-status": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "enums": {
       "authorization-credentials": {
         "GlobalAdmin": {
@@ -518,6 +522,9 @@
         }
       }
     },
+    "community": {
+      "no-user-groups": "There are no user groups"
+    },
     "login": {
       "title": "Sign in",
       "validations": {
@@ -530,7 +537,7 @@
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for multi stakeholder collaboration",
+      "description": "Leading the way in 21st century style collaboration and governance, Alkemio facilitates ecoverses for multi stakeholder collaboration",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
@@ -612,7 +619,10 @@
       }
     },
     "user-profile": {
-      "email-not-verified": " Please verify your <l>email</l>."
+      "email-not-verified": " Please verify your <l>email</l>.",
+      "tooltips": {
+        "settings": "User profile settings"
+      }
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",

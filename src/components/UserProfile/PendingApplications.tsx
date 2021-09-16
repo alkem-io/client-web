@@ -33,9 +33,10 @@ const useStyles = createStyles(theme => ({
 
 interface Props {
   user?: User;
+  canEdit?: boolean;
 }
 
-const PendingApplications: FC<Props> = ({ user }) => {
+const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
   const userId = user?.id || '';
 
   const styles = useStyles();
@@ -75,9 +76,11 @@ const PendingApplications: FC<Props> = ({ user }) => {
             </Typography>
             <Box display="flex" alignItems={'center'}>
               <Tag text={x.state} color="neutralMedium" />
-              <IconButton onClick={() => handleDelete(x.id)}>
-                <Icon component={Trash} color="negative" size={'md'} />
-              </IconButton>
+              {canEdit && (
+                <IconButton onClick={() => handleDelete(x.id)}>
+                  <Icon component={Trash} color="negative" size={'md'} />
+                </IconButton>
+              )}
             </Box>
           </div>
         ))}

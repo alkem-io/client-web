@@ -5,6 +5,16 @@ query community($communityId: UUID!) {
     groups {
       id
       name
+      profile {
+        id
+        avatar
+        description
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
     }
     updatesRoom {
       id

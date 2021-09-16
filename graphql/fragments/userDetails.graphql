@@ -1,5 +1,6 @@
 fragment UserDetails on User {
   id
+  nameID
   displayName
   firstName
   lastName
