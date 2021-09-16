@@ -1,18 +1,21 @@
 import { ReactComponent as CheckCircle } from 'bootstrap-icons/icons/check-circle.svg';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
-import { Box } from '@material-ui/core';
+import { Box, Link } from '@material-ui/core';
+import { useUserContext } from '../../hooks';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 interface RegistrationSuccessPageProps {}
 
 export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { t } = useTranslation();
+  const { user } = useUserContext();
 
   return (
     <AuthenticationLayout>
@@ -28,14 +31,14 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
         <ul>
           <li>
             The key next step is to complete your{' '}
-            <Link to={'/profile'}>
+            <Link component={RouterLink} to={buildUserProfileUrl(user?.user.nameID || '')}>
               <strong>profile:</strong>
             </Link>{' '}
             This makes it easier for others to find you, and your profile is also used when applying to join
             communities.
           </li>
           <li>
-            <Link to={'/'}>
+            <Link component={RouterLink} to={'/'}>
               <strong>Browse:</strong>
             </Link>{' '}
             Review the set of hosted Ecoverses , as well as the Challenges within each Ecoverse.
@@ -45,7 +48,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
             and provided information.
           </li>
           <li>
-            <Link to={'/search'}>
+            <Link component={RouterLink} to={'/search'}>
               <strong>Search</strong>
             </Link>{' '}
             for relevant Challenges, Users and Organisations.
@@ -61,7 +64,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
             contribute to and apply to join them.
           </li>
           <li>
-            <Link to={'/search'}>
+            <Link component={RouterLink} to={'/search'}>
               <strong>Connect to other members.</strong>
             </Link>
           </li>
