@@ -74,6 +74,10 @@
     "projects": "Projects",
     "group": "Group",
     "groups": "Groups",
+    "user-group": "User group",
+    "user-groups": "User groups",
+    "update": "Update",
+    "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
     "genders": {
