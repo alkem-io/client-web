@@ -38,6 +38,10 @@ import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema'
 import getActivityCount from '../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -254,7 +258,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             </Grid>
           </Grid>
         ) : (
-          <CardFilter data={challenges}>
+          <CardFilter data={challenges} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
             {filteredData => (
               <CardContainer>
                 {filteredData.map((challenge, i) => (

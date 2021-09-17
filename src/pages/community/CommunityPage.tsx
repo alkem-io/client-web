@@ -10,19 +10,24 @@ import { useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { OrganisationDetailsFragment, User } from '../../models/graphql-schema';
+import { CommunityPageMembersFragment, OrganisationDetailsFragment, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
-import { useCommunityQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
+import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import { CardContainer } from '../../components/core/CardContainer';
 import { Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
-import { buildOrganisationUrl } from '../../utils/urlBuilders';
+import { buildOrganisationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
+import CardFilter from '../../components/core/card-filter/CardFilter';
+import {
+  userTagsValueGetter,
+  userValueGetter,
+} from '../../components/core/card-filter/value-getters/user-value-getter';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -62,7 +67,7 @@ const CommunityPage: FC<Props> = ({
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { data, loading } = useCommunityQuery({
+  const { data, loading } = useCommunityPageQuery({
     variables: { communityId },
     skip: !communityId,
   });
@@ -70,7 +75,7 @@ const CommunityPage: FC<Props> = ({
   const groups = community?.groups || [];
   const updates = community?.updatesRoom?.messages || [];
   const hasUpdates = updates && updates.length > 0;
-  const members = (community?.members || []) as User[];
+  const members = (community?.members || []) as CommunityPageMembersFragment[];
 
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
@@ -93,9 +98,29 @@ const CommunityPage: FC<Props> = ({
         />
         <SubHeader text={parentTagline} />
       </Section>
+      <Divider />
+      <Section>
+        <SectionHeader text={t('common.users')} />
+      </Section>
+      <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+        {filteredData => (
+          <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
+            {filteredData.map(({ displayName, nameID, profile }, i) => (
+              <SimpleCard
+                key={i}
+                title={displayName}
+                avatar={profile?.avatar}
+                description={profile?.description}
+                tags={profile?.tagsets?.flatMap(y => y.tags)}
+                url={buildUserProfileUrl(nameID)}
+              />
+            ))}
+          </CardContainer>
+        )}
+      </CardFilter>
+      <Divider />
       {(hostOrganization || leadingOrganizations) && (
         <>
-          <Divider />
           <Section
             avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
             details={
@@ -120,6 +145,7 @@ const CommunityPage: FC<Props> = ({
               </>
             )}
           </Section>
+          <Divider />
         </>
       )}
       {leadingOrganizations && (
@@ -136,7 +162,6 @@ const CommunityPage: FC<Props> = ({
           ))}
         </CardContainer>
       )}
-      <Divider />
       <Section avatar={<Icon component={PersonBoundingBoxIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.user-groups')} />
       </Section>
@@ -170,7 +195,7 @@ const CommunityPage: FC<Props> = ({
         <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
           <CommunityUpdatesView
             entities={{
-              members: members,
+              members: members as User[],
               messages: updates,
             }}
             options={{

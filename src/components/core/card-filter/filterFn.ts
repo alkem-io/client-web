@@ -1,10 +1,20 @@
 import { RequiredFields } from './CardFilter';
 
-type FilterMapType<T> = {
-  [key: string]: T;
+export type ValueType = {
+  id: string;
+  values: string[];
 };
 
-export default function filterFn<T extends RequiredFields>(data: T[], terms: string[]): T[] {
+type FlatValueType = {
+  id: string;
+  value: string;
+};
+
+export default function filterFn<T extends RequiredFields>(
+  data: T[],
+  terms: string[],
+  valueGetter: (data: T) => ValueType
+): T[] {
   if (!data.length) {
     return [];
   }
@@ -17,35 +27,15 @@ export default function filterFn<T extends RequiredFields>(data: T[], terms: str
   const toRegex = (pattern: string) => new RegExp(`\\b${pattern}\\b`, 'gi');
   const termsRegex = terms.map(toRegex);
 
-  const result: T[] = [];
+  const valueTypes = data.map(valueGetter);
+  const flatValueType = valueTypes.map(toFlatValueType);
 
-  result.push(...data.filter(item => termsRegex.some(term => item.displayName.search(term) !== -1)));
-  result.push(
-    ...data.filter(
-      item => item?.tagset?.tags && termsRegex.some(term => item?.tagset?.tags.find(tag => tag.search(term) !== -1))
-    )
-  );
-  result.push(
-    ...data.filter(
-      item => item?.context?.tagline && termsRegex.some(term => item?.context?.tagline?.search(term) !== -1)
-    )
-  );
-  result.push(
-    ...data.filter(
-      item => item?.context?.background && termsRegex.some(term => item?.context?.background?.search(term) !== -1)
-    )
-  );
-  result.push(
-    ...data.filter(item => item?.context?.impact && termsRegex.some(term => item?.context?.impact?.search(term) !== -1))
-  );
-  result.push(
-    ...data.filter(item => item?.context?.vision && termsRegex.some(term => item?.context?.vision?.search(term) !== -1))
-  );
-  result.push(
-    ...data.filter(item => item?.context?.who && termsRegex.some(term => item?.context?.who?.search(term) !== -1))
-  );
+  const result = flatValueType.filter(({ value }) => termsRegex.some(term => value.search(term) !== -1));
 
-  const resultsMap = result.reduce<FilterMapType<T>>((map, x) => ({ ...map, [x.id]: x }), {});
-
-  return Object.values<T>(resultsMap);
+  return data.filter(({ id: dataId }) => result.some(({ id: resultId }) => resultId === dataId));
 }
+
+const toFlatValueType = ({ id, values }: ValueType): FlatValueType => ({
+  id,
+  value: values.filter(x => x).join(' '),
+});

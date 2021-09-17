@@ -2109,6 +2109,23 @@ export type MessageDetailsFragment = {
   timestamp: number;
 };
 
+export type CommunityPageMembersFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  country: string;
+  city: string;
+  email: string;
+  profile?: Maybe<{
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    description?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+  }>;
+};
+
 export type ConfigurationFragment = {
   __typename?: 'Config';
   authentication: {
@@ -3845,52 +3862,6 @@ export type ChallengesQuery = {
   };
 };
 
-export type CommunityQueryVariables = Exact<{
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityQuery = {
-  __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
-    id: string;
-    displayName: string;
-    groups?: Maybe<
-      Array<{
-        __typename?: 'UserGroup';
-        id: string;
-        name: string;
-        profile?: Maybe<{
-          __typename?: 'Profile';
-          id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
-        }>;
-      }>
-    >;
-    members?: Maybe<
-      Array<{
-        __typename?: 'User';
-        id: string;
-        displayName: string;
-        profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
-      }>
-    >;
-    updatesRoom?: Maybe<{
-      __typename?: 'CommunityRoom';
-      id: string;
-      messages: Array<{
-        __typename?: 'CommunicationMessageResult';
-        id: string;
-        message: string;
-        sender: string;
-        timestamp: number;
-      }>;
-    }>;
-  };
-};
-
 export type AllCommunitiesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
@@ -4203,6 +4174,62 @@ export type OpportunityCommunityQuery = {
         >;
       }>;
     };
+  };
+};
+
+export type CommunityPageQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityPageQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    groups?: Maybe<
+      Array<{
+        __typename?: 'UserGroup';
+        id: string;
+        name: string;
+        profile?: Maybe<{
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+        }>;
+      }>
+    >;
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        country: string;
+        city: string;
+        email: string;
+        profile?: Maybe<{
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        }>;
+      }>
+    >;
+    updatesRoom?: Maybe<{
+      __typename?: 'CommunityRoom';
+      id: string;
+      messages: Array<{
+        __typename?: 'CommunicationMessageResult';
+        id: string;
+        message: string;
+        sender: string;
+        timestamp: number;
+      }>;
+    }>;
   };
 };
 

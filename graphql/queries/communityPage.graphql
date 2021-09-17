@@ -1,4 +1,4 @@
-query community($communityId: UUID!) {
+query communityPage($communityId: UUID!) {
   community(ID: $communityId) {
     id
     displayName
@@ -17,12 +17,7 @@ query community($communityId: UUID!) {
       }
     }
     members {
-      id
-      displayName
-      profile {
-        id
-        avatar
-      }
+      ...CommunityPageMembers
     }
     updatesRoom {
       id

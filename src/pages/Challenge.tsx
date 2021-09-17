@@ -33,6 +33,10 @@ import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { buildAdminChallengeUrl, buildOrganisationUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -287,7 +291,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
-      <CardFilter data={opportunities}>
+      <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
         {filteredData => (
           <CardContainer>
             {filteredData.map((opp, i) => (
