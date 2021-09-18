@@ -9,10 +9,10 @@ import { Admin } from './admin/admin';
 import { IdentityRoute } from './identity/identity';
 import { EcoverseRoute } from './ecoverse';
 import { Messages } from './messages';
-import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
+import { UserRoute } from './user/user';
 import OrganizationRoute from './organization';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 
@@ -42,7 +42,7 @@ export const Routing: FC = () => {
         <Search />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
-        <div>User Page: Coming Soon!</div>
+        <UserRoute />
       </RestrictedRoute>
       <Route path="/organization/:organizationId">
         <OrganizationProvider>
@@ -51,9 +51,6 @@ export const Routing: FC = () => {
       </Route>
       <RestrictedRoute exact path="/messages">
         <Messages />
-      </RestrictedRoute>
-      <RestrictedRoute path="/profile">
-        <ProfileRoute />
       </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />

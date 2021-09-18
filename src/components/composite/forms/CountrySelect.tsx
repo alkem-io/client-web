@@ -30,6 +30,7 @@ export const CountrySelect: FC<CountrySelectProps> = ({
       onChange={(event, newValue) => {
         helper.setValue(newValue);
       }}
+      disabled={readOnly}
       renderInput={params => (
         <TextField
           {...params}

@@ -80,6 +80,10 @@
       "male": "male",
       "female": "female"
     },
+    "verified-status": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "enums": {
       "authorization-credentials": {
         "GlobalAdmin": {
@@ -607,7 +611,10 @@
       }
     },
     "user-profile": {
-      "email-not-verified": " Please verify your <l>email</l>."
+      "email-not-verified": " Please verify your <l>email</l>.",
+      "tooltips": {
+        "settings": "User profile settings"
+      }
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",

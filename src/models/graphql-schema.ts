@@ -2351,6 +2351,7 @@ export type UserAgentFragment = {
 export type UserDetailsFragment = {
   __typename?: 'User';
   id: string;
+  nameID: string;
   displayName: string;
   firstName: string;
   lastName: string;
@@ -2599,6 +2600,7 @@ export type CreateUserMutation = {
   createUser: {
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -2630,6 +2632,7 @@ export type CreateUserNewRegistrationMutation = {
   createUserNewRegistration: {
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -3057,6 +3060,7 @@ export type UpdateUserMutation = {
   updateUser: {
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -3367,6 +3371,7 @@ export type UserCardQuery = {
   user: {
     __typename: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -4329,6 +4334,7 @@ export type MeQuery = {
   me: {
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -5110,6 +5116,7 @@ export type UserQuery = {
   user: {
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;
@@ -5172,6 +5179,65 @@ export type UserAvatarsQuery = {
   }>;
 };
 
+export type UserProfileQueryVariables = Exact<{
+  input: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserProfileQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    gender: string;
+    country: string;
+    city: string;
+    phone: string;
+    accountUpn: string;
+    agent?: Maybe<{
+      __typename?: 'Agent';
+      id: string;
+      did?: Maybe<string>;
+      credentials?: Maybe<
+        Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+      >;
+    }>;
+    profile?: Maybe<{
+      __typename?: 'Profile';
+      id: string;
+      description?: Maybe<string>;
+      avatar?: Maybe<string>;
+      references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+    }>;
+  };
+  membershipUser: {
+    __typename?: 'UserMembership';
+    id: string;
+    ecoverses: Array<{
+      __typename?: 'MembershipUserResultEntryEcoverse';
+      id: string;
+      nameID: string;
+      ecoverseID: string;
+      displayName: string;
+      challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
+      opportunities: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
+      userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
+    }>;
+    organizations: Array<{
+      __typename?: 'MembershipUserResultEntryOrganization';
+      id: string;
+      nameID: string;
+      displayName: string;
+      userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
+    }>;
+  };
+};
+
 export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UsersQuery = {
@@ -5179,6 +5245,7 @@ export type UsersQuery = {
   users: Array<{
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     firstName: string;
     lastName: string;

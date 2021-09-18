@@ -1,16 +1,15 @@
-import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useCreateTagsetOnProfileMutation, useMeQuery, useUpdateUserMutation } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
-import { useNotification } from '../../hooks';
-import { UserModel } from '../../models/User';
+import React, { FC, useMemo } from 'react';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Loading } from '../../components/core';
+import { UserForm } from '../../components/UserProfile/UserForm';
+import { useApolloErrorHandler, useNotification, useUserContext } from '../../hooks';
+import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
-import { EditMode } from '../../utils/editMode';
-import { Loading } from '../core';
-import { UserForm } from './UserForm';
+import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
+import { EditMode } from '../../utils/editMode';
 
-interface EditUserProfileProps {}
+interface EditUserProfilePageProps {}
 
 // TODO [ATS] Need optimization this code is copy paste a few times.
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
@@ -29,9 +28,20 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
   };
 };
 
-export const EditUserProfile: FC<EditUserProfileProps> = () => {
+export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
+  const { userId } = useParams<{ userId: string }>();
+  const { user: currentUser } = useUserContext();
+
+  const { url } = useRouteMatch();
   const history = useHistory();
-  const { data, loading } = useMeQuery({ fetchPolicy: 'network-only' });
+  const { data, loading } = useUserQuery({
+    variables: {
+      id: userId,
+    },
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
+    errorPolicy: 'all',
+  });
   const notify = useNotification();
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
@@ -47,11 +57,16 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     },
   });
 
-  const handleCancel = () => history.goBack();
+  const handleCancel = () => history.replace(url.replace('/edit', ''));
+
+  const editMode = useMemo(() => {
+    if (data?.user.id === currentUser?.user.id) return EditMode.edit;
+    return EditMode.readOnly;
+  }, [data, currentUser]);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  const user = data?.me as User;
+  const user = data?.user as User;
 
   const handleSave = async (userToUpdate: UserModel) => {
     const profileId = userToUpdate.profile.id;
@@ -80,10 +95,10 @@ export const EditUserProfile: FC<EditUserProfileProps> = () => {
     <UserForm
       title={'Profile'}
       user={{ ...user } as UserModel}
-      editMode={EditMode.edit}
+      editMode={editMode}
       onSave={handleSave}
       onCancel={handleCancel}
     />
   );
 };
-export default EditUserProfile;
+export default EditUserProfilePage;
