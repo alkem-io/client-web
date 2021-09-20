@@ -28,7 +28,7 @@ const OrganizationProvider: FC = ({ children }) => {
     <OrganizationContext.Provider
       value={{
         organization,
-        organizationId: organization?.id || organizationId,
+        organizationId: organization?.id || '',
         organizationNameId: organization?.nameID || organizationId,
         loading,
       }}
