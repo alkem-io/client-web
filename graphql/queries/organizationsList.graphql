@@ -1,6 +1,7 @@
 query organizationsList {
   organizations {
     id
+    nameID
     displayName
   }
 }

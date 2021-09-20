@@ -7273,6 +7273,7 @@ export const OrganizationsListDocument = gql`
   query organizationsList {
     organizations {
       id
+      nameID
       displayName
     }
   }

@@ -421,6 +421,7 @@ export type MutationKeySpecifier = (
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
+  | 'assignUserAsOpportunityAdmin'
   | 'assignUserAsOrganizationAdmin'
   | 'assignUserAsOrganizationOwner'
   | 'assignUserToCommunity'
@@ -473,6 +474,7 @@ export type MutationKeySpecifier = (
   | 'removeUserAsEcoverseAdmin'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
+  | 'removeUserAsOpportunityAdmin'
   | 'removeUserAsOrganizationAdmin'
   | 'removeUserAsOrganizationOwner'
   | 'removeUserFromCommunity'
@@ -498,6 +500,7 @@ export type MutationFieldPolicy = {
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -550,6 +553,7 @@ export type MutationFieldPolicy = {
   removeUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromCommunity?: FieldPolicy<any> | FieldReadFunction<any>;

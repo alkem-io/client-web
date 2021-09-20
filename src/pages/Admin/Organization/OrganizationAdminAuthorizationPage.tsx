@@ -1,12 +1,10 @@
 import { Container } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
-import { useUpdateNavigation } from '../../../hooks';
+import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { OrganizationRouteParams } from '../../../routing/admin/organization/organization';
 import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
 
 export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
@@ -26,12 +24,13 @@ export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPag
 
   useUpdateNavigation({ currentPaths });
 
-  const { organizationId } = useParams<OrganizationRouteParams>();
+  const { organizationId } = useOrganization();
+
   return (
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organizationId: organizationId,
+          organizationId,
           credential: AuthorizationCredential.OrganizationAdmin,
         }}
       >

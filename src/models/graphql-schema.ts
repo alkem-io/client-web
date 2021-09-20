@@ -141,6 +141,11 @@ export type AssignGlobalCommunityAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignOpportunityAdminInput = {
+  opportunityID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignOrganizationAdminInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -206,6 +211,7 @@ export enum AuthorizationCredential {
   GlobalAdmin = 'GlobalAdmin',
   GlobalAdminCommunity = 'GlobalAdminCommunity',
   GlobalRegistered = 'GlobalRegistered',
+  OpportunityAdmin = 'OpportunityAdmin',
   OpportunityMember = 'OpportunityMember',
   OrganizationAdmin = 'OrganizationAdmin',
   OrganizationMember = 'OrganizationMember',
@@ -854,6 +860,8 @@ export type Mutation = {
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
   assignUserAsGlobalCommunityAdmin: User;
+  /** Assigns a User as an Opportunity Admin. */
+  assignUserAsOpportunityAdmin: User;
   /** Assigns a User as an Organization Admin. */
   assignUserAsOrganizationAdmin: User;
   /** Assigns a User as an Organization Owner. */
@@ -958,6 +966,8 @@ export type Mutation = {
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
   removeUserAsGlobalCommunityAdmin: User;
+  /** Removes a User from being an Opportunity Admin. */
+  removeUserAsOpportunityAdmin: User;
   /** Removes a User from being an Organization Admin. */
   removeUserAsOrganizationAdmin: User;
   /** Removes a User from being an Organization Owner. */
@@ -1010,6 +1020,10 @@ export type MutationAssignUserAsGlobalAdminArgs = {
 
 export type MutationAssignUserAsGlobalCommunityAdminArgs = {
   membershipData: AssignGlobalCommunityAdminInput;
+};
+
+export type MutationAssignUserAsOpportunityAdminArgs = {
+  membershipData: AssignOpportunityAdminInput;
 };
 
 export type MutationAssignUserAsOrganizationAdminArgs = {
@@ -1214,6 +1228,10 @@ export type MutationRemoveUserAsGlobalAdminArgs = {
 
 export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
   membershipData: RemoveGlobalCommunityAdminInput;
+};
+
+export type MutationRemoveUserAsOpportunityAdminArgs = {
+  membershipData: RemoveOpportunityAdminInput;
 };
 
 export type MutationRemoveUserAsOrganizationAdminArgs = {
@@ -1602,6 +1620,11 @@ export type RemoveGlobalAdminInput = {
 };
 
 export type RemoveGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveOpportunityAdminInput = {
+  opportunityID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -4888,7 +4911,7 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
-  organizations: Array<{ __typename?: 'Organization'; id: string; displayName: string }>;
+  organizations: Array<{ __typename?: 'Organization'; id: string; nameID: string; displayName: string }>;
 };
 
 export type ProjectProfileQueryVariables = Exact<{
