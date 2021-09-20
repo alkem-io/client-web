@@ -142,5 +142,46 @@ describe('ApplicationButton component', () => {
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toBeInTheDocument();
+    const dialogButton = screen.getAllByRole('button')[1];
+    expect(dialogButton).toHaveTextContent('Apply');
+    expect(dialogButton).toHaveAttribute('href');
+    expect(dialogButton['href']).toBe('http://localhost/parent/apply');
+  });
+
+  test('render application button - dialog opened - pending parent application', async () => {
+    // arrange
+    const props = {
+      isAuthenticated: true,
+      isMember: false,
+      isNotParentMember: true,
+      applyUrl: '/apply',
+      parentApplyUrl: '/parent/apply',
+      parentApplicationState: 'new',
+      challengeName: 'test challenge',
+      ecoverseName: 'test ecoverse',
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Apply');
+
+    fireEvent.click(button);
+
+    await waitFor(() => screen.getByRole('dialog'));
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toBeInTheDocument();
+    const dialogButton = screen.getAllByRole('button')[1];
+    expect(dialogButton).toHaveTextContent('Apply');
+    expect(dialogButton).toHaveAttribute('href');
+    expect(dialogButton['href']).toBe('http://localhost/apply');
   });
 });

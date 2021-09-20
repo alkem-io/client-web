@@ -167,6 +167,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   });
   const applications = memberShip?.membershipUser?.applications || [];
   const userApplication = applications.find(x => x.communityID === communityId);
+  const parenetApplication = applications.find(x => x.communityID === ecoverse?.ecoverse.community?.id);
 
   const { data: _activity } = useChallengeActivityQuery({ variables: { ecoverseId, challengeId: id } });
   const activity = _activity?.ecoverse?.challenge?.activity || [];
@@ -293,12 +294,13 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
 
             <ApplicationButton
+              isAuthenticated={isAuthenticated}
               isMember={user?.ofChallenge(challenge?.id)}
               isNotParentMember={!user?.ofEcoverse(toEcoverseId(ecoverseId))}
-              isAuthenticated={isAuthenticated}
               applyUrl={buildChallengeApplyUrl(ecoverseId, challenge.nameID)}
               parentApplyUrl={buildEcoverseApplyUrl(ecoverseId)}
               applicationState={userApplication?.state}
+              parentApplicationState={parenetApplication?.state}
               ecoverseName={ecoverse?.ecoverse.displayName}
               challengeName={challenge.displayName}
             />

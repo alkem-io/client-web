@@ -12,6 +12,7 @@ interface ApplicationButtonProps {
   isMember?: boolean;
   isNotParentMember?: boolean;
   applicationState?: string;
+  parentApplicationState?: string;
   applyUrl?: string;
   parentApplyUrl?: string;
   ecoverseName?: string;
@@ -21,6 +22,7 @@ interface ApplicationButtonProps {
 export const ApplicationButton: FC<ApplicationButtonProps> = ({
   isAuthenticated,
   applicationState,
+  parentApplicationState,
   applyUrl,
   parentApplyUrl,
   isMember = false,
@@ -39,6 +41,9 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     setIsDialogOpen(false);
   };
 
+  const isApplicationPending = (applicationState?: string) =>
+    applicationState === APPLICATION_STATE_NEW || applicationState === APPLICATION_STATE_REJECTED;
+
   const applicationButtonState = useMemo(() => {
     if (!isAuthenticated) {
       return (
@@ -49,30 +54,41 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     } else if (isNotParentMember) {
       return <Button text={t('buttons.apply')} onClick={handleClick} />;
     } else if (applicationState) {
-      if (applicationState === APPLICATION_STATE_NEW || applicationState === APPLICATION_STATE_REJECTED) {
+      if (isApplicationPending(applicationState)) {
         return <Button text={t('buttons.apply-pending')} disabled />;
       }
     }
-
     return <Button text={t('buttons.apply')} as={Link} to={applyUrl} />;
-  }, [isAuthenticated, applicationState, applyUrl]);
+  }, [isAuthenticated, applicationState, applyUrl, parentApplicationState]);
+
+  const dialogVariant = useMemo(
+    () => (isApplicationPending(parentApplicationState) ? 'dialog-parent-app-pending' : 'dialog-join-parent'),
+    [parentApplicationState, parentApplyUrl, applyUrl]
+  );
 
   return (
     <>
       {applicationButtonState}
       <Dialog open={isDialogOpen}>
-        <DialogTitle onClose={handleClose}>{t('components.application-button.dialog.title')}</DialogTitle>
+        <DialogTitle onClose={handleClose}>
+          {t(`components.application-button.${dialogVariant}.title` as const)}
+        </DialogTitle>
         <DialogContent dividers>
           <Trans
-            i18nKey="components.application-button.dialog.body"
+            i18nKey={`components.application-button.${dialogVariant}.body` as const}
             values={{ ecoverseName, challengeName }}
             components={{
-              strong: <strong></strong>,
+              strong: <strong />,
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button text={t('buttons.apply')} as={Link} to={parentApplyUrl} variant="primary" />
+          <Button
+            text={t('buttons.apply')}
+            as={Link}
+            to={isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl}
+            variant="primary"
+          />
         </DialogActions>
       </Dialog>
     </>
