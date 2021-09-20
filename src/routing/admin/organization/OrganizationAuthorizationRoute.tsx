@@ -1,20 +1,20 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../../pages';
-import OrganisationAdminAuthorizationPage from '../../../pages/Admin/Organisation/OrganisationAdminAuthorizationPage';
+import OrganizationAdminAuthorizationPage from '../../../pages/Admin/Organization/OrganizationAdminAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
-import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organisation/OrganizationOwnerAuthorizationPage';
+import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organization/OrganizationOwnerAuthorizationPage';
 
-interface OrganisationAuthorizationRouteProps extends AuthorizationRouteProps {}
+interface OrganizationAuthorizationRouteProps extends AuthorizationRouteProps {}
 
-const OrganisationAuthorizationRoute: FC<OrganisationAuthorizationRouteProps> = ({ paths }) => {
+const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
     <Switch>
       <Route exact path={`${path}/admins`}>
-        <OrganisationAdminAuthorizationPage paths={currentPaths} />
+        <OrganizationAdminAuthorizationPage paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/owners`}>
         <OrganizationOwnerAuthorizationPage paths={currentPaths} />
@@ -25,4 +25,4 @@ const OrganisationAuthorizationRoute: FC<OrganisationAuthorizationRouteProps> = 
     </Switch>
   );
 };
-export default OrganisationAuthorizationRoute;
+export default OrganizationAuthorizationRoute;

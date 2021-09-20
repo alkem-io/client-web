@@ -33,7 +33,7 @@ export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
   };
 
   const organizationsList =
-    organizationsListQuery?.organisations?.map(
+    organizationsListQuery?.organizations?.map(
       c =>
         ({
           id: c.id,

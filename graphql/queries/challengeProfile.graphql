@@ -50,7 +50,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           tags
         }
       }
-      leadOrganisations {
+      leadOrganizations {
         id
         displayName
         nameID

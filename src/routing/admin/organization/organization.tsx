@@ -8,14 +8,14 @@ import OrganizationList from '../../../components/Admin/Organization/Organizatio
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { useUpdateNavigation } from '../../../hooks';
 import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../hooks/generated/graphql';
-import { Organisation } from '../../../models/graphql-schema';
+import { Organization } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
-import OrganisationCommunityPage from '../../../pages/Admin/Organisation/OrganisationCommunityPage';
+import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 import { EditMode } from '../../../utils/editMode';
 import { AdminParameters } from '../admin';
-import OrganisationAuthorizationRoute from './OrganisationAuthorizationRoute';
-import { OrganisationGroupRoute } from './OrganisationGroupRoute';
-import { buildOrganisationUrl } from '../../../utils/urlBuilders';
+import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
+import { OrganizationGroupRoute } from './OrganizationGroupRoute';
+import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 
 export interface OrganizationRouteParams {
   organizationId: string;
@@ -54,8 +54,8 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   });
 
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: data?.organisation?.displayName || '', real: true }],
-    [paths, data?.organisation?.displayName]
+    () => [...paths, { value: url, name: data?.organization?.displayName || '', real: true }],
+    [paths, data?.organization?.displayName]
   );
 
   useUpdateNavigation({ currentPaths });
@@ -66,18 +66,18 @@ export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
         <ManagementPageTemplate
           data={managementData.organizationLvl}
           paths={currentPaths}
-          title={data?.organisation?.displayName}
-          entityUrl={buildOrganisationUrl(data?.organisation?.nameID || '')}
+          title={data?.organization?.displayName}
+          entityUrl={buildOrganizationUrl(data?.organization?.nameID || '')}
         />
       </Route>
       <Route exact path={`${path}/edit`}>
-        <OrganizationPage organization={data?.organisation as Organisation} mode={EditMode.edit} paths={currentPaths} />
+        <OrganizationPage organization={data?.organization as Organization} mode={EditMode.edit} paths={currentPaths} />
       </Route>
       <Route path={`${path}/community`}>
         <OrganizationCommunityRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <OrganisationAuthorizationRoute paths={currentPaths} />
+        <OrganizationAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -119,7 +119,7 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
         <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
       <Route path={`${path}/:groupId`}>
-        <OrganisationGroupRoute paths={currentPaths} />
+        <OrganizationGroupRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -135,7 +135,7 @@ const OrganizationMemberRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <OrganisationCommunityPage paths={currentPaths} />
+        <OrganizationCommunityPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -149,7 +149,7 @@ const OrganizationGroups: FC<PageProps> = ({ paths }) => {
   const { organizationId } = useParams<AdminParameters>();
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationId } });
 
-  const groups = data?.organisation?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
+  const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 
   return <ListPage paths={paths} data={groups || []} newLink={`${url}/new`} />;
 };
