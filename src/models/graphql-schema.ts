@@ -4919,7 +4919,7 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
-  organisations: Array<{ __typename?: 'Organisation'; id: string; displayName: string }>;
+  organisations: Array<{ __typename?: 'Organisation'; id: string; nameID: string; displayName: string }>;
 };
 
 export type ProjectProfileQueryVariables = Exact<{

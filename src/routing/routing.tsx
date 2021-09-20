@@ -12,7 +12,7 @@ import { Messages } from './messages';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
-import OrganisationRoute from './organisation';
+import OrganisationRoute from './organization';
 import { OrganisationProvider } from '../context/OrganisationProvider';
 import { UserRoute } from './user/user';
 

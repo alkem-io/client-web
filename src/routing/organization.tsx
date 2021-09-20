@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import { FourOuFour, PageProps } from '../pages';
-import OrganisationPage from '../pages/organisation/OrganisationPage';
+import OrganizationPage from '../pages/organisation/OrganizationPage';
 import { useOrganisation, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
@@ -27,7 +27,7 @@ const OrganisationRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route path={path}>
-        <OrganisationPage paths={currentPaths} permissions={{ edit: isAdmin }} />
+        <OrganizationPage paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path="*">
         <FourOuFour />

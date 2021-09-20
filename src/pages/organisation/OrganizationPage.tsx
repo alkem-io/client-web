@@ -29,13 +29,13 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-interface OrganisationPageProps extends PageProps {
+interface OrganizationPageProps extends PageProps {
   permissions: {
     edit: boolean;
   };
 }
 
-const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => {
+const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -134,4 +134,4 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
   );
 };
 
-export default OrganisationPage;
+export default OrganizationPage;
