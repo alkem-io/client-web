@@ -1,18 +1,17 @@
+import { Box } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import { LoginFlow } from '@ory/kratos-client';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
 import KratosUI from '../../components/Authentication/KratosUI';
+import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient } from '../../hooks';
-import { useUpdateNavigation } from '../../hooks';
-import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
+import { useKratosClient, useUpdateNavigation } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
-import { Box } from '@material-ui/core';
 import { logger } from '../../services/logging/winston/logger';
 
 interface LoginPageProps {
