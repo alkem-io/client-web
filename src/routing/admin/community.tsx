@@ -12,6 +12,7 @@ import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPa
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
+import { nameOfUrl } from '../ulr-params';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
@@ -87,7 +88,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route exact path={`${path}/new`}>
         <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route path={`${path}/:${nameOfUrl.groupId}`}>
         <EcoverseGroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">

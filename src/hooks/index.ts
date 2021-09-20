@@ -19,6 +19,8 @@ export * from './useOrganisation';
 export * from './useChallenge';
 export * from './useOpportunity';
 
+export * from './useUrlParams';
+
 export * from './operations/useEditReference';
 export * from './useNavigation';
 export * from './useNotification';

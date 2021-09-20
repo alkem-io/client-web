@@ -15,6 +15,7 @@ import { SearchRoute } from './search.route';
 import OrganisationRoute from './organisation.route';
 import { OrganisationProvider } from '../context/OrganisationProvider';
 import { UserRoute } from './user/user';
+import { nameOfUrl } from './ulr-params';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -44,7 +45,7 @@ export const Routing: FC = () => {
       <RestrictedRoute path="/user">
         <UserRoute />
       </RestrictedRoute>
-      <Route path="/organization/:organisationId">
+      <Route path={`/organization/:${nameOfUrl.opportunityId}`}>
         <OrganisationProvider>
           <OrganisationRoute paths={[]} />
         </OrganisationProvider>
@@ -61,7 +62,7 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
-      <Route path="/:ecoverseId">
+      <Route path={`/:${nameOfUrl.ecoverseId}`}>
         <EcoverseProvider>
           <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>

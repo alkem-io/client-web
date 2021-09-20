@@ -1,11 +1,9 @@
 import { Container } from '@material-ui/core';
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organisation/OrganizationMembers';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
 import { PageProps } from '../../common';
 import { useUsersQuery } from '../../../hooks/generated/graphql';
 
@@ -14,7 +12,7 @@ interface OrganisationCommunityPageProps extends PageProps {}
 export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
-  const { organizationId } = useParams<OrganizationRouteParams>();
+  const { organizationId } = useUrlParams();
   const { data } = useUsersQuery();
   const allUsers = data?.users;
 

@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import Grid from '@material-ui/core/Grid';
@@ -9,7 +8,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   refetchChallengeLeadOrganisationsQuery,
@@ -30,11 +29,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Params {
-  ecoverseId: string;
-  challengeId: string;
-}
-
 interface LeadingOrganisationPageProps extends PageProps {}
 
 const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) => {
@@ -43,7 +37,7 @@ const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) =>
 
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId, challengeId: challengeNameId } = useParams<Params>();
+  const { ecoverseId, challengeId: challengeNameId } = useUrlParams();
 
   const { data: _challenge } = useChallengeNameQuery({
     variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },

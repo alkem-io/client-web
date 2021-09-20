@@ -16,6 +16,7 @@ import { ChallengesRoute } from '../challenge/challenge';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
 import { buildEcoverseUrl } from '../../../utils/urlBuilders';
+import { nameOfUrl } from '../../ulr-params';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
@@ -30,7 +31,7 @@ export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/new`}>
         <NewEcoverse paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:ecoverseId`}>
+      <Route path={`${path}/:${nameOfUrl.ecoverseId}`}>
         <EcoverseProvider>
           <EcoverseAdminRoute paths={currentPaths} />
         </EcoverseProvider>

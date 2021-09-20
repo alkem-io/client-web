@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import { useOpportunityInfoQuery } from '../hooks/generated/graphql';
 import { OpportunityInfoFragment } from '../models/graphql-schema';
+import { useUrlParams } from '../hooks';
 
 interface OpportunityContextProps {
   opportunity?: OpportunityInfoFragment;
@@ -18,16 +18,10 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   ecoverseId: '',
 });
 
-interface UrlParams {
-  ecoverseId: string;
-  opportunityId: string;
-  challengeId: string;
-}
-
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { ecoverseId, challengeId, opportunityId } = useParams<UrlParams>();
+  const { ecoverseId, challengeId, opportunityId } = useUrlParams();
   const { data, loading } = useOpportunityInfoQuery({
     variables: { ecoverseId, opportunityId },
     errorPolicy: 'all',

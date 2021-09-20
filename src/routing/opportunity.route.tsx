@@ -1,12 +1,11 @@
 import { FourOuFour, OpportunityPage, PageProps } from '../pages';
 import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../models/graphql-schema';
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router';
-import { useEcoverse, useUserContext } from '../hooks';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router';
+import { useEcoverse, useUrlParams, useUserContext } from '../hooks';
 import { useOpportunityProfileQuery, useOpportunityUserIdsQuery } from '../hooks/generated/graphql';
 import Loading from '../components/core/Loading/Loading';
 import { Project } from './project';
-import { RouteParameters } from './ecoverse.route';
 import OpportunityCommunityPage from '../pages/community/OpportunityCommunityPage';
 import RestrictedRoute from './route.extensions';
 
@@ -18,7 +17,7 @@ interface OpportunityRootProps extends PageProps {
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
-  const { opportunityId: id, challengeId } = useParams<RouteParameters>();
+  const { opportunityId: id, challengeId } = useUrlParams();
   const { user } = useUserContext();
   const { ecoverseId, toEcoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';

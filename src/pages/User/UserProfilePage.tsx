@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import { Loading } from '../../components/core';
-import { useUpdateNavigation, useUserContext, useUserMetadata } from '../../hooks';
+import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfileView, { UserProfileViewProps } from '../../views/User/UserProfileView';
 import { FourOuFour } from '../FourOuFour';
 
@@ -16,7 +15,7 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   const { user: currentUser, verified } = useUserContext();
 
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useUrlParams();
 
   const { user: userMetadata, loading } = useUserMetadata(userId);
 

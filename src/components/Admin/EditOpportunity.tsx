@@ -1,9 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
@@ -17,12 +16,6 @@ import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import FormMode from './FormMode';
-
-interface Params {
-  ecoverseId?: string;
-  challengeId?: string;
-  opportunityId?: string;
-}
 
 interface Props {
   mode: FormMode;
@@ -38,11 +31,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const {
-    ecoverseId = '',
-    opportunityId: opportunityNameId = '',
-    challengeId: challengeNameId = '',
-  } = useParams<Params>();
+  const { ecoverseId = '', opportunityId: opportunityNameId = '', challengeId: challengeNameId = '' } = useUrlParams();
 
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
     refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],

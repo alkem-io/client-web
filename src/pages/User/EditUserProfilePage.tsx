@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Loading } from '../../components/core';
 import { UserForm } from '../../components/UserProfile/UserForm';
-import { useApolloErrorHandler, useNotification, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUrlParams, useUserContext } from '../../hooks';
 import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
@@ -29,7 +29,7 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 };
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useUrlParams();
   const { user: currentUser } = useUserContext();
 
   const { url } = useRouteMatch();

@@ -2,17 +2,13 @@ import React, { FC } from 'react';
 import { PageProps } from '../../../pages';
 import { ApplicationRoute } from '../ApplicationRoute';
 import { useEcoverseApplicationsQuery } from '../../../hooks/generated/graphql';
-import { useParams } from 'react-router';
 import Loading from '../../../components/core/Loading/Loading';
-
-interface Params {
-  ecoverseId: string;
-}
+import { useUrlParams } from '../../../hooks';
 
 interface Props extends PageProps {}
 
 export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
-  const { ecoverseId } = useParams<Params>();
+  const { ecoverseId } = useUrlParams();
   const { data, loading } = useEcoverseApplicationsQuery({
     variables: { ecoverseId: ecoverseId },
     fetchPolicy: 'cache-and-network',

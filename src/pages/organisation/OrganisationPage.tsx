@@ -39,7 +39,7 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { organisation, organisationId, loading: orgLoading } = useOrganisation();
+  const { organisation, organizationId, loading: orgLoading } = useOrganisation();
   const currentPaths = useMemo(
     () => (organisation ? [...paths, { value: url, name: organisation.displayName, real: true }] : paths),
     [paths, organisation]
@@ -52,7 +52,7 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
   const { data, loading: orgMembershipLoading } = useMembershipOrganisationQuery({
     variables: {
       input: {
-        organisationID: organisationId,
+        organisationID: organizationId,
       },
     },
     skip: !organisation,

@@ -1,21 +1,21 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading/Loading';
 import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../hooks/generated/graphql';
-import { useEcoverse } from '../../../hooks';
+import { useEcoverse, useUrlParams } from '../../../hooks';
 import { FourOuFour, PageProps } from '../../../pages';
 import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { AdminParameters } from '../admin';
 import { CommunityRoute } from '../community';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
+import { nameOfUrl } from '../../ulr-params';
 
 interface Props extends PageProps {
   challengeId: string;
@@ -40,7 +40,7 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths, challengeId }) => {
           paths={currentPaths}
         />
       </Route>
-      <Route path={`${path}/:opportunityId`}>
+      <Route path={`${path}/:${nameOfUrl.opportunityId}`}>
         <OpportunityProvider>
           <OpportunityRoutes paths={currentPaths} challengeId={challengeId} />
         </OpportunityProvider>
@@ -55,7 +55,7 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths, challengeId }) => {
 export const OpportunityRoutes: FC<Props> = ({ paths, challengeId: challengeUUID }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
-  const { opportunityId, challengeId } = useParams<AdminParameters>();
+  const { opportunityId, challengeId } = useUrlParams();
   const { ecoverseId } = useEcoverse();
 
   const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({

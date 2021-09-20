@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useApolloErrorHandler, useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsEcoverseAdminMutation,
@@ -8,19 +8,14 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { useParams, useRouteMatch } from 'react-router';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { useRouteMatch } from 'react-router';
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Container } from '@material-ui/core';
 import { Loading } from '../../../components/core';
 
-interface Params {
-  role: AuthorizationCredential;
-}
-
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
+  const { role: credential } = useUrlParams();
   const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

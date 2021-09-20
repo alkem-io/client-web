@@ -10,12 +10,7 @@ import ChallengeRoute from './challenge.route';
 import EcoverseCommunityPage from '../pages/community/EcoverseCommunityPage';
 import RestrictedRoute, { CredentialsForResource } from './route.extensions';
 import { ChallengeProvider } from '../context/ChallengeProvider';
-
-export interface RouteParameters {
-  ecoverseId: string;
-  challengeId: string;
-  opportunityId: string;
-}
+import { nameOfUrl } from './ulr-params';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -67,7 +62,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       <Route exact path={path}>
         <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
-      <Route path={`${path}/challenges/:challengeId`}>
+      <Route path={`${path}/challenges/:${nameOfUrl.challengeId}`}>
         <ChallengeProvider>
           <ChallengeRoute paths={currentPaths} challenges={challenges} />
         </ChallengeProvider>

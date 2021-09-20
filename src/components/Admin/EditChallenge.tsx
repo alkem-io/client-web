@@ -1,9 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
@@ -18,11 +17,6 @@ import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import FormMode from './FormMode';
 
-interface Params {
-  challengeId?: string;
-  ecoverseId?: string;
-}
-
 interface Props {
   mode: FormMode;
   paths: Path[];
@@ -36,7 +30,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId: challengeNameId = '', ecoverseId = '' } = useParams<Params>();
+  const { challengeId: challengeNameId = '', ecoverseId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {

@@ -7,7 +7,7 @@ import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/jou
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useRouteMatch } from 'react-router-dom';
 import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
@@ -26,7 +26,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
+import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles, useUrlParams } from '../hooks';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
 import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
@@ -126,12 +126,6 @@ const useChallengeStyles = createStyles(theme => ({
   },
 }));
 
-interface Params {
-  challengeId?: string;
-  opportunityId?: string;
-  ecoverseId?: string;
-}
-
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { edit: false } }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -139,7 +133,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   const styles = useChallengeStyles();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { ecoverseId = '' } = useParams<Params>();
+  const { ecoverseId = '' } = useUrlParams();
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });

@@ -1,19 +1,15 @@
 import React, { FC, useMemo } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { useOrganisationGroupQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
 import { GroupRoute } from '../GroupRoute';
+import { useUrlParams } from '../../../hooks';
 
 interface GroupRouteProps extends PageProps {}
 
-interface OrgRouteParams {
-  groupId: string;
-  organizationId: string;
-}
-
 export const OrganisationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { groupId, organizationId } = useParams<OrgRouteParams>();
+  const { groupId, organizationId } = useUrlParams();
 
   const { data, loading } = useOrganisationGroupQuery({
     variables: { organisationId: organizationId, groupId },

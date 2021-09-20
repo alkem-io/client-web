@@ -3,6 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../../pages';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import EcoverseAuthorizationPage from '../../../pages/Admin/Ecoverse/EcoverseAuthorizationPage';
+import { nameOfUrl } from '../../ulr-params';
 
 const EcoverseAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId }) => {
   const { path, url } = useRouteMatch();
@@ -10,7 +11,7 @@ const EcoverseAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resour
 
   return (
     <Switch>
-      <Route exact path={`${path}/:role`}>
+      <Route exact path={`${path}/:${nameOfUrl.role}`}>
         <EcoverseAuthorizationPage paths={currentPaths} resourceId={resourceId} />
       </Route>
       <Route path="*">

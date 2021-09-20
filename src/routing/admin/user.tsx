@@ -1,12 +1,14 @@
 import React, { FC, useMemo } from 'react';
 import { FourOuFour, PageProps } from '../../pages';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUserQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { UserModel } from '../../models/User';
 import Loading from '../../components/core/Loading/Loading';
 import { UserList } from '../../components/Admin/User/UserList';
 import { UserPage } from '../../pages/Admin/User/UserPage';
 import { EditMode } from '../../utils/editMode';
+import { useUrlParams } from '../../hooks';
+import { nameOfUrl } from '../ulr-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -27,10 +29,10 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       {/* <Route exact path={`${path}/new`}>
         <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
       </Route> */}
-      <Route exact path={`${path}/:userId/edit`}>
+      <Route exact path={`${path}/:${nameOfUrl.userId}/edit`}>
         <UserRoute mode={EditMode.edit} paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/:userId`}>
+      <Route exact path={`${path}/:${nameOfUrl.userId}`}>
         <UserRoute mode={EditMode.readOnly} paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -46,7 +48,7 @@ interface UserProps extends PageProps {
 }
 
 export const UserRoute: FC<UserProps> = ({ paths, mode, title }) => {
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useUrlParams();
   const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
 
   if (loading) return <Loading text={'Loading user...'} />;

@@ -1,11 +1,11 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnOrganizationMutation,
   useOrganizationNameQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -13,7 +13,7 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { organizationId } = useUrlParams();
   const handleError = useApolloErrorHandler();
 
   const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });

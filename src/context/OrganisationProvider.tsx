@@ -1,23 +1,23 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router';
 import { OrganisationInfoFragment } from '../models/graphql-schema';
 import { useOrganisationInfoQuery } from '../hooks/generated/graphql';
+import { useUrlParams } from '../hooks';
 
 interface OrganisationContextProps {
   organisation?: OrganisationInfoFragment;
-  organisationId: string;
+  organizationId: string;
   loading: boolean;
 }
 
 const OrganisationContext = React.createContext<OrganisationContextProps>({
   loading: true,
-  organisationId: '',
+  organizationId: '',
 });
 
 const OrganisationProvider: FC = ({ children }) => {
-  const { organisationId } = useParams<{ organisationId: string }>();
+  const { organizationId } = useUrlParams();
   const { data, loading } = useOrganisationInfoQuery({
-    variables: { organisationId },
+    variables: { organisationId: organizationId },
     errorPolicy: 'all',
   });
   const organisation = data?.organisation;
@@ -26,7 +26,7 @@ const OrganisationProvider: FC = ({ children }) => {
     <OrganisationContext.Provider
       value={{
         organisation,
-        organisationId,
+        organizationId,
         loading,
       }}
     >
