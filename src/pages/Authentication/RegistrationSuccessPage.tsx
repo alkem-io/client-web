@@ -51,7 +51,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
             <Link component={RouterLink} to={'/search'}>
               <strong>Search</strong>
             </Link>{' '}
-            for relevant Challenges, Users and Organisations.
+            for relevant Challenges, Users and Organizations.
           </li>
         </ul>
       </Typography>

@@ -1,4 +1,4 @@
-fragment OrganisationSearchResult on Organisation {
+fragment OrganizationSearchResult on Organization {
   id
   displayName
   profile {

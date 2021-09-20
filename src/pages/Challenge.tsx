@@ -29,10 +29,10 @@ import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
 import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
 import { SEARCH_PAGE } from '../models/constants';
-import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
+import { Challenge as ChallengeType, Organization } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
-import { buildAdminChallengeUrl, buildOrganisationUrl } from '../utils/urlBuilders';
+import { buildAdminChallengeUrl, buildOrganizationUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useOrganizationStyles = createStyles(theme => ({
@@ -67,10 +67,10 @@ const useOrganizationStyles = createStyles(theme => ({
 }));
 
 interface Props {
-  organizations: Organisation[];
+  organizations: Organization[];
 }
 
-const OrganisationBanners: FC<Props> = ({ organizations }) => {
+const OrganizationBanners: FC<Props> = ({ organizations }) => {
   const { t } = useTranslation();
   const styles = useOrganizationStyles();
   const [modalId, setModalId] = useState<string | null>(null);
@@ -83,7 +83,7 @@ const OrganisationBanners: FC<Props> = ({ organizations }) => {
           return (
             <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
               <div className={styles.imgContainer}>
-                <Link component={RouterLink} to={buildOrganisationUrl(org.nameID)}>
+                <Link component={RouterLink} to={buildOrganizationUrl(org.nameID)}>
                   <Image src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
                 </Link>
               </div>
@@ -140,7 +140,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities = [], leadOrganisations, id } = challenge;
+  const { displayName: name, context, opportunities = [], leadOrganizations, id } = challenge;
   const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
@@ -259,7 +259,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
       </Section>
       <Section
         avatar={<Icon component={JournalBookmarkIcon} color="primary" size="xl" />}
-        details={<OrganisationBanners organizations={leadOrganisations} />}
+        details={<OrganizationBanners organizations={leadOrganizations} />}
       >
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />

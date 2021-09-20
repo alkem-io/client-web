@@ -1,26 +1,26 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import { FourOuFour, PageProps } from '../pages';
-import OrganizationPage from '../pages/organisation/OrganizationPage';
-import { useOrganisation, useUserContext } from '../hooks';
+import OrganizationPage from '../pages/organization/OrganizationPage';
+import { useOrganization, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
-const OrganisationRoute: FC<PageProps> = ({ paths }) => {
+const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const { path } = useRouteMatch();
-  const currentPaths = useMemo(() => [{ value: '/', name: 'organisation', real: false }], [paths]);
+  const currentPaths = useMemo(() => [{ value: '/', name: 'organization', real: false }], [paths]);
 
-  const { organisation } = useOrganisation();
+  const { organization } = useOrganization();
   const { user } = useUserContext();
 
   const isAdmin = useMemo(
     () =>
-      user?.hasCredentials(AuthorizationCredential.OrganisationOwner) ||
-      user?.hasCredentials(AuthorizationCredential.OrganisationAdmin) ||
+      user?.hasCredentials(AuthorizationCredential.OrganizationOwner) ||
+      user?.hasCredentials(AuthorizationCredential.OrganizationAdmin) ||
       false,
     [user]
   );
 
-  if (!organisation) {
+  if (!organization) {
     return <FourOuFour />;
   }
 
@@ -35,4 +35,4 @@ const OrganisationRoute: FC<PageProps> = ({ paths }) => {
     </Switch>
   );
 };
-export default OrganisationRoute;
+export default OrganizationRoute;

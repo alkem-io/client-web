@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { useInputField } from './useInputField';
 import { SMALL_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 
-export const organisationegmentSchema = yup.object().shape({
+export const organizationegmentSchema = yup.object().shape({
   contactEmail: yup.string().email('Not a valid email').max(SMALL_TEXT_LENGTH),
   domain: yup.string().max(SMALL_TEXT_LENGTH),
   legalEntityName: yup.string().max(SMALL_TEXT_LENGTH),
@@ -12,48 +12,48 @@ export const organisationegmentSchema = yup.object().shape({
   verified: yup.string(),
 });
 
-interface OrganisationSegmentProps {
+interface OrganizationSegmentProps {
   disabled?: boolean;
   required?: boolean;
 }
 
-export const OrganisationSegment: FC<OrganisationSegmentProps> = ({ disabled = false, required = false }) => {
+export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = false, required = false }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
   return (
     <>
       {getInputField({
         name: 'contactEmail',
-        label: t('components.organisationSegment.contactEmail.name'),
-        placeholder: t('components.organisationSegment.contactEmail.placeholder'),
+        label: t('components.organizationSegment.contactEmail.name'),
+        placeholder: t('components.organizationSegment.contactEmail.placeholder'),
         disabled: disabled,
         required: required,
       })}
       {getInputField({
         name: 'domain',
-        label: t('components.organisationSegment.domain.name'),
-        placeholder: t('components.organisationSegment.domain.placeholder'),
+        label: t('components.organizationSegment.domain.name'),
+        placeholder: t('components.organizationSegment.domain.placeholder'),
         disabled: disabled,
         required: required,
       })}
       {getInputField({
         name: 'legalEntityName',
-        label: t('components.organisationSegment.legalEntityName.name'),
-        placeholder: t('components.organisationSegment.legalEntityName.placeholder'),
+        label: t('components.organizationSegment.legalEntityName.name'),
+        placeholder: t('components.organizationSegment.legalEntityName.placeholder'),
         disabled: disabled,
         required: required,
       })}
       {getInputField({
         name: 'website',
-        label: t('components.organisationSegment.website.name'),
-        placeholder: t('components.organisationSegment.website.placeholder'),
+        label: t('components.organizationSegment.website.name'),
+        placeholder: t('components.organizationSegment.website.placeholder'),
         disabled: disabled,
         required: required,
       })}
       {getInputField({
         name: 'verified',
-        label: t('components.organisationSegment.verified.name'),
-        placeholder: t('components.organisationSegment.verified.placeholder'),
+        label: t('components.organizationSegment.verified.name'),
+        placeholder: t('components.organizationSegment.verified.placeholder'),
         disabled: true,
       })}
     </>

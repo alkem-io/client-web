@@ -1,4 +1,4 @@
-fragment OrganisationInfo on Organisation {
+fragment OrganizationInfo on Organization {
   id
   nameID
   displayName

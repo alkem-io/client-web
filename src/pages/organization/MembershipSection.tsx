@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { Typography } from '@material-ui/core';
-import { MembershipOrganisationResultEntryChallenge, MembershipResultEntry } from '../../models/graphql-schema';
+import { MembershipOrganizationResultEntryChallenge, MembershipResultEntry } from '../../models/graphql-schema';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { CardContainer } from '../../components/core/CardContainer';
 import CardProps from './CardProps';
 
 type ComponentCard = React.ComponentType<CardProps>;
 
-type OrgMembershipResult = MembershipResultEntry | MembershipOrganisationResultEntryChallenge;
+type OrgMembershipResult = MembershipResultEntry | MembershipOrganizationResultEntryChallenge;
 
 interface Props {
   entities: OrgMembershipResult[];
@@ -19,10 +19,10 @@ interface Props {
   icon: React.ReactElement;
 }
 
-const isMembershipOrganisationResultEntryChallenge = (
+const isMembershipOrganizationResultEntryChallenge = (
   entities: OrgMembershipResult[]
-): entities is MembershipOrganisationResultEntryChallenge[] =>
-  (entities[0] as MembershipOrganisationResultEntryChallenge)?.ecoverseID != null;
+): entities is MembershipOrganizationResultEntryChallenge[] =>
+  (entities[0] as MembershipOrganizationResultEntryChallenge)?.ecoverseID != null;
 
 const MembershipSection: FC<Props> = ({
   entities,
@@ -35,7 +35,7 @@ const MembershipSection: FC<Props> = ({
 }) => {
   const toCardComponent = (entities: OrgMembershipResult[]) => {
     let cards: React.ReactElement[];
-    if (isMembershipOrganisationResultEntryChallenge(entities)) {
+    if (isMembershipOrganizationResultEntryChallenge(entities)) {
       cards = entities.map(({ id, ecoverseID }, i) => <CardComponent key={i} id={id} ecoverseID={ecoverseID} />);
     } else {
       cards = (entities as MembershipResultEntry[]).map(({ id }, i) => <CardComponent key={i} id={id} />);
