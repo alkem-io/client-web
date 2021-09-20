@@ -8,7 +8,7 @@ query search($searchData: SearchInput!) {
         id
       }
       ...UserSearchResult
-      ...OrganisationSearchResult
+      ...OrganizationSearchResult
       ...ChallengeSearchResult
       ...OpportunitySearchResult
     }

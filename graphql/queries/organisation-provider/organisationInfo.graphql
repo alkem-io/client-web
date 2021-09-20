@@ -1,5 +1,5 @@
-query organisationInfo($organisationId: UUID_NAMEID!) {
-  organisation(ID: $organisationId) {
-    ...OrganisationInfo
+query organizationInfo($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    ...OrganizationInfo
   }
 }

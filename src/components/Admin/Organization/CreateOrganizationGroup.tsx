@@ -17,7 +17,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
   const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });
-  const organization = organizationQuery?.organisation;
+  const organization = organizationQuery?.organization;
 
   const redirectToCreatedGroup = (groupId: string) => {
     const newGroupPath = url.replace('/new', `/${groupId}`);
@@ -25,11 +25,11 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   };
 
   const [createGroup] = useCreateGroupOnOrganizationMutation({
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganisation.id),
+    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganization.id),
     onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
-        const { createGroupOnOrganisation: newGroup } = data;
+        const { createGroupOnOrganization: newGroup } = data;
         cache.modify({
           id: cache.identify(organization),
           fields: {
