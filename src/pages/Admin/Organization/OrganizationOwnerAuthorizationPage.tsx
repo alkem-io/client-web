@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
-import { useUpdateNavigation } from '../../../hooks';
+import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { OrganizationRouteParams } from '../../../routing/admin/organization/organization';
 import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
@@ -27,11 +27,13 @@ export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPag
   useUpdateNavigation({ currentPaths });
 
   const { organizationId } = useParams<OrganizationRouteParams>();
+  const { organization } = useOrganization();
+
   return (
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organizationId: organizationId,
+          organizationId: organization ? organization.id : organizationId,
           credential: AuthorizationCredential.OrganizationOwner,
         }}
       >

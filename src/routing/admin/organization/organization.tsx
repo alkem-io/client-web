@@ -16,6 +16,7 @@ import { AdminParameters } from '../admin';
 import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
+import { OrganizationProvider } from '../../../context/OrganizationProvider';
 
 export interface OrganizationRouteParams {
   organizationId: string;
@@ -35,7 +36,9 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
       <Route path={`${path}/:organizationId`}>
-        <OrganizationRoutes paths={currentPaths} />
+        <OrganizationProvider>
+          <OrganizationRoutes paths={currentPaths} />
+        </OrganizationProvider>
       </Route>
       <Route path="*">
         <FourOuFour />

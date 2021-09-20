@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
-import { useUpdateNavigation } from '../../../hooks';
+import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { OrganizationRouteParams } from '../../../routing/admin/organization/organization';
 import { PageProps } from '../../common';
@@ -15,6 +15,8 @@ export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ 
   useUpdateNavigation({ currentPaths: paths });
 
   const { organizationId } = useParams<OrganizationRouteParams>();
+  const { organization } = useOrganization();
+
   const { data } = useUsersQuery();
   const allUsers = data?.users;
 
@@ -22,7 +24,7 @@ export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ 
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organizationId: organizationId,
+          organizationId: organization ? organization.id : organizationId,
           parentMembers: allUsers,
           credential: AuthorizationCredential.OrganizationMember,
         }}
