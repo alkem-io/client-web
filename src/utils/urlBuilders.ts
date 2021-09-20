@@ -1,3 +1,5 @@
+import { COMMUNITY_ROUTE } from '../models/constants';
+
 export const buildEcoverseUrl = (ecoverseNameId: string) => `/${ecoverseNameId}`;
 
 export const buildChallengeUrl = (ecoverseNameId: string, challengeNameId: string) =>
@@ -18,7 +20,6 @@ export const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId
 
 export const buildAdminOrganisationUrl = (organisationNameId: string) => `/admin/organizations/${organisationNameId}`;
 
-const COMMUNITY_ROUTE = '/community';
 export const buildEcoverseCommunityUrl = (ecoverseNameId: string) =>
   buildEcoverseUrl(ecoverseNameId).concat(COMMUNITY_ROUTE);
 export const buildChallengeCommunityUrl = (ecoverseNameId: string, challengeNameId: string) =>

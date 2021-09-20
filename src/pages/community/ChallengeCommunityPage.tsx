@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
 import CommunityPage from './CommunityPage';
 import { useChallenge, useUserContext } from '../../hooks';
@@ -7,6 +8,7 @@ import { AuthorizationCredential, OrganisationDetailsFragment } from '../../mode
 import { useChallengeLeadOrganisationsQuery } from '../../hooks/generated/graphql';
 
 const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
 
   const { challenge, ecoverseId } = useChallenge();
@@ -29,7 +31,7 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
     [userMetadata, challengeId, ecoverseId]
   );
 
-  const membershipTitle = 'Leading organizations';
+  const membershipTitle = t('pages.community.leading-organizations');
   const { data: _leadingOrganisations } = useChallengeLeadOrganisationsQuery({
     variables: { ecoverseId: ecoverseId, challengeID: challengeNameId },
     skip: !challengeNameId,

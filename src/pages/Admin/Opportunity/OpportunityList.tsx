@@ -18,9 +18,11 @@ interface OpportunityListProps extends PageProps {}
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const { challengeId } = useParams<AdminParameters>();
-  const { data: challengesListQuery, loading } = useOpportunitiesQuery({ variables: { ecoverseId, challengeId } });
+  const { data: challengesListQuery, loading } = useOpportunitiesQuery({
+    variables: { ecoverseId: ecoverseNameId, challengeId },
+  });
 
   const opportunityList =
     challengesListQuery?.ecoverse?.challenge?.opportunities?.map(o => ({
@@ -32,7 +34,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const [deleteOpportunity] = useDeleteOpportunityMutation({
     refetchQueries: [
       refetchOpportunitiesQuery({
-        ecoverseId,
+        ecoverseId: ecoverseNameId,
         challengeId,
       }),
     ],

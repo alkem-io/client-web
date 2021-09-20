@@ -525,6 +525,8 @@
       }
     },
     "community": {
+      "leading-organizations": "Leading organizations",
+      "ecoverse-host": "Ecoverse host",
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
     },

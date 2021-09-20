@@ -34,7 +34,7 @@ import {
 } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../models/constants';
-import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
+import { Challenge, Context, EcoverseInfoFragment } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
@@ -56,7 +56,7 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseInfoQuery;
+  ecoverse: EcoverseInfoFragment;
   permissions: {
     edit: boolean;
   };
@@ -73,7 +73,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { displayName: name, context, nameID: ecoverseId, community } = ecoverse.ecoverse;
+  const { displayName: name, context, nameID: ecoverseId, community } = ecoverse;
   const communityId = community?.id;
 
   const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: user?.user?.id || '' } } });

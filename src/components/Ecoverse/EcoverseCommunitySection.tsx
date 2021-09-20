@@ -8,16 +8,16 @@ import { Loading } from '../core';
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
 export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      ecoverseId: ecoverseNameId,
     },
     errorPolicy: 'all',
   });
   const { data, loading } = useEcoversCommunityMessagesQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      ecoverseId: ecoverseNameId,
     },
   });
 

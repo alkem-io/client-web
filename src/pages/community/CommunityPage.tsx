@@ -124,7 +124,7 @@ const CommunityPage: FC<Props> = ({
           <Section
             avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
             details={
-              hostOrganization ? (
+              hostOrganization && (
                 <Link component={RouterLink} to={buildOrganisationUrl(hostOrganization.nameID)}>
                   <Image
                     src={hostOrganization.profile?.avatar}
@@ -132,8 +132,6 @@ const CommunityPage: FC<Props> = ({
                     className={styles.bannerImg}
                   />
                 </Link>
-              ) : (
-                <div />
               )
             }
           >

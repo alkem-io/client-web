@@ -20,16 +20,16 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
   const history = useHistory();
   const { opportunityId: id, challengeId } = useParams<RouteParameters>();
   const { user } = useUserContext();
-  const { ecoverseId, toEcoverseId } = useEcoverse();
+  const { ecoverseNameId, ecoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
 
   const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
-    variables: { ecoverseId, opportunityId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId },
     errorPolicy: 'all',
   });
 
   const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
-    variables: { ecoverseId, opportunityId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId },
     errorPolicy: 'all',
   });
 
@@ -46,7 +46,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
   const isAdmin = useMemo(
     () =>
       user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
+      user?.isEcoverseAdmin(ecoverseId) ||
       user?.isChallengeAdmin(challengeUUID) ||
       false,
     [user, ecoverseId, challengeUUID]

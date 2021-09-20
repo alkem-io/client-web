@@ -24,13 +24,12 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
+import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
 } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
 import { Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
@@ -99,7 +98,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -112,7 +111,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
   const { data: _activity } = useOpportunityActivityQuery({
-    variables: { ecoverseId, opportunityId: opportunity?.id },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunity?.id },
   });
   const activity = _activity?.ecoverse?.opportunity?.activity || [];
 
@@ -144,7 +143,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const { data: opportunityLifecycleQuery } = useOpportunityLifecycleQuery({
-    variables: { ecoverseId, opportunityId: id },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: id },
   });
 
   const projectRef = useRef<HTMLDivElement>(null);
@@ -227,7 +226,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={buildAdminOpportunityUrl(ecoverseId, challengeId, opportunity.nameID)}
+                    to={buildAdminOpportunityUrl(ecoverseNameId, challengeId, opportunity.nameID)}
                     tooltip={t('pages.opportunity.sections.header.buttons.settings.tooltip')}
                   />
                 )
