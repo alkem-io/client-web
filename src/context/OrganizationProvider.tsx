@@ -6,12 +6,14 @@ import { useOrganizationInfoQuery } from '../hooks/generated/graphql';
 interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
   organizationId: string;
+  organizationNameId: string;
   loading: boolean;
 }
 
 const OrganizationContext = React.createContext<OrganizationContextProps>({
   loading: true,
   organizationId: '',
+  organizationNameId: '',
 });
 
 const OrganizationProvider: FC = ({ children }) => {
@@ -26,7 +28,8 @@ const OrganizationProvider: FC = ({ children }) => {
     <OrganizationContext.Provider
       value={{
         organization,
-        organizationId,
+        organizationId: organization?.id || organizationId,
+        organizationNameId: organization?.nameID || organizationId,
         loading,
       }}
     >
