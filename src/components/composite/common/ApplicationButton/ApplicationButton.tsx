@@ -51,12 +51,12 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
       );
     } else if (isMember) {
       return <Button text={t('buttons.member')} disabled />;
-    } else if (isNotParentMember) {
-      return <Button text={t('buttons.apply')} onClick={handleClick} />;
     } else if (applicationState) {
       if (isApplicationPending(applicationState)) {
         return <Button text={t('buttons.apply-pending')} disabled />;
       }
+    } else if (isNotParentMember) {
+      return <Button text={t('buttons.apply')} onClick={handleClick} />;
     }
     return <Button text={t('buttons.apply')} as={Link} to={applyUrl} />;
   }, [isAuthenticated, applicationState, applyUrl, parentApplicationState]);

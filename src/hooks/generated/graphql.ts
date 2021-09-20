@@ -4152,6 +4152,7 @@ export const ChallengeProfileDocument = gql`
           ...ContextDetails
         }
         community {
+          id
           members {
             id
             displayName

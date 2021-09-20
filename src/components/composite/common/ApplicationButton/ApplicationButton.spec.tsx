@@ -68,6 +68,30 @@ describe('ApplicationButton component', () => {
     expect(button).toHaveTextContent('pending');
   });
 
+  test('render application button - disabled, status - new, not parent member', () => {
+    // arrange
+    const props = {
+      isAuthenticated: true,
+      isMember: false,
+      applicationState: 'new',
+      parentApplicationState: 'new',
+      applyUrl: '/apply',
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Application pending');
+  });
+
   test('render application button - disabled, status - rejected', () => {
     // arrange
     const props = {

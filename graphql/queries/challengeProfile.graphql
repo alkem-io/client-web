@@ -13,6 +13,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         ...ContextDetails
       }
       community {
+        id
         members {
           id
           displayName

@@ -3567,6 +3567,7 @@ export type ChallengeProfileQuery = {
       }>;
       community?: Maybe<{
         __typename?: 'Community';
+        id: string;
         members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
