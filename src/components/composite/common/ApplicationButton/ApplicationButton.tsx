@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from '@material-ui/core';
 import React, { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../../models/constants';
 import { buildLoginUrl } from '../../../../utils/urlBuilders';
 import Button from '../../../core/Button';
@@ -47,7 +47,11 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   const applicationButtonState = useMemo(() => {
     if (!isAuthenticated) {
       return (
-        <Button text={t('buttons.apply-not-signed')} as={Link} to={buildLoginUrl(applyUrl?.replace('/apply', ''))} />
+        <Button
+          text={t('buttons.apply-not-signed')}
+          as={RouterLink}
+          to={buildLoginUrl(applyUrl?.replace('/apply', ''))}
+        />
       );
     } else if (isMember) {
       return <Button text={t('buttons.member')} disabled />;
@@ -58,7 +62,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     } else if (isNotParentMember) {
       return <Button text={t('buttons.apply')} onClick={handleClick} />;
     }
-    return <Button text={t('buttons.apply')} as={Link} to={applyUrl} />;
+    return <Button text={t('buttons.apply')} as={RouterLink} to={applyUrl} />;
   }, [isAuthenticated, applicationState, applyUrl, parentApplicationState]);
 
   const dialogVariant = useMemo(
@@ -85,7 +89,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         <DialogActions>
           <Button
             text={t('buttons.apply')}
-            as={Link}
+            as={RouterLink}
             to={isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl}
             variant="primary"
           />
