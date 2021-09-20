@@ -12,13 +12,13 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
-  refetchChallengeLeadOrganisationsQuery,
-  useChallengeLeadOrganisationsQuery,
+  refetchChallengeLeadOrganizationsQuery,
+  useChallengeLeadOrganizationsQuery,
   useChallengeNameQuery,
   useUpdateChallengeMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { OrganisationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
+import { OrganizationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
 
 const useStyles = makeStyles(theme => ({
@@ -35,9 +35,9 @@ interface Params {
   challengeId: string;
 }
 
-interface LeadingOrganisationPageProps extends PageProps {}
+interface LeadingOrganizationPageProps extends PageProps {}
 
-const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) => {
+const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { name: 'lead', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -50,42 +50,42 @@ const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) =>
   });
   const challengeId = _challenge?.ecoverse?.challenge.id || '';
 
-  const { data: _leadingOrganisations } = useChallengeLeadOrganisationsQuery({
+  const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
     variables: { ecoverseId: ecoverseId, challengeID: challengeNameId },
   });
-  const leadingOrganisations = (_leadingOrganisations?.ecoverse.challenge.leadOrganisations ||
-    []) as OrganisationDetailsFragment[];
-  const organisations = (_leadingOrganisations?.organisations || []) as OrganisationDetailsFragment[];
+  const leadingOrganizations = (_leadingOrganizations?.ecoverse.challenge.leadOrganizations ||
+    []) as OrganizationDetailsFragment[];
+  const organizations = (_leadingOrganizations?.organizations || []) as OrganizationDetailsFragment[];
 
   const available = useMemo(
-    () => organisations.filter(x => !leadingOrganisations.find(y => y.id === x.id)),
-    [organisations, leadingOrganisations]
+    () => organizations.filter(x => !leadingOrganizations.find(y => y.id === x.id)),
+    [organizations, leadingOrganizations]
   );
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onError: handleError,
-    refetchQueries: [refetchChallengeLeadOrganisationsQuery({ ecoverseId: ecoverseId, challengeID: challengeId })],
+    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ ecoverseId: ecoverseId, challengeID: challengeId })],
     awaitRefetchQueries: true,
   });
 
   const handleAdd = (orgId: string) => {
-    const newLeading = [...leadingOrganisations.map(x => x.id), orgId];
+    const newLeading = [...leadingOrganizations.map(x => x.id), orgId];
     _updateChallenge({
       ID: challengeId,
-      leadOrganisations: newLeading,
+      leadOrganizations: newLeading,
     });
   };
 
   const handleRemove = (orgId: string) => {
-    const orgToRemoveIndex = leadingOrganisations.findIndex(x => x.id === orgId);
+    const orgToRemoveIndex = leadingOrganizations.findIndex(x => x.id === orgId);
 
     if (orgToRemoveIndex > -1) {
-      const newLeading = [...leadingOrganisations].map(x => x.id);
+      const newLeading = [...leadingOrganizations].map(x => x.id);
       newLeading.splice(orgToRemoveIndex, 1);
 
       _updateChallenge({
         ID: challengeId,
-        leadOrganisations: newLeading,
+        leadOrganizations: newLeading,
       });
     }
   };
@@ -95,16 +95,16 @@ const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) =>
       variables: {
         input: {
           ID: input.ID,
-          leadOrganisations: input.leadOrganisations,
+          leadOrganizations: input.leadOrganizations,
         },
       },
     });
   };
 
   return (
-    <EditLeadingOrganisation
-      available={toOrganisationDetailsVm(available)}
-      leading={toOrganisationDetailsVm(leadingOrganisations)}
+    <EditLeadingOrganization
+      available={toOrganizationDetailsVm(available)}
+      leading={toOrganizationDetailsVm(leadingOrganizations)}
       onAdd={handleAdd}
       onRemove={handleRemove}
       isUpdating={isUpdating}
@@ -112,14 +112,14 @@ const LeadingOrganisationPage: FC<LeadingOrganisationPageProps> = ({ paths }) =>
   );
 };
 
-interface OrganisationDetailsVm {
+interface OrganizationDetailsVm {
   id: string;
   avatarSrc: string;
   name: string;
   tags?: string;
 }
 
-const toOrganisationDetailsVm = (prop: OrganisationDetailsFragment[]) => {
+const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
   return prop.map(
     x =>
       ({
@@ -127,19 +127,19 @@ const toOrganisationDetailsVm = (prop: OrganisationDetailsFragment[]) => {
         avatarSrc: x.profile.avatar,
         name: x.displayName,
         tags: (x.profile?.tagsets || []).flatMap(y => y.tags).join(','),
-      } as OrganisationDetailsVm)
+      } as OrganizationDetailsVm)
   );
 };
 
-interface EditLeadingOrganisationProps {
-  leading: OrganisationDetailsVm[];
-  available: OrganisationDetailsVm[];
+interface EditLeadingOrganizationProps {
+  leading: OrganizationDetailsVm[];
+  available: OrganizationDetailsVm[];
   onAdd: (orgId: string) => void;
   onRemove: (orgId: string) => void;
   isUpdating: boolean;
 }
 
-const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
+const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
   leading,
   available,
   onAdd,
@@ -175,7 +175,7 @@ const EditLeadingOrganisation: FC<EditLeadingOrganisationProps> = ({
     </Grid>
   );
 };
-export default LeadingOrganisationPage;
+export default LeadingOrganizationPage;
 
 const leadingColumns = (t: TFunction, styles: ClassNameMap<string>, onRemove: (orgId: string) => void) =>
   [

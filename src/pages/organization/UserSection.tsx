@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-  organisationId?: string;
+  organizationId?: string;
   credential: AuthorizationCredential;
   icon: React.ReactElement;
   title: string;
@@ -25,7 +25,7 @@ interface Props {
   noDataText: string;
 }
 
-const UserSection: FC<Props> = ({ organisationId, credential, icon, title, subtitle = '', noDataText }) => {
+const UserSection: FC<Props> = ({ organizationId, credential, icon, title, subtitle = '', noDataText }) => {
   const styles = useStyles();
 
   const { user: _user } = useUserContext();
@@ -34,11 +34,11 @@ const UserSection: FC<Props> = ({ organisationId, credential, icon, title, subti
   const { data, loading } = useUsersWithCredentialsQuery({
     variables: {
       input: {
-        resourceID: organisationId,
+        resourceID: organizationId,
         type: credential,
       },
     },
-    skip: !organisationId || !user,
+    skip: !organizationId || !user,
   });
   const users = data?.usersWithAuthorizationCredential;
 

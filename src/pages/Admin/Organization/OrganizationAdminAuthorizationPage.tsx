@@ -3,13 +3,13 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
-import OrganizationMembers from '../../../containers/organisation/OrganizationMembers';
+import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
 import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
-import OrganisationAuthorizationPageProps from './OrganisationAuthorizationPageProps';
+import { OrganizationRouteParams } from '../../../routing/admin/organization/organization';
+import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
 
-export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPageProps> = ({ paths }) => {
+export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
 
   const currentPaths = useMemo(
@@ -17,7 +17,7 @@ export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPag
       ...paths,
       {
         value: '',
-        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganisationAdmin}.name` as const),
+        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganizationAdmin}.name` as const),
         real: false,
       },
     ],
@@ -32,7 +32,7 @@ export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPag
       <OrganizationMembers
         entities={{
           organizationId: organizationId,
-          credential: AuthorizationCredential.OrganisationAdmin,
+          credential: AuthorizationCredential.OrganizationAdmin,
         }}
       >
         {(entities, actions, state) => (
@@ -51,4 +51,4 @@ export const OrganisationAdminAuthorizationPage: FC<OrganisationAuthorizationPag
   );
 };
 
-export default OrganisationAdminAuthorizationPage;
+export default OrganizationAdminAuthorizationPage;

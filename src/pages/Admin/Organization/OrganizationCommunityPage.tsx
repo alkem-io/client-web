@@ -2,16 +2,16 @@ import { Container } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
-import OrganizationMembers from '../../../containers/organisation/OrganizationMembers';
+import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
 import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
+import { OrganizationRouteParams } from '../../../routing/admin/organization/organization';
 import { PageProps } from '../../common';
 import { useUsersQuery } from '../../../hooks/generated/graphql';
 
-interface OrganisationCommunityPageProps extends PageProps {}
+interface OrganizationCommunityPageProps extends PageProps {}
 
-export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ paths }) => {
+export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   const { organizationId } = useParams<OrganizationRouteParams>();
@@ -24,7 +24,7 @@ export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ 
         entities={{
           organizationId: organizationId,
           parentMembers: allUsers,
-          credential: AuthorizationCredential.OrganisationMember,
+          credential: AuthorizationCredential.OrganizationMember,
         }}
       >
         {(entities, actions, state) => (
@@ -43,4 +43,4 @@ export const OrganisationCommunityPage: FC<OrganisationCommunityPageProps> = ({ 
   );
 };
 
-export default OrganisationCommunityPage;
+export default OrganizationCommunityPage;

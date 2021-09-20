@@ -1,5 +1,5 @@
-query organisationGroup($organisationId: UUID_NAMEID!, $groupId: UUID!) {
-  organisation(ID: $organisationId) {
+query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
+  organization(ID: $organizationId) {
     id
     members {
       ...GroupMembers

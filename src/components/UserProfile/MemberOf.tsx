@@ -53,7 +53,7 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
         {membershipItems(groups, t('common.group'), 'primary')}
         {membershipItems(challenges, t('common.challenge'), 'neutral')}
         {membershipItems(opportunities, t('common.opportunity'), 'primary')}
-        {membershipItems(organizations, t('common.organisation'), 'positive')}
+        {membershipItems(organizations, t('common.organization'), 'positive')}
       </Card>
     </Box>
   );
