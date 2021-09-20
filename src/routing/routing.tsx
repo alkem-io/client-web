@@ -15,6 +15,7 @@ import { Search } from './search';
 import OrganisationRoute from './organisation';
 import { OrganisationProvider } from '../context/OrganisationProvider';
 import { UserRoute } from './user/user';
+import ProfilePage from '../pages/ProfilePage';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -54,6 +55,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />
+      </Route>
+      <Route exact path="/profile">
+        <ProfilePage />
       </Route>
       <Route exact path="/restricted">
         <Restricted />
