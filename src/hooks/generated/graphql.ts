@@ -3216,13 +3216,12 @@ export const ChallengeApplicationDocument = gql`
           ...ContextDetails
         }
         community {
-          ...CommunityDetails
+          id
         }
       }
     }
   }
   ${ContextDetailsFragmentDoc}
-  ${CommunityDetailsFragmentDoc}
 `;
 
 /**
@@ -4153,6 +4152,7 @@ export const ChallengeProfileDocument = gql`
           ...ContextDetails
         }
         community {
+          id
           members {
             id
             displayName
