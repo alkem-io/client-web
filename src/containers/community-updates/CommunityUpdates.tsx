@@ -11,6 +11,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
+import { DocumentNode, useQuery } from '@apollo/client';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -118,12 +119,20 @@ export function useUpdateSubscription() {
   });
 }
 
-export function useCommunityUpdateSubscriptionSelector(community?: Partial<Community>) {
+// Need the container in order to conditionally use the subscription
+export const CommunityUpdatesSubscriptionContainer: FC<{}> = ({ children }) => {
+  useUpdateSubscription();
+
+  return <>{children}</>;
+};
+
+export function useCommunityUpdateSubscriptionSelector(
+  initialMessages?: CommunicationMessageResult[],
+  roomId?: string
+) {
   const { entities } = useGlobalState();
   const { communityUpdateService } = entities;
 
-  const roomId = community?.updatesRoom?.id;
-  const initialMessages = community?.updatesRoom?.messages;
   const messages =
     useSelector(communityUpdateService, state => {
       return state.context.messagesByRoom[roomId || ''];
@@ -139,3 +148,38 @@ export function useCommunityUpdateSubscriptionSelector(community?: Partial<Commu
 
   return zippedMessages;
 }
+
+export interface CommunityUpdatesDataContainerProps<TQuery, TVariables> {
+  entities: {
+    variables: TVariables;
+    document: DocumentNode;
+    messageSelector: (query?: TQuery) => CommunicationMessageResult[];
+    roomIdSelector: (query?: TQuery) => string;
+  };
+  children: (entities: CommunityUpdatesDataEntities, loading: CommunityUpdatesDataState) => React.ReactNode;
+}
+
+export interface CommunityUpdatesDataState {
+  retrievingUpdateMessages: boolean;
+}
+
+export interface CommunityUpdatesDataEntities {
+  messages: CommunicationMessageResult[];
+}
+
+// TODO - need to merge this into the CommunityUpdatesContainer once
+// the communityIds are present everywhere accross the application
+// Need the container in order to conditionally use the subscription
+export const CommunityUpdatesDataContainer = <TQuery, TVariables>({
+  children,
+  entities,
+}: CommunityUpdatesDataContainerProps<TQuery, TVariables>) => {
+  const { document, variables, messageSelector, roomIdSelector } = entities;
+  const { data, loading } = useQuery<TQuery, TVariables>(document, { variables });
+  const messages = useMemo(() => messageSelector(data), [data, messageSelector]);
+  const roomId = roomIdSelector(data);
+
+  const updateMessages = useCommunityUpdateSubscriptionSelector(messages, roomId);
+
+  return <>{children({ messages: updateMessages }, { retrievingUpdateMessages: loading })}</>;
+};
