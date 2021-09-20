@@ -13,6 +13,7 @@ import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
 import { UserRoute } from './user/user';
+import ProfilePage from '../pages/ProfilePage';
 import OrganizationRoute from './organization';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 
@@ -54,6 +55,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />
+      </Route>
+      <Route exact path="/profile">
+        <ProfilePage />
       </Route>
       <Route exact path="/restricted">
         <Restricted />
