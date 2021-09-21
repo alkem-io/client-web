@@ -52,7 +52,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
         variables: { msgData: { message, communityID: communityId } },
         refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
       });
-      return update.data?.messageUpdateCommunity;
+      return update.data?.sendMessageToCommunityUpdates;
     },
     [sendUpdate, communityId]
   );
@@ -65,7 +65,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
         variables: { msgData: { messageId, communityID: communityId } },
         refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
       });
-      return update.data?.removeUpdateCommunity;
+      return update.data?.removeMessageFromCommunityUpdates;
     },
     [sendUpdate, communityId]
   );

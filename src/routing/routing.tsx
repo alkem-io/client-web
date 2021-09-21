@@ -9,12 +9,13 @@ import { Admin } from './admin/admin';
 import { IdentityRoute } from './identity/identity';
 import { EcoverseRoute } from './ecoverse';
 import { Messages } from './messages';
-import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
 import { Search } from './search';
-import OrganisationRoute from './organisation';
-import { OrganisationProvider } from '../context/OrganisationProvider';
+import { UserRoute } from './user/user';
+import ProfilePage from '../pages/ProfilePage';
+import OrganizationRoute from './organization';
+import { OrganizationProvider } from '../context/OrganizationProvider';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -27,7 +28,7 @@ export const Routing: FC = () => {
         requiredCredentials={[
           AuthorizationCredential.GlobalAdmin,
           AuthorizationCredential.EcoverseAdmin,
-          AuthorizationCredential.OrganisationAdmin,
+          AuthorizationCredential.OrganizationAdmin,
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
         ]}
@@ -42,21 +43,21 @@ export const Routing: FC = () => {
         <Search />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
-        <div>User Page: Coming Soon!</div>
+        <UserRoute />
       </RestrictedRoute>
-      <Route path="/organization/:organisationId">
-        <OrganisationProvider>
-          <OrganisationRoute paths={[]} />
-        </OrganisationProvider>
+      <Route path="/organization/:organizationId">
+        <OrganizationProvider>
+          <OrganizationRoute paths={[]} />
+        </OrganizationProvider>
       </Route>
       <RestrictedRoute exact path="/messages">
         <Messages />
       </RestrictedRoute>
-      <RestrictedRoute path="/profile">
-        <ProfileRoute />
-      </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />
+      </Route>
+      <Route exact path="/profile">
+        <ProfilePage />
       </Route>
       <Route exact path="/restricted">
         <Restricted />

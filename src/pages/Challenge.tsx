@@ -1,3 +1,4 @@
+import { Link } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -8,13 +9,14 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import BackdropWithMessage from '../components/BackdropWithMessage';
 import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../components/Challenge/OpportunityCard';
+import ApplicationButton from '../components/composite/common/ApplicationButton/ApplicationButton';
 import SettingsButton from '../components/composite/common/SettingsButton/SettingsButton';
+import { Loading } from '../components/core';
 import Button from '../components/core/Button';
 import CardFilter from '../components/core/card-filter/CardFilter';
 import { CardContainer } from '../components/core/CardContainer';
@@ -26,13 +28,22 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { useAuthenticationContext, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
-import { useChallengeActivityQuery, useChallengeLifecycleQuery } from '../hooks/generated/graphql';
+import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
+import {
+  useChallengeActivityQuery,
+  useChallengeLifecycleQuery,
+  useUserApplicationsQuery,
+} from '../hooks/generated/graphql';
 import { SEARCH_PAGE } from '../models/constants';
-import { Challenge as ChallengeType, Organisation } from '../models/graphql-schema';
+import { Challenge as ChallengeType, Organization } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
-import { buildAdminChallengeUrl, buildOrganisationUrl } from '../utils/urlBuilders';
+import {
+  buildAdminChallengeUrl,
+  buildChallengeApplyUrl,
+  buildEcoverseApplyUrl,
+  buildOrganizationUrl,
+} from '../utils/urlBuilders';
 import { PageProps } from './common';
 
 const useOrganizationStyles = createStyles(theme => ({
@@ -67,10 +78,10 @@ const useOrganizationStyles = createStyles(theme => ({
 }));
 
 interface Props {
-  organizations: Organisation[];
+  organizations: Organization[];
 }
 
-const OrganisationBanners: FC<Props> = ({ organizations }) => {
+const OrganizationBanners: FC<Props> = ({ organizations }) => {
   const { t } = useTranslation();
   const styles = useOrganizationStyles();
   const [modalId, setModalId] = useState<string | null>(null);
@@ -83,7 +94,7 @@ const OrganisationBanners: FC<Props> = ({ organizations }) => {
           return (
             <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
               <div className={styles.imgContainer}>
-                <Link component={RouterLink} to={buildOrganisationUrl(org.nameID)}>
+                <Link component={RouterLink} to={buildOrganizationUrl(org.nameID)}>
                   <Image src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
                 </Link>
               </div>
@@ -137,14 +148,26 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
   const { ecoverseId = '' } = useParams<Params>();
+  const { ecoverse, toEcoverseId } = useEcoverse();
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities = [], leadOrganisations, id } = challenge;
-  const { data: challengeLifecycleQuery } = useChallengeLifecycleQuery({ variables: { ecoverseId, challengeId: id } });
+  const { displayName: name, context, opportunities = [], leadOrganizations, id, community } = challenge;
+  const communityId = community?.id;
+
+  const { data: challengeLifecycleQuery, loading: loadingChallengeLifecycle } = useChallengeLifecycleQuery({
+    variables: { ecoverseId, challengeId: id },
+  });
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
+
+  const { data: memberShip, loading: loadingMembership } = useUserApplicationsQuery({
+    variables: { input: { userID: user?.user?.id || '' } },
+  });
+  const applications = memberShip?.membershipUser?.applications || [];
+  const userApplication = applications.find(x => x.communityID === communityId);
+  const parenetApplication = applications.find(x => x.communityID === ecoverse?.ecoverse.community?.id);
 
   const { data: _activity } = useChallengeActivityQuery({ variables: { ecoverseId, challengeId: id } });
   const activity = _activity?.ecoverse?.challenge?.activity || [];
@@ -200,6 +223,8 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   }, [activity]);
 
   const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
+
+  if (loadingMembership || loadingChallengeLifecycle) return <Loading />;
 
   return (
     <>
@@ -259,7 +284,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
       </Section>
       <Section
         avatar={<Icon component={JournalBookmarkIcon} color="primary" size="xl" />}
-        details={<OrganisationBanners organizations={leadOrganisations} />}
+        details={<OrganizationBanners organizations={leadOrganizations} />}
       >
         <SectionHeader text="Challenge details" />
         <SubHeader text={tagline} />
@@ -267,11 +292,18 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
           <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
-            {user?.ofChallenge(challenge?.id) ? (
-              <></>
-            ) : (
-              <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />
-            )}
+
+            <ApplicationButton
+              isAuthenticated={isAuthenticated}
+              isMember={user?.ofChallenge(challenge?.id)}
+              isNotParentMember={!user?.ofEcoverse(toEcoverseId(ecoverseId))}
+              applyUrl={buildChallengeApplyUrl(ecoverseId, challenge.nameID)}
+              parentApplyUrl={buildEcoverseApplyUrl(ecoverseId)}
+              applicationState={userApplication?.state}
+              parentApplicationState={parenetApplication?.state}
+              ecoverseName={ecoverse?.ecoverse.displayName}
+              challengeName={challenge.displayName}
+            />
           </div>
         </Body>
       </Section>

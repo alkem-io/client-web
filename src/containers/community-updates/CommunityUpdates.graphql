@@ -15,11 +15,11 @@ query communityUpdates($communityId: UUID!) {
 }
 
 mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
-  messageUpdateCommunity(msgData: $msgData)
+  sendMessageToCommunityUpdates(messageData: $msgData)
 }
 
 mutation removeUpdateCommunity($msgData: CommunityRemoveMessageInput!) {
-  removeUpdateCommunity(msgData: $msgData)
+  removeMessageFromCommunityUpdates(messageData: $msgData)
 }
 
 subscription onMessageReceived {

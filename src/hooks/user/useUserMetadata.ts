@@ -1,22 +1,21 @@
-import { useMembershipUserQuery, useUserQuery } from '../generated/graphql';
 import { User } from '../../models/graphql-schema';
+import { useUserProfileQuery } from '../generated/graphql';
 import { useUserMetadataWrapper } from './useUserMetadataWrapper';
 
 export const useUserMetadata = (id: string) => {
   const wrapper = useUserMetadataWrapper();
 
-  const { data, loading: loadingData } = useUserQuery({ variables: { id } });
-
-  const { data: membershipData, loading: loadingMembership } = useMembershipUserQuery({
-    variables: { input: { userID: id } },
+  const { data, loading } = useUserProfileQuery({
+    variables: { input: id },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     errorPolicy: 'all',
     onError: () => {
       // because reset store can crash - error needs to be consumed
     },
   });
-  const loading = loadingData || loadingMembership;
   return {
-    user: wrapper(data?.user as User, membershipData?.membershipUser),
+    user: wrapper(data?.user as User, data?.membershipUser),
     loading,
   };
 };

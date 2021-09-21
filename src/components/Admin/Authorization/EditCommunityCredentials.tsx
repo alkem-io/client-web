@@ -19,7 +19,7 @@ interface EditCredentialsProps {
 export type CommunityCredentials =
   | AuthorizationCredential.EcoverseMember
   | AuthorizationCredential.OpportunityMember
-  | AuthorizationCredential.OrganisationMember
+  | AuthorizationCredential.OrganizationMember
   | AuthorizationCredential.ChallengeMember;
 
 export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, credential, resourceId, communityId }) => {

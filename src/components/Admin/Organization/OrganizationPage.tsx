@@ -8,18 +8,18 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import {
-  CreateOrganisationInput,
-  Organisation,
+  CreateOrganizationInput,
+  Organization,
   Reference,
   Tagset,
-  UpdateOrganisationInput,
+  UpdateOrganizationInput,
 } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
 import { EditMode } from '../../../utils/editMode';
 import OrganizationForm from './OrganizationForm';
 import { logger } from '../../../services/logging/winston/logger';
 interface Props extends PageProps {
-  organization?: Organisation;
+  organization?: Organization;
   title?: string;
   mode: EditMode;
 }
@@ -41,7 +41,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationId = data.createOrganisation.nameID;
+      const organizationId = data.createOrganization.nameID;
       if (organizationId) {
         notify('Organization created successfully', 'success');
         navigateToEdit(organizationId);
@@ -59,7 +59,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     },
   });
 
-  const handleSubmit = async (editedOrganization: Organisation) => {
+  const handleSubmit = async (editedOrganization: Organization) => {
     const {
       id: orgID,
       nameID,
@@ -72,7 +72,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
     } = editedOrganization;
 
     if (mode === EditMode.new) {
-      const input: CreateOrganisationInput = {
+      const input: CreateOrganizationInput = {
         nameID,
         contactEmail: contactEmail,
         displayName: displayName,
@@ -111,7 +111,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
         });
       }
 
-      const organisationInput: UpdateOrganisationInput = {
+      const organizationInput: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
         contactEmail: contactEmail,
@@ -136,7 +136,7 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       updateOrganization({
         variables: {
           input: {
-            ...organisationInput,
+            ...organizationInput,
           },
         },
       });

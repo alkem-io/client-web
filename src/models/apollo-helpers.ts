@@ -158,7 +158,7 @@ export type ChallengeKeySpecifier = (
   | 'displayName'
   | 'ecoverseID'
   | 'id'
-  | 'leadOrganisations'
+  | 'leadOrganizations'
   | 'lifecycle'
   | 'nameID'
   | 'opportunities'
@@ -175,7 +175,7 @@ export type ChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadOrganisations?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -384,14 +384,14 @@ export type MembershipCommunityResultEntryFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipOrganisationResultEntryChallengeKeySpecifier = (
+export type MembershipOrganizationResultEntryChallengeKeySpecifier = (
   | 'displayName'
   | 'ecoverseID'
   | 'id'
   | 'nameID'
-  | MembershipOrganisationResultEntryChallengeKeySpecifier
+  | MembershipOrganizationResultEntryChallengeKeySpecifier
 )[];
-export type MembershipOrganisationResultEntryChallengeFieldPolicy = {
+export type MembershipOrganizationResultEntryChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -422,19 +422,19 @@ export type MembershipUserResultEntryEcoverseFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipUserResultEntryOrganisationKeySpecifier = (
+export type MembershipUserResultEntryOrganizationKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
-  | 'organisationID'
+  | 'organizationID'
   | 'userGroups'
-  | MembershipUserResultEntryOrganisationKeySpecifier
+  | MembershipUserResultEntryOrganizationKeySpecifier
 )[];
-export type MembershipUserResultEntryOrganisationFieldPolicy = {
+export type MembershipUserResultEntryOrganizationFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  organisationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationID?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('activity' | 'services' | MetadataKeySpecifier)[];
@@ -447,13 +447,14 @@ export type MutationKeySpecifier = (
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
-  | 'assignUserAsOrganisationAdmin'
-  | 'assignUserAsOrganisationOwner'
+  | 'assignUserAsOpportunityAdmin'
+  | 'assignUserAsOrganizationAdmin'
+  | 'assignUserAsOrganizationOwner'
   | 'assignUserToCommunity'
   | 'assignUserToGroup'
-  | 'assignUserToOrganisation'
+  | 'assignUserToOrganization'
   | 'authorizationPolicyResetOnEcoverse'
-  | 'authorizationPolicyResetOnOrganisation'
+  | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
   | 'authorizeStateModificationOnChallenge'
   | 'createActor'
@@ -464,9 +465,9 @@ export type MutationKeySpecifier = (
   | 'createChildChallenge'
   | 'createEcoverse'
   | 'createGroupOnCommunity'
-  | 'createGroupOnOrganisation'
+  | 'createGroupOnOrganization'
   | 'createOpportunity'
-  | 'createOrganisation'
+  | 'createOrganization'
   | 'createProject'
   | 'createReferenceOnContext'
   | 'createReferenceOnProfile'
@@ -480,7 +481,7 @@ export type MutationKeySpecifier = (
   | 'deleteChallenge'
   | 'deleteEcoverse'
   | 'deleteOpportunity'
-  | 'deleteOrganisation'
+  | 'deleteOrganization'
   | 'deleteProject'
   | 'deleteReference'
   | 'deleteRelation'
@@ -490,30 +491,32 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnChallenge'
   | 'eventOnOpportunity'
+  | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToUser'
-  | 'messageDiscussionCommunity'
-  | 'messageUpdateCommunity'
   | 'messageUser'
-  | 'removeDiscussionCommunity'
-  | 'removeUpdateCommunity'
+  | 'removeMessageFromCommunityDiscussions'
+  | 'removeMessageFromCommunityUpdates'
   | 'removeUserAsChallengeAdmin'
   | 'removeUserAsEcoverseAdmin'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
-  | 'removeUserAsOrganisationAdmin'
-  | 'removeUserAsOrganisationOwner'
+  | 'removeUserAsOpportunityAdmin'
+  | 'removeUserAsOrganizationAdmin'
+  | 'removeUserAsOrganizationOwner'
   | 'removeUserFromCommunity'
   | 'removeUserFromGroup'
-  | 'removeUserFromOrganisation'
+  | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
+  | 'sendMessageToCommunityDiscussions'
+  | 'sendMessageToCommunityUpdates'
   | 'updateActor'
   | 'updateAspect'
   | 'updateChallenge'
   | 'updateEcosystemModel'
   | 'updateEcoverse'
   | 'updateOpportunity'
-  | 'updateOrganisation'
+  | 'updateOrganization'
   | 'updateProfile'
   | 'updateProject'
   | 'updateUser'
@@ -526,13 +529,14 @@ export type MutationFieldPolicy = {
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganisationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganisationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserToOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorizationPolicyResetOnOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizeStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -543,9 +547,9 @@ export type MutationFieldPolicy = {
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  createGroupOnOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  createOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -559,7 +563,7 @@ export type MutationFieldPolicy = {
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteProject?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRelation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -569,30 +573,32 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageDiscussionCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageUpdateCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeDiscussionCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUpdateCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeMessageFromCommunityDiscussions?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeMessageFromCommunityUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganisationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganisationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserFromOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToCommunityDiscussions?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToCommunityUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -649,7 +655,7 @@ export type OpportunityTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type OrganisationKeySpecifier = (
+export type OrganizationKeySpecifier = (
   | 'agent'
   | 'authorization'
   | 'contactEmail'
@@ -662,11 +668,11 @@ export type OrganisationKeySpecifier = (
   | 'members'
   | 'nameID'
   | 'profile'
-  | 'verified'
+  | 'verification'
   | 'website'
-  | OrganisationKeySpecifier
+  | OrganizationKeySpecifier
 )[];
-export type OrganisationFieldPolicy = {
+export type OrganizationFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -679,19 +685,32 @@ export type OrganisationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  verified?: FieldPolicy<any> | FieldReadFunction<any>;
+  verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type OrganisationMembershipKeySpecifier = (
+export type OrganizationMembershipKeySpecifier = (
   | 'challengesLeading'
   | 'ecoversesHosting'
   | 'id'
-  | OrganisationMembershipKeySpecifier
+  | OrganizationMembershipKeySpecifier
 )[];
-export type OrganisationMembershipFieldPolicy = {
+export type OrganizationMembershipFieldPolicy = {
   challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationVerificationKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'lifecycle'
+  | 'status'
+  | OrganizationVerificationKeySpecifier
+)[];
+export type OrganizationVerificationFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OryConfigKeySpecifier = ('issuer' | 'kratosPublicBaseURL' | OryConfigKeySpecifier)[];
 export type OryConfigFieldPolicy = {
@@ -760,11 +779,11 @@ export type QueryKeySpecifier = (
   | 'ecoverses'
   | 'me'
   | 'meHasProfile'
-  | 'membershipOrganisation'
+  | 'membershipOrganization'
   | 'membershipUser'
   | 'metadata'
-  | 'organisation'
-  | 'organisations'
+  | 'organization'
+  | 'organizations'
   | 'search'
   | 'user'
   | 'userAuthorizationPrivileges'
@@ -780,11 +799,11 @@ export type QueryFieldPolicy = {
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipOrganisation?: FieldPolicy<any> | FieldReadFunction<any>;
+  membershipOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   membershipUser?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
-  organisation?: FieldPolicy<any> | FieldReadFunction<any>;
-  organisations?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -956,7 +975,7 @@ export type UserMembershipKeySpecifier = (
   | 'communities'
   | 'ecoverses'
   | 'id'
-  | 'organisations'
+  | 'organizations'
   | UserMembershipKeySpecifier
 )[];
 export type UserMembershipFieldPolicy = {
@@ -964,7 +983,7 @@ export type UserMembershipFieldPolicy = {
   communities?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  organisations?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserTemplateKeySpecifier = ('name' | 'tagsets' | UserTemplateKeySpecifier)[];
 export type UserTemplateFieldPolicy = {
@@ -1127,12 +1146,12 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | MembershipCommunityResultEntryKeySpecifier);
     fields?: MembershipCommunityResultEntryFieldPolicy;
   };
-  MembershipOrganisationResultEntryChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  MembershipOrganizationResultEntryChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | MembershipOrganisationResultEntryChallengeKeySpecifier
-      | (() => undefined | MembershipOrganisationResultEntryChallengeKeySpecifier);
-    fields?: MembershipOrganisationResultEntryChallengeFieldPolicy;
+      | MembershipOrganizationResultEntryChallengeKeySpecifier
+      | (() => undefined | MembershipOrganizationResultEntryChallengeKeySpecifier);
+    fields?: MembershipOrganizationResultEntryChallengeFieldPolicy;
   };
   MembershipResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MembershipResultEntryKeySpecifier | (() => undefined | MembershipResultEntryKeySpecifier);
@@ -1145,12 +1164,12 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | MembershipUserResultEntryEcoverseKeySpecifier);
     fields?: MembershipUserResultEntryEcoverseFieldPolicy;
   };
-  MembershipUserResultEntryOrganisation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  MembershipUserResultEntryOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | MembershipUserResultEntryOrganisationKeySpecifier
-      | (() => undefined | MembershipUserResultEntryOrganisationKeySpecifier);
-    fields?: MembershipUserResultEntryOrganisationFieldPolicy;
+      | MembershipUserResultEntryOrganizationKeySpecifier
+      | (() => undefined | MembershipUserResultEntryOrganizationKeySpecifier);
+    fields?: MembershipUserResultEntryOrganizationFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
@@ -1172,13 +1191,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OpportunityTemplateKeySpecifier | (() => undefined | OpportunityTemplateKeySpecifier);
     fields?: OpportunityTemplateFieldPolicy;
   };
-  Organisation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | OrganisationKeySpecifier | (() => undefined | OrganisationKeySpecifier);
-    fields?: OrganisationFieldPolicy;
+  Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
+    fields?: OrganizationFieldPolicy;
   };
-  OrganisationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | OrganisationMembershipKeySpecifier | (() => undefined | OrganisationMembershipKeySpecifier);
-    fields?: OrganisationMembershipFieldPolicy;
+  OrganizationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationMembershipKeySpecifier | (() => undefined | OrganizationMembershipKeySpecifier);
+    fields?: OrganizationMembershipFieldPolicy;
+  };
+  OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
+    fields?: OrganizationVerificationFieldPolicy;
   };
   OryConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);

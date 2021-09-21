@@ -1,5 +1,5 @@
-mutation deleteOrganization($input: DeleteOrganisationInput!) {
-  deleteOrganisation(deleteData: $input) {
+mutation deleteOrganization($input: DeleteOrganizationInput!) {
+  deleteOrganization(deleteData: $input) {
     id
   }
 }

@@ -33,7 +33,7 @@ export const useUserMetadataWrapper = () => {
       const ecoverses = membershipData?.ecoverses.map(getDisplayName) || [];
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
-      const organizations = membershipData?.organisations.map(getDisplayName) || [];
+      const organizations = membershipData?.organizations.map(getDisplayName) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
       const communities =
         membershipData?.communities.reduce((aggr, value) => {
@@ -98,5 +98,5 @@ export const AdminRoles = [
   AuthorizationCredential.GlobalAdminCommunity,
   AuthorizationCredential.ChallengeAdmin,
   AuthorizationCredential.EcoverseAdmin,
-  AuthorizationCredential.OrganisationAdmin,
+  AuthorizationCredential.OrganizationAdmin,
 ];

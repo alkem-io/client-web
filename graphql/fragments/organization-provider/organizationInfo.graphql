@@ -1,0 +1,19 @@
+fragment OrganizationInfo on Organization {
+  id
+  nameID
+  displayName
+  contactEmail
+  verification {
+    status
+  }
+  website
+  profile {
+    id
+    avatar
+    description
+    tagsets {
+      id
+      tags
+    }
+  }
+}

@@ -16,10 +16,10 @@ import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../utils/editMode';
 import { Loading } from '../../../components/core/Loading/Loading';
-import { getUpdateUserInput } from '../../../components/UserProfile';
 import UserForm from '../../../components/UserProfile/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
 import { logger } from '../../../services/logging/winston/logger';
+import { getUpdateUserInput } from '../../User/EditUserProfilePage';
 
 interface UserPageProps extends PageProps {
   user?: UserModel;
