@@ -46,20 +46,19 @@ interface EcoverseAdminRouteProps extends PageProps {}
 
 export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
-  const { ecoverseId, ecoverse, loading: loadingEcoverse } = useEcoverse();
+  const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({
-    variables: { ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: ecoverse?.ecoverse.displayName || '', real: true }],
+    () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],
     [paths, ecoverse]
   );
 
   const community = data?.ecoverse.community;
-  const ecoverseUUID = ecoverse?.ecoverse.id || '';
 
   if (loadingEcoverse || loadingEcoverseCommunity) return <Loading text={'Loading'} />;
 
@@ -69,8 +68,8 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <ManagementPageTemplate
           data={managementData.ecoverseLvl}
           paths={currentPaths}
-          title={ecoverse?.ecoverse.displayName}
-          entityUrl={buildEcoverseUrl(ecoverseId)}
+          title={ecoverse?.displayName}
+          entityUrl={buildEcoverseUrl(ecoverseNameId)}
         />
       </Route>
       <Route path={`${path}/edit`}>
@@ -81,7 +80,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           paths={currentPaths}
           community={community}
           credential={AuthorizationCredential.EcoverseMember}
-          resourceId={ecoverseUUID}
+          resourceId={ecoverseId}
           accessedFrom="ecoverse"
         />
       </Route>
@@ -89,7 +88,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <ChallengesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseUUID} />
+        <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />
       </Route>
       <Route path="*">
         <FourOuFour />

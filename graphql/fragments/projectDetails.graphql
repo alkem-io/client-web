@@ -4,9 +4,11 @@ fragment ProjectDetails on Project {
   displayName
   description
   lifecycle {
+    id
     state
   }
   tagset {
+    id
     name
     tags
   }

@@ -40,6 +40,7 @@
     "create-project": "Create project",
     "processing": "Processing...",
     "details": "Details",
+    "settings": "Settings",
     "member": "Member"
   },
   "authentication": {
@@ -74,6 +75,12 @@
     "projects": "Projects",
     "group": "Group",
     "groups": "Groups",
+    "user-group": "User group",
+    "user-groups": "User groups",
+    "user": "User",
+    "users": "Users",
+    "update": "Update",
+    "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
     "genders": {
@@ -536,6 +543,12 @@
           "body": ""
         }
       }
+    },
+    "community": {
+      "leading-organizations": "Leading organizations",
+      "ecoverse-host": "Ecoverse host",
+      "no-user-groups": "There are no user groups",
+      "no-updates": "There are no updates"
     },
     "login": {
       "title": "Sign in",

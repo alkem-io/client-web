@@ -15,10 +15,10 @@ import { Loading } from '../core';
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
 export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      ecoverseId: ecoverseNameId,
     },
     errorPolicy: 'all',
   });
@@ -32,7 +32,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
             entities={{
               document: EcoversCommunityMessagesDocument,
               variables: {
-                ecoverseId,
+                ecoverseId: ecoverseNameId,
               },
               messageSelector: data => data?.ecoverse.community?.updatesRoom?.messages || [],
               roomIdSelector: data => data?.ecoverse.community?.updatesRoom?.id || '',

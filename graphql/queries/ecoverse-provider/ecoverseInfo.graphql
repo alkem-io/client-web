@@ -1,9 +1,5 @@
 query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
-    ...EcoverseDetails
-    community {
-      id
-      displayName
-    }
+    ...EcoverseInfo
   }
 }
