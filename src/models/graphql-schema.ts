@@ -2328,7 +2328,7 @@ export type OrganizationInfoFragment = {
   displayName: string;
   contactEmail?: Maybe<string>;
   website?: Maybe<string>;
-  verification: { __typename?: 'OrganizationVerification'; status: OrganizationVerificationEnum };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -2359,6 +2359,7 @@ export type OrganizationProfileInfoFragment = {
   domain?: Maybe<string>;
   legalEntityName?: Maybe<string>;
   website?: Maybe<string>;
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -3138,6 +3139,7 @@ export type UpdateOrganizationMutation = {
     domain?: Maybe<string>;
     legalEntityName?: Maybe<string>;
     website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -4843,30 +4845,6 @@ export type OpportunityWithActivityQuery = {
   };
 };
 
-export type OrganizationInfoQueryVariables = Exact<{
-  organizationId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationInfoQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    displayName: string;
-    contactEmail?: Maybe<string>;
-    website?: Maybe<string>;
-    verification: { __typename?: 'OrganizationVerification'; status: OrganizationVerificationEnum };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      avatar?: Maybe<string>;
-      description?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-    };
-  };
-};
-
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -4902,6 +4880,30 @@ export type OrganizationGroupQuery = {
         tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
       }>;
     }>;
+  };
+};
+
+export type OrganizationInfoQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationInfoQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    contactEmail?: Maybe<string>;
+    website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    };
   };
 };
 
@@ -4972,6 +4974,7 @@ export type OrganizationProfileInfoQuery = {
     domain?: Maybe<string>;
     legalEntityName?: Maybe<string>;
     website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
       id: string;

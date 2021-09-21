@@ -6,6 +6,10 @@ fragment OrganizationProfileInfo on Organization {
   domain
   legalEntityName
   website
+  verification {
+    id
+    status
+  }
   profile {
     id
     avatar
