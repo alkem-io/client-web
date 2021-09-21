@@ -293,7 +293,9 @@ export const OrganizationInfoFragmentDoc = gql`
     nameID
     displayName
     contactEmail
-    verified
+    verification {
+      status
+    }
     website
     profile {
       id
@@ -328,6 +330,10 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     domain
     legalEntityName
     website
+    verification {
+      id
+      status
+    }
     profile {
       id
       avatar
@@ -6896,61 +6902,6 @@ export type OpportunityWithActivityQueryResult = Apollo.QueryResult<
 export function refetchOpportunityWithActivityQuery(variables?: SchemaTypes.OpportunityWithActivityQueryVariables) {
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
-export const OrganizationInfoDocument = gql`
-  query organizationInfo($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      ...OrganizationInfo
-    }
-  }
-  ${OrganizationInfoFragmentDoc}
-`;
-
-/**
- * __useOrganizationInfoQuery__
- *
- * To run a query within a React component, call `useOrganizationInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationInfoQuery({
- *   variables: {
- *      organizationId: // value for 'organizationId'
- *   },
- * });
- */
-export function useOrganizationInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
-    OrganizationInfoDocument,
-    options
-  );
-}
-export function useOrganizationInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationInfoQuery,
-    SchemaTypes.OrganizationInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
-    OrganizationInfoDocument,
-    options
-  );
-}
-export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
-export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
-export type OrganizationInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationInfoQuery,
-  SchemaTypes.OrganizationInfoQueryVariables
->;
-export function refetchOrganizationInfoQuery(variables?: SchemaTypes.OrganizationInfoQueryVariables) {
-  return { query: OrganizationInfoDocument, variables: variables };
-}
 export const OrganizationGroupDocument = gql`
   query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
     organization(ID: $organizationId) {
@@ -7013,6 +6964,61 @@ export type OrganizationGroupQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationGroupQuery(variables?: SchemaTypes.OrganizationGroupQueryVariables) {
   return { query: OrganizationGroupDocument, variables: variables };
+}
+export const OrganizationInfoDocument = gql`
+  query organizationInfo($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      ...OrganizationInfo
+    }
+  }
+  ${OrganizationInfoFragmentDoc}
+`;
+
+/**
+ * __useOrganizationInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganizationInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationInfoQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
+    OrganizationInfoDocument,
+    options
+  );
+}
+export function useOrganizationInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationInfoQuery,
+    SchemaTypes.OrganizationInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
+    OrganizationInfoDocument,
+    options
+  );
+}
+export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
+export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
+export type OrganizationInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationInfoQuery,
+  SchemaTypes.OrganizationInfoQueryVariables
+>;
+export function refetchOrganizationInfoQuery(variables?: SchemaTypes.OrganizationInfoQueryVariables) {
+  return { query: OrganizationInfoDocument, variables: variables };
 }
 export const OrganizationDetailsDocument = gql`
   query organizationDetails($id: UUID_NAMEID!) {

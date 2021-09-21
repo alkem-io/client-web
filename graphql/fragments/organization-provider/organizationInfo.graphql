@@ -3,7 +3,10 @@ fragment OrganizationInfo on Organization {
   nameID
   displayName
   contactEmail
-  verified
+  verification {
+    id
+    status
+  }
   website
   profile {
     id

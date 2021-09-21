@@ -465,6 +465,7 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnChallenge'
   | 'eventOnOpportunity'
+  | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToUser'
   | 'messageDiscussionCommunity'
@@ -544,6 +545,7 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   messageDiscussionCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -636,7 +638,7 @@ export type OrganizationKeySpecifier = (
   | 'members'
   | 'nameID'
   | 'profile'
-  | 'verified'
+  | 'verification'
   | 'website'
   | OrganizationKeySpecifier
 )[];
@@ -653,7 +655,7 @@ export type OrganizationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  verified?: FieldPolicy<any> | FieldReadFunction<any>;
+  verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationMembershipKeySpecifier = (
@@ -666,6 +668,19 @@ export type OrganizationMembershipFieldPolicy = {
   challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationVerificationKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'lifecycle'
+  | 'status'
+  | OrganizationVerificationKeySpecifier
+)[];
+export type OrganizationVerificationFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OryConfigKeySpecifier = ('issuer' | 'kratosPublicBaseURL' | OryConfigKeySpecifier)[];
 export type OryConfigFieldPolicy = {
@@ -1138,6 +1153,10 @@ export type StrictTypedTypePolicies = {
   OrganizationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationMembershipKeySpecifier | (() => undefined | OrganizationMembershipKeySpecifier);
     fields?: OrganizationMembershipFieldPolicy;
+  };
+  OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
+    fields?: OrganizationVerificationFieldPolicy;
   };
   OryConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);

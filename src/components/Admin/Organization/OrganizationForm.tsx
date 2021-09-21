@@ -25,7 +25,9 @@ const emptyOrganization = {
   domain: '',
   legalEntityName: '',
   website: '',
-  verified: OrganizationVerificationEnum.NotVerified,
+  verification: {
+    status: OrganizationVerificationEnum.NotVerified,
+  },
   profile: {
     description: '',
     avatar: '',
@@ -65,7 +67,7 @@ export const OrganizationForm: FC<Props> = ({
     domain,
     legalEntityName,
     website,
-    verified,
+    verification: { status: verificationStatus },
     profile: { id: profileId, description, references, avatar },
   } = currentOrganization as Organization;
 
@@ -99,7 +101,7 @@ export const OrganizationForm: FC<Props> = ({
     domain: domain || emptyOrganization.domain,
     legalEntityName: legalEntityName || emptyOrganization.legalEntityName,
     website: website || emptyOrganization.website,
-    verified: verified || emptyOrganization.verified,
+    verified: verificationStatus || emptyOrganization.verification.status,
     references: references || emptyOrganization.profile.references,
   };
 
