@@ -15,7 +15,7 @@ import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
-import { nameOfUrl } from '../../ulr-params';
+import { nameOfUrl } from '../../url-params';
 
 interface Props extends PageProps {}
 

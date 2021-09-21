@@ -18,7 +18,7 @@ import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
 import { ChallengeProvider } from '../../../context/ChallengeProvider';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
-import { nameOfUrl } from '../../ulr-params';
+import { nameOfUrl } from '../../url-params';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();

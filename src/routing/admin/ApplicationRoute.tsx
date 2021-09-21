@@ -5,7 +5,7 @@ import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import { ApplicationInfoFragment } from '../../models/graphql-schema';
 import ApplicationDetailsPage from '../../components/Admin/Community/ApplicationDetailsPage';
-import { nameOfUrl } from '../ulr-params';
+import { nameOfUrl } from '../url-params';
 
 interface Props {
   paths: Path[];

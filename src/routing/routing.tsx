@@ -16,7 +16,7 @@ import OrganizationRoute from './organization.route';
 import { UserRoute } from './user/user';
 import ProfilePage from '../pages/ProfilePage';
 import { OrganizationProvider } from '../context/OrganizationProvider';
-import { nameOfUrl } from './ulr-params';
+import { nameOfUrl } from './url-params';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();

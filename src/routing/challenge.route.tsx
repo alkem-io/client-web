@@ -10,7 +10,7 @@ import OpportunityRoute from './opportunity.route';
 import ChallengeCommunityPage from '../pages/community/ChallengeCommunityPage';
 import RestrictedRoute from './route.extensions';
 import { OpportunityProvider } from '../context/OpportunityProvider';
-import { nameOfUrl } from './ulr-params';
+import { nameOfUrl } from './url-params';
 
 interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;

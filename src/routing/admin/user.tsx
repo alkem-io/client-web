@@ -8,7 +8,7 @@ import { UserList } from '../../components/Admin/User/UserList';
 import { UserPage } from '../../pages/Admin/User/UserPage';
 import { EditMode } from '../../utils/editMode';
 import { useUrlParams } from '../../hooks';
-import { nameOfUrl } from '../ulr-params';
+import { nameOfUrl } from '../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();

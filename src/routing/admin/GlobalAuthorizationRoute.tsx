@@ -4,7 +4,7 @@ import { FourOuFour } from '../../pages';
 import GlobalAuthorizationPage from '../../pages/Admin/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../../pages/Admin/GlobalCommunityAuthorizationPage';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
-import { nameOfUrl } from '../ulr-params';
+import { nameOfUrl } from '../url-params';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();

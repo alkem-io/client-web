@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour } from '../../../pages';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import ChallengeAuthorizationPage from '../../../pages/Admin/Challenge/ChallengeAuthorizationPage';
-import { nameOfUrl } from '../../ulr-params';
+import { nameOfUrl } from '../../url-params';
 
 const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId = '' }) => {
   const { path, url } = useRouteMatch();

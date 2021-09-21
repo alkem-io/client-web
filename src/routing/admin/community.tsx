@@ -12,7 +12,7 @@ import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPa
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
-import { nameOfUrl } from '../ulr-params';
+import { nameOfUrl } from '../url-params';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 

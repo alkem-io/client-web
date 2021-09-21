@@ -16,7 +16,7 @@ import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import { OrganizationProvider } from '../../../context/OrganizationProvider';
-import { nameOfUrl } from '../../ulr-params';
+import { nameOfUrl } from '../../url-params';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();

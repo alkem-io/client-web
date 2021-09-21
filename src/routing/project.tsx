@@ -7,7 +7,7 @@ import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as 
 import { Project as ProjectType } from '../models/graphql-schema';
 import { useApolloErrorHandler } from '../hooks';
 import RestrictedRoute from './route.extensions';
-import { nameOfUrl } from './ulr-params';
+import { nameOfUrl } from './url-params';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {

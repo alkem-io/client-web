@@ -10,7 +10,7 @@ import ChallengeRoute from './challenge.route';
 import EcoverseCommunityPage from '../pages/community/EcoverseCommunityPage';
 import RestrictedRoute, { CredentialsForResource } from './route.extensions';
 import { ChallengeProvider } from '../context/ChallengeProvider';
-import { nameOfUrl } from './ulr-params';
+import { nameOfUrl } from './url-params';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
