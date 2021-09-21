@@ -2,29 +2,29 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsOrganisationAdminMutation,
-  useAssignUserAsOrganisationOwnerMutation,
-  useAssignUserToOrganisationMutation,
-  useRemoveUserAsOrganisationAdminMutation,
-  useRemoveUserAsOrganisationOwnerMutation,
-  useRemoveUserFromOrganisationMutation,
+  useAssignUserAsOrganizationAdminMutation,
+  useAssignUserAsOrganizationOwnerMutation,
+  useAssignUserToOrganizationMutation,
+  useRemoveUserAsOrganizationAdminMutation,
+  useRemoveUserAsOrganizationOwnerMutation,
+  useRemoveUserFromOrganizationMutation,
 } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
-import { AuthorizationCredential, Organisation } from '../../models/graphql-schema';
+import { AuthorizationCredential, Organization } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
-const organisationMemberCredential = AuthorizationCredential.OrganisationMember;
-const organisationAdminCredential = AuthorizationCredential.OrganisationAdmin;
-const organisationOwnerCredential = AuthorizationCredential.OrganisationOwner;
+const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
+const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;
+const organizationOwnerCredential = AuthorizationCredential.OrganizationOwner;
 
 export type AuthorizationCredentials =
-  | AuthorizationCredential.OrganisationMember
-  | AuthorizationCredential.OrganisationAdmin
-  | AuthorizationCredential.OrganisationOwner;
+  | AuthorizationCredential.OrganizationMember
+  | AuthorizationCredential.OrganizationAdmin
+  | AuthorizationCredential.OrganizationOwner;
 
 export interface OrganizationMembersProps {
   entities: {
-    organizationId: Organisation['id'];
+    organizationId: Organization['id'];
     parentMembers?: Member[];
     credential: AuthorizationCredentials;
   };
@@ -64,27 +64,27 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
 
-  const [grantMember, { loading: addingUser }] = useAssignUserToOrganisationMutation({
+  const [grantMember, { loading: addingUser }] = useAssignUserToOrganizationMutation({
     onError: handleError,
   });
 
-  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganisationMutation({
+  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganizationMutation({
     onError: handleError,
   });
 
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganisationAdminMutation({
+  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganizationAdminMutation({
     onError: handleError,
   });
 
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganisationAdminMutation({
+  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganizationAdminMutation({
     onError: handleError,
   });
 
-  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganisationOwnerMutation({
+  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganizationOwnerMutation({
     onError: handleError,
   });
 
-  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganisationOwnerMutation({
+  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganizationOwnerMutation({
     onError: handleError,
   });
 
@@ -93,13 +93,13 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       grantMember({
         variables: {
           input: {
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
             userID: _member.id,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationMemberCredential, resourceID: entities.organizationId },
+            input: { type: organizationMemberCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -114,12 +114,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         variables: {
           input: {
             userID: _member.id,
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationMemberCredential, resourceID: entities.organizationId },
+            input: { type: organizationMemberCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -133,13 +133,13 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       grantAdmin({
         variables: {
           input: {
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
             userID: _member.id,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationAdminCredential, resourceID: entities.organizationId },
+            input: { type: organizationAdminCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -154,12 +154,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         variables: {
           input: {
             userID: _member.id,
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationAdminCredential, resourceID: entities.organizationId },
+            input: { type: organizationAdminCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -173,13 +173,13 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       grantOwner({
         variables: {
           input: {
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
             userID: _member.id,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationOwnerCredential, resourceID: entities.organizationId },
+            input: { type: organizationOwnerCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -194,12 +194,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         variables: {
           input: {
             userID: _member.id,
-            organisationID: entities.organizationId,
+            organizationID: entities.organizationId,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organisationOwnerCredential, resourceID: entities.organizationId },
+            input: { type: organizationOwnerCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,

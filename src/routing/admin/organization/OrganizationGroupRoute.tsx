@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
-import { useOrganisationGroupQuery } from '../../../hooks/generated/graphql';
+import { useOrganizationGroupQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
 import { GroupRoute } from '../GroupRoute';
 
@@ -11,20 +11,20 @@ interface OrgRouteParams {
   organizationId: string;
 }
 
-export const OrganisationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
+export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { groupId, organizationId } = useParams<OrgRouteParams>();
 
-  const { data, loading } = useOrganisationGroupQuery({
-    variables: { organisationId: organizationId, groupId },
+  const { data, loading } = useOrganizationGroupQuery({
+    variables: { organizationId: organizationId, groupId },
     fetchPolicy: 'cache-and-network',
   });
-  const parentMembers = useMemo(() => data?.organisation.members || [], [data]);
+  const parentMembers = useMemo(() => data?.organization.members || [], [data]);
 
   return (
     <GroupRoute
       loading={loading}
-      group={data?.organisation.group}
+      group={data?.organization.group}
       parentMembers={parentMembers}
       paths={paths}
       path={path}

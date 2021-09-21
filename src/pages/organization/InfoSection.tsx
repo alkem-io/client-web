@@ -3,25 +3,25 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 import EmailIcon from '@material-ui/icons/MailOutline';
-import { OrganisationInfoFragment, OrganizationVerificationEnum } from '../../models/graphql-schema';
-import { OrganisationVerifiedState } from '../../components/composite';
+import { OrganizationInfoFragment } from '../../models/graphql-schema';
+import { OrganizationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';
 import TagContainer from '../../components/core/TagContainer';
 import Tag from '../../components/core/Tag';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  organisation?: OrganisationInfoFragment;
+  organization?: OrganizationInfoFragment;
 }
 
-const InfoSection: FC<Props> = ({ organisation }) => {
+const InfoSection: FC<Props> = ({ organization }) => {
   const { t } = useTranslation();
 
-  if (!organisation) {
+  if (!organization) {
     return <Loading text={''} />;
   }
 
-  const { contactEmail, website, verified = OrganizationVerificationEnum.NotVerified, profile } = organisation;
+  const { contactEmail, website, verification, profile } = organization;
   const tags = profile?.tagsets?.flatMap(x => x.tags) || [];
 
   return (
@@ -44,7 +44,7 @@ const InfoSection: FC<Props> = ({ organisation }) => {
           </Grid>
         )}
         <Grid item>
-          <OrganisationVerifiedState state={verified} />
+          <OrganizationVerifiedState state={verification.status} />
         </Grid>
       </Grid>
       <Grid container item>

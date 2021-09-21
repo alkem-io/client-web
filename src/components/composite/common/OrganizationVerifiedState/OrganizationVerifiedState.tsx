@@ -31,12 +31,12 @@ interface Props {
   state: OrganizationVerificationEnum;
 }
 
-const OrganisationVerifiedState: FC<Props> = ({ state }) => {
+const OrganizationVerifiedState: FC<Props> = ({ state }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const isVerified = state === OrganizationVerificationEnum.ManualAttestation;
-  const translation = `components.organisation-verified.${isVerified ? 'verified' : 'not-verified'}`;
+  const isVerified = state === OrganizationVerificationEnum.VerifiedManualAttestation;
+  const translation = `components.organization-verified.${isVerified ? 'verified' : 'not-verified'}`;
   const stateColor = isVerified ? styles.verified : styles.notVerified;
 
   return (
@@ -45,4 +45,4 @@ const OrganisationVerifiedState: FC<Props> = ({ state }) => {
     </Typography>
   );
 };
-export default OrganisationVerifiedState;
+export default OrganizationVerifiedState;

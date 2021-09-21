@@ -1,13 +1,11 @@
 import { Container } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
-import OrganizationMembers from '../../../containers/organisation/OrganizationMembers';
-import { useUpdateNavigation } from '../../../hooks';
+import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
+import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { OrganizationRouteParams } from '../../../routing/admin/organisation/organization';
-import OrganizationAuthorizationPageProps from './OrganisationAuthorizationPageProps';
+import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
 
 export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -17,7 +15,7 @@ export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPag
       ...paths,
       {
         value: '',
-        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganisationOwner}.name` as const),
+        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganizationOwner}.name` as const),
         real: false,
       },
     ],
@@ -26,13 +24,14 @@ export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPag
 
   useUpdateNavigation({ currentPaths });
 
-  const { organizationId } = useParams<OrganizationRouteParams>();
+  const { organizationId } = useOrganization();
+
   return (
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
-          organizationId: organizationId,
-          credential: AuthorizationCredential.OrganisationOwner,
+          organizationId,
+          credential: AuthorizationCredential.OrganizationOwner,
         }}
       >
         {(entities, actions, state) => (

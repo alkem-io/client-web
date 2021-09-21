@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Grid } from '@material-ui/core';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { Tagset } from '../../../models/Profile';
-import { Organisation, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
+import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
 import { EditMode } from '../../../utils/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
@@ -15,7 +15,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { organisationegmentSchema, OrganisationSegment } from '../Common/OrganisationSegment';
+import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment } from '../Common/NameSegment';
 
 const emptyOrganization = {
@@ -25,7 +25,9 @@ const emptyOrganization = {
   domain: '',
   legalEntityName: '',
   website: '',
-  verified: OrganizationVerificationEnum.NotVerified,
+  verification: {
+    status: OrganizationVerificationEnum.NotVerified,
+  },
   profile: {
     description: '',
     avatar: '',
@@ -65,9 +67,9 @@ export const OrganizationForm: FC<Props> = ({
     domain,
     legalEntityName,
     website,
-    verified,
+    verification: { status: verificationStatus },
     profile: { id: profileId, description, references, avatar },
-  } = currentOrganization as Organisation;
+  } = currentOrganization as Organization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
     if (config) return config.configuration.template.users[0].tagsets || [];
@@ -99,7 +101,7 @@ export const OrganizationForm: FC<Props> = ({
     domain: domain || emptyOrganization.domain,
     legalEntityName: legalEntityName || emptyOrganization.legalEntityName,
     website: website || emptyOrganization.website,
-    verified: verified || emptyOrganization.verified,
+    verified: verificationStatus || emptyOrganization.verification.status,
     references: references || emptyOrganization.profile.references,
   };
 
@@ -108,25 +110,25 @@ export const OrganizationForm: FC<Props> = ({
     nameID: yup.string().required(t('forms.validations.required')),
     avatar: profileSegmentSchema.fields?.avatar || yup.string(),
     description: profileSegmentSchema.fields?.description || yup.string(),
-    contactEmail: organisationegmentSchema.fields?.contactEmail || yup.string(),
-    domain: organisationegmentSchema.fields?.domain || yup.string(),
-    legalEntityName: organisationegmentSchema.fields?.legalEntityName || yup.string(),
-    website: organisationegmentSchema.fields?.website || yup.string(),
-    verified: organisationegmentSchema.fields?.verified || yup.string(),
+    contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
+    domain: organizationegmentSchema.fields?.domain || yup.string(),
+    legalEntityName: organizationegmentSchema.fields?.legalEntityName || yup.string(),
+    website: organizationegmentSchema.fields?.website || yup.string(),
+    verified: organizationegmentSchema.fields?.verified || yup.string(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
 
   /**
    * @handleSubmit
-   * @param orgData instance of OrganisationModel
+   * @param orgData instance of OrganizationModel
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (orgData: typeof initialValues) => {
     const { tagsets, avatar, references, description, ...otherData } = orgData;
 
-    const organization: Organisation = {
+    const organization: Organization = {
       ...currentOrganization,
       ...otherData,
       displayName: otherData.name,
@@ -181,7 +183,7 @@ export const OrganizationForm: FC<Props> = ({
                       <>
                         <ProfileSegment disabled={isReadOnlyMode} />
 
-                        <OrganisationSegment disabled={isReadOnlyMode} />
+                        <OrganizationSegment disabled={isReadOnlyMode} />
 
                         <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                         {isEditMode && (

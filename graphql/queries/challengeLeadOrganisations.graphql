@@ -1,14 +1,14 @@
-query challengeLeadOrganisations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+query challengeLeadOrganizations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     challenge(ID: $challengeID) {
       id
-      leadOrganisations {
-        ...OrganisationDetails
+      leadOrganizations {
+        ...OrganizationDetails
       }
     }
   }
-  organisations {
-    ...OrganisationDetails
+  organizations {
+    ...OrganizationDetails
   }
 }

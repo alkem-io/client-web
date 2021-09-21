@@ -5,11 +5,11 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { createStyles, useOrganisation, useUpdateNavigation } from '../../hooks';
+import { createStyles, useOrganization, useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
-import { useMembershipOrganisationQuery } from '../../hooks/generated/graphql';
+import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
@@ -19,7 +19,7 @@ import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
 import UserSection from './UserSection';
 import { SettingsButton } from '../../components/composite';
-import { buildAdminOrganisationUrl } from '../../utils/urlBuilders';
+import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -29,35 +29,35 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-interface OrganisationPageProps extends PageProps {
+interface OrganizationPageProps extends PageProps {
   permissions: {
     edit: boolean;
   };
 }
 
-const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => {
+const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { organisation, organisationId, loading: orgLoading } = useOrganisation();
+  const { organization, organizationId, loading: orgLoading } = useOrganization();
   const currentPaths = useMemo(
-    () => (organisation ? [...paths, { value: url, name: organisation.displayName, real: true }] : paths),
-    [paths, organisation]
+    () => (organization ? [...paths, { value: url, name: organization.displayName, real: true }] : paths),
+    [paths, organization]
   );
   useUpdateNavigation({ currentPaths });
 
-  const { profile, displayName } = organisation || {};
+  const { profile, displayName } = organization || {};
   const { avatar, description } = profile || {};
 
-  const { data, loading: orgMembershipLoading } = useMembershipOrganisationQuery({
+  const { data, loading: orgMembershipLoading } = useMembershipOrganizationQuery({
     variables: {
       input: {
-        organisationID: organisationId,
+        organizationID: organizationId,
       },
     },
-    skip: !organisation,
+    skip: !organization,
   });
-  const { ecoversesHosting = [], challengesLeading = [] } = data?.membershipOrganisation || {};
+  const { ecoversesHosting = [], challengesLeading = [] } = data?.membershipOrganization || {};
 
   if (orgLoading || orgMembershipLoading) {
     return <Loading />;
@@ -72,7 +72,7 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
             permissions.edit && (
               <SettingsButton
                 color={'primary'}
-                to={buildAdminOrganisationUrl(organisation?.id || '')}
+                to={buildAdminOrganizationUrl(organization?.id || '')}
                 tooltip={t('components.settingsButton.tooltip')}
               />
             )
@@ -80,7 +80,7 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
         />
         <SubHeader text={description} />
         <Body>
-          <InfoSection organisation={organisation} />
+          <InfoSection organization={organization} />
         </Body>
       </Section>
       <Divider />
@@ -89,49 +89,49 @@ const OrganisationPage: FC<OrganisationPageProps> = ({ paths, permissions }) => 
         icon={<Icon component={Globe} color="primary" size="xl" />}
         cardComponent={HostedEcoverseCard}
         cardHeight={520}
-        title={t('pages.organisation.ecoverses.title')}
-        subtitle={t('pages.organisation.ecoverses.subtitle')}
-        noDataText={t('pages.organisation.ecoverses.no-data')}
+        title={t('pages.organization.ecoverses.title')}
+        subtitle={t('pages.organization.ecoverses.subtitle')}
+        noDataText={t('pages.organization.ecoverses.no-data')}
       />
       <Divider />
       <MembershipSection
         entities={challengesLeading}
         icon={<Icon component={CompassIcon} color="primary" size="xl" />}
         cardComponent={LeadingChallengeCard}
-        title={t('pages.organisation.challenges.title')}
-        subtitle={t('pages.organisation.challenges.subtitle')}
-        noDataText={t('pages.organisation.challenges.no-data')}
+        title={t('pages.organization.challenges.title')}
+        subtitle={t('pages.organization.challenges.subtitle')}
+        noDataText={t('pages.organization.challenges.no-data')}
       />
       <Divider />
       <UserSection
-        organisationId={organisation?.id}
-        credential={AuthorizationCredential.OrganisationOwner}
+        organizationId={organization?.id}
+        credential={AuthorizationCredential.OrganizationOwner}
         icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organisation.users.owners.title')}
-        subtitle={t('pages.organisation.users.owners.subtitle')}
-        noDataText={t('pages.organisation.users.owners.no-data')}
+        title={t('pages.organization.users.owners.title')}
+        subtitle={t('pages.organization.users.owners.subtitle')}
+        noDataText={t('pages.organization.users.owners.no-data')}
       />
       <Divider />
       <UserSection
-        organisationId={organisation?.id}
-        credential={AuthorizationCredential.OrganisationAdmin}
+        organizationId={organization?.id}
+        credential={AuthorizationCredential.OrganizationAdmin}
         icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organisation.users.admins.title')}
-        subtitle={t('pages.organisation.users.admins.subtitle')}
-        noDataText={t('pages.organisation.users.admins.no-data')}
+        title={t('pages.organization.users.admins.title')}
+        subtitle={t('pages.organization.users.admins.subtitle')}
+        noDataText={t('pages.organization.users.admins.no-data')}
       />
       <Divider />
       <UserSection
-        organisationId={organisation?.id}
-        credential={AuthorizationCredential.OrganisationMember}
+        organizationId={organization?.id}
+        credential={AuthorizationCredential.OrganizationMember}
         icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organisation.users.members.title')}
-        subtitle={t('pages.organisation.users.members.subtitle')}
-        noDataText={t('pages.organisation.users.members.no-data')}
+        title={t('pages.organization.users.members.title')}
+        subtitle={t('pages.organization.users.members.subtitle')}
+        noDataText={t('pages.organization.users.members.no-data')}
       />
       <Divider />
     </>
   );
 };
 
-export default OrganisationPage;
+export default OrganizationPage;

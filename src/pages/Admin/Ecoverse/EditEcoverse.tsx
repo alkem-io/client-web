@@ -29,7 +29,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organisations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
     [organizationList]
   );
 

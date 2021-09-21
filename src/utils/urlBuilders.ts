@@ -1,4 +1,4 @@
-import { COMMUNITY_ROUTE } from '../models/constants';
+import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../models/constants';
 
 export const buildEcoverseUrl = (ecoverseNameId: string) => `/${ecoverseNameId}`;
 
@@ -8,7 +8,7 @@ export const buildChallengeUrl = (ecoverseNameId: string, challengeNameId: strin
 export const buildOpportunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
   buildChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
-export const buildOrganisationUrl = (organisationNameId: string) => `/organization/${organisationNameId}`;
+export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
 export const buildAdminEcoverseUrl = (ecoverseNameId: string) => `/admin/ecoverses/${ecoverseNameId}`;
 
@@ -18,7 +18,7 @@ export const buildAdminChallengeUrl = (ecoverseNameId: string, challengeNameId: 
 export const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
   buildAdminChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
-export const buildAdminOrganisationUrl = (organisationNameId: string) => `/admin/organizations/${organisationNameId}`;
+export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
 export const buildEcoverseCommunityUrl = (ecoverseNameId: string) =>
   buildEcoverseUrl(ecoverseNameId).concat(COMMUNITY_ROUTE);
@@ -31,3 +31,14 @@ export const buildOpportunityCommunityUrl = (
 ) => buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+
+export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
+  returnUrl ? `${AUTH_REQUIRED_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_REQUIRED_PATH;
+
+export const buildLoginUrl = (returnUrl?: string) =>
+  returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+
+export const buildEcoverseApplyUrl = (ecoverseNameId: string) => `${buildEcoverseUrl(ecoverseNameId)}/apply`;
+
+export const buildChallengeApplyUrl = (ecoverseNameId: string, challengeNameId) =>
+  `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/apply`;
