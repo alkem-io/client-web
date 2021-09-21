@@ -9,13 +9,6 @@ import { OrganizationsRoute } from './organization/organization';
 import { UsersRoute } from './user';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
-export interface AdminParameters {
-  challengeId: string;
-  opportunityId: string;
-  organizationId: string;
-  groupId: string;
-}
-
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
