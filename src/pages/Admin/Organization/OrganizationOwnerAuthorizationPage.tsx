@@ -43,6 +43,8 @@ export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPag
             executor={entities.currentMember}
             onAdd={actions.handleAssignOwner}
             onRemove={actions.handleRemoveOwner}
+            loadingMembers={state.loading}
+            loadingAvailalbeMembers={state.loading}
           />
         )}
       </OrganizationMembers>

@@ -188,6 +188,9 @@
     }
   },
   "components": {
+    "edit-members": {
+      "no-available-memebers": "No users available to add; please check members of containing community"
+    },
     "application-button": {
       "dialog-join-parent": {
         "title": "Want to join the parent Ecoverse?",

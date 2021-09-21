@@ -34,6 +34,8 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       onRemove={onRemove}
       addingMember={loading}
       removingMember={loading}
+      loadingMembers={loading}
+      loadingAvailalbeMembers={loading}
     />
   );
 };
