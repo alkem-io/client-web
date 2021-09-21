@@ -205,6 +205,7 @@ const CommunityPage: FC<Props> = ({
             state={{
               loadingMessages: false,
               submittingMessage: false,
+              removingMessage: false,
             }}
           />
         </Box>
