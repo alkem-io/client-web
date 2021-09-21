@@ -4,8 +4,8 @@
   },
   "search": {
     "header": "Search",
-    "subheader": "Find relevant users, organisations, groups and not least Challenges!",
-    "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
+    "subheader": "Find relevant users, organizations, groups and not least Challenges!",
+    "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
     "body": "",
     "organization": {
       "no-hosted": "None",
@@ -39,7 +39,9 @@
     "cancel-project": "Cancel project",
     "create-project": "Create project",
     "processing": "Processing...",
-    "details": "Details"
+    "details": "Details",
+    "settings": "Settings",
+    "member": "Member"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -67,18 +69,28 @@
     "challenges": "Challenges",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
-    "organisation": "Organisation",
-    "organisations": "Organisations",
+    "organization": "Organization",
+    "organizations": "Organizations",
     "project": "Project",
     "projects": "Projects",
     "group": "Group",
     "groups": "Groups",
+    "user-group": "User group",
+    "user-groups": "User groups",
+    "user": "User",
+    "users": "Users",
+    "update": "Update",
+    "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
       "female": "female"
+    },
+    "verified-status": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
     },
     "enums": {
       "authorization-credentials": {
@@ -137,18 +149,18 @@
           "order": 9,
           "hidden": true
         },
-        "OrganisationOwner": {
-          "name": "Organisation Owner",
+        "OrganizationOwner": {
+          "name": "Organization Owner",
           "order": 10,
           "hidden": false
         },
-        "OrganisationAdmin": {
-          "name": "Organisation Admin",
+        "OrganizationAdmin": {
+          "name": "Organization Admin",
           "order": 11,
           "hidden": false
         },
-        "OrganisationMember": {
-          "name": "Organisation Member",
+        "OrganizationMember": {
+          "name": "Organization Member",
           "order": 12,
           "hidden": true
         },
@@ -176,7 +188,17 @@
     }
   },
   "components": {
-    "organisation-verified": {
+    "application-button": {
+      "dialog-join-parent": {
+        "title": "Want to join the parent Ecoverse?",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> ecoverse first. Please add the challenge you want to join in the ecoverse's application form."
+      },
+      "dialog-parent-app-pending": {
+        "title": "Parrent application pending!",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> ecoverse first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+      }
+    },
+    "organization-verified": {
       "verified": "Verified",
       "not-verified": "Not verified"
     },
@@ -242,7 +264,7 @@
         "placeholder": "Enter a description"
       }
     },
-    "organisationSegment": {
+    "organizationSegment": {
       "contactEmail": {
         "name": "Contact email",
         "placeholder": "Enter a contact email"
@@ -253,7 +275,7 @@
       },
       "legalEntityName": {
         "name": "Legal entity name",
-        "placeholder": "Enter the legal name of this organisation"
+        "placeholder": "Enter the legal name of this organization"
       },
       "website": {
         "name": "Website",
@@ -316,7 +338,7 @@
       "members": "Members",
       "interests": "Interests",
       "users": "Users",
-      "organisations": "Organisations",
+      "organizations": "Organizations",
       "lifecycle-info": "Click to view lifecycle graph"
     },
     "home": {
@@ -328,36 +350,36 @@
         },
         "ecoverse": {
           "header": "Explore the hosted Ecoverses!",
-          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organisation.<br>",
+          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
         }
       }
     },
-    "organisation": {
+    "organization": {
       "ecoverses": {
         "title": "Hosted ecoverses",
-        "subtitle": "Ecoverses which this organisation is hosting",
+        "subtitle": "Ecoverses which this organization is hosting",
         "no-data": "No ecoverses are hosted at the moment"
       },
       "challenges": {
         "title": "Challenges leading",
-        "subtitle": "Challenges which this organisation is leading",
+        "subtitle": "Challenges which this organization is leading",
         "no-data": "No challenges are being led at the moment"
       },
       "users": {
         "owners": {
           "title": "Owners",
-          "subtitle": "Owners of this organisation",
+          "subtitle": "Owners of this organization",
           "no-data": "None"
         },
         "admins": {
           "title": "Admins",
-          "subtitle": "Admins of this organisation",
+          "subtitle": "Admins of this organization",
           "no-data": "None"
         },
         "members": {
           "title": "Members",
-          "subtitle": "Members of this organisation",
+          "subtitle": "Members of this organization",
           "no-data": "None"
         }
       }
@@ -513,6 +535,12 @@
         }
       }
     },
+    "community": {
+      "leading-organizations": "Leading organizations",
+      "ecoverse-host": "Ecoverse host",
+      "no-user-groups": "There are no user groups",
+      "no-updates": "There are no updates"
+    },
     "login": {
       "title": "Sign in",
       "validations": {
@@ -525,7 +553,7 @@
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for multi stakeholder collaboration",
+      "description": "Leading the way in 21st century style collaboration and governance, Alkemio facilitates ecoverses for multi stakeholder collaboration",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
@@ -607,7 +635,10 @@
       }
     },
     "user-profile": {
-      "email-not-verified": " Please verify your <l>email</l>."
+      "email-not-verified": " Please verify your <l>email</l>.",
+      "tooltips": {
+        "settings": "User profile settings"
+      }
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",

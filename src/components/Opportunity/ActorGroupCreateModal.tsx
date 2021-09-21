@@ -24,16 +24,16 @@ interface P {
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
   const { t } = useTranslation();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
   const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({
-    variables: { ecoverseId, opportunityId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId },
   });
   const ecosystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
   const isFormValid = name && description && description.length >= 2 && description.length <= 380;

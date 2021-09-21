@@ -1,25 +1,19 @@
 import React, { FC } from 'react';
 import EditLifecycle from '../../../components/Admin/EditLifecycle';
-import { useParams } from 'react-router';
 import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../../hooks/generated/graphql';
 import Loading from '../../../components/core/Loading/Loading';
 import { PageProps } from '../../../pages';
-import { useApolloErrorHandler } from '../../../hooks';
-
-interface Params {
-  ecoverseId: string;
-  opportunityId: string;
-}
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 
 interface Props extends PageProps {}
 
 const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId = '', opportunityId: opportunityNameId = '' } = useParams<Params>();
+  const { ecoverseNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const { data, loading } = useOpportunityLifecycleQuery({
-    variables: { ecoverseId: ecoverseId, opportunityId: opportunityNameId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
   });
 

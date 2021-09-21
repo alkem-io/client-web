@@ -20,7 +20,7 @@ fragment UserMembershipDetails on UserMembership {
       displayName
     }
   }
-  organisations {
+  organizations {
     id
     nameID
     displayName

@@ -9,7 +9,6 @@ import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import { CommunitySection } from '../components/Community/CommunitySection';
@@ -25,14 +24,12 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
+import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityTemplateQuery,
 } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
-import { SEARCH_PAGE } from '../models/constants';
 import { Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
@@ -101,8 +98,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const history = useHistory();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -115,7 +111,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
   const { data: _activity } = useOpportunityActivityQuery({
-    variables: { ecoverseId, opportunityId: opportunity?.id },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunity?.id },
   });
   const activity = _activity?.ecoverse?.opportunity?.activity || [];
 
@@ -147,7 +143,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const { data: opportunityLifecycleQuery } = useOpportunityLifecycleQuery({
-    variables: { ecoverseId, opportunityId: id },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: id },
   });
 
   const projectRef = useRef<HTMLDivElement>(null);
@@ -230,7 +226,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={buildAdminOpportunityUrl(ecoverseId, challengeId, opportunity.nameID)}
+                    to={buildAdminOpportunityUrl(ecoverseNameId, challengeId, opportunity.nameID)}
                     tooltip={t('pages.opportunity.sections.header.buttons.settings.tooltip')}
                   />
                 )
@@ -472,7 +468,6 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
         subTitle={t('pages.opportunity.sections.community.subtitle')}
         users={users}
         shuffle={true}
-        onExplore={() => history.push(SEARCH_PAGE)}
       />
       <Divider />
       <div ref={projectRef} />

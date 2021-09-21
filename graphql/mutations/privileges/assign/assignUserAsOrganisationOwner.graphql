@@ -1,5 +1,5 @@
-mutation assignUserAsOrganisationOwner($input: AssignOrganisationOwnerInput!) {
-  assignUserAsOrganisationOwner(membershipData: $input) {
+mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
+  assignUserAsOrganizationOwner(membershipData: $input) {
     id
     displayName
   }

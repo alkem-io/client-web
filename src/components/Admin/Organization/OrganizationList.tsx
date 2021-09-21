@@ -33,12 +33,12 @@ export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
   };
 
   const organizationsList =
-    organizationsListQuery?.organisations?.map(
+    organizationsListQuery?.organizations?.map(
       c =>
         ({
           id: c.id,
           value: c.displayName,
-          url: `${url}/${c.id}`,
+          url: `${url}/${c.nameID}`,
         } as SearchableListItem)
     ) || [];
 

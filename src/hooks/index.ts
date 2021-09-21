@@ -13,8 +13,14 @@ export * from './authentication/useAuthenticationContext';
 export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
+
 export * from './useEcoverse';
-export * from './useOrganisation';
+export * from './useOrganization';
+export * from './useChallenge';
+export * from './useOpportunity';
+
+export * from './useUrlParams';
+
 export * from './operations/useEditReference';
 export * from './useNavigation';
 export * from './useNotification';

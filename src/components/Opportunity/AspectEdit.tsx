@@ -52,12 +52,12 @@ const useContextEditStyles = createStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
   const { t } = useTranslation();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
   const { data: opportunity, loading: loadingOpportunity } = useOpportunityProfileQuery({
-    variables: { ecoverseId, opportunityId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId },
   });
   const contextId = opportunity?.ecoverse?.opportunity?.context?.id;
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
@@ -83,14 +83,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

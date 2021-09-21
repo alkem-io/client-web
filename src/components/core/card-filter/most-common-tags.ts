@@ -1,14 +1,13 @@
-import { RequiredFields } from './CardFilter';
-
-export default function mostCommonTags<T extends RequiredFields>(data: T[]): string[] {
+export default function mostCommonTags<T>(data: T[], valueGetter: (data: T) => string[]): string[] {
   if (!data.length) {
     return [];
   }
+
   // holds tags and usages
   const tagMap: Record<string, number> = {};
 
   data
-    .flatMap(x => x.tagset?.tags || [])
+    .flatMap(x => valueGetter(x) || [])
     .forEach(x => {
       const usages = tagMap[x];
       tagMap[x] = (usages || 0) + 1;

@@ -3,13 +3,16 @@ import { Autocomplete } from '@material-ui/lab';
 import { isArray } from 'lodash';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 
+// TODO: Do we realy need to extend from OutlinedTextFieldProps?
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   onChange?: (tags: (string | string[])[]) => void;
   value: string[];
+  readOnly?: boolean;
+  disabled?: boolean;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
-  ({ InputProps, onChange, value, placeholder, ...rest }, ref) => {
+  ({ onChange, value, placeholder, readOnly, disabled, ...rest }, ref) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
       const changedValues = newValue.map(x => (isArray(x) ? x : x.trim())).filter(x => x.length >= 2);
       onChange && onChange(changedValues);
@@ -29,6 +32,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
         value={value}
         onChange={handleChange}
         disableClearable
+        disabled={readOnly || disabled}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip variant="outlined" label={option} {...getTagProps({ index })} size="small" />

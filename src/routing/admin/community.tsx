@@ -5,13 +5,14 @@ import { CommunityCredentials } from '../../components/Admin/Authorization/EditC
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
-import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
+import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
 import { useDeleteUserGroup } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
+import { nameOfUrl } from '../url-params';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
@@ -53,7 +54,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityUpdatesPage paths={paths} community={community} />
       </Route>
       <Route path={`${path}/lead`}>
-        <LeadingOrganisationPage paths={paths} />
+        <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -87,7 +88,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route exact path={`${path}/new`}>
         <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route path={`${path}/:${nameOfUrl.groupId}`}>
         <EcoverseGroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">

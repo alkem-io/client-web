@@ -5,16 +5,9 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
-import { OrganizationsRoute } from './organisation/organization';
+import { OrganizationsRoute } from './organization/organization';
 import { UsersRoute } from './user';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
-
-export interface AdminParameters {
-  challengeId: string;
-  opportunityId: string;
-  organizationId: string;
-  groupId: string;
-}
 
 export const Admin: FC = () => {
   useTransactionScope({ type: 'admin' });

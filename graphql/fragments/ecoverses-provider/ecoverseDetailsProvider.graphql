@@ -10,6 +10,9 @@ fragment EcoverseDetailsProvider on Ecoverse {
     name
     value
   }
+  community {
+    id
+  }
   tagset {
     id
     name

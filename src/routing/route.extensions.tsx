@@ -5,11 +5,22 @@ import { useAuthenticationContext } from '../hooks';
 import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
-interface RestrictedRoutePros extends RouteProps {
-  requiredCredentials?: AuthorizationCredential[];
+export interface CredentialsForResource {
+  credential: AuthorizationCredential;
+  resourceId: string;
 }
 
-const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
+interface RestrictedRoutePros extends RouteProps {
+  requiredCredentials?: AuthorizationCredential[];
+  credentialForResource?: CredentialsForResource[];
+}
+
+const RestrictedRoute: FC<RestrictedRoutePros> = ({
+  children,
+  requiredCredentials = [],
+  credentialForResource = [],
+  ...rest
+}) => {
   const { pathname } = useLocation();
   const { user, loading: userLoading } = useUserContext();
   const { isAuthenticated, loading: loadingAuthContext } = useAuthenticationContext();
@@ -22,7 +33,15 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
     return <Redirect to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
   }
 
-  if (requiredCredentials.every(x => !user || !user.hasCredentials(x)) && requiredCredentials.length !== 0) {
+  if (!user || (requiredCredentials.every(x => !user.hasCredentials(x)) && requiredCredentials.length !== 0)) {
+    return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
+  }
+
+  if (
+    !user ||
+    (credentialForResource.some(({ credential, resourceId }) => !user.hasCredentials(credential, resourceId)) &&
+      credentialForResource.length)
+  ) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 

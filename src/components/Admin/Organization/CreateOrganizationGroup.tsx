@@ -1,11 +1,11 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnOrganizationMutation,
   useOrganizationNameQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -13,11 +13,11 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { organizationNameId } = useUrlParams();
   const handleError = useApolloErrorHandler();
 
-  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });
-  const organization = organizationQuery?.organisation;
+  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationNameId } });
+  const organization = organizationQuery?.organization;
 
   const redirectToCreatedGroup = (groupId: string) => {
     const newGroupPath = url.replace('/new', `/${groupId}`);
@@ -25,11 +25,11 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   };
 
   const [createGroup] = useCreateGroupOnOrganizationMutation({
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganisation.id),
+    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganization.id),
     onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
-        const { createGroupOnOrganisation: newGroup } = data;
+        const { createGroupOnOrganization: newGroup } = data;
         cache.modify({
           id: cache.identify(organization),
           fields: {
@@ -51,13 +51,13 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
       createGroup({
         variables: {
           input: {
-            parentID: organizationId,
+            parentID: organizationNameId,
             name,
           },
         },
       });
     },
-    [organizationId]
+    [organizationNameId]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

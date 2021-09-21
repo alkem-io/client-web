@@ -58,9 +58,11 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
           <Box display={'flex'} alignItems={'end'} flexDirection={'column'}>
             <Tooltip placement={'bottom'} id={'Edit profile'} title={'Edit profile'}>
               <span>
-                <IconButton aria-label="Edit" size="small" onClick={onEdit}>
-                  <Edit />
-                </IconButton>
+                {onEdit && (
+                  <IconButton aria-label="Edit" size="small" onClick={onEdit}>
+                    <Edit />
+                  </IconButton>
+                )}
               </span>
             </Tooltip>
           </Box>

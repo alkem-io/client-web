@@ -1,5 +1,4 @@
 import mostCommonTags from './most-common-tags';
-import { RequiredFields } from './CardFilter';
 import { Tagset } from '../../../models/graphql-schema';
 
 type SimpleType = Partial<Tagset>;
@@ -10,24 +9,26 @@ type TestData = {
   result: string[];
 };
 
+const getter = (val: SimpleType) => val?.tags || [];
+
 const data = (): TestData[] =>
   (
     [
       // edge cases
-      { name: 'a', data: [], result: [] },
-      { name: 'b', data: [{ tagset: { tags: [] } }], result: [] },
+      { name: '1', data: [], result: [] },
+      { name: '2', data: [{ tags: [] }], result: [] },
       // normal match
-      { name: '3', data: [{ tagset: { tags: ['a'] } }], result: ['a'] },
-      { name: '4', data: [{ tagset: { tags: ['a', 'b'] } }], result: ['a', 'b'] },
+      { name: '3', data: [{ tags: ['a'] }], result: ['a'] },
+      { name: '4', data: [{ tags: ['a', 'b'] }], result: ['a', 'b'] },
       // from multiple sources
-      { name: '5', data: [{ tagset: { tags: ['a'] } }, { tagset: { tags: ['a'] } }], result: ['a'] },
-      { name: '6', data: [{ tagset: { tags: ['a'] } }, { tagset: { tags: ['b'] } }], result: ['a', 'b'] },
-      { name: '7', data: [{ tagset: { tags: ['a'] } }, { tagset: { tags: ['a', 'b'] } }], result: ['a', 'b'] },
+      { name: '5', data: [{ tags: ['a'] }, { tags: ['a'] }], result: ['a'] },
+      { name: '6', data: [{ tags: ['a'] }, { tags: ['b'] }], result: ['a', 'b'] },
+      { name: '7', data: [{ tags: ['a'] }, { tags: ['a', 'b'] }], result: ['a', 'b'] },
       // with sorting
-      { name: '8', data: [{ tagset: { tags: ['a', 'b'] } }, { tagset: { tags: ['b'] } }], result: ['b', 'a'] },
+      { name: '8', data: [{ tags: ['a', 'b'] }, { tags: ['b'] }], result: ['b', 'a'] },
       {
         name: '9',
-        data: [{ tagset: { tags: ['a', 'b'] } }, { tagset: { tags: ['b', 'c'] } }],
+        data: [{ tags: ['a', 'b'] }, { tags: ['b', 'c'] }],
         result: ['b', 'a', 'c'],
       },
     ] as TestData[]
@@ -35,7 +36,7 @@ const data = (): TestData[] =>
 
 describe('mostCommonTags', () => {
   test.concurrent.each(data())('%s', async ({ data, result }) => {
-    const tags = mostCommonTags(data as RequiredFields[]);
+    const tags = mostCommonTags(data as any[], getter);
     expect(tags).toEqual(result);
   });
 });
