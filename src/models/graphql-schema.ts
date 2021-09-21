@@ -2306,6 +2306,7 @@ export type OrganizationProfileInfoFragment = {
   domain?: Maybe<string>;
   legalEntityName?: Maybe<string>;
   website?: Maybe<string>;
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -3084,6 +3085,7 @@ export type UpdateOrganizationMutation = {
     domain?: Maybe<string>;
     legalEntityName?: Maybe<string>;
     website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -4917,6 +4919,7 @@ export type OrganizationProfileInfoQuery = {
     domain?: Maybe<string>;
     legalEntityName?: Maybe<string>;
     website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
       id: string;

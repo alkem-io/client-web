@@ -330,6 +330,10 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     domain
     legalEntityName
     website
+    verification {
+      id
+      status
+    }
     profile {
       id
       avatar
