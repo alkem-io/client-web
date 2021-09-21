@@ -8,7 +8,7 @@ import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/jou
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useRouteMatch } from 'react-router-dom';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import BackdropWithMessage from '../components/BackdropWithMessage';
@@ -34,7 +34,6 @@ import {
   useChallengeLifecycleQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { SEARCH_PAGE } from '../models/constants';
 import { Challenge as ChallengeType, Organization } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
@@ -45,6 +44,10 @@ import {
   buildOrganizationUrl,
 } from '../utils/urlBuilders';
 import { PageProps } from './common';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -134,12 +137,6 @@ const useChallengeStyles = createStyles(theme => ({
   },
 }));
 
-interface Params {
-  challengeId?: string;
-  opportunityId?: string;
-  ecoverseId?: string;
-}
-
 const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { edit: false } }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -147,8 +144,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   const styles = useChallengeStyles();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { ecoverseId = '' } = useParams<Params>();
-  const { ecoverse, toEcoverseId } = useEcoverse();
+  const { ecoverse, ecoverseNameId, ecoverseId } = useEcoverse();
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
@@ -156,7 +152,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   const communityId = community?.id;
 
   const { data: challengeLifecycleQuery, loading: loadingChallengeLifecycle } = useChallengeLifecycleQuery({
-    variables: { ecoverseId, challengeId: id },
+    variables: { ecoverseId: ecoverseNameId, challengeId: id },
   });
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
@@ -167,9 +163,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   });
   const applications = memberShip?.membershipUser?.applications || [];
   const userApplication = applications.find(x => x.communityID === communityId);
-  const parenetApplication = applications.find(x => x.communityID === ecoverse?.ecoverse.community?.id);
+  const parenetApplication = applications.find(x => x.communityID === ecoverse?.community?.id);
 
-  const { data: _activity } = useChallengeActivityQuery({ variables: { ecoverseId, challengeId: id } });
+  const { data: _activity } = useChallengeActivityQuery({
+    variables: {
+      ecoverseId: ecoverseNameId,
+      challengeId: id,
+    },
+  });
   const activity = _activity?.ecoverse?.challenge?.activity || [];
 
   const projects = useMemo(
@@ -257,7 +258,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={buildAdminChallengeUrl(ecoverseId, challenge.nameID)}
+                    to={buildAdminChallengeUrl(ecoverseNameId, challenge.nameID)}
                     tooltip={t('pages.challenge.sections.header.buttons.settigns.tooltip')}
                   />
                 )
@@ -296,12 +297,12 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
             <ApplicationButton
               isAuthenticated={isAuthenticated}
               isMember={user?.ofChallenge(challenge?.id)}
-              isNotParentMember={!user?.ofEcoverse(toEcoverseId(ecoverseId))}
-              applyUrl={buildChallengeApplyUrl(ecoverseId, challenge.nameID)}
-              parentApplyUrl={buildEcoverseApplyUrl(ecoverseId)}
+              isNotParentMember={!user?.ofEcoverse(ecoverseId)}
+              applyUrl={buildChallengeApplyUrl(ecoverseNameId, challenge.nameID)}
+              parentApplyUrl={buildEcoverseApplyUrl(ecoverseNameId)}
               applicationState={userApplication?.state}
               parentApplicationState={parenetApplication?.state}
-              ecoverseName={ecoverse?.ecoverse.displayName}
+              ecoverseName={ecoverse?.displayName}
               challengeName={challenge.displayName}
             />
           </div>
@@ -320,7 +321,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
-      <CardFilter data={opportunities}>
+      <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
         {filteredData => (
           <CardContainer>
             {filteredData.map((opp, i) => (
@@ -349,11 +350,10 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
       >
         <ChallengeCommunitySection
           challengeId={challenge.id}
-          ecoverseId={ecoverseId}
+          ecoverseId={ecoverseNameId}
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}
           body={who}
-          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </BackdropWithMessage>
       <Divider />

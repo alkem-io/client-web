@@ -32,11 +32,14 @@ import {
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { SEARCH_PAGE } from '../models/constants';
-import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
+import { Challenge, Context, EcoverseInfoFragment } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -51,7 +54,7 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseInfoQuery;
+  ecoverse: EcoverseInfoFragment;
   permissions: {
     edit: boolean;
   };
@@ -68,34 +71,34 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { toEcoverseId } = useEcoverse();
+  const { ecoverseId } = useEcoverse();
 
-  const { displayName: name, context, nameID: ecoverseId, community } = ecoverse.ecoverse;
+  const { displayName: name, context, nameID: ecoverseNameId, community } = ecoverse;
   const communityId = community?.id;
 
   const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: user?.user?.id || '' } } });
   const applications = memberShip?.membershipUser?.applications || [];
   const userApplication = applications.find(x => x.communityID === communityId);
 
-  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId: ecoverseNameId } });
 
   const {
     data: _challenges,
     error: challengesError,
     loading: isChallengeLoading,
   } = useChallengeCardsQuery({
-    variables: { ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
   });
   const challenges = (_challenges?.ecoverse?.challenges || []) as Challenge[];
 
-  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId: ecoverseNameId } });
   const projects = _projects?.ecoverse?.projects || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
 
-  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId: ecoverseNameId } });
   const visual = _visual?.ecoverse?.context?.visual;
 
-  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId } });
+  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId: ecoverseNameId } });
   const activity = _activity?.ecoverse?.activity || [];
 
   useUpdateNavigation({ currentPaths: paths });
@@ -199,7 +202,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             permissions.edit && (
               <SettingsButton
                 color={'primary'}
-                to={buildAdminEcoverseUrl(ecoverseId)}
+                to={buildAdminEcoverseUrl(ecoverseNameId)}
                 tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
               />
             )
@@ -213,7 +216,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
             <ApplicationButton
               isAuthenticated={isAuthenticated}
-              isMember={user?.ofEcoverse(toEcoverseId(ecoverseId))}
+              isMember={user?.ofEcoverse(ecoverseId)}
               applyUrl={`${url}/apply`}
               applicationState={userApplication?.state}
             />
@@ -246,7 +249,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             </Grid>
           </Grid>
         ) : (
-          <CardFilter data={challenges}>
+          <CardFilter data={challenges} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
             {filteredData => (
               <CardContainer>
                 {filteredData.map((challenge, i) => (
@@ -277,7 +280,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
           subTitle={t('pages.ecoverse.sections.community.subheader')}
           body={context?.who}
           shuffle={true}
-          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </AuthenticationBackdrop>
       <Divider />

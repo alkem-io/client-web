@@ -1,4 +1,4 @@
-import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH } from '../models/constants';
+import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../models/constants';
 
 export const buildEcoverseUrl = (ecoverseNameId: string) => `/${ecoverseNameId}`;
 
@@ -19,6 +19,16 @@ export const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId
   buildAdminChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
+
+export const buildEcoverseCommunityUrl = (ecoverseNameId: string) =>
+  buildEcoverseUrl(ecoverseNameId).concat(COMMUNITY_ROUTE);
+export const buildChallengeCommunityUrl = (ecoverseNameId: string, challengeNameId: string) =>
+  buildChallengeUrl(ecoverseNameId, challengeNameId).concat(COMMUNITY_ROUTE);
+export const buildOpportunityCommunityUrl = (
+  ecoverseNameId: string,
+  challengeNameId: string,
+  opportunityNameId: string
+) => buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 

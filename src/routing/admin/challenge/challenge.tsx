@@ -17,6 +17,8 @@ import { OpportunitiesRoutes } from '../opportunity/opportunity';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
+import { ChallengeProvider } from '../../../context/ChallengeProvider';
+import { OpportunityProvider } from '../../../context/OpportunityProvider';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -33,7 +35,9 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         <EditChallenge mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
       </Route>
       <Route path={`${path}/:challengeId`}>
-        <ChallengeRoutes paths={currentPaths} />
+        <ChallengeProvider>
+          <ChallengeRoutes paths={currentPaths} />
+        </ChallengeProvider>
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -46,15 +50,15 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { challengeId } = useParams<AdminParameters>();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
 
   const { data } = useChallengeCommunityQuery({
-    variables: { ecoverseId, challengeId },
+    variables: { ecoverseId: ecoverseNameId, challengeId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
   const { data: ecoverseCommunity } = useEcoverseCommunityQuery({
-    variables: { ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -76,7 +80,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           data={managementData.challengeLvl}
           paths={currentPaths}
           title={data?.ecoverse.challenge.displayName}
-          entityUrl={buildChallengeUrl(ecoverseId, challengeId)}
+          entityUrl={buildChallengeUrl(ecoverseNameId, challengeId)}
         />
       </Route>
       <Route path={`${path}/edit`}>
@@ -93,7 +97,9 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route path={`${path}/opportunities`}>
-        <OpportunitiesRoutes paths={currentPaths} challengeId={challengeUUID} />
+        <OpportunityProvider>
+          <OpportunitiesRoutes paths={currentPaths} />
+        </OpportunityProvider>
       </Route>
       <Route path={`${path}/authorization`}>
         <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />

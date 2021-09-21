@@ -1,29 +1,52 @@
-import filterFn from './filterFn';
+import filterFn, { ValueType } from './filterFn';
 import { RequiredFields } from './CardFilter';
 
-type SimpleType = Partial<RequiredFields>[];
+type TestDataType = RequiredFields & {
+  displayName?: string;
+  tags?: string[];
+  context?: {
+    background?: string;
+    impact?: string;
+    tagline?: string;
+    vision?: string;
+    who?: string;
+  };
+};
 
 type TestData = {
   name: string;
-  data: SimpleType; //for easier testing
+  data: TestDataType[];
   terms: string[];
   result: string[]; //for easier testing - array of ids of the filtered objects
 };
+
+const getter = ({ id, displayName, tags, context: c }: TestDataType): ValueType => ({
+  id: id,
+  values: [
+    displayName || '',
+    (tags || []).join(' '),
+    c?.background || '',
+    c?.impact || '',
+    c?.tagline || '',
+    c?.vision || '',
+    c?.who || '',
+  ],
+});
 
 const data = (): TestData[] =>
   (
     [
       // edge cases
-      { name: '1', data: [] as SimpleType, terms: [], result: [] },
-      { name: '2', data: [] as SimpleType, terms: ['1'], result: [] },
-      { name: '3', data: [{ id: '1' }] as SimpleType, terms: [], result: ['1'] },
+      { name: '1', data: [], terms: [], result: [] },
+      { name: '2', data: [], terms: ['1'], result: [] },
+      { name: '3', data: [{ id: '1' }], terms: [], result: ['1'] },
       // normal full match
       {
         name: '4',
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'test' },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -32,7 +55,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'test' },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -41,7 +64,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'test123' },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -51,7 +74,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'tes' },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -60,7 +83,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { background: 'tes' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -69,7 +92,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { impact: 'tes' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -78,7 +101,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { tagline: 'tes' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -87,7 +110,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { vision: 'tes' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -96,7 +119,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { who: 'tes' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1'],
       },
@@ -106,7 +129,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { background: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -115,7 +138,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { impact: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -124,7 +147,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { tagline: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -133,7 +156,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { vision: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -142,7 +165,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { who: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -152,7 +175,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'test', context: { who: 'test' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -161,7 +184,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'test', context: { who: 'test1' } },
-        ] as SimpleType,
+        ],
         terms: ['test', 'test1'],
         result: ['1', '2'],
       },
@@ -171,7 +194,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: 'tEsT' },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -180,7 +203,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { background: 'tEsT' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -189,7 +212,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { impact: 'tEsT' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -198,7 +221,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { tagline: 'tEsT' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -207,7 +230,7 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { vision: 'tEsT' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
@@ -216,80 +239,80 @@ const data = (): TestData[] =>
         data: [
           { id: '1', displayName: 'test' },
           { id: '2', displayName: '', context: { who: 'tEsT' } },
-        ] as SimpleType,
+        ],
         terms: ['test'],
         result: ['1', '2'],
       },
       // match words only
       {
         name: '26',
-        data: [{ id: '1', displayName: 'this is a display name' }] as SimpleType,
+        data: [{ id: '1', displayName: 'this is a display name' }],
         terms: ['display'],
         result: ['1'],
       },
       {
         name: '27',
-        data: [{ id: '1', displayName: 'this is a display name' }] as SimpleType,
+        data: [{ id: '1', displayName: 'this is a display name' }],
         terms: ['play'],
         result: [],
       },
       {
         name: '28',
-        data: [{ id: '1', displayName: '', context: { background: 'this is a background name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { background: 'this is a background name' } }],
         terms: ['background'],
         result: ['1'],
       },
       {
         name: '29',
-        data: [{ id: '1', displayName: '', context: { background: 'this is a background name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { background: 'this is a background name' } }],
         terms: ['round', 'back'],
         result: [],
       },
       {
         name: '30',
-        data: [{ id: '1', displayName: '', context: { impact: 'this is a impact name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { impact: 'this is a impact name' } }],
         terms: ['impact'],
         result: ['1'],
       },
       {
         name: '31',
-        data: [{ id: '1', displayName: '', context: { impact: 'this is a impact name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { impact: 'this is a impact name' } }],
         terms: ['pact', 'imp'],
         result: [],
       },
       {
         name: '32',
-        data: [{ id: '1', displayName: '', context: { tagline: 'this is a tagline name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { tagline: 'this is a tagline name' } }],
         terms: ['tagline'],
         result: ['1'],
       },
       {
         name: '33',
-        data: [{ id: '1', displayName: '', context: { tagline: 'this is a tagline name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { tagline: 'this is a tagline name' } }],
         terms: ['line', 'tag'],
         result: [],
       },
       {
         name: '34',
-        data: [{ id: '1', displayName: '', context: { vision: 'this is a vision name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { vision: 'this is a vision name' } }],
         terms: ['vision'],
         result: ['1'],
       },
       {
         name: '35',
-        data: [{ id: '1', displayName: '', context: { vision: 'this is a vision name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { vision: 'this is a vision name' } }],
         terms: ['vi', 'sio', 'on'],
         result: [],
       },
       {
         name: '36',
-        data: [{ id: '1', displayName: '', context: { who: 'this is a who name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { who: 'this is a who name' } }],
         terms: ['who'],
         result: ['1'],
       },
       {
         name: '37',
-        data: [{ id: '1', displayName: '', context: { who: 'this is a who name' } }] as SimpleType,
+        data: [{ id: '1', displayName: '', context: { who: 'this is a who name' } }],
         terms: ['w', 'ho', 'o'],
         result: [],
       },
@@ -298,7 +321,7 @@ const data = (): TestData[] =>
 
 describe('filterFn', () => {
   test.concurrent.each(data())('%s', async ({ data, terms, result }) => {
-    const filtered = filterFn(data as RequiredFields[], terms).map(x => x.id);
+    const filtered = filterFn(data, terms, getter).map(x => x.id);
     expect(filtered).toEqual(result);
   });
 });

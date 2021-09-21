@@ -7,14 +7,14 @@ import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { Admin } from './admin/admin';
 import { IdentityRoute } from './identity/identity';
-import { EcoverseRoute } from './ecoverse';
+import { EcoverseRoute } from './ecoverse.route';
 import { Messages } from './messages';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
-import { Search } from './search';
+import { SearchRoute } from './search.route';
+import OrganizationRoute from './organization.route';
 import { UserRoute } from './user/user';
 import ProfilePage from '../pages/ProfilePage';
-import OrganizationRoute from './organization';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 
 export const Routing: FC = () => {
@@ -40,7 +40,7 @@ export const Routing: FC = () => {
         <IdentityRoute />
       </Route>
       <RestrictedRoute path="/search">
-        <Search />
+        <SearchRoute />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
         <UserRoute />

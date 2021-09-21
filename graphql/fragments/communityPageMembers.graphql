@@ -1,0 +1,17 @@
+fragment CommunityPageMembers on User {
+  id
+  nameID
+  displayName
+  country
+  city
+  email
+  profile {
+    id
+    avatar
+    description
+    tagsets {
+      id
+      tags
+    }
+  }
+}

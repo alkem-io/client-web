@@ -31,14 +31,14 @@ interface P {
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
   const handleError = useApolloErrorHandler();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
     onError: handleError,
-    refetchQueries: [refetchOpportunityRelationsQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityRelationsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

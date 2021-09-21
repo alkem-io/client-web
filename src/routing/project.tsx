@@ -74,11 +74,11 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const { url } = useRouteMatch();
   const { id } = useParams<{ id: string }>();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const target = projects?.find(x => x.nameID === id);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { ecoverseId, projectId: target?.id || '' },
+    variables: { ecoverseId: ecoverseNameId, projectId: target?.id || '' },
   });
 
   const project = query?.ecoverse.project;
