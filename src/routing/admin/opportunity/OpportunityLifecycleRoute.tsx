@@ -10,10 +10,10 @@ interface Props extends PageProps {}
 const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId = '', opportunityId: opportunityNameId = '' } = useUrlParams();
+  const { ecoverseNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const { data, loading } = useOpportunityLifecycleQuery({
-    variables: { ecoverseId: ecoverseId, opportunityId: opportunityNameId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
   });
 

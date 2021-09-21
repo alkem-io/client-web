@@ -10,8 +10,8 @@ interface Props extends PageProps {}
 
 const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
   const { path } = useRouteMatch();
-  const { ecoverseId, challengeId } = useUrlParams();
-  const backUrl = buildChallengeUrl(ecoverseId, challengeId);
+  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const backUrl = buildChallengeUrl(ecoverseNameId, challengeNameId);
 
   /* todo: only community ID is needed */
   const {
@@ -20,8 +20,8 @@ const ChallengeApplyRoute: FC<Props> = ({ paths }) => {
     error: communityError,
   } = useChallengeApplicationQuery({
     variables: {
-      ecoverseId: ecoverseId,
-      challengeId: challengeId,
+      ecoverseId: ecoverseNameId,
+      challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });

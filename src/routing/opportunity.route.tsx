@@ -17,7 +17,7 @@ interface OpportunityRootProps extends PageProps {
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
   const { path, url } = useRouteMatch();
   const history = useHistory();
-  const { opportunityId: id, challengeId } = useUrlParams();
+  const { opportunityNameId: id, challengeNameId } = useUrlParams();
   const { user } = useUserContext();
   const { ecoverseNameId, ecoverseId } = useEcoverse();
   const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
@@ -65,7 +65,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
     <Switch>
       <Route exact path={path}>
         <OpportunityPage
-          challengeId={challengeId}
+          challengeId={challengeNameId}
           opportunity={opportunity as OpportunityType}
           users={users as User[] | undefined}
           paths={currentPaths}

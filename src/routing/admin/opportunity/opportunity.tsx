@@ -33,7 +33,7 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths }) => {
       <Route exact path={`${path}/new`}>
         <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.opportunityId}`}>
+      <Route path={`${path}/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <OpportunityRoutes paths={currentPaths} />
         </OpportunityProvider>

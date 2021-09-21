@@ -18,9 +18,9 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
-  const { challengeId } = useUrlParams();
+  const { challengeNameId } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
   });
 
   const opportunityList =
@@ -34,7 +34,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     refetchQueries: [
       refetchOpportunitiesQuery({
         ecoverseId: ecoverseNameId,
-        challengeId,
+        challengeId: challengeNameId,
       }),
     ],
     awaitRefetchQueries: true,

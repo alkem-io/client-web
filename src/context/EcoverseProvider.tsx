@@ -19,7 +19,7 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
 interface EcoverseProviderProps {}
 
 const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
-  const { ecoverseId: ecoverseNameId = '' } = useUrlParams();
+  const { ecoverseNameId = '' } = useUrlParams();
   const { data, loading } = useEcoverseInfoQuery({
     variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',

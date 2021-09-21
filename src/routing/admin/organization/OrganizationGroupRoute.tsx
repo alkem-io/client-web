@@ -9,10 +9,10 @@ interface GroupRouteProps extends PageProps {}
 
 export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { groupId, organizationId } = useUrlParams();
+  const { groupId, organizationNameId } = useUrlParams();
 
   const { data, loading } = useOrganizationGroupQuery({
-    variables: { organizationId: organizationId, groupId },
+    variables: { organizationId: organizationNameId, groupId },
     fetchPolicy: 'cache-and-network',
   });
   const parentMembers = useMemo(() => data?.organization.members || [], [data]);

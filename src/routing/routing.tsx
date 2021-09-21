@@ -46,7 +46,7 @@ export const Routing: FC = () => {
       <RestrictedRoute path="/user">
         <UserRoute />
       </RestrictedRoute>
-      <Route path={`/organization/:${nameOfUrl.opportunityId}`}>
+      <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoute paths={[]} />
         </OrganizationProvider>
@@ -66,7 +66,7 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
-      <Route path={`/:${nameOfUrl.ecoverseId}`}>
+      <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>

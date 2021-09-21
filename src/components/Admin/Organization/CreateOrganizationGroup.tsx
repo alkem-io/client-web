@@ -13,10 +13,10 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { organizationId } = useUrlParams();
+  const { organizationNameId } = useUrlParams();
   const handleError = useApolloErrorHandler();
 
-  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });
+  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationNameId } });
   const organization = organizationQuery?.organization;
 
   const redirectToCreatedGroup = (groupId: string) => {
@@ -51,13 +51,13 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
       createGroup({
         variables: {
           input: {
-            parentID: organizationId,
+            parentID: organizationNameId,
             name,
           },
         },
       });
     },
-    [organizationId]
+    [organizationNameId]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

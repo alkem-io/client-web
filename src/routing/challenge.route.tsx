@@ -19,7 +19,7 @@ interface ChallengeRootProps extends PageProps {
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { ecoverseId, ecoverseNameId } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { challengeId: id } = useUrlParams();
+  const { challengeNameId: id } = useUrlParams();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { user } = useUserContext();
@@ -59,7 +59,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
-      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityId}`}>
+      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
         </OpportunityProvider>

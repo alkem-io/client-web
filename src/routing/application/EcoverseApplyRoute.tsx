@@ -9,8 +9,8 @@ interface Props extends PageProps {}
 
 export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
   const { path } = useRouteMatch();
-  const { ecoverseId } = useUrlParams();
-  const backUrl = `/${ecoverseId}`;
+  const { ecoverseNameId } = useUrlParams();
+  const backUrl = `/${ecoverseNameId}`;
 
   const {
     data: ecoverseInfoData,
@@ -18,7 +18,7 @@ export const EcoverseApplyRoute: FC<Props> = ({ paths }) => {
     error: communityError,
   } = useEcoverseApplicationQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      ecoverseId: ecoverseNameId,
     },
     errorPolicy: 'all',
   });

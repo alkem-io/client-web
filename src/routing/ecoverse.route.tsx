@@ -58,7 +58,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       <Route exact path={path}>
         <EcoversePage ecoverse={ecoverse} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
-      <Route path={`${path}/challenges/:${nameOfUrl.challengeId}`}>
+      <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
         <ChallengeProvider>
           <ChallengeRoute paths={currentPaths} challenges={challenges} />
         </ChallengeProvider>

@@ -31,7 +31,7 @@ export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/new`}>
         <NewEcoverse paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.ecoverseId}`}>
+      <Route path={`${path}/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <EcoverseAdminRoute paths={currentPaths} />
         </EcoverseProvider>

@@ -2,10 +2,10 @@ import nameof from '../utils/name-of';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
 export default interface UrlParams {
-  ecoverseId: string;
-  challengeId: string;
-  opportunityId: string;
-  organizationId: string;
+  ecoverseNameId: string;
+  challengeNameId: string;
+  opportunityNameId: string;
+  organizationNameId: string;
   groupId: string;
   projectId: string;
   applicationId: string;

@@ -31,7 +31,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/new`}>
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.organizationId}`}>
+      <Route path={`${path}/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoutes paths={currentPaths} />
         </OrganizationProvider>
@@ -45,10 +45,10 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
 
 export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { organizationId } = useUrlParams();
+  const { organizationNameId } = useUrlParams();
 
   const { data } = useOrganizationProfileInfoQuery({
-    variables: { id: organizationId },
+    variables: { id: organizationNameId },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -145,8 +145,8 @@ const OrganizationMemberRoutes: FC<PageProps> = ({ paths }) => {
 
 const OrganizationGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { organizationId } = useUrlParams();
-  const { data } = useOrganizationGroupsQuery({ variables: { id: organizationId } });
+  const { organizationNameId } = useUrlParams();
+  const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });
 
   const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 

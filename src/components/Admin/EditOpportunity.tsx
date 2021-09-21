@@ -32,10 +32,10 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   const { challengeId } = useOpportunity();
 
-  const { ecoverseId = '', opportunityId: opportunityNameId = '', challengeId: challengeNameId = '' } = useUrlParams();
+  const { ecoverseNameId = '', opportunityNameId = '', challengeNameId = '' } = useUrlParams();
 
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId: ecoverseNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
@@ -46,12 +46,14 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId: opportunityNameId })],
+    refetchQueries: [
+      refetchOpportunityProfileInfoQuery({ ecoverseId: ecoverseNameId, opportunityId: opportunityNameId }),
+    ],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
-    variables: { ecoverseId: ecoverseId, opportunityId: opportunityNameId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     skip: mode === FormMode.create,
   });
 

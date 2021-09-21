@@ -9,10 +9,10 @@ interface GroupRouteProps extends WithOptionalMembersProps {}
 
 export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
-  const { groupId, ecoverseId } = useUrlParams();
+  const { groupId, ecoverseNameId } = useUrlParams();
 
   const { data, loading } = useEcoverseGroupQuery({
-    variables: { ecoverseId, groupId },
+    variables: { ecoverseId: ecoverseNameId, groupId },
     fetchPolicy: 'cache-and-network',
   });
 

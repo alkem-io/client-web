@@ -30,7 +30,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId: challengeNameId = '', ecoverseId = '' } = useUrlParams();
+  const { challengeNameId = '', ecoverseNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
@@ -38,19 +38,19 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
       navigateToEdit(data.createChallenge.nameID);
     },
     onError: handleError,
-    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId: ecoverseNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId: ecoverseNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
   const challenge = challengeProfile?.ecoverse?.challenge;
@@ -74,7 +74,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               displayName: name,
-              ecoverseID: ecoverseId,
+              ecoverseID: ecoverseNameId,
               context: createContextInput(values),
               tags: tagsets.flatMap(x => x.tags),
             },

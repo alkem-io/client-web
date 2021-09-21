@@ -10,10 +10,10 @@ interface Props extends PageProps {}
 export const ChallengeLifecycleRoute: FC<Props> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId = '', challengeId: challengeNameId = '' } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { data, loading } = useChallengeLifecycleQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
   });
 
