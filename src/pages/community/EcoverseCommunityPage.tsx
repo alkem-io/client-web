@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
 import CommunityPage from './CommunityPage';
 import { useEcoverse, useUserContext } from '../../hooks';
@@ -6,10 +7,10 @@ import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 
 const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
 
-  const { ecoverse: _ecoverse } = useEcoverse();
-  const ecoverse = _ecoverse?.ecoverse;
+  const { ecoverse } = useEcoverse();
 
   const ecoverseId = ecoverse?.id || '';
   const ecoverseNameId = ecoverse?.nameID;
@@ -28,7 +29,7 @@ const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
     [userMetadata, ecoverseId]
   );
 
-  const membershipTitle = 'Ecoverse host';
+  const membershipTitle = t('pages.community.ecoverse-host');
   const ecoverseHostId = ecoverse?.host?.id;
 
   return (

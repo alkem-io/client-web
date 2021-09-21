@@ -71,7 +71,7 @@ export const managementData = {
         { description: 'Members', url: '/community/members' },
         { description: 'Groups', url: '/community/groups' },
         { description: 'Applications', url: '/community/applications' },
-        { description: 'Lead Organisations', url: '/community/lead' },
+        { description: 'Lead Organizations', url: '/community/lead' },
         { description: 'Updates', url: '/community/updates' },
       ],
     },

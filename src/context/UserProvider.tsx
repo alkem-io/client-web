@@ -28,6 +28,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const { data: meData, loading: loadingMe } = useMeQuery({
     skip: !meHasProfileData?.meHasProfile,
   });
+
   const { data: membershipData, loading: loadingMembershipData } = useMembershipUserQuery({
     skip: !meData?.me.id,
     variables: {

@@ -1,5 +1,5 @@
 query organizationGroups($id: UUID_NAMEID!) {
-  organisation(ID: $id) {
+  organization(ID: $id) {
     id
     groups {
       id

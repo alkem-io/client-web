@@ -1,4 +1,4 @@
-fragment OrganizationProfileInfo on Organisation {
+fragment OrganizationProfileInfo on Organization {
   id
   nameID
   displayName
@@ -6,6 +6,10 @@ fragment OrganizationProfileInfo on Organisation {
   domain
   legalEntityName
   website
+  verification {
+    id
+    status
+  }
   profile {
     id
     avatar

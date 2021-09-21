@@ -10,7 +10,7 @@ import { useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { CommunityPageMembersFragment, OrganisationDetailsFragment, User } from '../../models/graphql-schema';
+import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
 import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
@@ -19,7 +19,7 @@ import { Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
-import { buildOrganisationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
@@ -43,7 +43,7 @@ interface Props extends PageProps {
   parentTagline?: string;
   membershipTitle?: string;
   ecoverseHostId?: string;
-  leadingOrganizations?: OrganisationDetailsFragment[];
+  leadingOrganizations?: OrganizationDetailsFragment[];
   settingsUrl?: string;
   permissions: {
     edit: boolean;
@@ -81,7 +81,7 @@ const CommunityPage: FC<Props> = ({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
   });
-  const hostOrganization = _orgProfile?.organisation;
+  const hostOrganization = _orgProfile?.organization;
 
   if (loading) {
     return <Loading />;
@@ -124,16 +124,14 @@ const CommunityPage: FC<Props> = ({
           <Section
             avatar={<Icon component={BuildingIcon} color="primary" size="xl" />}
             details={
-              hostOrganization ? (
-                <Link component={RouterLink} to={buildOrganisationUrl(hostOrganization.nameID)}>
+              hostOrganization && (
+                <Link component={RouterLink} to={buildOrganizationUrl(hostOrganization.nameID)}>
                   <Image
                     src={hostOrganization.profile?.avatar}
                     alt={`${hostOrganization.displayName} logo`}
                     className={styles.bannerImg}
                   />
                 </Link>
-              ) : (
-                <div />
               )
             }
           >
@@ -157,7 +155,7 @@ const CommunityPage: FC<Props> = ({
               avatar={profile?.avatar}
               description={profile?.description}
               tags={profile?.tagsets?.flatMap(y => y.tags)}
-              url={buildOrganisationUrl(nameID)}
+              url={buildOrganizationUrl(nameID)}
             />
           ))}
         </CardContainer>

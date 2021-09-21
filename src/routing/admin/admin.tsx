@@ -5,7 +5,7 @@ import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplat
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
-import { OrganizationsRoute } from './organisation/organization';
+import { OrganizationsRoute } from './organization/organization';
 import { UsersRoute } from './user';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 

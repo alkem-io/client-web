@@ -63,9 +63,9 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     });
   };
 
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const { data, loading } = useEcoverseMembersQuery({
-    variables: { ecoverseId: ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
   });
   const ecoMembers = data?.ecoverse?.community?.members || [];
 

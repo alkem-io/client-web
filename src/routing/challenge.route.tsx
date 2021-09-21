@@ -17,7 +17,7 @@ interface ChallengeRootProps extends PageProps {
 }
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
-  const { ecoverseId, toEcoverseId } = useEcoverse();
+  const { ecoverseId, ecoverseNameId } = useEcoverse();
   const { path, url } = useRouteMatch();
   const { challengeId: id } = useUrlParams();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
@@ -27,7 +27,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   // todo: you don't need opportunities selected here
   const { data: query, loading } = useChallengeProfileQuery({
     variables: {
-      ecoverseId,
+      ecoverseId: ecoverseNameId,
       challengeId,
     },
     errorPolicy: 'all',
@@ -43,7 +43,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const isAdmin = useMemo(
     () =>
       user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
+      user?.isEcoverseAdmin(ecoverseId) ||
       user?.isChallengeAdmin(challenge?.id || '') ||
       false,
     [user, ecoverseId, challenge]

@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useOpportunity, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
@@ -21,15 +21,16 @@ interface Props {
   mode: FormMode;
   paths: Path[];
   title: string;
-  challengeId: string;
 }
 
-const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
+const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
+
+  const { challengeId } = useOpportunity();
 
   const { ecoverseId = '', opportunityId: opportunityNameId = '', challengeId: challengeNameId = '' } = useUrlParams();
 

@@ -5,7 +5,7 @@ import { CommunityCredentials } from '../../components/Admin/Authorization/EditC
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
-import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
+import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
 import { useDeleteUserGroup } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
@@ -54,7 +54,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityUpdatesPage paths={paths} community={community} />
       </Route>
       <Route path={`${path}/lead`}>
-        <LeadingOrganisationPage paths={paths} />
+        <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
         <FourOuFour />

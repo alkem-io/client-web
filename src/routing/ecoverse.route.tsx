@@ -15,12 +15,11 @@ import { nameOfUrl } from './ulr-params';
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverseId, ecoverse: ecoverseInfo, loading: ecoverseLoading, toEcoverseId } = useEcoverse();
-  const ecoverse = ecoverseInfo?.ecoverse;
+  const { ecoverseNameId, ecoverseId, ecoverse, loading: ecoverseLoading } = useEcoverse();
   const isPrivate = ecoverse?.authorization?.anonymousReadAccess || false;
 
   const { data: challenges, loading: challengesLoading } = useChallengesQuery({
-    variables: { ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'ignore' /*todo do not ignore errors*/,
   });
 
@@ -31,10 +30,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { user } = useUserContext();
 
   const isAdmin = useMemo(
-    () =>
-      user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-      user?.isEcoverseAdmin(toEcoverseId(ecoverseId)) ||
-      false,
+    () => user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || user?.isEcoverseAdmin(ecoverseId) || false,
     [user, ecoverseId]
   );
 
@@ -44,7 +40,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
     return <Loading text={'Loading ecoverse'} />;
   }
 
-  if (!ecoverseInfo) {
+  if (!ecoverse) {
     return <FourOuFour />;
   }
 
@@ -60,7 +56,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        <EcoversePage ecoverse={ecoverseInfo} paths={currentPaths} permissions={{ edit: isAdmin }} />
+        <EcoversePage ecoverse={ecoverse} paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeId}`}>
         <ChallengeProvider>

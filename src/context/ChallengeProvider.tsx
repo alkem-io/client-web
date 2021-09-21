@@ -6,32 +6,41 @@ import { useUrlParams } from '../hooks';
 interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
+  challengeNameId: string;
   ecoverseId: string;
+  ecoverseNameId: string;
   loading: boolean;
 }
 
 const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
+  challengeNameId: '',
   ecoverseId: '',
+  ecoverseNameId: '',
 });
 
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { ecoverseId, challengeId } = useUrlParams();
+  const { ecoverseId: ecoverseNameId, challengeId: challengeNameId } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
-    variables: { ecoverseId, challengeId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
+    skip: !ecoverseNameId || !challengeNameId,
   });
+  const ecoverseId = data?.ecoverse?.id || '';
   const challenge = data?.ecoverse?.challenge;
+  const challengeId = challenge?.id || '';
 
   return (
     <ChallengeContext.Provider
       value={{
         challenge,
-        ecoverseId,
         challengeId,
+        challengeNameId,
+        ecoverseId,
+        ecoverseNameId,
         loading,
       }}
     >

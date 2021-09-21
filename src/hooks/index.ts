@@ -15,7 +15,7 @@ export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 
 export * from './useEcoverse';
-export * from './useOrganisation';
+export * from './useOrganization';
 export * from './useChallenge';
 export * from './useOpportunity';
 

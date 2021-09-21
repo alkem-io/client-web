@@ -196,7 +196,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                     <TableRow>
                       <TableCell align="center">
                         <Typography weight={'medium'} className={styles.centeredText}>
-                          Organisations
+                          Organizations
                         </Typography>
                       </TableCell>
                       <TableCell align="center">{getStringOfNames(organizations)}</TableCell>

@@ -1,0 +1,36 @@
+mutation assignUserToOrganization($input: AssignOrganizationMemberInput!) {
+  assignUserToOrganization(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+mutation removeUserFromOrganization($input: RemoveOrganizationMemberInput!) {
+  removeUserFromOrganization(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+mutation assignUserAsOrganizationAdmin($input: AssignOrganizationAdminInput!) {
+  assignUserAsOrganizationAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
+  removeUserAsOrganizationAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+query organizationMembers($id: UUID_NAMEID!) {
+  organization(ID: $id) {
+    id
+    members {
+      ...GroupMembers
+    }
+  }
+}

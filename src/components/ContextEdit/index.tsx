@@ -38,20 +38,30 @@ const useContextEditStyles = createStyles(() => ({
 
 const ContextEdit: FC<Props> = ({ show, onHide, variant, data, id }) => {
   const { t } = useTranslation();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
 
   const [updateChallenge] = useUpdateChallengeMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileQuery({ ecoverseId, challengeId: id })],
+    refetchQueries: [
+      refetchChallengeProfileQuery({
+        ecoverseId: ecoverseNameId,
+        challengeId: id,
+      }),
+    ],
     awaitRefetchQueries: true,
   });
   const [updateOpportunity] = useUpdateOpportunityMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityProfileQuery({ ecoverseId, opportunityId: id })],
+    refetchQueries: [
+      refetchOpportunityProfileQuery({
+        ecoverseId: ecoverseNameId,
+        opportunityId: id,
+      }),
+    ],
     awaitRefetchQueries: true,
   });
 

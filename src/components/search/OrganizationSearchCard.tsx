@@ -7,7 +7,7 @@ import hexToRGBA from '../../utils/hexToRGBA';
 import OrganizationPopUp from '../Organizations/OrganizationPopUp';
 import TagContainer from '../core/TagContainer';
 import Tag from '../core/Tag';
-import { OrganisationSearchResultFragment } from '../../models/graphql-schema';
+import { OrganizationSearchResultFragment } from '../../models/graphql-schema';
 import EntitySearchCardProps from './EntitySearchCardProps';
 
 const OrganizationCardStyles = createStyles(theme => ({
@@ -47,19 +47,19 @@ const OrganizationCardStyles = createStyles(theme => ({
   },
 }));
 
-const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganisationSearchResultFragment>> = ({
+const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchResultFragment>> = ({
   terms,
-  entity: organisation,
+  entity: organization,
 }) => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const styles = OrganizationCardStyles();
 
   const tagProps = { text: 'Organization' };
 
-  const displayName = organisation?.displayName || '';
-  const avatar = organisation?.profile?.avatar || '';
+  const displayName = organization?.displayName || '';
+  const avatar = organization?.profile?.avatar || '';
 
-  const tags = (organisation?.profile?.tagsets || []).flatMap(x => x.tags);
+  const tags = (organization?.profile?.tagsets || []).flatMap(x => x.tags);
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   return (
@@ -106,8 +106,8 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganisationSearchRe
           !isModalOpened && setIsModalOpened(true);
         }}
       >
-        {isModalOpened && organisation && (
-          <OrganizationPopUp id={organisation?.id} onHide={() => setIsModalOpened(false)} />
+        {isModalOpened && organization && (
+          <OrganizationPopUp id={organization?.id} onHide={() => setIsModalOpened(false)} />
         )}
       </Card>
     </div>
