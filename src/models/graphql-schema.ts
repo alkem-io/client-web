@@ -948,6 +948,8 @@ export type Mutation = {
   eventOnChallenge: Challenge;
   /** Trigger an event on the Opportunity. */
   eventOnOpportunity: Opportunity;
+  /** Trigger an event on the Organization Verification. */
+  eventOnOrganizationVerification: OrganizationVerification;
   /** Trigger an event on the Project. */
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
@@ -1194,6 +1196,10 @@ export type MutationEventOnOpportunityArgs = {
   opportunityEventData: OpportunityEventInput;
 };
 
+export type MutationEventOnOrganizationVerificationArgs = {
+  organizationVerificationEventData: OrganizationVerificationEventInput;
+};
+
 export type MutationEventOnProjectArgs = {
   projectEventData: ProjectEventInput;
 };
@@ -1387,8 +1393,7 @@ export type Organization = Groupable &
     nameID: Scalars['NameID'];
     /** The profile for this organization. */
     profile: Profile;
-    /** Organization verification type */
-    verified: OrganizationVerificationEnum;
+    verification: OrganizationVerification;
     /** Organization website */
     website?: Maybe<Scalars['String']>;
   };
@@ -1411,10 +1416,26 @@ export type OrganizationMembership = {
   id: Scalars['UUID'];
 };
 
+export type OrganizationVerification = {
+  __typename?: 'OrganizationVerification';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lifecycle: Lifecycle;
+  /** Organization verification type */
+  status: OrganizationVerificationEnum;
+};
+
 export enum OrganizationVerificationEnum {
-  ManualAttestation = 'MANUAL_ATTESTATION',
   NotVerified = 'NOT_VERIFIED',
+  VerifiedManualAttestation = 'VERIFIED_MANUAL_ATTESTATION',
 }
+
+export type OrganizationVerificationEventInput = {
+  eventName: Scalars['String'];
+  organizationVerificationID: Scalars['UUID'];
+};
 
 export type OryConfig = {
   __typename?: 'OryConfig';
@@ -2253,8 +2274,8 @@ export type OrganizationInfoFragment = {
   nameID: string;
   displayName: string;
   contactEmail?: Maybe<string>;
-  verified: OrganizationVerificationEnum;
   website?: Maybe<string>;
+  verification: { __typename?: 'OrganizationVerification'; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -4767,30 +4788,6 @@ export type OpportunityWithActivityQuery = {
   };
 };
 
-export type OrganizationInfoQueryVariables = Exact<{
-  organizationId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationInfoQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    displayName: string;
-    contactEmail?: Maybe<string>;
-    verified: OrganizationVerificationEnum;
-    website?: Maybe<string>;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      avatar?: Maybe<string>;
-      description?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-    };
-  };
-};
-
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -4826,6 +4823,30 @@ export type OrganizationGroupQuery = {
         tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
       }>;
     }>;
+  };
+};
+
+export type OrganizationInfoQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationInfoQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    contactEmail?: Maybe<string>;
+    website?: Maybe<string>;
+    verification: { __typename?: 'OrganizationVerification'; status: OrganizationVerificationEnum };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    };
   };
 };
 

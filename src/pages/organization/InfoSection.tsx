@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 import EmailIcon from '@material-ui/icons/MailOutline';
-import { OrganizationInfoFragment, OrganizationVerificationEnum } from '../../models/graphql-schema';
+import { OrganizationInfoFragment } from '../../models/graphql-schema';
 import { OrganizationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';
 import TagContainer from '../../components/core/TagContainer';
@@ -21,7 +21,7 @@ const InfoSection: FC<Props> = ({ organization }) => {
     return <Loading text={''} />;
   }
 
-  const { contactEmail, website, verified = OrganizationVerificationEnum.NotVerified, profile } = organization;
+  const { contactEmail, website, verification, profile } = organization;
   const tags = profile?.tagsets?.flatMap(x => x.tags) || [];
 
   return (
@@ -44,7 +44,7 @@ const InfoSection: FC<Props> = ({ organization }) => {
           </Grid>
         )}
         <Grid item>
-          <OrganizationVerifiedState state={verified} />
+          <OrganizationVerifiedState state={verification.status} />
         </Grid>
       </Grid>
       <Grid container item>
