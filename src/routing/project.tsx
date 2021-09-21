@@ -1,12 +1,13 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import Loading from '../components/core/Loading/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../hooks/generated/graphql';
-import { useEcoverse } from '../hooks';
+import { useEcoverse, useUrlParams } from '../hooks';
 import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
 import { Project as ProjectType } from '../models/graphql-schema';
 import { useApolloErrorHandler } from '../hooks';
 import RestrictedRoute from './route.extensions';
+import { nameOfUrl } from './url-params';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
@@ -24,7 +25,7 @@ export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunit
       <RestrictedRoute exact path={`${path}/new`} requiredCredentials={[]} strict={false}>
         <ProjectNew paths={paths} projects={projects} opportunityId={opportunityId} />
       </RestrictedRoute>
-      <RestrictedRoute exact path={`${path}/:id`}>
+      <RestrictedRoute exact path={`${path}/:${nameOfUrl.projectId}`}>
         <ProjectIndex paths={paths} projects={projects} opportunityId={opportunityId} />
       </RestrictedRoute>
       <Route path="*">
@@ -73,9 +74,9 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
 
 const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   const { url } = useRouteMatch();
-  const { id } = useParams<{ id: string }>();
+  const { projectId } = useUrlParams();
   const { ecoverseNameId } = useEcoverse();
-  const target = projects?.find(x => x.nameID === id);
+  const target = projects?.find(x => x.nameID === projectId);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
     variables: { ecoverseId: ecoverseNameId, projectId: target?.id || '' },
@@ -85,7 +86,7 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
 
   const currentPaths = useMemo(
     () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),
-    [paths, id, project]
+    [paths, projectId, project]
   );
 
   if (projectLoading) {

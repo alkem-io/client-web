@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
 import { EcoverseInfoFragment } from '../models/graphql-schema';
+import { useUrlParams } from '../hooks';
 
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoFragment;
@@ -19,7 +19,7 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
 interface EcoverseProviderProps {}
 
 const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
-  const { ecoverseId: ecoverseNameId = '' } = useParams<{ ecoverseId: string }>();
+  const { ecoverseNameId = '' } = useUrlParams();
   const { data, loading } = useEcoverseInfoQuery({
     variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',

@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import Grid from '@material-ui/core/Grid';
@@ -9,7 +8,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import {
   refetchChallengeLeadOrganizationsQuery,
@@ -30,11 +29,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Params {
-  ecoverseId: string;
-  challengeId: string;
-}
-
 interface LeadingOrganizationPageProps extends PageProps {}
 
 const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) => {
@@ -43,15 +37,15 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
 
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId, challengeId: challengeNameId } = useParams<Params>();
+  const { ecoverseNameId, challengeNameId } = useUrlParams();
 
   const { data: _challenge } = useChallengeNameQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
   });
   const challengeId = _challenge?.ecoverse?.challenge.id || '';
 
   const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
-    variables: { ecoverseId: ecoverseId, challengeID: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeID: challengeNameId },
   });
   const leadingOrganizations = (_leadingOrganizations?.ecoverse.challenge.leadOrganizations ||
     []) as OrganizationDetailsFragment[];
@@ -64,7 +58,7 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onError: handleError,
-    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ ecoverseId: ecoverseId, challengeID: challengeId })],
+    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ ecoverseId: ecoverseNameId, challengeID: challengeId })],
     awaitRefetchQueries: true,
   });
 
