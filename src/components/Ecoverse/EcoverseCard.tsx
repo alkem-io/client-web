@@ -1,19 +1,18 @@
-import { FC, useMemo } from 'react';
-import { createStyles } from '../../hooks/useTheme';
-import { useTranslation } from 'react-i18next';
-import Card from '../core/Card';
-import * as React from 'react';
-import hexToRGBA from '../../utils/hexToRGBA';
-import Typography from '../core/Typography';
-import Button from '../core/Button';
-import { Link } from 'react-router-dom';
-import { Activities } from '../ActivityPanel/Activities';
-import TagContainer from '../core/TagContainer';
-import Tag from '../core/Tag';
-import getActivityCount from '../../utils/get-activity-count';
-import { Nvp } from '../../models/graphql-schema';
-import Tooltip from '@material-ui/core/Tooltip';
 import { Box } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
+import * as React from 'react';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { createStyles } from '../../hooks/useTheme';
+import { Nvp } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
+import hexToRGBA from '../../utils/hexToRGBA';
+import { Activities } from '../ActivityPanel/Activities';
+import CardTags from '../composite/common/CardTags/CardTags';
+import Button from '../core/Button';
+import Card from '../core/Card';
+import Typography from '../core/Typography';
 
 // todo: unify in one card props
 interface EcoverseCardProps {
@@ -75,7 +74,6 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
   const styles = useCardStyles();
   const { tagline, visual } = context;
   const { anonymousReadAccess } = authorization;
-  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   const getCardTags = (isMember: boolean, readAccess: boolean) => {
     if (isMember) {
@@ -106,6 +104,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         }}
         primaryTextProps={{
           text: displayName || '',
+          tooltip: true,
           classes: {
             color: theme => theme.palette.neutralLight.main,
           },
@@ -132,22 +131,7 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
                   },
                 ]}
               />
-              <TagContainer>
-                {truncatedTags.map((t, i) => (
-                  // with maxWidth limit long tags to 2 per line. so no more than 2 lines of tags.
-                  // 45% was the break point.
-                  <Box key={i} overflow={'hidden'} maxWidth={'45%'}>
-                    <Tag key={i} text={t} color="neutralMedium" />
-                  </Box>
-                ))}
-                {tags.length > 3 && (
-                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
-                    <span>
-                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
-                    </span>
-                  </Tooltip>
-                )}
-              </TagContainer>
+              <CardTags tags={tags} />
             </Box>
           ),
           className: styles.content,
@@ -163,9 +147,13 @@ export const EcoverseCard: FC<EcoverseCardProps> = ({
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
-            <span>{tagline}</span>
-          </Typography>
+          <Tooltip placement="right" title={tagline || ''} arrow>
+            <div>
+              <Typography color="neutralLight" className={styles.tagline} clamp={2}>
+                <span>{tagline}</span>
+              </Typography>
+            </div>
+          </Tooltip>
         )}
       </Card>
     </div>
