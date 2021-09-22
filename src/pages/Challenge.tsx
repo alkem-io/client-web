@@ -28,7 +28,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
+import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
 import {
   useChallengeActivityQuery,
   useChallengeLifecycleQuery,

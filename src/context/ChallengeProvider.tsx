@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import { useChallengeInfoQuery } from '../hooks/generated/graphql';
 import { ChallengeInfoFragment } from '../models/graphql-schema';
+import { useUrlParams } from '../hooks';
 
 interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
@@ -20,15 +20,10 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   ecoverseNameId: '',
 });
 
-interface UrlParams {
-  ecoverseId: string;
-  challengeId: string;
-}
-
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { ecoverseId: ecoverseNameId, challengeId: challengeNameId } = useParams<UrlParams>();
+  const { ecoverseNameId, challengeNameId } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',

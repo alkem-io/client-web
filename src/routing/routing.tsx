@@ -16,6 +16,7 @@ import OrganizationRoute from './organization.route';
 import { UserRoute } from './user/user';
 import ProfilePage from '../pages/ProfilePage';
 import { OrganizationProvider } from '../context/OrganizationProvider';
+import { nameOfUrl } from './url-params';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -45,7 +46,7 @@ export const Routing: FC = () => {
       <RestrictedRoute path="/user">
         <UserRoute />
       </RestrictedRoute>
-      <Route path="/organization/:organizationId">
+      <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoute paths={[]} />
         </OrganizationProvider>
@@ -65,7 +66,7 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
-      <Route path="/:ecoverseId">
+      <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>

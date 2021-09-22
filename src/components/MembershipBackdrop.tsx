@@ -5,7 +5,7 @@ import BackdropWithMessage, { BackdropProps } from './BackdropWithMessage';
 const MembershipBackdrop: FC<BackdropProps> = ({ children, blockName, show = false }) => {
   const { t } = useTranslation();
 
-  if (show) return <>{children}</>;
+  if (!show) return <>{children}</>;
 
   return (
     <BackdropWithMessage message={t('components.backdrop.private', { blockName })} children={children} show={show} />

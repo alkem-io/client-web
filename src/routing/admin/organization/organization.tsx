@@ -1,26 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../../components/Admin';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
 import OrganizationList from '../../../components/Admin/Organization/OrganizationList';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { useOrganizationGroupsQuery, useOrganizationProfileInfoQuery } from '../../../hooks/generated/graphql';
 import { Organization } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 import { EditMode } from '../../../utils/editMode';
-import { AdminParameters } from '../admin';
 import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import { OrganizationProvider } from '../../../context/OrganizationProvider';
-
-export interface OrganizationRouteParams {
-  organizationId: string;
-}
+import { nameOfUrl } from '../../url-params';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -35,7 +31,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`${path}/new`}>
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:organizationId`}>
+      <Route path={`${path}/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoutes paths={currentPaths} />
         </OrganizationProvider>
@@ -49,10 +45,10 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
 
 export const OrganizationRoutes: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const { organizationId } = useParams<AdminParameters>();
+  const { organizationNameId } = useUrlParams();
 
   const { data } = useOrganizationProfileInfoQuery({
-    variables: { id: organizationId },
+    variables: { id: organizationNameId },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -121,7 +117,7 @@ const OrganizationGroupRoutes: FC<PageProps> = ({ paths }) => {
       <Route exact path={`${path}/new`}>
         <CreateOrganizationGroupPage paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route path={`${path}/:${nameOfUrl.groupId}`}>
         <OrganizationGroupRoute paths={currentPaths} />
       </Route>
       <Route path="*">
@@ -149,8 +145,8 @@ const OrganizationMemberRoutes: FC<PageProps> = ({ paths }) => {
 
 const OrganizationGroups: FC<PageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { organizationId } = useParams<AdminParameters>();
-  const { data } = useOrganizationGroupsQuery({ variables: { id: organizationId } });
+  const { organizationNameId } = useUrlParams();
+  const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });
 
   const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));
 

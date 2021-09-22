@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
+import { useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
 import {
   refetchUsersWithCredentialsQuery,
@@ -7,20 +7,15 @@ import {
   useRemoveUserAsGlobalCommunityAdminMutation,
   useUsersQuery,
 } from '../../hooks/generated/graphql';
-import { AuthorizationCredential } from '../../models/graphql-schema';
-import { useApolloErrorHandler, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import { Member } from '../../models/User';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { Loading } from '../../components/core';
 
-interface Params {
-  role: AuthorizationCredential;
-}
-
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
+  const { role: credential } = useUrlParams();
   const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
