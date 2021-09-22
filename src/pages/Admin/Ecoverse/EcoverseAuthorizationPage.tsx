@@ -21,11 +21,11 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsEcoverseAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsEcoverseAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsEcoverseAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsEcoverseAdminMutation({
     onError: handleError,
   });
 
@@ -81,6 +81,8 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
         resourceId={resourceId}
         credential={credential}
         memberList={ecoMembers}
+        addingMember={addingMember}
+        removingMember={removingMember}
       />
     </Container>
   );

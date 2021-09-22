@@ -81,7 +81,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {loadingMembers && <InternalLoading />}
+                    {loadingMembers && <InternalLoading span={5} />}
                     {!loadingMembers &&
                       filteredMembers.map(m => {
                         const disableExecutor = m.id === executor?.id && !deleteExecutor;
@@ -152,11 +152,11 @@ export const EditMembers: FC<EditMembersProps> = ({
   );
 };
 
-const InternalLoading: FC = () => {
+const InternalLoading: FC<{ span?: number }> = ({ span = 2 }) => {
   const styles = useStyles();
   return (
     <TableRow className={styles.trow}>
-      <TableCell colSpan={2}>
+      <TableCell colSpan={span}>
         <Loading text={''} />
       </TableCell>
     </TableRow>

@@ -81,10 +81,11 @@ const CommunityPage: FC<Props> = ({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
   });
+
   const hostOrganization = _orgProfile?.organization;
 
   if (loading) {
-    return <Loading />;
+    return <Loading text={'Loading Community Page'} />;
   }
 
   return (

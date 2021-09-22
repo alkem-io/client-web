@@ -21,11 +21,11 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsChallengeAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsChallengeAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({
     onError: handleError,
   });
 
@@ -81,6 +81,8 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
         resourceId={resourceId}
         credential={credential}
         memberList={ecoMembers}
+        addingMember={addingMember}
+        removingMember={removingMember}
       />
     </Container>
   );
