@@ -68,7 +68,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
 
   if (tooltip) {
     return (
-      <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''}>
+      <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''} arrow>
         <div className={styles.primaryTextWrapper}>
           <Typography
             as="h4"
