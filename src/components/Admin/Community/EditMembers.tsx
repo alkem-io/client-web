@@ -81,7 +81,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {loadingMembers && <Loading text={''} />}
+                    {loadingMembers && <InternalLoading />}
                     {!loadingMembers &&
                       filteredMembers.map(m => {
                         const disableExecutor = m.id === executor?.id && !deleteExecutor;
@@ -152,6 +152,17 @@ export const EditMembers: FC<EditMembersProps> = ({
   );
 };
 
+const InternalLoading: FC = () => {
+  const styles = useStyles();
+  return (
+    <TableRow className={styles.trow}>
+      <TableCell colSpan={2}>
+        <Loading text={''} />
+      </TableCell>
+    </TableRow>
+  );
+};
+
 interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
   filteredMembers?: Member[];
   availableMembers?: Member[];
@@ -169,9 +180,11 @@ const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
   const styles = useStyles();
   const { t } = useTranslation();
 
-  if (loading) return <Loading text={''} />;
+  if (loading) {
+    return <InternalLoading />;
+  }
 
-  if (!availableMembers || availableMembers.length === 0)
+  if (!availableMembers || availableMembers.length === 0) {
     return (
       <TableRow className={styles.trow}>
         <TableCell colSpan={2}>
@@ -179,8 +192,9 @@ const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
         </TableCell>
       </TableRow>
     );
+  }
 
-  if (!filteredMembers || filteredMembers.length === 0)
+  if (!filteredMembers || filteredMembers.length === 0) {
     return (
       <TableRow className={styles.trow}>
         <TableCell colSpan={2}>
@@ -188,6 +202,7 @@ const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
         </TableCell>
       </TableRow>
     );
+  }
 
   return (
     <>
