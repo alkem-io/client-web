@@ -4,7 +4,9 @@ export const typePolicies: TypedTypePolicies = {
   UserGroup: {
     fields: {
       members: {
-        merge: false,
+        merge(existing = [], incoming: any[]) {
+          return [...existing, ...incoming];
+        },
       },
     },
   },
@@ -26,11 +28,16 @@ export const typePolicies: TypedTypePolicies = {
   Metadata: {
     merge: true,
   },
-  Query: {
+  Community: {
     fields: {
-      usersWithAuthorizationCredential: {
-        merge: false,
+      members: {
+        merge(existing = [], incoming: any[]) {
+          return [...existing, ...incoming];
+        },
       },
     },
+  },
+  Query: {
+    fields: {},
   },
 };

@@ -21,11 +21,11 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsGlobalCommunityAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsGlobalCommunityAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalCommunityAdminMutation({
     onError: handleError,
   });
 
@@ -70,7 +70,14 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
 
   return (
     <Container maxWidth="xl">
-      <EditMemberCredentials onAdd={handleAdd} onRemove={handleRemove} credential={credential} memberList={members} />
+      <EditMemberCredentials
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        credential={credential}
+        memberList={members}
+        addingMember={addingMember}
+        removingMember={removingMember}
+      />
     </Container>
   );
 };
