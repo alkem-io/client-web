@@ -132,7 +132,8 @@ export const EditMembers: FC<EditMembersProps> = ({
                       </TableHead>
                       <TableBody>
                         <AvailalbeMembersFragment
-                          data={filteredData}
+                          availableMembers={availableMembers}
+                          filteredMembers={filteredData}
                           loading={loadingAvailalbeMembers}
                           onAdd={onAdd}
                           addingMember={addingMember}
@@ -152,12 +153,14 @@ export const EditMembers: FC<EditMembersProps> = ({
 };
 
 interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
-  data?: Member[];
+  filteredMembers?: Member[];
+  availableMembers?: Member[];
   loading: boolean;
 }
 
 const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
-  data,
+  filteredMembers,
+  availableMembers,
   loading,
   onAdd,
   addingMember,
@@ -168,7 +171,7 @@ const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
 
   if (loading) return <Loading text={''} />;
 
-  if (!data || data.length === 0)
+  if (!availableMembers || availableMembers.length === 0)
     return (
       <TableRow className={styles.trow}>
         <TableCell colSpan={2}>
@@ -177,9 +180,18 @@ const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
       </TableRow>
     );
 
+  if (!filteredMembers || filteredMembers.length === 0)
+    return (
+      <TableRow className={styles.trow}>
+        <TableCell colSpan={2}>
+          <Typography>{t('components.edit-members.user-not-found')}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+
   return (
     <>
-      {data.map(m => (
+      {filteredMembers.map(m => (
         <TableRow key={m.email} className={styles.trow}>
           <TableCell>
             {onAdd && (
