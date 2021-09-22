@@ -5,6 +5,7 @@ import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import { ApplicationInfoFragment } from '../../models/graphql-schema';
 import ApplicationDetailsPage from '../../components/Admin/Community/ApplicationDetailsPage';
+import { nameOfUrl } from '../url-params';
 
 interface Props {
   paths: Path[];
@@ -16,7 +17,7 @@ export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
 
   return (
     <Switch>
-      <Route exact path={`${path}/:appId`}>
+      <Route exact path={`${path}/:${nameOfUrl.applicationId}`}>
         <ApplicationDetailsPage />
       </Route>
       <Route path={path}>

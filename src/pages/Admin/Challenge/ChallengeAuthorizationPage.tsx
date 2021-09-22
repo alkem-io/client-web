@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
+import { useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
-import { useApolloErrorHandler, useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
@@ -10,17 +10,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Loading } from '../../../components/core';
 
-interface Params {
-  role: AuthorizationCredential;
-}
-
 const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
+  const { role: credential } = useUrlParams();
   const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

@@ -1,22 +1,18 @@
 import React, { FC } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { WithOptionalMembersProps } from '../../../components/Admin/Community/CommunityTypes';
 import { useEcoverseGroupQuery } from '../../../hooks/generated/graphql';
 import { GroupRoute } from '../GroupRoute';
+import { useUrlParams } from '../../../hooks';
 
 interface GroupRouteProps extends WithOptionalMembersProps {}
 
-interface EcoverseGroupParams {
-  groupId: string;
-  ecoverseId: string;
-}
-
 export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
   const { path, url } = useRouteMatch();
-  const { groupId, ecoverseId } = useParams<EcoverseGroupParams>();
+  const { groupId, ecoverseNameId } = useUrlParams();
 
   const { data, loading } = useEcoverseGroupQuery({
-    variables: { ecoverseId, groupId },
+    variables: { ecoverseId: ecoverseNameId, groupId },
     fetchPolicy: 'cache-and-network',
   });
 

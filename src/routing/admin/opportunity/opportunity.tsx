@@ -15,6 +15,7 @@ import FormMode from '../../../components/Admin/FormMode';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
+import { nameOfUrl } from '../../url-params';
 
 interface Props extends PageProps {}
 
@@ -32,7 +33,7 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths }) => {
       <Route exact path={`${path}/new`}>
         <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:opportunityId`}>
+      <Route path={`${path}/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <OpportunityRoutes paths={currentPaths} />
         </OpportunityProvider>

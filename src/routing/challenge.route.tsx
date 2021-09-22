@@ -1,16 +1,16 @@
 import { Challenge as ChallengePage, FourOuFour, PageProps } from '../pages';
 import { AuthorizationCredential, Challenge as ChallengeType, ChallengesQuery } from '../models/graphql-schema';
 import React, { FC, useMemo } from 'react';
-import { useEcoverse, useUserContext } from '../hooks';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router';
+import { useEcoverse, useUrlParams, useUserContext } from '../hooks';
+import { Route, Switch, useRouteMatch } from 'react-router';
 import { useChallengeProfileQuery } from '../hooks/generated/graphql';
 import Loading from '../components/core/Loading/Loading';
 import ChallengeApplyRoute from './application/ChallengeApplyRoute';
-import { RouteParameters } from './ecoverse.route';
 import OpportunityRoute from './opportunity.route';
 import ChallengeCommunityPage from '../pages/community/ChallengeCommunityPage';
 import RestrictedRoute from './route.extensions';
 import { OpportunityProvider } from '../context/OpportunityProvider';
+import { nameOfUrl } from './url-params';
 
 interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
@@ -19,7 +19,7 @@ interface ChallengeRootProps extends PageProps {
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
   const { ecoverseId, ecoverseNameId } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { challengeId: id } = useParams<RouteParameters>();
+  const { challengeNameId: id } = useUrlParams();
   const challengeId = challenges?.ecoverse.challenges?.find(x => x.nameID === id)?.id || '';
 
   const { user } = useUserContext();
@@ -59,7 +59,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths, challenges }) => {
 
   return (
     <Switch>
-      <Route path={`${path}/opportunities/:opportunityId`}>
+      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <OpportunityRoute opportunities={challenge.opportunities} paths={currentPaths} challengeUUID={challenge.id} />
         </OpportunityProvider>

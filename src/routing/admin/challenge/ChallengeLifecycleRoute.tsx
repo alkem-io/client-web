@@ -1,25 +1,19 @@
 import React, { FC } from 'react';
 import EditLifecycle from '../../../components/Admin/EditLifecycle';
-import { useParams } from 'react-router';
 import { useChallengeLifecycleQuery, useEventOnChallengeMutation } from '../../../hooks/generated/graphql';
 import Loading from '../../../components/core/Loading/Loading';
 import { PageProps } from '../../../pages';
-import { useApolloErrorHandler } from '../../../hooks';
-
-interface Params {
-  ecoverseId: string;
-  challengeId: string;
-}
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 
 interface Props extends PageProps {}
 
 export const ChallengeLifecycleRoute: FC<Props> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseId = '', challengeId: challengeNameId = '' } = useParams<Params>();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { data, loading } = useChallengeLifecycleQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
   });
 
