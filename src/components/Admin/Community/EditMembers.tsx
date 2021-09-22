@@ -24,7 +24,7 @@ export interface EditMembersProps {
   availableMembers: Member[];
   addingMember?: boolean;
   removingMember?: boolean;
-  loadingAvailalbeMembers?: boolean;
+  loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
   onAdd?: (member: Member) => void;
   onRemove?: (member: Member) => void;
@@ -54,7 +54,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   executor,
   addingMember = false,
   removingMember = false,
-  loadingAvailalbeMembers = false,
+  loadingAvailableMembers = false,
   loadingMembers = false,
   onAdd,
   onRemove,
@@ -134,7 +134,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                         <AvailalbeMembersFragment
                           availableMembers={availableMembers}
                           filteredMembers={filteredData}
-                          loading={loadingAvailalbeMembers}
+                          loading={loadingAvailableMembers}
                           onAdd={onAdd}
                           addingMember={addingMember}
                           removingMember={removingMember}

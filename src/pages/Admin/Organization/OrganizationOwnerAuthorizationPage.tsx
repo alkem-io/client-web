@@ -44,7 +44,7 @@ export const OrganizationOwnerAuthorizationPage: FC<OrganizationAuthorizationPag
             onAdd={actions.handleAssignOwner}
             onRemove={actions.handleRemoveOwner}
             loadingMembers={state.loading}
-            loadingAvailalbeMembers={state.loading}
+            loadingAvailableMembers={state.loading}
           />
         )}
       </OrganizationMembers>

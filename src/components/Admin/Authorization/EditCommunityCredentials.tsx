@@ -78,7 +78,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, crede
       onRemove={handleRemove}
       removingMember={loading}
       loadingMembers={loading}
-      loadingAvailalbeMembers={loading}
+      loadingAvailableMembers={loading}
     />
   );
 };

@@ -44,7 +44,7 @@ export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPag
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
             loadingMembers={state.loading}
-            loadingAvailalbeMembers={state.loading}
+            loadingAvailableMembers={state.loading}
           />
         )}
       </OrganizationMembers>

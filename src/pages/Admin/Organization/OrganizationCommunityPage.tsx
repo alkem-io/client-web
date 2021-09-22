@@ -36,7 +36,7 @@ export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ 
             onAdd={actions.handleAssignMember}
             onRemove={actions.handleRemoveMember}
             loadingMembers={state.loading}
-            loadingAvailalbeMembers={state.loading}
+            loadingAvailableMembers={state.loading}
           />
         )}
       </OrganizationMembers>
