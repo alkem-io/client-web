@@ -557,7 +557,7 @@
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboraiton.",
+      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
