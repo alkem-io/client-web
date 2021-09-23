@@ -353,7 +353,7 @@
           "body": "Realising societies potential. Building a better future, together."
         },
         "ecoverse": {
-          "header": "Explore the hosted Hubs!",
+          "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
         }
@@ -361,8 +361,8 @@
     },
     "organization": {
       "ecoverses": {
-        "title": "Hosted hubs",
-        "subtitle": "Hubs which this organization is hosting",
+        "title": "Challenge Hubs hosting",
+        "subtitle": "Challenge Hubs which this organization is hosting",
         "no-data": "No Hubs are hosted at the moment"
       },
       "challenges": {
