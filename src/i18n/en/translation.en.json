@@ -243,11 +243,23 @@
       }
     },
     "contextSegment": {
-      "background": "Background",
-      "impact": "Impact",
       "tagline": "Tagline",
-      "vision": "Vision",
-      "who": "Who"
+      "background": {
+        "title": "Background",
+        "tooltip": ""
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": ""
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": ""
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": ""
+      }
     },
     "visualSegment": {
       "title": "Visual",
