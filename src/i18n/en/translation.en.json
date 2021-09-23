@@ -246,19 +246,19 @@
       "tagline": "Tagline",
       "background": {
         "title": "Background",
-        "tooltip": ""
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
       },
       "impact": {
         "title": "Impact",
-        "tooltip": ""
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
       },
       "vision": {
         "title": "Vision",
-        "tooltip": ""
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
       },
       "who": {
         "title": "Who",
-        "tooltip": ""
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
       }
     },
     "visualSegment": {
