@@ -3,7 +3,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 export const managementData = {
   adminLvl: [
     {
-      name: 'Ecoverses',
+      name: 'Hubs',
       buttons: [
         { description: 'Manage', url: '/ecoverses' },
         { description: 'New', url: '/ecoverses/new' },
@@ -54,7 +54,7 @@ export const managementData = {
     },
     {
       name: 'Authorization',
-      buttons: [{ description: 'Ecoverse admins', url: `/authorization/${AuthorizationCredential.EcoverseAdmin}` }],
+      buttons: [{ description: 'Hub admins', url: `/authorization/${AuthorizationCredential.EcoverseAdmin}` }],
     },
   ],
   challengeLvl: [
