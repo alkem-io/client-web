@@ -23,14 +23,17 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   const { user, loading: userLoading } = useUserContext();
   const { isAuthenticated, loading: loadingAuthContext } = useAuthenticationContext();
 
-  requiredCredentials.push(...adminCredentials);
-
   if (userLoading || loadingAuthContext) {
     return <Loading text="Loading user configuration" />;
   }
 
   if (!isAuthenticated) {
     return <Redirect to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
+  }
+
+  // if the user has any of the credentials - get him through
+  if (!user || adminCredentials.some(x => user.hasCredentials(x))) {
+    return <Route {...rest}>{children}</Route>;
   }
 
   const toCredentialForResource = (x: RequiredCredential): CredentialForResource =>
