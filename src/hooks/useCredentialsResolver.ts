@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { AuthorizationCredential } from '../models/graphql-schema';
+import { getCredentialName } from '../utils/credential-name-mapper';
 
 export interface CredentialResolver {
   toRoleName: (value: AuthorizationCredential) => string;
@@ -15,7 +16,7 @@ export const useCredentialsResolver = (): CredentialResolver => {
     // Most common case is inconsistency between the backend and the forntened.
     // check if the `AuthorizationCredential` was updated and add/remove missing items
     // in the translation file.
-    return t(`common.enums.authorization-credentials.${value}.name` as const);
+    return t(`common.enums.authorization-credentials.${getCredentialName(value)}.name` as const);
   };
 
   const toRoleOrder = (value: AuthorizationCredential) => {
@@ -23,11 +24,11 @@ export const useCredentialsResolver = (): CredentialResolver => {
     // Most common case is inconsistency between the backend and the forntened.
     // check if the `AuthorizationCredential` was updated and add/remove missing items
     // in the translation file.
-    return Number(t(`common.enums.authorization-credentials.${value}.order` as const));
+    return Number(t(`common.enums.authorization-credentials.${getCredentialName(value)}.order` as const));
   };
 
   const isHidden = (value: AuthorizationCredential) => {
-    return Boolean(t(`common.enums.authorization-credentials.${value}.hidden` as const));
+    return Boolean(t(`common.enums.authorization-credentials.${getCredentialName(value)}.hidden` as const));
   };
 
   return { toRoleName, toRoleOrder, isHidden };

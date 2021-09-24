@@ -94,87 +94,87 @@
     },
     "enums": {
       "authorization-credentials": {
-        "GLOBAL_ADMIN": {
+        "global_admin": {
           "name": "Global Admin",
           "order": 0,
           "hidden": false
         },
-        "GLOBAL_ADMIN_COMMUNITY": {
+        "global_admin_community": {
           "name": "Global Community Admin",
           "order": 1,
           "hidden": false
         },
-        "GLOBAL_ADMIN_CHALLENGES": {
+        "global_admin_challenges": {
           "name": "Global Challenges Admin",
           "order": 2,
           "hidden": false
         },
-        "GLOBAL_REGISTERED": {
+        "global_registered": {
           "name": "Registered",
           "order": 999,
           "hidden": true
         },
-        "ECOVERSE_ADMIN": {
+        "ecoverse_admin": {
           "name": "Hub Admin",
           "order": 3,
           "hidden": false
         },
-        "ECOVERSE_HOST": {
+        "ecoverse_host": {
           "name": "Hub Host",
           "order": 4,
           "hidden": true
         },
-        "ECOVERSE_MEMBER": {
+        "ecoverse_member": {
           "name": "Hub Member",
           "order": 5,
           "hidden": true
         },
-        "CHALLENGE_ADMIN": {
+        "challenge_admin": {
           "name": "Challenge Admin",
           "order": 6,
           "hidden": false
         },
-        "CHALLENGE_LEAD": {
+        "challenge_lead": {
           "name": "Challenge Lead",
           "order": 7,
           "hidden": true
         },
-        "CHALLENGE_MEMBER": {
+        "challenge_member": {
           "name": "Challenge Member",
           "order": 8,
           "hidden": true
         },
-        "OPPORTUNITY_MEMBER": {
+        "opportunity_member": {
           "name": "Opportunity Member",
           "order": 9,
           "hidden": true
         },
-        "ORGANIZATION_OWNER": {
+        "organization_owner": {
           "name": "Organization Owner",
           "order": 10,
           "hidden": false
         },
-        "ORGANIZATION_ADMIN": {
+        "organization_admin": {
           "name": "Organization Admin",
           "order": 11,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
+        "organization_member": {
           "name": "Organization Member",
           "order": 12,
           "hidden": true
         },
-        "USER_SELF_MANAGEMENT": {
+        "user_self_management": {
           "name": "User Self Management",
           "order": 13,
           "hidden": true
         },
-        "COMMUNITY_MEMBER": {
+        "community_member": {
           "name": "Community Member",
           "order": 14,
           "hidden": true
         },
-        "USER_GROUP_MEMBER": {
+        "user_group_member": {
           "name": "User Group Member",
           "order": 15,
           "hidden": true
