@@ -12,13 +12,21 @@ import { Member } from '../../models/User';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { Loading } from '../../components/core';
+import { useTranslation } from 'react-i18next';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
+  const { t } = useTranslation();
   const { role: credential } = useUrlParams();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
-  useUpdateNavigation({ currentPaths });
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      { value: url, name: t(`common.enums.authorization-credentials.${credential}.name` as const), real: true },
+    ],
+    [paths]
+  );
 
+  useUpdateNavigation({ currentPaths });
   const handleError = useApolloErrorHandler();
 
   const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({

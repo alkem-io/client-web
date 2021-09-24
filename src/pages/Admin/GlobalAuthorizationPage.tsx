@@ -12,11 +12,19 @@ import { Member } from '../../models/User';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { Loading } from '../../components/core';
+import { useTranslation } from 'react-i18next';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
   const { role: credential } = useUrlParams();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      { value: url, name: t(`common.enums.authorization-credentials.${credential}.name` as const), real: true },
+    ],
+    [paths]
+  );
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
