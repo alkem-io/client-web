@@ -23,7 +23,10 @@ export const managementData = {
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Global admins', url: `/authorization/${AuthorizationCredential.GlobalAdmin}` },
+        {
+          description: 'Global admins',
+          url: `/authorization/${AuthorizationCredential.GlobalAdmin}`,
+        },
         {
           description: 'Global community admins',
           url: `/authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
@@ -54,7 +57,12 @@ export const managementData = {
     },
     {
       name: 'Authorization',
-      buttons: [{ description: 'Hub admins', url: `/authorization/${AuthorizationCredential.EcoverseAdmin}` }],
+      buttons: [
+        {
+          description: 'Hub admins',
+          url: `/authorization/${AuthorizationCredential.EcoverseAdmin}`,
+        },
+      ],
     },
   ],
   challengeLvl: [
@@ -84,7 +92,12 @@ export const managementData = {
     },
     {
       name: 'Authorization',
-      buttons: [{ description: 'Challenge admins', url: `/authorization/${AuthorizationCredential.ChallengeAdmin}` }],
+      buttons: [
+        {
+          description: 'Challenge admins',
+          url: `/authorization/${AuthorizationCredential.ChallengeAdmin}`,
+        },
+      ],
     },
   ],
   opportunityLvl: [
