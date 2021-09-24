@@ -63,8 +63,8 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
-    "ecoverse": "Ecoverse",
-    "ecoverses": "Ecoverses",
+    "ecoverse": "Hub",
+    "ecoverses": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "opportunity": "Opportunity",
@@ -115,17 +115,17 @@
           "hidden": true
         },
         "EcoverseAdmin": {
-          "name": "Ecoverse Admin",
+          "name": "Hub Admin",
           "order": 3,
           "hidden": false
         },
         "EcoverseHost": {
-          "name": "Ecoverse Host",
+          "name": "Hub Host",
           "order": 4,
           "hidden": true
         },
         "EcoverseMember": {
-          "name": "Ecoverse Member",
+          "name": "Hub Member",
           "order": 5,
           "hidden": true
         },
@@ -194,12 +194,12 @@
     },
     "application-button": {
       "dialog-join-parent": {
-        "title": "Want to join the parent Ecoverse?",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> ecoverse first. Please add the challenge you want to join in the ecoverse's application form."
+        "title": "Want to join the parent Hub?",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parrent application pending!",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> ecoverse first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       }
     },
     "organization-verified": {
@@ -232,7 +232,7 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-ecoverse members to challenges",
+      "read-access": "Allow read access for non-hub members to challenges",
       "read-access-title": "Visibility"
     },
     "nameSegment": {
@@ -243,11 +243,23 @@
       }
     },
     "contextSegment": {
-      "background": "Background",
-      "impact": "Impact",
       "tagline": "Tagline",
-      "vision": "Vision",
-      "who": "Who"
+      "background": {
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+      }
     },
     "visualSegment": {
       "title": "Visual",
@@ -335,7 +347,7 @@
   "pages": {
     "activity": {
       "title": "{{blockName}} activity",
-      "ecoverses": "Ecoverses",
+      "ecoverses": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
       "projects": "Projects",
@@ -353,17 +365,17 @@
           "body": "Realising societies potential. Building a better future, together."
         },
         "ecoverse": {
-          "header": "Explore the hosted Ecoverses!",
-          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
+          "header": "Explore the Challenge Hubs!",
+          "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
         }
       }
     },
     "organization": {
       "ecoverses": {
-        "title": "Hosted ecoverses",
-        "subtitle": "Ecoverses which this organization is hosting",
-        "no-data": "No ecoverses are hosted at the moment"
+        "title": "Challenge Hubs hosting",
+        "subtitle": "Challenge Hubs which this organization is hosting",
+        "no-data": "No Hubs are hosted at the moment"
       },
       "challenges": {
         "title": "Challenges leading",
@@ -389,7 +401,7 @@
       }
     },
     "ecoverse": {
-      "title": "Ecoverse",
+      "title": "Hub",
       "application": {
         "title": "Application to join $t(common.{{entity}}) \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
@@ -402,7 +414,7 @@
         "header": {
           "buttons": {
             "settings": {
-              "tooltip": "Ecoverse settings"
+              "tooltip": "Hub settings"
             }
           }
         },
@@ -418,7 +430,7 @@
         },
         "projects": {
           "header": "Projects",
-          "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
+          "subheader": "Recently initiated projects in the {{ecoverse}} Hub",
           "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
         }
       }
@@ -541,7 +553,7 @@
     },
     "community": {
       "leading-organizations": "Leading organizations",
-      "ecoverse-host": "Ecoverse host",
+      "ecoverse-host": "Hub host",
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
     },
@@ -551,13 +563,13 @@
         "email": "Please enter your email address.",
         "password": "Please enter your password."
       },
-      "logo": "{{ecoverse}} ecoverse logo",
+      "logo": "{{ecoverse}} Hub logo",
       "register": "Don't have an account?",
       "recovery": "Forgot your password?"
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Leading the way in 21st century style collaboration and governance, Alkemio facilitates ecoverses for multi stakeholder collaboration",
+      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {

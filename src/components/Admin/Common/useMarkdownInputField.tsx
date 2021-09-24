@@ -6,6 +6,7 @@ import useProfileStyles from './useProfileStyles';
 interface MarkdownInputFieldProps {
   name: string;
   label: string;
+  tooltipLabel?: string;
   placeholder?: string;
   rows?: number;
   disabled?: boolean;
@@ -14,19 +15,18 @@ interface MarkdownInputFieldProps {
 
 export const useMarkdownInputField = () => {
   const styles = useProfileStyles();
-  return ({ name, label, placeholder, rows, disabled = false, required }: MarkdownInputFieldProps) => {
-    return (
-      <Grid item xs={12}>
-        <FormikMarkdownField
-          name={name}
-          title={label}
-          placeholder={placeholder || label}
-          className={styles.field}
-          disabled={disabled}
-          rows={rows}
-          required={required}
-        />
-      </Grid>
-    );
-  };
+  return ({ name, label, tooltipLabel, placeholder, rows, disabled = false, required }: MarkdownInputFieldProps) => (
+    <Grid item xs={12}>
+      <FormikMarkdownField
+        name={name}
+        title={label}
+        tooltipTitle={tooltipLabel}
+        placeholder={placeholder || label}
+        className={styles.field}
+        disabled={disabled}
+        rows={rows}
+        required={required}
+      />
+    </Grid>
+  );
 };
