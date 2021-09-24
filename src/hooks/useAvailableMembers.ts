@@ -20,7 +20,7 @@ export interface AvailableMembersResults {
  */
 export const useAvailableMembers = (
   credential: AuthorizationCredential,
-  resourceId: string,
+  resourceId?: string,
   parentMembers?: Member[]
 ): AvailableMembersResults => {
   const {
@@ -47,7 +47,6 @@ export const useAvailableMembers = (
         resourceID: resourceId,
       },
     },
-    skip: !resourceId,
   });
   const current = _current?.usersWithAuthorizationCredential || [];
 

@@ -17,7 +17,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,
   credential,
-  resourceId = '',
+  resourceId,
   memberList,
   addingMember = false,
   removingMember = false,
