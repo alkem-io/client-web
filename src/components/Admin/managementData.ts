@@ -1,5 +1,4 @@
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import { getCredentialName } from '../../utils/credential-name-mapper';
 
 export const managementData = {
   adminLvl: [
@@ -26,11 +25,11 @@ export const managementData = {
       buttons: [
         {
           description: 'Global admins',
-          url: `/authorization/${getCredentialName(AuthorizationCredential.GlobalAdmin)}`,
+          url: `/authorization/${AuthorizationCredential.GlobalAdmin}`,
         },
         {
           description: 'Global community admins',
-          url: `/authorization/community/${getCredentialName(AuthorizationCredential.GlobalAdminCommunity)}`,
+          url: `/authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
         },
       ],
     },
@@ -61,7 +60,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Hub admins',
-          url: `/authorization/${getCredentialName(AuthorizationCredential.EcoverseAdmin)}`,
+          url: `/authorization/${AuthorizationCredential.EcoverseAdmin}`,
         },
       ],
     },
@@ -96,7 +95,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Challenge admins',
-          url: `/authorization/${getCredentialName(AuthorizationCredential.ChallengeAdmin)}`,
+          url: `/authorization/${AuthorizationCredential.ChallengeAdmin}`,
         },
       ],
     },

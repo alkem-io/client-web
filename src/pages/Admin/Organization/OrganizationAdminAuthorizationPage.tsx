@@ -5,7 +5,6 @@ import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
 import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { getCredentialName } from '../../../utils/credential-name-mapper';
 import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
 
 export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
@@ -16,11 +15,7 @@ export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPag
       ...paths,
       {
         value: '',
-        name: t(
-          `common.enums.authorization-credentials.${getCredentialName(
-            AuthorizationCredential.OrganizationAdmin
-          )}.name` as const
-        ),
+        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganizationAdmin}.name` as const),
         real: false,
       },
     ],
