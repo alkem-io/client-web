@@ -1,11 +1,13 @@
+import clsx from 'clsx';
+import React, { FC, useMemo } from 'react';
 import { FormGroup, FormHelperText, InputLabel, InputProps } from '@material-ui/core';
 import MDEditor from '@uiw/react-md-editor';
-import clsx from 'clsx';
+import Tooltip from '@material-ui/core/Tooltip';
+import InfoIcon from '@material-ui/icons/Info';
 import { useField } from 'formik';
-import React, { FC, useMemo } from 'react';
-import { createStyles } from '../../../hooks/useTheme';
+import { createStyles } from '../../../hooks';
 
-const useStyle = createStyles(() => ({
+const useStyle = createStyles(theme => ({
   padding: {
     /*
       select the inner div only if state classes are applied
@@ -15,10 +17,15 @@ const useStyle = createStyles(() => ({
       paddingRight: 30,
     },
   },
+  withTooltipIcon: {
+    display: 'flex',
+    gap: theme.spacing(0.5),
+  },
 }));
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
+  tooltipTitle?: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -30,6 +37,7 @@ interface MarkdownFieldProps extends InputProps {
 
 export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   title,
+  tooltipTitle,
   name,
   required = false,
   readOnly = false,
@@ -44,7 +52,14 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   return (
     <FormGroup>
-      <InputLabel required={required}>{title}</InputLabel>
+      <div className={styles.withTooltipIcon}>
+        <InputLabel required={required}>{title}</InputLabel>
+        {tooltipTitle && (
+          <Tooltip title={tooltipTitle} arrow placement="top" aria-label={`tooltip-${title}`}>
+            <InfoIcon fontSize="inherit" color="primary" />
+          </Tooltip>
+        )}
+      </div>
       <MDEditor
         value={field.value}
         onChange={e => helper.setValue(e)}

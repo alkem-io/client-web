@@ -5,7 +5,7 @@ import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../models/graphql-schema';
-import { Admin } from './admin/admin';
+import { AdminRoute } from './admin/admin.route';
 import { IdentityRoute } from './identity/identity';
 import { EcoverseRoute } from './ecoverse.route';
 import { Messages } from './messages';
@@ -32,10 +32,11 @@ export const Routing: FC = () => {
           AuthorizationCredential.OrganizationAdmin,
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
+          AuthorizationCredential.OrganizationOwner,
         ]}
         strict={false}
       >
-        <Admin />
+        <AdminRoute />
       </RestrictedRoute>
       <Route path="/identity">
         <IdentityRoute />

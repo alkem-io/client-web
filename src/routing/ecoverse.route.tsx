@@ -8,7 +8,7 @@ import { AuthorizationCredential } from '../models/graphql-schema';
 import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
 import ChallengeRoute from './challenge.route';
 import EcoverseCommunityPage from '../pages/community/EcoverseCommunityPage';
-import RestrictedRoute, { CredentialsForResource } from './route.extensions';
+import RestrictedRoute, { CredentialForResource } from './route.extensions';
 import { ChallengeProvider } from '../context/ChallengeProvider';
 import { nameOfUrl } from './url-params';
 
@@ -44,14 +44,8 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
     return <FourOuFour />;
   }
 
-  const credentialForResource: CredentialsForResource[] = isPrivate
-    ? [
-        {
-          credential: AuthorizationCredential.EcoverseMember,
-          resourceId: ecoverse?.id || '',
-        },
-      ]
-    : [];
+  const requiredCredentials: CredentialForResource[] =
+    isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
 
   return (
     <Switch>
@@ -63,7 +57,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
           <ChallengeRoute paths={currentPaths} challenges={challenges} />
         </ChallengeProvider>
       </Route>
-      <RestrictedRoute path={`${path}/community`} credentialForResource={credentialForResource}>
+      <RestrictedRoute path={`${path}/community`} requiredCredentials={requiredCredentials}>
         <EcoverseCommunityPage paths={currentPaths} />
       </RestrictedRoute>
       <Route path={path}>

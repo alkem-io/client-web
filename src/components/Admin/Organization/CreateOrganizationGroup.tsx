@@ -1,11 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import {
-  GroupDetailsFragmentDoc,
-  useCreateGroupOnOrganizationMutation,
-  useOrganizationNameQuery,
-} from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
+import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useOrganization } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -13,11 +9,8 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { organizationNameId } = useUrlParams();
+  const { organizationId, organization } = useOrganization();
   const handleError = useApolloErrorHandler();
-
-  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationNameId } });
-  const organization = organizationQuery?.organization;
 
   const redirectToCreatedGroup = (groupId: string) => {
     const newGroupPath = url.replace('/new', `/${groupId}`);
@@ -51,13 +44,13 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
       createGroup({
         variables: {
           input: {
-            parentID: organizationNameId,
+            parentID: organizationId,
             name,
           },
         },
       });
     },
-    [organizationNameId]
+    [organizationId]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

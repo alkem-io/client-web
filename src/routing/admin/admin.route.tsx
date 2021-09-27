@@ -9,7 +9,7 @@ import { OrganizationsRoute } from './organization/organization';
 import { UsersRoute } from './user';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
-export const Admin: FC = () => {
+export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);

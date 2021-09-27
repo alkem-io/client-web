@@ -202,22 +202,22 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
-  ChallengeAdmin = 'ChallengeAdmin',
-  ChallengeLead = 'ChallengeLead',
-  ChallengeMember = 'ChallengeMember',
-  EcoverseAdmin = 'EcoverseAdmin',
-  EcoverseHost = 'EcoverseHost',
-  EcoverseMember = 'EcoverseMember',
-  GlobalAdmin = 'GlobalAdmin',
-  GlobalAdminCommunity = 'GlobalAdminCommunity',
-  GlobalRegistered = 'GlobalRegistered',
-  OpportunityAdmin = 'OpportunityAdmin',
-  OpportunityMember = 'OpportunityMember',
-  OrganizationAdmin = 'OrganizationAdmin',
-  OrganizationMember = 'OrganizationMember',
-  OrganizationOwner = 'OrganizationOwner',
-  UserGroupMember = 'UserGroupMember',
-  UserSelfManagement = 'UserSelfManagement',
+  ChallengeAdmin = 'CHALLENGE_ADMIN',
+  ChallengeLead = 'CHALLENGE_LEAD',
+  ChallengeMember = 'CHALLENGE_MEMBER',
+  EcoverseAdmin = 'ECOVERSE_ADMIN',
+  EcoverseHost = 'ECOVERSE_HOST',
+  EcoverseMember = 'ECOVERSE_MEMBER',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
+  GlobalRegistered = 'GLOBAL_REGISTERED',
+  OpportunityAdmin = 'OPPORTUNITY_ADMIN',
+  OpportunityMember = 'OPPORTUNITY_MEMBER',
+  OrganizationAdmin = 'ORGANIZATION_ADMIN',
+  OrganizationMember = 'ORGANIZATION_MEMBER',
+  OrganizationOwner = 'ORGANIZATION_OWNER',
+  UserGroupMember = 'USER_GROUP_MEMBER',
+  UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
 
 export enum AuthorizationPrivilege {
@@ -774,6 +774,8 @@ export type Lifecycle = {
   nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The current state of this Lifecycle. */
   state?: Maybe<Scalars['String']>;
+  /** Is this lifecycle in a final state (done). */
+  stateIsFinal: Scalars['Boolean'];
   /** The Lifecycle template name. */
   templateName?: Maybe<Scalars['String']>;
 };
@@ -3690,6 +3692,7 @@ export type ChallengeLifecycleQuery = {
         machineDef: string;
         state?: Maybe<string>;
         nextEvents?: Maybe<Array<string>>;
+        stateIsFinal: boolean;
       }>;
     };
   };
@@ -4212,6 +4215,28 @@ export type OpportunityCommunityQuery = {
         >;
       }>;
     };
+  };
+};
+
+export type CommunityMembersQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityMembersQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+      }>
+    >;
   };
 };
 
@@ -4873,6 +4898,7 @@ export type OpportunityLifecycleQuery = {
         machineDef: string;
         state?: Maybe<string>;
         nextEvents?: Maybe<Array<string>>;
+        stateIsFinal: boolean;
       }>;
     };
   };

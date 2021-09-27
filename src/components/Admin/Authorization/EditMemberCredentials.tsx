@@ -7,7 +7,7 @@ import { Member } from '../../../models/User';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
-    Pick<EditMembersProps, 'onAdd' | 'onRemove'> {
+    Pick<EditMembersProps, 'onAdd' | 'onRemove' | 'addingMember' | 'removingMember'> {
   credential: AuthorizationCredential;
   /** Members of the edited entity */
   memberList: Member[];
@@ -17,8 +17,10 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,
   credential,
-  resourceId = '',
+  resourceId,
   memberList,
+  addingMember = false,
+  removingMember = false,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
@@ -32,8 +34,10 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       executor={user}
       onAdd={onAdd}
       onRemove={onRemove}
-      addingMember={loading}
-      removingMember={loading}
+      addingMember={addingMember}
+      removingMember={removingMember}
+      loadingMembers={loading}
+      loadingAvailableMembers={loading}
     />
   );
 };

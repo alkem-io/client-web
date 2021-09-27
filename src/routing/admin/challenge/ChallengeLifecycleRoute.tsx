@@ -15,6 +15,7 @@ export const ChallengeLifecycleRoute: FC<Props> = ({ paths }) => {
   const { data, loading } = useChallengeLifecycleQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const lifecycle = data?.ecoverse.challenge?.lifecycle;

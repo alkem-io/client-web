@@ -14,6 +14,7 @@ export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }
   const { data, loading } = useEcoverseGroupQuery({
     variables: { ecoverseId: ecoverseNameId, groupId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   return (

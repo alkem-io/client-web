@@ -1,17 +1,16 @@
-import React, { FC, useMemo } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Card from '../core/Card';
+import { Link } from 'react-router-dom';
+import { createStyles } from '../../hooks/useTheme';
+import { Nvp } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { Activities } from '../ActivityPanel/Activities';
-import getActivityCount from '../../utils/get-activity-count';
-import TagContainer from '../core/TagContainer';
-import Tag from '../core/Tag';
+import CardTags from '../composite/common/CardTags/CardTags';
 import Button from '../core/Button';
-import { Link } from 'react-router-dom';
+import Card from '../core/Card';
 import Typography from '../core/Typography';
-import { Nvp } from '../../models/graphql-schema';
-import { createStyles } from '../../hooks/useTheme';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const useCardStyles = createStyles(theme => ({
   relative: {
@@ -64,7 +63,6 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
   const cardTags = isMember ? { text: t('components.card.member') } : undefined;
 
   const backgroundImg = visual?.background;
-  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   return (
     <div className={styles.relative}>
@@ -81,6 +79,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
         }}
         primaryTextProps={{
           text: displayName || '',
+          tooltip: true,
           classes: {
             color: theme => theme.palette.neutralLight.main,
           },
@@ -94,18 +93,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
                   { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
                 ]}
               />
-              <TagContainer>
-                {truncatedTags.map((t, i) => (
-                  <Tag key={i} text={t} color="neutralMedium" />
-                ))}
-                {tags.length > 3 && (
-                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
-                    <span>
-                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
-                    </span>
-                  </Tooltip>
-                )}
-              </TagContainer>
+              <CardTags tags={tags} />
             </div>
           ),
           className: styles.content,
@@ -121,9 +109,13 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ displayName, context = {}, url,
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
-            <span>{tagline}</span>
-          </Typography>
+          <Tooltip placement="right" title={tagline || ''} arrow>
+            <div>
+              <Typography color="neutralLight" className={styles.tagline} clamp={2}>
+                <span>{tagline}</span>
+              </Typography>
+            </div>
+          </Tooltip>
         )}
       </Card>
     </div>
