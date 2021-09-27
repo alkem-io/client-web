@@ -184,7 +184,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                         type="submit"
                         disabled={isCreationLoading}
                         onClick={() => handleSubmit()}
-                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
+                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
                       />
                     </Grid>
                   </Grid>
