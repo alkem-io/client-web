@@ -54,10 +54,12 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
     variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const currentPaths = useMemo(
@@ -68,7 +70,8 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
   const community = data?.ecoverse?.opportunity?.community;
   const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
   const opportunityUUID = data?.ecoverse.opportunity.id || '';
-  if (loadingOpportunity || loadingChallenge) return <Loading text={'Loading'} />;
+  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
+  if (loadingChallenge) return <Loading text={'Loading challenge'} />;
 
   return (
     <Switch>

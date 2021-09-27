@@ -12,6 +12,7 @@ export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
   const { data, loading } = useEcoverseApplicationsQuery({
     variables: { ecoverseId: ecoverseNameId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
   const applications = data?.ecoverse?.community?.applications || [];
 
