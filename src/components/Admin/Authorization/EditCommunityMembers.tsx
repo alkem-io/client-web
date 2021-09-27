@@ -22,14 +22,19 @@ export type CommunityCredentials =
   | AuthorizationCredential.OrganizationMember
   | AuthorizationCredential.ChallengeMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, credential, resourceId, communityId }) => {
+export const EditCommunityMembers: FC<EditCredentialsProps> = ({
+  parentMembers,
+  credential,
+  resourceId,
+  communityId,
+}) => {
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserToCommunityMutation({
+  const [grant, { loading: addingMember }] = useAssignUserToCommunityMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserFromCommunityMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserFromCommunityMutation({
     onError: handleError,
   });
 
@@ -74,10 +79,12 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ parentMembers, crede
       members={current}
       availableMembers={available}
       onAdd={handleAdd}
-      addingMember={loading}
+      addingMember={addingMember}
       onRemove={handleRemove}
-      removingMember={loading}
+      removingMember={removingMember}
+      loadingMembers={loading}
+      loadingAvailableMembers={loading}
     />
   );
 };
-export default EditCredentials;
+export default EditCommunityMembers;

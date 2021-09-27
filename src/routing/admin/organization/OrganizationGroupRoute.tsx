@@ -14,6 +14,7 @@ export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
   const { data, loading } = useOrganizationGroupQuery({
     variables: { organizationId: organizationNameId, groupId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
   const parentMembers = useMemo(() => data?.organization.members || [], [data]);
 

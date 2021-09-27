@@ -15,6 +15,7 @@ const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
   const { data, loading } = useOpportunityLifecycleQuery({
     variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const lifecycle = data?.ecoverse.opportunity?.lifecycle;

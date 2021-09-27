@@ -20,11 +20,11 @@ export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserToGroupMutation({
+  const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserFromGroupMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserFromGroupMutation({
     onError: handleError,
   });
 
@@ -69,9 +69,11 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
       members={current}
       availableMembers={available}
       onAdd={handleAdd}
-      addingMember={loading}
+      addingMember={addingMember}
       onRemove={handleRemove}
-      removingMember={loading}
+      removingMember={removingMember}
+      loadingMembers={loading}
+      loadingAvailableMembers={loading}
     />
   );
 };

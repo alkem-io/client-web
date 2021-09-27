@@ -52,7 +52,8 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({
     variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
   });
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],
@@ -61,7 +62,9 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   const community = data?.ecoverse.community;
 
-  if (loadingEcoverse || loadingEcoverseCommunity) return <Loading text={'Loading'} />;
+  if (loadingEcoverse || loadingEcoverseCommunity) {
+    return <Loading text={'Loading Ecoverse'} />;
+  }
 
   return (
     <Switch>

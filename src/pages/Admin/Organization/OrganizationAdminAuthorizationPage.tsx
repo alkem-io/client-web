@@ -6,6 +6,8 @@ import OrganizationMembers from '../../../containers/organization/OrganizationMe
 import { useOrganization, useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import OrganizationAuthorizationPageProps from './OrganizationAuthorizationPageProps';
+import { useOrganizationMembersQuery } from '../../../hooks/generated/graphql';
+import Loading from '../../../components/core/Loading/Loading';
 
 export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -26,11 +28,19 @@ export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPag
 
   const { organizationId } = useOrganization();
 
+  const { data, loading } = useOrganizationMembersQuery({ variables: { id: organizationId } });
+  const orgMembers = data?.organization.members;
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <Container maxWidth="xl">
       <OrganizationMembers
         entities={{
           organizationId,
+          parentMembers: orgMembers,
           credential: AuthorizationCredential.OrganizationAdmin,
         }}
       >
@@ -43,6 +53,8 @@ export const OrganizationAdminAuthorizationPage: FC<OrganizationAuthorizationPag
             executor={entities.currentMember}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
+            loadingMembers={state.loading}
+            loadingAvailableMembers={state.loading}
           />
         )}
       </OrganizationMembers>

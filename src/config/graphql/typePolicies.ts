@@ -26,11 +26,14 @@ export const typePolicies: TypedTypePolicies = {
   Metadata: {
     merge: true,
   },
-  Query: {
+  Community: {
     fields: {
-      usersWithAuthorizationCredential: {
+      members: {
         merge: false,
       },
     },
+  },
+  Query: {
+    fields: {},
   },
 };

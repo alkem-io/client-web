@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip, Dialog } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import Grid from '@material-ui/core/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles } from '../../hooks';
 import { Lifecycle, Maybe } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 import LifecycleVisualizer from '../core/Lifecycle';
@@ -18,20 +19,11 @@ export interface ActivityCardItemProps {
 const useCardStyles = createStyles(() => ({
   item: {
     display: 'flex',
-    flexGrow: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
-
+  },
+  capitalize: {
     '& > span': {
       textTransform: 'capitalize',
-    },
-  },
-  title: {
-    display: 'flex',
-    alignItems: 'center',
-
-    '& > p': {
-      marginBottom: 0,
     },
   },
 }));
@@ -83,18 +75,20 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
   }
 
   return (
-    <div>
-      <div className={styles.item}>
-        <div className={styles.title}>
+    <>
+      <Grid container item justifyContent={'space-between'} alignItems={'center'}>
+        <Grid item className={styles.item}>
           <Typography>State</Typography>
           <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
             <IconButton color="primary" onClick={() => setModalVisible(true)}>
               <InfoIcon />
             </IconButton>
           </Tooltip>
-        </div>
-        <span>{lifecycle?.state}</span>
-      </div>
+        </Grid>
+        <Grid item className={styles.capitalize}>
+          <span>{lifecycle?.state}</span>
+        </Grid>
+      </Grid>
       <LifecycleModal
         lifecycle={lifecycle}
         show={modalVisible || false}
@@ -102,7 +96,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
           setModalVisible(false);
         }}
       />
-    </div>
+    </>
   );
 };
 

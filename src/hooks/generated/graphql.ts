@@ -4146,6 +4146,7 @@ export const ChallengeLifecycleDocument = gql`
           machineDef
           state
           nextEvents
+          stateIsFinal
         }
       }
     }
@@ -5162,6 +5163,64 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityCommunityQuery(variables?: SchemaTypes.OpportunityCommunityQueryVariables) {
   return { query: OpportunityCommunityDocument, variables: variables };
+}
+export const CommunityMembersDocument = gql`
+  query communityMembers($communityId: UUID!) {
+    community(ID: $communityId) {
+      id
+      members {
+        ...GroupMembers
+      }
+    }
+  }
+  ${GroupMembersFragmentDoc}
+`;
+
+/**
+ * __useCommunityMembersQuery__
+ *
+ * To run a query within a React component, call `useCommunityMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityMembersQuery({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>(
+    CommunityMembersDocument,
+    options
+  );
+}
+export function useCommunityMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityMembersQuery,
+    SchemaTypes.CommunityMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>(
+    CommunityMembersDocument,
+    options
+  );
+}
+export type CommunityMembersQueryHookResult = ReturnType<typeof useCommunityMembersQuery>;
+export type CommunityMembersLazyQueryHookResult = ReturnType<typeof useCommunityMembersLazyQuery>;
+export type CommunityMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityMembersQuery,
+  SchemaTypes.CommunityMembersQueryVariables
+>;
+export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMembersQueryVariables) {
+  return { query: CommunityMembersDocument, variables: variables };
 }
 export const CommunityPageDocument = gql`
   query communityPage($communityId: UUID!) {
@@ -6651,6 +6710,7 @@ export const OpportunityLifecycleDocument = gql`
           machineDef
           state
           nextEvents
+          stateIsFinal
         }
       }
     }

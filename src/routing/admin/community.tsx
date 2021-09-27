@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin';
-import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
+import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
@@ -44,7 +44,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         />
       </Route>
       <Route path={`${path}/groups`}>
-        <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
+        <CommunityGroupsRoute paths={paths} community={community} parentMembers={community?.members} />
       </Route>
       <Route path={`${path}/applications`}>
         {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}

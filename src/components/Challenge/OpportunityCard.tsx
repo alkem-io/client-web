@@ -1,17 +1,16 @@
-import React, { FC, useMemo } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { createStyles } from '../../hooks/useTheme';
+import { Nvp } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
+import { Activities } from '../ActivityPanel/Activities';
+import CardTags from '../composite/common/CardTags/CardTags';
 import Button from '../core/Button';
 import Card from '../core/Card';
-import { useTranslation } from 'react-i18next';
-import { Nvp } from '../../models/graphql-schema';
-import { Activities } from '../ActivityPanel/Activities';
-import getActivityCount from '../../utils/get-activity-count';
-import TagContainer from '../core/TagContainer';
-import Tag from '../core/Tag';
-import { createStyles } from '../../hooks/useTheme';
 import Typography from '../core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const useCardStyles = createStyles(theme => ({
   card: {
@@ -63,7 +62,6 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
 
   const backgroundImg = visual?.background;
   const cardTags = lifecycle.state ? { text: t('components.card.status', { statusName: lifecycle.state }) } : undefined;
-  const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   return (
     <div className={styles.relative}>
@@ -80,6 +78,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
         }}
         primaryTextProps={{
           text: displayName,
+          tooltip: true,
           classes: {
             color: theme => theme.palette.neutralLight.main,
           },
@@ -93,18 +92,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
                   { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
                 ]}
               />
-              <TagContainer>
-                {truncatedTags.map((t, i) => (
-                  <Tag key={i} text={t} color="neutralMedium" />
-                ))}
-                {tags.length > 3 && (
-                  <Tooltip placement="right" title={tags.slice(3).join(', ')} id="more-tags" arrow>
-                    <span>
-                      <Tag text={<>{`+ ${tags.length - truncatedTags.length} more`}</>} color="neutralMedium" />
-                    </span>
-                  </Tooltip>
-                )}
-              </TagContainer>
+              <CardTags tags={tags} />
             </div>
           ),
           className: styles.content,
@@ -120,9 +108,13 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ displayName = '', context, 
         tagProps={cardTags}
       >
         {tagline && (
-          <Typography color="neutralLight" className={styles.tagline} clamp={2}>
-            <span>{tagline}</span>
-          </Typography>
+          <Tooltip placement="right" title={tagline || ''} arrow>
+            <div>
+              <Typography color="neutralLight" className={styles.tagline} clamp={2}>
+                <span>{tagline}</span>
+              </Typography>
+            </div>
+          </Tooltip>
         )}
       </Card>
     </div>
