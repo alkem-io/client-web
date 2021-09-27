@@ -55,10 +55,12 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
   const { data: ecoverseCommunity } = useEcoverseCommunityQuery({
     variables: { ecoverseId: ecoverseNameId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const currentPaths = useMemo(
