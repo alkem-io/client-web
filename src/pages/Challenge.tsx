@@ -259,7 +259,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
                 permissions.edit && (
                   <SettingsButton
                     to={buildAdminChallengeUrl(ecoverseNameId, challenge.nameID)}
-                    tooltip={t('pages.challenge.sections.header.buttons.settigns.tooltip')}
+                    tooltip={t('pages.challenge.sections.header.buttons.settings.tooltip')}
                   />
                 )
               }
