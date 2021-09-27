@@ -348,6 +348,7 @@ export type LifecycleKeySpecifier = (
   | 'machineDef'
   | 'nextEvents'
   | 'state'
+  | 'stateIsFinal'
   | 'templateName'
   | LifecycleKeySpecifier
 )[];
@@ -356,6 +357,7 @@ export type LifecycleFieldPolicy = {
   machineDef?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
+  stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MembershipOrganizationResultEntryChallengeKeySpecifier = (
