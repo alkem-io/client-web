@@ -8,6 +8,7 @@ query challengeLifecycle($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) 
       	machineDef
     		state
         nextEvents
+        stateIsFinal
       }
     }
   }
