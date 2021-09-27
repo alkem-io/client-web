@@ -17,7 +17,6 @@ import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
 import { ChallengeProvider } from '../../../context/ChallengeProvider';
-import { OpportunityProvider } from '../../../context/OpportunityProvider';
 import { nameOfUrl } from '../../url-params';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
@@ -97,9 +96,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route path={`${path}/opportunities`}>
-        <OpportunityProvider>
-          <OpportunitiesRoutes paths={currentPaths} />
-        </OpportunityProvider>
+        <OpportunitiesRoutes paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
         <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />

@@ -3,7 +3,7 @@ import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams }
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsEcoverseAdminMutation,
-  useEcoverseMembersQuery,
+  useCommunityMembersQuery,
   useRemoveUserAsEcoverseAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
@@ -63,13 +63,16 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     });
   };
 
-  const { ecoverseNameId } = useEcoverse();
-  const { data, loading } = useEcoverseMembersQuery({
-    variables: { ecoverseId: ecoverseNameId },
-  });
-  const ecoMembers = data?.ecoverse?.community?.members || [];
+  const { ecoverse, loading: loadingEcoverse } = useEcoverse();
+  const communityId = ecoverse?.community?.id || '';
 
-  if (loading) {
+  const { data, loading: loadingCommunity } = useCommunityMembersQuery({
+    variables: { communityId: communityId },
+    skip: !communityId,
+  });
+  const ecoMembers = data?.community?.members || [];
+
+  if (loadingEcoverse || loadingCommunity) {
     return <Loading />;
   }
 
