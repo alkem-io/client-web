@@ -8,6 +8,7 @@ query opportunityLifecycle($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEI
       	machineDef
     		state
         nextEvents
+        stateIsFinal
       }
     }
   }
