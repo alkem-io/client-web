@@ -150,7 +150,7 @@ export const OrganizationForm: FC<Props> = ({
       <Button
         variant={editMode ? 'default' : 'primary'}
         onClick={handleBack}
-        text={t(`buttons.${editMode ? 'cancel' : 'back'}`)}
+        text={t(`buttons.${editMode ? 'cancel' : 'back'}` as const)}
       />
     </Grid>
   );

@@ -21,7 +21,7 @@ const EcoversesSection = () => {
   return (
     <>
       {loading ? (
-        <Loading text={t('loading.message', { blockName: t('common.ecoverses') })} />
+        <Loading text={t('components.loading.message', { blockName: t('common.ecoverses') })} />
       ) : error ? (
         <Grid container spacing={2}>
           <Grid item xs={12}>
