@@ -17,7 +17,7 @@ export const OpportunityAdminAuthorizationPage: FC<OpportunityAuthorizationPageP
       ...paths,
       {
         value: '',
-        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OrganizationAdmin}.name` as const),
+        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OpportunityAdmin}.name` as const),
         real: false,
       },
     ],
