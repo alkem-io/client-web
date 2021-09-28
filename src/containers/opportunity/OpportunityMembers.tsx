@@ -3,10 +3,11 @@ import { useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
+  useCommunityMembersQuery,
   useRemoveUserAsOpportunityAdminMutation,
 } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
-import { AuthorizationCredential, Opportunity } from '../../models/graphql-schema';
+import { AuthorizationCredential, Community, Opportunity } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
@@ -18,7 +19,7 @@ export type AuthorizationCredentials =
 export interface OpportunityMembersProps {
   entities: {
     opportunityId: Opportunity['id'];
-    parentMembers?: Member[];
+    communityId?: Community['id'];
     credential: AuthorizationCredentials;
   };
   children: (
@@ -48,6 +49,12 @@ export interface OpportunityMembersEntities {
 export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, entities }) => {
   const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
+  const { communityId } = entities;
+
+  const { data: communityData, loading: loadingCommunity } = useCommunityMembersQuery({
+    variables: { communityId: communityId || '' },
+    skip: !communityId,
+  });
 
   const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOpportunityAdminMutation({
     onError: handleError,
@@ -101,7 +108,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     available: availableMembers,
     current: allMembers,
     loading,
-  } = useAvailableMembers(entities.credential, entities.opportunityId, entities.parentMembers);
+  } = useAvailableMembers(entities.credential, entities.opportunityId, communityData?.community.members);
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -125,7 +132,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         {
           addingAdmin,
           removingAdmin,
-          loading: loading,
+          loading: loading || loadingCommunity,
         }
       )}
     </>
