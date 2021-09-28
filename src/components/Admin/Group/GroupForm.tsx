@@ -149,7 +149,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                           variant={isEditMode ? 'default' : 'primary'}
                           onClick={() => onCancel()}
                           disabled={isSubmitting}
-                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}` as const)}
                         />
                       </Grid>
                     )}

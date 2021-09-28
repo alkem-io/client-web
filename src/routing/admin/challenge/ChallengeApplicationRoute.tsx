@@ -13,6 +13,7 @@ export const ChallengeApplicationRoute: FC<Props> = ({ paths }) => {
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const applications = data?.ecoverse?.challenge?.community?.applications || [];

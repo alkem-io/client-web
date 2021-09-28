@@ -123,7 +123,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
         />
       </Grid>
     </Grid>

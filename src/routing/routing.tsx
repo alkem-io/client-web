@@ -34,6 +34,7 @@ export const Routing: FC = () => {
           AuthorizationCredential.OrganizationAdmin,
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
+          AuthorizationCredential.OrganizationOwner,
         ]}
         strict={false}
       >

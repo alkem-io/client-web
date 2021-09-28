@@ -774,6 +774,8 @@ export type Lifecycle = {
   nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The current state of this Lifecycle. */
   state?: Maybe<Scalars['String']>;
+  /** Is this lifecycle in a final state (done). */
+  stateIsFinal: Scalars['Boolean'];
   /** The Lifecycle template name. */
   templateName?: Maybe<Scalars['String']>;
 };
@@ -3690,6 +3692,7 @@ export type ChallengeLifecycleQuery = {
         machineDef: string;
         state?: Maybe<string>;
         nextEvents?: Maybe<Array<string>>;
+        stateIsFinal: boolean;
       }>;
     };
   };
@@ -4212,6 +4215,28 @@ export type OpportunityCommunityQuery = {
         >;
       }>;
     };
+  };
+};
+
+export type CommunityMembersQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityMembersQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+      }>
+    >;
   };
 };
 
@@ -4873,6 +4898,7 @@ export type OpportunityLifecycleQuery = {
         machineDef: string;
         state?: Maybe<string>;
         nextEvents?: Maybe<Array<string>>;
+        stateIsFinal: boolean;
       }>;
     };
   };

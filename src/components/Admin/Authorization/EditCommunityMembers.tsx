@@ -22,7 +22,7 @@ export type CommunityCredentials =
   | AuthorizationCredential.OrganizationMember
   | AuthorizationCredential.ChallengeMember;
 
-export const EditCommunityCredentials: FC<EditCredentialsProps> = ({
+export const EditCommunityMembers: FC<EditCredentialsProps> = ({
   parentMembers,
   credential,
   resourceId,
@@ -87,4 +87,4 @@ export const EditCommunityCredentials: FC<EditCredentialsProps> = ({
     />
   );
 };
-export default EditCommunityCredentials;
+export default EditCommunityMembers;
