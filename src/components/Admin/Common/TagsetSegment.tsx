@@ -7,8 +7,6 @@ import { Tagset } from '../../../models/Profile';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 import { TagsInput } from '../../core';
 
-import useProfileStyles from './useProfileStyles';
-
 interface TagsSegmentProps {
   tagsets: Tagset[];
   template?: TagsetTemplate[];
@@ -70,7 +68,6 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   disabled = false,
   placeholder,
 }) => {
-  const styles = useProfileStyles();
   const [field, , helper] = useField(name);
   return (
     <Grid item xs={12}>
@@ -80,13 +77,10 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         variant={'outlined'}
         placeholder={placeholder}
         value={field.value}
-        className={styles.field}
         required={required}
         disabled={disabled}
+        readOnly={readOnly}
         onChange={items => helper.setValue(items)}
-        InputProps={{
-          readOnly,
-        }}
         InputLabelProps={{
           shrink: true,
         }}

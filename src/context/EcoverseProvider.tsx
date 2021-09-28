@@ -1,46 +1,40 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
 import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
-import { EcoverseInfoQuery } from '../models/graphql-schema';
+import { EcoverseInfoFragment } from '../models/graphql-schema';
+import { useUrlParams } from '../hooks';
 
 interface EcoverseContextProps {
-  ecoverse?: EcoverseInfoQuery;
+  ecoverse?: EcoverseInfoFragment;
   ecoverseId: string;
+  ecoverseNameId: string;
   loading: boolean;
-  toEcoverseId: (nameID: string) => string;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
   loading: true,
   ecoverseId: '',
-  toEcoverseId: (_textId: string) => {
-    throw new Error('Ecoverse Context not provided! (toId)');
-  },
+  ecoverseNameId: '',
 });
 
-interface EcoverseProviderProps {
-  // ecoverseId: string;
-}
+interface EcoverseProviderProps {}
 
 const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
-  const { ecoverseId } = useParams<{ ecoverseId: string }>();
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseInfoQuery({
-    variables: { ecoverseId },
+  const { ecoverseNameId = '' } = useUrlParams();
+  const { data, loading } = useEcoverseInfoQuery({
+    variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
+    skip: !ecoverseNameId,
   });
-  const loading = ecoverseLoading;
-
-  const toEcoverseId = (_textId: string) => {
-    return ecoverse?.ecoverse.id || '';
-  };
+  const ecoverse = data?.ecoverse;
+  const ecoverseId = ecoverse?.id || '';
 
   return (
     <EcoverseContext.Provider
       value={{
         ecoverse,
         ecoverseId,
+        ecoverseNameId,
         loading,
-        toEcoverseId,
       }}
     >
       {children}

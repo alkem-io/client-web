@@ -1,16 +1,18 @@
-import React, { FC } from 'react';
-import { Box, makeStyles } from '@material-ui/core';
+import { Box, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Member } from '../../../models/User';
+import { Loading } from '../../core';
 import { Filter } from '../Common/Filter';
 
 const TABLE_HEIGHT = 600;
@@ -22,6 +24,8 @@ export interface EditMembersProps {
   availableMembers: Member[];
   addingMember?: boolean;
   removingMember?: boolean;
+  loadingAvailableMembers?: boolean;
+  loadingMembers?: boolean;
   onAdd?: (member: Member) => void;
   onRemove?: (member: Member) => void;
 }
@@ -50,10 +54,13 @@ export const EditMembers: FC<EditMembersProps> = ({
   executor,
   addingMember = false,
   removingMember = false,
+  loadingAvailableMembers = false,
+  loadingMembers = false,
   onAdd,
   onRemove,
 }) => {
   const styles = useStyles();
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={8}>
@@ -74,30 +81,32 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredMembers.map(m => {
-                      const disableExecutor = m.id === executor?.id && !deleteExecutor;
-                      return (
-                        <TableRow key={m.email} className={styles.trow}>
-                          <TableCell>{m.displayName}</TableCell>
-                          <TableCell>{m.firstName}</TableCell>
-                          <TableCell>{m.lastName}</TableCell>
-                          <TableCell>{m.email}</TableCell>
-                          <TableCell align={'right'}>
-                            {onRemove && (
-                              <IconButton
-                                aria-label="Remove"
-                                size="small"
-                                disabled={disableExecutor || addingMember || removingMember}
-                                className={styles.iconButtonNegative}
-                                onClick={() => onRemove(m)}
-                              >
-                                <RemoveIcon />
-                              </IconButton>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {loadingMembers && <InternalLoading span={5} />}
+                    {!loadingMembers &&
+                      filteredMembers.map(m => {
+                        const disableExecutor = m.id === executor?.id && !deleteExecutor;
+                        return (
+                          <TableRow key={m.email} className={styles.trow}>
+                            <TableCell>{m.displayName}</TableCell>
+                            <TableCell>{m.firstName}</TableCell>
+                            <TableCell>{m.lastName}</TableCell>
+                            <TableCell>{m.email}</TableCell>
+                            <TableCell align={'right'}>
+                              {onRemove && (
+                                <IconButton
+                                  aria-label="Remove"
+                                  size="small"
+                                  disabled={disableExecutor || addingMember || removingMember}
+                                  className={styles.iconButtonNegative}
+                                  onClick={() => onRemove(m)}
+                                >
+                                  <RemoveIcon />
+                                </IconButton>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                   </TableBody>
                 </Table>
               </Box>
@@ -122,24 +131,14 @@ export const EditMembers: FC<EditMembersProps> = ({
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {filteredData.map(m => (
-                          <TableRow key={m.email} className={styles.trow}>
-                            <TableCell>
-                              {onAdd && (
-                                <IconButton
-                                  aria-label="Add"
-                                  size="small"
-                                  onClick={() => onAdd(m)}
-                                  className={styles.iconButtonSuccess}
-                                  disabled={addingMember || removingMember}
-                                >
-                                  <AddIcon />
-                                </IconButton>
-                              )}
-                            </TableCell>
-                            <TableCell>{m.displayName}</TableCell>
-                          </TableRow>
-                        ))}
+                        <AvailalbeMembersFragment
+                          availableMembers={availableMembers}
+                          filteredMembers={filteredData}
+                          loading={loadingAvailableMembers}
+                          onAdd={onAdd}
+                          addingMember={addingMember}
+                          removingMember={removingMember}
+                        />
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -150,6 +149,82 @@ export const EditMembers: FC<EditMembersProps> = ({
         </Filter>
       </Grid>
     </Grid>
+  );
+};
+
+const InternalLoading: FC<{ span?: number }> = ({ span = 2 }) => {
+  const styles = useStyles();
+  return (
+    <TableRow className={styles.trow}>
+      <TableCell colSpan={span}>
+        <Loading text={''} />
+      </TableCell>
+    </TableRow>
+  );
+};
+
+interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
+  filteredMembers?: Member[];
+  availableMembers?: Member[];
+  loading: boolean;
+}
+
+const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
+  filteredMembers,
+  availableMembers,
+  loading,
+  onAdd,
+  addingMember,
+  removingMember,
+}) => {
+  const styles = useStyles();
+  const { t } = useTranslation();
+
+  if (loading) {
+    return <InternalLoading />;
+  }
+
+  if (!availableMembers || availableMembers.length === 0) {
+    return (
+      <TableRow className={styles.trow}>
+        <TableCell colSpan={2}>
+          <Typography>{t('components.edit-members.no-available-memebers')}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  if (!filteredMembers || filteredMembers.length === 0) {
+    return (
+      <TableRow className={styles.trow}>
+        <TableCell colSpan={2}>
+          <Typography>{t('components.edit-members.user-not-found')}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  return (
+    <>
+      {filteredMembers.map(m => (
+        <TableRow key={m.email} className={styles.trow}>
+          <TableCell>
+            {onAdd && (
+              <IconButton
+                aria-label="Add"
+                size="small"
+                onClick={() => onAdd(m)}
+                className={styles.iconButtonSuccess}
+                disabled={addingMember || removingMember}
+              >
+                <AddIcon />
+              </IconButton>
+            )}
+          </TableCell>
+          <TableCell>{m.displayName}</TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 };
 

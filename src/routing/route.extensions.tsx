@@ -1,12 +1,21 @@
 import React, { FC } from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading/Loading';
-import { useAuthenticationContext } from '../hooks';
-import { useUserContext } from '../hooks';
+import { useAuthenticationContext, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
+// those roles have unconditional access to every restricted resource
+const adminCredentials = [AuthorizationCredential.GlobalAdmin, AuthorizationCredential.GlobalAdminCommunity];
+
+export interface CredentialForResource {
+  credential: AuthorizationCredential;
+  resourceId?: string;
+}
+
+type RequiredCredential = AuthorizationCredential | CredentialForResource;
+
 interface RestrictedRoutePros extends RouteProps {
-  requiredCredentials?: AuthorizationCredential[];
+  requiredCredentials?: RequiredCredential[];
 }
 
 const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
@@ -22,7 +31,19 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
     return <Redirect to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
   }
 
-  if (requiredCredentials.every(x => !user || !user.hasCredentials(x)) && requiredCredentials.length !== 0) {
+  // if the user has any of the credentials - get him through
+  if (!user || adminCredentials.some(x => user.hasCredentials(x))) {
+    return <Route {...rest}>{children}</Route>;
+  }
+
+  const toCredentialForResource = (x: RequiredCredential): CredentialForResource =>
+    typeof x === 'string' ? { credential: x } : x;
+
+  if (
+    !user ||
+    (requiredCredentials.map(toCredentialForResource).every(x => !user.hasCredentials(x.credential, x.resourceId)) &&
+      requiredCredentials.length !== 0)
+  ) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 

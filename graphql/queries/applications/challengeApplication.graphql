@@ -4,11 +4,11 @@ query challengeApplication($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!
     challenge(ID: $challengeId) {
       id
       displayName
-      context{
+      context {
         ...ContextDetails
       }
       community {
-        ...CommunityDetails
+        id
       }
     }
   }

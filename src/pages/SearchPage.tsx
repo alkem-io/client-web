@@ -16,7 +16,7 @@ import Section, { Header as SectionHeader, SubHeader } from '../components/core/
 import Typography from '../components/core/Typography';
 import { useSearchLazyQuery } from '../hooks/generated/graphql';
 import { createStyles, useUpdateNavigation } from '../hooks';
-import { Challenge, Opportunity, Organisation, User, UserGroup } from '../models/graphql-schema';
+import { Challenge, Opportunity, Organization, User, UserGroup } from '../models/graphql-schema';
 import { PageProps } from './common';
 
 const useStyles = createStyles(() => ({
@@ -42,7 +42,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const filtersConfig: FilterConfig = {
     all: {
       title: 'All',
-      value: ['user', 'opportunity', 'organisation', 'challenge'],
+      value: ['user', 'opportunity', 'organization', 'challenge'],
       typename: 'all',
     },
     user: {
@@ -57,8 +57,8 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
     organization: {
       title: 'Organizations only',
-      value: ['organisation'],
-      typename: 'Organisation',
+      value: ['organization'],
+      typename: 'Organization',
     },
     challenge: {
       title: 'Challenges only',
@@ -97,7 +97,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   ];
 
-  type CommunityType = (User | UserGroup | Organisation | Challenge | Opportunity) & { score: number; terms: string[] };
+  type CommunityType = (User | UserGroup | Organization | Challenge | Opportunity) & { score: number; terms: string[] };
   const [community, setCommunity] = useState<Array<CommunityType>>([]);
   const [tags, setTags] = useState<Array<{ name: string }>>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
@@ -209,7 +209,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
             if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
             if (el.__typename === 'Opportunity')
               return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
-            if (el.__typename === 'Organisation')
+            if (el.__typename === 'Organization')
               return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
             if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
 

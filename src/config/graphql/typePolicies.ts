@@ -18,7 +18,7 @@ export const typePolicies: TypedTypePolicies = {
   },
   Challenge: {
     fields: {
-      leadOrganisations: {
+      leadOrganizations: {
         merge: false,
       },
     },
@@ -26,11 +26,14 @@ export const typePolicies: TypedTypePolicies = {
   Metadata: {
     merge: true,
   },
-  Query: {
+  Community: {
     fields: {
-      usersWithAuthorizationCredential: {
+      members: {
         merge: false,
       },
     },
+  },
+  Query: {
+    fields: {},
   },
 };

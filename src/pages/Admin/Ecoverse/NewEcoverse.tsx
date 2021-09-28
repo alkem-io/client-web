@@ -57,7 +57,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organisations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
     [organizationList]
   );
 
@@ -96,7 +96,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
         />
       </Box>
     </Container>

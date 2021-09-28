@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { UserMetadata } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import Avatar from '../core/Avatar';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
@@ -78,7 +79,7 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
             <Box display="flex" textAlign="center">
               <Button
                 as={Link}
-                to={'/profile'}
+                to={buildUserProfileUrl(user.nameID)}
                 onClick={() => {
                   setDropdownOpen(false);
                 }}

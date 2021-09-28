@@ -1,14 +1,14 @@
+import Grid from '@material-ui/core/Grid';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import { Link } from '@material-ui/core';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
 import { SettingsButton } from '../components/composite';
+import ApplicationButton from '../components/composite/common/ApplicationButton/ApplicationButton';
 import Button from '../components/core/Button';
 import CardFilter from '../components/core/card-filter/CardFilter';
 import { CardContainer } from '../components/core/CardContainer';
@@ -23,7 +23,7 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import ChallengeCard from '../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
 import MembershipBackdrop from '../components/MembershipBackdrop';
-import { useAuthenticationContext, useUpdateNavigation, useUserContext } from '../hooks';
+import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
 import {
   useChallengeCardsQuery,
   useEcoverseActivityQuery,
@@ -32,12 +32,14 @@ import {
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH, SEARCH_PAGE } from '../models/constants';
-import { Challenge, Context, EcoverseInfoQuery } from '../models/graphql-schema';
+import { Challenge, Context, EcoverseInfoFragment } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
 import { PageProps } from './common';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -52,7 +54,7 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseInfoQuery;
+  ecoverse: EcoverseInfoFragment;
   permissions: {
     edit: boolean;
   };
@@ -69,32 +71,34 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { displayName: name, context, nameID: ecoverseId, community } = ecoverse.ecoverse;
+  const { ecoverseId } = useEcoverse();
+
+  const { displayName: name, context, nameID: ecoverseNameId, community } = ecoverse;
   const communityId = community?.id;
 
   const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: user?.user?.id || '' } } });
   const applications = memberShip?.membershipUser?.applications || [];
   const userApplication = applications.find(x => x.communityID === communityId);
 
-  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId } });
+  const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId: ecoverseNameId } });
 
   const {
     data: _challenges,
     error: challengesError,
     loading: isChallengeLoading,
   } = useChallengeCardsQuery({
-    variables: { ecoverseId },
+    variables: { ecoverseId: ecoverseNameId },
   });
   const challenges = (_challenges?.ecoverse?.challenges || []) as Challenge[];
 
-  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId } });
+  const { data: _projects } = useProjectsQuery({ variables: { ecoverseId: ecoverseNameId } });
   const projects = _projects?.ecoverse?.projects || [];
   const projectsNestHistory = _projectsNestHistory?.ecoverse?.challenges || [];
 
-  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId } });
+  const { data: _visual } = useEcoverseVisualQuery({ variables: { ecoverseId: ecoverseNameId } });
   const visual = _visual?.ecoverse?.context?.visual;
 
-  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId } });
+  const { data: _activity } = useEcoverseActivityQuery({ variables: { ecoverseId: ecoverseNameId } });
   const activity = _activity?.ecoverse?.activity || [];
 
   useUpdateNavigation({ currentPaths: paths });
@@ -175,20 +179,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
     [activity]
   );
 
-  const applicationButtonState = useMemo(() => {
-    if (!user) {
-      return <Button text={t('buttons.apply-not-signed')} as={Link} to={AUTH_LOGIN_PATH} />;
-    } else {
-      if (userApplication) {
-        if (userApplication.state === APPLICATION_STATE_NEW || userApplication.state === APPLICATION_STATE_REJECTED) {
-          return <Button text={t('buttons.apply-pending')} disabled />;
-        }
-      } else {
-        return <Button text={t('buttons.apply')} as={Link} to={`${url}/apply`} />;
-      }
-    }
-  }, [user, userApplication]);
-
   return (
     <>
       <Section
@@ -212,8 +202,8 @@ const EcoversePage: FC<EcoversePageProps> = ({
             permissions.edit && (
               <SettingsButton
                 color={'primary'}
-                to={buildAdminEcoverseUrl(ecoverseId)}
-                tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
+                to={buildAdminEcoverseUrl(ecoverseNameId)}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
               />
             )
           }
@@ -224,7 +214,12 @@ const EcoversePage: FC<EcoversePageProps> = ({
           <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {more && <Button text={t('buttons.learn-more')} as={'a'} href={`${more.uri}`} target="_blank" />}
-            {applicationButtonState}
+            <ApplicationButton
+              isAuthenticated={isAuthenticated}
+              isMember={user?.ofEcoverse(ecoverseId)}
+              applyUrl={`${url}/apply`}
+              applicationState={userApplication?.state}
+            />
           </div>
         </Body>
       </Section>
@@ -254,7 +249,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
             </Grid>
           </Grid>
         ) : (
-          <CardFilter data={challenges}>
+          <CardFilter data={challenges} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
             {filteredData => (
               <CardContainer>
                 {filteredData.map((challenge, i) => (
@@ -285,7 +280,6 @@ const EcoversePage: FC<EcoversePageProps> = ({
           subTitle={t('pages.ecoverse.sections.community.subheader')}
           body={context?.who}
           shuffle={true}
-          onExplore={() => history.push(SEARCH_PAGE)}
         />
       </AuthenticationBackdrop>
       <Divider />

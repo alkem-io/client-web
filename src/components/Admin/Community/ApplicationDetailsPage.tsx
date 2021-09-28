@@ -1,16 +1,12 @@
 import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
-
-interface Params {
-  appId: string;
-}
+import { useUrlParams } from '../../../hooks';
 
 export const ApplicationDetailsPage: FC = () => {
-  const { appId } = useParams<Params>();
+  const { applicationId } = useUrlParams();
 
   return (
     <>
-      This is application #<b>{appId}</b>
+      This is application #<b>{applicationId}</b>
     </>
   );
 };

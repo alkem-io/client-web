@@ -4,6 +4,7 @@ import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
@@ -26,7 +27,6 @@ interface CommunitySectionProps {
   shuffle?: boolean;
   updates?: CommunicationMessageResult[];
   discussions?: CommunicationMessageResult[];
-  onExplore?: () => void;
 }
 
 const useCommunityStyles = makeStyles(theme => ({
@@ -45,9 +45,9 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   users,
   updates,
   discussions,
-  onExplore,
   shuffle = false,
 }) => {
+  const { url } = useRouteMatch();
   const { t } = useTranslation();
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');
@@ -81,7 +81,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
             <Members shuffle={shuffle} users={users} />
-            {onExplore && <Button text={t('buttons.explore-and-connect')} onClick={() => onExplore()} />}
+            <Button text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>

@@ -168,7 +168,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                         <FormikInputField
                           key={i}
                           title={x.question}
-                          name={x.question}
+                          name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
                           rows={2}
                           multiline
                           required={x.required}
@@ -184,7 +184,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                         type="submit"
                         disabled={isCreationLoading}
                         onClick={() => handleSubmit()}
-                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
+                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
                       />
                     </Grid>
                   </Grid>

@@ -46,7 +46,7 @@ const useContextEditStyles = createStyles(theme => ({
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
   const { t } = useTranslation();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseNameId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
 
@@ -68,7 +68,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
@@ -164,7 +164,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
           type={'submit'}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${!id ? 'create' : 'save'}`)}
+          text={t(`buttons.${!id ? 'create' : 'save'}` as const)}
         />
       </DialogActions>
     </Dialog>

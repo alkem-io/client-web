@@ -1,0 +1,20 @@
+fragment ChallengeInfo on Challenge {
+  id
+  displayName
+  nameID
+  community {
+    id
+  }
+  context {
+    id
+    tagline
+    references {
+      id
+      name
+      uri
+    }
+    visual {
+      ...ContextVisual
+    }
+  }
+}

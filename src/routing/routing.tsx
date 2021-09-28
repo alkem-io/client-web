@@ -5,16 +5,18 @@ import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../models/graphql-schema';
-import { Admin } from './admin/admin';
+import { AdminRoute } from './admin/admin.route';
 import { IdentityRoute } from './identity/identity';
-import { EcoverseRoute } from './ecoverse';
+import { EcoverseRoute } from './ecoverse.route';
 import { Messages } from './messages';
-import ProfileRoute from './profile';
 import { Restricted } from './restricted';
 import RestrictedRoute from './route.extensions';
-import { Search } from './search';
-import OrganisationRoute from './organisation';
-import { OrganisationProvider } from '../context/OrganisationProvider';
+import { SearchRoute } from './search.route';
+import OrganizationRoute from './organization.route';
+import { UserRoute } from './user/user';
+import ProfilePage from '../pages/ProfilePage';
+import { OrganizationProvider } from '../context/OrganizationProvider';
+import { nameOfUrl } from './url-params';
 
 export const Routing: FC = () => {
   const { pathname } = useLocation();
@@ -27,36 +29,37 @@ export const Routing: FC = () => {
         requiredCredentials={[
           AuthorizationCredential.GlobalAdmin,
           AuthorizationCredential.EcoverseAdmin,
-          AuthorizationCredential.OrganisationAdmin,
+          AuthorizationCredential.OrganizationAdmin,
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
+          AuthorizationCredential.OrganizationOwner,
         ]}
         strict={false}
       >
-        <Admin />
+        <AdminRoute />
       </RestrictedRoute>
       <Route path="/identity">
         <IdentityRoute />
       </Route>
       <RestrictedRoute path="/search">
-        <Search />
+        <SearchRoute />
       </RestrictedRoute>
       <RestrictedRoute path="/user">
-        <div>User Page: Coming Soon!</div>
+        <UserRoute />
       </RestrictedRoute>
-      <Route path="/organization/:organisationId">
-        <OrganisationProvider>
-          <OrganisationRoute paths={[]} />
-        </OrganisationProvider>
+      <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
+        <OrganizationProvider>
+          <OrganizationRoute paths={[]} />
+        </OrganizationProvider>
       </Route>
       <RestrictedRoute exact path="/messages">
         <Messages />
       </RestrictedRoute>
-      <RestrictedRoute path="/profile">
-        <ProfileRoute />
-      </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />
+      </Route>
+      <Route exact path="/profile">
+        <ProfilePage />
       </Route>
       <Route exact path="/restricted">
         <Restricted />
@@ -64,7 +67,7 @@ export const Routing: FC = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
-      <Route path="/:ecoverseId">
+      <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
         </EcoverseProvider>

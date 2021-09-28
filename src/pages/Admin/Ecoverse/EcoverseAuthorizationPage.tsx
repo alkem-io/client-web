@@ -1,36 +1,43 @@
 import React, { FC, useMemo } from 'react';
-import { useApolloErrorHandler, useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useTranslation } from 'react-i18next';
+import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsEcoverseAdminMutation,
-  useEcoverseMembersQuery,
+  useCommunityMembersQuery,
   useRemoveUserAsEcoverseAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { useParams, useRouteMatch } from 'react-router';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { useRouteMatch } from 'react-router';
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Container } from '@material-ui/core';
 import { Loading } from '../../../components/core';
 
-interface Params {
-  role: AuthorizationCredential;
-}
-
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
+  const { role: credential } = useUrlParams();
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      {
+        value: url,
+        name: t(`common.enums.authorization-credentials.${credential}.name` as const),
+        real: true,
+      },
+    ],
+    [paths]
+  );
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsEcoverseAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsEcoverseAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsEcoverseAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsEcoverseAdminMutation({
     onError: handleError,
   });
 
@@ -68,13 +75,16 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     });
   };
 
-  const { ecoverseId } = useEcoverse();
-  const { data, loading } = useEcoverseMembersQuery({
-    variables: { ecoverseId: ecoverseId },
-  });
-  const ecoMembers = data?.ecoverse?.community?.members || [];
+  const { ecoverse, loading: loadingEcoverse } = useEcoverse();
+  const communityId = ecoverse?.community?.id || '';
 
-  if (loading) {
+  const { data, loading: loadingCommunity } = useCommunityMembersQuery({
+    variables: { communityId: communityId },
+    skip: !communityId,
+  });
+  const ecoMembers = data?.community?.members || [];
+
+  if (loadingEcoverse || loadingCommunity) {
     return <Loading />;
   }
 
@@ -86,6 +96,8 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
         resourceId={resourceId}
         credential={credential}
         memberList={ecoMembers}
+        addingMember={addingMember}
+        removingMember={removingMember}
       />
     </Container>
   );

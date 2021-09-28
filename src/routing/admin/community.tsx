@@ -1,17 +1,18 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ListPage } from '../../components/Admin';
-import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
+import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
-import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
+import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
 import { useDeleteUserGroup } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
+import { nameOfUrl } from '../url-params';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
@@ -43,7 +44,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         />
       </Route>
       <Route path={`${path}/groups`}>
-        <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
+        <CommunityGroupsRoute paths={paths} community={community} parentMembers={community?.members} />
       </Route>
       <Route path={`${path}/applications`}>
         {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
@@ -53,7 +54,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityUpdatesPage paths={paths} community={community} />
       </Route>
       <Route path={`${path}/lead`}>
-        <LeadingOrganisationPage paths={paths} />
+        <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
         <FourOuFour />
@@ -87,7 +88,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route exact path={`${path}/new`}>
         <CreateCommunityGroup paths={currentPaths} community={community} />
       </Route>
-      <Route path={`${path}/:groupId`}>
+      <Route path={`${path}/:${nameOfUrl.groupId}`}>
         <EcoverseGroupRoute paths={currentPaths} parentMembers={parentMembers} />
       </Route>
       <Route path="*">

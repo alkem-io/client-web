@@ -17,8 +17,12 @@ interface ChallengeListProps extends PageProps {}
 export const ChallengeList: FC<ChallengeListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
-  const { ecoverseId } = useEcoverse();
-  const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({ variables: { ecoverseId } });
+  const { ecoverseNameId } = useEcoverse();
+  const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
+    variables: {
+      ecoverseId: ecoverseNameId,
+    },
+  });
 
   const challengeList =
     challengesListQuery?.ecoverse?.challenges?.map(c => ({
@@ -30,7 +34,7 @@ export const ChallengeList: FC<ChallengeListProps> = ({ paths }) => {
   const [deleteChallenge] = useDeleteChallengeMutation({
     refetchQueries: [
       refetchChallengesWithCommunityQuery({
-        ecoverseId,
+        ecoverseId: ecoverseNameId,
       }),
     ],
     awaitRefetchQueries: true,

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
+import { useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
 import {
   refetchUsersWithCredentialsQuery,
@@ -7,30 +7,33 @@ import {
   useRemoveUserAsGlobalAdminMutation,
   useUsersQuery,
 } from '../../hooks/generated/graphql';
-import { AuthorizationCredential } from '../../models/graphql-schema';
-import { useApolloErrorHandler, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import { Member } from '../../models/User';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { Loading } from '../../components/core';
-
-interface Params {
-  role: AuthorizationCredential;
-}
+import { useTranslation } from 'react-i18next';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
+  const { role: credential } = useUrlParams();
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      { value: url, name: t(`common.enums.authorization-credentials.${credential}.name` as const), real: true },
+    ],
+    [paths]
+  );
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsGlobalAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsGlobalAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalAdminMutation({
     onError: handleError,
   });
 
@@ -75,7 +78,14 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
 
   return (
     <Container maxWidth="xl">
-      <EditMemberCredentials onAdd={handleAdd} onRemove={handleRemove} credential={credential} memberList={members} />
+      <EditMemberCredentials
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        credential={credential}
+        memberList={members}
+        addingMember={addingMember}
+        removingMember={removingMember}
+      />
     </Container>
   );
 };

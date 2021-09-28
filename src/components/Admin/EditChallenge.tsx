@@ -1,9 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
@@ -18,11 +17,6 @@ import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
 import FormMode from './FormMode';
 
-interface Params {
-  challengeId?: string;
-  ecoverseId?: string;
-}
-
 interface Props {
   mode: FormMode;
   paths: Path[];
@@ -36,7 +30,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId: challengeNameId = '', ecoverseId = '' } = useParams<Params>();
+  const { challengeNameId = '', ecoverseNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
@@ -44,19 +38,19 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
       navigateToEdit(data.createChallenge.nameID);
     },
     onError: handleError,
-    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId })],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId: ecoverseNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId: ecoverseNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { ecoverseId: ecoverseId, challengeId: challengeNameId },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
   const challenge = challengeProfile?.ecoverse?.challenge;
@@ -80,7 +74,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               displayName: name,
-              ecoverseID: ecoverseId,
+              ecoverseID: ecoverseNameId,
               context: createContextInput(values),
               tags: tagsets.flatMap(x => x.tags),
             },
@@ -125,7 +119,7 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
         />
       </Grid>
     </Grid>

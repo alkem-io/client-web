@@ -3,7 +3,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 export const managementData = {
   adminLvl: [
     {
-      name: 'Ecoverses',
+      name: 'Hubs',
       buttons: [
         { description: 'Manage', url: '/ecoverses' },
         { description: 'New', url: '/ecoverses/new' },
@@ -23,7 +23,10 @@ export const managementData = {
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Global admins', url: `/authorization/${AuthorizationCredential.GlobalAdmin}` },
+        {
+          description: 'Global admins',
+          url: `/authorization/${AuthorizationCredential.GlobalAdmin}`,
+        },
         {
           description: 'Global community admins',
           url: `/authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
@@ -54,7 +57,12 @@ export const managementData = {
     },
     {
       name: 'Authorization',
-      buttons: [{ description: 'Ecoverse admins', url: `/authorization/${AuthorizationCredential.EcoverseAdmin}` }],
+      buttons: [
+        {
+          description: 'Hub admins',
+          url: `/authorization/${AuthorizationCredential.EcoverseAdmin}`,
+        },
+      ],
     },
   ],
   challengeLvl: [
@@ -71,7 +79,7 @@ export const managementData = {
         { description: 'Members', url: '/community/members' },
         { description: 'Groups', url: '/community/groups' },
         { description: 'Applications', url: '/community/applications' },
-        { description: 'Lead Organisations', url: '/community/lead' },
+        { description: 'Lead Organizations', url: '/community/lead' },
         { description: 'Updates', url: '/community/updates' },
       ],
     },
@@ -84,7 +92,12 @@ export const managementData = {
     },
     {
       name: 'Authorization',
-      buttons: [{ description: 'Challenge admins', url: `/authorization/${AuthorizationCredential.ChallengeAdmin}` }],
+      buttons: [
+        {
+          description: 'Challenge admins',
+          url: `/authorization/${AuthorizationCredential.ChallengeAdmin}`,
+        },
+      ],
     },
   ],
   opportunityLvl: [
