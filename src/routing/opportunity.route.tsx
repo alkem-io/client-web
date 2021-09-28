@@ -47,8 +47,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
       user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
       user?.isEcoverseAdmin(ecoverseId) ||
       user?.isChallengeAdmin(challengeUUID) ||
+      user?.hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunity?.id) ||
       false,
-    [user, ecoverseId, challengeUUID]
+    [user, ecoverseId, challengeUUID, opportunity]
   );
 
   const loading = opportunityLoading || usersLoading;

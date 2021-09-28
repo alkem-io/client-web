@@ -117,6 +117,15 @@ export const managementData = {
         { description: 'Updates', url: '/community/updates' },
       ],
     },
+    {
+      name: 'Authorization',
+      buttons: [
+        {
+          description: 'Opportunity admins',
+          url: '/authorization/admins',
+        },
+      ],
+    },
   ],
   organizationLvl: [
     {

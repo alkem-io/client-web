@@ -1,0 +1,28 @@
+mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
+  assignUserAsOpportunityAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
+  removeUserAsOpportunityAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+query opportunityMembers($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        members {
+          ...GroupMembers
+        }
+      }
+    }
+  }
+}
