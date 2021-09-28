@@ -25,7 +25,7 @@ export const AdminRoute: FC = () => {
       <Route path={`${path}/authorization`}>
         <GlobalAuthorizationRoute paths={currentPaths} />
       </Route>
-      <Route path={`${path}/ecoverses`}>
+      <Route path={`${path}/hubs`}>
         <EcoverseListAdminRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/organizations`}>
