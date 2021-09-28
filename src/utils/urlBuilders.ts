@@ -10,7 +10,7 @@ export const buildOpportunityUrl = (ecoverseNameId: string, challengeNameId: str
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildAdminEcoverseUrl = (ecoverseNameId: string) => `/admin/ecoverses/${ecoverseNameId}`;
+export const buildAdminEcoverseUrl = (ecoverseNameId: string) => `/admin/hubs/${ecoverseNameId}`;
 
 export const buildAdminChallengeUrl = (ecoverseNameId: string, challengeNameId: string) =>
   buildAdminEcoverseUrl(ecoverseNameId).concat(`/challenges/${challengeNameId}`);
