@@ -5,8 +5,8 @@ export const managementData = {
     {
       name: 'Hubs',
       buttons: [
-        { description: 'Manage', url: '/ecoverses' },
-        { description: 'New', url: '/ecoverses/new' },
+        { description: 'Manage', url: '/hubs' },
+        { description: 'New', url: '/hubs/new' },
       ],
     },
     {

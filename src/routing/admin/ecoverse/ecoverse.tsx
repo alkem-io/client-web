@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
 import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
 import Loading from '../../../components/core/Loading/Loading';
@@ -19,9 +20,20 @@ import { buildEcoverseUrl } from '../../../utils/urlBuilders';
 import { nameOfUrl } from '../../url-params';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
+  const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'ecoverses', real: true }], []);
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      {
+        value: url,
+        name: t('common.ecoverses'),
+        real: true,
+      },
+    ],
+    []
+  );
 
   return (
     <Switch>
