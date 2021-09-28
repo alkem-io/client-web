@@ -203,7 +203,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               <SettingsButton
                 color={'primary'}
                 to={buildAdminEcoverseUrl(ecoverseNameId)}
-                tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
               />
             )
           }

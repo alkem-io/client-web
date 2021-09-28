@@ -164,7 +164,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
           type={'submit'}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${!id ? 'create' : 'save'}`)}
+          text={t(`buttons.${!id ? 'create' : 'save'}` as const)}
         />
       </DialogActions>
     </Dialog>
