@@ -669,6 +669,10 @@
       "email-not-verified": " Please verify your <l>email</l>.",
       "tooltips": {
         "settings": "User profile settings"
+      },
+      "member-of": "Member of",
+      "applications": {
+        "title": "Pending applications"
       }
     },
     "authentication-required": {

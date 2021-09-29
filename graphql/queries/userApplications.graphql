@@ -5,6 +5,10 @@ query userApplications($input: MembershipUserInput!) {
       state
       communityID
       displayName
+      createdDate
+      ecoverseID
+      challengeID
+      opportunityID
     }
   }
 }

@@ -8158,6 +8158,10 @@ export const UserApplicationsDocument = gql`
         state
         communityID
         displayName
+        createdDate
+        ecoverseID
+        challengeID
+        opportunityID
       }
     }
   }

@@ -99,14 +99,24 @@ export type ApplicationReceived = {
 
 export type ApplicationResultEntry = {
   __typename?: 'ApplicationResultEntry';
+  /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
+  challengeID?: Maybe<Scalars['UUID']>;
   /** ID for the community */
   communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
   /** Display name of the community */
   displayName: Scalars['String'];
+  /** ID for the ultimate containing Hub */
+  ecoverseID: Scalars['UUID'];
   /** ID for the application */
   id: Scalars['UUID'];
+  /** ID for the Opportunity being applied to, if any. */
+  opportunityID?: Maybe<Scalars['UUID']>;
   /** The current state of the application. */
   state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
 };
 
 export type ApplicationTemplate = {
@@ -5562,6 +5572,10 @@ export type UserApplicationsQuery = {
         state: string;
         communityID: string;
         displayName: string;
+        createdDate: Date;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
       }>
     >;
   };

@@ -73,17 +73,27 @@ export type ApplicationReceivedFieldPolicy = {
   userNameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationResultEntryKeySpecifier = (
+  | 'challengeID'
   | 'communityID'
+  | 'createdDate'
   | 'displayName'
+  | 'ecoverseID'
   | 'id'
+  | 'opportunityID'
   | 'state'
+  | 'updatedDate'
   | ApplicationResultEntryKeySpecifier
 )[];
 export type ApplicationResultEntryFieldPolicy = {
+  challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunityID?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
 export type ApplicationTemplateFieldPolicy = {

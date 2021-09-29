@@ -1,4 +1,10 @@
-import React, { FC, useMemo } from 'react';
+import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
 import Card from '../core/Card';
 import {
   refetchUserApplicationsQuery,
@@ -6,16 +12,13 @@ import {
   useUserApplicationsQuery,
 } from '../../hooks/generated/graphql';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
-import Typography from '../core/Typography';
 import Tag from '../core/Tag';
-import { createStyles } from '../../hooks/useTheme';
+import { createStyles, useApolloErrorHandler, useNotification } from '../../hooks';
 import Icon from '../core/Icon';
-import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import IconButton from '../core/IconButton';
-import { useApolloErrorHandler } from '../../hooks';
-import { useNotification } from '../../hooks';
-import { User } from '../../models/graphql-schema';
-import { Box } from '@material-ui/core';
+import { ApplicationResultEntry, User } from '../../models/graphql-schema';
+import getApplicationWithType, { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+import { Typography } from '@material-ui/core';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -26,8 +29,16 @@ const useStyles = createStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  row: {
+    display: 'flex',
+    justifyContent: 'end',
+    gap: theme.spacing(0.5),
+  },
   noPadding: {
     padding: 0,
+  },
+  capitalize: {
+    textTransform: 'capitalize',
   },
 }));
 
@@ -39,15 +50,15 @@ interface Props {
 const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
   const userId = user?.id || '';
 
+  const { t } = useTranslation();
   const styles = useStyles();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: userId } } });
-  const applications = memberShip?.membershipUser?.applications || [];
-  const pendingApp = useMemo(
-    () => applications.filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED),
-    [applications]
-  );
+  const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResultEntry[];
+  const appsWithType = applications
+    .filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED)
+    .map(getApplicationWithType);
 
   const [deleteApplication] = useDeleteUserApplicationMutation({
     onCompleted: () => notify('Successfully deleted', 'success'),
@@ -68,24 +79,40 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
 
   return (
     <Box marginY={1}>
-      <Card primaryTextProps={{ text: 'Pending applications' }}>
-        {pendingApp.map((x, i) => (
-          <div key={i} className={styles.listDetail}>
-            <Typography as="span" className={styles.noPadding}>
-              {x.displayName}
-            </Typography>
-            <Box display="flex" alignItems={'center'}>
-              <Tag text={x.state} color="neutralMedium" />
-              {canEdit && (
-                <IconButton onClick={() => handleDelete(x.id)}>
-                  <Icon component={Trash} color="negative" size={'md'} />
-                </IconButton>
-              )}
-            </Box>
-          </div>
+      <Card primaryTextProps={{ text: t('pages.user-profile.applications.title') }}>
+        {appsWithType.map((x, i) => (
+          <Grid container key={i} spacing={1} justifyContent={'space-between'} alignItems={'center'}>
+            <Grid item xs={6}>
+              <Link component={RouterLink} to={buildApplicationLink(x)} aria-label="Link to entity">
+                <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
+                  {x.displayName}
+                </Typography>
+              </Link>
+            </Grid>
+            <Grid item xs={6} className={styles.row}>
+              <Tag text={x.type} color="neutralMedium" aria-label="Application type" />
+              <Box display="flex" alignItems={'center'}>
+                <Tag
+                  className={styles.capitalize}
+                  text={x.state}
+                  color={x.state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
+                  aria-label="Application state"
+                />
+                {canEdit && (
+                  <IconButton onClick={() => handleDelete(x.id)} aria-label="Delete">
+                    <Icon component={Trash} color="negative" size={'md'} />
+                  </IconButton>
+                )}
+              </Box>
+            </Grid>
+          </Grid>
         ))}
       </Card>
     </Box>
   );
 };
 export default PendingApplications;
+
+const buildApplicationLink = (application: ApplicationWithType): string => {
+  return application.displayName; // todo build app link
+};

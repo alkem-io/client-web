@@ -12,7 +12,7 @@ import { Loading } from '../components/core/Loading/Loading';
 import Typography from '../components/core/Typography';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 import { CreateNvpInput, QuestionTemplate } from '../models/graphql-schema';
 import { PageProps } from './common';
 
