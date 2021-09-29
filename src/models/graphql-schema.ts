@@ -1730,7 +1730,6 @@ export type ServiceMetadata = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  avatarUploaded: Profile;
   messageReceived: CommunicationMessageReceived;
   roomNotificationReceived: RoomInvitationReceived;
 };
@@ -5664,6 +5663,24 @@ export type SendCommunityUpdateMutationVariables = Exact<{
 }>;
 
 export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; messageUpdateCommunity: string };
+
+export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
+  input: AssignOpportunityAdminInput;
+}>;
+
+export type AssignUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
+  input: RemoveOpportunityAdminInput;
+}>;
+
+export type RemoveUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
 
 export type AssignUserToOrganizationMutationVariables = Exact<{
   input: AssignOrganizationMemberInput;

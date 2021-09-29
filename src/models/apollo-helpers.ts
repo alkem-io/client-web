@@ -846,14 +846,8 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SubscriptionKeySpecifier = (
-  | 'avatarUploaded'
-  | 'messageReceived'
-  | 'roomNotificationReceived'
-  | SubscriptionKeySpecifier
-)[];
+export type SubscriptionKeySpecifier = ('messageReceived' | 'roomNotificationReceived' | SubscriptionKeySpecifier)[];
 export type SubscriptionFieldPolicy = {
-  avatarUploaded?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   roomNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };

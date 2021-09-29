@@ -16,6 +16,7 @@ import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
 import { nameOfUrl } from '../../url-params';
+import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 
 interface Props extends PageProps {}
 
@@ -98,6 +99,9 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
       </Route>
       <Route path={`${path}/lifecycle`}>
         <OpportunityLifecycleRoute paths={currentPaths} />
+      </Route>
+      <Route path={`${path}/authorization`}>
+        <OpportunityAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">
         <FourOuFour />
