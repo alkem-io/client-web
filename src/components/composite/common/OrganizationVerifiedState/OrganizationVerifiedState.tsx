@@ -36,7 +36,7 @@ const OrganizationVerifiedState: FC<Props> = ({ state }) => {
   const styles = useStyles();
 
   const isVerified = state === OrganizationVerificationEnum.VerifiedManualAttestation;
-  const translation = `components.organization-verified.${isVerified ? 'verified' : 'not-verified'}`;
+  const translation = `components.organization-verified.${isVerified ? 'verified' : 'not-verified'}` as const;
   const stateColor = isVerified ? styles.verified : styles.notVerified;
 
   return (

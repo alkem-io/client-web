@@ -80,7 +80,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
         />
       </Box>
     </Container>
