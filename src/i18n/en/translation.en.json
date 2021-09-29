@@ -341,10 +341,10 @@
           "confirmationContent": "Removing a community update is an irreversible. Are you sure you want to continue?",
           "confirmationButtonTitle": "Yes"
         }
-      },
-      "settingsButton": {
-        "tooltip": "Settings"
       }
+    },
+    "settingsButton": {
+      "tooltip": "Settings"
     }
   },
   "navigation": {

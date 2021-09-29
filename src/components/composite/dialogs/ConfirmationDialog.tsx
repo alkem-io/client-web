@@ -1,17 +1,17 @@
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import Dialog from '@material-ui/core/Dialog';
-import Button from '../../core/Button';
+import React, { FC } from 'react';
+import { DefaultNamespace, DefaultResources, TFuncKey, useTranslation } from 'react-i18next';
 import { Loading } from '../../core';
-import { DialogTitle, DialogContent, DialogActions } from '../../core/dialog';
+import Button from '../../core/Button';
+import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 
 interface ConfirmationDialogProps {
   entities: {
-    titleId?: string;
+    titleId?: TFuncKey<DefaultNamespace, DefaultResources>;
     title?: string;
-    contentId?: string;
+    contentId?: TFuncKey<DefaultNamespace, DefaultResources>;
     content?: string;
-    confirmButtonTextId?: string;
+    confirmButtonTextId?: TFuncKey<DefaultNamespace, DefaultResources>;
     confirmButtonText?: string;
   };
   actions: {
@@ -37,7 +37,9 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, op
   if (!content) {
     throw new Error('The confirmation dialog needs text content provided');
   }
-  const confirmButtonText = entities.confirmButtonTextId ? t(entities.confirmButtonTextId) : entities.confirmButtonText;
+  const confirmButtonText = entities.confirmButtonTextId
+    ? (t(entities.confirmButtonTextId) as string)
+    : entities.confirmButtonText;
   if (!confirmButtonText) {
     throw new Error('The confirmation dialog needs button text content provided');
   }
