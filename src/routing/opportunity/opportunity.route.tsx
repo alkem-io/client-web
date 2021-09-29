@@ -1,13 +1,13 @@
-import { FourOuFour, OpportunityPage, PageProps } from '../pages';
-import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../models/graphql-schema';
+import { FourOuFour, OpportunityPage, PageProps } from '../../pages';
+import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../../models/graphql-schema';
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router';
-import { useEcoverse, useUrlParams, useUserContext } from '../hooks';
-import { useOpportunityProfileQuery, useOpportunityUserIdsQuery } from '../hooks/generated/graphql';
-import Loading from '../components/core/Loading/Loading';
-import { Project } from './project';
-import OpportunityCommunityPage from '../pages/community/OpportunityCommunityPage';
-import RestrictedRoute from './route.extensions';
+import { useEcoverse, useUrlParams, useUserContext } from '../../hooks';
+import { useOpportunityProfileQuery, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
+import Loading from '../../components/core/Loading/Loading';
+import { Project } from './project.route';
+import OpportunityCommunityPage from '../../pages/community/OpportunityCommunityPage';
+import RestrictedRoute from '../route.extensions';
 
 interface OpportunityRootProps extends PageProps {
   opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;

@@ -1,16 +1,16 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import Loading from '../components/core/Loading/Loading';
-import { useChallengesQuery } from '../hooks/generated/graphql';
-import { useEcoverse, useUserContext } from '../hooks';
-import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../pages';
-import { AuthorizationCredential } from '../models/graphql-schema';
-import { EcoverseApplyRoute } from './application/EcoverseApplyRoute';
-import ChallengeRoute from './challenge.route';
-import EcoverseCommunityPage from '../pages/community/EcoverseCommunityPage';
-import RestrictedRoute, { CredentialForResource } from './route.extensions';
-import { ChallengeProvider } from '../context/ChallengeProvider';
-import { nameOfUrl } from './url-params';
+import Loading from '../../components/core/Loading/Loading';
+import { useChallengesQuery } from '../../hooks/generated/graphql';
+import { useEcoverse, useUserContext } from '../../hooks';
+import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
+import { AuthorizationCredential } from '../../models/graphql-schema';
+import { EcoverseApplyRoute } from '../application/EcoverseApplyRoute';
+import ChallengeRoute from '../challenge/challenge.route';
+import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
+import RestrictedRoute, { CredentialForResource } from '../route.extensions';
+import { ChallengeProvider } from '../../context/ChallengeProvider';
+import { nameOfUrl } from '../url-params';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();

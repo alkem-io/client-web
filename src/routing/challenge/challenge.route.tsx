@@ -1,16 +1,16 @@
-import { Challenge as ChallengePage, FourOuFour, PageProps } from '../pages';
-import { AuthorizationCredential, Challenge as ChallengeType, ChallengesQuery } from '../models/graphql-schema';
+import { Challenge as ChallengePage, FourOuFour, PageProps } from '../../pages';
+import { AuthorizationCredential, Challenge as ChallengeType, ChallengesQuery } from '../../models/graphql-schema';
 import React, { FC, useMemo } from 'react';
-import { useEcoverse, useUrlParams, useUserContext } from '../hooks';
+import { useEcoverse, useUrlParams, useUserContext } from '../../hooks';
 import { Route, Switch, useRouteMatch } from 'react-router';
-import { useChallengeProfileQuery } from '../hooks/generated/graphql';
-import Loading from '../components/core/Loading/Loading';
-import ChallengeApplyRoute from './application/ChallengeApplyRoute';
-import OpportunityRoute from './opportunity.route';
-import ChallengeCommunityPage from '../pages/community/ChallengeCommunityPage';
-import RestrictedRoute from './route.extensions';
-import { OpportunityProvider } from '../context/OpportunityProvider';
-import { nameOfUrl } from './url-params';
+import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
+import Loading from '../../components/core/Loading/Loading';
+import ChallengeApplyRoute from '../application/ChallengeApplyRoute';
+import OpportunityRoute from '../opportunity/opportunity.route';
+import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
+import RestrictedRoute from '../route.extensions';
+import { OpportunityProvider } from '../../context/OpportunityProvider';
+import { nameOfUrl } from '../url-params';
 
 interface ChallengeRootProps extends PageProps {
   challenges: ChallengesQuery | undefined;
