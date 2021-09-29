@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Alkemio client, enabling users to interact with the Challenge centric platform.",
   "author": "Cherrytwist Foundation",
   "repository": {
