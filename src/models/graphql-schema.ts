@@ -1775,7 +1775,6 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive new applications with filtering. */
   applicationReceived: ApplicationReceived;
-  avatarUploaded: Profile;
   /** Receive new messages for rooms the currently authenticated User is a member of. */
   messageReceived: CommunicationMessageReceived;
   /** Receive new room invitations. */
@@ -5744,6 +5743,24 @@ export type OnMessageReceivedSubscription = {
       timestamp: number;
     };
   };
+};
+
+export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
+  input: AssignOpportunityAdminInput;
+}>;
+
+export type AssignUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
+  input: RemoveOpportunityAdminInput;
+}>;
+
+export type RemoveUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type AssignUserToOrganizationMutationVariables = Exact<{

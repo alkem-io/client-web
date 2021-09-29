@@ -17,8 +17,10 @@ import { UserRoute } from './user/user';
 import ProfilePage from '../pages/ProfilePage';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { nameOfUrl } from './url-params';
+import { useTranslation } from 'react-i18next';
 
 export const Routing: FC = () => {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
 
   return (
@@ -33,6 +35,7 @@ export const Routing: FC = () => {
           AuthorizationCredential.ChallengeAdmin,
           AuthorizationCredential.GlobalAdminCommunity,
           AuthorizationCredential.OrganizationOwner,
+          AuthorizationCredential.OpportunityAdmin,
         ]}
         strict={false}
       >
@@ -69,7 +72,7 @@ export const Routing: FC = () => {
       </Route>
       <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
-          <EcoverseRoute paths={[{ value: '/', name: 'ecoverses', real: true }]} />
+          <EcoverseRoute paths={[{ value: '/', name: t('common.ecoverses'), real: true }]} />
         </EcoverseProvider>
       </Route>
       <Route path="*">

@@ -1,0 +1,13 @@
+mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
+  assignUserAsOpportunityAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
+
+mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
+  removeUserAsOpportunityAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}
