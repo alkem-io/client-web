@@ -1,13 +1,15 @@
-import { ApolloLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
+import { ApolloLink, from, InMemoryCache, NormalizedCacheObject, Operation, split } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { createUploadLink } from 'apollo-upload-client';
+import { WebSocketLink } from '@apollo/client/link/ws';
 import { useMemo } from 'react';
 import { typePolicies } from '../../config/graphql/typePolicies';
 import { ErrorStatus } from '../../models/constants/erros.constants';
 import { logger } from '../../services/logging/winston/logger';
 import { env } from '../../types/env';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
@@ -54,6 +56,23 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     credentials: 'include',
   });
 
+  const wsUri = new URL(graphQLEndpoint, `ws://${window.location.hostname}:${window.location.port}`);
+  const wsLink = new WebSocketLink({
+    uri: wsUri.toString(),
+    options: {
+      reconnect: true,
+    },
+  });
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+    },
+    wsLink,
+    httpLink
+  );
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const retryIf = (error: any, _operation: Operation) => {
     const doNotRetryCodes = [500, 400];
@@ -93,7 +112,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   return useMemo(() => {
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, splitLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies }),
     });
   }, []);

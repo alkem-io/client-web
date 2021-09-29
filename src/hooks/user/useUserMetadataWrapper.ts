@@ -17,6 +17,7 @@ export interface UserMetadata {
   opportunities: string[];
   challenges: string[];
   ecoverses: string[];
+  communities: Record<string, string>;
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
@@ -34,6 +35,11 @@ export const useUserMetadataWrapper = () => {
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
+      const communities =
+        membershipData?.communities.reduce((aggr, value) => {
+          aggr[value.id] = value.displayName;
+          return aggr;
+        }, {}) || {};
 
       const roles =
         user?.agent?.credentials
@@ -56,7 +62,6 @@ export const useUserMetadataWrapper = () => {
         );
       const metadata = {
         user,
-
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
         ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
@@ -69,6 +74,7 @@ export const useUserMetadataWrapper = () => {
         opportunities,
         organizations,
         ecoverses,
+        communities,
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);

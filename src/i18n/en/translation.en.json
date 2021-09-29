@@ -331,11 +331,20 @@
     },
     "communityUpdates": {
       "title": "Let your community know what's next",
-      "postAction": "Post Update",
-      "updatesTitle": "Published updates"
-    },
-    "settingsButton": {
-      "tooltip": "Settings"
+      "updatesTitle": "Published updates",
+      "actions": {
+        "add": {
+          "buttonTitle": "Post Update"
+        },
+        "remove": {
+          "confirmationTitle": "Removing update",
+          "confirmationContent": "Removing a community update is an irreversible. Are you sure you want to continue?",
+          "confirmationButtonTitle": "Yes"
+        }
+      },
+      "settingsButton": {
+        "tooltip": "Settings"
+      }
     }
   },
   "navigation": {

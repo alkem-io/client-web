@@ -61,6 +61,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   if (error) return <Error error={error} />;
 
   const wrappedMe = meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined;
+
   return (
     <UserContext.Provider
       value={{

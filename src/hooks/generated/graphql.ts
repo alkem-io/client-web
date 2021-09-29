@@ -657,6 +657,10 @@ export const UserMembershipDetailsFragmentDoc = gql`
         displayName
       }
     }
+    communities {
+      id
+      displayName
+    }
   }
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
@@ -8493,7 +8497,7 @@ export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUp
 }
 export const SendCommunityUpdateDocument = gql`
   mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
-    messageUpdateCommunity(msgData: $msgData)
+    sendMessageToCommunityUpdates(messageData: $msgData)
   }
 `;
 export type SendCommunityUpdateMutationFn = Apollo.MutationFunction<
@@ -8536,6 +8540,96 @@ export type SendCommunityUpdateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendCommunityUpdateMutation,
   SchemaTypes.SendCommunityUpdateMutationVariables
 >;
+export const RemoveUpdateCommunityDocument = gql`
+  mutation removeUpdateCommunity($msgData: CommunityRemoveMessageInput!) {
+    removeMessageFromCommunityUpdates(messageData: $msgData)
+  }
+`;
+export type RemoveUpdateCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUpdateCommunityMutation,
+  SchemaTypes.RemoveUpdateCommunityMutationVariables
+>;
+
+/**
+ * __useRemoveUpdateCommunityMutation__
+ *
+ * To run a mutation, you first call `useRemoveUpdateCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUpdateCommunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUpdateCommunityMutation, { data, loading, error }] = useRemoveUpdateCommunityMutation({
+ *   variables: {
+ *      msgData: // value for 'msgData'
+ *   },
+ * });
+ */
+export function useRemoveUpdateCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUpdateCommunityMutation,
+    SchemaTypes.RemoveUpdateCommunityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUpdateCommunityMutation,
+    SchemaTypes.RemoveUpdateCommunityMutationVariables
+  >(RemoveUpdateCommunityDocument, options);
+}
+export type RemoveUpdateCommunityMutationHookResult = ReturnType<typeof useRemoveUpdateCommunityMutation>;
+export type RemoveUpdateCommunityMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUpdateCommunityMutation>;
+export type RemoveUpdateCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUpdateCommunityMutation,
+  SchemaTypes.RemoveUpdateCommunityMutationVariables
+>;
+export const OnMessageReceivedDocument = gql`
+  subscription onMessageReceived {
+    messageReceived {
+      roomId
+      roomName
+      communityId
+      message {
+        id
+        message
+        sender
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useOnMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useOnMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnMessageReceivedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnMessageReceivedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.OnMessageReceivedSubscription,
+    SchemaTypes.OnMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.OnMessageReceivedSubscription,
+    SchemaTypes.OnMessageReceivedSubscriptionVariables
+  >(OnMessageReceivedDocument, options);
+}
+export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
+export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
     assignUserAsOpportunityAdmin(membershipData: $input) {
