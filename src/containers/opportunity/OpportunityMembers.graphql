@@ -11,18 +11,3 @@ mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
     displayName
   }
 }
-
-query opportunityMembers($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
-    id
-    opportunity(ID: $opportunityId) {
-      id
-      community {
-        id
-        members {
-          ...GroupMembers
-        }
-      }
-    }
-  }
-}

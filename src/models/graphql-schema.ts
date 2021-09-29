@@ -5682,37 +5682,6 @@ export type RemoveUserAsOpportunityAdminMutation = {
   removeUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type OpportunityMembersQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityMembersQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        members?: Maybe<
-          Array<{
-            __typename?: 'User';
-            id: string;
-            displayName: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-          }>
-        >;
-      }>;
-    };
-  };
-};
-
 export type AssignUserToOrganizationMutationVariables = Exact<{
   input: AssignOrganizationMemberInput;
 }>;
