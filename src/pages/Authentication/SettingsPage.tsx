@@ -1,50 +1,30 @@
-import { SettingsFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import Grid from '@material-ui/core/Grid';
 import { Box, Container } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import React, { FC, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient } from '../../hooks';
-import { logger } from '../../services/logging/winston/logger';
+import { useKratos } from '../../hooks';
 
 interface RegisterPageProps {
   flow: string;
 }
 
 export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
-  const [settingsFlow, setSettingsFlow] = useState<SettingsFlow>();
-  const kratos = useKratosClient();
+  const { t } = useTranslation();
+  const { settingsFlow, getSettingsFlow, loading } = useKratos();
 
   const hideFields = useMemo(
     () => ['traits.name.first', 'traits.name.last', 'traits.accepted_terms', 'profile', 'traits.email'],
     []
   );
-  const { t } = useTranslation();
 
   useEffect(() => {
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceSettingsFlow(flow)
-        .then(({ status, data: flow, ..._response }) => {
-          if (status !== 200) {
-            logger.error(flow);
-          }
-          setSettingsFlow(flow);
-        })
-        .catch(err => {
-          const response = err && err.response;
-          if (response) {
-            if (response.status === 410) {
-              window.location.replace(response.data.error.details.redirect_to);
-            }
-          }
-        });
-    }
-  }, [flow]);
+    getSettingsFlow(flow);
+  }, [getSettingsFlow, flow]);
 
-  if (!settingsFlow) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   return (
     <Container maxWidth="lg">
@@ -59,4 +39,5 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
     </Container>
   );
 };
+
 export default SettingsPage;

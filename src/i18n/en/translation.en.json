@@ -681,5 +681,15 @@
       "updated-successfuly": "Group {{name}} has been updated!",
       "deleted-successfuly": "Group {{name}} deleted successfully"
     }
+  },
+  "kratos": {
+    "errors": {
+      "session": {
+        "default": "Can't get session information!"
+      },
+      "401": "Unauthenticated"
+    },
+    "loading-flow": "Loading flow",
+    "loading-error": "Loading error"
   }
 }

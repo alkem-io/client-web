@@ -1,37 +1,37 @@
-import { SelfServiceErrorContainer } from '@ory/kratos-client';
+import { SelfServiceError } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from '@material-ui/core';
 import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';
 import { logger } from '../../services/logging/winston/logger';
+import { useTranslation } from 'react-i18next';
 
 export const ErrorRoute: FC = () => {
+  const { t } = useTranslation();
   const params = useQueryParams();
-  const errorCode = params.get('error');
-  const [errorContainer, setErrorContainer] = useState<SelfServiceErrorContainer>();
+  const errorCode = params.get('id');
+  const [error, setError] = useState<SelfServiceError>();
   const kratos = useKratosClient();
 
   useEffect(() => {
     if (errorCode && kratos) {
-      kratos.getSelfServiceError(errorCode).then(({ status, data: errorContainer, ..._response }) => {
+      kratos.getSelfServiceError(errorCode).then(({ status, data: selfServiceError, ..._response }) => {
         if (status !== 200) {
-          logger.error(errorContainer);
+          logger.error(selfServiceError);
         }
-        setErrorContainer(errorContainer);
+        setError(selfServiceError);
       });
     }
   }, [errorCode, kratos]);
 
-  if (!errorContainer) {
-    return <Loading text={'Loading config'} />;
+  if (!error) {
+    return <Loading text={t('kratos.loading-error')} />;
   }
 
   return (
     <Container maxWidth="sm">
-      {errorContainer.errors.map((e, i) => (
-        <p key={i}>{`${e['code']} - ${e['message']} (${e['reason']})`}</p>
-      ))}
+      {error.error ? <p>{`${error.error['code']} - ${error.error['message']} (${error.error['reason']})`}</p> : <></>}
     </Container>
   );
 };

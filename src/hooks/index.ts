@@ -4,6 +4,7 @@ export * from './user/useUserMetadataWrapper';
 
 export * from './kratos/useKratosClient';
 export * from './kratos/useWhoami';
+export * from './kratos/useKratos';
 
 export * from './graphql/useApolloErrorHandler';
 export * from './graphql/useGraphQLClient';

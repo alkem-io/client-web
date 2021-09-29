@@ -1,7 +1,6 @@
 import { Box } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { LoginFlow } from '@ory/kratos-client';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
@@ -10,17 +9,16 @@ import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratosClient, useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
+import { useKratos } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
-import { logger } from '../../services/logging/winston/logger';
 
 interface LoginPageProps {
   flow?: string;
 }
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
-  const [loginFlow, setLoginFlow] = useState<LoginFlow>();
-  const kratos = useKratosClient();
+  const { loginFlow, getLoginFlow, loading } = useKratos();
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -28,31 +26,10 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   useUpdateNavigation({ currentPaths });
 
   useEffect(() => {
-    if (flow && kratos) {
-      kratos
-        .getSelfServiceLoginFlow(flow)
-        .then(({ status, data: flow }) => {
-          if (status !== 200) {
-            logger.error(flow);
-          }
-          setLoginFlow(flow);
-        })
-        .catch(err => {
-          const response = err && err.response;
-          if (response) {
-            if (response.status === 410) {
-              window.location.replace(response.data.error.details.redirect_to);
-            }
-          }
-        });
-    }
-  }, [flow, kratos]);
+    getLoginFlow(flow);
+  }, [getLoginFlow, flow]);
 
-  if (!flow) {
-    window.location.replace('/identity/ory/kratos/public/self-service/login/browser');
-  }
-
-  if (!loginFlow) return <Loading text={'Loading flow'} />;
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
   const resetPassword = (
     <Box display={'flex'} justifyContent={'flex-end'}>
