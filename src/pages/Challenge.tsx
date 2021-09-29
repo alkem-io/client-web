@@ -19,6 +19,10 @@ import SettingsButton from '../components/composite/common/SettingsButton/Settin
 import { Loading } from '../components/core';
 import Button from '../components/core/Button';
 import CardFilter from '../components/core/card-filter/CardFilter';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
 import Icon from '../components/core/Icon';
@@ -28,13 +32,21 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../components
 import Typography from '../components/core/Typography';
 import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
-import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
+import {
+  createStyles,
+  useAuthenticationContext,
+  useChallenge,
+  useEcoverse,
+  useUpdateNavigation,
+  useUserContext,
+} from '../hooks';
 import {
   useChallengeActivityQuery,
   useChallengeLifecycleQuery,
+  useChallengeProfileQuery,
   useUserApplicationsQuery,
 } from '../hooks/generated/graphql';
-import { Challenge as ChallengeType, Organization } from '../models/graphql-schema';
+import { Opportunity, OrganizationDetailsFragment } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import {
@@ -44,10 +56,6 @@ import {
   buildOrganizationUrl,
 } from '../utils/urlBuilders';
 import { PageProps } from './common';
-import {
-  entityTagsValueGetter,
-  entityValueGetter,
-} from '../components/core/card-filter/value-getters/entity-value-getter';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
@@ -81,7 +89,7 @@ const useOrganizationStyles = createStyles(theme => ({
 }));
 
 interface Props {
-  organizations: Organization[];
+  organizations: OrganizationDetailsFragment[];
 }
 
 const OrganizationBanners: FC<Props> = ({ organizations }) => {
@@ -123,12 +131,7 @@ const OrganizationBanners: FC<Props> = ({ organizations }) => {
   );
 };
 
-interface ChallengePageProps extends PageProps {
-  challenge: ChallengeType;
-  permissions: {
-    edit: boolean;
-  };
-}
+interface ChallengePageProps extends PageProps {}
 
 const useChallengeStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -137,22 +140,37 @@ const useChallengeStyles = createStyles(theme => ({
   },
 }));
 
-const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { edit: false } }): React.ReactElement => {
+const Challenge: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
   const styles = useChallengeStyles();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { ecoverse, ecoverseNameId, ecoverseId } = useEcoverse();
+  const { ecoverseNameId, ecoverseId, ecoverse } = useEcoverse();
+  const { challengeId, challengeNameId } = useChallenge();
+
+  const { data: query, loading } = useChallengeProfileQuery({
+    variables: {
+      ecoverseId: ecoverseNameId,
+      challengeId,
+    },
+    errorPolicy: 'all',
+  });
+
+  const challenge = query?.ecoverse.challenge;
+
+  const permissions = {
+    edit: useMemo(() => user?.isChallengeAdmin(ecoverseId, challengeId) || false, [user, ecoverseId, challengeId]),
+  };
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name, context, opportunities = [], leadOrganizations, id, community } = challenge;
+  const { displayName: name = '', context, opportunities = [], leadOrganizations = [], community } = challenge || {};
   const communityId = community?.id;
 
   const { data: challengeLifecycleQuery, loading: loadingChallengeLifecycle } = useChallengeLifecycleQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: id },
+    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
   });
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
@@ -168,7 +186,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
   const { data: _activity } = useChallengeActivityQuery({
     variables: {
       ecoverseId: ecoverseNameId,
-      challengeId: id,
+      challengeId: challengeNameId,
     },
   });
   const activity = _activity?.ecoverse?.challenge?.activity || [];
@@ -225,7 +243,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
 
   const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
 
-  if (loadingMembership || loadingChallengeLifecycle) return <Loading />;
+  if (loading || loadingMembership || loadingChallengeLifecycle) return <Loading />;
 
   return (
     <>
@@ -258,7 +276,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
               editComponent={
                 permissions.edit && (
                   <SettingsButton
-                    to={buildAdminChallengeUrl(ecoverseNameId, challenge.nameID)}
+                    to={buildAdminChallengeUrl(ecoverseNameId, challengeNameId)}
                     tooltip={t('pages.challenge.sections.header.buttons.settings.tooltip')}
                   />
                 )
@@ -296,14 +314,14 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
 
             <ApplicationButton
               isAuthenticated={isAuthenticated}
-              isMember={user?.ofChallenge(challenge?.id)}
+              isMember={user?.ofChallenge(challengeId)}
               isNotParentMember={!user?.ofEcoverse(ecoverseId)}
-              applyUrl={buildChallengeApplyUrl(ecoverseNameId, challenge.nameID)}
+              applyUrl={buildChallengeApplyUrl(ecoverseNameId, challengeNameId)}
               parentApplyUrl={buildEcoverseApplyUrl(ecoverseNameId)}
               applicationState={userApplication?.state}
               parentApplicationState={parenetApplication?.state}
               ecoverseName={ecoverse?.displayName}
-              challengeName={challenge.displayName}
+              challengeName={challenge?.displayName}
             />
           </div>
         </Body>
@@ -321,7 +339,11 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
         {!opportunities ||
           (opportunities.length === 0 && <Body text={t('pages.challenge.sections.opportunities.body-missing')}></Body>)}
       </Section>
-      <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
+      <CardFilter
+        data={opportunities as Opportunity[]}
+        tagsValueGetter={entityTagsValueGetter}
+        valueGetter={entityValueGetter}
+      >
         {filteredData => (
           <CardContainer>
             {filteredData.map((opp, i) => (
@@ -349,7 +371,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths, challenge, permissions = { e
         show={!!user}
       >
         <ChallengeCommunitySection
-          challengeId={challenge.id}
+          challengeId={challengeNameId}
           ecoverseId={ecoverseNameId}
           title={t('pages.challenge.sections.community.header')}
           subTitle={t('pages.challenge.sections.community.subheader')}

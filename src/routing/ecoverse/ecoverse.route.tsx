@@ -1,40 +1,28 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { useChallengesQuery } from '../../hooks/generated/graphql';
-import { useEcoverse, useUserContext } from '../../hooks';
-import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
+import { ChallengeProvider } from '../../context/ChallengeProvider';
+import { useEcoverse } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
+import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
+import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
 import { EcoverseApplyRoute } from '../application/EcoverseApplyRoute';
 import ChallengeRoute from '../challenge/challenge.route';
-import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';
-import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { nameOfUrl } from '../url-params';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverseNameId, ecoverseId, ecoverse, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverseId, ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
   const isPrivate = ecoverse?.authorization?.anonymousReadAccess || false;
 
-  const { data: challenges, loading: challengesLoading } = useChallengesQuery({
-    variables: { ecoverseId: ecoverseNameId },
-    errorPolicy: 'ignore' /*todo do not ignore errors*/,
-  });
-
   const currentPaths = useMemo(
-    () => (ecoverse ? [...paths, { value: url, name: ecoverse?.displayName, real: true }] : paths),
-    [paths, ecoverse]
-  );
-  const { user } = useUserContext();
-
-  const isAdmin = useMemo(
-    () => user?.hasCredentials(AuthorizationCredential.GlobalAdmin) || user?.isEcoverseAdmin(ecoverseId) || false,
-    [user, ecoverseId]
+    () => (ecoverse ? [...paths, { value: url, name: displayName, real: true }] : paths),
+    [paths, displayName]
   );
 
-  const loading = ecoverseLoading || challengesLoading;
+  const loading = ecoverseLoading;
 
   if (loading) {
     return <Loading text={'Loading ecoverse'} />;
@@ -50,11 +38,11 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        <EcoversePage ecoverse={ecoverse} paths={currentPaths} permissions={{ edit: isAdmin }} />
+        <EcoversePage ecoverse={ecoverse} paths={currentPaths} />
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
         <ChallengeProvider>
-          <ChallengeRoute paths={currentPaths} challenges={challenges} />
+          <ChallengeRoute paths={currentPaths} />
         </ChallengeProvider>
       </Route>
       <RestrictedRoute path={`${path}/community`} requiredCredentials={requiredCredentials}>

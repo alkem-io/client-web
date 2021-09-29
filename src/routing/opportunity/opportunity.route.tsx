@@ -1,58 +1,22 @@
-import { FourOuFour, OpportunityPage, PageProps } from '../../pages';
-import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../../models/graphql-schema';
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useHistory, useRouteMatch } from 'react-router';
-import { useEcoverse, useUrlParams, useUserContext } from '../../hooks';
-import { useOpportunityProfileQuery, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
+import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
-import { Project } from './project.route';
+import { useOpportunity } from '../../hooks';
+import { FourOuFour, OpportunityPage, PageProps } from '../../pages';
 import OpportunityCommunityPage from '../../pages/community/OpportunityCommunityPage';
 import RestrictedRoute from '../route.extensions';
+import { Project } from './project.route';
 
-interface OpportunityRootProps extends PageProps {
-  opportunities: Pick<OpportunityType, 'id' | 'nameID'>[] | undefined;
-  challengeUUID: string;
-}
+interface OpportunityRootProps extends PageProps {}
 
-const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [], challengeUUID }) => {
+const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const history = useHistory();
-  const { opportunityNameId: id, challengeNameId } = useUrlParams();
-  const { user } = useUserContext();
-  const { ecoverseNameId, ecoverseId } = useEcoverse();
-  const opportunityId = opportunities.find(x => x.nameID === id)?.id || '';
-
-  const { data: query, loading: opportunityLoading } = useOpportunityProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId },
-    errorPolicy: 'all',
-  });
-
-  const { data: usersQuery, loading: usersLoading } = useOpportunityUserIdsQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId },
-    errorPolicy: 'all',
-  });
-
-  const opportunity = query?.ecoverse.opportunity;
-  const opportunityGroups = usersQuery?.ecoverse.opportunity;
-  const members = opportunityGroups?.community?.members;
-  const users = useMemo(() => members || [], [members]);
+  const { opportunity, displayName, loading } = useOpportunity();
 
   const currentPaths = useMemo(
-    () => (opportunity ? [...paths, { value: url, name: opportunity.displayName, real: true }] : paths),
-    [paths, id, opportunity]
+    () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
+    [paths, displayName]
   );
-
-  const isAdmin = useMemo(
-    () =>
-      user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-      user?.isEcoverseAdmin(ecoverseId) ||
-      user?.isChallengeAdmin(challengeUUID) ||
-      user?.hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunity?.id) ||
-      false,
-    [user, ecoverseId, challengeUUID, opportunity]
-  );
-
-  const loading = opportunityLoading || usersLoading;
 
   if (loading) {
     return <Loading text={'Loading opportunity'} />;
@@ -65,24 +29,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths, opportunities = [],
   return (
     <Switch>
       <Route exact path={path}>
-        <OpportunityPage
-          challengeId={challengeNameId}
-          opportunity={opportunity as OpportunityType}
-          users={users as User[] | undefined}
-          paths={currentPaths}
-          onProjectTransition={project => {
-            history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
-          }}
-          // TODO [ATS]: More generic way of controlling the UI based on user credentials must be implemented
-          permissions={{
-            edit: isAdmin,
-            projectWrite: isAdmin,
-            editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-            editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-            editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-            removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-          }}
-        />
+        <OpportunityPage paths={currentPaths} />
       </Route>
       <RestrictedRoute path={`${path}/community`}>
         <OpportunityCommunityPage paths={currentPaths} />

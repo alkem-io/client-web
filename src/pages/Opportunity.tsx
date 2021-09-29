@@ -9,10 +9,12 @@ import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg
 import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ActivityItem } from '../components/ActivityPanel/Activities';
 import ActivityCard from '../components/ActivityPanel/ActivityCard';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import { SettingsButton } from '../components/composite';
+import { Loading } from '../components/core';
 import Button from '../components/core/Button';
 import { CardContainer } from '../components/core/CardContainer';
 import Divider from '../components/core/Divider';
@@ -24,13 +26,15 @@ import { SwitchCardComponent } from '../components/Ecoverse/Cards';
 import InterestModal from '../components/Ecoverse/InterestModal';
 import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
 import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext, createStyles } from '../hooks';
+import { createStyles, useAuthenticationContext, useOpportunity, useUpdateNavigation, useUserContext } from '../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
+  useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
+  useOpportunityUserIdsQuery,
 } from '../hooks/generated/graphql';
-import { Opportunity as OpportunityType, Project, User } from '../models/graphql-schema';
+import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../models/graphql-schema';
 import getActivityCount from '../utils/get-activity-count';
 import hexToRGBA from '../utils/hexToRGBA';
 import { replaceAll } from '../utils/replaceAll';
@@ -63,55 +67,59 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-interface OpportunityPageProps extends PageProps {
-  challengeId: string;
-  opportunity: OpportunityType;
-  users: User[] | undefined;
-  onProjectTransition: (project: Project | undefined) => void;
-  permissions: {
-    edit: boolean;
-    projectWrite: boolean;
-    editActorGroup: boolean;
-    editAspect: boolean;
-    editActors: boolean;
-    removeRelations: boolean;
-  };
-}
+interface OpportunityPageProps extends PageProps {}
 
-const OpportunityPage: FC<OpportunityPageProps> = ({
-  paths,
-  challengeId,
-  opportunity,
-  users = [],
-  permissions = {
-    edit: false,
-    projectWrite: false,
-    editActorGroup: false,
-    editAspect: false,
-    editActors: false,
-    removeRelations: false,
-  },
-  onProjectTransition,
-}): React.ReactElement => {
+const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const history = useHistory();
+  const { url } = useRouteMatch();
   const styles = useStyles();
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const { ecoverseNameId } = useEcoverse();
+  const { ecoverseId, ecoverseNameId, challengeId, opportunityId, opportunityNameId } = useOpportunity();
 
   useUpdateNavigation({ currentPaths: paths });
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
+
   const userName = user?.user.displayName;
+
+  const permissions = useMemo(() => {
+    const isAdmin = user?.isOpportunityAdmin(ecoverseId, challengeId, opportunityId) || false;
+    return {
+      edit: isAdmin,
+      projectWrite: isAdmin,
+      editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+    };
+  }, [user, ecoverseId, challengeId, opportunityId]);
+
+  const { data: query, loading: loadingOpportunity } = useOpportunityProfileQuery({
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    errorPolicy: 'all',
+  });
+
+  const { data: usersQuery, loading: loadingUsers } = useOpportunityUserIdsQuery({
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    errorPolicy: 'all',
+  });
+
+  const opportunity = query?.ecoverse.opportunity as OpportunityType;
+
+  const opportunityGroups = usersQuery?.ecoverse.opportunity;
+  const members = opportunityGroups?.community?.members;
+  const users = useMemo(() => (members || []) as User[], [members]);
 
   const { data: config } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups;
 
   const { data: _activity } = useOpportunityActivityQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunity?.id },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
   });
   const activity = _activity?.ecoverse?.opportunity?.activity || [];
 
@@ -147,6 +155,10 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
   });
 
   const projectRef = useRef<HTMLDivElement>(null);
+
+  const onProjectTransition = project => {
+    history.push(`${url}/projects/${project ? project.nameID : 'new'}`);
+  };
 
   const activitySummary: ActivityItem[] = useMemo(() => {
     return [
@@ -192,6 +204,9 @@ const OpportunityPage: FC<OpportunityPageProps> = ({
 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
+
+  if (loadingOpportunity || loadingUsers) return <Loading />;
+
   return (
     <>
       <Section
