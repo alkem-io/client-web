@@ -6,8 +6,9 @@ import {
   useDeleteUserMutation,
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
+  useUserQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { UserModel } from '../../../models/User';
@@ -22,19 +23,21 @@ import { logger } from '../../../services/logging/winston/logger';
 import { getUpdateUserInput } from '../../User/EditUserProfilePage';
 
 interface UserPageProps extends PageProps {
-  user?: UserModel;
   mode: EditMode;
   title?: string;
 }
 
-export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, title = 'User', paths }) => {
+export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User', paths }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
+  const { userId } = useUrlParams();
+  const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
 
+  const user = data?.user as UserModel;
   const currentPaths = useMemo(
     () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
-    [paths]
+    [paths, user]
   );
 
   useUpdateNavigation({ currentPaths });
@@ -159,6 +162,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
   const closeModal = (): void => {
     setModalOpened(false);
   };
+
+  if (loading) return <Loading text={'Loading user...'} />;
 
   return (
     <div>

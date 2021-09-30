@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useDeleteUserMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
+import { Loading } from '../../../components/core';
+import { useApolloErrorHandler } from '../../../hooks';
+import { useDeleteUserMutation, useUsersQuery } from '../../../hooks/generated/graphql';
 
-interface UserListPageProps extends PageProps {
-  users: UserModel[];
-}
+interface UserListPageProps extends PageProps {}
 
-export const UserListPage: FC<UserListPageProps> = ({ users, paths }) => {
+export const UserListPage: FC<UserListPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
 
-  const data = users.map(u => ({ id: u.id, value: `${u.displayName} (${u.email})`, url: `${url}/${u.id}/edit` }));
+  const { data, loading } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
+
+  const users = data?.users || [];
+
+  const userList = users.map(u => ({ id: u.id, value: `${u.displayName} (${u.email})`, url: `${url}/${u.id}/edit` }));
   const handleError = useApolloErrorHandler();
 
   const [deleteUser] = useDeleteUserMutation({
@@ -33,7 +35,10 @@ export const UserListPage: FC<UserListPageProps> = ({ users, paths }) => {
     });
   };
 
-  return <ListPage data={data} paths={paths} onDelete={handleDelete} />;
+  if (loading) {
+    return <Loading text={'Loading Users ...'} />;
+  }
+  return <ListPage data={userList} paths={paths} onDelete={handleDelete} />;
 };
 
 // interface Props<TEntities, TActions> {
