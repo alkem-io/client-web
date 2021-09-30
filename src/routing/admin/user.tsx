@@ -4,7 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useUserQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { UserModel } from '../../models/User';
 import Loading from '../../components/core/Loading/Loading';
-import { UserList } from '../../components/Admin/User/UserList';
+import { UserListPage } from '../../pages/Admin/User/UserListPage';
 import { UserPage } from '../../pages/Admin/User/UserPage';
 import { EditMode } from '../../utils/editMode';
 import { useUrlParams } from '../../hooks';
@@ -23,7 +23,7 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <UserList users={users} paths={currentPaths} />
+        <UserListPage users={users} paths={currentPaths} />
       </Route>
       {/* creating users is disabled */}
       {/* <Route exact path={`${path}/new`}>
