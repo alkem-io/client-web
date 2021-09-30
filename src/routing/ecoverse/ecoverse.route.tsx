@@ -7,7 +7,7 @@ import { ApplicationTypeEnum } from '../../models/application';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
 import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
-import ApplyRoute from '../application/ApplyRoute';
+import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/challenge.route';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';
 import { nameOfUrl } from '../url-params';

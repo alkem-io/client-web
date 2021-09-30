@@ -6,7 +6,7 @@ import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/application';
 import { Challenge as ChallengePage, FourOuFour, PageProps } from '../../pages';
 import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
-import ApplyRoute from '../application/ApplyRoute';
+import ApplyRoute from '../application/apply.route';
 import OpportunityRoute from '../opportunity/opportunity.route';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
