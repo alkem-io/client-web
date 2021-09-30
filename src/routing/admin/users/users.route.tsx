@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour, PageProps } from '../../pages';
-import { UserListPage } from '../../pages/Admin/User/UserListPage';
-import { UserPage } from '../../pages/Admin/User/UserPage';
-import { EditMode } from '../../utils/editMode';
-import { nameOfUrl } from '../url-params';
+import { FourOuFour, PageProps } from '../../../pages';
+import { UserListPage } from '../../../pages/Admin/User/UserListPage';
+import { UserPage } from '../../../pages/Admin/User/UserPage';
+import { EditMode } from '../../../utils/editMode';
+import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();

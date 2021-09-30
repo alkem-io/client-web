@@ -6,7 +6,7 @@ import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
 import { OrganizationsRoute } from './organization/organization';
-import { UsersRoute } from './user';
+import { UsersRoute } from './users/users.route';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
 export const AdminRoute: FC = () => {
