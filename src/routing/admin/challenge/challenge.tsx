@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { managementData } from '../../../components/Admin/managementData';
-import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
+import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
 import { useEcoverse, useUrlParams } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
@@ -77,7 +77,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate
+        <ManagementPageTemplatePage
           data={managementData.challengeLvl}
           paths={currentPaths}
           title={data?.ecoverse.challenge.displayName}

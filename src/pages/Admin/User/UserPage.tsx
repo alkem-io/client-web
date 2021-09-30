@@ -15,7 +15,7 @@ import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
 import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
-import { EditMode } from '../../../utils/editMode';
+import { EditMode } from '../../../models/editMode';
 import { Loading } from '../../../components/core/Loading/Loading';
 import UserForm from '../../../components/UserProfile/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';

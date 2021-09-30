@@ -1,23 +1,21 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
-import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
-import Loading from '../../../components/core/Loading/Loading';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
+import { useEcoverse, useTransactionScope } from '../../../hooks';
 import { useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
-import { useEcoverse } from '../../../hooks';
-import { useTransactionScope } from '../../../hooks';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
 import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
 import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
 import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
+import { buildEcoverseUrl } from '../../../utils/urlBuilders';
+import { nameOfUrl } from '../../url-params';
 import { ChallengesRoute } from '../challenge/challenge';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
-import { buildEcoverseUrl } from '../../../utils/urlBuilders';
-import { nameOfUrl } from '../../url-params';
 
 export const EcoverseListAdminRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -74,18 +72,15 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   const community = data?.ecoverse.community;
 
-  if (loadingEcoverse || loadingEcoverseCommunity) {
-    return <Loading text={'Loading Ecoverse'} />;
-  }
-
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate
+        <ManagementPageTemplatePage
           data={managementData.ecoverseLvl}
           paths={currentPaths}
           title={ecoverse?.displayName}
           entityUrl={buildEcoverseUrl(ecoverseNameId)}
+          loading={loadingEcoverse || loadingEcoverseCommunity}
         />
       </Route>
       <Route path={`${path}/edit`}>

@@ -1,5 +1,5 @@
 export enum EditMode {
-  readOnly,
-  edit,
-  new,
+  readOnly = 'read-only',
+  edit = 'edit',
+  new = 'new',
 }

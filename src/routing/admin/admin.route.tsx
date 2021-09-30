@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
 import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
@@ -17,7 +17,7 @@ export const AdminRoute: FC = () => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
+        <ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />
       </Route>
       <Route path={`${path}/users`}>
         <UsersRoute paths={currentPaths} />

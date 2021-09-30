@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { FourOuFour, PageProps } from '../../../pages';
 import { UserListPage } from '../../../pages/Admin/User/UserListPage';
 import { UserPage } from '../../../pages/Admin/User/UserPage';
-import { EditMode } from '../../../utils/editMode';
+import { EditMode } from '../../../models/editMode';
 import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {

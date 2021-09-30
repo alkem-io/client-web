@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { Tagset } from '../../../models/Profile';
 import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
-import { EditMode } from '../../../utils/editMode';
+import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../../EditableAvatar';

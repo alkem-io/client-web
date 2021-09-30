@@ -1,22 +1,21 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { managementData } from '../../../components/Admin/managementData';
-import ManagementPageTemplate from '../../../components/Admin/ManagementPageTemplate';
-import Loading from '../../../components/core/Loading/Loading';
-import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../hooks/generated/graphql';
-import { useOpportunity } from '../../../hooks';
-import { FourOuFour, PageProps } from '../../../pages';
-import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { CommunityRoute } from '../community';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
-import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
-import { buildOpportunityUrl } from '../../../utils/urlBuilders';
+import { managementData } from '../../../components/Admin/managementData';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
+import { useOpportunity } from '../../../hooks';
+import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../hooks/generated/graphql';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { FourOuFour, PageProps } from '../../../pages';
+import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
+import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
+import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { nameOfUrl } from '../../url-params';
+import { CommunityRoute } from '../community';
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
+import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 
 interface Props extends PageProps {}
 
@@ -71,17 +70,16 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
   const community = data?.ecoverse?.opportunity?.community;
   const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
   const opportunityUUID = data?.ecoverse.opportunity.id || '';
-  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
-  if (loadingChallenge) return <Loading text={'Loading challenge'} />;
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate
+        <ManagementPageTemplatePage
           data={managementData.opportunityLvl}
           paths={currentPaths}
           title={data?.ecoverse.opportunity.displayName}
           entityUrl={buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
+          loading={loadingOpportunity || loadingChallenge}
         />
       </Route>
       <Route exact path={`${path}/edit`}>
