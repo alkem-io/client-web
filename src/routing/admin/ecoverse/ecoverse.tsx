@@ -4,7 +4,6 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useEcoverse, useTransactionScope } from '../../../hooks';
-import { useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
 import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
@@ -59,18 +58,11 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
   const { path, url } = useRouteMatch();
-  const { data, loading: loadingEcoverseCommunity } = useEcoverseCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId },
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-first',
-  });
+
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],
     [paths, ecoverse]
   );
-
-  const community = data?.ecoverse.community;
 
   return (
     <Switch>
@@ -80,7 +72,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           paths={currentPaths}
           title={ecoverse?.displayName}
           entityUrl={buildEcoverseUrl(ecoverseNameId)}
-          loading={loadingEcoverse || loadingEcoverseCommunity}
+          loading={loadingEcoverse}
         />
       </Route>
       <Route path={`${path}/edit`}>
@@ -89,7 +81,7 @@ export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
       <Route path={`${path}/community`}>
         <CommunityRoute
           paths={currentPaths}
-          community={community}
+          communityId={ecoverse?.community?.id}
           credential={AuthorizationCredential.EcoverseMember}
           resourceId={ecoverseId}
           accessedFrom="ecoverse"

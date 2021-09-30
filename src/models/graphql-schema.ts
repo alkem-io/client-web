@@ -3872,7 +3872,13 @@ export type ChallengeProfileQuery = {
         id: string;
         displayName: string;
         nameID: string;
-        profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string> };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        };
       }>;
     };
   };
@@ -4268,6 +4274,20 @@ export type OpportunityCommunityQuery = {
         >;
       }>;
     };
+  };
+};
+
+export type CommunityGroupsQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityGroupsQuery = {
+  __typename?: 'Query';
+  community: {
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    groups?: Maybe<Array<{ __typename?: 'UserGroup'; id: string; name: string }>>;
   };
 };
 

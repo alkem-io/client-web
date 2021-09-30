@@ -1,0 +1,10 @@
+query communityGroups($communityId: UUID!) {
+  community(ID: $communityId) {
+    id
+    displayName
+    groups {
+      id
+      name
+    }
+  }
+}

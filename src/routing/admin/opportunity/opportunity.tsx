@@ -5,8 +5,7 @@ import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
-import { useOpportunity } from '../../../hooks';
-import { useChallengeCommunityQuery, useOpportunityCommunityQuery } from '../../../hooks/generated/graphql';
+import { useChallenge, useOpportunity } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
@@ -48,28 +47,21 @@ export const OpportunitiesRoutes: FC<Props> = ({ paths }) => {
 export const OpportunityRoutes: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
-  const { opportunityNameId, ecoverseNameId, challengeNameId } = useOpportunity();
-
-  const { data, loading: loadingOpportunity } = useOpportunityCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
-    errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-  });
-  const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-  });
+  const { challenge, loading: loadingChallenge } = useChallenge();
+  const {
+    opportunity,
+    opportunityId,
+    opportunityNameId,
+    ecoverseNameId,
+    challengeNameId,
+    displayName,
+    loading: loadingOpportunity,
+  } = useOpportunity();
 
   const currentPaths = useMemo(
-    () => [...paths, { value: url, name: data?.ecoverse?.opportunity?.displayName || '', real: true }],
-    [paths, data?.ecoverse?.opportunity?.displayName, url]
+    () => [...paths, { value: url, name: displayName || '', real: true }],
+    [paths, displayName, url]
   );
-
-  const community = data?.ecoverse?.opportunity?.community;
-  const parentMembers = challengeData?.ecoverse?.challenge.community?.members || [];
-  const opportunityUUID = data?.ecoverse.opportunity.id || '';
 
   return (
     <Switch>
@@ -77,7 +69,7 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
         <ManagementPageTemplatePage
           data={managementData.opportunityLvl}
           paths={currentPaths}
-          title={data?.ecoverse.opportunity.displayName}
+          title={displayName}
           entityUrl={buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
           loading={loadingOpportunity || loadingChallenge}
         />
@@ -88,10 +80,10 @@ export const OpportunityRoutes: FC<Props> = ({ paths }) => {
       <Route path={`${path}/community`}>
         <CommunityRoute
           paths={currentPaths}
-          community={community}
-          parentMembers={parentMembers}
+          communityId={opportunity?.community?.id}
+          parentCommunityId={challenge?.community?.id}
           credential={AuthorizationCredential.OpportunityMember}
-          resourceId={opportunityUUID}
+          resourceId={opportunityId}
           accessedFrom="opportunity"
         />
       </Route>

@@ -14,7 +14,7 @@ import { useEcoverse } from '../../../hooks';
 
 interface ChallengeListProps extends PageProps {}
 
-export const ChallengeList: FC<ChallengeListProps> = ({ paths }) => {
+export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
@@ -55,4 +55,4 @@ export const ChallengeList: FC<ChallengeListProps> = ({ paths }) => {
 
   return <ListPage data={challengeList} paths={paths} newLink={`${url}/new`} onDelete={handleDelete} />;
 };
-export default ChallengeList;
+export default ChallengeListPage;

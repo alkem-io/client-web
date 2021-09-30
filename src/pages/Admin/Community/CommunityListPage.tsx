@@ -1,0 +1,39 @@
+import React, { FC, useMemo } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import { ListPage } from '../../../components/Admin';
+import { Loading } from '../../../components/core';
+import { useDeleteUserGroup } from '../../../hooks';
+import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
+import { PageProps } from '../../common';
+
+interface CommunityListPageProps extends PageProps {
+  communityId: string;
+}
+
+export const CommunityListPage: FC<CommunityListPageProps> = ({ paths, communityId }) => {
+  const { url } = useRouteMatch();
+  const { data, loading } = useCommunityGroupsQuery({
+    variables: {
+      communityId,
+    },
+  });
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
+  const { handleDelete } = useDeleteUserGroup();
+
+  const community = data?.community;
+  const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
+
+  if (loading) return <Loading />;
+
+  return (
+    <ListPage
+      data={groupsList}
+      paths={currentPaths}
+      title={community ? `${community?.displayName} Groups` : 'Groups'}
+      onDelete={x => handleDelete(x.id)}
+      newLink={`${url}/new`}
+    />
+  );
+};
+
+export default CommunityListPage;
