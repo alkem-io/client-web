@@ -3,10 +3,11 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { useEcoverse } from '../../hooks';
+import { ApplicationTypeEnum } from '../../models/application';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
 import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
-import { EcoverseApplyRoute } from '../application/EcoverseApplyRoute';
+import ApplyRoute from '../application/ApplyRoute';
 import ChallengeRoute from '../challenge/challenge.route';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';
 import { nameOfUrl } from '../url-params';
@@ -48,8 +49,8 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       <RestrictedRoute path={`${path}/community`} requiredCredentials={requiredCredentials}>
         <EcoverseCommunityPage paths={currentPaths} />
       </RestrictedRoute>
-      <Route path={path}>
-        <EcoverseApplyRoute paths={currentPaths} />
+      <Route path={`${path}/apply`}>
+        <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
       </Route>
       <Route path="*">
         <FourOuFour />

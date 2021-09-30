@@ -3,9 +3,10 @@ import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
+import { ApplicationTypeEnum } from '../../models/application';
 import { Challenge as ChallengePage, FourOuFour, PageProps } from '../../pages';
 import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
-import ChallengeApplyRoute from '../application/ChallengeApplyRoute';
+import ApplyRoute from '../application/ApplyRoute';
 import OpportunityRoute from '../opportunity/opportunity.route';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
@@ -43,7 +44,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
         <ChallengeCommunityPage paths={currentPaths} />
       </RestrictedRoute>
       <Route path={path}>
-        <ChallengeApplyRoute paths={currentPaths} />
+        <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
       </Route>
       <Route path="*">
         <FourOuFour />
