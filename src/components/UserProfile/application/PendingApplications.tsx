@@ -5,20 +5,27 @@ import { Link as RouterLink } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import Card from '../../core/Card';
+import { Typography } from '@material-ui/core';
 import {
   refetchUserApplicationsQuery,
+  useChallengeNameIdQuery,
   useDeleteUserApplicationMutation,
-  useUserApplicationsQuery,
+  useEcoverseNameIdQuery,
+  useOpportunityNameIdQuery,
+  useUserProfileApplicationsQuery,
 } from '../../../hooks/generated/graphql';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../models/constants';
-import Tag from '../../core/Tag';
+import { ApplicationResultEntry, User } from '../../../models/graphql-schema';
 import { createStyles, useApolloErrorHandler, useNotification } from '../../../hooks';
+import Tag from '../../core/Tag';
 import Icon from '../../core/Icon';
 import IconButton from '../../core/IconButton';
-import { ApplicationResultEntry, User } from '../../../models/graphql-schema';
-import getApplicationWithType, { ApplicationWithType } from '../../../utils/application/getApplicationWithType';
-import { Typography } from '@material-ui/core';
+import Card from '../../core/Card';
+import getApplicationWithType, {
+  ApplicationType,
+  ApplicationWithType,
+} from '../../../utils/application/getApplicationWithType';
+import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../../utils/urlBuilders';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -29,10 +36,13 @@ const useStyles = createStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  row: {
+  labels: {
     display: 'flex',
     justifyContent: 'end',
     gap: theme.spacing(0.5),
+  },
+  row: {
+    padding: `${theme.spacing(0.5)}px 0`,
   },
   noPadding: {
     padding: 0,
@@ -51,10 +61,9 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
   const userId = user?.id || '';
 
   const { t } = useTranslation();
-  const styles = useStyles();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
-  const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: userId } } });
+  const { data: memberShip } = useUserProfileApplicationsQuery({ variables: { input: { userID: userId } } });
   const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResultEntry[];
   const appsWithType = applications
     .filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED)
@@ -81,31 +90,7 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
     <Box marginY={1}>
       <Card primaryTextProps={{ text: t('pages.user-profile.applications.title') }}>
         {appsWithType.map((x, i) => (
-          <Grid container key={i} spacing={1} justifyContent={'space-between'} alignItems={'center'}>
-            <Grid item xs={6}>
-              <Link component={RouterLink} to={buildApplicationLink(x)} aria-label="Link to entity">
-                <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
-                  {x.displayName}
-                </Typography>
-              </Link>
-            </Grid>
-            <Grid item xs={6} className={styles.row}>
-              <Tag text={x.type} color="neutralMedium" aria-label="Application type" />
-              <Box display="flex" alignItems={'center'}>
-                <Tag
-                  className={styles.capitalize}
-                  text={x.state}
-                  color={x.state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
-                  aria-label="Application state"
-                />
-                {canEdit && (
-                  <IconButton onClick={() => handleDelete(x.id)} aria-label="Delete">
-                    <Icon component={Trash} color="negative" size={'md'} />
-                  </IconButton>
-                )}
-              </Box>
-            </Grid>
-          </Grid>
+          <PendingApplication key={i} application={x} edit={canEdit} handleDelete={handleDelete} />
         ))}
       </Card>
     </Box>
@@ -113,6 +98,91 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
 };
 export default PendingApplications;
 
-const buildApplicationLink = (application: ApplicationWithType): string => {
-  return application.displayName; // todo build app link
+type NameIds = {
+  ecoverseNameId: string;
+  challengeNameId: string;
+  opportunityNameId: string;
+};
+
+interface PendingApplicationProps {
+  application: ApplicationWithType;
+  edit: boolean;
+  handleDelete: (id: string) => void;
+}
+
+const PendingApplication: FC<PendingApplicationProps> = ({ application, edit, handleDelete }) => {
+  const styles = useStyles();
+  const { id, displayName, type, state, ecoverseID, challengeID = '', opportunityID = '' } = application;
+
+  const nameIds: NameIds = {
+    ecoverseNameId: '',
+    challengeNameId: '',
+    opportunityNameId: '',
+  };
+
+  const { data: _opportunityNameId } = useOpportunityNameIdQuery({
+    variables: { ecoverseId: ecoverseID, opportunityId: opportunityID },
+    skip: !opportunityID,
+  });
+  if (opportunityID) {
+    nameIds.ecoverseNameId = _opportunityNameId?.ecoverse.nameID || '';
+    nameIds.challengeNameId = _opportunityNameId?.ecoverse.opportunity.challenge?.nameID || '';
+    nameIds.opportunityNameId = _opportunityNameId?.ecoverse.opportunity.nameID || '';
+  }
+
+  const { data: _challengeNameId } = useChallengeNameIdQuery({
+    variables: { ecoverseId: ecoverseID, challengeId: challengeID },
+    skip: !challengeID,
+  });
+  if (challengeID && !opportunityID) {
+    nameIds.ecoverseNameId = _challengeNameId?.ecoverse.nameID || '';
+    nameIds.challengeNameId = _challengeNameId?.ecoverse.challenge.nameID || '';
+  }
+
+  const { data: _ecoverseNameId } = useEcoverseNameIdQuery({
+    variables: { ecoverseId: ecoverseID },
+    skip: !!(ecoverseID && (challengeID || opportunityID)),
+  });
+  if (ecoverseID && !challengeID && !opportunityID) {
+    nameIds.ecoverseNameId = _ecoverseNameId?.ecoverse.nameID || '';
+  }
+
+  return (
+    <Grid container spacing={1} justifyContent={'space-between'} alignItems={'center'} className={styles.row}>
+      <Grid item xs={6}>
+        <Link component={RouterLink} to={buildApplicationLink(nameIds, type)} aria-label="Link to entity">
+          <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
+            {displayName}
+          </Typography>
+        </Link>
+      </Grid>
+      <Grid item xs={6} className={styles.labels}>
+        <Tag text={type} color="neutralMedium" aria-label="Application type" />
+        <Box display="flex" alignItems={'center'}>
+          <Tag
+            className={styles.capitalize}
+            text={state}
+            color={state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
+            aria-label="Application state"
+          />
+          {edit && (
+            <IconButton onClick={() => handleDelete(id)} aria-label="Delete">
+              <Icon component={Trash} color="negative" size={'md'} />
+            </IconButton>
+          )}
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
+
+const buildApplicationLink = (nameIds: NameIds, type: ApplicationType): string => {
+  switch (type) {
+    case ApplicationType.HUB:
+      return buildEcoverseUrl(nameIds.ecoverseNameId);
+    case ApplicationType.CHALLENGE:
+      return buildChallengeUrl(nameIds.ecoverseNameId, nameIds.challengeNameId);
+    case ApplicationType.OPPORTUNITY:
+      return buildOpportunityUrl(nameIds.ecoverseNameId, nameIds.challengeNameId, nameIds.opportunityNameId);
+  }
 };

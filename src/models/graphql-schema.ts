@@ -3478,6 +3478,50 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
+export type EcoverseNameIdQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseNameIdQuery = {
+  __typename?: 'Query';
+  ecoverse: { __typename?: 'Ecoverse'; id: string; nameID: string };
+};
+
+export type ChallengeNameIdQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeNameIdQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    challenge: { __typename?: 'Challenge'; id: string; nameID: string };
+  };
+};
+
+export type OpportunityNameIdQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityNameIdQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string }>;
+    };
+  };
+};
+
 export type ChallengeCardQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -5516,6 +5560,28 @@ export type TagsetsTemplateQuery = {
         tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
       }>;
     };
+  };
+};
+
+export type UserProfileApplicationsQueryVariables = Exact<{
+  input: MembershipUserInput;
+}>;
+
+export type UserProfileApplicationsQuery = {
+  __typename?: 'Query';
+  membershipUser: {
+    __typename?: 'UserMembership';
+    applications?: Maybe<
+      Array<{
+        __typename?: 'ApplicationResultEntry';
+        id: string;
+        state: string;
+        displayName: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
+      }>
+    >;
   };
 };
 
