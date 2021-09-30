@@ -13,7 +13,7 @@ import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildEcoverseUrl } from '../../../utils/urlBuilders';
 import { nameOfUrl } from '../../url-params';
-import { ChallengesRoute } from '../challenge/challenge';
+import { ChallengesRoute } from '../challenge/challenges.route';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
 

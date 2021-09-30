@@ -1,23 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { managementData } from '../../../components/Admin/managementData';
-import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
-import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
-import { useEcoverse, useUrlParams } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { FourOuFour, PageProps } from '../../../pages';
-import ChallengeList from '../../../pages/Admin/Challenge/ChallengeList';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditChallenge from '../../../components/Admin/EditChallenge';
 import FormMode from '../../../components/Admin/FormMode';
+import { managementData } from '../../../components/Admin/managementData';
+import { ChallengeProvider } from '../../../context/ChallengeProvider';
+import { useChallenge, useUpdateNavigation } from '../../../hooks';
+import { useChallengeCommunityQuery, useEcoverseCommunityQuery } from '../../../hooks/generated/graphql';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { FourOuFour, PageProps } from '../../../pages';
+import ChallengeList from '../../../pages/Admin/Challenge/ChallengeList';
+import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
+import { buildChallengeUrl } from '../../../utils/urlBuilders';
+import { nameOfUrl } from '../../url-params';
 import { CommunityRoute } from '../community';
 import { OpportunitiesRoutes } from '../opportunity/opportunity';
-import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
-import { buildChallengeUrl } from '../../../utils/urlBuilders';
-import { ChallengeProvider } from '../../../context/ChallengeProvider';
-import { nameOfUrl } from '../../url-params';
+import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -48,8 +47,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
-  const { challengeNameId } = useUrlParams();
-  const { ecoverseNameId } = useEcoverse();
+  const { ecoverseNameId, challengeId, challengeNameId } = useChallenge();
 
   const { data } = useChallengeCommunityQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
@@ -70,7 +68,6 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
 
   const community = data?.ecoverse?.challenge?.community;
   const parentMembers = ecoverseCommunity?.ecoverse?.community?.members || [];
-  const challengeUUID = data?.ecoverse.challenge.id || '';
 
   useUpdateNavigation({ currentPaths });
 
@@ -93,7 +90,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
           community={community}
           parentMembers={parentMembers}
           credential={AuthorizationCredential.ChallengeMember}
-          resourceId={challengeUUID}
+          resourceId={challengeId}
           accessedFrom="challenge"
         />
       </Route>
@@ -101,7 +98,7 @@ const ChallengeRoutes: FC<PageProps> = ({ paths }) => {
         <OpportunitiesRoutes paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
-        <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeUUID} />
+        <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />
       </Route>
       <Route path={`${path}/lifecycle`}>
         <ChallengeLifecycleRoute paths={currentPaths} />
