@@ -5,19 +5,19 @@ import { Link as RouterLink } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import Card from '../core/Card';
+import Card from '../../core/Card';
 import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,
   useUserApplicationsQuery,
-} from '../../hooks/generated/graphql';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
-import Tag from '../core/Tag';
-import { createStyles, useApolloErrorHandler, useNotification } from '../../hooks';
-import Icon from '../core/Icon';
-import IconButton from '../core/IconButton';
-import { ApplicationResultEntry, User } from '../../models/graphql-schema';
-import getApplicationWithType, { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+} from '../../../hooks/generated/graphql';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../models/constants';
+import Tag from '../../core/Tag';
+import { createStyles, useApolloErrorHandler, useNotification } from '../../../hooks';
+import Icon from '../../core/Icon';
+import IconButton from '../../core/IconButton';
+import { ApplicationResultEntry, User } from '../../../models/graphql-schema';
+import getApplicationWithType, { ApplicationWithType } from '../../../utils/application/getApplicationWithType';
 import { Typography } from '@material-ui/core';
 
 const useStyles = createStyles(theme => ({

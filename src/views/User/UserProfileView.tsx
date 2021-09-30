@@ -13,7 +13,7 @@ import TagContainer from '../../components/core/TagContainer';
 import Typography from '../../components/core/Typography';
 import ContactDetails from '../../components/UserProfile/ContactDetails';
 import MemberOf from '../../components/UserProfile/MemberOf';
-import PendingApplications from '../../components/UserProfile/PendingApplications';
+import PendingApplications from '../../components/UserProfile/application/PendingApplications';
 import { UserMetadata } from '../../hooks';
 import { AUTH_VERIFY_PATH, COUNTRIES } from '../../models/constants';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
