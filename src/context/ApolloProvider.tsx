@@ -9,8 +9,8 @@ interface Props {
 
 const AlkemioApolloProvider: FC<Props> = ({ children, apiUrl }) => {
   const { isFeatureEnabled } = useConfig();
-
   const client = useGraphQLClient(apiUrl, isFeatureEnabled(FEATURE_COMMUNICATIONS));
+
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 export default AlkemioApolloProvider;

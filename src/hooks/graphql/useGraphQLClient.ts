@@ -16,7 +16,7 @@ const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
 export const useGraphQLClient = (
   graphQLEndpoint: string,
-  disableGraphQLWebSocket: boolean
+  enableWebSockets: boolean
 ): ApolloClient<NormalizedCacheObject> => {
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
@@ -54,27 +54,30 @@ export const useGraphQLClient = (
     });
   });
 
-  const httpLink = createUploadLink({
-    uri: graphQLEndpoint,
-    credentials: 'include',
-  });
-
-  const wsUri = new URL(graphQLEndpoint, `ws://${window.location.hostname}:${window.location.port}`);
-  const wsLink = new WebSocketLink({
-    uri: wsUri.toString(),
-    options: {
-      reconnect: true,
-    },
-  });
-
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
-    },
-    wsLink,
-    httpLink
-  );
+  const terminationLink = (enableWebSockets: boolean) => {
+    const httpLink = createUploadLink({
+      uri: graphQLEndpoint,
+      credentials: 'include',
+    });
+    if (enableWebSockets) {
+      const wsUri = new URL(graphQLEndpoint, `ws://${window.location.hostname}:${window.location.port}`);
+      const wsLink = new WebSocketLink({
+        uri: wsUri.toString(),
+        options: {
+          reconnect: true,
+        },
+      });
+      return split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+        },
+        wsLink,
+        httpLink
+      );
+    }
+    return httpLink;
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const retryIf = (error: any, _operation: Operation) => {
@@ -114,11 +117,10 @@ export const useGraphQLClient = (
 
   return useMemo(() => {
     return new ApolloClient({
-      // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, disableGraphQLWebSocket ? httpLink : splitLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, terminationLink(enableWebSockets)]),
       cache: new InMemoryCache({ addTypename: true, typePolicies }),
     });
-  }, []);
+  }, [enableWebSockets]);
 };
 
 export default useGraphQLClient;
