@@ -73,7 +73,8 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
   const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResultEntry[];
   const appsWithType = applications
     .filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED)
-    .map(getApplicationWithType);
+    .map(getApplicationWithType)
+    .sort(sortApplications);
 
   const [deleteApplication] = useDeleteUserApplicationMutation({
     onCompleted: () => notify('Successfully deleted', 'success'),
@@ -209,4 +210,30 @@ const buildApplicationLink = (nameIds: NameIds, type: ApplicationType): string =
     case ApplicationType.OPPORTUNITY:
       return buildOpportunityUrl(nameIds.ecoverseNameId, nameIds.challengeNameId, nameIds.opportunityNameId);
   }
+};
+
+const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
+  if (
+    (a.type === ApplicationType.HUB && b.type !== ApplicationType.HUB) ||
+    (a.type === ApplicationType.CHALLENGE && b.type === ApplicationType.OPPORTUNITY)
+  ) {
+    return -1;
+  }
+
+  if (
+    (b.type === ApplicationType.HUB && a.type !== ApplicationType.HUB) ||
+    (b.type === ApplicationType.CHALLENGE && a.type === ApplicationType.OPPORTUNITY)
+  ) {
+    return 1;
+  }
+
+  if (a.state === APPLICATION_STATE_NEW && b.state !== APPLICATION_STATE_NEW) {
+    return -1;
+  }
+
+  if (b.state === APPLICATION_STATE_NEW && a.state !== APPLICATION_STATE_NEW) {
+    return 1;
+  }
+
+  return 0;
 };
