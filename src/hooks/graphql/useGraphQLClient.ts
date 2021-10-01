@@ -14,7 +14,10 @@ import { getMainDefinition } from '@apollo/client/utilities';
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
-export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
+export const useGraphQLClient = (
+  graphQLEndpoint: string,
+  disableGraphQLWebSocket: boolean
+): ApolloClient<NormalizedCacheObject> => {
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
     if (graphQLErrors) {
@@ -112,7 +115,7 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
   return useMemo(() => {
     return new ApolloClient({
       // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, splitLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, disableGraphQLWebSocket ? httpLink : splitLink]),
       cache: new InMemoryCache({ addTypename: true, typePolicies }),
     });
   }, []);
