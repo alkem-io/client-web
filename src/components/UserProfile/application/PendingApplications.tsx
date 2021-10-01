@@ -1,5 +1,6 @@
-import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
-import React, { FC } from 'react';
+import DeleteIcon from '@material-ui/icons/Delete';
+import InfoIcon from '@material-ui/icons/Info';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -18,7 +19,6 @@ import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../mode
 import { ApplicationResultEntry, User } from '../../../models/graphql-schema';
 import { createStyles, useApolloErrorHandler, useNotification } from '../../../hooks';
 import Tag from '../../core/Tag';
-import Icon from '../../core/Icon';
 import IconButton from '../../core/IconButton';
 import Card from '../../core/Card';
 import getApplicationWithType, {
@@ -26,6 +26,8 @@ import getApplicationWithType, {
   ApplicationWithType,
 } from '../../../utils/application/getApplicationWithType';
 import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../../utils/urlBuilders';
+import ApplicationDialogWrapper from './ApplicationDialogWrapper';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -46,6 +48,10 @@ const useStyles = createStyles(theme => ({
   },
   noPadding: {
     padding: 0,
+  },
+  statusRow: {
+    display: 'flex',
+    gap: theme.spacing(0.5),
   },
   capitalize: {
     textTransform: 'capitalize',
@@ -111,8 +117,11 @@ interface PendingApplicationProps {
 }
 
 const PendingApplication: FC<PendingApplicationProps> = ({ application, edit, handleDelete }) => {
+  const { t } = useTranslation();
   const styles = useStyles();
   const { id, displayName, type, state, ecoverseID, challengeID = '', opportunityID = '' } = application;
+
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const nameIds: NameIds = {
     ecoverseNameId: '',
@@ -148,31 +157,46 @@ const PendingApplication: FC<PendingApplicationProps> = ({ application, edit, ha
   }
 
   return (
-    <Grid container spacing={1} justifyContent={'space-between'} alignItems={'center'} className={styles.row}>
-      <Grid item xs={6}>
-        <Link component={RouterLink} to={buildApplicationLink(nameIds, type)} aria-label="Link to entity">
-          <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
-            {displayName}
-          </Typography>
-        </Link>
+    <>
+      <Grid container spacing={1} justifyContent={'space-between'} alignItems={'center'} className={styles.row}>
+        <Grid item xs={6}>
+          <Link component={RouterLink} to={buildApplicationLink(nameIds, type)} aria-label="Link to entity">
+            <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
+              {displayName}
+            </Typography>
+          </Link>
+        </Grid>
+        <Grid item xs={6} className={styles.labels}>
+          <Tag text={type} color="neutralMedium" aria-label="Application type" />
+          <Box display="flex" alignItems={'center'} className={styles.statusRow}>
+            <Tag
+              className={styles.capitalize}
+              text={state}
+              color={state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
+              aria-label="Application state"
+            />
+            <Tooltip title={t('tooltips.click-more-info')} placement="top">
+              <IconButton className={styles.noPadding} onClick={() => setShowDialog(true)} aria-label="Info dialog">
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
+            {edit && (
+              <Tooltip title={t('tooltips.click-delete')} placement="top">
+                <IconButton className={styles.noPadding} onClick={() => handleDelete(id)} aria-label="Delete">
+                  <DeleteIcon color={'error'} />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={6} className={styles.labels}>
-        <Tag text={type} color="neutralMedium" aria-label="Application type" />
-        <Box display="flex" alignItems={'center'}>
-          <Tag
-            className={styles.capitalize}
-            text={state}
-            color={state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
-            aria-label="Application state"
-          />
-          {edit && (
-            <IconButton onClick={() => handleDelete(id)} aria-label="Delete">
-              <Icon component={Trash} color="negative" size={'md'} />
-            </IconButton>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
+      <ApplicationDialogWrapper
+        onHide={() => setShowDialog(false)}
+        applicationId={id}
+        ecoverseId={ecoverseID}
+        show={showDialog}
+      />
+    </>
   );
 };
 

@@ -75,10 +75,12 @@ export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
   questions: Array<Question>;
+  updatedDate: Scalars['DateTime'];
   user: User;
 };
 
@@ -2110,6 +2112,8 @@ export type Visual = {
 export type ApplicationInfoFragment = {
   __typename?: 'Application';
   id: string;
+  createdDate: Date;
+  updatedDate: Date;
   lifecycle: { __typename?: 'Lifecycle'; id: string; state?: Maybe<string>; nextEvents?: Maybe<Array<string>> };
   user: {
     __typename?: 'User';
@@ -3347,6 +3351,26 @@ export type AllOpportunitiesQuery = {
   };
 };
 
+export type ApplicationByEcoverseQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  appId: Scalars['UUID'];
+}>;
+
+export type ApplicationByEcoverseQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    application: {
+      __typename?: 'Application';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+    };
+  };
+};
+
 export type ChallengeApplicationQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -3399,6 +3423,8 @@ export type ChallengeApplicationsQuery = {
           Array<{
             __typename?: 'Application';
             id: string;
+            createdDate: Date;
+            updatedDate: Date;
             lifecycle: {
               __typename?: 'Lifecycle';
               id: string;
@@ -3463,6 +3489,8 @@ export type EcoverseApplicationsQuery = {
         Array<{
           __typename?: 'Application';
           id: string;
+          createdDate: Date;
+          updatedDate: Date;
           lifecycle: { __typename?: 'Lifecycle'; id: string; state?: Maybe<string>; nextEvents?: Maybe<Array<string>> };
           user: {
             __typename?: 'User';
@@ -5560,6 +5588,28 @@ export type TagsetsTemplateQuery = {
         tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
       }>;
     };
+  };
+};
+
+export type UserApplicationDetailsQueryVariables = Exact<{
+  input: MembershipUserInput;
+}>;
+
+export type UserApplicationDetailsQuery = {
+  __typename?: 'Query';
+  membershipUser: {
+    __typename?: 'UserMembership';
+    applications?: Maybe<
+      Array<{
+        __typename?: 'ApplicationResultEntry';
+        id: string;
+        state: string;
+        displayName: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
+      }>
+    >;
   };
 };
 

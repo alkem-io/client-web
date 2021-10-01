@@ -48,17 +48,21 @@ export type AgentFieldPolicy = {
 };
 export type ApplicationKeySpecifier = (
   | 'authorization'
+  | 'createdDate'
   | 'id'
   | 'lifecycle'
   | 'questions'
+  | 'updatedDate'
   | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationReceivedKeySpecifier = (

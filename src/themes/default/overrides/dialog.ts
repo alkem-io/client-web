@@ -6,6 +6,11 @@ const dialogOverrides = (theme: ThemeOptions): Overrides | undefined => {
     return undefined;
   }
   return {
+    MuiDialog: {
+      paper: {
+        minHeight: '100px',
+      },
+    },
     MuiDialogContent: {
       dividers: {
         borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
