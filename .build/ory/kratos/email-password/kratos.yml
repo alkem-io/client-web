@@ -1,4 +1,4 @@
-version: v0.6.3-alpha.1
+version: v0.7.6-alpha.1
 
 dsn: memory
 
@@ -30,10 +30,14 @@ selfservice:
     settings:
       ui_url: http://localhost:3000/identity/settings
       privileged_session_max_age: 15m
+      after:
+        default_browser_return_url: http://localhost:3000/profile
 
     recovery:
       enabled: true
       ui_url: http://localhost:3000/identity/recovery
+      after:
+        default_browser_return_url: http://localhost:3000/profile
 
     verification:
       enabled: true
@@ -82,4 +86,7 @@ identity:
 
 courier:
   smtp:
-    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
+    from_name: Team Alkemio
+    from_address: info@alkem.io
+  template_override_path: /etc/config/kratos/courier-templates

@@ -1,9 +1,9 @@
 http:
   services:
-    synapse-admin:
-      loadBalancer:
-        servers:
-          - url: 'http://synapse-admin:80/'
+    # synapse-admin:
+    #   loadBalancer:
+    #     servers:
+    #       - url: 'http://synapse-admin:80/'
 
     rabbitmq-management:
       loadBalancer:
@@ -69,12 +69,20 @@ http:
           - /identity/ory/kratos/public
         forceSlash: false
 
+    # strip-synapse-admin-prefix:
+    #   stripPrefix:
+    #     prefixes:
+    #       - /synapse-admin
+    #     forceSlash: false
+
   routers:
-    synapse-admin:
-      rule: 'PathPrefix(`/synapse-admin`)'
-      service: 'synapse-admin'
-      entryPoints:
-        - 'web'
+    # synapse-admin:
+    #   rule: 'PathPrefix(`/`)'
+    #   service: 'synapse-admin'
+    #   middlewares:
+    #     - strip-synapse-admin-prefix
+    #   entryPoints:
+    #     - 'synapse-admin'
 
     graphql:
       rule: 'PathPrefix(`/graphql`)'

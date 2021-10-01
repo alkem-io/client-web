@@ -97,7 +97,7 @@ services:
 
   ipfs:
     container_name: alkemio_client_ipfs
-    image: ipfs/go-ipfs
+    image: ipfs/go-ipfs:v0.9.1
     networks:
       - alkemio_client_net
     restart: always
@@ -130,7 +130,7 @@ services:
       - GRAPHQL_ENDPOINT_PORT=4000
       - IPFS_ENDPOINT=http://ipfs:5001
       - IPFS_CLIENT_ENDPOINT=http://localhost:3000/ipfs
-      - AUTH_ORY_KRATOS_ISSUER=http://localhost:3000/
+      - AUTH_ORY_KRATOS_ISSUER=http://alkemio-client/
       - AUTH_ORY_KRATOS_JWKS_URI=http://oathkeeper:4456/.well-known/jwks.json
       - AUTH_ORY_KRATOS_PUBLIC_BASE_URL=http://localhost:3000/identity/ory/kratos/public
       - AUTH_ORY_KRATOS_PUBLIC_BASE_URL_SERVER=http://kratos:4433/
