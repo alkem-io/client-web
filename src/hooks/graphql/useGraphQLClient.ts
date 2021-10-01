@@ -60,21 +60,36 @@ export const useGraphQLClient = (
       credentials: 'include',
     });
     if (enableWebSockets) {
-      const wsUri = new URL(graphQLEndpoint, `ws://${window.location.hostname}:${window.location.port}`);
-      const wsLink = new WebSocketLink({
-        uri: wsUri.toString(),
-        options: {
-          reconnect: true,
-        },
-      });
-      return split(
-        ({ query }) => {
-          const definition = getMainDefinition(query);
-          return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
-        },
-        wsLink,
-        httpLink
-      );
+      // if creating the web socket link fails fall back to http only
+      try {
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        // building the url plainly instead of using URL
+        // URL forces the default protocol on the uri
+        const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/${graphQLEndpoint}`;
+        const wsLink = new WebSocketLink({
+          uri: wsUrl,
+          options: {
+            reconnect: true,
+            // we shouldn't switch to lazy in order to capture the error early on
+            lazy: false,
+            connectionCallback: errors => {
+              if (errors) {
+                logger.error('Unable to connect over WS', errors);
+              }
+            },
+          },
+        });
+        return split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+          },
+          wsLink,
+          httpLink
+        );
+      } catch (error) {
+        logger.error(error);
+      }
     }
     return httpLink;
   };
