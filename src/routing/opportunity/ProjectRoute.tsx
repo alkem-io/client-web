@@ -15,7 +15,7 @@ interface ProjectRootProps extends PageProps {
   projects: Pick<ProjectType, 'id' | 'nameID' | 'displayName'>[] | undefined;
 }
 
-export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
+export const ProjectRoute: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>

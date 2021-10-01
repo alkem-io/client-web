@@ -7,9 +7,9 @@ import { FourOuFour, PageProps } from '../../../pages';
 import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
 import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
 import { nameOfUrl } from '../../url-params';
-import { EcoverseAdminRoute } from './ecoverse.admin.route';
+import { EcoverseRoute } from './EcoverseRoute';
 
-export const EcoversesAdminRoute: FC<PageProps> = ({ paths }) => {
+export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
   const { path, url } = useRouteMatch();
@@ -35,7 +35,7 @@ export const EcoversesAdminRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
-          <EcoverseAdminRoute paths={currentPaths} />
+          <EcoverseRoute paths={currentPaths} />
         </EcoverseProvider>
       </Route>
       <Route path="*">

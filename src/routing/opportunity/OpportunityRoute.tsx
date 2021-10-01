@@ -5,7 +5,7 @@ import { useOpportunity } from '../../hooks';
 import { FourOuFour, OpportunityPage, PageProps } from '../../pages';
 import OpportunityCommunityPage from '../../pages/community/OpportunityCommunityPage';
 import RestrictedRoute from '../route.extensions';
-import { Project } from './project.route';
+import { ProjectRoute } from './ProjectRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -35,7 +35,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
         <OpportunityCommunityPage paths={currentPaths} />
       </RestrictedRoute>
       <Route path={`${path}/projects`}>
-        <Project paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
+        <ProjectRoute paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
       </Route>
       <Route path="*">
         <FourOuFour />

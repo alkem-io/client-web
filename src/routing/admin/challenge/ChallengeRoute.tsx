@@ -10,7 +10,7 @@ import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage'
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
 import { CommunityRoute } from '../community';
-import { OpportunitiesRoutes } from '../opportunity/opportunity';
+import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
@@ -58,7 +58,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
         />
       </Route>
       <Route path={`${path}/opportunities`}>
-        <OpportunitiesRoutes paths={currentPaths} />
+        <OpportunitiesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/authorization`}>
         <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />

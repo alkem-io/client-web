@@ -5,15 +5,15 @@ import { FourOuFour } from '../pages';
 import AboutPage from '../pages/About';
 import HomePage from '../pages/home/Home';
 import { AuthorizationCredential } from '../models/graphql-schema';
-import { AdminRoute } from './admin/admin.route';
+import { AdminRoute } from './admin/AdminRoute';
 import { IdentityRoute } from './identity/identity';
-import { EcoverseRoute } from './ecoverse/ecoverse.route';
-import { Messages } from './messages/messages.route';
-import { Restricted } from './restricted';
+import { EcoverseRoute } from './ecoverse/EcoverseRoute';
+import { MessagesRoute } from './messages/MessagesRoute';
+import { Restricted } from './Restricted';
 import RestrictedRoute from './route.extensions';
 import { SearchRoute } from './search.route';
-import OrganizationRoute from './organization/organization.route';
-import { UserRoute } from './user/user';
+import OrganizationRoute from './organization/OrganizationRoute';
+import { UserRoute } from './user/UserRoute';
 import ProfilePage from '../pages/ProfilePage';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { nameOfUrl } from './url-params';
@@ -56,7 +56,7 @@ export const Routing: FC = () => {
         </OrganizationProvider>
       </Route>
       <RestrictedRoute exact path="/messages">
-        <Messages />
+        <MessagesRoute />
       </RestrictedRoute>
       <Route exact path="/about">
         <AboutPage />

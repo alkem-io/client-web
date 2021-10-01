@@ -7,13 +7,13 @@ import { FourOuFour, PageProps } from '../../../pages';
 import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildEcoverseUrl } from '../../../utils/urlBuilders';
-import { ChallengesRoute } from '../challenge/challenges.route';
+import { ChallengesRoute } from '../challenge/ChallengesRoute';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
 
 interface EcoverseAdminRouteProps extends PageProps {}
 
-export const EcoverseAdminRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
+export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
   const { path, url } = useRouteMatch();

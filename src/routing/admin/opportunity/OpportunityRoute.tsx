@@ -4,47 +4,18 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
-import { OpportunityProvider } from '../../../context/OpportunityProvider';
 import { useChallenge, useOpportunity } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { FourOuFour, PageProps } from '../../../pages';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
-import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
-import { nameOfUrl } from '../../url-params';
 import { CommunityRoute } from '../community';
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
 
 interface Props extends PageProps {}
 
-export const OpportunitiesRoutes: FC<Props> = ({ paths }) => {
-  const { t } = useTranslation();
-  const { path, url } = useRouteMatch();
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
-
-  return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <OpportunityList paths={currentPaths} />
-      </Route>
-      <Route exact path={`${path}/new`}>
-        <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <OpportunityRoutes paths={currentPaths} />
-        </OpportunityProvider>
-      </Route>
-      <Route path="*">
-        <FourOuFour />
-      </Route>
-    </Switch>
-  );
-};
-
-export const OpportunityRoutes: FC<Props> = ({ paths }) => {
+export const OpportunityRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
   const { path, url } = useRouteMatch();
   const { challenge, loading: loadingChallenge } = useChallenge();

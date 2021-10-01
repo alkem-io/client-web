@@ -4,10 +4,10 @@ import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
-import { EcoversesAdminRoute } from './ecoverse/ecoverses.admin.route';
-import { OrganizationsRoute } from './organization/organization';
-import { UsersRoute } from './users/users.route';
+import { EcoversesRoute } from './ecoverse/EcoversesRoute';
+import { UsersRoute } from './users/UsersRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
+import { OrganizationsRoute } from './organization/OrganizationsRoute';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -26,7 +26,7 @@ export const AdminRoute: FC = () => {
         <GlobalAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/hubs`}>
-        <EcoversesAdminRoute paths={currentPaths} />
+        <EcoversesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/organizations`}>
         <OrganizationsRoute paths={currentPaths} />

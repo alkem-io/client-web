@@ -7,7 +7,7 @@ import { ChallengeProvider } from '../../../context/ChallengeProvider';
 import { FourOuFour, PageProps } from '../../../pages';
 import ChallengeListPage from '../../../pages/Admin/Challenge/ChallengeListPage';
 import { nameOfUrl } from '../../url-params';
-import { ChallengeRoute } from './challenge.route';
+import { ChallengeRoute } from './ChallengeRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
