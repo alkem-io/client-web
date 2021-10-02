@@ -12,6 +12,7 @@ import {
 import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
 import { DocumentNode, useQuery } from '@apollo/client';
+import { logger } from '../../services/logging/winston/logger';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -121,7 +122,12 @@ export function useUpdateSubscription() {
 
 // Need the container in order to conditionally use the subscription
 export const CommunityUpdatesSubscriptionContainer: FC<{}> = ({ children }) => {
-  useUpdateSubscription();
+  try {
+    useUpdateSubscription();
+  } catch (error) {
+    // need to find a way to capture globally all subscription failures
+    logger.error('Failed subscribing for community updates. Failing gracefully.');
+  }
 
   return <>{children}</>;
 };

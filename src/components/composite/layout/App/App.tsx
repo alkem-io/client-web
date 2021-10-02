@@ -6,15 +6,17 @@ import React, { useRef, useState } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import {
-  CommunityUpdatesSubscriptionContainer,
-  useUpdateSubscription,
-} from '../../../../containers/community-updates/CommunityUpdates';
+import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
 import { useAuthenticationContext, useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { useEcoversesQuery, useServerMetadataQuery } from '../../../../hooks/generated/graphql';
 import { useGlobalState } from '../../../../hooks/useGlobalState';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, FEATURE_COMMUNICATIONS } from '../../../../models/constants';
+import {
+  AUTH_LOGIN_PATH,
+  AUTH_REGISTER_PATH,
+  FEATURE_COMMUNICATIONS,
+  FEATURE_SUBSCRIPTIONS,
+} from '../../../../models/constants';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Button from '../../../core/Button';
@@ -31,7 +33,6 @@ import Main from './Main';
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
-  useUpdateSubscription();
   const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
 
   const { user, loading, verified } = useUserContext();
@@ -72,8 +73,9 @@ const App = ({ children }): React.ReactElement => {
 
   const addUpdateSubscription = (children: React.ReactNode) => {
     const communicationEnabled = isFeatureEnabled(FEATURE_COMMUNICATIONS);
+    const subscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
 
-    return communicationEnabled ? (
+    return communicationEnabled && subscriptionsEnabled ? (
       <CommunityUpdatesSubscriptionContainer>{children}</CommunityUpdatesSubscriptionContainer>
     ) : (
       <>{children}</>
