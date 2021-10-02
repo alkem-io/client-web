@@ -819,10 +819,11 @@ export type QuestionFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type QuestionTemplateKeySpecifier = ('question' | 'required' | QuestionTemplateKeySpecifier)[];
+export type QuestionTemplateKeySpecifier = ('question' | 'required' | 'sortOrder' | QuestionTemplateKeySpecifier)[];
 export type QuestionTemplateFieldPolicy = {
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   required?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ReferenceKeySpecifier = ('authorization' | 'description' | 'id' | 'name' | 'uri' | ReferenceKeySpecifier)[];
 export type ReferenceFieldPolicy = {

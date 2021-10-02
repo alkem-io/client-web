@@ -107,6 +107,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
       questionsAndAnswers.push({
         name: answer,
         value: values[answer],
+        sortOrder: 1, // todo: send back the template sortOrder
       });
     }
 
