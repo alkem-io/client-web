@@ -1,5 +1,6 @@
 import { ApplicationResultEntry } from '../../models/graphql-schema';
-import getApplicationWithType, { ApplicationType, ApplicationWithType } from './getApplicationWithType';
+import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
+import ApplicationTypeEnum from '../../models/application-type';
 
 type TestData = {
   name: string;
@@ -21,12 +22,12 @@ const data = (): TestData[] =>
     {
       name: '3',
       data: { id: 'app-id', ecoverseID: 'eco' },
-      result: { id: 'app-id', ecoverseID: 'eco', type: ApplicationType.HUB },
+      result: { id: 'app-id', ecoverseID: 'eco', type: ApplicationTypeEnum.HUB },
     },
     {
       name: '4',
       data: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall' },
-      result: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall', type: ApplicationType.CHALLENGE },
+      result: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.CHALLENGE },
     },
     {
       name: '5',
@@ -36,7 +37,7 @@ const data = (): TestData[] =>
         ecoverseID: 'eco',
         challengeID: 'chall',
         opportunityID: 'opp',
-        type: ApplicationType.OPPORTUNITY,
+        type: ApplicationTypeEnum.OPPORTUNITY,
       },
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each

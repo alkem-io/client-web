@@ -1,11 +1,7 @@
 import { ApplicationResultEntry } from '../../models/graphql-schema';
+import ApplicationTypeEnum from '../../models/application-type';
 
-export enum ApplicationType {
-  HUB = 'Hub',
-  CHALLENGE = 'Challenge',
-  OPPORTUNITY = 'Opportunity',
-}
-type WithType = { type: ApplicationType };
+type WithType = { type: ApplicationTypeEnum };
 export type ApplicationWithType = ApplicationResultEntry & WithType;
 
 const getApplicationWithType = (application: ApplicationResultEntry): ApplicationWithType | never => ({
@@ -14,9 +10,9 @@ const getApplicationWithType = (application: ApplicationResultEntry): Applicatio
 });
 export default getApplicationWithType;
 
-const getType = ({ ecoverseID, challengeID, opportunityID }: ApplicationResultEntry): ApplicationType | never => {
+const getType = ({ ecoverseID, challengeID, opportunityID }: ApplicationResultEntry): ApplicationTypeEnum | never => {
   if (ecoverseID && challengeID && opportunityID) {
-    return ApplicationType.OPPORTUNITY;
+    return ApplicationTypeEnum.OPPORTUNITY;
   }
 
   if (ecoverseID && opportunityID && !challengeID) {
@@ -24,11 +20,11 @@ const getType = ({ ecoverseID, challengeID, opportunityID }: ApplicationResultEn
   }
 
   if (ecoverseID && challengeID) {
-    return ApplicationType.CHALLENGE;
+    return ApplicationTypeEnum.CHALLENGE;
   }
 
   if (ecoverseID) {
-    return ApplicationType.HUB;
+    return ApplicationTypeEnum.HUB;
   }
 
   throw new TypeError("'ecoverseID' parameter expected");
