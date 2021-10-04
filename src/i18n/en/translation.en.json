@@ -188,7 +188,8 @@
           "order": 16,
           "hidden": true
         }
-      }
+      },
+      "application-type": {}
     }
   },
   "forms": {
