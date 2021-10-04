@@ -5,7 +5,7 @@ import { WithCommunity } from '../../../components/Admin/Community/CommunityType
 import { Loading } from '../../../components/core';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdates';
 import { AvatarsProvider } from '../../../context/AvatarsProvider';
-import { useUpdateNavigation } from '../../../hooks';
+import { useEcoverse, useUpdateNavigation } from '../../../hooks';
 import { useCommunityMembersQuery } from '../../../hooks/generated/graphql';
 import { User } from '../../../models/graphql-schema';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
@@ -17,14 +17,14 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
   const { url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-
+  const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
   const { data, loading: loadingCommunity } = useCommunityMembersQuery({
-    variables: { communityId: communityId || '' },
+    variables: { ecoverseId, communityId: communityId || '' },
     skip: !communityId,
   });
-  const members = (data?.community?.members || []) as User[];
+  const members = (data?.ecoverse.community?.members || []) as User[];
 
-  if (loadingCommunity) return <Loading />;
+  if (loadingCommunity || loadingEcoverse) return <Loading />;
 
   if (!communityId) {
     return <Container maxWidth="xl">No community</Container>;

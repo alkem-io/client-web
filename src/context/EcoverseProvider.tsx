@@ -12,7 +12,7 @@ interface EcoverseContextProps {
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
-  loading: true,
+  loading: false,
   ecoverseId: '',
   ecoverseNameId: '',
   displayName: '',

@@ -5160,13 +5160,16 @@ export function refetchOpportunityCommunityQuery(variables?: SchemaTypes.Opportu
   return { query: OpportunityCommunityDocument, variables: variables };
 }
 export const CommunityGroupsDocument = gql`
-  query communityGroups($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityGroups($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      groups {
+      community(ID: $communityId) {
         id
-        name
+        displayName
+        groups {
+          id
+          name
+        }
       }
     }
   }
@@ -5184,6 +5187,7 @@ export const CommunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGroupsQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -5216,11 +5220,14 @@ export function refetchCommunityGroupsQuery(variables?: SchemaTypes.CommunityGro
   return { query: CommunityGroupsDocument, variables: variables };
 }
 export const CommunityMembersDocument = gql`
-  query communityMembers($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityMembers($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      members {
-        ...GroupMembers
+      community(ID: $communityId) {
+        id
+        members {
+          ...GroupMembers
+        }
       }
     }
   }
@@ -5239,6 +5246,7 @@ export const CommunityMembersDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityMembersQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });

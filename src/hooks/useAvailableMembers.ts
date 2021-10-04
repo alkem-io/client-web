@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { useCommunityMembersQuery, useUsersQuery, useUsersWithCredentialsQuery } from './generated/graphql';
 import { Member } from '../models/User';
+import { useEcoverse } from './useEcoverse';
 
 export interface AvailableMembersResults {
   available: Member[];
@@ -24,6 +25,7 @@ export const useAvailableMembers = (
   parentCommunityId?: string,
   parentMembers?: Member[] // Just because the organizations doesn't have community.
 ): AvailableMembersResults => {
+  const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
   const {
     data: _allUsers,
     loading: loadingUsers,
@@ -58,16 +60,17 @@ export const useAvailableMembers = (
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     variables: {
+      ecoverseId: ecoverseId,
       communityId: parentCommunityId || '',
     },
-    skip: Boolean(!parentCommunityId || parentMembers),
+    skip: Boolean(!ecoverseId || !parentCommunityId || parentMembers),
   });
 
   const current = _current?.usersWithAuthorizationCredential || [];
 
-  const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers;
+  const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingEcoverse;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
-  const entityMembers = parentMembers || _parentCommunityMembers?.community.members || allUsers || [];
+  const entityMembers = parentMembers || _parentCommunityMembers?.ecoverse.community?.members || allUsers || [];
 
   const availableMembers = useMemo<Member[]>(
     () => entityMembers.filter(p => current.findIndex(m => m.id === p.id) < 0),
