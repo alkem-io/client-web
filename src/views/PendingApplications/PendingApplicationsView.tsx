@@ -61,7 +61,7 @@ interface Props {
   canEdit?: boolean;
 }
 
-const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
+const PendingApplicationsView: FC<Props> = ({ user, canEdit = true }) => {
   const userId = user?.id || '';
 
   const { t } = useTranslation();
@@ -101,7 +101,7 @@ const PendingApplications: FC<Props> = ({ user, canEdit = true }) => {
     </Box>
   );
 };
-export default PendingApplications;
+export default PendingApplicationsView;
 
 interface PendingApplicationProps {
   application: ApplicationWithType;
