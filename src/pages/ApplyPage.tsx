@@ -14,7 +14,7 @@ import { useApplicationCommunityQuery } from '../containers/application/useAppli
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
 import { createStyles } from '../hooks/useTheme';
-import { ApplicationTypeEnum } from '../models/application';
+import { ApplicationTypeEnum } from '../models/enums/application-type';
 import { CreateNvpInput } from '../models/graphql-schema';
 import { PageProps } from './common';
 
