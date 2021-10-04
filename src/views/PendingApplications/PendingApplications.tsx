@@ -14,18 +14,18 @@ import {
   useEcoverseNameIdQuery,
   useOpportunityNameIdQuery,
   useUserProfileApplicationsQuery,
-} from '../../../hooks/generated/graphql';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../models/constants';
-import { ApplicationResultEntry, User } from '../../../models/graphql-schema';
-import { createStyles, useApolloErrorHandler, useNotification } from '../../../hooks';
-import Tag from '../../core/Tag';
-import IconButton from '../../core/IconButton';
-import Card from '../../core/Card';
-import getApplicationWithType, { ApplicationWithType } from '../../../utils/application/getApplicationWithType';
-import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../../utils/urlBuilders';
+} from '../../hooks/generated/graphql';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
+import { ApplicationResultEntry, User } from '../../models/graphql-schema';
+import { createStyles, useApolloErrorHandler, useNotification } from '../../hooks';
+import Tag from '../../components/core/Tag';
+import IconButton from '../../components/core/IconButton';
+import Card from '../../components/core/Card';
+import getApplicationWithType, { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import ApplicationDialogWrapper from './ApplicationDialogWrapper';
 import Tooltip from '@material-ui/core/Tooltip';
-import sortApplications from '../../../utils/application/sortApplications';
+import sortApplications from '../../utils/application/sortApplications';
 
 const useStyles = createStyles(theme => ({
   listDetail: {

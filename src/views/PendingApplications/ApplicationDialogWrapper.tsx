@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { ApplicationDialog } from '../../composite';
-import { useApplicationByEcoverseQuery } from '../../../hooks/generated/graphql';
+import { ApplicationDialog } from '../../components/composite';
+import { useApplicationByEcoverseQuery } from '../../hooks/generated/graphql';
 
 interface Props {
   show: boolean;
