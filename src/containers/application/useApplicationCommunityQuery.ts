@@ -6,7 +6,7 @@ import {
   useEcoverseApplicationQuery,
   useEcoverseApplicationTemplateQuery,
 } from '../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../models/application';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {

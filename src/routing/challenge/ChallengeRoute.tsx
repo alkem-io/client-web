@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
-import { ApplicationTypeEnum } from '../../models/application';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, FourOuFour, PageProps } from '../../pages';
 import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
 import ApplyRoute from '../application/apply.route';

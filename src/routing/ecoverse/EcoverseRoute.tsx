@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { useEcoverse } from '../../hooks';
-import { ApplicationTypeEnum } from '../../models/application';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
 import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';

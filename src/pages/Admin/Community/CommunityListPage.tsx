@@ -6,11 +6,11 @@ import { useDeleteUserGroup, useEcoverse } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../common';
 
-interface CommunityListPageProps extends PageProps {
+interface CommunityGroupListPageProps extends PageProps {
   communityId: string;
 }
 
-export const CommunityListPage: FC<CommunityListPageProps> = ({ paths, communityId }) => {
+export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
   const { url } = useRouteMatch();
   const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
 
@@ -39,4 +39,4 @@ export const CommunityListPage: FC<CommunityListPageProps> = ({ paths, community
   );
 };
 
-export default CommunityListPage;
+export default CommunityGroupListPage;

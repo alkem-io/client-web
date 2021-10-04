@@ -6,7 +6,7 @@ import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
 import { FourOuFour, PageProps } from '../../pages';
-import CommunityListPage from '../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPage';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
@@ -71,7 +71,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <CommunityListPage communityId={communityId || ''} paths={currentPaths} />
+        <CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
         <CreateCommunityGroup paths={currentPaths} communityId={communityId} />

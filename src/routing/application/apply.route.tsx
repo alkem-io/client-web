@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ApplicationTypeEnum } from '../../models/application';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { FourOuFour, PageProps } from '../../pages';
 import ApplyPage from '../../pages/ApplyPage';
 import RestrictedRoute from '../route.extensions';
