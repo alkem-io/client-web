@@ -1,5 +1,5 @@
 import { ApplicationWithType } from './getApplicationWithType';
-import ApplicationTypeEnum from '../../models/application-type';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
 import sortApplications from './sortApplications';
 
@@ -14,44 +14,44 @@ const data = (): TestData[] =>
     {
       name: '1',
       data: [
-        { id: '1', type: ApplicationTypeEnum.CHALLENGE },
-        { id: '2', type: ApplicationTypeEnum.HUB },
-        { id: '3', type: ApplicationTypeEnum.OPPORTUNITY },
-        { id: '4', type: ApplicationTypeEnum.HUB },
+        { id: '1', type: ApplicationTypeEnum.challenge },
+        { id: '2', type: ApplicationTypeEnum.ecoverse },
+        { id: '3', type: ApplicationTypeEnum.opportunity },
+        { id: '4', type: ApplicationTypeEnum.ecoverse },
       ],
       result: ['2', '4', '1', '3'],
     },
     {
       name: '2',
       data: [
-        { id: '1', type: ApplicationTypeEnum.HUB, state: APPLICATION_STATE_REJECTED },
-        { id: '2', type: ApplicationTypeEnum.HUB, state: APPLICATION_STATE_NEW },
+        { id: '1', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_REJECTED },
+        { id: '2', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_NEW },
       ],
       result: ['2', '1'],
     },
     {
       name: '3',
       data: [
-        { id: '1', type: ApplicationTypeEnum.CHALLENGE, state: APPLICATION_STATE_REJECTED },
-        { id: '2', type: ApplicationTypeEnum.CHALLENGE, state: APPLICATION_STATE_NEW },
+        { id: '1', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_REJECTED },
+        { id: '2', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_NEW },
       ],
       result: ['2', '1'],
     },
     {
       name: '4',
       data: [
-        { id: '1', type: ApplicationTypeEnum.OPPORTUNITY, state: APPLICATION_STATE_REJECTED },
-        { id: '2', type: ApplicationTypeEnum.OPPORTUNITY, state: APPLICATION_STATE_NEW },
+        { id: '1', type: ApplicationTypeEnum.opportunity, state: APPLICATION_STATE_REJECTED },
+        { id: '2', type: ApplicationTypeEnum.opportunity, state: APPLICATION_STATE_NEW },
       ],
       result: ['2', '1'],
     },
     {
       name: '5',
       data: [
-        { id: '1', type: ApplicationTypeEnum.CHALLENGE, state: APPLICATION_STATE_REJECTED },
-        { id: '2', type: ApplicationTypeEnum.CHALLENGE, state: APPLICATION_STATE_NEW },
-        { id: '3', type: ApplicationTypeEnum.HUB, state: APPLICATION_STATE_NEW },
-        { id: '4', type: ApplicationTypeEnum.HUB, state: APPLICATION_STATE_REJECTED },
+        { id: '1', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_REJECTED },
+        { id: '2', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_NEW },
+        { id: '3', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_NEW },
+        { id: '4', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_REJECTED },
       ],
       result: ['3', '4', '2', '1'],
     },

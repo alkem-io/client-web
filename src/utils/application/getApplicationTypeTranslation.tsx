@@ -1,10 +1,10 @@
-import ApplicationTypeEnum from '../../models/application-type';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import TranslationKey from '../../types/TranslationKey';
 
 const applicationTypeTranslationKeyDict: Record<ApplicationTypeEnum, TranslationKey> = {
-  [ApplicationTypeEnum.HUB]: 'common.ecoverse',
-  [ApplicationTypeEnum.CHALLENGE]: 'common.challenge',
-  [ApplicationTypeEnum.OPPORTUNITY]: 'common.opportunity',
+  [ApplicationTypeEnum.ecoverse]: 'common.ecoverse',
+  [ApplicationTypeEnum.challenge]: 'common.challenge',
+  [ApplicationTypeEnum.opportunity]: 'common.opportunity',
 } as const;
 
 const getApplicationTypeTranslationKey = (type: ApplicationTypeEnum): TranslationKey =>

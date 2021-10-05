@@ -1,18 +1,18 @@
 import { ApplicationWithType } from './getApplicationWithType';
-import ApplicationTypeEnum from '../../models/application-type';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { APPLICATION_STATE_NEW } from '../../models/constants';
 
 const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
   if (
-    (a.type === ApplicationTypeEnum.HUB && b.type !== ApplicationTypeEnum.HUB) ||
-    (a.type === ApplicationTypeEnum.CHALLENGE && b.type === ApplicationTypeEnum.OPPORTUNITY)
+    (a.type === ApplicationTypeEnum.ecoverse && b.type !== ApplicationTypeEnum.ecoverse) ||
+    (a.type === ApplicationTypeEnum.challenge && b.type === ApplicationTypeEnum.opportunity)
   ) {
     return -1;
   }
 
   if (
-    (b.type === ApplicationTypeEnum.HUB && a.type !== ApplicationTypeEnum.HUB) ||
-    (b.type === ApplicationTypeEnum.CHALLENGE && a.type === ApplicationTypeEnum.OPPORTUNITY)
+    (b.type === ApplicationTypeEnum.ecoverse && a.type !== ApplicationTypeEnum.ecoverse) ||
+    (b.type === ApplicationTypeEnum.challenge && a.type === ApplicationTypeEnum.opportunity)
   ) {
     return 1;
   }
