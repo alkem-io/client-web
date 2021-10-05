@@ -189,7 +189,11 @@
           "hidden": true
         }
       },
-      "application-type": {}
+      "edit-mode": {
+        "new": "New",
+        "edit": "Edit",
+        "read-only": "Read only"
+      }
     }
   },
   "forms": {

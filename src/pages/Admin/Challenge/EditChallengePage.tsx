@@ -1,21 +1,21 @@
 import { Grid } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
+import { Path } from '../../../context/NavigationProvider';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
-} from '../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../utils/buildContext';
-import Button from '../core/Button';
-import Typography from '../core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
-import FormMode from './FormMode';
+} from '../../../hooks/generated/graphql';
+import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
+import { createContextInput, updateContextInput } from '../../../utils/buildContext';
+import Button from '../../../components/core/Button';
+import Typography from '../../../components/core/Typography';
+import ProfileForm, { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
+import FormMode from '../../../components/Admin/FormMode';
 
 interface Props {
   mode: FormMode;
@@ -23,7 +23,7 @@ interface Props {
   title: string;
 }
 
-const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
+const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
@@ -125,4 +125,4 @@ const EditChallenge: FC<Props> = ({ paths, mode, title }) => {
     </Grid>
   );
 };
-export default EditChallenge;
+export default EditChallengePage;

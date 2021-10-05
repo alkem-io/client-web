@@ -51,13 +51,7 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         }
       }
       leadOrganizations {
-        id
-        displayName
-        nameID
-        profile {
-          id
-          avatar
-        }
+        ...OrganizationDetails
       }
     }
   }

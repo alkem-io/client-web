@@ -1,18 +1,16 @@
-import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
+import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router';
+import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
+import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsGlobalCommunityAdminMutation,
   useRemoveUserAsGlobalCommunityAdminMutation,
-  useUsersQuery,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import { Member } from '../../models/User';
-import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import AuthorizationPageProps from './AuthorizationPageProps';
-import { Loading } from '../../components/core';
-import { useTranslation } from 'react-i18next';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
@@ -69,20 +67,12 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
     });
   };
 
-  const { data, loading } = useUsersQuery();
-  const members = data?.users || [];
-
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <Container maxWidth="xl">
       <EditMemberCredentials
         onAdd={handleAdd}
         onRemove={handleRemove}
         credential={credential}
-        memberList={members}
         addingMember={addingMember}
         removingMember={removingMember}
       />

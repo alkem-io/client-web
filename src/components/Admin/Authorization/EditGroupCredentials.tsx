@@ -13,11 +13,17 @@ interface EditCredentialsProps {
   credential: GroupCredentials;
   resourceId: string;
   parentMembers?: Member[];
+  parentCommunityId?: string;
 }
 
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
+export const EditCredentials: FC<EditCredentialsProps> = ({
+  credential,
+  parentCommunityId,
+  resourceId,
+  parentMembers,
+}) => {
   const handleError = useApolloErrorHandler();
 
   const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
@@ -62,7 +68,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     });
   };
 
-  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentMembers);
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentCommunityId, parentMembers);
 
   return (
     <EditMembers

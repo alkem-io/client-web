@@ -1,13 +1,13 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
-import ManagementPageTemplate from '../../components/Admin/ManagementPageTemplate';
+import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import { useTransactionScope } from '../../hooks';
 import { FourOuFour } from '../../pages';
-import { EcoverseListAdminRoute } from './ecoverse/ecoverse';
-import { OrganizationsRoute } from './organization/organization';
-import { UsersRoute } from './user';
+import { EcoversesRoute } from './ecoverse/EcoversesRoute';
+import { UsersRoute } from './users/UsersRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
+import { OrganizationsRoute } from './organization/OrganizationsRoute';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -17,7 +17,7 @@ export const AdminRoute: FC = () => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ManagementPageTemplate data={managementData.adminLvl} paths={currentPaths} />
+        <ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />
       </Route>
       <Route path={`${path}/users`}>
         <UsersRoute paths={currentPaths} />
@@ -26,7 +26,7 @@ export const AdminRoute: FC = () => {
         <GlobalAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/hubs`}>
-        <EcoverseListAdminRoute paths={currentPaths} />
+        <EcoversesRoute paths={currentPaths} />
       </Route>
       <Route path={`${path}/organizations`}>
         <OrganizationsRoute paths={currentPaths} />

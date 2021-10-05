@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
-import { FourOuFour, PageProps } from '../pages';
-import OrganizationPage from '../pages/organization/OrganizationPage';
-import { useOrganization, useUserContext } from '../hooks';
-import { AuthorizationCredential } from '../models/graphql-schema';
+import { FourOuFour, PageProps } from '../../pages';
+import OrganizationPage from '../../pages/organization/OrganizationPage';
+import { useOrganization, useUserContext } from '../../hooks';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 
 const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const { path } = useRouteMatch();

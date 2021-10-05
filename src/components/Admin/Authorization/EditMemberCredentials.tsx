@@ -1,16 +1,15 @@
 import React, { FC } from 'react';
-import { EditMembers, EditMembersProps } from '../Community/EditMembers';
+import { useAvailableMembers, useUserContext } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { useUserContext, useAvailableMembers } from '../../../hooks';
-import { Member } from '../../../models/User';
+import { EditMembers, EditMembersProps } from '../Community/EditMembers';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
     Pick<EditMembersProps, 'onAdd' | 'onRemove' | 'addingMember' | 'removingMember'> {
   credential: AuthorizationCredential;
   /** Members of the edited entity */
-  memberList: Member[];
+  parentCommunityId?: string;
 }
 
 export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
@@ -18,14 +17,14 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onRemove,
   credential,
   resourceId,
-  memberList,
+  parentCommunityId,
   addingMember = false,
   removingMember = false,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { available, current, loading } = useAvailableMembers(credential, resourceId, memberList);
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentCommunityId);
 
   return (
     <EditMembers
