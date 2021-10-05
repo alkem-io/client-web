@@ -6,6 +6,8 @@ const defaultOptions = {};
 export const ApplicationInfoFragmentDoc = gql`
   fragment ApplicationInfo on Application {
     id
+    createdDate
+    updatedDate
     lifecycle {
       id
       state
@@ -3340,6 +3342,74 @@ export type AllOpportunitiesQueryResult = Apollo.QueryResult<
 export function refetchAllOpportunitiesQuery(variables?: SchemaTypes.AllOpportunitiesQueryVariables) {
   return { query: AllOpportunitiesDocument, variables: variables };
 }
+export const ApplicationByEcoverseDocument = gql`
+  query applicationByEcoverse($ecoverseId: UUID_NAMEID!, $appId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      application(ID: $appId) {
+        id
+        createdDate
+        updatedDate
+        questions {
+          id
+          name
+          value
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useApplicationByEcoverseQuery__
+ *
+ * To run a query within a React component, call `useApplicationByEcoverseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApplicationByEcoverseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useApplicationByEcoverseQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      appId: // value for 'appId'
+ *   },
+ * });
+ */
+export function useApplicationByEcoverseQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ApplicationByEcoverseQuery,
+    SchemaTypes.ApplicationByEcoverseQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ApplicationByEcoverseQuery, SchemaTypes.ApplicationByEcoverseQueryVariables>(
+    ApplicationByEcoverseDocument,
+    options
+  );
+}
+export function useApplicationByEcoverseLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ApplicationByEcoverseQuery,
+    SchemaTypes.ApplicationByEcoverseQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ApplicationByEcoverseQuery, SchemaTypes.ApplicationByEcoverseQueryVariables>(
+    ApplicationByEcoverseDocument,
+    options
+  );
+}
+export type ApplicationByEcoverseQueryHookResult = ReturnType<typeof useApplicationByEcoverseQuery>;
+export type ApplicationByEcoverseLazyQueryHookResult = ReturnType<typeof useApplicationByEcoverseLazyQuery>;
+export type ApplicationByEcoverseQueryResult = Apollo.QueryResult<
+  SchemaTypes.ApplicationByEcoverseQuery,
+  SchemaTypes.ApplicationByEcoverseQueryVariables
+>;
+export function refetchApplicationByEcoverseQuery(variables?: SchemaTypes.ApplicationByEcoverseQueryVariables) {
+  return { query: ApplicationByEcoverseDocument, variables: variables };
+}
 export const ChallengeApplicationDocument = gql`
   query challengeApplication($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -3606,6 +3676,179 @@ export type EcoverseApplicationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchEcoverseApplicationsQuery(variables?: SchemaTypes.EcoverseApplicationsQueryVariables) {
   return { query: EcoverseApplicationsDocument, variables: variables };
+}
+export const EcoverseNameIdDocument = gql`
+  query ecoverseNameId($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      nameID
+    }
+  }
+`;
+
+/**
+ * __useEcoverseNameIdQuery__
+ *
+ * To run a query within a React component, call `useEcoverseNameIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseNameIdQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoverseNameIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>(
+    EcoverseNameIdDocument,
+    options
+  );
+}
+export function useEcoverseNameIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>(
+    EcoverseNameIdDocument,
+    options
+  );
+}
+export type EcoverseNameIdQueryHookResult = ReturnType<typeof useEcoverseNameIdQuery>;
+export type EcoverseNameIdLazyQueryHookResult = ReturnType<typeof useEcoverseNameIdLazyQuery>;
+export type EcoverseNameIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseNameIdQuery,
+  SchemaTypes.EcoverseNameIdQueryVariables
+>;
+export function refetchEcoverseNameIdQuery(variables?: SchemaTypes.EcoverseNameIdQueryVariables) {
+  return { query: EcoverseNameIdDocument, variables: variables };
+}
+export const ChallengeNameIdDocument = gql`
+  query challengeNameId($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      nameID
+      challenge(ID: $challengeId) {
+        id
+        nameID
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeNameIdQuery__
+ *
+ * To run a query within a React component, call `useChallengeNameIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeNameIdQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeNameIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>(
+    ChallengeNameIdDocument,
+    options
+  );
+}
+export function useChallengeNameIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>(
+    ChallengeNameIdDocument,
+    options
+  );
+}
+export type ChallengeNameIdQueryHookResult = ReturnType<typeof useChallengeNameIdQuery>;
+export type ChallengeNameIdLazyQueryHookResult = ReturnType<typeof useChallengeNameIdLazyQuery>;
+export type ChallengeNameIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeNameIdQuery,
+  SchemaTypes.ChallengeNameIdQueryVariables
+>;
+export function refetchChallengeNameIdQuery(variables?: SchemaTypes.ChallengeNameIdQueryVariables) {
+  return { query: ChallengeNameIdDocument, variables: variables };
+}
+export const OpportunityNameIdDocument = gql`
+  query opportunityNameId($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      nameID
+      opportunity(ID: $opportunityId) {
+        id
+        nameID
+        challenge {
+          id
+          nameID
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityNameIdQuery__
+ *
+ * To run a query within a React component, call `useOpportunityNameIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityNameIdQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityNameIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>(
+    OpportunityNameIdDocument,
+    options
+  );
+}
+export function useOpportunityNameIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityNameIdQuery,
+    SchemaTypes.OpportunityNameIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>(
+    OpportunityNameIdDocument,
+    options
+  );
+}
+export type OpportunityNameIdQueryHookResult = ReturnType<typeof useOpportunityNameIdQuery>;
+export type OpportunityNameIdLazyQueryHookResult = ReturnType<typeof useOpportunityNameIdLazyQuery>;
+export type OpportunityNameIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityNameIdQuery,
+  SchemaTypes.OpportunityNameIdQueryVariables
+>;
+export function refetchOpportunityNameIdQuery(variables?: SchemaTypes.OpportunityNameIdQueryVariables) {
+  return { query: OpportunityNameIdDocument, variables: variables };
 }
 export const ChallengeCardDocument = gql`
   query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -8164,6 +8407,134 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<
 export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTemplateQueryVariables) {
   return { query: TagsetsTemplateDocument, variables: variables };
 }
+export const UserApplicationDetailsDocument = gql`
+  query userApplicationDetails($input: MembershipUserInput!) {
+    membershipUser(membershipData: $input) {
+      applications {
+        id
+        state
+        displayName
+        ecoverseID
+        challengeID
+        opportunityID
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserApplicationDetailsQuery__
+ *
+ * To run a query within a React component, call `useUserApplicationDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserApplicationDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserApplicationDetailsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUserApplicationDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserApplicationDetailsQuery,
+    SchemaTypes.UserApplicationDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserApplicationDetailsQuery, SchemaTypes.UserApplicationDetailsQueryVariables>(
+    UserApplicationDetailsDocument,
+    options
+  );
+}
+export function useUserApplicationDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserApplicationDetailsQuery,
+    SchemaTypes.UserApplicationDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserApplicationDetailsQuery, SchemaTypes.UserApplicationDetailsQueryVariables>(
+    UserApplicationDetailsDocument,
+    options
+  );
+}
+export type UserApplicationDetailsQueryHookResult = ReturnType<typeof useUserApplicationDetailsQuery>;
+export type UserApplicationDetailsLazyQueryHookResult = ReturnType<typeof useUserApplicationDetailsLazyQuery>;
+export type UserApplicationDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserApplicationDetailsQuery,
+  SchemaTypes.UserApplicationDetailsQueryVariables
+>;
+export function refetchUserApplicationDetailsQuery(variables?: SchemaTypes.UserApplicationDetailsQueryVariables) {
+  return { query: UserApplicationDetailsDocument, variables: variables };
+}
+export const UserProfileApplicationsDocument = gql`
+  query userProfileApplications($input: MembershipUserInput!) {
+    membershipUser(membershipData: $input) {
+      applications {
+        id
+        state
+        displayName
+        ecoverseID
+        challengeID
+        opportunityID
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserProfileApplicationsQuery__
+ *
+ * To run a query within a React component, call `useUserProfileApplicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileApplicationsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUserProfileApplicationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserProfileApplicationsQuery,
+    SchemaTypes.UserProfileApplicationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserProfileApplicationsQuery, SchemaTypes.UserProfileApplicationsQueryVariables>(
+    UserProfileApplicationsDocument,
+    options
+  );
+}
+export function useUserProfileApplicationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserProfileApplicationsQuery,
+    SchemaTypes.UserProfileApplicationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserProfileApplicationsQuery,
+    SchemaTypes.UserProfileApplicationsQueryVariables
+  >(UserProfileApplicationsDocument, options);
+}
+export type UserProfileApplicationsQueryHookResult = ReturnType<typeof useUserProfileApplicationsQuery>;
+export type UserProfileApplicationsLazyQueryHookResult = ReturnType<typeof useUserProfileApplicationsLazyQuery>;
+export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserProfileApplicationsQuery,
+  SchemaTypes.UserProfileApplicationsQueryVariables
+>;
+export function refetchUserProfileApplicationsQuery(variables?: SchemaTypes.UserProfileApplicationsQueryVariables) {
+  return { query: UserProfileApplicationsDocument, variables: variables };
+}
 export const UserDocument = gql`
   query user($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
@@ -8217,6 +8588,10 @@ export const UserApplicationsDocument = gql`
         state
         communityID
         displayName
+        createdDate
+        ecoverseID
+        challengeID
+        opportunityID
       }
     }
   }
