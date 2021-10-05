@@ -8,6 +8,7 @@ import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useConfig, UserMetadata } from '../../../../hooks';
 import { createStyles } from '../../../../hooks/useTheme';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
@@ -15,7 +16,7 @@ import { Image } from '../../../core/Image';
 import Tag from '../../../core/Tag';
 import SidebarItem from './SidebarItem';
 import SidebarItemEcoverse from './SidebarItemEcoverse';
-import { Link as RouterLink } from 'react-router-dom';
+
 interface SidebarProps {
   isUserAuth?: boolean;
   ecoverses: EcoverseDetailsFragment[];
