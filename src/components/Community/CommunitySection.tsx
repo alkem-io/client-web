@@ -16,6 +16,7 @@ import Icon from '../core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Section';
 import Discussions from './Discussions';
 import Members from './Members';
+import Markdown from '../core/Markdown';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -72,7 +73,8 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />} hideDetails>
       <SectionHeader text={title} />
       <SubHeader text={subTitle} />
-      <Body text={body}>
+      <Body>
+        <Markdown children={body || ''} />
         <TabContext value={tabValue}>
           <TabList value={tabValue} onChange={handleChange} indicatorColor="primary" textColor="primary">
             {tabList.map((t, i) => (

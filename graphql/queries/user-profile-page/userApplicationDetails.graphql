@@ -1,11 +1,9 @@
-query userApplications($input: MembershipUserInput!) {
+query userApplicationDetails($input: MembershipUserInput!) {
   membershipUser(membershipData: $input) {
     applications {
       id
       state
-      communityID
       displayName
-      createdDate
       ecoverseID
       challengeID
       opportunityID

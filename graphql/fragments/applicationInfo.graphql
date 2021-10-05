@@ -1,5 +1,7 @@
 fragment ApplicationInfo on Application {
   id
+  createdDate
+  updatedDate
   lifecycle {
     id
     state

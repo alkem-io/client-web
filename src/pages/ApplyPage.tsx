@@ -13,7 +13,7 @@ import Typography from '../components/core/Typography';
 import { useApplicationCommunityQuery } from '../containers/application/useApplicationCommunityQuery';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
+import { createStyles } from '../hooks';
 import { ApplicationTypeEnum } from '../models/enums/application-type';
 import { CreateNvpInput } from '../models/graphql-schema';
 import { PageProps } from './common';
