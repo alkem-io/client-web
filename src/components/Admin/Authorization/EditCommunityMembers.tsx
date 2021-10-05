@@ -8,11 +8,11 @@ import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { EditMembers } from '../Community/EditMembers';
+import { WithCommunity } from '../Community/CommunityTypes';
 
-interface EditCredentialsProps {
+interface EditCredentialsProps extends WithCommunity {
   resourceId: string;
   communityId: string;
-  parentMembers?: Member[];
   credential: CommunityCredentials;
 }
 
@@ -23,10 +23,10 @@ export type CommunityCredentials =
   | AuthorizationCredential.ChallengeMember;
 
 export const EditCommunityMembers: FC<EditCredentialsProps> = ({
-  parentMembers,
   credential,
   resourceId,
   communityId,
+  parentCommunityId,
 }) => {
   const handleError = useApolloErrorHandler();
 
@@ -72,7 +72,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentMembers);
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentCommunityId);
 
   return (
     <EditMembers

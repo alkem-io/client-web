@@ -23,10 +23,8 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
 
   const isAdmin = useMemo(
     () =>
-      userMetadata?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
       userMetadata?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) ||
-      userMetadata?.isEcoverseAdmin(ecoverseId) ||
-      userMetadata?.isChallengeAdmin(challengeId) ||
+      userMetadata?.isChallengeAdmin(ecoverseId, challengeId) ||
       false,
     [userMetadata, challengeId, ecoverseId]
   );

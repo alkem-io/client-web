@@ -11,7 +11,7 @@ import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import { createStyles } from './hooks';
 import './i18n/config';
-import { Routing } from './routing/routing';
+import { Routing } from './routing/Routing';
 import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';

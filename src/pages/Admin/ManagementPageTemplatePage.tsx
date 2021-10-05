@@ -3,11 +3,12 @@ import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { Container, Link, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 
-import Button from '../core/Button';
-import Card from '../core/Card';
+import Button from '../../components/core/Button';
+import Card from '../../components/core/Card';
 
 import { useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../../pages';
+import { PageProps } from '..';
+import { Loading } from '../../components/core';
 
 interface Props extends PageProps {
   data: Array<{
@@ -19,24 +20,27 @@ interface Props extends PageProps {
   }>;
   title?: string;
   entityUrl?: string;
+  loading?: boolean;
 }
 
-export const ManagementPageTemplate: FC<Props> = ({ title, entityUrl: returnUrl, data, paths }) => {
+export const ManagementPageTemplatePage: FC<Props> = ({ title, entityUrl, data, paths, loading = false }) => {
   const { url } = useRouteMatch();
 
   useUpdateNavigation({ currentPaths: paths });
 
   const titleElement = useMemo(
     () =>
-      returnUrl ? (
-        <Link component={RouterLink} to={returnUrl}>
+      entityUrl ? (
+        <Link component={RouterLink} to={entityUrl}>
           {title}
         </Link>
       ) : (
         title
       ),
-    [returnUrl, title]
+    [entityUrl, title]
   );
+
+  if (loading) return <Loading />;
 
   return (
     <Container maxWidth="xl">
@@ -74,4 +78,4 @@ export const ManagementPageTemplate: FC<Props> = ({ title, entityUrl: returnUrl,
   );
 };
 
-export default ManagementPageTemplate;
+export default ManagementPageTemplatePage;
