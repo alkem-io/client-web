@@ -111,7 +111,7 @@ services:
 
   alkemio_server:
     container_name: alkemio_client_server
-    image: vyanakiev/alkemio-server:v0.14.0
+    image: vyanakiev/alkemio-server:v0.14.0-p1
     depends_on:
       - mysql_db
       - ipfs
@@ -135,11 +135,12 @@ services:
       - AUTH_ORY_KRATOS_PUBLIC_BASE_URL=http://localhost:3000/identity/ory/kratos/public
       - AUTH_ORY_KRATOS_PUBLIC_BASE_URL_SERVER=http://kratos:4433/
       - CORS_ENABLED=true
-      - LOGGING_LEVEL_CONSOLE=verbose
-      - LOGGING_CONSOLE_ENABLED=true
+      - LOGGING_LEVEL_CONSOLE
+      - LOGGING_CONSOLE_ENABLED
       - RABBITMQ_HOST=rabbitmq
-      - COMMUNICATIONS_ENABLED=true
+      - COMMUNICATIONS_ENABLED
       - SYNAPSE_SERVER_URL=http://synapse:8008
+      - SUBSCRIPTIONS_ENABLED
     restart: always
     ports:
       - 4000
