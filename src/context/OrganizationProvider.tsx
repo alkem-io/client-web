@@ -7,6 +7,7 @@ interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
   organizationId: string;
   organizationNameId: string;
+  displayName: string;
   loading: boolean;
 }
 
@@ -14,6 +15,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
   loading: true,
   organizationId: '',
   organizationNameId: '',
+  displayName: '',
 });
 
 const OrganizationProvider: FC = ({ children }) => {
@@ -23,6 +25,7 @@ const OrganizationProvider: FC = ({ children }) => {
     errorPolicy: 'all',
   });
   const organization = data?.organization;
+  const displayName = data?.organization.displayName || '';
 
   return (
     <OrganizationContext.Provider
@@ -30,6 +33,7 @@ const OrganizationProvider: FC = ({ children }) => {
         organization,
         organizationId: organization?.id || '',
         organizationNameId: organization?.nameID || organizationId,
+        displayName,
         loading,
       }}
     >

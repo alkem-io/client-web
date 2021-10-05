@@ -1,8 +1,11 @@
-query communityMembers ($communityId: UUID!) {
-  community(ID: $communityId) {
+query communityMembers($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    members {
-      ...GroupMembers
+    community(ID: $communityId) {
+      id
+      members {
+        ...GroupMembers
+      }
     }
   }
 }

@@ -1,12 +1,10 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useAvailableMembers, useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
-  useCommunityMembersQuery,
   useRemoveUserAsOpportunityAdminMutation,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
 import { AuthorizationCredential, Community, Opportunity } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
@@ -50,11 +48,6 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
   const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
   const { communityId } = entities;
-
-  const { data: communityData, loading: loadingCommunity } = useCommunityMembersQuery({
-    variables: { communityId: communityId || '' },
-    skip: !communityId,
-  });
 
   const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOpportunityAdminMutation({
     onError: handleError,
@@ -108,7 +101,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     available: availableMembers,
     current: allMembers,
     loading,
-  } = useAvailableMembers(entities.credential, entities.opportunityId, communityData?.community.members);
+  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId);
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -132,7 +125,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         {
           addingAdmin,
           removingAdmin,
-          loading: loading || loadingCommunity,
+          loading: loading,
         }
       )}
     </>
