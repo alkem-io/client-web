@@ -4188,6 +4188,7 @@ export const ChallengeApplicationTemplateDocument = gql`
             questions {
               required
               question
+              sortOrder
             }
           }
         }
@@ -5775,6 +5776,7 @@ export const EcoverseApplicationTemplateDocument = gql`
             questions {
               required
               question
+              sortOrder
             }
           }
         }

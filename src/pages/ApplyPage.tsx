@@ -86,12 +86,16 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   );
 
   const onSubmit = async (values: Record<string, string> /* <question, answer> */) => {
-    const questionsAndAnswers: CreateNvpInput[] = [];
+    const questionArrayInput: CreateNvpInput[] = [];
 
-    for (const answer in values) {
-      questionsAndAnswers.push({
-        name: answer,
-        value: values[answer],
+    for (const questionText in values) {
+      const question = questions.find(x => x.question === questionText);
+      const sortOrder = question?.sortOrder || 0; // sort order defaults to 0
+
+      questionArrayInput.push({
+        name: questionText,
+        value: values[questionText],
+        sortOrder: sortOrder,
       });
     }
 
@@ -100,7 +104,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
         input: {
           userID: userId,
           parentID: communityId,
-          questions: questionsAndAnswers,
+          questions: questionArrayInput,
         },
       },
     });

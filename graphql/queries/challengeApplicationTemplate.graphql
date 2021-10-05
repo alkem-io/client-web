@@ -8,6 +8,7 @@ query challengeApplicationTemplate {
           questions {
             required
             question
+            sortOrder
           }
         }
       }

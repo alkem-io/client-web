@@ -79,7 +79,9 @@ export type Application = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
+  /** The Questions for this application. */
   questions: Array<Question>;
+  /** The User for this Application. */
   updatedDate: Scalars['DateTime'];
   user: User;
 };
@@ -502,6 +504,7 @@ export type CreateEcoverseInput = {
 
 export type CreateNvpInput = {
   name: Scalars['String'];
+  sortOrder: Scalars['Float'];
   value: Scalars['String'];
 };
 
@@ -1656,6 +1659,8 @@ export type QuestionTemplate = {
   question: Scalars['String'];
   /** Is question required? */
   required: Scalars['Boolean'];
+  /** Sorting order for the question. Lower is first. */
+  sortOrder?: Maybe<Scalars['Float']>;
 };
 
 export type Reference = {
@@ -3741,7 +3746,12 @@ export type ChallengeApplicationTemplateQuery = {
           Array<{
             __typename?: 'ApplicationTemplate';
             name: string;
-            questions: Array<{ __typename?: 'QuestionTemplate'; required: boolean; question: string }>;
+            questions: Array<{
+              __typename?: 'QuestionTemplate';
+              required: boolean;
+              question: string;
+              sortOrder?: Maybe<number>;
+            }>;
           }>
         >;
       }>;
@@ -4556,7 +4566,12 @@ export type EcoverseApplicationTemplateQuery = {
           Array<{
             __typename?: 'ApplicationTemplate';
             name: string;
-            questions: Array<{ __typename?: 'QuestionTemplate'; required: boolean; question: string }>;
+            questions: Array<{
+              __typename?: 'QuestionTemplate';
+              required: boolean;
+              question: string;
+              sortOrder?: Maybe<number>;
+            }>;
           }>
         >;
       }>;
