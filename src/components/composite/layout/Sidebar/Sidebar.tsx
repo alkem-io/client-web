@@ -1,4 +1,4 @@
-import { Box, Drawer, DrawerProps } from '@material-ui/core';
+import { Box, Drawer, DrawerProps, Link } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
@@ -7,7 +7,7 @@ import { ReactComponent as HouseIcon } from 'bootstrap-icons/icons/house.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg';
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useConfig, UserMetadata } from '../../../../hooks';
 import { createStyles } from '../../../../hooks/useTheme';
 import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
@@ -15,7 +15,7 @@ import { Image } from '../../../core/Image';
 import Tag from '../../../core/Tag';
 import SidebarItem from './SidebarItem';
 import SidebarItemEcoverse from './SidebarItemEcoverse';
-
+import { Link as RouterLink } from 'react-router-dom';
 interface SidebarProps {
   isUserAuth?: boolean;
   ecoverses: EcoverseDetailsFragment[];
@@ -79,6 +79,19 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
   const { open } = drawerProps || { open: upSm };
   const iconSize = 'md'; //upMd ? 'md' : upSm ? 'md' : 'sm';
 
+  const LogoComponent = useMemo(() => {
+    const isLarge = upMd || !upSm;
+    const style = isLarge ? styles.logoLg : styles.logoSm;
+    const src = isLarge ? '/logo.png' : '/logo192.png';
+    return (
+      <Link component={RouterLink} to="/" className={style}>
+        <Box display="flex" flexDirection="column">
+          <Image src={src} alt="alkemio" />
+        </Box>
+      </Link>
+    );
+  }, [upMd, upSm]);
+
   return (
     <Drawer
       variant={upSm ? 'persistent' : 'temporary'}
@@ -89,25 +102,7 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
       open={upSm || open}
     >
       <Box position="relative" display="flex" flexDirection="column">
-        {upMd || !upSm ? (
-          <Image
-            src={'/logo.png'}
-            className={styles.logoLg}
-            alt="alkemio"
-            onError={() => {
-              /* TODO */
-            }}
-          />
-        ) : (
-          <Image
-            src={'/logo192.png'}
-            className={styles.logoSm}
-            alt="alkemio"
-            onError={() => {
-              /* TODO */
-            }}
-          />
-        )}
+        {LogoComponent}
         <Box position="absolute" className={clsx(styles.previewTag, upMd || !upSm ? '' : styles.tagScale)}>
           <Tag text={'public preview'} color="positive" />
         </Box>
