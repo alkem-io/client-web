@@ -1,13 +1,13 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import Loading from '../components/core/Loading/Loading';
-import { useCreateProjectMutation, useProjectProfileQuery } from '../hooks/generated/graphql';
-import { useEcoverse, useUrlParams } from '../hooks';
-import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../pages';
-import { Project as ProjectType } from '../models/graphql-schema';
-import { useApolloErrorHandler } from '../hooks';
-import RestrictedRoute from './route.extensions';
-import { nameOfUrl } from './url-params';
+import Loading from '../../components/core/Loading/Loading';
+import { useCreateProjectMutation, useProjectProfileQuery } from '../../hooks/generated/graphql';
+import { useEcoverse, useUrlParams } from '../../hooks';
+import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
+import { Project as ProjectType } from '../../models/graphql-schema';
+import { useApolloErrorHandler } from '../../hooks';
+import RestrictedRoute from '../route.extensions';
+import { nameOfUrl } from '../url-params';
 /*local files imports end*/
 
 interface ProjectRootProps extends PageProps {
@@ -15,7 +15,7 @@ interface ProjectRootProps extends PageProps {
   projects: Pick<ProjectType, 'id' | 'nameID' | 'displayName'>[] | undefined;
 }
 
-export const Project: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
+export const ProjectRoute: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>

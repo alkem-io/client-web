@@ -212,7 +212,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     available: availableMembers,
     current: allMembers,
     loading,
-  } = useAvailableMembers(entities.credential, entities.organizationId, entities.parentMembers);
+  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers);
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)

@@ -9,6 +9,7 @@ interface ChallengeContextProps {
   challengeNameId: string;
   ecoverseId: string;
   ecoverseNameId: string;
+  displayName: string;
   loading: boolean;
 }
 
@@ -18,6 +19,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   challengeNameId: '',
   ecoverseId: '',
   ecoverseNameId: '',
+  displayName: '',
 });
 
 interface ChallengeProviderProps {}
@@ -32,7 +34,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const ecoverseId = data?.ecoverse?.id || '';
   const challenge = data?.ecoverse?.challenge;
   const challengeId = challenge?.id || '';
-
+  const displayName = challenge?.displayName || '';
   return (
     <ChallengeContext.Provider
       value={{
@@ -41,6 +43,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challengeNameId,
         ecoverseId,
         ecoverseNameId,
+        displayName,
         loading,
       }}
     >

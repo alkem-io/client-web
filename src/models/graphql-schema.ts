@@ -699,7 +699,7 @@ export type Ecoverse = {
   challenge: Challenge;
   /** The challenges for the ecoverse. */
   challenges?: Maybe<Array<Challenge>>;
-  /** The community for the ecoverse. */
+  /** Get a Community within the Ecoverse. Defaults to the Community for the Ecoverse itself. */
   community?: Maybe<Community>;
   /** The context for the ecoverse. */
   context?: Maybe<Context>;
@@ -735,6 +735,10 @@ export type EcoverseApplicationArgs = {
 
 export type EcoverseChallengeArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type EcoverseCommunityArgs = {
+  ID?: Maybe<Scalars['UUID']>;
 };
 
 export type EcoverseGroupArgs = {
@@ -3872,7 +3876,13 @@ export type ChallengeProfileQuery = {
         id: string;
         displayName: string;
         nameID: string;
-        profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string> };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        };
       }>;
     };
   };
@@ -4271,25 +4281,49 @@ export type OpportunityCommunityQuery = {
   };
 };
 
+export type CommunityGroupsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityGroupsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      groups?: Maybe<Array<{ __typename?: 'UserGroup'; id: string; name: string }>>;
+    }>;
+  };
+};
+
 export type CommunityMembersQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityMembersQuery = {
   __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
+  ecoverse: {
+    __typename?: 'Ecoverse';
     id: string;
-    members?: Maybe<
-      Array<{
-        __typename?: 'User';
-        id: string;
-        displayName: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-      }>
-    >;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
+          id: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+        }>
+      >;
+    }>;
   };
 };
 

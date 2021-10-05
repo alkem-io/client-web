@@ -7,7 +7,7 @@ import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery }
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
-import { EditMode } from '../../utils/editMode';
+import { EditMode } from '../../models/editMode';
 
 interface EditUserProfilePageProps {}
 
