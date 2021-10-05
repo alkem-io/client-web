@@ -32,7 +32,7 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
   const { t } = useTranslation();
   const styles = useMemberOfStyles();
 
-  const membershipItems = (names: string[], tagText: string, tagColor: TagProps['color']) => {
+  const membershipItems = (names: string[], tagText: string, tagColor: TagProps['color'] = 'neutralMedium') => {
     return (
       names &&
       names.map((x, i) => (
@@ -48,12 +48,12 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
 
   return (
     <Box marginY={1}>
-      <Card primaryTextProps={{ text: 'Member of' }}>
-        {membershipItems(ecoverses, t('common.ecoverse'), 'primary')}
-        {membershipItems(groups, t('common.group'), 'primary')}
-        {membershipItems(challenges, t('common.challenge'), 'neutral')}
-        {membershipItems(opportunities, t('common.opportunity'), 'primary')}
-        {membershipItems(organizations, t('common.organization'), 'positive')}
+      <Card primaryTextProps={{ text: t('pages.user-profile.member-of') }}>
+        {membershipItems(ecoverses, t('common.ecoverse'))}
+        {membershipItems(groups, t('common.group'))}
+        {membershipItems(challenges, t('common.challenge'))}
+        {membershipItems(opportunities, t('common.opportunity'))}
+        {membershipItems(organizations, t('common.organization'))}
       </Card>
     </Box>
   );
