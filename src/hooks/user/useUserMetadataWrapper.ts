@@ -8,8 +8,9 @@ export interface UserMetadata {
   hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
   ofEcoverse: (id: string) => boolean;
-  isEcoverseAdmin: (id: string) => boolean;
-  isChallengeAdmin: (id: string) => boolean;
+  isEcoverseAdmin: (ecoverseId: string) => boolean;
+  isChallengeAdmin: (ecoverseId: string, challengeId: string) => boolean;
+  isOpportunityAdmin: (ecoverseId: string, challengeId: string, opportunityId: string) => boolean;
   isAdmin: boolean;
   roles: Role[];
   groups: string[];
@@ -17,6 +18,7 @@ export interface UserMetadata {
   opportunities: string[];
   challenges: string[];
   ecoverses: string[];
+  communities: Record<string, string>;
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
@@ -34,6 +36,11 @@ export const useUserMetadataWrapper = () => {
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
+      const communities =
+        membershipData?.communities.reduce((aggr, value) => {
+          aggr[value.id] = value.displayName;
+          return aggr;
+        }, {}) || {};
 
       const roles =
         user?.agent?.credentials
@@ -54,14 +61,26 @@ export const useUserMetadataWrapper = () => {
             c => c.type === credential && (!resourceId || c.resourceID === resourceId)
           ) !== -1
         );
+
+      const isEcoverseAdmin = (id: string) =>
+        hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+        hasCredentials(AuthorizationCredential.EcoverseAdmin, id);
+
+      const isChallengeAdmin = (ecoverseId: string, challengeId: string) =>
+        isEcoverseAdmin(ecoverseId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
+
+      const isOpportunityAdmin = (ecoverseId: string, challengeId: string, opportunityId) =>
+        isChallengeAdmin(ecoverseId, challengeId) ||
+        hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
+
       const metadata = {
         user,
-
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
         ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
-        isEcoverseAdmin: (id: string) => hasCredentials(AuthorizationCredential.EcoverseAdmin, id),
-        isChallengeAdmin: (id: string) => hasCredentials(AuthorizationCredential.ChallengeAdmin, id),
+        isEcoverseAdmin,
+        isChallengeAdmin,
+        isOpportunityAdmin,
         isAdmin: false,
         roles,
         groups,
@@ -69,6 +88,7 @@ export const useUserMetadataWrapper = () => {
         opportunities,
         organizations,
         ecoverses,
+        communities,
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);

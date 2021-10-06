@@ -9,9 +9,9 @@ import { WithCommunity } from './CommunityTypes';
 
 interface CreateCommunityGroupProps extends WithCommunity, PageProps {}
 
-export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, community }) => {
-  const history = useHistory();
+export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, communityId }) => {
   const { url } = useRouteMatch();
+  const history = useHistory();
 
   const handleError = useApolloErrorHandler();
 
@@ -24,10 +24,13 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnCommunity.id),
     onError: handleError,
     update: (cache, { data }) => {
-      if (data && community) {
+      if (data && communityId) {
         const { createGroupOnCommunity: newGroup } = data;
         cache.modify({
-          id: cache.identify(community),
+          id: cache.identify({
+            __typename: 'Community', // TODO: Find a way to generate it.
+            id: communityId,
+          }),
           fields: {
             groups(existingGroups = []) {
               const newGroupRef = cache.writeFragment({
@@ -44,17 +47,17 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
 
   const handleCreate = useCallback(
     async (name: string) => {
-      if (community)
+      if (communityId)
         await createGroup({
           variables: {
             input: {
-              parentID: community.id,
+              parentID: communityId,
               name,
             },
           },
         });
     },
-    [community]
+    [communityId]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

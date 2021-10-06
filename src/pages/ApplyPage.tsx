@@ -10,10 +10,12 @@ import ErrorBlock from '../components/core/ErrorBlock';
 import Image from '../components/core/Image';
 import { Loading } from '../components/core/Loading/Loading';
 import Typography from '../components/core/Typography';
+import { useApplicationCommunityQuery } from '../containers/application/useApplicationCommunityQuery';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
-import { CreateNvpInput, QuestionTemplate } from '../models/graphql-schema';
+import { createStyles } from '../hooks';
+import { ApplicationTypeEnum } from '../models/enums/application-type';
+import { CreateNvpInput } from '../models/graphql-schema';
 import { PageProps } from './common';
 
 const useStyles = createStyles(theme => ({
@@ -38,32 +40,11 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export type ApplyPageType = 'ecoverse' | 'challenge';
-
 interface ApplyPageProps extends PageProps {
-  loading: boolean;
-  error: boolean;
-  communityId: string;
-  communityName: string;
-  tagline: string;
-  avatar: string;
-  questions: QuestionTemplate[];
-  backUrl: string;
-  type: ApplyPageType;
+  type: ApplicationTypeEnum;
 }
 
-const ApplyPage: FC<ApplyPageProps> = ({
-  paths,
-  communityId,
-  communityName,
-  questions,
-  tagline,
-  avatar,
-  loading,
-  error,
-  backUrl,
-  type,
-}): React.ReactElement => {
+const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'apply', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -73,6 +54,10 @@ const ApplyPage: FC<ApplyPageProps> = ({
 
   const { user } = useUserContext();
   const userId = user?.user.id || '';
+
+  const { data, loading, error } = useApplicationCommunityQuery(type);
+
+  const { questions = [], communityId = '', displayName: communityName, avatar, tagline, backUrl = '' } = data || {};
 
   const [hasApplied, setHasApplied] = useState(false);
 
@@ -101,12 +86,16 @@ const ApplyPage: FC<ApplyPageProps> = ({
   );
 
   const onSubmit = async (values: Record<string, string> /* <question, answer> */) => {
-    const questionsAndAnswers: CreateNvpInput[] = [];
+    const questionArrayInput: CreateNvpInput[] = [];
 
-    for (const answer in values) {
-      questionsAndAnswers.push({
-        name: answer,
-        value: values[answer],
+    for (const questionText in values) {
+      const question = questions.find(x => x.question === questionText);
+      const sortOrder = question?.sortOrder || 0; // sort order defaults to 0
+
+      questionArrayInput.push({
+        name: questionText,
+        value: values[questionText],
+        sortOrder: sortOrder,
       });
     }
 
@@ -115,7 +104,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
         input: {
           userID: userId,
           parentID: communityId,
-          questions: questionsAndAnswers,
+          questions: questionArrayInput,
         },
       },
     });
@@ -184,7 +173,7 @@ const ApplyPage: FC<ApplyPageProps> = ({
                         type="submit"
                         disabled={isCreationLoading}
                         onClick={() => handleSubmit()}
-                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}`)}
+                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
                       />
                     </Grid>
                   </Grid>

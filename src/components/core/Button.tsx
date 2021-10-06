@@ -137,8 +137,6 @@ const Button: FC<ButtonProps> = forwardRef(
       ...rest,
     };
 
-    // const Link = React.forwardRef((props, ref) => <Component ref={ref} to={to} {...props} />);
-
     return (
       <MuiButton
         ref={ref}

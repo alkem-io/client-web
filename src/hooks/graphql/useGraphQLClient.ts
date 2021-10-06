@@ -1,18 +1,23 @@
-import { ApolloLink, from, InMemoryCache, NormalizedCacheObject, Operation } from '@apollo/client';
+import { ApolloLink, from, InMemoryCache, NormalizedCacheObject, Operation, split } from '@apollo/client';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { createUploadLink } from 'apollo-upload-client';
+import { WebSocketLink } from '@apollo/client/link/ws';
 import { useMemo } from 'react';
 import { typePolicies } from '../../config/graphql/typePolicies';
 import { ErrorStatus } from '../../models/constants/erros.constants';
 import { logger } from '../../services/logging/winston/logger';
 import { env } from '../../types/env';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
 
-export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<NormalizedCacheObject> => {
+export const useGraphQLClient = (
+  graphQLEndpoint: string,
+  enableWebSockets: boolean
+): ApolloClient<NormalizedCacheObject> => {
   const errorLink = onError(({ graphQLErrors, networkError, forward: _forward, operation: _operation }) => {
     let errors: Error[] = [];
     if (graphQLErrors) {
@@ -49,10 +54,45 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
     });
   });
 
-  const httpLink = createUploadLink({
-    uri: graphQLEndpoint,
-    credentials: 'include',
-  });
+  const terminationLink = (enableWebSockets: boolean) => {
+    const httpLink = createUploadLink({
+      uri: graphQLEndpoint,
+      credentials: 'include',
+    });
+    if (enableWebSockets) {
+      // if creating the web socket link fails fall back to http only
+      try {
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        // building the url plainly instead of using URL
+        // URL forces the default protocol on the uri
+        const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/${graphQLEndpoint}`;
+        const wsLink = new WebSocketLink({
+          uri: wsUrl,
+          options: {
+            reconnect: true,
+            // we shouldn't switch to lazy in order to capture the error early on
+            lazy: false,
+            connectionCallback: errors => {
+              if (errors) {
+                logger.error('Unable to connect over WS', errors);
+              }
+            },
+          },
+        });
+        return split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+          },
+          wsLink,
+          httpLink
+        );
+      } catch (error) {
+        logger.error(error);
+      }
+    }
+    return httpLink;
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const retryIf = (error: any, _operation: Operation) => {
@@ -92,11 +132,10 @@ export const useGraphQLClient = (graphQLEndpoint: string): ApolloClient<Normaliz
 
   return useMemo(() => {
     return new ApolloClient({
-      // link: from([authLink, errorLink, retryLink, omitTypenameLink, consoleLink, httpLink]),
-      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, httpLink]),
+      link: from([consoleLink, omitTypenameLink, errorLink, retryLink, terminationLink(enableWebSockets)]),
       cache: new InMemoryCache({ addTypename: true, typePolicies }),
     });
-  }, []);
+  }, [enableWebSockets]);
 };
 
 export default useGraphQLClient;

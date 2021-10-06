@@ -1,0 +1,13 @@
+query communityGroups($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      displayName
+      groups {
+        id
+        name
+      }
+    }
+  }
+}

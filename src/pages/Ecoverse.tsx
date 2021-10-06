@@ -55,16 +55,9 @@ const useStyles = createStyles(theme => ({
 
 interface EcoversePageProps extends PageProps {
   ecoverse: EcoverseInfoFragment;
-  permissions: {
-    edit: boolean;
-  };
 }
 
-const EcoversePage: FC<EcoversePageProps> = ({
-  permissions = { edit: false },
-  paths,
-  ecoverse,
-}): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -81,6 +74,10 @@ const EcoversePage: FC<EcoversePageProps> = ({
   const userApplication = applications.find(x => x.communityID === communityId);
 
   const { data: _projectsNestHistory } = useProjectsChainHistoryQuery({ variables: { ecoverseId: ecoverseNameId } });
+
+  const permissions = {
+    edit: user?.isEcoverseAdmin(ecoverseId),
+  };
 
   const {
     data: _challenges,
@@ -203,7 +200,7 @@ const EcoversePage: FC<EcoversePageProps> = ({
               <SettingsButton
                 color={'primary'}
                 to={buildAdminEcoverseUrl(ecoverseNameId)}
-                tooltip={t('pages.ecoverse.sections.header.buttons.settigns.tooltip')}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
               />
             )
           }

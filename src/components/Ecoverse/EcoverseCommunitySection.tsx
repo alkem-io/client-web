@@ -1,7 +1,14 @@
-import React, { FC } from 'react';
-import { useEcoversCommunityMessagesQuery, useEcoverseUserIdsQuery } from '../../hooks/generated/graphql';
-import { useEcoverse } from '../../hooks';
-import { User } from '../../models/graphql-schema';
+import React, { FC, useCallback, useMemo } from 'react';
+import { CommunityUpdatesDataContainer } from '../../containers/community-updates/CommunityUpdates';
+import { useConfig, useEcoverse } from '../../hooks';
+import { EcoversCommunityMessagesDocument, useEcoverseUserIdsQuery } from '../../hooks/generated/graphql';
+import { FEATURE_COMMUNICATIONS } from '../../models/constants';
+import {
+  CommunicationMessageResult,
+  EcoversCommunityMessagesQuery,
+  EcoversCommunityMessagesQueryVariables,
+  User,
+} from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import { Loading } from '../core';
 
@@ -15,21 +22,49 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
     },
     errorPolicy: 'all',
   });
-  const { data, loading } = useEcoversCommunityMessagesQuery({
-    variables: {
-      ecoverseId: ecoverseNameId,
+  const { isFeatureEnabled } = useConfig();
+
+  const addCommunityUpdatesContainer = useCallback(
+    (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+        return (
+          <CommunityUpdatesDataContainer<EcoversCommunityMessagesQuery, EcoversCommunityMessagesQueryVariables>
+            entities={{
+              document: EcoversCommunityMessagesDocument,
+              variables: {
+                ecoverseId: ecoverseNameId,
+              },
+              messageSelector: data => data?.ecoverse.community?.updatesRoom?.messages || [],
+              roomIdSelector: data => data?.ecoverse.community?.updatesRoom?.id || '',
+            }}
+          >
+            {({ messages }, { retrievingUpdateMessages }) =>
+              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(messages)
+            }
+          </CommunityUpdatesDataContainer>
+        );
+      } else {
+        return children([]);
+      }
     },
-  });
-
-  if (usersLoading || loading) return <Loading text={'Loading community data'} />;
-
-  return (
-    <CommunitySection
-      updates={data?.ecoverse.community?.updatesRoom?.messages}
-      discussions={data?.ecoverse.community?.discussionRoom?.messages}
-      users={(usersQuery?.ecoverse.community?.members as User[]) || []}
-      {...rest}
-    />
+    [isFeatureEnabled]
   );
+
+  const memoizedNode = useMemo(
+    () =>
+      addCommunityUpdatesContainer(messages => (
+        <CommunitySection
+          users={(usersQuery?.ecoverse.community?.members as User[]) || []}
+          updates={messages}
+          discussions={[]}
+          {...rest}
+        />
+      )),
+    [addCommunityUpdatesContainer]
+  );
+
+  if (usersLoading) return <Loading text={'Loading community data'} />;
+
+  return memoizedNode;
 };
 export default EcoverseCommunitySection;

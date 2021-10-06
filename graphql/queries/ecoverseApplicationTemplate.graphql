@@ -8,6 +8,7 @@ query ecoverseApplicationTemplate {
           questions {
             required
             question
+            sortOrder
           }
         }
       }

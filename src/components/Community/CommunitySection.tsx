@@ -16,6 +16,7 @@ import Icon from '../core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Section';
 import Discussions from './Discussions';
 import Members from './Members';
+import Markdown from '../core/Markdown';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -69,10 +70,11 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   ].filter(x => x.enabled);
 
   return (
-    <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+    <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />} hideDetails>
       <SectionHeader text={title} />
       <SubHeader text={subTitle} />
-      <Body text={body}>
+      <Body>
+        <Markdown children={body || ''} />
         <TabContext value={tabValue}>
           <TabList value={tabValue} onChange={handleChange} indicatorColor="primary" textColor="primary">
             {tabList.map((t, i) => (
@@ -86,7 +88,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
-                <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
+                <Box>
                   {updates && (
                     <AvatarsProvider users={users}>
                       {detailedUsers => (
@@ -104,6 +106,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
                           state={{
                             loadingMessages: false,
                             submittingMessage: false,
+                            removingMessage: false,
                           }}
                         />
                       )}

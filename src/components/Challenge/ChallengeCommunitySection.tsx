@@ -1,6 +1,14 @@
-import React, { FC } from 'react';
-import { useChallengeCommunityMessagesQuery, useChallengeUserIdsQuery } from '../../hooks/generated/graphql';
-import { User } from '../../models/graphql-schema';
+import React, { FC, useCallback, useMemo } from 'react';
+import { CommunityUpdatesDataContainer } from '../../containers/community-updates/CommunityUpdates';
+import { useConfig } from '../../hooks';
+import { ChallengeCommunityMessagesDocument, useChallengeUserIdsQuery } from '../../hooks/generated/graphql';
+import { FEATURE_COMMUNICATIONS } from '../../models/constants';
+import {
+  ChallengeCommunityMessagesQuery,
+  ChallengeCommunityMessagesQueryVariables,
+  CommunicationMessageResult,
+  User,
+} from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import { Loading } from '../core';
 
@@ -17,23 +25,51 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
     },
     errorPolicy: 'all',
   });
-  const { data, loading } = useChallengeCommunityMessagesQuery({
-    variables: {
-      ecoverseId: ecoverseId,
-      challengeId: challengeId,
+  const { isFeatureEnabled } = useConfig();
+
+  const addCommunityUpdatesContainer = useCallback(
+    (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+        return (
+          <CommunityUpdatesDataContainer<ChallengeCommunityMessagesQuery, ChallengeCommunityMessagesQueryVariables>
+            entities={{
+              document: ChallengeCommunityMessagesDocument,
+              variables: {
+                ecoverseId,
+                challengeId,
+              },
+              messageSelector: data => data?.ecoverse.challenge.community?.updatesRoom?.messages || [],
+              roomIdSelector: data => data?.ecoverse.challenge.community?.updatesRoom?.id || '',
+            }}
+          >
+            {({ messages }, { retrievingUpdateMessages }) =>
+              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(messages)
+            }
+          </CommunityUpdatesDataContainer>
+        );
+      } else {
+        return children([]);
+      }
     },
-    errorPolicy: 'ignore',
-  });
-
-  if (loading || usersLoading) return <Loading text={'Loading community data'} />;
-
-  return (
-    <CommunitySection
-      users={(usersQuery?.ecoverse.challenge.community?.members as User[]) || []}
-      updates={data?.ecoverse.challenge.community?.updatesRoom?.messages}
-      discussions={data?.ecoverse.challenge.community?.discussionRoom?.messages}
-      {...rest}
-    />
+    [isFeatureEnabled]
   );
+
+  const memoizedNode = useMemo(
+    () =>
+      addCommunityUpdatesContainer(messages => (
+        <CommunitySection
+          users={(usersQuery?.ecoverse.challenge.community?.members as User[]) || []}
+          updates={messages}
+          discussions={[]}
+          {...rest}
+        />
+      )),
+    [addCommunityUpdatesContainer]
+  );
+
+  if (usersLoading) return <Loading text={'Loading community data'} />;
+
+  return memoizedNode;
 };
+
 export default ChallengeCommunitySection;
