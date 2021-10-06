@@ -1,12 +1,15 @@
 import React, { FC, useMemo } from 'react';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../hooks';
+import { useTranslation } from 'react-i18next';
+import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../hooks';
 import {
   refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
+  useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
+import { EditMode } from '../../../models/editMode';
 import {
   CreateOrganizationInput,
   Organization,
@@ -15,19 +18,28 @@ import {
   UpdateOrganizationInput,
 } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
-import { EditMode } from '../../../utils/editMode';
-import OrganizationForm from './OrganizationForm';
 import { logger } from '../../../services/logging/winston/logger';
+import { Loading } from '../../core';
+import OrganizationForm from './OrganizationForm';
 interface Props extends PageProps {
-  organization?: Organization;
   title?: string;
   mode: EditMode;
 }
 
-const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
+const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
   const handleError = useApolloErrorHandler();
+  const { t } = useTranslation();
+  const { organizationNameId } = useOrganization();
+
+  const { data, loading } = useOrganizationProfileInfoQuery({
+    variables: { id: organizationNameId },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const organization = data?.organization;
+
   const currentPaths = useMemo(
-    () => [...paths, { name: organization?.displayName ? 'edit' : 'new', real: false }],
+    () => [...paths, { name: t(`common.enums.edit-mode.${mode}` as const), real: false }],
     [paths]
   );
   const notify = useNotification();
@@ -142,6 +154,8 @@ const OrganizationPage: FC<Props> = ({ organization, title, mode, paths }) => {
       });
     }
   };
+
+  if (loading) return <Loading text={t('components.loading.message', { bloackName: t('common.organization') })} />;
 
   return <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} title={title} />;
 };

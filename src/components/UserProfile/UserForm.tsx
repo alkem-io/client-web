@@ -9,7 +9,7 @@ import { TagsetTemplate } from '../../models/graphql-schema';
 import { Tagset } from '../../models/Profile';
 import { defaultUser, UserFromGenerated, UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
-import { EditMode } from '../../utils/editMode';
+import { EditMode } from '../../models/editMode';
 import { FormikInputField } from '../Admin/Common/FormikInputField';
 import FormikSelect from '../Admin/Common/FormikSelect';
 import ProfileReferenceSegment from '../Admin/Common/ProfileReferenceSegment';
@@ -284,7 +284,7 @@ export const UserForm: FC<UserProps> = ({
                             onCancel();
                           }}
                           disabled={isSubmitting}
-                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}` as const)}
                         />
                       </Grid>
                     )}

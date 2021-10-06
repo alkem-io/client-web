@@ -1,18 +1,17 @@
-import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
 import { Container } from '@material-ui/core';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router';
+import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../components/core';
 import { useApolloErrorHandler, useChallenge, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
-  useCommunityMembersQuery,
   useRemoveUserAsChallengeAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../components/core';
 
 const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
@@ -29,6 +28,7 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     ],
     [paths]
   );
+
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
@@ -78,13 +78,7 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
   const { challenge, loading: loadingChallenge } = useChallenge();
   const communityId = challenge?.community?.id || '';
 
-  const { data, loading: loadingCommunity } = useCommunityMembersQuery({
-    variables: { communityId: communityId },
-    skip: !communityId,
-  });
-  const challengeMembers = data?.community?.members || [];
-
-  if (loadingChallenge || loadingCommunity) {
+  if (loadingChallenge) {
     return <Loading />;
   }
 
@@ -95,7 +89,7 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
         onRemove={handleRemove}
         resourceId={resourceId}
         credential={credential}
-        memberList={challengeMembers}
+        parentCommunityId={communityId}
         addingMember={addingMember}
         removingMember={removingMember}
       />

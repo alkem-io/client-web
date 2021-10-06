@@ -1,18 +1,17 @@
+import { Container } from '@material-ui/core';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router';
+import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../components/core';
 import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsEcoverseAdminMutation,
-  useCommunityMembersQuery,
   useRemoveUserAsEcoverseAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { useRouteMatch } from 'react-router';
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Container } from '@material-ui/core';
-import { Loading } from '../../../components/core';
 
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
@@ -78,13 +77,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
   const { ecoverse, loading: loadingEcoverse } = useEcoverse();
   const communityId = ecoverse?.community?.id || '';
 
-  const { data, loading: loadingCommunity } = useCommunityMembersQuery({
-    variables: { communityId: communityId },
-    skip: !communityId,
-  });
-  const ecoMembers = data?.community?.members || [];
-
-  if (loadingEcoverse || loadingCommunity) {
+  if (loadingEcoverse) {
     return <Loading />;
   }
 
@@ -95,7 +88,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
         onRemove={handleRemove}
         resourceId={resourceId}
         credential={credential}
-        memberList={ecoMembers}
+        parentCommunityId={communityId}
         addingMember={addingMember}
         removingMember={removingMember}
       />

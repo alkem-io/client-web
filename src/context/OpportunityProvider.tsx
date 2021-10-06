@@ -12,6 +12,7 @@ interface OpportunityContextProps {
   challengeNameId: string;
   ecoverseId: string;
   ecoverseNameId: string;
+  displayName: string;
   loading: boolean;
 }
 
@@ -23,6 +24,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   challengeNameId: '',
   ecoverseId: '',
   ecoverseNameId: '',
+  displayName: '',
 });
 
 interface OpportunityProviderProps {}
@@ -38,6 +40,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const opportunityId = opportunity?.id || '';
   // using the challenge provider
   const { challengeId } = useChallenge();
+  const displayName = opportunity?.displayName || '';
 
   return (
     <OpportunityContext.Provider
@@ -49,6 +52,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         challengeNameId,
         opportunityId,
         opportunityNameId,
+        displayName,
         loading,
       }}
     >

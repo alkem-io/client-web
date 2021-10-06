@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.9.1",
+  "version": "0.10.1",
   "description": "Alkemio client, enabling users to interact with the Challenge centric platform.",
   "author": "Cherrytwist Foundation",
   "repository": {
@@ -14,7 +14,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "4.0.0-alpha.60",
     "@mui/x-data-grid": "^4.0.0",
-    "@ory/kratos-client": "^0.6.3-alpha.1",
+    "@ory/kratos-client": "^0.7.6-alpha.1",
     "@sentry/react": "^6.9.0",
     "@sentry/tracing": "^6.9.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -46,6 +46,7 @@
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "logform": "^2.2.0",
+    "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-cookie-consent": "^6.2.4",
     "react-copy-to-clipboard": "^5.0.3",

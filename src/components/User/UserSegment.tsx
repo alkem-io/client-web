@@ -1,17 +1,17 @@
-import React, { FC, useMemo, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Popover } from '@material-ui/core';
-import { createStyles } from '../../hooks/useTheme';
-import { UserMetadata } from '../../hooks';
-import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
+import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
+import React, { FC, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { UserMetadata } from '../../hooks';
+import { createStyles } from '../../hooks/useTheme';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import Avatar from '../core/Avatar';
-import Typography from '../core/Typography';
-import User from './User';
 import Button from '../core/Button';
 import Icon from '../core/Icon';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import Typography from '../core/Typography';
+import User from './User';
 
 const useStyles = createStyles(theme => ({
   popover: {
@@ -35,7 +35,6 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
   const styles = useStyles();
-  const history = useHistory();
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -77,11 +76,12 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 {role}
               </Typography>
             </Box>
-            <Box display="flex">
+            <Box display="flex" textAlign="center">
               <Button
+                as={Link}
+                to={buildUserProfileUrl(user.nameID)}
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push(buildUserProfileUrl(user.nameID));
                 }}
                 variant="transparent"
                 inset
@@ -91,18 +91,19 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
                 startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
               />
             </Box>
-            <Box>
+            <Box display="flex" textAlign="center">
               <Button
+                as={Link}
+                to={'/identity/logout'}
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push('/identity/logout');
                 }}
                 variant="transparent"
                 inset
                 block
                 small
-                startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
                 text={t('buttons.sign-out')}
+                startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
               />
             </Box>
           </Box>

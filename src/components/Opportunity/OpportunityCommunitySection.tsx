@@ -1,6 +1,14 @@
-import React, { FC } from 'react';
-import { useOpportunityCommunityMessagesQuery, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
-import { User } from '../../models/graphql-schema';
+import React, { FC, useCallback, useMemo } from 'react';
+import { CommunityUpdatesDataContainer } from '../../containers/community-updates/CommunityUpdates';
+import { useConfig } from '../../hooks';
+import { OpportunityCommunityMessagesDocument, useOpportunityUserIdsQuery } from '../../hooks/generated/graphql';
+import { FEATURE_COMMUNICATIONS } from '../../models/constants';
+import {
+  CommunicationMessageResult,
+  OpportunityCommunityMessagesQuery,
+  OpportunityCommunityMessagesQueryVariables,
+  User,
+} from '../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
 import { Loading } from '../core';
 
@@ -21,22 +29,50 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
     },
     errorPolicy: 'all',
   });
-  const { data, loading } = useOpportunityCommunityMessagesQuery({
-    variables: {
-      ecoverseId: ecoverseId,
-      opportunityId: opportunityId,
+  const { isFeatureEnabled } = useConfig();
+
+  const addCommunityUpdatesContainer = useCallback(
+    (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+        return (
+          <CommunityUpdatesDataContainer<OpportunityCommunityMessagesQuery, OpportunityCommunityMessagesQueryVariables>
+            entities={{
+              document: OpportunityCommunityMessagesDocument,
+              variables: {
+                ecoverseId,
+                opportunityId,
+              },
+              messageSelector: data => data?.ecoverse.opportunity.community?.updatesRoom?.messages || [],
+              roomIdSelector: data => data?.ecoverse.opportunity.community?.updatesRoom?.id || '',
+            }}
+          >
+            {({ messages }, { retrievingUpdateMessages }) =>
+              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(messages)
+            }
+          </CommunityUpdatesDataContainer>
+        );
+      } else {
+        return children([]);
+      }
     },
-  });
-
-  if (loading || usersLoading) return <Loading text={'Loading community data'} />;
-
-  return (
-    <CommunitySection
-      users={(usersQuery?.ecoverse.opportunity.community?.members as User[]) || []}
-      updates={data?.ecoverse.opportunity.community?.updatesRoom?.messages}
-      discussions={data?.ecoverse.opportunity.community?.discussionRoom?.messages}
-      {...rest}
-    />
+    [isFeatureEnabled]
   );
+
+  const memoizedNode = useMemo(
+    () =>
+      addCommunityUpdatesContainer(messages => (
+        <CommunitySection
+          users={(usersQuery?.ecoverse.opportunity.community?.members as User[]) || []}
+          updates={messages}
+          discussions={[]}
+          {...rest}
+        />
+      )),
+    [addCommunityUpdatesContainer]
+  );
+
+  if (usersLoading) return <Loading text={'Loading community data'} />;
+
+  return memoizedNode;
 };
 export default OpportunityCommunitySection;

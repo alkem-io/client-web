@@ -7,13 +7,15 @@ interface EcoverseContextProps {
   ecoverse?: EcoverseInfoFragment;
   ecoverseId: string;
   ecoverseNameId: string;
+  displayName: string;
   loading: boolean;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
-  loading: true,
+  loading: false,
   ecoverseId: '',
   ecoverseNameId: '',
+  displayName: '',
 });
 
 interface EcoverseProviderProps {}
@@ -27,6 +29,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   });
   const ecoverse = data?.ecoverse;
   const ecoverseId = ecoverse?.id || '';
+  const displayName = ecoverse?.displayName || '';
 
   return (
     <EcoverseContext.Provider
@@ -34,6 +37,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
         ecoverse,
         ecoverseId,
         ecoverseNameId,
+        displayName,
         loading,
       }}
     >
