@@ -49,7 +49,7 @@ const PendingApplicationsView: FC<PendingApplicationsViewProps> = ({
               <PendingApplicationView
                 key={i}
                 application={x}
-                questions={entities.questions}
+                applicationDetails={entities.applicationDetails}
                 handleDelete={containerActions.handleDelete}
                 isDeleting={containerState.isDeleting}
                 handleDialogOpen={actions.handleDialogOpen}

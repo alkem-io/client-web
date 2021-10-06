@@ -9,12 +9,12 @@ import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
-import { Question } from '../../models/graphql-schema';
 import { ApplicationDialog, ApplicationDialogDataType } from '../../components/composite';
 import Tag from '../../components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../models/constants';
 import IconButton from '../../components/core/IconButton';
 import { createStyles } from '../../hooks';
+import { ApplicationDialogDetails } from '../../containers/application/PendingApplicationContainer';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -47,7 +47,7 @@ const useStyles = createStyles(theme => ({
 
 interface PendingApplicationProps {
   application: ApplicationWithType;
-  questions: Question[];
+  applicationDetails?: ApplicationDialogDetails;
   edit: boolean;
   isDeleting: boolean;
   loading: boolean;
@@ -61,7 +61,7 @@ interface PendingApplicationProps {
 
 const PendingApplicationView: FC<PendingApplicationProps> = ({
   application,
-  questions,
+  applicationDetails,
   edit,
   typeName,
   url,
@@ -77,7 +77,7 @@ const PendingApplicationView: FC<PendingApplicationProps> = ({
 
   const applicationForDialog = {
     ...application,
-    questions,
+    ...applicationDetails,
   } as ApplicationDialogDataType;
 
   return (
@@ -124,7 +124,7 @@ const PendingApplicationView: FC<PendingApplicationProps> = ({
           </Box>
         </Grid>
       </Grid>
-      {questions.length > 0 && (
+      {applicationDetails && (
         <ApplicationDialog app={applicationForDialog} onHide={handleDialogClose} loading={loadingDialog} />
       )}
     </>
