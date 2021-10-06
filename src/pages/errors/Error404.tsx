@@ -1,15 +1,14 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Button from '../components/core/Button';
-import Section from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { useUpdateNavigation } from '../hooks';
-import './FourOuFour.css';
+import Button from '../../components/core/Button';
+import Section from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { useUpdateNavigation } from '../../hooks';
 
 const paths = { currentPaths: [] };
 
-export const FourOuFour: FC = () => {
+export const Error404: FC = () => {
   useUpdateNavigation(paths);
   const { t } = useTranslation();
   return (

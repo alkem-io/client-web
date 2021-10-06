@@ -4,26 +4,26 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { ActivityItem } from '../components/ActivityPanel/Activities';
-import ActivityCard from '../components/ActivityPanel/ActivityCard';
-import AuthenticationBackdrop from '../components/AuthenticationBackdrop';
-import { SettingsButton } from '../components/composite';
-import ApplicationButton from '../components/composite/common/ApplicationButton/ApplicationButton';
-import Button from '../components/core/Button';
-import CardFilter from '../components/core/card-filter/CardFilter';
-import { CardContainer } from '../components/core/CardContainer';
-import Divider from '../components/core/Divider';
-import ErrorBlock from '../components/core/ErrorBlock';
-import Icon from '../components/core/Icon';
-import { Image } from '../components/core/Image';
-import Loading from '../components/core/Loading/Loading';
-import Markdown from '../components/core/Markdown';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import ChallengeCard from '../components/Ecoverse/ChallengeCard';
-import EcoverseCommunitySection from '../components/Ecoverse/EcoverseCommunitySection';
-import MembershipBackdrop from '../components/MembershipBackdrop';
-import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../hooks';
+import { ActivityItem } from '../../components/ActivityPanel/Activities';
+import ActivityCard from '../../components/ActivityPanel/ActivityCard';
+import AuthenticationBackdrop from '../../components/AuthenticationBackdrop';
+import { SettingsButton } from '../../components/composite';
+import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import Button from '../../components/core/Button';
+import CardFilter from '../../components/core/card-filter/CardFilter';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import ErrorBlock from '../../components/core/ErrorBlock';
+import Icon from '../../components/core/Icon';
+import { Image } from '../../components/core/Image';
+import Loading from '../../components/core/Loading/Loading';
+import Markdown from '../../components/core/Markdown';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
+import ChallengeCard from '../../components/Ecoverse/ChallengeCard';
+import EcoverseCommunitySection from '../../components/Ecoverse/EcoverseCommunitySection';
+import MembershipBackdrop from '../../components/MembershipBackdrop';
+import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../../hooks';
 import {
   useChallengeCardsQuery,
   useEcoverseActivityQuery,
@@ -31,15 +31,15 @@ import {
   useProjectsChainHistoryQuery,
   useProjectsQuery,
   useUserApplicationsQuery,
-} from '../hooks/generated/graphql';
-import { Challenge, Context, EcoverseInfoFragment } from '../models/graphql-schema';
-import getActivityCount from '../utils/get-activity-count';
-import { buildAdminEcoverseUrl } from '../utils/urlBuilders';
-import { PageProps } from './common';
+} from '../../hooks/generated/graphql';
+import { Challenge, Context, EcoverseInfoFragment } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
+import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
+import { PageProps } from '../common';
 import {
   entityTagsValueGetter,
   entityValueGetter,
-} from '../components/core/card-filter/value-getters/entity-value-getter';
+} from '../../components/core/card-filter/value-getters/entity-value-getter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {

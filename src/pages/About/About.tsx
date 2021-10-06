@@ -2,11 +2,11 @@ import { Box } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Button from '../components/core/Button';
-import Typography from '../components/core/Typography';
-import { useUpdateNavigation } from '../hooks';
-import { useServerMetadataQuery } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks/useTheme';
+import Button from '../../components/core/Button';
+import Typography from '../../components/core/Typography';
+import { useUpdateNavigation } from '../../hooks';
+import { useServerMetadataQuery } from '../../hooks/generated/graphql';
+import { createStyles } from '../../hooks/useTheme';
 
 const useAboutStyles = createStyles(theme => ({
   content: {
@@ -50,7 +50,7 @@ const useAboutStyles = createStyles(theme => ({
 }));
 
 const currentPaths = [];
-const AboutPage = () => {
+export const AboutPage = () => {
   const styles = useAboutStyles();
   const { data } = useServerMetadataQuery();
   const { t } = useTranslation();

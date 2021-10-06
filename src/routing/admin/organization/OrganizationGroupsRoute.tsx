@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import { OrganizationGroupsPage } from '../../../pages/Admin/Organization/OrganizationGroupsPage';
 import { nameOfUrl } from '../../url-params';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
@@ -22,7 +22,7 @@ export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationGroupRoute paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

@@ -5,7 +5,7 @@ import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
+import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
 import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
@@ -30,7 +30,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   }
 
   if (!ecoverse) {
-    return <FourOuFour />;
+    return <Error404 />;
   }
 
   const requiredCredentials: CredentialForResource[] =
@@ -53,7 +53,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

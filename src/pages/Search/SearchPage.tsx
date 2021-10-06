@@ -7,17 +7,17 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { OrganizationSearchCard, ChallengeSearchCard, UserCard, OpportunitySearchCard } from '../components/search';
-import { CardContainer } from '../components/core/CardContainer';
-import Divider from '../components/core/Divider';
-import Icon from '../components/core/Icon';
-import MultipleSelect from '../components/core/MultipleSelect';
-import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { useSearchLazyQuery } from '../hooks/generated/graphql';
-import { createStyles, useUpdateNavigation } from '../hooks';
-import { Challenge, Opportunity, Organization, User, UserGroup } from '../models/graphql-schema';
-import { PageProps } from './common';
+import { OrganizationSearchCard, ChallengeSearchCard, UserCard, OpportunitySearchCard } from '../../components/search';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import Icon from '../../components/core/Icon';
+import MultipleSelect from '../../components/core/MultipleSelect';
+import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { useSearchLazyQuery } from '../../hooks/generated/graphql';
+import { createStyles, useUpdateNavigation } from '../../hooks';
+import { Challenge, Opportunity, Organization, User, UserGroup } from '../../models/graphql-schema';
+import { PageProps } from '../common';
 
 const useStyles = createStyles(() => ({
   formControl: {

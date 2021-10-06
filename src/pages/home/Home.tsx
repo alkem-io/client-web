@@ -8,7 +8,7 @@ import Divider from '../../components/core/Divider';
 import EcoversesSection from './EcoversesSection';
 import WelcomeSection from './WelcomeSection';
 
-const HomePage = () => {
+export const HomePage = () => {
   const { t } = useTranslation();
 
   const currentPaths = useMemo(() => [], []);

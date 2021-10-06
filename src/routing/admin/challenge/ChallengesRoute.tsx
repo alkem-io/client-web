@@ -4,7 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import FormMode from '../../../components/Admin/FormMode';
 import { ChallengeProvider } from '../../../context/ChallengeProvider';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import ChallengeListPage from '../../../pages/Admin/Challenge/ChallengeListPage';
 import { nameOfUrl } from '../../url-params';
 import { ChallengeRoute } from './ChallengeRoute';
@@ -29,7 +29,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
         </ChallengeProvider>
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

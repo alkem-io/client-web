@@ -4,19 +4,19 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FormikInputField from '../components/Admin/Common/FormikInputField';
-import Button from '../components/core/Button';
-import ErrorBlock from '../components/core/ErrorBlock';
-import Image from '../components/core/Image';
-import { Loading } from '../components/core/Loading/Loading';
-import Typography from '../components/core/Typography';
-import { useApplicationCommunityQuery } from '../containers/application/useApplicationCommunityQuery';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../hooks';
-import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../hooks/generated/graphql';
-import { createStyles } from '../hooks';
-import { ApplicationTypeEnum } from '../models/enums/application-type';
-import { CreateNvpInput } from '../models/graphql-schema';
-import { PageProps } from './common';
+import FormikInputField from '../../components/Admin/Common/FormikInputField';
+import Button from '../../components/core/Button';
+import ErrorBlock from '../../components/core/ErrorBlock';
+import Image from '../../components/core/Image';
+import { Loading } from '../../components/core/Loading/Loading';
+import Typography from '../../components/core/Typography';
+import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';
+import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
+import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../../hooks/generated/graphql';
+import { createStyles } from '../../hooks';
+import { ApplicationTypeEnum } from '../../models/enums/application-type';
+import { CreateNvpInput } from '../../models/graphql-schema';
+import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({
   thankYouDiv: {

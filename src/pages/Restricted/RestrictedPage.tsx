@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../components/core/Button';
-import Section from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { useUpdateNavigation } from '../hooks';
+import Button from '../../components/core/Button';
+import Section from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { useUpdateNavigation } from '../../hooks';
 import { useTranslation } from 'react-i18next';
 
 const paths = { currentPaths: [] };
 
-export const Restricted: FC<{ attemptedTarget: string }> = ({ attemptedTarget }) => {
+export const RestrictedPage: FC<{ attemptedTarget: string }> = ({ attemptedTarget }) => {
   const { t } = useTranslation();
   useUpdateNavigation(paths);
 

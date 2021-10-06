@@ -8,7 +8,7 @@ import {
 } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks';
-import { Error } from '../pages/Error';
+import { Error } from '../pages/errors/ErrorPage';
 import { User } from '../models/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;

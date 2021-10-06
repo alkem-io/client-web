@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
-import { Error as ErrorPage } from '../pages/Error';
+import { Error as ErrorPage } from '../pages/errors/ErrorPage';
 import sentryBootstrap from '../services/logging/sentry/bootstrap';
 import { useConfig } from '../hooks';
 

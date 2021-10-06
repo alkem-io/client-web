@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
-import { FourOuFour, PageProps } from '../../pages';
+import { Error404, PageProps } from '../../pages';
 import OrganizationPage from '../../pages/organization/OrganizationPage';
 import { useOrganization, useUserContext } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
@@ -21,7 +21,7 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   );
 
   if (!organization) {
-    return <FourOuFour />;
+    return <Error404 />;
   }
 
   return (
@@ -30,7 +30,7 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationPage paths={currentPaths} permissions={{ edit: isAdmin }} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

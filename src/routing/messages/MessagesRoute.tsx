@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour, Messages as MessagesPage } from '../../pages';
+import { Error404, MessagesPage } from '../../pages';
 
 export const MessagesRoute: FC = () => {
   const { path, url } = useRouteMatch();
@@ -12,7 +12,7 @@ export const MessagesRoute: FC = () => {
         <MessagesPage paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

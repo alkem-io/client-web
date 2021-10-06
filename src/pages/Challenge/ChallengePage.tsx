@@ -9,29 +9,29 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useHistory, useRouteMatch } from 'react-router-dom';
-import { ActivityItem } from '../components/ActivityPanel/Activities';
-import ActivityCard from '../components/ActivityPanel/ActivityCard';
-import BackdropWithMessage from '../components/BackdropWithMessage';
-import ChallengeCommunitySection from '../components/Challenge/ChallengeCommunitySection';
-import OpportunityCard from '../components/Challenge/OpportunityCard';
-import ApplicationButton from '../components/composite/common/ApplicationButton/ApplicationButton';
-import SettingsButton from '../components/composite/common/SettingsButton/SettingsButton';
-import { Loading } from '../components/core';
-import Button from '../components/core/Button';
-import CardFilter from '../components/core/card-filter/CardFilter';
+import { ActivityItem } from '../../components/ActivityPanel/Activities';
+import ActivityCard from '../../components/ActivityPanel/ActivityCard';
+import BackdropWithMessage from '../../components/BackdropWithMessage';
+import ChallengeCommunitySection from '../../components/Challenge/ChallengeCommunitySection';
+import OpportunityCard from '../../components/Challenge/OpportunityCard';
+import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import SettingsButton from '../../components/composite/common/SettingsButton/SettingsButton';
+import { Loading } from '../../components/core';
+import Button from '../../components/core/Button';
+import CardFilter from '../../components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
-} from '../components/core/card-filter/value-getters/entity-value-getter';
-import { CardContainer } from '../components/core/CardContainer';
-import Divider from '../components/core/Divider';
-import Icon from '../components/core/Icon';
-import { Image } from '../components/core/Image';
-import Markdown from '../components/core/Markdown';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import OrganizationPopUp from '../components/Organizations/OrganizationPopUp';
+} from '../../components/core/card-filter/value-getters/entity-value-getter';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import Icon from '../../components/core/Icon';
+import { Image } from '../../components/core/Image';
+import Markdown from '../../components/core/Markdown';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
+import OrganizationPopUp from '../../components/Organizations/OrganizationPopUp';
 import {
   createStyles,
   useAuthenticationContext,
@@ -39,23 +39,23 @@ import {
   useEcoverse,
   useUpdateNavigation,
   useUserContext,
-} from '../hooks';
+} from '../../hooks';
 import {
   useChallengeActivityQuery,
   useChallengeLifecycleQuery,
   useChallengeProfileQuery,
   useUserApplicationsQuery,
-} from '../hooks/generated/graphql';
-import { Opportunity, OrganizationDetailsFragment } from '../models/graphql-schema';
-import getActivityCount from '../utils/get-activity-count';
-import hexToRGBA from '../utils/hexToRGBA';
+} from '../../hooks/generated/graphql';
+import { Opportunity, OrganizationDetailsFragment } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
+import hexToRGBA from '../../utils/hexToRGBA';
 import {
   buildAdminChallengeUrl,
   buildChallengeApplyUrl,
   buildEcoverseApplyUrl,
   buildOrganizationUrl,
-} from '../utils/urlBuilders';
-import { PageProps } from './common';
+} from '../../utils/urlBuilders';
+import { PageProps } from '../common';
 
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {

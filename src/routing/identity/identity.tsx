@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
 import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../state/global/ui/loginNavigationMachine';
 import RestrictedRoute from '../route.extensions';
@@ -54,7 +54,7 @@ export const IdentityRoute: FC = () => {
         <ErrorRoute />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

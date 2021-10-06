@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '../components/core/Button';
-import Section from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { env } from '../types/env';
+import Button from '../../components/core/Button';
+import Section from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { env } from '../../types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 

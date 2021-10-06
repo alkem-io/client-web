@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { FourOuFour, PageProps } from '../../pages';
-import ApplyPage from '../../pages/ApplyPage';
+import { Error404, PageProps } from '../../pages';
+import ApplyPage from '../../pages/Application/ApplyPage';
 import RestrictedRoute from '../route.extensions';
 
 interface Props extends PageProps {
@@ -17,7 +17,7 @@ const ApplyRoute: FC<Props> = ({ paths, type }) => {
         <ApplyPage paths={paths} type={type} />
       </RestrictedRoute>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

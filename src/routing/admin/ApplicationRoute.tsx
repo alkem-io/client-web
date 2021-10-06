@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
 import { ApplicationInfoFragment } from '../../models/graphql-schema';
@@ -24,7 +24,7 @@ export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
         <ApplicationPage paths={paths} applications={applications} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

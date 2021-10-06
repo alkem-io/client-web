@@ -10,36 +10,42 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { ActivityItem } from '../components/ActivityPanel/Activities';
-import ActivityCard from '../components/ActivityPanel/ActivityCard';
-import { CommunitySection } from '../components/Community/CommunitySection';
-import { SettingsButton } from '../components/composite';
-import { Loading } from '../components/core';
-import Button from '../components/core/Button';
-import { CardContainer } from '../components/core/CardContainer';
-import Divider from '../components/core/Divider';
-import Icon from '../components/core/Icon';
-import Markdown from '../components/core/Markdown';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../components/core/Section';
-import Typography from '../components/core/Typography';
-import { SwitchCardComponent } from '../components/Ecoverse/Cards';
-import InterestModal from '../components/Ecoverse/InterestModal';
-import ActorGroupCreateModal from '../components/Opportunity/ActorGroupCreateModal';
-import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../components/Opportunity/Cards';
-import { createStyles, useAuthenticationContext, useOpportunity, useUpdateNavigation, useUserContext } from '../hooks';
+import { ActivityItem } from '../../components/ActivityPanel/Activities';
+import ActivityCard from '../../components/ActivityPanel/ActivityCard';
+import { CommunitySection } from '../../components/Community/CommunitySection';
+import { SettingsButton } from '../../components/composite';
+import { Loading } from '../../components/core';
+import Button from '../../components/core/Button';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import Icon from '../../components/core/Icon';
+import Markdown from '../../components/core/Markdown';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
+import InterestModal from '../../components/Ecoverse/InterestModal';
+import ActorGroupCreateModal from '../../components/Opportunity/ActorGroupCreateModal';
+import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../../components/Opportunity/Cards';
+import {
+  createStyles,
+  useAuthenticationContext,
+  useOpportunity,
+  useUpdateNavigation,
+  useUserContext,
+} from '../../hooks';
 import {
   useOpportunityActivityQuery,
   useOpportunityLifecycleQuery,
   useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
   useOpportunityUserIdsQuery,
-} from '../hooks/generated/graphql';
-import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../models/graphql-schema';
-import getActivityCount from '../utils/get-activity-count';
-import hexToRGBA from '../utils/hexToRGBA';
-import { replaceAll } from '../utils/replaceAll';
-import { buildAdminOpportunityUrl } from '../utils/urlBuilders';
-import { PageProps } from './common';
+} from '../../hooks/generated/graphql';
+import { AuthorizationCredential, Opportunity as OpportunityType, User } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
+import hexToRGBA from '../../utils/hexToRGBA';
+import { replaceAll } from '../../utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { PageProps } from '../common';
 
 const useStyles = createStyles(theme => ({
   tag: {

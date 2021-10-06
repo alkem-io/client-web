@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Loading } from '../../components/core';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfileView, { UserProfileViewProps } from '../../views/User/UserProfileView';
-import { FourOuFour } from '../FourOuFour';
+import { Error404 } from '../';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -21,7 +21,7 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  if (!userMetadata) return <FourOuFour />;
+  if (!userMetadata) return <Error404 />;
 
   const options: UserProfileViewProps['options'] = {
     isCurrentUser: currentUser?.user.id === userMetadata.user.id,
