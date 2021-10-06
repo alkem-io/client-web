@@ -43,6 +43,10 @@
     "settings": "Settings",
     "member": "Member"
   },
+  "tooltips": {
+    "click-more-info": "Click for more information",
+    "click-delete": "Click to delete"
+  },
   "authentication": {
     "sign-in": "Sign in",
     "sign-up": "Sign up",
@@ -184,6 +188,11 @@
           "order": 16,
           "hidden": true
         }
+      },
+      "edit-mode": {
+        "new": "New",
+        "edit": "Edit",
+        "read-only": "Read only"
       }
     }
   },
@@ -669,6 +678,10 @@
       "email-not-verified": " Please verify your <l>email</l>.",
       "tooltips": {
         "settings": "User profile settings"
+      },
+      "member-of": "Member of",
+      "applications": {
+        "title": "Pending applications"
       }
     },
     "authentication-required": {
