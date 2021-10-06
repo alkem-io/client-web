@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Card from '../../components/core/Card';
 import { Loading } from '../../components/core';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
-import PendingApplicationContainer from '../../containers/applications/PendingApplicationContainer';
+import PendingApplicationContainer from '../../containers/application/PendingApplicationContainer';
 import PendingApplicationView from './PendingApplicationView';
 
 export interface PendingApplicationsViewEntities {
