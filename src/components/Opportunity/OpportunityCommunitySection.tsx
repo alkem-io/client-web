@@ -9,7 +9,7 @@ import {
   OpportunityCommunityMessagesQueryVariables,
   User,
 } from '../../models/graphql-schema';
-import CommunitySection, { CommunitySectionPropsExt } from '../Community/CommunitySection';
+import CommunitySection, { CommunitySectionPropsExt } from '../../views/CommunitySection/CommunitySectionView';
 import { Loading } from '../core';
 
 interface OpportunityCommunitySectionProps extends CommunitySectionPropsExt {

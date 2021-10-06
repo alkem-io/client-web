@@ -8,7 +8,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { useUsersWithCredentialsQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import { useUserContext } from '../../hooks';
-import AuthenticationBackdrop from '../../components/AuthenticationBackdrop';
+import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 
 const useStyles = makeStyles(theme => ({
   noDataText: {

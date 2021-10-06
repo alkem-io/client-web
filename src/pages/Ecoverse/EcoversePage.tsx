@@ -4,9 +4,9 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { ActivityItem } from '../../components/ActivityPanel/Activities';
-import ActivityCard from '../../components/ActivityPanel/ActivityCard';
-import AuthenticationBackdrop from '../../components/AuthenticationBackdrop';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
+import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import { SettingsButton } from '../../components/composite';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import Button from '../../components/core/Button';
@@ -22,7 +22,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
 import ChallengeCard from '../../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../../components/Ecoverse/EcoverseCommunitySection';
-import MembershipBackdrop from '../../components/MembershipBackdrop';
+import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../../hooks';
 import {
   useChallengeCardsQuery,

@@ -10,13 +10,13 @@ import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { CommunicationMessageResult, User } from '../../models/graphql-schema';
-import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
-import Button from '../core/Button';
-import Icon from '../core/Icon';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../core/Section';
-import Discussions from './Discussions';
-import Members from './Members';
-import Markdown from '../core/Markdown';
+import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
+import Button from '../../components/core/Button';
+import Icon from '../../components/core/Icon';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import DiscussionsView from './DiscussionsView';
+import MembersView from './MembersView';
+import Markdown from '../../components/core/Markdown';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -82,7 +82,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             ))}
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
-            <Members shuffle={shuffle} users={users} />
+            <MembersView shuffle={shuffle} users={users} />
             <Button text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
@@ -116,7 +116,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               </TabPanel>
 
               <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
-                <Discussions messages={discussions} />
+                <DiscussionsView messages={discussions} />
               </TabPanel>
             </>
           )}

@@ -6,11 +6,11 @@ import InfoIcon from '@material-ui/icons/Info';
 import Grid from '@material-ui/core/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { createStyles } from '../../hooks';
-import { Lifecycle, Maybe } from '../../models/graphql-schema';
-import Typography from '../core/Typography';
-import LifecycleVisualizer from '../core/Lifecycle';
-import { DialogContent, DialogTitle } from '../core/dialog';
+import { createStyles } from '../../../../hooks';
+import { Lifecycle, Maybe } from '../../../../models/graphql-schema';
+import Typography from '../../../core/Typography';
+import LifecycleVisualizer from '../../../core/Lifecycle';
+import { DialogContent, DialogTitle } from '../../../core/dialog';
 
 export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;

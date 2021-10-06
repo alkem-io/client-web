@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 import { OpportunitySearchResultFragment } from '../../models/graphql-schema';
-import { ActivityItem } from '../ActivityPanel/Activities';
+import { ActivityItem } from '../composite/common/ActivityPanel/Activities';
 import getActivityCount from '../../utils/get-activity-count';
 import OpportunityPopUp from '../Opportunity/OpportunityPopUp';
 import { useEcoverseNameQuery } from '../../hooks/generated/graphql';

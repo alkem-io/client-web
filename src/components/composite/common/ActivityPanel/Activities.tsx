@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { FC } from 'react';
-import CircleTag from '../core/CircleTag';
-import Typography from '../core/Typography';
+import CircleTag from '../../../core/CircleTag';
+import Typography from '../../../core/Typography';
 
 export interface ActivityItem {
   name: string;

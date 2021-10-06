@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Lifecycle, Maybe } from '../../models/graphql-schema';
-import Card, { CardProps } from '../core/Card';
+import { Lifecycle, Maybe } from '../../../../models/graphql-schema';
+import Card, { CardProps } from '../../../core/Card';
 import { Activities, ActivityItem } from './Activities';
 import StateActivityCardItem from './StateActivityCardItem';
 import activitiesMock from './tempMockActivities';

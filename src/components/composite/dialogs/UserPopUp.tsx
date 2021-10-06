@@ -8,16 +8,16 @@ import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserMetadata } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
-import { Loading } from '../core';
-import Avatar from '../core/Avatar';
-import Button from '../core/Button';
-import Delimiter from '../core/Delimiter';
-import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
-import Tag from '../core/Tag';
-import TagContainer from '../core/TagContainer';
-import Typography from '../core/Typography';
+import { useUserMetadata } from '../../../hooks';
+import { createStyles } from '../../../hooks/useTheme';
+import { Loading } from '../../core';
+import Avatar from '../../core/Avatar';
+import Button from '../../core/Button';
+import Delimiter from '../../core/Delimiter';
+import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
+import Tag from '../../core/Tag';
+import TagContainer from '../../core/TagContainer';
+import Typography from '../../core/Typography';
 
 const useUserPopUpStyles = createStyles(theme => ({
   header: {

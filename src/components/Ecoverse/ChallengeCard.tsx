@@ -6,7 +6,7 @@ import { createStyles } from '../../hooks/useTheme';
 import { Nvp } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { Activities } from '../ActivityPanel/Activities';
+import { Activities } from '../composite/common/ActivityPanel/Activities';
 import CardTags from '../composite/common/CardTags/CardTags';
 import Button from '../core/Button';
 import Card from '../core/Card';

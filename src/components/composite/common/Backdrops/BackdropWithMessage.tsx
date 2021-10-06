@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { createStyles } from '../hooks/useTheme';
-import Backdrop from './core/Backdrop';
-import Typography from './core/Typography';
+import { createStyles } from '../../../../hooks/useTheme';
+import Backdrop from '../../../core/Backdrop';
+import Typography from '../../../core/Typography';
 
 const useBackdropStyles = createStyles(theme => ({
   backdropContainer: {
@@ -28,7 +28,7 @@ export interface BackdropProps {
   template?: React.ReactNode;
 }
 
-const BackdropWithMessage: FC<BackdropProps> = ({ children, message, template, show = false }) => {
+export const BackdropWithMessage: FC<BackdropProps> = ({ children, message, template, show = false }) => {
   const styles = useBackdropStyles();
 
   if (show) return <>{children}</>;

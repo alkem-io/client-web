@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
+import Avatar from '../../components/core/Avatar';
+import AvatarContainer from '../../components/core/AvatarContainer';
+import Typography from '../../components/core/Typography';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { User } from '../../models/graphql-schema';
 import shuffleCollection from '../../utils/shuffleCollection';
-import Avatar from '../core/Avatar';
-import AvatarContainer from '../core/AvatarContainer';
-import Typography from '../core/Typography';
 
 interface MembersProps {
   shuffle?: boolean;
   users: User[];
 }
 
-export const Members: FC<MembersProps> = ({ shuffle = false, users }) => {
+export const MembersView: FC<MembersProps> = ({ shuffle = false, users }) => {
   return (
     <AvatarsProvider users={users}>
       {populated => {
@@ -35,4 +35,4 @@ export const Members: FC<MembersProps> = ({ shuffle = false, users }) => {
     </AvatarsProvider>
   );
 };
-export default Members;
+export default MembersView;
