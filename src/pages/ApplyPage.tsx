@@ -90,7 +90,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
     for (const questionText in values) {
       const question = questions.find(x => x.question === questionText);
-      const sortOrder = question?.sortOrder || 0; // sort order defaults to 0 - test new comment
+      const sortOrder = question?.sortOrder || 0; // sort order defaults to 0 - test new comment with changes
 
       questionArrayInput.push({
         name: questionText,
