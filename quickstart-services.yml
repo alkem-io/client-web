@@ -111,7 +111,7 @@ services:
 
   alkemio_server:
     container_name: alkemio_client_server
-    image: vyanakiev/alkemio-server:v0.14.0-p1
+    image: alkemio/server:v0.14.1
     depends_on:
       - mysql_db
       - ipfs
