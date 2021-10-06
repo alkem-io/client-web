@@ -1,25 +1,5 @@
 http:
   services:
-    # synapse-admin:
-    #   loadBalancer:
-    #     servers:
-    #       - url: 'http://synapse-admin:80/'
-
-    rabbitmq-management:
-      loadBalancer:
-        servers:
-          - url: 'http://rabbitmq:15672'
-
-    mailslurper-client:
-      loadBalancer:
-        servers:
-          - url: 'http://mailslurper:4436'
-
-    mailslurper-api:
-      loadBalancer:
-        servers:
-          - url: 'http://mailslurper:4437'
-
     alkemio-server:
       loadBalancer:
         servers:
@@ -69,21 +49,7 @@ http:
           - /identity/ory/kratos/public
         forceSlash: false
 
-    # strip-synapse-admin-prefix:
-    #   stripPrefix:
-    #     prefixes:
-    #       - /synapse-admin
-    #     forceSlash: false
-
   routers:
-    # synapse-admin:
-    #   rule: 'PathPrefix(`/`)'
-    #   service: 'synapse-admin'
-    #   middlewares:
-    #     - strip-synapse-admin-prefix
-    #   entryPoints:
-    #     - 'synapse-admin'
-
     graphql:
       rule: 'PathPrefix(`/graphql`)'
       service: 'oathkeeper-proxy'

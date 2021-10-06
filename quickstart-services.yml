@@ -174,16 +174,6 @@ services:
         source: ./.build/synapse
         target: /data
 
-  synapse-admin:
-    container_name: alkemio_client_synapse_admin
-    hostname: synapse-admin
-    image: awesometechnologies/synapse-admin:0.8.1
-    restart: always
-    networks:
-      - alkemio_client_net
-    ports:
-      - 80
-
   rabbitmq:
     container_name: alkemio_client_rabbitmq
     image: docker.io/bitnami/rabbitmq:3.9
