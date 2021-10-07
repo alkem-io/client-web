@@ -15,8 +15,7 @@ import { nameOfUrl } from '../url-params';
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverseId, ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
-  const isPrivate = ecoverse?.authorization?.anonymousReadAccess || false;
+  const { ecoverseId, ecoverse, displayName, loading: ecoverseLoading, isPrivate } = useEcoverse();
 
   const currentPaths = useMemo(
     () => (ecoverse ? [...paths, { value: url, name: displayName, real: true }] : paths),
@@ -39,7 +38,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        <EcoversePage ecoverse={ecoverse} paths={currentPaths} />
+        <EcoversePage paths={currentPaths} />
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
         <ChallengeProvider>

@@ -1,0 +1,3 @@
+query ecoversePage($ecoverseId: UUID_NAMEID!) {
+
+}

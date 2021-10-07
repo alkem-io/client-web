@@ -4,13 +4,18 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { SettingsButton } from '../../components/composite';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
-import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
-import { SettingsButton } from '../../components/composite';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
+import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 import Button from '../../components/core/Button';
 import CardFilter from '../../components/core/card-filter/CardFilter';
+import {
+  entityTagsValueGetter,
+  entityValueGetter,
+} from '../../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
 import Divider from '../../components/core/Divider';
 import ErrorBlock from '../../components/core/ErrorBlock';
@@ -22,7 +27,6 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
 import ChallengeCard from '../../components/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../../components/Ecoverse/EcoverseCommunitySection';
-import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 import { createStyles, useAuthenticationContext, useEcoverse, useUpdateNavigation, useUserContext } from '../../hooks';
 import {
   useChallengeCardsQuery,
@@ -32,14 +36,10 @@ import {
   useProjectsQuery,
   useUserApplicationsQuery,
 } from '../../hooks/generated/graphql';
-import { Challenge, Context, EcoverseInfoFragment } from '../../models/graphql-schema';
+import { Challenge, Context } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 import { PageProps } from '../common';
-import {
-  entityTagsValueGetter,
-  entityValueGetter,
-} from '../../components/core/card-filter/value-getters/entity-value-getter';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -53,20 +53,18 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-interface EcoversePageProps extends PageProps {
-  ecoverse: EcoverseInfoFragment;
-}
+interface EcoversePageProps extends PageProps {}
 
-const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactElement => {
+const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const history = useHistory();
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { ecoverseId } = useEcoverse();
+  const { ecoverseId, ecoverseNameId, ecoverse } = useEcoverse();
 
-  const { displayName: name, context, nameID: ecoverseNameId, community } = ecoverse;
+  const { displayName: name, context, community } = ecoverse || {};
   const communityId = community?.id;
 
   const { data: memberShip } = useUserApplicationsQuery({ variables: { input: { userID: user?.user?.id || '' } } });
@@ -271,7 +269,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
       </MembershipBackdrop>
 
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!!user}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!isAuthenticated}>
         <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
@@ -280,7 +278,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths, ecoverse }): React.ReactEl
         />
       </AuthenticationBackdrop>
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')} show={!!user}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')} show={!isAuthenticated}>
         {ecoverseProjects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>

@@ -34,4 +34,11 @@ fragment UserMembershipDetails on UserMembership {
     id
     displayName
   }
+  applications {
+    id
+    communityID
+    displayName
+    state
+
+  }
 }

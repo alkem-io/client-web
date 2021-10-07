@@ -31,7 +31,7 @@ export interface BackdropProps {
 export const BackdropWithMessage: FC<BackdropProps> = ({ children, message, template, show = false }) => {
   const styles = useBackdropStyles();
 
-  if (show) return <>{children}</>;
+  if (!show) return <>{children}</>;
 
   return (
     <div style={{ position: 'relative' }}>
