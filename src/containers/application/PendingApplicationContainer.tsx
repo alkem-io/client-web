@@ -6,15 +6,17 @@ import {
   useEcoverseNameIdQuery,
   useOpportunityNameIdQuery,
 } from '../../hooks/generated/graphql';
-import { Question } from '../../models/graphql-schema';
+import { Application } from '../../models/graphql-schema';
 import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import getApplicationTypeTranslationKey from '../../utils/application/getApplicationTypeTranslation';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
 
+export type ApplicationDialogDetails = Pick<Application, 'questions' | 'createdDate' | 'updatedDate'>;
+
 export interface PendingApplicationEntities {
   url: string;
   typeName: string;
-  questions: Question[];
+  applicationDetails?: ApplicationDialogDetails;
 }
 export interface PendingApplicationActions {
   handleDialogOpen: (application: ApplicationWithType) => void;
@@ -23,6 +25,7 @@ export interface PendingApplicationActions {
 export interface PendingApplicationState {
   loading: boolean;
   loadingDialog: boolean;
+  isDialogOpened: boolean;
 }
 
 export interface PendingApplicationContainerProps {
@@ -40,7 +43,8 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   const { t } = useTranslation();
   const { type, ecoverseID, challengeID = '', opportunityID = '' } = entities.application;
 
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [applicationDetails, setApplicationDetails] = useState<ApplicationDialogDetails>();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
   let url = '';
 
@@ -77,7 +81,12 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   const [applicationByEcoverse, { loading: loadingDialog }] = useApplicationByEcoverseLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
-    onCompleted: data => setQuestions(data?.ecoverse.application.questions),
+    onCompleted: ({ ecoverse }) =>
+      setApplicationDetails({
+        questions: ecoverse.application.questions,
+        createdDate: ecoverse.application.createdDate,
+        updatedDate: ecoverse.application.updatedDate,
+      }),
   });
 
   const handleDialogOpen = useCallback(
@@ -85,11 +94,15 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
       applicationByEcoverse({
         variables: { ecoverseId: application.ecoverseID, appId: application.id },
       });
+      setIsDialogOpened(true);
     },
     [entities.application]
   );
 
-  const handleDialogClose = () => setQuestions([]);
+  const handleDialogClose = () => {
+    setApplicationDetails(undefined);
+    setIsDialogOpened(false);
+  };
 
   const typeTranslationKey = getApplicationTypeTranslationKey(type);
   const typeName = t(typeTranslationKey) as string;
@@ -97,11 +110,12 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   return (
     <>
       {children(
-        { url, typeName, questions },
+        { url, typeName, applicationDetails: applicationDetails },
         { handleDialogOpen, handleDialogClose },
         {
           loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
           loadingDialog,
+          isDialogOpened,
         }
       )}
     </>
