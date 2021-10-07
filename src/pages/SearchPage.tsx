@@ -14,6 +14,7 @@ import Icon from '../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../components/core/Section';
 import Typography from '../components/core/Typography';
+import { Loading } from '../components/core';
 import { useSearchLazyQuery } from '../hooks/generated/graphql';
 import { createStyles, useUpdateNavigation } from '../hooks';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../models/graphql-schema';
@@ -103,16 +104,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const [results, setResults] = useState<ResultType[]>([]);
-  const [isSearched, setIsSearched] = useState<boolean>(false);
+  const [results, setResults] = useState<ResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
 
   const resetState = () => {
-    setIsSearched(false);
     setTypesFilter(filtersConfig.all);
     setSearchTerms([]);
-    setResults([]);
+    setResults(undefined);
   };
 
   const handleTermChange = (newValue: MultiSelectElement[]) => {
@@ -139,11 +138,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     }
   };
 
-  const [search] = useSearchLazyQuery({
+  const [search, { loading: isSearching }] = useSearchLazyQuery({
     fetchPolicy: 'no-cache',
     onCompleted: data => {
-      setIsSearched(true);
-
       const updatedResult = toResultType(data);
       setResults(updatedResult);
     },
@@ -171,54 +168,62 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         <MultipleSelect label={'search for skills'} onChange={handleTermChange} elements={_tags} allowUnknownValues />
       </Section>
       <Divider />
-      {isSearched && (
+      {isSearching && (
         <Container maxWidth="xl">
-          <Box marginBottom={3}>
-            <Grid container spacing={2} justifyContent={'center'}>
-              <Grid item lg={3}>
-                <FormControl variant="outlined" className={styles.formControl}>
-                  <InputLabel id="filter-select-label">Filter</InputLabel>
-                  <Select
-                    labelId="filter-select-label"
-                    id="filter-select"
-                    value={typesFilter.typename}
-                    label={typesFilter.title}
-                    onChange={handleFilterChange}
-                    variant={'outlined'}
-                    input={<OutlinedInput notched label={'Filter'} />}
-                  >
-                    {Object.keys(filtersConfig).map((x, i) => (
-                      <MenuItem key={`menu-item-${i}`} value={filtersConfig[x].typename}>
-                        {filtersConfig[x].title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item lg={9}>
-                {results.length > 10 && (
-                  <Typography>
-                    There are more search results. Please use more specific search criteria to narrow down the results
-                  </Typography>
-                )}
-              </Grid>
-            </Grid>
-          </Box>
+          <Loading />
         </Container>
       )}
-      {results.length > 0 && (
-        <CardContainer cardHeight={320} xs={12} sm={6} md={6}>
-          {results.slice(0, 12).map(el => {
-            if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
-            if (el.__typename === 'Opportunity')
-              return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
-            if (el.__typename === 'Organization')
-              return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
-            if (el.__typename === 'Challenge') return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
+      {results && (
+        <>
+          <Container maxWidth="xl">
+            <Box marginBottom={3}>
+              <Grid container spacing={2} justifyContent={'center'}>
+                <Grid item lg={3}>
+                  <FormControl variant="outlined" className={styles.formControl}>
+                    <InputLabel id="filter-select-label">Filter</InputLabel>
+                    <Select
+                      labelId="filter-select-label"
+                      id="filter-select"
+                      value={typesFilter.typename}
+                      label={typesFilter.title}
+                      onChange={handleFilterChange}
+                      variant={'outlined'}
+                      input={<OutlinedInput notched label={'Filter'} />}
+                    >
+                      {Object.keys(filtersConfig).map((x, i) => (
+                        <MenuItem key={`menu-item-${i}`} value={filtersConfig[x].typename}>
+                          {filtersConfig[x].title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item lg={9}>
+                  {results.length > 10 && (
+                    <Typography>
+                      There are more search results. Please use more specific search criteria to narrow down the results
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+          </Container>
+          {results.length > 0 && (
+            <CardContainer cardHeight={320} xs={12} sm={6} md={6}>
+              {results.slice(0, 12).map(el => {
+                if (el.__typename === 'User') return <UserCard key={el.id} {...el} />;
+                if (el.__typename === 'Opportunity')
+                  return <OpportunitySearchCard key={el.id} terms={el.terms} entity={el} />;
+                if (el.__typename === 'Organization')
+                  return <OrganizationSearchCard key={el.id} terms={el.terms} entity={el} />;
+                if (el.__typename === 'Challenge')
+                  return <ChallengeSearchCard key={el.id} terms={el.terms} entity={el} />;
 
-            return undefined;
-          })}
-        </CardContainer>
+                return undefined;
+              })}
+            </CardContainer>
+          )}
+        </>
       )}
     </>
   );
