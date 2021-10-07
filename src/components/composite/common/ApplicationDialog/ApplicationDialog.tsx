@@ -8,6 +8,7 @@ import Typography from '../../../core/Typography';
 import LifecycleButton from '../../../core/LifecycleButton';
 import { Optional } from '../../../../types/util';
 import { Loading } from '../../../core';
+import { useTranslation } from 'react-i18next';
 
 const appStyles = createStyles(theme => ({
   minHeight: {
@@ -67,8 +68,8 @@ const appStyles = createStyles(theme => ({
   },
   date: {
     display: 'flex',
-    justifyContent: 'center',
-    gap: theme.spacing(2),
+    flexDirection: 'column',
+    alignItems: 'flex-end',
   },
 }));
 
@@ -82,6 +83,7 @@ export interface ApplicationDialogProps {
 }
 
 const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewState, loading }) => {
+  const { t } = useTranslation();
   const styles = appStyles();
 
   const appId = app?.id || '';
@@ -106,25 +108,18 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
       {!loading && (
         <>
           <DialogTitle id="dialog-title" onClose={onHide}>
-            {user && (
-              <div className={styles.title}>
-                <div className={styles.header}>
+            <div className={styles.title}>
+              <div className={styles.header}>
+                {!user && t('components.application-dialog.title')}
+                {user && (
                   <div className={styles.profile}>
                     <Avatar src={avatarSrc} size={'lg'} />
                     <div className={styles.userName}>
                       <Typography variant={'h3'}>{username}</Typography>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            )}
-            <div className={styles.date}>
-              <Typography variant="caption" color="neutralMedium">
-                Created on {createdDate}
-              </Typography>
-              <Typography variant="caption" color="neutralMedium">
-                Last updated on {updatedDate}
-              </Typography>
             </div>
           </DialogTitle>
           <DialogContent dividers>
@@ -138,6 +133,20 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
                 ))}
               </div>
             </div>
+            {(createdDate || updatedDate) && (
+              <div className={styles.date}>
+                {createdDate && (
+                  <Typography variant="caption" color="neutralMedium">
+                    {t('components.application-dialog.created', { date: createdDate })}
+                  </Typography>
+                )}
+                {updatedDate && (
+                  <Typography variant="caption" color="neutralMedium">
+                    {t('components.application-dialog.updated', { date: updatedDate })}
+                  </Typography>
+                )}
+              </div>
+            )}
           </DialogContent>
           {nextEvents.length > 0 && (
             <DialogActions>
