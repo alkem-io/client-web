@@ -25,6 +25,7 @@ export interface PendingApplicationActions {
 export interface PendingApplicationState {
   loading: boolean;
   loadingDialog: boolean;
+  isDialogOpened: boolean;
 }
 
 export interface PendingApplicationContainerProps {
@@ -43,6 +44,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   const { type, ecoverseID, challengeID = '', opportunityID = '' } = entities.application;
 
   const [applicationDetails, setApplicationDetails] = useState<ApplicationDialogDetails>();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
   let url = '';
 
@@ -92,11 +94,15 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
       applicationByEcoverse({
         variables: { ecoverseId: application.ecoverseID, appId: application.id },
       });
+      setIsDialogOpened(true);
     },
     [entities.application]
   );
 
-  const handleDialogClose = () => setApplicationDetails(undefined);
+  const handleDialogClose = () => {
+    setApplicationDetails(undefined);
+    setIsDialogOpened(false);
+  };
 
   const typeTranslationKey = getApplicationTypeTranslationKey(type);
   const typeName = t(typeTranslationKey) as string;
@@ -109,6 +115,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
         {
           loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
           loadingDialog,
+          isDialogOpened,
         }
       )}
     </>

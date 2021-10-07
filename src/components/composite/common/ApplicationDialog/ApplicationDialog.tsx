@@ -98,7 +98,11 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
 
   return (
     <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="dialog-title">
-      {loading && <Loading />}
+      {loading && (
+        <DialogTitle id="dialog-title" onClose={onHide}>
+          <Loading />
+        </DialogTitle>
+      )}
       {!loading && (
         <>
           <DialogTitle id="dialog-title" onClose={onHide}>
