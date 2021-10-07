@@ -1,3 +1,41 @@
 query ecoversePage($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    ...EcoversePage
+  }
+}
 
+fragment EcoversePage on Ecoverse {
+  ...EcoverseInfo
+  activity {
+    name
+    value
+  }
+}
+
+fragment ProjectInfo on Project {
+  id
+  nameID
+  displayName
+  description
+  lifecycle {
+    state
+  }
+}
+
+query EcoversePageProjects($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenges {
+      id
+      displayName
+      nameID
+      opportunities {
+        id
+        nameID
+        projects {
+          ...ProjectInfo
+        }
+      }
+    }
+  }
 }

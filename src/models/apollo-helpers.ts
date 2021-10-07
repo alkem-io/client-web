@@ -136,6 +136,7 @@ export type AuthorizationKeySpecifier = (
   | 'anonymousReadAccess'
   | 'credentialRules'
   | 'id'
+  | 'myPrivileges'
   | 'verifiedCredentialRules'
   | AuthorizationKeySpecifier
 )[];
@@ -143,15 +144,16 @@ export type AuthorizationFieldPolicy = {
   anonymousReadAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AuthorizationRuleCredentialKeySpecifier = (
+export type AuthorizationPolicyRuleCredentialKeySpecifier = (
   | 'grantedPrivileges'
   | 'resourceID'
   | 'type'
-  | AuthorizationRuleCredentialKeySpecifier
+  | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
-export type AuthorizationRuleCredentialFieldPolicy = {
+export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1073,12 +1075,12 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AuthorizationKeySpecifier | (() => undefined | AuthorizationKeySpecifier);
     fields?: AuthorizationFieldPolicy;
   };
-  AuthorizationRuleCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  AuthorizationPolicyRuleCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | AuthorizationRuleCredentialKeySpecifier
-      | (() => undefined | AuthorizationRuleCredentialKeySpecifier);
-    fields?: AuthorizationRuleCredentialFieldPolicy;
+      | AuthorizationPolicyRuleCredentialKeySpecifier
+      | (() => undefined | AuthorizationPolicyRuleCredentialKeySpecifier);
+    fields?: AuthorizationPolicyRuleCredentialFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);

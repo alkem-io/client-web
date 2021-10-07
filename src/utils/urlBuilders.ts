@@ -40,5 +40,12 @@ export const buildLoginUrl = (returnUrl?: string) =>
 
 export const buildEcoverseApplyUrl = (ecoverseNameId: string) => `${buildEcoverseUrl(ecoverseNameId)}/apply`;
 
-export const buildChallengeApplyUrl = (ecoverseNameId: string, challengeNameId) =>
+export const buildChallengeApplyUrl = (ecoverseNameId: string, challengeNameId: string) =>
   `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/apply`;
+
+export const buildProjectUrl = (
+  ecoverseNameId: string,
+  challengeNameId: string,
+  opportunityNameId: string,
+  projectNameId: string
+) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}}`;

@@ -14,11 +14,13 @@ export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;
   verified: boolean;
+  isAuthenticated: boolean;
 }
 const UserContext = React.createContext<UserContextContract>({
   user: undefined,
   loading: true,
   verified: false,
+  isAuthenticated: false,
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
@@ -68,6 +70,7 @@ const UserProvider: FC<{}> = ({ children }) => {
         user: wrappedMe,
         loading,
         verified,
+        isAuthenticated,
       }}
     >
       {children}

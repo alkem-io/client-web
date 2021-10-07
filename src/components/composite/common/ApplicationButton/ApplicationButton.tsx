@@ -7,7 +7,7 @@ import { buildLoginUrl } from '../../../../utils/urlBuilders';
 import Button from '../../../core/Button';
 import { DialogActions, DialogTitle } from '../../../core/dialog';
 
-interface ApplicationButtonProps {
+export interface ApplicationButtonProps {
   isAuthenticated: boolean;
   isMember?: boolean;
   isNotParentMember?: boolean;

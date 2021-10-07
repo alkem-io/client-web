@@ -81,8 +81,8 @@ export type Application = {
   lifecycle: Lifecycle;
   /** The Questions for this application. */
   questions: Array<Question>;
-  /** The User for this Application. */
   updatedDate: Scalars['DateTime'];
+  /** The User for this Application. */
   user: User;
 };
 
@@ -218,11 +218,13 @@ export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
   /** The set of credential rules that are contained by this Authorization Policy. */
-  credentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
+  credentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted to the current user based on this Authorization Policy. */
+  myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
-  verifiedCredentialRules?: Maybe<Array<AuthorizationRuleCredential>>;
+  verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
 };
 
 export enum AuthorizationCredential {
@@ -244,6 +246,13 @@ export enum AuthorizationCredential {
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
 
+export type AuthorizationPolicyRuleCredential = {
+  __typename?: 'AuthorizationPolicyRuleCredential';
+  grantedPrivileges: Array<Scalars['String']>;
+  resourceID: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export enum AuthorizationPrivilege {
   Create = 'CREATE',
   Delete = 'DELETE',
@@ -251,13 +260,6 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   Update = 'UPDATE',
 }
-
-export type AuthorizationRuleCredential = {
-  __typename?: 'AuthorizationRuleCredential';
-  grantedPrivileges: Array<Scalars['String']>;
-  resourceID: Scalars['String'];
-  type: Scalars['String'];
-};
 
 export type Canvas = {
   __typename?: 'Canvas';
@@ -2645,6 +2647,15 @@ export type UserMembershipDetailsFragment = {
     userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
   }>;
   communities: Array<{ __typename?: 'MembershipCommunityResultEntry'; id: string; displayName: string }>;
+  applications?: Maybe<
+    Array<{
+      __typename?: 'ApplicationResultEntry';
+      id: string;
+      communityID: string;
+      displayName: string;
+      state: string;
+    }>
+  >;
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -4856,6 +4867,15 @@ export type MembershipUserQuery = {
       userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     }>;
     communities: Array<{ __typename?: 'MembershipCommunityResultEntry'; id: string; displayName: string }>;
+    applications?: Maybe<
+      Array<{
+        __typename?: 'ApplicationResultEntry';
+        id: string;
+        communityID: string;
+        displayName: string;
+        state: string;
+      }>
+    >;
   };
 };
 
@@ -5817,6 +5837,15 @@ export type UserProfileQuery = {
       userGroups: Array<{ __typename?: 'MembershipResultEntry'; id: string; nameID: string; displayName: string }>;
     }>;
     communities: Array<{ __typename?: 'MembershipCommunityResultEntry'; id: string; displayName: string }>;
+    applications?: Maybe<
+      Array<{
+        __typename?: 'ApplicationResultEntry';
+        id: string;
+        communityID: string;
+        displayName: string;
+        state: string;
+      }>
+    >;
   };
 };
 
@@ -5921,6 +5950,107 @@ export type OnMessageReceivedSubscription = {
       sender: string;
       timestamp: number;
     };
+  };
+};
+
+export type EcoversePageQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoversePageQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    displayName: string;
+    activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+    community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+    tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
+    host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
+    context?: Maybe<{
+      __typename?: 'Context';
+      id: string;
+      tagline?: Maybe<string>;
+      background?: Maybe<string>;
+      vision?: Maybe<string>;
+      impact?: Maybe<string>;
+      who?: Maybe<string>;
+      references?: Maybe<
+        Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+      >;
+      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    }>;
+  };
+};
+
+export type EcoversePageFragment = {
+  __typename?: 'Ecoverse';
+  id: string;
+  nameID: string;
+  displayName: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
+  host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    background?: Maybe<string>;
+    vision?: Maybe<string>;
+    impact?: Maybe<string>;
+    who?: Maybe<string>;
+    references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+  }>;
+};
+
+export type ProjectInfoFragment = {
+  __typename?: 'Project';
+  id: string;
+  nameID: string;
+  displayName: string;
+  description?: Maybe<string>;
+  lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+};
+
+export type EcoversePageProjectsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoversePageProjectsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenges?: Maybe<
+      Array<{
+        __typename?: 'Challenge';
+        id: string;
+        displayName: string;
+        nameID: string;
+        opportunities?: Maybe<
+          Array<{
+            __typename?: 'Opportunity';
+            id: string;
+            nameID: string;
+            projects?: Maybe<
+              Array<{
+                __typename?: 'Project';
+                id: string;
+                nameID: string;
+                displayName: string;
+                description?: Maybe<string>;
+                lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+              }>
+            >;
+          }>
+        >;
+      }>
+    >;
   };
 };
 
