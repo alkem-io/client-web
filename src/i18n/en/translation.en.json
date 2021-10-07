@@ -202,6 +202,9 @@
     }
   },
   "components": {
+    "remove-modal": {
+      "title": "Confirm remove"
+    },
     "edit-members": {
       "no-available-memebers": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
