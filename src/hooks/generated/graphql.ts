@@ -445,6 +445,21 @@ export const OrganizationInfoFragmentDoc = gql`
         tags
       }
     }
+    members {
+      id
+      nameID
+      displayName
+      city
+      country
+      profile {
+        id
+        avatar
+        tagsets {
+          id
+          tags
+        }
+      }
+    }
   }
 `;
 export const OrganizationDetailsFragmentDoc = gql`

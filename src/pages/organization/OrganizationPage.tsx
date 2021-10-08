@@ -5,7 +5,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { createStyles, useOrganization, useUpdateNavigation } from '../../hooks';
+import { createStyles, useOrganization, useUpdateNavigation, useUserContext } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
@@ -13,13 +13,20 @@ import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { AuthorizationCredential } from '../../models/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import InfoSection from './InfoSection';
 import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
-import UserSection from './UserSection';
 import { SettingsButton } from '../../components/composite';
-import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
+import { buildAdminOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import AuthenticationBackdrop from '../../components/AuthenticationBackdrop';
+import {
+  userTagsValueGetter,
+  userValueGetter,
+} from '../../components/core/card-filter/value-getters/user-value-getter';
+import { CardContainer } from '../../components/core/CardContainer';
+import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
+import CardFilter from '../../components/core/card-filter/CardFilter';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -39,12 +46,17 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
+
+  const { user: _user } = useUserContext();
+  const user = _user?.user;
+
   const { organization, organizationId, loading: orgLoading } = useOrganization();
   const currentPaths = useMemo(
     () => (organization ? [...paths, { value: url, name: organization.displayName, real: true }] : paths),
     [paths, organization]
   );
   useUpdateNavigation({ currentPaths });
+  const members = organization?.members;
 
   const { profile, displayName } = organization || {};
   const { avatar, description } = profile || {};
@@ -103,32 +115,33 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
         noDataText={t('pages.organization.challenges.no-data')}
       />
       <Divider />
-      <UserSection
-        organizationId={organization?.id}
-        credential={AuthorizationCredential.OrganizationOwner}
-        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organization.users.owners.title')}
-        subtitle={t('pages.organization.users.owners.subtitle')}
-        noDataText={t('pages.organization.users.owners.no-data')}
-      />
-      <Divider />
-      <UserSection
-        organizationId={organization?.id}
-        credential={AuthorizationCredential.OrganizationAdmin}
-        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organization.users.admins.title')}
-        subtitle={t('pages.organization.users.admins.subtitle')}
-        noDataText={t('pages.organization.users.admins.no-data')}
-      />
-      <Divider />
-      <UserSection
-        organizationId={organization?.id}
-        credential={AuthorizationCredential.OrganizationMember}
-        icon={<Icon component={PeopleIcon} color="primary" size="xl" />}
-        title={t('pages.organization.users.members.title')}
-        subtitle={t('pages.organization.users.members.subtitle')}
-        noDataText={t('pages.organization.users.members.no-data')}
-      />
+      <AuthenticationBackdrop show={user != null} blockName={t('common.users')}>
+        <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+          <SectionHeader text={t('common.users')} />
+        </Section>
+        {orgLoading && <Loading text="" />}
+        {members && (
+          <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+            {filteredData => (
+              <CardContainer cardHeight={USER_CARD_HEIGHT}>
+                {filteredData.map(({ displayName, nameID, profile, city, country }, i) => (
+                  /* todo add roleTitle, jobTitle */
+                  <UserCard
+                    key={i}
+                    avatarSrc={profile?.avatar || ''}
+                    displayName={displayName}
+                    roleTitle={''}
+                    city={city}
+                    country={country}
+                    tags={(profile?.tagsets || []).flatMap(x => x.tags)}
+                    url={buildUserProfileUrl(nameID)}
+                  />
+                ))}
+              </CardContainer>
+            )}
+          </CardFilter>
+        )}
+      </AuthenticationBackdrop>
       <Divider />
     </>
   );

@@ -28,7 +28,7 @@ import {
   userTagsValueGetter,
   userValueGetter,
 } from '../../components/core/card-filter/value-getters/user-value-getter';
-import UserCard from '../../components/composite/common/cards/user-card/UserCard';
+import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -50,10 +50,6 @@ interface Props extends PageProps {
     edit: boolean;
   };
 }
-
-// todo: unify card height on a later stage
-// Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
-export const USER_CARD_HEIGHT = 416;
 
 const CommunityPage: FC<Props> = ({
   paths,
@@ -95,7 +91,7 @@ const CommunityPage: FC<Props> = ({
 
   return (
     <>
-      <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+      <Section>
         <SectionHeader
           text={parentDisplayName}
           editComponent={
@@ -105,7 +101,7 @@ const CommunityPage: FC<Props> = ({
         <SubHeader text={parentTagline} />
       </Section>
       <Divider />
-      <Section>
+      <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
       <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>

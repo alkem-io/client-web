@@ -13,6 +13,9 @@ import TagsComponent from '../../TagsComponent/TagsComponent';
 import Image from '../../../../core/Image';
 import Box from '@material-ui/core/Box';
 
+// todo: unify card height on a later stage
+// Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
+export const USER_CARD_HEIGHT = 416;
 const IMAGE_HEIGHT = 188;
 const TAG_CONTAINER_HEIGHT = 82;
 const TAG_DISPLAY_COUNT = 3;

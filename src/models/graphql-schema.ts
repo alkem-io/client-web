@@ -2486,6 +2486,22 @@ export type OrganizationInfoFragment = {
     description?: Maybe<string>;
     tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
   };
+  members?: Maybe<
+    Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      displayName: string;
+      city: string;
+      country: string;
+      profile?: Maybe<{
+        __typename?: 'Profile';
+        id: string;
+        avatar?: Maybe<string>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+      }>;
+    }>
+  >;
 };
 
 export type OrganizationDetailsFragment = {
@@ -5366,6 +5382,22 @@ export type OrganizationInfoQuery = {
       description?: Maybe<string>;
       tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
     };
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        city: string;
+        country: string;
+        profile?: Maybe<{
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        }>;
+      }>
+    >;
   };
 };
 

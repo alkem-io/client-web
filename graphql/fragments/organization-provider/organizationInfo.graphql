@@ -17,4 +17,19 @@ fragment OrganizationInfo on Organization {
       tags
     }
   }
+  members {
+    id
+    nameID
+    displayName
+    city
+    country
+    profile {
+      id
+      avatar
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
 }

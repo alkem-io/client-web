@@ -419,21 +419,7 @@
         "no-data": "No challenges are being led at the moment"
       },
       "users": {
-        "owners": {
-          "title": "Owners",
-          "subtitle": "Owners of this organization",
-          "no-data": "None"
-        },
-        "admins": {
-          "title": "Admins",
-          "subtitle": "Admins of this organization",
-          "no-data": "None"
-        },
-        "members": {
-          "title": "Members",
-          "subtitle": "Members of this organization",
-          "no-data": "None"
-        }
+        "no-data": "None"
       }
     },
     "ecoverse": {
