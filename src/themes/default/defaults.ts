@@ -5,6 +5,7 @@ import buttonOverrides from './overrides/button';
 import dialogOverrides from './overrides/dialog';
 import chipOverrides from './overrides/chip';
 import iconOverrides from './overrides/icon';
+import cardOverrides from './overrides/card';
 
 const space = 10;
 
@@ -41,6 +42,7 @@ theme.overrides = {
   ...dialogOverrides(theme),
   ...chipOverrides(theme),
   ...iconOverrides(theme),
+  ...cardOverrides(theme),
 };
 
 declare module '@material-ui/core/styles/createTheme' {

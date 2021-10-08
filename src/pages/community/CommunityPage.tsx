@@ -28,6 +28,7 @@ import {
   userTagsValueGetter,
   userValueGetter,
 } from '../../components/core/card-filter/value-getters/user-value-getter';
+import UserCard from '../../components/composite/common/cards/user-card/UserCard';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -49,6 +50,10 @@ interface Props extends PageProps {
     edit: boolean;
   };
 }
+
+// todo: unify card height on a later stage
+// Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
+export const USER_CARD_HEIGHT = 416;
 
 const CommunityPage: FC<Props> = ({
   paths,
@@ -105,14 +110,17 @@ const CommunityPage: FC<Props> = ({
       </Section>
       <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
-          <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
-            {filteredData.map(({ displayName, nameID, profile }, i) => (
-              <SimpleCard
+          <CardContainer cardHeight={USER_CARD_HEIGHT}>
+            {filteredData.map(({ displayName, nameID, profile, city, country }, i) => (
+              /* todo add roleTitle, jobTitle */
+              <UserCard
                 key={i}
-                title={displayName}
-                avatar={profile?.avatar}
-                description={profile?.description}
-                tags={profile?.tagsets?.flatMap(y => y.tags)}
+                avatarSrc={profile?.avatar || ''}
+                displayName={displayName}
+                roleTitle={''}
+                city={city}
+                country={country}
+                tags={(profile?.tagsets || []).flatMap(x => x.tags)}
                 url={buildUserProfileUrl(nameID)}
               />
             ))}

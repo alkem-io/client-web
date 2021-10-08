@@ -202,6 +202,10 @@
     }
   },
   "components": {
+    "tags-component": {
+      "more": "+{{count}} more",
+      "no-tags": "No tags available"
+    },
     "remove-modal": {
       "title": "Confirm remove"
     },
