@@ -3921,7 +3921,14 @@ export type ChallengeProfileQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
+      lifecycle?: Maybe<{
+        __typename?: 'Lifecycle';
+        id: string;
+        machineDef: string;
+        state?: Maybe<string>;
+        nextEvents?: Maybe<Array<string>>;
+        stateIsFinal: boolean;
+      }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
@@ -3974,6 +3981,7 @@ export type ChallengeProfileQuery = {
           tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
         }>
       >;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
       leadOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
@@ -3989,6 +3997,85 @@ export type ChallengeProfileQuery = {
       }>;
     };
   };
+};
+
+export type ChallengeProfileFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  nameID: string;
+  displayName: string;
+  lifecycle?: Maybe<{
+    __typename?: 'Lifecycle';
+    id: string;
+    machineDef: string;
+    state?: Maybe<string>;
+    nextEvents?: Maybe<Array<string>>;
+    stateIsFinal: boolean;
+  }>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    tagline?: Maybe<string>;
+    background?: Maybe<string>;
+    vision?: Maybe<string>;
+    impact?: Maybe<string>;
+    who?: Maybe<string>;
+    references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+  }>;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+  opportunities?: Maybe<
+    Array<{
+      __typename?: 'Opportunity';
+      id: string;
+      displayName: string;
+      nameID: string;
+      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        tagline?: Maybe<string>;
+        background?: Maybe<string>;
+        vision?: Maybe<string>;
+        impact?: Maybe<string>;
+        who?: Maybe<string>;
+        references?: Maybe<
+          Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        >;
+        visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      }>;
+      projects?: Maybe<
+        Array<{
+          __typename?: 'Project';
+          id: string;
+          nameID: string;
+          displayName: string;
+          description?: Maybe<string>;
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
+        }>
+      >;
+      tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+    }>
+  >;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  leadOrganizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    displayName: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    };
+  }>;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{

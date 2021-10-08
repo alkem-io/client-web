@@ -412,22 +412,6 @@ export const OrganizationInfoFragmentDoc = gql`
     }
   }
 `;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar
-      description
-      tagsets {
-        id
-        tags
-      }
-    }
-  }
-`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
@@ -635,6 +619,85 @@ export const UserMembershipDetailsFragmentDoc = gql`
       state
     }
   }
+`;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar
+      description
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+`;
+export const ChallengeProfileFragmentDoc = gql`
+  fragment ChallengeProfile on Challenge {
+    id
+    nameID
+    displayName
+    lifecycle {
+      id
+      machineDef
+      state
+      nextEvents
+      stateIsFinal
+    }
+    context {
+      ...ContextDetails
+    }
+    community {
+      id
+      members {
+        id
+        displayName
+      }
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    opportunities {
+      id
+      displayName
+      lifecycle {
+        state
+      }
+      nameID
+      context {
+        ...ContextDetails
+      }
+      projects {
+        id
+        nameID
+        displayName
+        description
+        lifecycle {
+          id
+          state
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+    }
+    activity {
+      name
+      value
+    }
+    leadOrganizations {
+      ...OrganizationDetails
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
@@ -4605,61 +4668,11 @@ export const ChallengeProfileDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeId) {
-        id
-        nameID
-        displayName
-        lifecycle {
-          id
-          state
-        }
-        context {
-          ...ContextDetails
-        }
-        community {
-          id
-          members {
-            id
-            displayName
-          }
-        }
-        tagset {
-          id
-          name
-          tags
-        }
-        opportunities {
-          id
-          displayName
-          lifecycle {
-            state
-          }
-          nameID
-          context {
-            ...ContextDetails
-          }
-          projects {
-            id
-            nameID
-            displayName
-            description
-            lifecycle {
-              id
-              state
-            }
-          }
-          tagset {
-            name
-            tags
-          }
-        }
-        leadOrganizations {
-          ...OrganizationDetails
-        }
+        ...ChallengeProfile
       }
     }
   }
-  ${ContextDetailsFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
+  ${ChallengeProfileFragmentDoc}
 `;
 
 /**
