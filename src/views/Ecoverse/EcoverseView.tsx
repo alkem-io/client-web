@@ -98,7 +98,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
                 ecoverseName: ecoverse?.displayName || '',
               }}
             >
-              {e => <ApplicationButton {...e?.applicationButtonProps} />}
+              {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
             </ApplicationButtonContainer>
           </div>
         </Body>

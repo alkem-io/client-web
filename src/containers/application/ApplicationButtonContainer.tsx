@@ -51,6 +51,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ enti
   const applicationButtonProps: ApplicationButtonProps = {
     isAuthenticated,
     isMember,
+    isNotParentMember: Boolean(challengeId) && !user?.ofEcoverse(ecoverseId),
     applyUrl,
     parentApplyUrl: buildEcoverseApplyUrl(ecoverseNameId),
     applicationState: userApplication?.state,

@@ -9,12 +9,12 @@ import clsx from 'clsx';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useHistory, useRouteMatch } from 'react-router-dom';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
-import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
 import ChallengeCommunitySection from '../../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../../components/Challenge/OpportunityCard';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
 import SettingsButton from '../../components/composite/common/SettingsButton/SettingsButton';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
@@ -32,6 +32,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import Typography from '../../components/core/Typography';
 import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
 import OrganizationPopUp from '../../components/Organizations/OrganizationPopUp';
+import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import {
   createStyles,
   useAuthenticationContext,
@@ -44,17 +45,11 @@ import {
   useChallengeActivityQuery,
   useChallengeLifecycleQuery,
   useChallengeProfileQuery,
-  useUserApplicationsQuery,
 } from '../../hooks/generated/graphql';
 import { Opportunity, OrganizationDetailsFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
-import {
-  buildAdminChallengeUrl,
-  buildChallengeApplyUrl,
-  buildEcoverseApplyUrl,
-  buildOrganizationUrl,
-} from '../../utils/urlBuilders';
+import { buildAdminChallengeUrl, buildOrganizationUrl } from '../../utils/urlBuilders';
 import { PageProps } from '../common';
 
 const useOrganizationStyles = createStyles(theme => ({
@@ -166,8 +161,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
 
   const opportunityRef = useRef<HTMLDivElement>(null);
   useUpdateNavigation({ currentPaths: paths });
-  const { displayName: name = '', context, opportunities = [], leadOrganizations = [], community } = challenge || {};
-  const communityId = community?.id;
+  const { displayName: name = '', context, opportunities = [], leadOrganizations = [] } = challenge || {};
 
   const { data: challengeLifecycleQuery, loading: loadingChallengeLifecycle } = useChallengeLifecycleQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
@@ -175,13 +169,6 @@ const Challenge: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
-
-  const { data: memberShip, loading: loadingMembership } = useUserApplicationsQuery({
-    variables: { input: { userID: user?.user?.id || '' } },
-  });
-  const applications = memberShip?.membershipUser?.applications || [];
-  const userApplication = applications.find(x => x.communityID === communityId);
-  const parenetApplication = applications.find(x => x.communityID === ecoverse?.community?.id);
 
   const { data: _activity } = useChallengeActivityQuery({
     variables: {
@@ -243,7 +230,7 @@ const Challenge: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
 
   const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
 
-  if (loading || loadingMembership || loadingChallengeLifecycle) return <Loading />;
+  if (loading || loadingChallengeLifecycle) return <Loading />;
 
   return (
     <>
@@ -311,18 +298,18 @@ const Challenge: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
           <Markdown children={vision} />
           <div className={styles.buttonsWrapper}>
             {video && <Button text={t('buttons.see-more')} as={'a'} href={video.uri} target="_blank" />}
-
-            <ApplicationButton
-              isAuthenticated={isAuthenticated}
-              isMember={user?.ofChallenge(challengeId)}
-              isNotParentMember={!user?.ofEcoverse(ecoverseId)}
-              applyUrl={buildChallengeApplyUrl(ecoverseNameId, challengeNameId)}
-              parentApplyUrl={buildEcoverseApplyUrl(ecoverseNameId)}
-              applicationState={userApplication?.state}
-              parentApplicationState={parenetApplication?.state}
-              ecoverseName={ecoverse?.displayName}
-              challengeName={challenge?.displayName}
-            />
+            <ApplicationButtonContainer
+              entities={{
+                ecoverseId,
+                ecoverseNameId,
+                ecoverseName: ecoverse?.displayName || '',
+                challengeId,
+                challengeName: challenge?.displayName || '',
+                challengeNameId,
+              }}
+            >
+              {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+            </ApplicationButtonContainer>
           </div>
         </Body>
       </Section>

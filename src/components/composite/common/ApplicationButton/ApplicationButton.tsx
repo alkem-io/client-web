@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@material-ui/core';
+import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
 import React, { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
@@ -17,6 +17,7 @@ export interface ApplicationButtonProps {
   parentApplyUrl?: string;
   ecoverseName?: string;
   challengeName?: string;
+  loading?: boolean;
 }
 
 export const ApplicationButton: FC<ApplicationButtonProps> = ({
@@ -29,6 +30,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   isNotParentMember = false,
   ecoverseName,
   challengeName,
+  loading = false,
 }) => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -45,6 +47,9 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     applicationState === APPLICATION_STATE_NEW || applicationState === APPLICATION_STATE_REJECTED;
 
   const applicationButtonState = useMemo(() => {
+    if (loading) {
+      return <Button disabled startIcon={<CircularProgress size={24} />} />;
+    }
     if (!isAuthenticated) {
       return (
         <Button
@@ -63,7 +68,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
       return <Button text={t('buttons.apply')} onClick={handleClick} />;
     }
     return <Button text={t('buttons.apply')} as={RouterLink} to={applyUrl} />;
-  }, [isAuthenticated, applicationState, applyUrl, parentApplicationState]);
+  }, [isAuthenticated, applicationState, applyUrl, parentApplicationState, loading]);
 
   const dialogVariant = useMemo(
     () => (isApplicationPending(parentApplicationState) ? 'dialog-parent-app-pending' : 'dialog-join-parent'),
