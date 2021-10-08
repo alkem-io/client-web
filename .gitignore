@@ -33,3 +33,7 @@ public/*config.js
 .env.base
 # eslint
 .eslintcache
+
+
+# Ignores homeserver.db file
+**/*.db
