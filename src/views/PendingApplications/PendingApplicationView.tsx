@@ -9,12 +9,12 @@ import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
-import { Question } from '../../models/graphql-schema';
 import { ApplicationDialog, ApplicationDialogDataType } from '../../components/composite';
 import Tag from '../../components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../models/constants';
-import IconButton from '../../components/core/IconButton';
 import { createStyles } from '../../hooks';
+import { ApplicationDialogDetails } from '../../containers/application/PendingApplicationContainer';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -45,77 +45,84 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-interface PendingApplicationProps {
+export interface PendingApplicationViewEntities {
   application: ApplicationWithType;
-  questions: Question[];
-  edit: boolean;
-  isDeleting: boolean;
-  loading: boolean;
-  loadingDialog: boolean;
+  applicationDetails?: ApplicationDialogDetails;
   typeName: string;
   url: string;
+}
+
+export interface PendingApplicationViewActions {
   handleDelete: (application: ApplicationWithType) => void;
   handleDialogOpen: (application: ApplicationWithType) => void;
   handleDialogClose: () => void;
 }
 
-const PendingApplicationView: FC<PendingApplicationProps> = ({
-  application,
-  questions,
-  edit,
-  typeName,
-  url,
-  loadingDialog,
-  handleDelete,
-  handleDialogOpen,
-  handleDialogClose,
-  isDeleting,
-}) => {
+export interface PendingApplicationViewState {
+  isDeleting: boolean;
+  loading: boolean;
+  loadingDialog: boolean;
+  isDialogOpened: boolean;
+}
+
+export interface PendingApplicationViewOptions {
+  canEdit: boolean;
+}
+
+export interface PendingApplicationViewProps {
+  entities: PendingApplicationViewEntities;
+  actions: PendingApplicationViewActions;
+  state: PendingApplicationViewState;
+  options: PendingApplicationViewOptions;
+}
+
+const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, actions, state, options }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { displayName, state } = application;
+  const { displayName, state: applicationState } = entities.application;
 
   const applicationForDialog = {
-    ...application,
-    questions,
+    ...entities.application,
+    ...entities.applicationDetails,
   } as ApplicationDialogDataType;
 
   return (
     <>
       <Grid container spacing={1} justifyContent={'space-between'} alignItems={'center'} className={styles.row}>
         <Grid item xs={6}>
-          <Link component={RouterLink} to={url} aria-label="Link to entity">
+          <Link component={RouterLink} to={entities.url} aria-label="Link to entity">
             <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
               {displayName}
             </Typography>
           </Link>
         </Grid>
         <Grid item xs={6} className={styles.labels}>
-          <Tag text={typeName} color="neutralMedium" aria-label="Application type" />
+          <Tag text={entities.typeName} color="neutralMedium" aria-label="Application type" />
           <Box display="flex" alignItems={'center'} className={styles.statusRow}>
             <Tag
-              className={styles.capitalize}
-              text={state}
-              color={state === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
               aria-label="Application state"
+              className={styles.capitalize}
+              text={applicationState}
+              color={applicationState === APPLICATION_STATE_NEW ? 'positive' : 'negative'}
             />
             <Tooltip title={t('tooltips.click-more-info')} placement="top">
               <IconButton
-                className={styles.noPadding}
-                onClick={() => handleDialogOpen(application)}
-                disabled={isDeleting}
                 aria-label="Info dialog"
+                className={styles.noPadding}
+                color={'primary'}
+                onClick={() => actions.handleDialogOpen(entities.application)}
+                disabled={state.isDeleting}
               >
                 <InfoIcon />
               </IconButton>
             </Tooltip>
-            {edit && (
+            {options.canEdit && (
               <Tooltip title={t('tooltips.click-delete')} placement="top">
                 <IconButton
-                  className={styles.noPadding}
-                  onClick={() => handleDelete(application)}
-                  disabled={isDeleting}
                   aria-label="Delete"
+                  className={styles.noPadding}
+                  onClick={() => actions.handleDelete(entities.application)}
+                  disabled={state.isDeleting}
                 >
                   <DeleteIcon color={'error'} />
                 </IconButton>
@@ -124,8 +131,12 @@ const PendingApplicationView: FC<PendingApplicationProps> = ({
           </Box>
         </Grid>
       </Grid>
-      {questions.length > 0 && (
-        <ApplicationDialog app={applicationForDialog} onHide={handleDialogClose} loading={loadingDialog} />
+      {state.isDialogOpened && (
+        <ApplicationDialog
+          app={applicationForDialog}
+          onHide={actions.handleDialogClose}
+          loading={state.loadingDialog}
+        />
       )}
     </>
   );

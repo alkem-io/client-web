@@ -8,9 +8,9 @@ log:
 
 entryPoints:
   web:
-    address: ":80"
+    address: ':80'
   mysql:
-    address: ":3306"
+    address: ':3306'
 
 providers:
   file:
@@ -18,5 +18,4 @@ providers:
     watch: true
 
 accessLog:
-  filePath: "/etc/traefik/access.log"
-
+  filePath: '/etc/traefik/access.log'

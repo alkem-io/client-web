@@ -41,6 +41,14 @@ The page will reload if you make edits.<br />
 By default, eslint will cause compilation errors and be prominently visible.
 Setting `ESLINT_NO_DEV_ERRORS=true` in `.env.local` reduces eslint errors to warnings in the console.
 
+**Note**: If a container (e.g. Synapse) writes to a directory that is mapped locally, you will need to have enough permissions to write there.
+E.g. on Linux you can grant permissions the following way:
+
+- Navigate to the directory, e.g. .build/synapse
+- Change the permissions with `chmod 777 *`\*
+
+* This is not a security best practice and an alternative solution is scheduled for a later stage.
+
 ## Development stack
 
 The client development stack includes:

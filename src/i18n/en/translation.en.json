@@ -202,6 +202,11 @@
     }
   },
   "components": {
+    "application-dialog": {
+      "title": "Application details",
+      "created": "Created on {{date}}",
+      "updated": "Last updated on {{date}}"
+    },
     "edit-members": {
       "no-available-memebers": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
