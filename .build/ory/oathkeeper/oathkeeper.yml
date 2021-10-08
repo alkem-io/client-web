@@ -80,7 +80,7 @@ mutators:
   id_token:
     enabled: true
     config:
-      issuer_url: http://alkemio-demo/
+      issuer_url: http://alkemio-client/
       jwks_url: file:///etc/config/oathkeeper/id_token.jwks.json
       ttl: 1h
       claims: |
