@@ -81,8 +81,8 @@ export type Application = {
   lifecycle: Lifecycle;
   /** The Questions for this application. */
   questions: Array<Question>;
-  /** The User for this Application. */
   updatedDate: Scalars['DateTime'];
+  /** The User for this Application. */
   user: User;
 };
 
