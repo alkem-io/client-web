@@ -17,7 +17,7 @@ import PendingApplicationsView from '../PendingApplications/PendingApplicationsV
 import { UserMetadata } from '../../hooks';
 import { AUTH_VERIFY_PATH, COUNTRIES } from '../../models/constants';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
-import PendingApplicationsContainer from '../../containers/applications/PendingApplicationsContainer';
+import PendingApplicationsContainer from '../../containers/application/PendingApplicationsContainer';
 
 export interface UserProfileViewProps {
   entities: {

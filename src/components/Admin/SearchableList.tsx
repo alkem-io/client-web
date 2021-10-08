@@ -107,9 +107,11 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
             to={`${item.url}${editSuffix}`}
             primary={item.value}
             icon={
-              <IconButton onClick={e => openModal(e, item)}>
-                <Icon component={Trash} color="negative" size={'sm'} />
-              </IconButton>
+              onDelete && (
+                <IconButton onClick={e => openModal(e, item)}>
+                  <Icon component={Trash} color="negative" size={'sm'} />
+                </IconButton>
+              )
             }
           />
         ))}
