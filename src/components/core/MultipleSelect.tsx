@@ -164,18 +164,18 @@ const useMultipleSelectStyles = createStyles(theme => ({
   },
 }));
 
-interface Element {
+export interface MultiSelectElement {
   name: string;
   id?: string | number;
 }
 
 interface MultipleSelectProps {
-  elements: Array<Element>;
-  onChange: (elements: Array<Element>) => void;
-  onInput: (value: string) => void;
-  onSearch: () => void;
+  elements: Array<MultiSelectElement>;
+  onChange?: (elements: Array<MultiSelectElement>) => void;
+  onInput?: (value: string) => void;
+  onSearch?: () => void;
   allowUnknownValues?: boolean;
-  defaultValue?: Array<Element>;
+  defaultValue?: Array<MultiSelectElement>;
   disabled?: boolean;
   label?: string;
   onTop?: boolean;
@@ -193,9 +193,9 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 }) => {
   const select = useRef<HTMLDivElement>(document.createElement('div'));
   const input = useRef<HTMLInputElement>(document.createElement('input'));
-  const [elements, setElements] = useState<Array<Element>>(_elements || []);
-  const [elementsNoFilter, setElementsNoFilter] = useState<Array<Element>>(_elements || []);
-  const [selectedElements, setSelected] = useState<Array<Element>>(defaultValue || []);
+  const [elements, setElements] = useState<Array<MultiSelectElement>>(_elements || []);
+  const [elementsNoFilter, setElementsNoFilter] = useState<Array<MultiSelectElement>>(_elements || []);
+  const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(defaultValue || []);
   const [isNoMatches, setNoMatches] = useState<boolean>(false);
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
   const styles = useMultipleSelectStyles();
@@ -237,8 +237,8 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     setSelected(newSelected);
     setElements(newElements);
     setElementsNoFilter(newElements);
-    onChange(newSelected);
-    onInput('');
+    onChange && onChange(newSelected);
+    onInput && onInput('');
   };
 
   const handleRemove = (e, value) => {
@@ -249,12 +249,12 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     setSelected(newSelected);
     setElements(newElements);
     setElementsNoFilter(newElements);
-    onChange(newSelected);
+    onChange && onChange(newSelected);
   };
 
   const handleInputChange = e => {
     const value = e.target.value.toLowerCase();
-    onInput(value);
+    onInput && onInput(value);
     if (allowUnknownValues && e.key === 'Enter' && value !== '') {
       if (shouldOpenTooltip()) return;
 
@@ -267,9 +267,9 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       setElementsNoFilter(newElements);
       setSelected([...selectedElements, { name: value }]);
       setNoMatches(false);
-      onChange([...selectedElements, { name: value }]);
-      onSearch();
-      onInput('');
+      onChange && onChange([...selectedElements, { name: value }]);
+      onSearch && onSearch();
+      onInput && onInput('');
     }
   };
 
