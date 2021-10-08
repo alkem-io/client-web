@@ -151,6 +151,14 @@ export const CommunityPageMembersFragmentDoc = gql`
     country
     city
     email
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
     profile {
       id
       avatar
@@ -451,6 +459,14 @@ export const OrganizationInfoFragmentDoc = gql`
       displayName
       city
       country
+      agent {
+        id
+        credentials {
+          id
+          type
+          resourceID
+        }
+      }
       profile {
         id
         avatar

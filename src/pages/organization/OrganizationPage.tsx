@@ -13,7 +13,7 @@ import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { User } from '../../models/graphql-schema';
+import { Agent, User } from '../../models/graphql-schema';
 import InfoSection from './InfoSection';
 import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
@@ -124,13 +124,14 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
           <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
             {filteredData => (
               <CardContainer cardHeight={USER_CARD_HEIGHT}>
-                {filteredData.map(({ displayName, nameID, profile, city, country }, i) => (
+                {filteredData.map(({ displayName, agent, nameID, profile, city, country }, i) => (
                   /* todo add roleTitle, jobTitle */
                   <UserCard
                     key={i}
+                    userAgent={agent as Agent}
+                    resourceId={organizationId}
                     avatarSrc={profile?.avatar || ''}
                     displayName={displayName}
-                    roleTitle={''}
                     city={city}
                     country={country}
                     tags={(profile?.tagsets || []).flatMap(x => x.tags)}

@@ -87,6 +87,9 @@
     "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

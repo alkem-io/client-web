@@ -10,7 +10,7 @@ import { useUpdateNavigation } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
+import { Agent, CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
 import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
@@ -40,6 +40,7 @@ const useStyles = makeStyles(() => ({
 
 interface Props extends PageProps {
   communityId?: string;
+  parentId: string;
   parentDisplayName?: string;
   parentTagline?: string;
   membershipTitle?: string;
@@ -55,6 +56,7 @@ const CommunityPage: FC<Props> = ({
   paths,
   communityId = '',
   membershipTitle,
+  parentId,
   parentDisplayName,
   parentTagline,
   ecoverseHostId = '',
@@ -82,7 +84,6 @@ const CommunityPage: FC<Props> = ({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
   });
-
   const hostOrganization = _orgProfile?.organization;
 
   if (loading) {
@@ -107,13 +108,14 @@ const CommunityPage: FC<Props> = ({
       <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
           <CardContainer cardHeight={USER_CARD_HEIGHT}>
-            {filteredData.map(({ displayName, nameID, profile, city, country }, i) => (
+            {filteredData.map(({ displayName, agent, nameID, profile, city, country }, i) => (
               /* todo add roleTitle, jobTitle */
               <UserCard
                 key={i}
+                userAgent={agent as Agent}
+                resourceId={parentId}
                 avatarSrc={profile?.avatar || ''}
                 displayName={displayName}
-                roleTitle={''}
                 city={city}
                 country={country}
                 tags={(profile?.tagsets || []).flatMap(x => x.tags)}

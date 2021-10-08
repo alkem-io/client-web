@@ -5,6 +5,14 @@ fragment CommunityPageMembers on User {
   country
   city
   email
+  agent {
+    id
+    credentials {
+      id
+      type
+      resourceID
+    }
+  }
   profile {
     id
     avatar

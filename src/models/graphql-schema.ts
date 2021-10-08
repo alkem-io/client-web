@@ -2238,6 +2238,13 @@ export type CommunityPageMembersFragment = {
   country: string;
   city: string;
   email: string;
+  agent?: Maybe<{
+    __typename?: 'Agent';
+    id: string;
+    credentials?: Maybe<
+      Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+    >;
+  }>;
   profile?: Maybe<{
     __typename?: 'Profile';
     id: string;
@@ -2494,6 +2501,13 @@ export type OrganizationInfoFragment = {
       displayName: string;
       city: string;
       country: string;
+      agent?: Maybe<{
+        __typename?: 'Agent';
+        id: string;
+        credentials?: Maybe<
+          Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        >;
+      }>;
       profile?: Maybe<{
         __typename?: 'Profile';
         id: string;
@@ -4468,6 +4482,13 @@ export type CommunityPageQuery = {
         country: string;
         city: string;
         email: string;
+        agent?: Maybe<{
+          __typename?: 'Agent';
+          id: string;
+          credentials?: Maybe<
+            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          >;
+        }>;
         profile?: Maybe<{
           __typename?: 'Profile';
           id: string;
@@ -5390,6 +5411,13 @@ export type OrganizationInfoQuery = {
         displayName: string;
         city: string;
         country: string;
+        agent?: Maybe<{
+          __typename?: 'Agent';
+          id: string;
+          credentials?: Maybe<
+            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          >;
+        }>;
         profile?: Maybe<{
           __typename?: 'Profile';
           id: string;

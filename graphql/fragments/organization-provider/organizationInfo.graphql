@@ -23,6 +23,14 @@ fragment OrganizationInfo on Organization {
     displayName
     city
     country
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
     profile {
       id
       avatar
