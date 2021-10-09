@@ -14,7 +14,12 @@ import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { ChallengeSearchCard, OpportunitySearchCard, OrganizationSearchCard, UserCard } from '../../components/search';
+import {
+  ChallengeSearchCard,
+  OpportunitySearchCard,
+  OrganizationSearchCard,
+  UserCard,
+} from '../../components/composite/search';
 import { createStyles, useUpdateNavigation } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';

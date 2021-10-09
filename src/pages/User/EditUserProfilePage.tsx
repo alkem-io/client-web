@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Loading } from '../../components/core';
-import { UserForm } from '../../components/UserProfile/UserForm';
+import { UserForm } from '../../components/composite/forms/UserForm';
 import { useApolloErrorHandler, useNotification, useUrlParams, useUserContext } from '../../hooks';
 import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
 import { UpdateUserInput, User } from '../../models/graphql-schema';

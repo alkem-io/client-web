@@ -10,7 +10,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { PushFunc, RemoveFunc } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
 import Typography from '../../core/Typography';
-import FormikInputField from './FormikInputField';
+import FormikInputField from '../../composite/forms/FormikInputField';
 
 const useStyles = makeStyles(theme => ({
   iconButtonSuccess: {

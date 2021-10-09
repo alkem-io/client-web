@@ -24,7 +24,7 @@ import Icon from '../../../core/Icon';
 import IconButton from '../../../core/IconButton';
 import Loading from '../../../core/Loading/Loading';
 import Section from '../../../core/Section';
-import UserSegment from '../../../User/UserSegment';
+import UserSegment from '../../entities/User/UserSegment';
 import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
 import Header from './Header';

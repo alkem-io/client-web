@@ -4,7 +4,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FormikInputField from '../../components/Admin/Common/FormikInputField';
+import FormikInputField from '../../components/composite/forms/FormikInputField';
 import Button from '../../components/core/Button';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import Image from '../../components/core/Image';

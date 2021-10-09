@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import CardProps from './CardProps';
-import ChallengeCard from '../../components/Ecoverse/ChallengeCard';
+import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
 import { useUserContext } from '../../hooks';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';

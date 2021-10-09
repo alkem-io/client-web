@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import CardProps from './CardProps';
 import { useEcoverseCardQuery } from '../../hooks/generated/graphql';
-import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
+import EcoverseCard from '../../components/composite/entities/Ecoverse/EcoverseCard';
 import Loading from '../../components/core/Loading/Loading';
 import { buildEcoverseUrl } from '../../utils/urlBuilders';
 import { useUserContext } from '../../hooks';

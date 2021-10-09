@@ -22,10 +22,16 @@ import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
-import InterestModal from '../../components/Ecoverse/InterestModal';
-import ActorGroupCreateModal from '../../components/Opportunity/ActorGroupCreateModal';
-import { ActorCard, AspectCard, NewActorCard, NewAspectCard, RelationCard } from '../../components/Opportunity/Cards';
+import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
+import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
+import ActorGroupCreateModal from '../../components/composite/entities/Opportunity/ActorGroupCreateModal';
+import {
+  ActorCard,
+  AspectCard,
+  NewActorCard,
+  NewAspectCard,
+  RelationCard,
+} from '../../components/composite/entities/Opportunity/Cards';
 import {
   createStyles,
   useAuthenticationContext,

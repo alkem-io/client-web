@@ -3,9 +3,9 @@ import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import FormikInputField from '../../composite/forms/FormikInputField';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
-import FormikInputField from './FormikInputField';
 
 interface CreateGroupFormProps {
   onCreate: (name: string) => Promise<void>;

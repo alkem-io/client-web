@@ -10,7 +10,7 @@ import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../.
 import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../EditableAvatar';
+import EditableAvatar from '../../composite/common/EditableAvatar';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';

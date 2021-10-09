@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CardContainer } from '../../components/core/CardContainer';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import Loading from '../../components/core/Loading/Loading';
-import EcoverseCard from '../../components/Ecoverse/EcoverseCard';
+import EcoverseCard from '../../components/composite/entities/Ecoverse/EcoverseCard';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { useEcoversesQuery } from '../../hooks/generated/graphql';
 import { buildEcoverseUrl } from '../../utils/urlBuilders';

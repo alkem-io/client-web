@@ -14,7 +14,7 @@ import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../utils/buildContext';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../../../components/ProfileForm/ProfileForm';
+import ProfileForm, { ProfileFormValuesType } from '../../../components/composite/forms/ProfileForm';
 import FormMode from '../../../components/Admin/FormMode';
 
 interface Props {

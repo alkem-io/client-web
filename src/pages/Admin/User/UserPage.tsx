@@ -17,7 +17,7 @@ import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../models/editMode';
 import { Loading } from '../../../components/core/Loading/Loading';
-import UserForm from '../../../components/UserProfile/UserForm';
+import UserForm from '../../../components/composite/forms/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
 import { logger } from '../../../services/logging/winston/logger';
 import { getUpdateUserInput } from '../../User/EditUserProfilePage';
