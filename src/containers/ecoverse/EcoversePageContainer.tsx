@@ -6,7 +6,7 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
 import { Container } from '../../models/container';
-import { EcoverseProject } from '../../models/Ecoverse';
+import { Project } from '../../models/Project';
 import { EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
@@ -16,7 +16,7 @@ export interface EcoverseContainerEntities {
   permissions: {
     canEdit: boolean;
   };
-  projects: EcoverseProject[];
+  projects: Project[];
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
@@ -63,9 +63,10 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
                     title: p.displayName || '',
                     description: p.description || '',
                     caption: c.displayName || '',
+                    tag: { status: 'positive', text: p?.lifecycle?.state || '' },
                     type: 'display',
                     onSelect: () => history.replace(buildProjectUrl(ecoverseNameId, c.nameID, o.nameID, p.nameID)),
-                  } as EcoverseProject)
+                  } as Project)
               ) || []
           ) || []
       ) || [];
@@ -75,7 +76,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
       {
         title: t('pages.opportunity.sections.projects.more-projects'),
         type: 'more',
-      } as EcoverseProject,
+      } as Project,
     ];
   }, [_projects]);
 

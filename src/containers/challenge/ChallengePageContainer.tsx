@@ -1,16 +1,20 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useChallenge, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
 import { Container } from '../../models/container';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
+import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
+import { buildProjectUrl } from '../../utils/urlBuilders';
 
 export interface ChallengeContainerEntities {
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
+  projects: Project[];
   permissions: {
     canEdit: boolean;
   };
@@ -30,6 +34,7 @@ export interface ChallengePageContainerProps
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
+  const history = useHistory();
   const { user, isAuthenticated } = useUserContext();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
 
@@ -66,6 +71,34 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_challenge]);
 
+  const _opportunities = _challenge?.ecoverse.challenge.opportunities || [];
+
+  const projects = useMemo(() => {
+    const result =
+      _opportunities?.flatMap(
+        o =>
+          o.projects?.map(
+            p =>
+              ({
+                title: p.displayName || '',
+                description: p.description || '',
+                caption: o.displayName || '',
+                tag: { status: 'positive', text: p?.lifecycle?.state || '' },
+                type: 'display',
+                onSelect: () => history.replace(buildProjectUrl(ecoverseNameId, challengeNameId, o.nameID, p.nameID)),
+              } as Project)
+          ) || []
+      ) || [];
+
+    return [
+      ...result,
+      {
+        title: t('pages.opportunity.sections.projects.more-projects'),
+        type: 'more',
+      } as Project,
+    ];
+  }, [_opportunities]);
+
   return (
     <>
       {children(
@@ -75,6 +108,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
+          projects,
         },
         { loading: loading || loadingProfile },
         {}

@@ -1,20 +1,17 @@
-import { Link } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
-import clsx from 'clsx';
-import React, { FC, useMemo, useRef, useState } from 'react';
+import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useHistory, useRouteMatch } from 'react-router-dom';
 import ChallengeCommunitySection from '../../components/Challenge/ChallengeCommunitySection';
 import OpportunityCard from '../../components/Challenge/OpportunityCard';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
 import SettingsButton from '../../components/composite/common/SettingsButton/SettingsButton';
+import { OrganizationBanners } from '../../components/composite/entitiy/organization/OrganizationBanners';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
 import CardFilter from '../../components/core/card-filter/CardFilter';
@@ -25,93 +22,15 @@ import {
 import { CardContainer } from '../../components/core/CardContainer';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
-import { Image } from '../../components/core/Image';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Typography from '../../components/core/Typography';
 import { SwitchCardComponent } from '../../components/Ecoverse/Cards';
-import OrganizationPopUp from '../../components/Organizations/OrganizationPopUp';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { createStyles, useChallenge, useEcoverse } from '../../hooks';
-import { Opportunity, OrganizationDetailsFragment } from '../../models/graphql-schema';
+import { Opportunity } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { buildAdminChallengeUrl, buildOrganizationUrl } from '../../utils/urlBuilders';
-
-const useOrganizationStyles = createStyles(theme => ({
-  organizationWrapper: {
-    display: 'flex',
-    gap: `${theme.spacing(1)}px`,
-    flexWrap: 'wrap',
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-  column: {
-    flexDirection: 'column',
-  },
-  imgContainer: {
-    display: 'flex',
-    flex: '0 45%',
-    width: '100%',
-    margin: '0 auto',
-  },
-  img: {
-    height: 'initial',
-    maxWidth: '100%',
-    maxHeight: 150,
-    margin: '0 auto',
-    objectFit: 'contain',
-  },
-  link: {
-    marginTop: `${theme.spacing(2)}px`,
-    marginRight: `${theme.spacing(4)}px`,
-  },
-}));
-
-interface Props {
-  organizations: OrganizationDetailsFragment[];
-}
-
-// TODO: extract in separate file
-const OrganizationBanners: FC<Props> = ({ organizations }) => {
-  const { t } = useTranslation();
-  const styles = useOrganizationStyles();
-  const [modalId, setModalId] = useState<string | null>(null);
-
-  return (
-    <>
-      <div className={clsx(styles.organizationWrapper, organizations.length === 2 && styles.column)}>
-        {organizations.map((org, index) => {
-          if (index > 4) return null;
-          return (
-            <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
-              <div className={styles.imgContainer}>
-                <Link component={RouterLink} to={buildOrganizationUrl(org.nameID)}>
-                  <Image src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
-                </Link>
-              </div>
-            </Tooltip>
-          );
-        })}
-      </div>
-
-      {!!modalId && <OrganizationPopUp id={modalId} onHide={() => setModalId(null)} />}
-
-      {organizations.length > 4 && (
-        <Tooltip
-          placement="bottom"
-          id="challenge-rest-tooltip"
-          title={organizations.map(x => x.displayName).join(', ')}
-        >
-          <Box display={'flex'}>
-            <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
-          </Box>
-        </Tooltip>
-      )}
-    </>
-  );
-};
+import { buildAdminChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 
 interface ChallengeViewProps {
   entities: ChallengeContainerEntities;
@@ -127,14 +46,13 @@ const useChallengeStyles = createStyles(theme => ({
 
 const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.ReactElement => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
-  const history = useHistory();
   const styles = useChallengeStyles();
 
   const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
-  const { challenge, permissions, activity, isAuthenticated } = entities;
+  const { challenge, permissions, activity, isAuthenticated, projects } = entities;
+
   const { loading } = state;
 
   const opportunityRef = useRef<HTMLDivElement>(null);
@@ -144,36 +62,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
   const { references, background = '', tagline, who = '', visual, impact = '', vision = '' } = context || {};
   const bannerImg = visual?.banner;
   const video = references?.find(x => x.name === 'video');
-
-  const projects = useMemo(
-    () =>
-      opportunities.flatMap(o =>
-        o?.projects?.flatMap(p => ({
-          caption: o.displayName,
-          url: `${url}/opportunities/${o.nameID}/projects/${p.nameID}`,
-          ...p,
-        }))
-      ),
-    [opportunities]
-  );
-
-  const challengeProjects = useMemo(
-    () => [
-      ...(projects || []).map(p => ({
-        title: p?.displayName || '',
-        description: p?.description,
-        caption: p?.caption,
-        tag: { status: 'positive', text: p?.lifecycle?.state || '' },
-        type: 'display',
-        onSelect: () => history.replace(p?.url || ''),
-      })),
-      {
-        title: 'MORE PROJECTS STARTING SOON',
-        type: 'more',
-      },
-    ],
-    [projects]
-  );
 
   const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
 
@@ -285,7 +173,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
                 key={i}
                 displayName={opp.displayName}
                 activity={opp.activity || []}
-                url={`${url}/opportunities/${opp.nameID}`}
+                url={buildOpportunityUrl(ecoverseNameId, challengeNameId, opp.nameID)}
                 lifecycle={{ state: opp?.lifecycle?.state || '' }}
                 context={{
                   tagline: opp?.context?.tagline || '',
@@ -327,7 +215,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
         </Section>
         {isAuthenticated && (
           <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
-            {challengeProjects.map(({ type, ...rest }, i) => {
+            {projects.map(({ type, ...rest }, i) => {
               const Component = SwitchCardComponent({ type });
               return <Component {...rest} key={i} />;
             })}

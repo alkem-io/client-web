@@ -1,4 +1,4 @@
-export type EcoverseProject = {
+export type Project = {
   title: string;
   description?: string;
   caption?: string;
