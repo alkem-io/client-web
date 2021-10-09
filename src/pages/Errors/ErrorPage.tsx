@@ -7,7 +7,7 @@ import { env } from '../../types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
-export const Error: FC<{ error: Error }> = ({ error }) => {
+export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();
 
   return (

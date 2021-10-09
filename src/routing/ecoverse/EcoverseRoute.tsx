@@ -6,7 +6,7 @@ import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
-import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
+import EcoverseCommunityPage from '../../pages/Community/EcoverseCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';

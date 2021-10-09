@@ -39,6 +39,5 @@ fragment UserMembershipDetails on UserMembership {
     communityID
     displayName
     state
-
   }
 }

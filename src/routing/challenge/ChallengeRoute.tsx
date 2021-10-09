@@ -5,7 +5,7 @@ import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
-import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
+import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import RestrictedRoute from '../route.extensions';

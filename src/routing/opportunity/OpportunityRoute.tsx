@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, OpportunityPage, PageProps } from '../../pages';
-import OpportunityCommunityPage from '../../pages/community/OpportunityCommunityPage';
+import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
 import RestrictedRoute from '../route.extensions';
 import { ProjectRoute } from './ProjectRoute';
 

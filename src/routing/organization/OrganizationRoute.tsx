@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import { Error404, PageProps } from '../../pages';
-import OrganizationPage from '../../pages/organization/OrganizationPage';
+import OrganizationPage from '../../pages/Organization/OrganizationPage';
 import { useOrganization, useUserContext } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 
