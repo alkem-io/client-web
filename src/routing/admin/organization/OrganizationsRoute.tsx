@@ -4,7 +4,7 @@ import OrganizationList from '../../../components/Admin/Organization/Organizatio
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { OrganizationProvider } from '../../../context/OrganizationProvider';
 import { EditMode } from '../../../models/editMode';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../url-params';
 import { OrganizationRoute } from './OrganizationRoute';
 
@@ -27,7 +27,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
         </OrganizationProvider>
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

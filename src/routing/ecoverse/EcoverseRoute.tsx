@@ -5,8 +5,8 @@ import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import { Ecoverse as EcoversePage, FourOuFour, PageProps } from '../../pages';
-import EcoverseCommunityPage from '../../pages/community/EcoverseCommunityPage';
+import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
+import EcoverseCommunityPage from '../../pages/Community/EcoverseCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';
@@ -15,8 +15,7 @@ import { nameOfUrl } from '../url-params';
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
 
-  const { ecoverseId, ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
-  const isPrivate = ecoverse?.authorization?.anonymousReadAccess || false;
+  const { ecoverseId, ecoverse, displayName, loading: ecoverseLoading, isPrivate } = useEcoverse();
 
   const currentPaths = useMemo(
     () => (ecoverse ? [...paths, { value: url, name: displayName, real: true }] : paths),
@@ -30,7 +29,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   }
 
   if (!ecoverse) {
-    return <FourOuFour />;
+    return <Error404 />;
   }
 
   const requiredCredentials: CredentialForResource[] =
@@ -39,7 +38,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        <EcoversePage ecoverse={ecoverse} paths={currentPaths} />
+        <EcoversePage paths={currentPaths} />
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
         <ChallengeProvider>
@@ -53,7 +52,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

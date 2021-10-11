@@ -8,17 +8,19 @@ import {
 } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks';
-import { Error } from '../pages/Error';
+import { ErrorPage } from '../pages';
 import { User } from '../models/graphql-schema';
 export interface UserContextContract {
   user: UserMetadata | undefined;
   loading: boolean;
   verified: boolean;
+  isAuthenticated: boolean;
 }
 const UserContext = React.createContext<UserContextContract>({
   user: undefined,
   loading: true,
   verified: false,
+  isAuthenticated: false,
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
@@ -58,7 +60,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     loadingMembershipData ||
     (isAuthenticated && !meHasProfileData?.meHasProfile);
 
-  if (error) return <Error error={error} />;
+  if (error) return <ErrorPage error={error} />;
 
   const wrappedMe = meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined;
 
@@ -68,6 +70,7 @@ const UserProvider: FC<{}> = ({ children }) => {
         user: wrappedMe,
         loading,
         verified,
+        isAuthenticated,
       }}
     >
       {children}

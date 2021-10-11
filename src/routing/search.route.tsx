@@ -1,21 +1,14 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTransactionScope } from '../hooks';
-import { FourOuFour } from '../pages';
-import { SearchPage } from '../pages/SearchPage';
+import { Error404 } from '../pages';
+import { SearchPage } from '../pages/Search/SearchPage';
 
 export const SearchRoute: FC = () => {
-  // const { t } = useTranslation();
-
   useTransactionScope({ type: 'connect(search)' });
 
   const { path } = useRouteMatch();
-  const currentPaths = useMemo(
-    () => [
-      // { value: url, name: t('search.header'), real: true }
-    ],
-    []
-  );
+  const currentPaths = useMemo(() => [], []);
 
   return (
     <Switch>
@@ -23,7 +16,7 @@ export const SearchRoute: FC = () => {
         <SearchPage paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

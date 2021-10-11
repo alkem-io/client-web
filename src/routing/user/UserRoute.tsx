@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
 import { UserProfilePage } from '../../pages/User/UserProfilePage';
 import { nameOfUrl } from '../url-params';
@@ -17,7 +17,7 @@ export const UserRoute: FC = () => {
         <EditUserProfilePage />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

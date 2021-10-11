@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import { useEcoverse, useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildEcoverseUrl } from '../../../utils/urlBuilders';
@@ -53,7 +53,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
         <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

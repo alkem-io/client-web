@@ -4,7 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
 import { nameOfUrl } from '../../url-params';
 import { OpportunityRoute } from './OpportunityRoute';
@@ -31,7 +31,7 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
         </OpportunityProvider>
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

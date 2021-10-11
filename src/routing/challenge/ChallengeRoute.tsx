@@ -4,8 +4,8 @@ import Loading from '../../components/core/Loading/Loading';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { Challenge as ChallengePage, FourOuFour, PageProps } from '../../pages';
-import ChallengeCommunityPage from '../../pages/community/ChallengeCommunityPage';
+import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
+import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import RestrictedRoute from '../route.extensions';
@@ -27,7 +27,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   }
 
   if (!challengeId) {
-    return <FourOuFour />;
+    return <Error404 />;
   }
 
   return (
@@ -47,7 +47,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
         <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

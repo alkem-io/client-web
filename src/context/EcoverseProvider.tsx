@@ -1,18 +1,20 @@
 import React, { FC } from 'react';
+import { useUrlParams } from '../hooks';
 import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
 import { EcoverseInfoFragment } from '../models/graphql-schema';
-import { useUrlParams } from '../hooks';
 
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoFragment;
   ecoverseId: string;
   ecoverseNameId: string;
   displayName: string;
+  isPrivate: boolean;
   loading: boolean;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
   loading: false,
+  isPrivate: false,
   ecoverseId: '',
   ecoverseNameId: '',
   displayName: '',
@@ -30,6 +32,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const ecoverse = data?.ecoverse;
   const ecoverseId = ecoverse?.id || '';
   const displayName = ecoverse?.displayName || '';
+  const isPrivate = Boolean(ecoverse?.authorization?.anonymousReadAccess);
 
   return (
     <EcoverseContext.Provider
@@ -38,6 +41,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
         ecoverseId,
         ecoverseNameId,
         displayName,
+        isPrivate,
         loading,
       }}
     >

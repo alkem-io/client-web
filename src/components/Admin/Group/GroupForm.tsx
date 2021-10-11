@@ -9,13 +9,14 @@ import { Tagset as TagsetModel } from '../../../models/Profile';
 import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../EditableAvatar';
-import { FormikInputField } from '../Common/FormikInputField';
+import EditableAvatar from '../../composite/common/EditableAvatar';
+
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
 import { Grid } from '@material-ui/core';
+import FormikInputField from '../../composite/forms/FormikInputField';
 
 interface GroupFormProps {
   title?: string;

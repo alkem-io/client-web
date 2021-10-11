@@ -4,7 +4,7 @@ import { managementData } from '../../../components/Admin/managementData';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { useOrganization } from '../../../hooks';
 import { EditMode } from '../../../models/editMode';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
@@ -38,7 +38,7 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

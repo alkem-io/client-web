@@ -5,7 +5,7 @@ import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
 import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
-import { FourOuFour, PageProps } from '../../pages';
+import { Error404, PageProps } from '../../pages';
 import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPage';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { nameOfUrl } from '../url-params';
@@ -56,7 +56,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );
@@ -80,7 +80,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
         <EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

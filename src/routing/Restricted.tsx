@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useQueryParams } from '../hooks';
 import { useTransactionScope } from '../hooks';
-import { Restricted as RestrictedPage } from '../pages';
+import { RestrictedPage } from '../pages';
 import { info as logInfo } from '../services/logging/sentry/log';
 
 export const Restricted: FC = () => {

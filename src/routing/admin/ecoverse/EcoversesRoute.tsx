@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useTransactionScope } from '../../../hooks';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
 import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
 import { nameOfUrl } from '../../url-params';
@@ -39,7 +39,7 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
         </EcoverseProvider>
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

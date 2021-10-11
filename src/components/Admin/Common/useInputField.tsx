@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import FormikInputField from './FormikInputField';
+import FormikInputField from '../../composite/forms/FormikInputField';
 import useProfileStyles from './useProfileStyles';
 
 interface InputFieldProps {

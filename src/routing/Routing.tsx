@@ -1,23 +1,21 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { EcoverseProvider } from '../context/EcoverseProvider';
-import { FourOuFour } from '../pages';
-import AboutPage from '../pages/About';
-import HomePage from '../pages/home/Home';
+import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
+import { AboutPage, Error404, HomePage } from '../pages';
 import { AdminRoute } from './admin/AdminRoute';
-import { IdentityRoute } from './identity/identity';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
+import { IdentityRoute } from './identity/identity';
 import { MessagesRoute } from './messages/MessagesRoute';
+import OrganizationRoute from './organization/OrganizationRoute';
+import ProfileRoute from './profile/ProfileRoute';
 import { Restricted } from './Restricted';
 import RestrictedRoute from './route.extensions';
 import { SearchRoute } from './search.route';
-import OrganizationRoute from './organization/OrganizationRoute';
-import { UserRoute } from './user/UserRoute';
-import ProfilePage from '../pages/ProfilePage';
-import { OrganizationProvider } from '../context/OrganizationProvider';
 import { nameOfUrl } from './url-params';
-import { useTranslation } from 'react-i18next';
+import { UserRoute } from './user/UserRoute';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -62,7 +60,7 @@ export const Routing: FC = () => {
         <AboutPage />
       </Route>
       <Route exact path="/profile">
-        <ProfilePage />
+        <ProfileRoute />
       </Route>
       <Route exact path="/restricted">
         <Restricted />
@@ -76,7 +74,7 @@ export const Routing: FC = () => {
         </EcoverseProvider>
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );
