@@ -23,9 +23,6 @@ const TAG_DISPLAY_COUNT = 3;
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
-  iconMargin: {
-    marginRight: theme.spacing(0.5),
-  },
   imageContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -45,6 +42,12 @@ const useStyles = makeStyles(theme => ({
   },
   tagBoxSize: {
     height: TAG_CONTAINER_HEIGHT,
+  },
+  infoRowHeight: {
+    height: (theme.typography.body1.fontSize as number) * (theme.typography.body1.lineHeight as number),
+  },
+  infoRowIconMargin: {
+    marginRight: theme.spacing(0.5),
   },
 }));
 
@@ -78,8 +81,12 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
                 </Typography>
               </Grid>
               <Grid container item>
-                <InfoRow text={roleName} icon={PersonIcon} />
-                <InfoRow text={`${city}${city && country && ', '}${country}`} icon={LocationOnIcon} />
+                <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" />
+                <InfoRow
+                  text={`${city}${city && country && ', '}${country}`}
+                  icon={LocationOnIcon}
+                  ariaLabel="Location"
+                />
               </Grid>
               <Grid item>
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
@@ -95,16 +102,17 @@ export default UserCard;
 
 interface InfoRowProps {
   icon: typeof SvgIcon;
+  ariaLabel: string;
   text?: string;
 }
 
-const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text }) => {
+const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel }) => {
   const styles = useStyles();
 
   return (
-    <Grid container item alignItems={'center'}>
-      <Icon fontSize="inherit" className={styles.iconMargin} />
-      <Typography color="textPrimary" noWrap={true}>
+    <Grid container alignItems={'center'} className={styles.infoRowHeight}>
+      <Icon fontSize="inherit" className={styles.infoRowHeight} />
+      <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel}>
         {text}
       </Typography>
     </Grid>
