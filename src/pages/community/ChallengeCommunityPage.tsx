@@ -40,6 +40,7 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage
       communityId={communityId}
+      parentId={challengeId}
       parentDisplayName={displayName}
       parentTagline={tagline}
       membershipTitle={membershipTitle}

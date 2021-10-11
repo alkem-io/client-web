@@ -15,6 +15,9 @@ export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 
+export * from './cards/useUserCardRoleName';
+export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
+
 export * from './useEcoverse';
 export * from './useOrganization';
 export * from './useChallenge';

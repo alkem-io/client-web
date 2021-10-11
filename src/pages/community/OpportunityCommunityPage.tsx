@@ -31,6 +31,7 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage
       communityId={communityId}
+      parentId={opportunityId}
       parentDisplayName={displayName}
       parentTagline={tagline}
       permissions={{ edit: isAdmin }}

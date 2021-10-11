@@ -87,6 +87,9 @@
     "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -202,6 +205,10 @@
     }
   },
   "components": {
+    "tags-component": {
+      "more": "+{{count}} more",
+      "no-tags": "No tags available"
+    },
     "remove-modal": {
       "title": "Confirm remove"
     },
@@ -415,21 +422,7 @@
         "no-data": "No challenges are being led at the moment"
       },
       "users": {
-        "owners": {
-          "title": "Owners",
-          "subtitle": "Owners of this organization",
-          "no-data": "None"
-        },
-        "admins": {
-          "title": "Admins",
-          "subtitle": "Admins of this organization",
-          "no-data": "None"
-        },
-        "members": {
-          "title": "Members",
-          "subtitle": "Members of this organization",
-          "no-data": "None"
-        }
+        "no-data": "None"
       }
     },
     "ecoverse": {

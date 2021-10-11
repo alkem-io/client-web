@@ -6,7 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
@@ -24,10 +24,9 @@ import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
-import {
-  userTagsValueGetter,
-  userValueGetter,
-} from '../../components/core/card-filter/value-getters/user-value-getter';
+import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
+import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
+import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -39,6 +38,7 @@ const useStyles = makeStyles(() => ({
 
 interface Props extends PageProps {
   communityId?: string;
+  parentId: string;
   parentDisplayName?: string;
   parentTagline?: string;
   membershipTitle?: string;
@@ -54,6 +54,7 @@ const CommunityPage: FC<Props> = ({
   paths,
   communityId = '',
   membershipTitle,
+  parentId,
   parentDisplayName,
   parentTagline,
   ecoverseHostId = '',
@@ -76,12 +77,12 @@ const CommunityPage: FC<Props> = ({
   const updates = community?.updatesRoom?.messages || [];
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
+  const membersWithRole = useUserCardRoleName(members as User[], parentId);
 
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
   });
-
   const hostOrganization = _orgProfile?.organization;
 
   if (loading) {
@@ -90,7 +91,7 @@ const CommunityPage: FC<Props> = ({
 
   return (
     <>
-      <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
+      <Section>
         <SectionHeader
           text={parentDisplayName}
           editComponent={
@@ -100,19 +101,22 @@ const CommunityPage: FC<Props> = ({
         <SubHeader text={parentTagline} />
       </Section>
       <Divider />
-      <Section>
+      <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
-      <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+      {/* search by role name */}
+      <CardFilter data={membersWithRole} valueGetter={userWithRoleValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
-          <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
-            {filteredData.map(({ displayName, nameID, profile }, i) => (
-              <SimpleCard
+          <CardContainer cardHeight={USER_CARD_HEIGHT}>
+            {filteredData.map(({ displayName, roleName, nameID, profile, city, country }, i) => (
+              <UserCard
                 key={i}
-                title={displayName}
-                avatar={profile?.avatar}
-                description={profile?.description}
-                tags={profile?.tagsets?.flatMap(y => y.tags)}
+                roleName={roleName}
+                avatarSrc={profile?.avatar || ''}
+                displayName={displayName}
+                city={city}
+                country={country}
+                tags={(profile?.tagsets || []).flatMap(x => x.tags)}
                 url={buildUserProfileUrl(nameID)}
               />
             ))}
