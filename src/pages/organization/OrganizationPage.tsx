@@ -19,13 +19,11 @@ import LeadingChallengeCard from './LeadingChallengeCard';
 import { SettingsButton } from '../../components/composite';
 import { buildAdminOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import AuthenticationBackdrop from '../../components/AuthenticationBackdrop';
-import {
-  userTagsValueGetter,
-  userValueGetter,
-} from '../../components/core/card-filter/value-getters/user-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
+import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
+import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import { User } from '../../models/graphql-schema';
 
 const useStyles = createStyles(() => ({
@@ -122,7 +120,11 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
         </Section>
         {orgLoading && <Loading text="" />}
         {members && (
-          <CardFilter data={membersWithRole} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+          <CardFilter
+            data={membersWithRole}
+            valueGetter={userWithRoleValueGetter}
+            tagsValueGetter={userTagsValueGetter}
+          >
             {filteredData => (
               <CardContainer cardHeight={USER_CARD_HEIGHT}>
                 {filteredData.map(({ displayName, roleName, nameID, profile, city, country }, i) => (

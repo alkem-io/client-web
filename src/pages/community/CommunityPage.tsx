@@ -24,10 +24,8 @@ import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
-import {
-  userTagsValueGetter,
-  userValueGetter,
-} from '../../components/core/card-filter/value-getters/user-value-getter';
+import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
+import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 
 const useStyles = makeStyles(() => ({
@@ -107,7 +105,7 @@ const CommunityPage: FC<Props> = ({
         <SectionHeader text={t('common.users')} />
       </Section>
       {/* search by role name */}
-      <CardFilter data={membersWithRole} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+      <CardFilter data={membersWithRole} valueGetter={userWithRoleValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
           <CardContainer cardHeight={USER_CARD_HEIGHT}>
             {filteredData.map(({ displayName, roleName, nameID, profile, city, country }, i) => (
