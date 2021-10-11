@@ -5,7 +5,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { createStyles, useOrganization, useUpdateNavigation, useUserContext } from '../../hooks';
+import { createStyles, useOrganization, useUpdateNavigation, useUserContext, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
@@ -13,7 +13,6 @@ import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { Loading } from '../../components/core';
 import Icon from '../../components/core/Icon';
 import MembershipSection from './MembershipSection';
-import { Agent, User } from '../../models/graphql-schema';
 import InfoSection from './InfoSection';
 import HostedEcoverseCard from './HostedEcoverseCard';
 import LeadingChallengeCard from './LeadingChallengeCard';
@@ -27,6 +26,7 @@ import {
 import { CardContainer } from '../../components/core/CardContainer';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
+import { User } from '../../models/graphql-schema';
 
 const useStyles = createStyles(() => ({
   banner: {
@@ -57,6 +57,7 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
   );
   useUpdateNavigation({ currentPaths });
   const members = organization?.members;
+  const membersWithRole = useUserCardRoleName(members as User[], organizationId);
 
   const { profile, displayName } = organization || {};
   const { avatar, description } = profile || {};
@@ -121,15 +122,13 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
         </Section>
         {orgLoading && <Loading text="" />}
         {members && (
-          <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+          <CardFilter data={membersWithRole} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
             {filteredData => (
               <CardContainer cardHeight={USER_CARD_HEIGHT}>
-                {filteredData.map(({ displayName, agent, nameID, profile, city, country }, i) => (
-                  /* todo add roleTitle, jobTitle */
+                {filteredData.map(({ displayName, roleName, nameID, profile, city, country }, i) => (
                   <UserCard
                     key={i}
-                    userAgent={agent as Agent}
-                    resourceId={organizationId}
+                    roleName={roleName}
                     avatarSrc={profile?.avatar || ''}
                     displayName={displayName}
                     city={city}

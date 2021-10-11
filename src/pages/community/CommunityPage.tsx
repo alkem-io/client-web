@@ -6,11 +6,11 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
-import { Agent, CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
+import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
 import Icon from '../../components/core/Icon';
 import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
@@ -79,6 +79,7 @@ const CommunityPage: FC<Props> = ({
   const updates = community?.updatesRoom?.messages || [];
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
+  const membersWithRole = useUserCardRoleName(members as User[], parentId);
 
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
@@ -105,15 +106,14 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
-      <CardFilter data={members as User[]} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
+      {/* search by role name */}
+      <CardFilter data={membersWithRole} valueGetter={userValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
           <CardContainer cardHeight={USER_CARD_HEIGHT}>
-            {filteredData.map(({ displayName, agent, nameID, profile, city, country }, i) => (
-              /* todo add roleTitle, jobTitle */
+            {filteredData.map(({ displayName, roleName, nameID, profile, city, country }, i) => (
               <UserCard
                 key={i}
-                userAgent={agent as Agent}
-                resourceId={parentId}
+                roleName={roleName}
                 avatarSrc={profile?.avatar || ''}
                 displayName={displayName}
                 city={city}

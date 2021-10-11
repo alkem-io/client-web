@@ -7,12 +7,10 @@ import Link from '@material-ui/core/Link';
 import { SvgIcon, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import Box from '@material-ui/core/Box';
 import PersonIcon from '@material-ui/icons/Person';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 import Image from '../../../../core/Image';
-import Box from '@material-ui/core/Box';
-import { Agent } from '../../../../../models/graphql-schema';
-import useUserRoleNameForCard from '../../../../../hooks/cards/useUserRoleNameForCard';
 
 // todo: unify card height on a later stage
 // Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
@@ -51,20 +49,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/* todo add jobTitle */
 export interface UserCardProps {
   avatarSrc: string;
   displayName: string;
   tags: string[];
   url: string;
-  userAgent: Agent;
-  resourceId: string;
+  roleName?: string;
   city?: string;
   country?: string;
 }
 
-const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, userAgent, resourceId }) => {
+const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
   const styles = useStyles();
-  const roleName = useUserRoleNameForCard(userAgent, resourceId);
 
   return (
     <Link component={RouterLink} to={url} underline="none">
