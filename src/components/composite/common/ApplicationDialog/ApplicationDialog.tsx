@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import { createStyles } from '../../../../hooks';
 import { ApplicationInfoFragment } from '../../../../models/graphql-schema';
@@ -8,7 +9,6 @@ import Typography from '../../../core/Typography';
 import LifecycleButton from '../../../core/LifecycleButton';
 import { Optional } from '../../../../types/util';
 import { Loading } from '../../../core';
-import { useTranslation } from 'react-i18next';
 
 const appStyles = createStyles(theme => ({
   minHeight: {
@@ -113,9 +113,11 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
                 {!user && t('components.application-dialog.title')}
                 {user && (
                   <div className={styles.profile}>
-                    <Avatar src={avatarSrc} size={'lg'} />
+                    <Avatar src={avatarSrc} size={'lg'} aria-label="User avatar" />
                     <div className={styles.userName}>
-                      <Typography variant={'h3'}>{username}</Typography>
+                      <Typography variant={'h3'} aria-label="Username">
+                        {username}
+                      </Typography>
                     </div>
                   </div>
                 )}
@@ -127,8 +129,10 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
               <div className={styles.questions}>
                 {questions.map(x => (
                   <div key={x.id} className={styles.question}>
-                    <label>{x.name}</label>
-                    <Typography weight={'boldLight'}>{x.value}</Typography>
+                    <label aria-label="Questions">{x.name}</label>
+                    <Typography weight={'boldLight'} aria-label="Answer">
+                      {x.value}
+                    </Typography>
                   </div>
                 ))}
               </div>
@@ -136,12 +140,12 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
             {(createdDate || updatedDate) && (
               <div className={styles.date}>
                 {createdDate && (
-                  <Typography variant="caption" color="neutralMedium">
+                  <Typography variant="caption" color="neutralMedium" aria-label="Date created">
                     {t('components.application-dialog.created', { date: createdDate })}
                   </Typography>
                 )}
                 {updatedDate && (
-                  <Typography variant="caption" color="neutralMedium">
+                  <Typography variant="caption" color="neutralMedium" aria-label="Date updated">
                     {t('components.application-dialog.updated', { date: updatedDate })}
                   </Typography>
                 )}
