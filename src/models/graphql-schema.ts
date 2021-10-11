@@ -2240,6 +2240,13 @@ export type CommunityPageMembersFragment = {
   country: string;
   city: string;
   email: string;
+  agent?: Maybe<{
+    __typename?: 'Agent';
+    id: string;
+    credentials?: Maybe<
+      Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+    >;
+  }>;
   profile?: Maybe<{
     __typename?: 'Profile';
     id: string;
@@ -2488,6 +2495,29 @@ export type OrganizationInfoFragment = {
     description?: Maybe<string>;
     tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
   };
+  members?: Maybe<
+    Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      displayName: string;
+      city: string;
+      country: string;
+      agent?: Maybe<{
+        __typename?: 'Agent';
+        id: string;
+        credentials?: Maybe<
+          Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        >;
+      }>;
+      profile?: Maybe<{
+        __typename?: 'Profile';
+        id: string;
+        avatar?: Maybe<string>;
+        tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+      }>;
+    }>
+  >;
 };
 
 export type OrganizationDetailsFragment = {
@@ -4550,6 +4580,13 @@ export type CommunityPageQuery = {
         country: string;
         city: string;
         email: string;
+        agent?: Maybe<{
+          __typename?: 'Agent';
+          id: string;
+          credentials?: Maybe<
+            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          >;
+        }>;
         profile?: Maybe<{
           __typename?: 'Profile';
           id: string;
@@ -5473,6 +5510,29 @@ export type OrganizationInfoQuery = {
       description?: Maybe<string>;
       tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
     };
+    members?: Maybe<
+      Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        city: string;
+        country: string;
+        agent?: Maybe<{
+          __typename?: 'Agent';
+          id: string;
+          credentials?: Maybe<
+            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          >;
+        }>;
+        profile?: Maybe<{
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        }>;
+      }>
+    >;
   };
 };
 

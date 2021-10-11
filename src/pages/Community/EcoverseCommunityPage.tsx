@@ -35,6 +35,7 @@ const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage
       communityId={communityId}
+      parentId={ecoverseId}
       parentDisplayName={displayName}
       parentTagline={tagline}
       membershipTitle={membershipTitle}
