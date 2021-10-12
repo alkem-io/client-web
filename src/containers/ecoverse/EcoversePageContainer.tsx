@@ -20,6 +20,7 @@ export interface EcoverseContainerEntities {
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
+  isAdmin: boolean;
 }
 
 export interface EcoverseContainerActions {}
@@ -116,6 +117,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           projects,
           isAuthenticated,
           isMember: user?.ofEcoverse(ecoverseId) || false,
+          isAdmin: user?.isGlobalAdmin || false,
         },
         {
           loading: loading || loadingEcoverse,
