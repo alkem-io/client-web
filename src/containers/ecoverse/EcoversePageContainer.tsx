@@ -13,6 +13,8 @@ import { buildProjectUrl } from '../../utils/urlBuilders';
 
 export interface EcoverseContainerEntities {
   ecoverse?: EcoversePageFragment;
+  isPrivate: boolean;
+  hideChallenges: boolean;
   permissions: {
     canEdit: boolean;
   };
@@ -107,17 +109,24 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     ];
   }, [_ecoverse]);
 
+  const isMember = user?.ofEcoverse(ecoverseId) ?? false;
+  const isAdmin = user?.isGlobalAdmin ?? false;
+  const isPrivate = !(_ecoverse?.ecoverse?.authorization?.anonymousReadAccess ?? true);
+  const hideChallenges = isPrivate ? !isMember && !isAdmin : false;
+
   return (
     <>
       {children(
         {
           ecoverse: _ecoverse?.ecoverse,
+          isPrivate,
+          hideChallenges,
           permissions,
           activity,
           projects,
           isAuthenticated,
-          isMember: user?.ofEcoverse(ecoverseId) || false,
-          isAdmin: user?.isGlobalAdmin || false,
+          isMember,
+          isAdmin,
         },
         {
           loading: loading || loadingEcoverse,
