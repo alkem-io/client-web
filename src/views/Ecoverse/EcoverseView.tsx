@@ -169,7 +169,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
       </MembershipBackdrop>
 
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!isAuthenticated}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
         <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
@@ -178,7 +178,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         />
       </AuthenticationBackdrop>
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')} show={!isAuthenticated}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
         {projects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
