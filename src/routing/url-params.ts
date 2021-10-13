@@ -7,7 +7,7 @@ export default interface UrlParams {
   opportunityNameId: string;
   organizationNameId: string;
   groupId: string;
-  projectId: string;
+  projectNameId: string;
   applicationId: string;
   userId: string;
   role: AuthorizationCredential;

@@ -12,10 +12,9 @@ import { nameOfUrl } from '../url-params';
 
 interface ProjectRootProps extends PageProps {
   opportunityId: string;
-  projects: Pick<ProjectType, 'id' | 'nameID' | 'displayName'>[] | undefined;
 }
 
-export const ProjectRoute: FC<ProjectRootProps> = ({ paths, projects = [], opportunityId }) => {
+export const ProjectRoute: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>
@@ -23,10 +22,10 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths, projects = [], oppor
         // TODO: set correct credentials
       }
       <RestrictedRoute exact path={`${path}/new`} requiredCredentials={[]} strict={false}>
-        <ProjectNew paths={paths} projects={projects} opportunityId={opportunityId} />
+        <ProjectNew paths={paths} opportunityId={opportunityId} />
       </RestrictedRoute>
-      <RestrictedRoute exact path={`${path}/:${nameOfUrl.projectId}`}>
-        <ProjectIndex paths={paths} projects={projects} opportunityId={opportunityId} />
+      <RestrictedRoute exact path={`${path}/:${nameOfUrl.projectNameId}`}>
+        <ProjectIndex paths={paths} opportunityId={opportunityId} />
       </RestrictedRoute>
       <Route path="*">
         <Error404 />
@@ -72,21 +71,20 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
   );
 };
 
-const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
+const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-  const { projectId } = useUrlParams();
+  const { projectNameId } = useUrlParams();
   const { ecoverseNameId } = useEcoverse();
-  const target = projects?.find(x => x.nameID === projectId);
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, projectId: target?.id || '' },
+    variables: { ecoverseId: ecoverseNameId, projectId: projectNameId },
   });
 
   const project = query?.ecoverse.project;
 
   const currentPaths = useMemo(
     () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),
-    [paths, projectId, project]
+    [paths, projectNameId, project]
   );
 
   if (projectLoading) {
