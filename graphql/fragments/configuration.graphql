@@ -1,6 +1,5 @@
 fragment Configuration on Config {
   authentication {
-    enabled
     providers {
       name
       label
