@@ -12,6 +12,8 @@ export interface UserMetadata {
   isChallengeAdmin: (ecoverseId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (ecoverseId: string, challengeId: string, opportunityId: string) => boolean;
   isAdmin: boolean;
+  isGlobalAdmin: boolean;
+  isGlobalAdminCommunity: boolean;
   roles: Role[];
   groups: string[];
   organizations: string[];
@@ -82,6 +84,8 @@ export const useUserMetadataWrapper = () => {
         isChallengeAdmin,
         isOpportunityAdmin,
         isAdmin: false,
+        isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
+        isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
         roles,
         groups,
         challenges,

@@ -28,17 +28,21 @@ interface ApplicationContainerProps
 export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ entities, children }) => {
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-  const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, ecoverseName, challengeName } = entities;
+  // challengeId = null, because the query returns null rather than undefined
+  const { ecoverseNameId, ecoverseId, challengeId = null, challengeNameId, ecoverseName, challengeName } = entities;
   const { data: memberShip, loading } = useUserApplicationsQuery({
     variables: { input: { userID: user?.user?.id || '' } },
   });
 
+  // todo: refactor logic or use entity privileges
   const userApplication = memberShip?.membershipUser.applications?.find(
     x => x.ecoverseID === ecoverseId && x.challengeID === challengeId && !x.opportunityID
   );
 
+  // find an application which does not have a challengeID, meaning it's on ecoverse level,
+  // but you are at least at challenge level to have a parent application
   const parentApplication = memberShip?.membershipUser.applications?.find(
-    x => x.ecoverseID === ecoverseId && !x.challengeID && !x.opportunityID
+    x => x.ecoverseID === ecoverseId && !x.challengeID && !x.opportunityID && challengeId
   );
 
   const isMember =
@@ -46,7 +50,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ enti
   const applyUrl =
     challengeId && challengeNameId
       ? buildChallengeApplyUrl(ecoverseNameId, challengeNameId)
-      : buildEcoverseApplyUrl(ecoverseId);
+      : buildEcoverseApplyUrl(ecoverseNameId);
 
   const applicationButtonProps: ApplicationButtonProps = {
     isAuthenticated,
