@@ -11,12 +11,12 @@ import Image from '../../components/core/Image';
 import { Loading } from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
+import { createStyles, useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../../hooks/generated/graphql';
-import { createStyles } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { CreateNvpInput } from '../../models/graphql-schema';
 import { PageProps } from '../common';
+import getApplicationTypeKey from '../../utils/translation/get-application-type-key';
 
 const useStyles = createStyles(theme => ({
   thankYouDiv: {
@@ -110,6 +110,8 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
     });
   };
 
+  const entityNameKey = getApplicationTypeKey(type);
+
   return (
     <Container maxWidth="xl">
       {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
@@ -117,7 +119,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       {!loading && !hasApplied && (
         <Box marginY={4}>
           <Typography variant={'h2'}>
-            {t('pages.ecoverse.application.title', { name: communityName, entity: type })}
+            {t('pages.ecoverse.application.title', { name: communityName, entity: t(entityNameKey) })}
           </Typography>
         </Box>
       )}
