@@ -22,7 +22,7 @@ export interface EcoverseContainerEntities {
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
-  isAdmin: boolean;
+  isGlobalAdmin: boolean;
 }
 
 export interface EcoverseContainerActions {}
@@ -110,9 +110,9 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
   }, [_ecoverse]);
 
   const isMember = user?.ofEcoverse(ecoverseId) ?? false;
-  const isAdmin = user?.isGlobalAdmin ?? false;
+  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const isPrivate = !(_ecoverse?.ecoverse?.authorization?.anonymousReadAccess ?? true);
-  const hideChallenges = isPrivate ? !isMember && !isAdmin : false;
+  const hideChallenges = isPrivate ? !isMember && !isGlobalAdmin : false;
 
   return (
     <>
@@ -126,7 +126,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           projects,
           isAuthenticated,
           isMember,
-          isAdmin,
+          isGlobalAdmin,
         },
         {
           loading: loading || loadingEcoverse,
