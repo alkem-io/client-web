@@ -1,3 +1,4 @@
+export * from './useTheme';
 export * from './user/useUserContext';
 export * from './user/useUserMetadata';
 export * from './user/useUserMetadataWrapper';
@@ -30,6 +31,5 @@ export * from './useNavigation';
 export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
-export * from './useTheme';
 export * from './useGlobalState';
 export * from './useAvailableMembers';

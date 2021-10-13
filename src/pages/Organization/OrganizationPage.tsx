@@ -5,7 +5,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { createStyles, useOrganization, useUpdateNavigation, useUserContext, useUserCardRoleName } from '../../hooks';
+import { createStyles, useOrganization, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { Image } from '../../components/core/Image';
 import Divider from '../../components/core/Divider';
@@ -45,9 +45,6 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
   const { t } = useTranslation();
   const { url } = useRouteMatch();
 
-  const { user: _user } = useUserContext();
-  const user = _user?.user;
-
   const { organization, organizationId, loading: orgLoading } = useOrganization();
   const currentPaths = useMemo(
     () => (organization ? [...paths, { value: url, name: organization.displayName, real: true }] : paths),
@@ -55,7 +52,7 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
   );
   useUpdateNavigation({ currentPaths });
   const members = organization?.members;
-  const membersWithRole = useUserCardRoleName(members as User[], organizationId);
+  const membersWithRole = useUserCardRoleName((members || []) as User[], organizationId);
 
   const { profile, displayName } = organization || {};
   const { avatar, description } = profile || {};
@@ -114,7 +111,7 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
         noDataText={t('pages.organization.challenges.no-data')}
       />
       <Divider />
-      <AuthenticationBackdrop show={user != null} blockName={t('common.users')}>
+      <AuthenticationBackdrop blockName={t('common.users')}>
         <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('common.users')} />
         </Section>

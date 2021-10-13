@@ -53,7 +53,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const styles = useStyles();
-  const { ecoverse, permissions, activity, projects, isAuthenticated, isMember } = entities;
+  const { ecoverse, permissions, activity, projects, isAuthenticated, hideChallenges } = entities;
   const { displayName: name = '', nameID: ecoverseNameId = '', id: ecoverseId = '', context } = ecoverse || {};
   const ecoverseBanner = ecoverse?.context?.visual?.banner;
   const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
@@ -104,7 +104,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         </Body>
       </Section>
       <Divider />
-      <MembershipBackdrop show={!isMember} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop show={hideChallenges} blockName={t('pages.ecoverse.sections.challenges.header')}>
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader>
@@ -169,7 +169,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
       </MembershipBackdrop>
 
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')} show={!isAuthenticated}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
         <EcoverseCommunitySection
           title={t('pages.ecoverse.sections.community.header')}
           subTitle={t('pages.ecoverse.sections.community.subheader')}
@@ -178,7 +178,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         />
       </AuthenticationBackdrop>
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')} show={!isAuthenticated}>
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
         {projects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
