@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import { UserListPage } from '../../../pages/Admin/User/UserListPage';
 import { UserPage } from '../../../pages/Admin/User/UserPage';
 import { EditMode } from '../../../models/editMode';
@@ -27,7 +27,7 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
         <UserPage paths={paths} mode={EditMode.readOnly} />;
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

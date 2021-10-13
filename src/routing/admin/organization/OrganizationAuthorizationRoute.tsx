@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour } from '../../../pages';
+import { Error404 } from '../../../pages';
 import OrganizationAdminAuthorizationPage from '../../../pages/Admin/Organization/OrganizationAdminAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organization/OrganizationOwnerAuthorizationPage';
@@ -20,7 +20,7 @@ const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = 
         <OrganizationOwnerAuthorizationPage paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

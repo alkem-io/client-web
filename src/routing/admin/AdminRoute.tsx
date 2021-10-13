@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import { useTransactionScope } from '../../hooks';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 import { EcoversesRoute } from './ecoverse/EcoversesRoute';
 import { UsersRoute } from './users/UsersRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
@@ -32,7 +32,7 @@ export const AdminRoute: FC = () => {
         <OrganizationsRoute paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

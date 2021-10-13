@@ -5,7 +5,7 @@ import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import GroupPage from '../../components/Admin/Group/GroupPage';
 import Loading from '../../components/core/Loading/Loading';
 import { UserGroup } from '../../models/graphql-schema';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 
 interface Props extends WithOptionalMembersProps, WithCommunity {
   group?: UserGroup;
@@ -34,7 +34,7 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
         />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

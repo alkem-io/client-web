@@ -5,7 +5,7 @@ import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { useChallenge, useEcoverse } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
@@ -67,7 +67,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
         <ChallengeLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

@@ -3,7 +3,7 @@ import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading/Loading';
 import { ConfigurationDocument } from '../hooks/generated/graphql';
-import { Error } from '../pages/Error';
+import { ErrorPage } from '../pages';
 import { ConfigurationFragment, ConfigurationQuery } from '../models/graphql-schema';
 
 export interface ConfigContext {
@@ -67,7 +67,7 @@ const ConfigProvider: FC<Props> = ({ children, apiUrl }) => {
       }}
     >
       {loading && <Loading text={'Loading configuration ...'} />}
-      {error && <Error error={error} />}
+      {error && <ErrorPage error={error} />}
       {!loading && !error && children}
     </configContext.Provider>
   );

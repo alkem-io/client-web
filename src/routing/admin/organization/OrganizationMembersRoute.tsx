@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 
 export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
@@ -13,7 +13,7 @@ export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
         <OrganizationCommunityPage paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

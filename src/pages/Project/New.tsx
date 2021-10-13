@@ -9,7 +9,7 @@ import Button from '../../components/core/Button';
 import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { ContentCard } from '../../components/Project/Cards';
+import { ContentCard } from '../../components/composite/entities/Project/Cards';
 import { useUpdateNavigation } from '../../hooks';
 import { createStyles } from '../../hooks/useTheme';
 import { Project as ProjectType, User } from '../../models/graphql-schema';

@@ -11,13 +11,13 @@ import Section, { Body, Header } from '../../components/core/Section';
 import Tag from '../../components/core/Tag';
 import TagContainer from '../../components/core/TagContainer';
 import Typography from '../../components/core/Typography';
-import ContactDetails from '../../components/UserProfile/ContactDetails';
-import MemberOf from '../../components/UserProfile/MemberOf';
+import ContactDetails from '../../components/composite/entities/UserProfile/ContactDetails';
+import MemberOf from '../../components/composite/entities/UserProfile/MemberOf';
 import PendingApplicationsView from '../PendingApplications/PendingApplicationsView';
 import { UserMetadata } from '../../hooks';
 import { AUTH_VERIFY_PATH, COUNTRIES } from '../../models/constants';
 import { toFirstCaptitalLetter } from '../../utils/toFirstCapitalLeter';
-import PendingApplicationsContainer from '../../containers/applications/PendingApplicationsContainer';
+import PendingApplicationsContainer from '../../containers/application/PendingApplicationsContainer';
 
 export interface UserProfileViewProps {
   entities: {

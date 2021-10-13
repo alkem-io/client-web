@@ -3,7 +3,7 @@ import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useCreateProjectMutation, useProjectProfileQuery } from '../../hooks/generated/graphql';
 import { useEcoverse, useUrlParams } from '../../hooks';
-import { FourOuFour, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
+import { Error404, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
 import { Project as ProjectType } from '../../models/graphql-schema';
 import { useApolloErrorHandler } from '../../hooks';
 import RestrictedRoute from '../route.extensions';
@@ -29,7 +29,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths, projects = [], oppor
         <ProjectIndex paths={paths} projects={projects} opportunityId={opportunityId} />
       </RestrictedRoute>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );
@@ -94,7 +94,7 @@ const ProjectIndex: FC<ProjectRootProps> = ({ paths, projects = [] }) => {
   }
 
   if (!project) {
-    return <FourOuFour />;
+    return <Error404 />;
   }
 
   return <ProjectIndexPage paths={currentPaths} project={project as ProjectType} users={[]} />;

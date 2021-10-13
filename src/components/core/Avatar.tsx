@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
-import UserPopUp from '../Community/UserPopUp';
+import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from './Image';
 import Typography from './Typography';
 import { Theme, Tooltip } from '@material-ui/core';

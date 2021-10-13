@@ -1,3 +1,4 @@
+export * from './useTheme';
 export * from './user/useUserContext';
 export * from './user/useUserMetadata';
 export * from './user/useUserMetadataWrapper';
@@ -15,6 +16,9 @@ export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 
+export * from './cards/useUserCardRoleName';
+export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
+
 export * from './useEcoverse';
 export * from './useOrganization';
 export * from './useChallenge';
@@ -27,6 +31,5 @@ export * from './useNavigation';
 export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
-export * from './useTheme';
 export * from './useGlobalState';
 export * from './useAvailableMembers';

@@ -6,7 +6,7 @@ import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { useChallenge, useOpportunity } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { FourOuFour, PageProps } from '../../../pages';
+import { Error404, PageProps } from '../../../pages';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { CommunityRoute } from '../community';
@@ -65,7 +65,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
         <OpportunityAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Card from '../../components/core/Card';
 import { Loading } from '../../components/core';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
-import PendingApplicationContainer from '../../containers/applications/PendingApplicationContainer';
+import PendingApplicationContainer from '../../containers/application/PendingApplicationContainer';
 import PendingApplicationView from './PendingApplicationView';
 
 export interface PendingApplicationsViewEntities {
@@ -44,21 +44,29 @@ const PendingApplicationsView: FC<PendingApplicationsViewProps> = ({
       <Card primaryTextProps={{ text: t('pages.user-profile.applications.title') }}>
         {containerState.loading && <Loading />}
         {containerEntities.applications.map((x, i) => (
+          // todo: refactor to use only one container; remove PendingApplicationContainer
           <PendingApplicationContainer key={i} entities={{ application: x }}>
             {(entities, actions, state) => (
               <PendingApplicationView
                 key={i}
-                application={x}
-                questions={entities.questions}
-                handleDelete={containerActions.handleDelete}
-                isDeleting={containerState.isDeleting}
-                handleDialogOpen={actions.handleDialogOpen}
-                handleDialogClose={actions.handleDialogClose}
-                loadingDialog={state.loadingDialog}
-                edit={containerOptions.canEdit}
-                loading={containerState.loading || state.loading}
-                typeName={entities.typeName}
-                url={entities.url}
+                entities={{
+                  application: x,
+                  applicationDetails: entities.applicationDetails,
+                  typeName: entities.typeName,
+                  url: entities.url,
+                }}
+                actions={{
+                  handleDelete: containerActions.handleDelete,
+                  handleDialogOpen: actions.handleDialogOpen,
+                  handleDialogClose: actions.handleDialogClose,
+                }}
+                state={{
+                  loading: containerState.loading || state.loading,
+                  isDeleting: containerState.isDeleting,
+                  isDialogOpened: state.isDialogOpened,
+                  loadingDialog: state.loadingDialog,
+                }}
+                options={containerOptions}
               />
             )}
           </PendingApplicationContainer>

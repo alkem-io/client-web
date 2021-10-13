@@ -87,6 +87,10 @@
     "updates": "Updates",
     "no-tags": "No tags available",
     "membership": "Membership",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "empty-string": "",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -202,6 +206,18 @@
     }
   },
   "components": {
+    "tags-component": {
+      "more": "+{{count}} more",
+      "no-tags": "No tags available"
+    },
+    "remove-modal": {
+      "title": "Confirm remove"
+    },
+    "application-dialog": {
+      "title": "Application details",
+      "created": "Created on {{date}}",
+      "updated": "Last updated on {{date}}"
+    },
     "edit-members": {
       "no-available-memebers": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
@@ -224,7 +240,7 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "{{blockName}} are only visible for members.",
+      "private": "{{blockName}} are only visible to members.",
       "authentication": "Please sign in to check out the {{blockName}}."
     },
     "notifications": {
@@ -407,27 +423,13 @@
         "no-data": "No challenges are being led at the moment"
       },
       "users": {
-        "owners": {
-          "title": "Owners",
-          "subtitle": "Owners of this organization",
-          "no-data": "None"
-        },
-        "admins": {
-          "title": "Admins",
-          "subtitle": "Admins of this organization",
-          "no-data": "None"
-        },
-        "members": {
-          "title": "Members",
-          "subtitle": "Members of this organization",
-          "no-data": "None"
-        }
+        "no-data": "None"
       }
     },
     "ecoverse": {
       "title": "Hub",
       "application": {
-        "title": "Application to join $t(common.{{entity}}) \"{{name}}\"",
+        "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",

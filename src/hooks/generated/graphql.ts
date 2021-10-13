@@ -151,6 +151,14 @@ export const CommunityPageMembersFragmentDoc = gql`
     country
     city
     email
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
     profile {
       id
       avatar
@@ -165,7 +173,6 @@ export const CommunityPageMembersFragmentDoc = gql`
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
     authentication {
-      enabled
       providers {
         name
         label
@@ -198,61 +205,6 @@ export const ConfigurationFragmentDoc = gql`
       submitPII
     }
   }
-`;
-export const ContextDetailsFragmentDoc = gql`
-  fragment ContextDetails on Context {
-    id
-    tagline
-    background
-    vision
-    impact
-    who
-    references {
-      id
-      name
-      uri
-      description
-    }
-    visual {
-      ...ContextVisual
-    }
-  }
-  ${ContextVisualFragmentDoc}
-`;
-export const EcoverseDetailsFragmentDoc = gql`
-  fragment EcoverseDetails on Ecoverse {
-    id
-    nameID
-    displayName
-    tagset {
-      id
-      name
-      tags
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    host {
-      id
-      displayName
-      nameID
-    }
-    context {
-      ...ContextDetails
-    }
-  }
-  ${ContextDetailsFragmentDoc}
-`;
-export const EcoverseInfoFragmentDoc = gql`
-  fragment EcoverseInfo on Ecoverse {
-    ...EcoverseDetails
-    community {
-      id
-      displayName
-    }
-  }
-  ${EcoverseDetailsFragmentDoc}
 `;
 export const EcoverseNameFragmentDoc = gql`
   fragment EcoverseName on Ecoverse {
@@ -343,6 +295,26 @@ export const NewOpportunityFragmentDoc = gql`
     nameID
     displayName
   }
+`;
+export const ContextDetailsFragmentDoc = gql`
+  fragment ContextDetails on Context {
+    id
+    tagline
+    background
+    vision
+    impact
+    who
+    references {
+      id
+      name
+      uri
+      description
+    }
+    visual {
+      ...ContextVisual
+    }
+  }
+  ${ContextVisualFragmentDoc}
 `;
 export const ProjectDetailsFragmentDoc = gql`
   fragment ProjectDetails on Project {
@@ -445,20 +417,27 @@ export const OrganizationInfoFragmentDoc = gql`
         tags
       }
     }
-  }
-`;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
+    members {
       id
-      avatar
-      description
-      tagsets {
+      nameID
+      displayName
+      city
+      country
+      agent {
         id
-        tags
+        credentials {
+          id
+          type
+          resourceID
+        }
+      }
+      profile {
+        id
+        avatar
+        tagsets {
+          id
+          tags
+        }
       }
     }
   }
@@ -663,12 +642,153 @@ export const UserMembershipDetailsFragmentDoc = gql`
       id
       displayName
     }
+    applications {
+      id
+      communityID
+      displayName
+      state
+    }
   }
+`;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar
+      description
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+`;
+export const ChallengeProfileFragmentDoc = gql`
+  fragment ChallengeProfile on Challenge {
+    id
+    nameID
+    displayName
+    lifecycle {
+      id
+      machineDef
+      state
+      nextEvents
+      stateIsFinal
+    }
+    context {
+      ...ContextDetails
+    }
+    community {
+      id
+      members {
+        id
+        displayName
+      }
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    opportunities {
+      id
+      displayName
+      lifecycle {
+        state
+      }
+      nameID
+      context {
+        ...ContextDetails
+      }
+      projects {
+        id
+        nameID
+        displayName
+        description
+        lifecycle {
+          id
+          state
+        }
+      }
+      tagset {
+        name
+        tags
+      }
+    }
+    activity {
+      name
+      value
+    }
+    leadOrganizations {
+      ...OrganizationDetails
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
     displayName
+  }
+`;
+export const EcoverseDetailsFragmentDoc = gql`
+  fragment EcoverseDetails on Ecoverse {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    host {
+      id
+      displayName
+      nameID
+    }
+    context {
+      ...ContextDetails
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+`;
+export const EcoverseInfoFragmentDoc = gql`
+  fragment EcoverseInfo on Ecoverse {
+    ...EcoverseDetails
+    community {
+      id
+      displayName
+    }
+  }
+  ${EcoverseDetailsFragmentDoc}
+`;
+export const EcoversePageFragmentDoc = gql`
+  fragment EcoversePage on Ecoverse {
+    ...EcoverseInfo
+    activity {
+      name
+      value
+    }
+  }
+  ${EcoverseInfoFragmentDoc}
+`;
+export const ProjectInfoFragmentDoc = gql`
+  fragment ProjectInfo on Project {
+    id
+    nameID
+    displayName
+    description
+    lifecycle {
+      state
+    }
   }
 `;
 export const AssignUserToCommunityDocument = gql`
@@ -4578,61 +4698,11 @@ export const ChallengeProfileDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       challenge(ID: $challengeId) {
-        id
-        nameID
-        displayName
-        lifecycle {
-          id
-          state
-        }
-        context {
-          ...ContextDetails
-        }
-        community {
-          id
-          members {
-            id
-            displayName
-          }
-        }
-        tagset {
-          id
-          name
-          tags
-        }
-        opportunities {
-          id
-          displayName
-          lifecycle {
-            state
-          }
-          nameID
-          context {
-            ...ContextDetails
-          }
-          projects {
-            id
-            nameID
-            displayName
-            description
-            lifecycle {
-              id
-              state
-            }
-          }
-          tagset {
-            name
-            tags
-          }
-        }
-        leadOrganizations {
-          ...OrganizationDetails
-        }
+        ...ChallengeProfile
       }
     }
   }
-  ${ContextDetailsFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
+  ${ChallengeProfileFragmentDoc}
 `;
 
 /**
@@ -9066,6 +9136,128 @@ export function useOnMessageReceivedSubscription(
 }
 export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
 export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
+export const EcoversePageDocument = gql`
+  query ecoversePage($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      ...EcoversePage
+    }
+  }
+  ${EcoversePageFragmentDoc}
+`;
+
+/**
+ * __useEcoversePageQuery__
+ *
+ * To run a query within a React component, call `useEcoversePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversePageQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoversePageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>(
+    EcoversePageDocument,
+    options
+  );
+}
+export function useEcoversePageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>(
+    EcoversePageDocument,
+    options
+  );
+}
+export type EcoversePageQueryHookResult = ReturnType<typeof useEcoversePageQuery>;
+export type EcoversePageLazyQueryHookResult = ReturnType<typeof useEcoversePageLazyQuery>;
+export type EcoversePageQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoversePageQuery,
+  SchemaTypes.EcoversePageQueryVariables
+>;
+export function refetchEcoversePageQuery(variables?: SchemaTypes.EcoversePageQueryVariables) {
+  return { query: EcoversePageDocument, variables: variables };
+}
+export const EcoversePageProjectsDocument = gql`
+  query EcoversePageProjects($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenges {
+        id
+        displayName
+        nameID
+        opportunities {
+          id
+          nameID
+          projects {
+            ...ProjectInfo
+          }
+        }
+      }
+    }
+  }
+  ${ProjectInfoFragmentDoc}
+`;
+
+/**
+ * __useEcoversePageProjectsQuery__
+ *
+ * To run a query within a React component, call `useEcoversePageProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoversePageProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoversePageProjectsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoversePageProjectsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.EcoversePageProjectsQuery,
+    SchemaTypes.EcoversePageProjectsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoversePageProjectsQuery, SchemaTypes.EcoversePageProjectsQueryVariables>(
+    EcoversePageProjectsDocument,
+    options
+  );
+}
+export function useEcoversePageProjectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.EcoversePageProjectsQuery,
+    SchemaTypes.EcoversePageProjectsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoversePageProjectsQuery, SchemaTypes.EcoversePageProjectsQueryVariables>(
+    EcoversePageProjectsDocument,
+    options
+  );
+}
+export type EcoversePageProjectsQueryHookResult = ReturnType<typeof useEcoversePageProjectsQuery>;
+export type EcoversePageProjectsLazyQueryHookResult = ReturnType<typeof useEcoversePageProjectsLazyQuery>;
+export type EcoversePageProjectsQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoversePageProjectsQuery,
+  SchemaTypes.EcoversePageProjectsQueryVariables
+>;
+export function refetchEcoversePageProjectsQuery(variables?: SchemaTypes.EcoversePageProjectsQueryVariables) {
+  return { query: EcoversePageProjectsDocument, variables: variables };
+}
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
     assignUserAsOpportunityAdmin(membershipData: $input) {
