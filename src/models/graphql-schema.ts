@@ -192,8 +192,6 @@ export type AssignUserGroupMemberInput = {
 
 export type AuthenticationConfig = {
   __typename?: 'AuthenticationConfig';
-  /** Is authentication enabled? */
-  enabled: Scalars['Boolean'];
   /** Alkemio Authentication Providers Config. */
   providers: Array<AuthenticationProviderConfig>;
 };
@@ -2260,7 +2258,6 @@ export type ConfigurationFragment = {
   __typename?: 'Config';
   authentication: {
     __typename?: 'AuthenticationConfig';
-    enabled: boolean;
     providers: Array<{
       __typename?: 'AuthenticationProviderConfig';
       name: string;
@@ -4618,7 +4615,6 @@ export type ConfigurationQuery = {
     __typename?: 'Config';
     authentication: {
       __typename?: 'AuthenticationConfig';
-      enabled: boolean;
       providers: Array<{
         __typename?: 'AuthenticationProviderConfig';
         name: string;

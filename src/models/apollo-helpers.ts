@@ -112,9 +112,8 @@ export type AspectFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AuthenticationConfigKeySpecifier = ('enabled' | 'providers' | AuthenticationConfigKeySpecifier)[];
+export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   providers?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationProviderConfigKeySpecifier = (

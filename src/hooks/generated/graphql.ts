@@ -173,7 +173,6 @@ export const CommunityPageMembersFragmentDoc = gql`
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
     authentication {
-      enabled
       providers {
         name
         label
