@@ -1480,6 +1480,14 @@ export type OrganizationMembership = {
   id: Scalars['UUID'];
 };
 
+export type OrganizationTemplate = {
+  __typename?: 'OrganizationTemplate';
+  /** Organization template name. */
+  name: Scalars['String'];
+  /** Tagset templates. */
+  tagsets?: Maybe<Array<TagsetTemplate>>;
+};
+
 export type OrganizationVerification = {
   __typename?: 'OrganizationVerification';
   /** The authorization rules for the entity */
@@ -1836,6 +1844,8 @@ export type Template = {
   name: Scalars['String'];
   /** Opportunity templates. */
   opportunities: Array<OpportunityTemplate>;
+  /** Challenge templates. */
+  organizations: Array<OrganizationTemplate>;
   /** User templates. */
   users: Array<UserTemplate>;
 };
@@ -5797,6 +5807,10 @@ export type TagsetsTemplateQuery = {
       __typename?: 'Template';
       users: Array<{
         __typename?: 'UserTemplate';
+        tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
+      }>;
+      organizations: Array<{
+        __typename?: 'OrganizationTemplate';
         tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
       }>;
     };
