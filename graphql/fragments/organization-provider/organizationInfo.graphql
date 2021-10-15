@@ -14,7 +14,13 @@ fragment OrganizationInfo on Organization {
     description
     tagsets {
       id
+      name
       tags
+    }
+    references {
+      id
+      name
+      uri
     }
   }
   members {

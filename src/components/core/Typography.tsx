@@ -69,6 +69,12 @@ const useTypographyStyles = makeStyles(theme => ({
   background: {
     color: theme.palette.background.paper,
   },
+  success: {
+    color: theme.palette.success.main,
+  },
+  warning: {
+    color: theme.palette.warning.main,
+  },
   inherit: {
     color: 'inherit',
   },

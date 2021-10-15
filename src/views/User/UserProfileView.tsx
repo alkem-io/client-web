@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import { SettingsButton } from '../../components/composite';
-import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
+import VerifiedStatusChip from '../../components/composite/common/VerifiedStatus/VerifiedStatusChip';
 import Avatar from '../../components/core/Avatar';
 import Card from '../../components/core/Card';
 import Section, { Body, Header } from '../../components/core/Section';
@@ -80,7 +80,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         </Grid>
         {isCurrentUser && (
           <Grid item>
-            <VerifiedStatus verified={verified} to={verified ? undefined : AUTH_VERIFY_PATH} />
+            <VerifiedStatusChip verified={verified} to={verified ? undefined : AUTH_VERIFY_PATH} />
           </Grid>
         )}
       </Grid>

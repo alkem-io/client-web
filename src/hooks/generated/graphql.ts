@@ -414,7 +414,13 @@ export const OrganizationInfoFragmentDoc = gql`
       description
       tagsets {
         id
+        name
         tags
+      }
+      references {
+        id
+        name
+        uri
       }
     }
     members {

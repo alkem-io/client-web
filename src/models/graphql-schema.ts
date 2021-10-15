@@ -2490,7 +2490,8 @@ export type OrganizationInfoFragment = {
     id: string;
     avatar?: Maybe<string>;
     description?: Maybe<string>;
-    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+    references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
   };
   members?: Maybe<
     Array<{
@@ -5504,7 +5505,8 @@ export type OrganizationInfoQuery = {
       id: string;
       avatar?: Maybe<string>;
       description?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+      references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
     };
     members?: Maybe<
       Array<{

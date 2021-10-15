@@ -66,6 +66,8 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
   return (
     <Link component={RouterLink} to={url} underline="none">
       <Card>
+        {' '}
+        {/* TODO Return shadow and transition */}
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
             <Image src={avatarSrc} aria-label="User avatar" alt={`${displayName}\`s avatar`} />

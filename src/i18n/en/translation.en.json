@@ -370,6 +370,40 @@
     },
     "settingsButton": {
       "tooltip": "Settings"
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Description"
+        },
+        "phone": {
+          "title": "Phone"
+        },
+        "telephone": {
+          "title": "Telephone"
+        },
+        "mobile": {
+          "title": "Mobile"
+        },
+        "keywords": {
+          "title": "Keywords"
+        },
+        "skills": {
+          "title": "Skills"
+        },
+        "capabilities": {
+          "title": "Capabilities"
+        },
+        "links": {
+          "title": "Links"
+        },
+        "location": {
+          "title": "Location"
+        }
+      }
     }
   },
   "navigation": {
@@ -412,6 +446,9 @@
       }
     },
     "organization": {
+      "settings": {
+        "tooltip": "Organization settings"
+      },
       "ecoverses": {
         "title": "Challenge Hubs hosting",
         "subtitle": "Challenge Hubs which this organization is hosting",
