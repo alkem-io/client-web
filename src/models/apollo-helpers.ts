@@ -206,7 +206,7 @@ export type CommunicationMessageReceivedKeySpecifier = (
   | 'message'
   | 'roomId'
   | 'roomName'
-  | 'userEmail'
+  | 'userID'
   | CommunicationMessageReceivedKeySpecifier
 )[];
 export type CommunicationMessageReceivedFieldPolicy = {
@@ -214,7 +214,7 @@ export type CommunicationMessageReceivedFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   roomId?: FieldPolicy<any> | FieldReadFunction<any>;
   roomName?: FieldPolicy<any> | FieldReadFunction<any>;
-  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationMessageResultKeySpecifier = (
   | 'id'
@@ -716,6 +716,11 @@ export type OrganizationMembershipFieldPolicy = {
   ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type OrganizationTemplateKeySpecifier = ('name' | 'tagsets' | OrganizationTemplateKeySpecifier)[];
+export type OrganizationTemplateFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type OrganizationVerificationKeySpecifier = (
   | 'authorization'
   | 'id'
@@ -921,6 +926,7 @@ export type TemplateKeySpecifier = (
   | 'ecoverses'
   | 'name'
   | 'opportunities'
+  | 'organizations'
   | 'users'
   | TemplateKeySpecifier
 )[];
@@ -930,6 +936,7 @@ export type TemplateFieldPolicy = {
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserKeySpecifier = (
@@ -1214,6 +1221,10 @@ export type StrictTypedTypePolicies = {
   OrganizationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationMembershipKeySpecifier | (() => undefined | OrganizationMembershipKeySpecifier);
     fields?: OrganizationMembershipFieldPolicy;
+  };
+  OrganizationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationTemplateKeySpecifier | (() => undefined | OrganizationTemplateKeySpecifier);
+    fields?: OrganizationTemplateFieldPolicy;
   };
   OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
