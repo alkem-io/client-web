@@ -81,6 +81,7 @@ services:
   oathkeeper:
     container_name: alkemio_client_oathkeeper
     image: oryd/oathkeeper:v0.38
+    restart: always
     depends_on:
       - kratos
     ports:
@@ -88,7 +89,6 @@ services:
       - 4456
     environment:
       - LOG_LEVEL=debug
-    restart: on-failure
     networks:
       - alkemio_client_net
     volumes:
@@ -148,6 +148,7 @@ services:
   mailslurper:
     container_name: alkemio_client_kratos_mailslurper
     image: oryd/mailslurper:latest-smtps
+    restart: always
     ports:
       - 4436
       - 4437
