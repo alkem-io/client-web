@@ -60,7 +60,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer]
+    [addCommunityUpdatesContainer, usersQuery]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;
