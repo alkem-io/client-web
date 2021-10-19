@@ -52,7 +52,7 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const { data: config } = useTagsetsTemplateQuery({});
+  const { data: config } = useTagsetsTemplateQuery();
 
   useEffect(() => {}, [config]);
 
@@ -72,7 +72,7 @@ export const OrganizationForm: FC<Props> = ({
   } = currentOrganization as Organization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
-    if (config) return config.configuration.template.users[0].tagsets || [];
+    if (config) return config.configuration.template.organizations[0].tagsets || [];
     return [];
   }, [config]);
 

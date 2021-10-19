@@ -5811,6 +5811,10 @@ export type TagsetsTemplateQuery = {
         __typename?: 'UserTemplate';
         tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
       }>;
+      organizations: Array<{
+        __typename?: 'OrganizationTemplate';
+        tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
+      }>;
     };
   };
 };

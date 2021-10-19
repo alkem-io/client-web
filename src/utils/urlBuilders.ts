@@ -48,4 +48,4 @@ export const buildProjectUrl = (
   challengeNameId: string,
   opportunityNameId: string,
   projectNameId: string
-) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}}`;
+) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;

@@ -8432,6 +8432,12 @@ export const TagsetsTemplateDocument = gql`
             placeholder
           }
         }
+        organizations {
+          tagsets {
+            name
+            placeholder
+          }
+        }
       }
     }
   }
