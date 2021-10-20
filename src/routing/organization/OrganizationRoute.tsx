@@ -4,6 +4,7 @@ import { Loading } from '../../components/core';
 import { useOrganization } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
 import OrganizationPage from '../../pages/Organization/OrganizationPage';
+import OldOrganizationPage from '../../pages/Organization/OrganizationPage.old';
 
 const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
@@ -23,6 +24,10 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Switch>
+      {/* TODO Remove it */}
+      <Route path={`${path}/old`}>
+        <OldOrganizationPage paths={currentPaths} permissions={{ edit: false }} />
+      </Route>
       <Route path={path}>
         <OrganizationPage paths={currentPaths} />
       </Route>

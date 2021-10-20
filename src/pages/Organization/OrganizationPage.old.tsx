@@ -40,7 +40,7 @@ interface OrganizationPageProps extends PageProps {
   };
 }
 
-const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => {
+const OldOrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
@@ -148,4 +148,4 @@ const OrganizationPage: FC<OrganizationPageProps> = ({ paths, permissions }) => 
   );
 };
 
-export default OrganizationPage;
+export default OldOrganizationPage;
