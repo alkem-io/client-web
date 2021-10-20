@@ -68,7 +68,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer]
+    [addCommunityUpdatesContainer, usersQuery]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;

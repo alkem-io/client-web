@@ -64,7 +64,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer]
+    [addCommunityUpdatesContainer, usersQuery]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;

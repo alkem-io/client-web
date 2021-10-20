@@ -4379,11 +4379,11 @@ export type ChallengeCommunityMessagesQuery = {
   };
 };
 
-export type EcoversCommunityMessagesQueryVariables = Exact<{
+export type EcoverseCommunityMessagesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoversCommunityMessagesQuery = {
+export type EcoverseCommunityMessagesQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
@@ -5811,6 +5811,10 @@ export type TagsetsTemplateQuery = {
       __typename?: 'Template';
       users: Array<{
         __typename?: 'UserTemplate';
+        tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
+      }>;
+      organizations: Array<{
+        __typename?: 'OrganizationTemplate';
         tagsets?: Maybe<Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: Maybe<string> }>>;
       }>;
     };

@@ -35,7 +35,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
         <OpportunityCommunityPage paths={currentPaths} />
       </RestrictedRoute>
       <Route path={`${path}/projects`}>
-        <ProjectRoute paths={currentPaths} projects={opportunity.projects} opportunityId={opportunity.id} />
+        <ProjectRoute paths={currentPaths} opportunityId={opportunity.id} />
       </Route>
       <Route path="*">
         <Error404 />

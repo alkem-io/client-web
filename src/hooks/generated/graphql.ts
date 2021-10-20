@@ -5283,8 +5283,8 @@ export function refetchChallengeCommunityMessagesQuery(
 ) {
   return { query: ChallengeCommunityMessagesDocument, variables: variables };
 }
-export const EcoversCommunityMessagesDocument = gql`
-  query ecoversCommunityMessages($ecoverseId: UUID_NAMEID!) {
+export const EcoverseCommunityMessagesDocument = gql`
+  query ecoverseCommunityMessages($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
       id
       nameID
@@ -5297,53 +5297,53 @@ export const EcoversCommunityMessagesDocument = gql`
 `;
 
 /**
- * __useEcoversCommunityMessagesQuery__
+ * __useEcoverseCommunityMessagesQuery__
  *
- * To run a query within a React component, call `useEcoversCommunityMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEcoverseCommunityMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoversCommunityMessagesQuery({
+ * const { data, loading, error } = useEcoverseCommunityMessagesQuery({
  *   variables: {
  *      ecoverseId: // value for 'ecoverseId'
  *   },
  * });
  */
-export function useEcoversCommunityMessagesQuery(
+export function useEcoverseCommunityMessagesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoversCommunityMessagesQuery,
-    SchemaTypes.EcoversCommunityMessagesQueryVariables
+    SchemaTypes.EcoverseCommunityMessagesQuery,
+    SchemaTypes.EcoverseCommunityMessagesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoversCommunityMessagesQuery, SchemaTypes.EcoversCommunityMessagesQueryVariables>(
-    EcoversCommunityMessagesDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.EcoverseCommunityMessagesQuery,
+    SchemaTypes.EcoverseCommunityMessagesQueryVariables
+  >(EcoverseCommunityMessagesDocument, options);
 }
-export function useEcoversCommunityMessagesLazyQuery(
+export function useEcoverseCommunityMessagesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoversCommunityMessagesQuery,
-    SchemaTypes.EcoversCommunityMessagesQueryVariables
+    SchemaTypes.EcoverseCommunityMessagesQuery,
+    SchemaTypes.EcoverseCommunityMessagesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.EcoversCommunityMessagesQuery,
-    SchemaTypes.EcoversCommunityMessagesQueryVariables
-  >(EcoversCommunityMessagesDocument, options);
+    SchemaTypes.EcoverseCommunityMessagesQuery,
+    SchemaTypes.EcoverseCommunityMessagesQueryVariables
+  >(EcoverseCommunityMessagesDocument, options);
 }
-export type EcoversCommunityMessagesQueryHookResult = ReturnType<typeof useEcoversCommunityMessagesQuery>;
-export type EcoversCommunityMessagesLazyQueryHookResult = ReturnType<typeof useEcoversCommunityMessagesLazyQuery>;
-export type EcoversCommunityMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoversCommunityMessagesQuery,
-  SchemaTypes.EcoversCommunityMessagesQueryVariables
+export type EcoverseCommunityMessagesQueryHookResult = ReturnType<typeof useEcoverseCommunityMessagesQuery>;
+export type EcoverseCommunityMessagesLazyQueryHookResult = ReturnType<typeof useEcoverseCommunityMessagesLazyQuery>;
+export type EcoverseCommunityMessagesQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseCommunityMessagesQuery,
+  SchemaTypes.EcoverseCommunityMessagesQueryVariables
 >;
-export function refetchEcoversCommunityMessagesQuery(variables?: SchemaTypes.EcoversCommunityMessagesQueryVariables) {
-  return { query: EcoversCommunityMessagesDocument, variables: variables };
+export function refetchEcoverseCommunityMessagesQuery(variables?: SchemaTypes.EcoverseCommunityMessagesQueryVariables) {
+  return { query: EcoverseCommunityMessagesDocument, variables: variables };
 }
 export const OpportunityCommunityMessagesDocument = gql`
   query opportunityCommunityMessages($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
@@ -8433,6 +8433,12 @@ export const TagsetsTemplateDocument = gql`
     configuration {
       template {
         users {
+          tagsets {
+            name
+            placeholder
+          }
+        }
+        organizations {
           tagsets {
             name
             placeholder

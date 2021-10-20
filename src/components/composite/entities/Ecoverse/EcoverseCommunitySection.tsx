@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { CommunityUpdatesDataContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { useConfig, useEcoverse } from '../../../../hooks';
-import { EcoversCommunityMessagesDocument, useEcoverseUserIdsQuery } from '../../../../hooks/generated/graphql';
+import { EcoverseCommunityMessagesDocument, useEcoverseUserIdsQuery } from '../../../../hooks/generated/graphql';
 import { FEATURE_COMMUNICATIONS } from '../../../../models/constants';
 import {
   CommunicationMessageResult,
-  EcoversCommunityMessagesQuery,
-  EcoversCommunityMessagesQueryVariables,
+  EcoverseCommunityMessagesQuery,
+  EcoverseCommunityMessagesQueryVariables,
   User,
 } from '../../../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../../../../views/CommunitySection/CommunitySectionView';
@@ -28,9 +28,9 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
     (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
       if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
         return (
-          <CommunityUpdatesDataContainer<EcoversCommunityMessagesQuery, EcoversCommunityMessagesQueryVariables>
+          <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
             entities={{
-              document: EcoversCommunityMessagesDocument,
+              document: EcoverseCommunityMessagesDocument,
               variables: {
                 ecoverseId: ecoverseNameId,
               },
@@ -60,7 +60,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer]
+    [addCommunityUpdatesContainer, usersQuery]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;
