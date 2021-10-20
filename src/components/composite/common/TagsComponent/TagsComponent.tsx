@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Tooltip from '@material-ui/core/Tooltip';
 import { createStyles } from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -23,6 +24,24 @@ const useStyles = makeStyles(theme =>
       marginLeft: 4,
       marginRight: -6,
     },
+    'count-1': {
+      maxWidth: '48%',
+    },
+    'count-2': {
+      maxWidth: '32%',
+    },
+    'count-3': {
+      maxWidth: '24%',
+    },
+    'count-4': {
+      maxWidth: '19%',
+    },
+    'count-5': {
+      maxWidth: '15%',
+    },
+    maxWidth: {
+      maxWidth: '100%',
+    },
   })
 );
 
@@ -30,37 +49,42 @@ interface Props {
   tags: string[];
   count: number;
   className?: any;
+  keepInRow?: boolean;
 }
 //  todo move in diff dir
-const TagsComponent: FC<Props> = ({ tags, count, className }) => {
+const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
   const tagsToDisplay = tags.slice(0, count);
   const moreTags = tags.slice(count);
   const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
-  const moreTagsTooltipTitle = moreTags.join(',');
+  const moreTagsTooltipTitle = moreTags.join(', ');
 
   return (
     <div className={className}>
-      {/*div instead of Box because can't manipulate flexGap*/}
       <div className={styles.tagWrapper}>
         {tagsToDisplay.map((x, i) => (
-          <Chip
-            classes={{
-              iconSmall: styles.iconSmall,
-            }}
-            key={i}
-            label={x}
-            variant="outlined"
-            color="primary"
-            size="small"
-            icon={<FiberManualRecordIcon fontSize="small" />}
-            className={styles.tagMargin}
-          />
+          <Tooltip title={x} arrow placement="bottom">
+            <Chip
+              classes={{
+                iconSmall: styles.iconSmall,
+              }}
+              key={i}
+              label={x}
+              variant="outlined"
+              color="primary"
+              size="small"
+              icon={<FiberManualRecordIcon fontSize="small" />}
+              className={clsx(styles.tagMargin, {
+                [styles[`count-${count}`]]: keepInRow && count <= 5,
+                [styles.maxWidth]: !keepInRow && count > 5,
+              })}
+            />
+          </Tooltip>
         ))}
         {moreTags.length > 0 && (
-          <Tooltip title={moreTagsTooltipTitle} arrow placement={'right'}>
+          <Tooltip title={moreTagsTooltipTitle} arrow placement="bottom">
             <Chip
               classes={{
                 iconSmall: styles.iconSmall,

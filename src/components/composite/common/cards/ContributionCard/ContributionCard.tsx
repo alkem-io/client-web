@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme =>
 const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { name = '', type = 'ecoverse', tags = [], image = '' } = details || {};
+  const { name = '', type, tags = [], image = '' } = details || {};
 
   return (
     <Card className={styles.card}>
@@ -61,7 +61,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
         <CardMedia image={image} className={styles.cardMedia} />
       )}
       <CardContent className={styles.cardContent}>
-        <Grid container>
+        <Grid container spacing={1}>
           <Grid item container justifyContent="space-between" alignItems="flex-start" spacing={2} wrap="nowrap">
             {loading ? (
               <Grid item xs={12}>
@@ -77,7 +77,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
                 <Grid item>
                   <Box className={styles.entityTypeWrapper}>
                     <Typography variant="body1" className={styles.entityType}>
-                      {t(`common.${type}` as const)}
+                      {type && t(`common.${type}` as const)}
                     </Typography>
                   </Box>
                 </Grid>
@@ -87,9 +87,9 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
           <Grid item container>
             <Grid item xs={12}>
               {loading ? (
-                <Skeleton variant="rect" animation="wave" style={{ marginTop: '10px' }} />
+                <Skeleton variant="rect" animation="wave" />
               ) : (
-                <TagsComponent tags={tags} count={2} />
+                <TagsComponent tags={tags} count={2} keepInRow />
               )}
             </Grid>
           </Grid>
