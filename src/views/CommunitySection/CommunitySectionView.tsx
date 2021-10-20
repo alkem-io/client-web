@@ -3,7 +3,7 @@ import Box from '@material-ui/core/Box';
 import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
@@ -69,6 +69,8 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     },
   ].filter(x => x.enabled);
 
+  const updateUsers = useMemo<Pick<User, 'id'>[] | undefined>(() => updates?.map(u => ({ id: u.sender })), [updates]);
+
   return (
     <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />} hideDetails>
       <SectionHeader text={title} />
@@ -90,7 +92,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
                 <Box>
                   {updates && (
-                    <AvatarsProvider users={users}>
+                    <AvatarsProvider users={updateUsers}>
                       {detailedUsers => (
                         <CommunityUpdatesView
                           entities={{
