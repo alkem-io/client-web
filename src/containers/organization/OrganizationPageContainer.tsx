@@ -5,7 +5,7 @@ import { SocialLinkItem } from '../../components/composite/common/SocialLinks/So
 import { useOrganization, useUserContext } from '../../hooks';
 import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
-import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
 import { Container } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
@@ -16,7 +16,7 @@ export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
   socialLinks: SocialLinkItem[];
   links: string[];
-  skills: string[];
+  capabilities: string[];
   keywords: string[];
   associates: UserCardProps[];
   contributions: ContributionItem[];
@@ -76,8 +76,8 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     [organization]
   );
 
-  const skills = useMemo(
-    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
+  const capabilities = useMemo(
+    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === CAPABILITIES_TAGSET)?.tags || [],
     [organization]
   );
 
@@ -148,7 +148,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   return (
     <>
       {children(
-        { organization, permissions, socialLinks, links, keywords, skills, associates, contributions },
+        { organization, permissions, socialLinks, links, keywords, capabilities, associates, contributions },
         {
           loading: loading || orgMembershipLoading,
         },

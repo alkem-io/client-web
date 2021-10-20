@@ -19,14 +19,14 @@ interface OrganizationPageViewProps {
 export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }) => {
   const { t } = useTranslation();
 
-  const { permissions, socialLinks, links, organization, skills, keywords, associates, contributions } = entities;
+  const { permissions, socialLinks, links, organization, capabilities, keywords, associates, contributions } = entities;
 
   const tagsets = useMemo(
     () => [
       { name: t('components.profile.fields.keywords.title'), tags: keywords },
-      { name: t('components.profile.fields.skills.title'), tags: skills },
+      { name: t('components.profile.fields.capabilities.title'), tags: capabilities },
     ],
-    [keywords, skills]
+    [keywords, capabilities]
   );
 
   const entity: OrganizationProfileViewProps['entity'] = useMemo(
