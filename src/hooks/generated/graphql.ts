@@ -9028,6 +9028,7 @@ export const ChallengeContributionDetailsDocument = gql`
   query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         id
         nameID
@@ -9109,10 +9110,15 @@ export const OpportunityContributionDetailsDocument = gql`
   query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
       id
+      nameID
       opportunity(ID: $opportunityId) {
         id
         nameID
         displayName
+        challenge {
+          id
+          nameID
+        }
         tagset {
           id
           name

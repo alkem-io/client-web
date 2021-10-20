@@ -7,6 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { Container } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
+import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionCardDetails;
@@ -55,6 +56,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'ecoverse',
         image: ecoverseData.ecoverse.context?.visual?.banner,
         tags: ecoverseData.ecoverse.tagset?.tags || [],
+        url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),
       } as ContributionCardDetails;
 
     if (challengeData)
@@ -63,6 +65,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'challenge',
         image: challengeData.ecoverse.challenge.context?.visual?.banner,
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
+        url: buildChallengeUrl(challengeData.ecoverse.nameID, challengeData.ecoverse.challenge.nameID),
       } as ContributionCardDetails;
 
     if (opportunityData)
@@ -71,6 +74,11 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'challenge',
         image: opportunityData.ecoverse.opportunity.context?.visual?.banner,
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
+        url: buildOpportunityUrl(
+          opportunityData.ecoverse.nameID,
+          opportunityData.ecoverse.opportunity.challenge?.nameID || '',
+          opportunityData.ecoverse.opportunity.nameID
+        ),
       } as ContributionCardDetails;
   }, [ecoverseData, challengeData, opportunityData]);
 

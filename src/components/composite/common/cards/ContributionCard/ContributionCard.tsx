@@ -1,7 +1,18 @@
-import { Box, Card, CardActionArea, CardContent, CardMedia, createStyles, Grid, makeStyles } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  createStyles,
+  Grid,
+  Link,
+  makeStyles,
+} from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RouterLink } from '../../../../core/RouterLink';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 
@@ -10,6 +21,7 @@ export interface ContributionCardDetails {
   type: 'ecoverse' | 'challenge' | 'opportunity';
   tags: string[];
   image: string;
+  url: string;
 }
 
 export interface ContributionCardProps {
@@ -51,52 +63,54 @@ const useStyles = makeStyles(theme =>
 const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { name = '', type, tags = [], image = '' } = details || {};
+  const { name = '', type, tags = [], image = '', url = '' } = details || {};
 
   return (
-    <Card className={styles.card}>
-      {loading ? (
-        <Skeleton variant="rect" className={styles.cardMedia} animation="wave" />
-      ) : (
-        <CardMedia image={image} className={styles.cardMedia} />
-      )}
-      <CardContent className={styles.cardContent}>
-        <Grid container spacing={1}>
-          <Grid item container justifyContent="space-between" alignItems="flex-start" spacing={2} wrap="nowrap">
-            {loading ? (
-              <Grid item xs={12}>
-                <Skeleton variant="rect" animation="wave"></Skeleton>
-              </Grid>
-            ) : (
-              <>
-                <Grid item zeroMinWidth>
-                  <Typography color="primary" weight="boldLight" clamp={1}>
-                    {name}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Box className={styles.entityTypeWrapper}>
-                    <Typography variant="body1" className={styles.entityType}>
-                      {type && t(`common.${type}` as const)}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </>
-            )}
-          </Grid>
-          <Grid item container>
-            <Grid item xs={12}>
+    <Link component={RouterLink} to={url} underline="none">
+      <Card className={styles.card}>
+        {loading ? (
+          <Skeleton variant="rect" className={styles.cardMedia} animation="wave" />
+        ) : (
+          <CardMedia image={image} className={styles.cardMedia} />
+        )}
+        <CardContent className={styles.cardContent}>
+          <Grid container spacing={1}>
+            <Grid item container justifyContent="space-between" alignItems="flex-start" spacing={2} wrap="nowrap">
               {loading ? (
-                <Skeleton variant="rect" animation="wave" />
+                <Grid item xs={12}>
+                  <Skeleton variant="rect" animation="wave"></Skeleton>
+                </Grid>
               ) : (
-                <TagsComponent tags={tags} count={2} keepInRow />
+                <>
+                  <Grid item zeroMinWidth>
+                    <Typography color="primary" weight="boldLight" clamp={1}>
+                      {name}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Box className={styles.entityTypeWrapper}>
+                      <Typography variant="body1" className={styles.entityType}>
+                        {type && t(`common.${type}` as const)}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </>
               )}
             </Grid>
+            <Grid item container>
+              <Grid item xs={12}>
+                {loading ? (
+                  <Skeleton variant="rect" animation="wave" />
+                ) : (
+                  <TagsComponent tags={tags} count={2} keepInRow />
+                )}
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-      </CardContent>
-      <CardActionArea></CardActionArea>
-    </Card>
+        </CardContent>
+        <CardActionArea></CardActionArea>
+      </Card>
+    </Link>
   );
 };
 export default ContributionCard;

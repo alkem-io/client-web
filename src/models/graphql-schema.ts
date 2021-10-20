@@ -6089,6 +6089,7 @@ export type ChallengeContributionDetailsQuery = {
   ecoverse: {
     __typename?: 'Ecoverse';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;
@@ -6114,11 +6115,13 @@ export type OpportunityContributionDetailsQuery = {
   ecoverse: {
     __typename?: 'Ecoverse';
     id: string;
+    nameID: string;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
       nameID: string;
       displayName: string;
+      challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
