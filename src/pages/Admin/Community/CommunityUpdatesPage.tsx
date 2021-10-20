@@ -23,7 +23,7 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
     <Container maxWidth="xl">
       <CommunityUpdatesContainer entities={{ communityId }}>
         {(entities, actions, loading) => (
-          <AvatarsProvider users={entities.messages.map(m => ({ id: m.sender }))}>
+          <AvatarsProvider users={entities.senders}>
             {populatedUsers => (
               <CommunityUpdatesView
                 entities={{ ...entities, members: populatedUsers }}

@@ -1,12 +1,14 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { CommunityUpdatesDataContainer } from '../../../../containers/community-updates/CommunityUpdates';
+import {
+  CommunityUpdatesDataContainer,
+  CommunityUpdatesDataEntities,
+} from '../../../../containers/community-updates/CommunityUpdates';
 import { useConfig } from '../../../../hooks';
 import { ChallengeCommunityMessagesDocument, useChallengeUserIdsQuery } from '../../../../hooks/generated/graphql';
 import { FEATURE_COMMUNICATIONS } from '../../../../models/constants';
 import {
   ChallengeCommunityMessagesQuery,
   ChallengeCommunityMessagesQueryVariables,
-  CommunicationMessageResult,
   User,
 } from '../../../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../../../../views/CommunitySection/CommunitySectionView';
@@ -28,7 +30,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
   const { isFeatureEnabled } = useConfig();
 
   const addCommunityUpdatesContainer = useCallback(
-    (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
+    (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
       if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
         return (
           <CommunityUpdatesDataContainer<ChallengeCommunityMessagesQuery, ChallengeCommunityMessagesQueryVariables>
@@ -42,13 +44,13 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
               roomIdSelector: data => data?.ecoverse.challenge.community?.updatesRoom?.id || '',
             }}
           >
-            {({ messages }, { retrievingUpdateMessages }) =>
-              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(messages)
+            {(entities, { retrievingUpdateMessages }) =>
+              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(entities)
             }
           </CommunityUpdatesDataContainer>
         );
       } else {
-        return children([]);
+        return children(undefined);
       }
     },
     [isFeatureEnabled]
@@ -56,10 +58,11 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
 
   const memoizedNode = useMemo(
     () =>
-      addCommunityUpdatesContainer(messages => (
+      addCommunityUpdatesContainer(entities => (
         <CommunitySection
           users={(usersQuery?.ecoverse.challenge.community?.members as User[]) || []}
-          updates={messages}
+          updates={entities?.messages}
+          updateSenders={entities?.senders}
           discussions={[]}
           {...rest}
         />

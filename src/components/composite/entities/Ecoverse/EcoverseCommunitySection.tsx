@@ -1,10 +1,12 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { CommunityUpdatesDataContainer } from '../../../../containers/community-updates/CommunityUpdates';
+import {
+  CommunityUpdatesDataContainer,
+  CommunityUpdatesDataEntities,
+} from '../../../../containers/community-updates/CommunityUpdates';
 import { useConfig, useEcoverse } from '../../../../hooks';
 import { EcoverseCommunityMessagesDocument, useEcoverseUserIdsQuery } from '../../../../hooks/generated/graphql';
 import { FEATURE_COMMUNICATIONS } from '../../../../models/constants';
 import {
-  CommunicationMessageResult,
   EcoverseCommunityMessagesQuery,
   EcoverseCommunityMessagesQueryVariables,
   User,
@@ -25,7 +27,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
   const { isFeatureEnabled } = useConfig();
 
   const addCommunityUpdatesContainer = useCallback(
-    (children: (messages: CommunicationMessageResult[]) => React.ReactElement) => {
+    (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
       if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
         return (
           <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
@@ -38,13 +40,13 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
               roomIdSelector: data => data?.ecoverse.community?.updatesRoom?.id || '',
             }}
           >
-            {({ messages }, { retrievingUpdateMessages }) =>
-              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(messages)
+            {(entities, { retrievingUpdateMessages }) =>
+              retrievingUpdateMessages ? <Loading text={'Loading community data'} /> : children(entities)
             }
           </CommunityUpdatesDataContainer>
         );
       } else {
-        return children([]);
+        return children(undefined);
       }
     },
     [isFeatureEnabled]
@@ -52,10 +54,11 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
 
   const memoizedNode = useMemo(
     () =>
-      addCommunityUpdatesContainer(messages => (
+      addCommunityUpdatesContainer(entities => (
         <CommunitySection
           users={(usersQuery?.ecoverse.community?.members as User[]) || []}
-          updates={messages}
+          updates={entities?.messages}
+          updateSenders={entities?.senders}
           discussions={[]}
           {...rest}
         />
