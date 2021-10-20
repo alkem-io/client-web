@@ -8,7 +8,7 @@ import {
 import { OrganizationVerificationEnum } from '../../models/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
 import AssociatesView from '../ProfileView/AssociatesView';
-import ContributionView from '../ProfileView/ContributionView';
+import ContributionsView from '../ProfileView/ContributionsView';
 import ProfileView, { ProfileViewProps } from '../ProfileView/ProfileView';
 
 interface OrganizationPageViewProps {
@@ -19,46 +19,15 @@ interface OrganizationPageViewProps {
 export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }) => {
   const { t } = useTranslation();
 
-  const { permissions, socialLinks, links, organization, skills, keywords } = entities;
+  const { permissions, socialLinks, links, organization, skills, keywords, associates, contributions } = entities;
 
   const tagsets = useMemo(
     () => [
-      { name: 'Keywords', tags: keywords },
-      { name: 'Skills', tags: skills },
+      { name: t('components.profile.fields.keywords.title'), tags: keywords },
+      { name: t('components.profile.fields.skills.title'), tags: skills },
     ],
     [keywords, skills]
   );
-
-  const associates = [
-    { name: 'Isabella Bookmaker', title: 'Owner', src: '' },
-    { name: 'James Yellowflower', title: 'Owner', src: '' },
-    { name: 'Masha Fence', title: 'Owner', src: '' },
-    { name: 'Maddie Thinker', title: 'Owner', src: '' },
-    { name: 'Josh Hipster', title: 'Owner', src: '' },
-    { name: 'Nathalie Shadow', title: 'Owner', src: '' },
-    { name: 'Jamie Blackwhite', title: 'Owner', src: '' },
-    { name: 'Kevin Toghguy', title: 'Owner', src: '' },
-    { name: 'Brandon Furrow', title: 'Owner', src: '' },
-    { name: 'Natash Orange', title: 'Owner', src: '' },
-    { name: 'Bella Leaner', title: 'Owner', src: '' },
-    { name: 'Claire Influencer', title: 'Owner', src: '' },
-    { name: 'Mason Thinkhard', title: 'Owner', src: '' },
-    { name: 'Bram Airborne', title: 'Owner', src: '' },
-    { name: 'Leigh-Anne Earrings', title: 'Owner', src: '' },
-  ];
-
-  const contributions = [
-    { name: 'PET-Technologie', type: 'challenge', tags: ['Innovation', '3D', 'AI', 'Python', 'CSS', 'HTML'], img: '' },
-    { name: 'Care for data', type: 'opportunity', tags: ['Innovation', '3D', 'AI', 'Python', 'CSS', 'HTML'], img: '' },
-    { name: 'Care for data', type: 'challenge', tags: ['Innovation', '3D', 'AI', 'Python', 'CSS', 'HTML'], img: '' },
-    {
-      name: 'PET-Technologie',
-      type: 'opportunity',
-      tags: ['Innovation', '3D', 'AI', 'Python', 'CSS', 'HTML'],
-      img: '',
-    },
-    { name: 'PET-Technologie', type: 'challenge', tags: ['Innovation', '3D', 'AI', 'Python', 'CSS', 'HTML'], img: '' },
-  ];
 
   const entity: ProfileViewProps['entity'] = useMemo(
     () => ({
@@ -86,7 +55,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
             <AssociatesView associates={associates} />
           </Grid>
           <Grid item xs={12}>
-            <ContributionView contributions={contributions} />
+            <ContributionsView contributions={contributions} />
           </Grid>
         </Grid>
       </Grid>

@@ -21,6 +21,7 @@ import Typography from '../../components/core/Typography';
 export interface ProfileViewProps {
   entity: {
     avatar?: string;
+    banner?: string;
     displayName: string;
     settingsUrl: string;
     settingsTooltip: string;
@@ -88,7 +89,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ entity, permissions }) => {
 
   return (
     <Card elevation={0} className={styles.card}>
-      <CardMedia className={styles.media}>
+      <CardMedia className={styles.media} image={entity.banner}>
         <CardHeader
           classes={{
             action: styles.headerAction,
@@ -108,7 +109,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ entity, permissions }) => {
           title={
             <Box padding={1}>{entity.varified !== undefined && <VerifiedStatus verified={entity.varified} />}</Box>
           }
-        ></CardHeader>
+        />
       </CardMedia>
 
       <CardContent className={styles.content}>
@@ -135,14 +136,12 @@ export const ProfileView: FC<ProfileViewProps> = ({ entity, permissions }) => {
             <Detail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
           {entity.tagsets?.map((tagset, i) => (
-            <>
-              <Grid item key={i}>
-                <Typography color="primary" weight="boldLight">
-                  {tagset.name}
-                </Typography>
-                <TagsComponent tags={tagset.tags} count={5} />
-              </Grid>
-            </>
+            <Grid item key={i}>
+              <Typography color="primary" weight="boldLight">
+                {tagset.name}
+              </Typography>
+              <TagsComponent tags={tagset.tags} count={5} />
+            </Grid>
           ))}
 
           <Grid item container direction="column">

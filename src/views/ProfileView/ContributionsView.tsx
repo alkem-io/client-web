@@ -1,11 +1,14 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles, Tooltip } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
 import React, { FC } from 'react';
-import { ContributinoCard } from '../../components/composite/common/cards/ContributionCard/ContributinoCard';
+import { useTranslation } from 'react-i18next';
+import { ContributionCard } from '../../components/composite/common/cards';
 import Typography from '../../components/core/Typography';
+import ContributionDetailsContainer from '../../containers/ContributionDetails/ContributionDetailsContainer';
+import { ContributionItem } from '../../models/entities/contribution';
 
-interface ContributionViewProps {
-  contributions: { name: string; type: string; tags: string[]; img: string }[];
+export interface ContributionViewProps {
+  contributions: ContributionItem[];
 }
 
 const useStyles = makeStyles(theme =>
@@ -16,19 +19,17 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const ContributionView: FC<ContributionViewProps> = ({ contributions }) => {
+export const ContributionsView: FC<ContributionViewProps> = ({ contributions }) => {
   const styles = useStyles();
+  const { t } = useTranslation();
+
   return (
     <Card elevation={0} className={styles.card}>
       <CardHeader
         title={
           <Typography variant="h3" weight="boldLight">
-            Contributions
-            <Tooltip
-              title="Shows different challenges and opportunities you are contributing to."
-              arrow
-              placement="right"
-            >
+            {t('components.contributions.title')}
+            <Tooltip title={t('components.contributions.help')} arrow placement="right">
               <Help color="primary" />
             </Tooltip>
           </Typography>
@@ -38,7 +39,9 @@ export const ContributionView: FC<ContributionViewProps> = ({ contributions }) =
         <Grid container spacing={1}>
           {contributions.map((x, i) => (
             <Grid item key={i}>
-              <ContributinoCard name={x.name} type={x.type} tags={x.tags} image={x.img} />
+              <ContributionDetailsContainer entities={x}>
+                {(entities, state) => <ContributionCard details={entities.details} loading={state.loading} />}
+              </ContributionDetailsContainer>
             </Grid>
           ))}
         </Grid>
@@ -46,4 +49,4 @@ export const ContributionView: FC<ContributionViewProps> = ({ contributions }) =
     </Card>
   );
 };
-export default ContributionView;
+export default ContributionsView;

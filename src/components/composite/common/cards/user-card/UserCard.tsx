@@ -62,11 +62,10 @@ export interface UserCardProps {
 
 const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
   const styles = useStyles();
-
+  const location = [city, country].filter(x => !!x).join(', ');
   return (
     <Link component={RouterLink} to={url} underline="none">
       <Card>
-        {' '}
         {/* TODO Return shadow and transition */}
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
@@ -81,11 +80,7 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
               </Grid>
               <Grid container item>
                 <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" />
-                <InfoRow
-                  text={`${city}${city && country && ', '}${country}`}
-                  icon={LocationOnIcon}
-                  ariaLabel="Location"
-                />
+                <InfoRow text={location} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
               <Grid item>
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />

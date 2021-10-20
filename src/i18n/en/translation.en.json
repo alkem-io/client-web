@@ -404,6 +404,14 @@
           "title": "Location"
         }
       }
+    },
+    "associates": {
+      "title": "Associates ({{count}})",
+      "help": "Users associated with this organization."
+    },
+    "contributions": {
+      "title": "Contributions",
+      "help": "Shows different challenges and opportunities you are contributing to."
     }
   },
   "navigation": {

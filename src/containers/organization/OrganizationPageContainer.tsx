@@ -1,11 +1,16 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
+import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
 import { SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
 import { useOrganization, useUserContext } from '../../hooks';
+import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
+import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
 import { Container } from '../../models/container';
+import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
-import { AuthorizationCredential, OrganizationInfoFragment } from '../../models/graphql-schema';
+import { AuthorizationCredential, Credential, OrganizationInfoFragment } from '../../models/graphql-schema';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -13,6 +18,8 @@ export interface OrganizationContainerEntities {
   links: string[];
   skills: string[];
   keywords: string[];
+  associates: UserCardProps[];
+  contributions: ContributionItem[];
   permissions: {
     canEdit: boolean;
   };
@@ -29,7 +36,16 @@ export interface OrganizationPageContainerProps
   extends Container<OrganizationContainerEntities, OrganizationContainerActions, OrganizationContainerState> {}
 
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
-  const { organizationId, loading, organization } = useOrganization();
+  const { organizationId, organizationNameId, loading, organization } = useOrganization();
+
+  const { data: membershipData, loading: orgMembershipLoading } = useMembershipOrganizationQuery({
+    variables: {
+      input: {
+        organizationID: organizationNameId,
+      },
+    },
+    skip: !organizationNameId,
+  });
 
   const socialLinks = useMemo(() => {
     const isSocialLink = (item: { type?: string; url: string }): item is SocialLinkItem => !!item?.type;
@@ -78,12 +94,63 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     ),
   };
 
+  const associates = useMemo(() => {
+    const toRole = (credentials: Credential[] = []) => {
+      let result = 'Member';
+
+      if (
+        credentials.findIndex(
+          c =>
+            (c.type === AuthorizationCredential.OrganizationAdmin && c.resourceID === organizationId) ||
+            c.type === AuthorizationCredential.GlobalAdmin
+        ) > -1
+      ) {
+        result = 'Admin';
+      }
+
+      if (
+        credentials.findIndex(
+          c => c.type === AuthorizationCredential.OrganizationOwner && c.resourceID === organizationId
+        ) > -1
+      ) {
+        result = 'Owner';
+      }
+      return result;
+    };
+
+    return (
+      organization?.members?.map<UserCardProps>(x => ({
+        displayName: x.displayName,
+        roleName: toRole(x.agent?.credentials),
+        avatarSrc: x.profile?.avatar || '',
+        tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
+        url: buildUserProfileUrl(x.nameID),
+        city: x.city,
+        country: COUNTRIES_BY_CODE[x.country],
+      })) || []
+    );
+  }, [organization]);
+
+  const contributions = useMemo(() => {
+    const { ecoversesHosting = [], challengesLeading = [] } = membershipData?.membershipOrganization || {};
+    const ecoverseContributions = ecoversesHosting.map<ContributionItem>(x => ({
+      ecoverseId: x.id,
+    }));
+
+    const challengeContributions = challengesLeading.map<ContributionItem>(x => ({
+      ecoverseId: x.ecoverseID,
+      challengeId: x.id,
+    }));
+
+    return [...ecoverseContributions, ...challengeContributions];
+  }, [membershipData]);
+
   return (
     <>
       {children(
-        { organization, permissions, socialLinks, links, keywords, skills },
+        { organization, permissions, socialLinks, links, keywords, skills, associates, contributions },
         {
-          loading,
+          loading: loading || orgMembershipLoading,
         },
         {}
       )}

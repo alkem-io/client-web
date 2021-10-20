@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, Link, makeStyles, Tooltip } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
+import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
 import Typography from '../../components/core/Typography';
 
 interface AssociatesViewProps {
-  associates: { name: string; title: string; src: string }[];
+  associates: UserCardProps[];
 }
 
 const useStyles = makeStyles(theme =>
@@ -18,13 +20,15 @@ const useStyles = makeStyles(theme =>
 
 export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
   const styles = useStyles();
+  const { t } = useTranslation();
+
   return (
     <Card elevation={0} className={styles.card}>
       <CardHeader
         title={
           <Typography variant="h3" weight="boldLight">
-            Associates ({associates.length})
-            <Tooltip title="Users associated with this organization" arrow placement="right">
+            {t('components.associates.title', { count: associates.length })}
+            <Tooltip title={t('components.associates.help')} arrow placement="right">
               <Help color="primary" />
             </Tooltip>
           </Typography>
@@ -32,9 +36,9 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
       />
       <CardContent>
         <Grid item container spacing={2}>
-          {associates.map((x, i) => (
+          {associates.slice(0, 10).map((x, i) => (
             <Grid key={i} item>
-              <AssociateCard name={x.name} title={x.title} avatar={x.src} />
+              <AssociateCard {...x} />
             </Grid>
           ))}
           <Grid item container justifyContent="flex-end">
