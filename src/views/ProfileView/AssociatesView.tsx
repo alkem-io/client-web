@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
+import { RouterLink } from '../../components/core/RouterLink';
 import Typography from '../../components/core/Typography';
 
 interface AssociatesViewProps {
@@ -42,7 +43,9 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
             </Grid>
           ))}
           <Grid item container justifyContent="flex-end">
-            <Link>See more</Link>
+            <Link component={RouterLink} to="/user/search">
+              {t('buttons.see-more')}
+            </Link>
           </Grid>
         </Grid>
       </CardContent>
