@@ -45,3 +45,27 @@ query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID
   }
 }
 
+query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        id
+        visual {
+          id
+          avatar
+          background
+          banner
+        }
+      }
+    }
+  }
+}

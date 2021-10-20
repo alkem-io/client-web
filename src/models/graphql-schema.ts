@@ -6100,6 +6100,31 @@ export type ChallengeContributionDetailsQuery = {
   };
 };
 
+export type OpportunityContributionDetailsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityContributionDetailsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      displayName: string;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      }>;
+    };
+  };
+};
+
 export type CommunityUpdatesQueryVariables = Exact<{
   communityId: Scalars['UUID'];
 }>;

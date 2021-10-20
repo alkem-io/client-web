@@ -3,6 +3,7 @@ import { ContributionCardDetails } from '../../components/composite/common/cards
 import {
   useChallengeContributionDetailsQuery,
   useEcoverseContributionDetailsQuery,
+  useOpportunityContributionDetailsQuery,
 } from '../../hooks/generated/graphql';
 import { Container } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
@@ -39,7 +40,13 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     skip: !challengeId || Boolean(opportunityId),
   });
 
-  // TODO Add opportunity data
+  const { data: opportunityData, loading: opportunityLoading } = useOpportunityContributionDetailsQuery({
+    variables: {
+      ecoverseId: ecoverseId,
+      opportunityId: opportunityId || '',
+    },
+    skip: !opportunityId,
+  });
 
   const details = useMemo(() => {
     if (ecoverseData)
@@ -59,14 +66,23 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         image: challengeData.ecoverse.challenge.context?.visual?.avatar,
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
       } as ContributionCardDetails;
-  }, [ecoverseData, challengeData]);
+
+    if (opportunityData)
+      return {
+        name: opportunityData.ecoverse.opportunity.displayName,
+        type: 'challenge',
+        // TODO Switch to banner when banner can be uploaded
+        image: opportunityData.ecoverse.opportunity.context?.visual?.avatar,
+        tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
+      } as ContributionCardDetails;
+  }, [ecoverseData, challengeData, opportunityData]);
 
   return (
     <>
       {children(
         { details },
         {
-          loading: ecoverseLoading || challengeLoading,
+          loading: ecoverseLoading || challengeLoading || opportunityLoading,
         },
         {}
       )}

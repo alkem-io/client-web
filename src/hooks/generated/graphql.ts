@@ -9099,6 +9099,87 @@ export function refetchChallengeContributionDetailsQuery(
 ) {
   return { query: ChallengeContributionDetailsDocument, variables: variables };
 }
+export const OpportunityContributionDetailsDocument = gql`
+  query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        nameID
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        context {
+          id
+          visual {
+            id
+            avatar
+            background
+            banner
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityContributionDetailsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityContributionDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityContributionDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityContributionDetailsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityContributionDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityContributionDetailsQuery,
+    SchemaTypes.OpportunityContributionDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityContributionDetailsQuery,
+    SchemaTypes.OpportunityContributionDetailsQueryVariables
+  >(OpportunityContributionDetailsDocument, options);
+}
+export function useOpportunityContributionDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityContributionDetailsQuery,
+    SchemaTypes.OpportunityContributionDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityContributionDetailsQuery,
+    SchemaTypes.OpportunityContributionDetailsQueryVariables
+  >(OpportunityContributionDetailsDocument, options);
+}
+export type OpportunityContributionDetailsQueryHookResult = ReturnType<typeof useOpportunityContributionDetailsQuery>;
+export type OpportunityContributionDetailsLazyQueryHookResult = ReturnType<
+  typeof useOpportunityContributionDetailsLazyQuery
+>;
+export type OpportunityContributionDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityContributionDetailsQuery,
+  SchemaTypes.OpportunityContributionDetailsQueryVariables
+>;
+export function refetchOpportunityContributionDetailsQuery(
+  variables?: SchemaTypes.OpportunityContributionDetailsQueryVariables
+) {
+  return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($communityId: UUID!) {
     community(ID: $communityId) {
