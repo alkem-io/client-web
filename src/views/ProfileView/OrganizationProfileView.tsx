@@ -18,7 +18,7 @@ import TagsComponent from '../../components/composite/common/TagsComponent/TagsC
 import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
 import Typography from '../../components/core/Typography';
 
-export interface ProfileViewProps {
+export interface OrganizationProfileViewProps {
   entity: {
     avatar?: string;
     banner?: string;
@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme =>
     },
   })
 );
-export const ProfileView: FC<ProfileViewProps> = ({ entity, permissions }) => {
+export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
 
@@ -159,4 +159,4 @@ export const ProfileView: FC<ProfileViewProps> = ({ entity, permissions }) => {
     </Card>
   );
 };
-export default ProfileView;
+export default OrganizationProfileView;

@@ -1,3 +1,3 @@
 export * from './AssociatesView';
 export * from './ContributionsView';
-export * from './ProfileView';
+export * from './OrganizationProfileView';

@@ -9,7 +9,7 @@ import { OrganizationVerificationEnum } from '../../models/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
 import AssociatesView from '../ProfileView/AssociatesView';
 import ContributionsView from '../ProfileView/ContributionsView';
-import ProfileView, { ProfileViewProps } from '../ProfileView/ProfileView';
+import OrganizationProfileView, { OrganizationProfileViewProps } from '../ProfileView/OrganizationProfileView';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -29,7 +29,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
     [keywords, skills]
   );
 
-  const entity: ProfileViewProps['entity'] = useMemo(
+  const entity: OrganizationProfileViewProps['entity'] = useMemo(
     () => ({
       avatar: organization?.profile.avatar,
       displayName: organization?.displayName || '',
@@ -47,7 +47,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} xl={7}>
-        <ProfileView entity={entity} permissions={permissions} />
+        <OrganizationProfileView entity={entity} permissions={permissions} />
       </Grid>
       <Grid item xs={12} xl={5}>
         <Grid container spacing={2}>
