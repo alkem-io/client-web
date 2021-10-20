@@ -53,8 +53,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         name: ecoverseData.ecoverse.displayName,
         type: 'ecoverse',
-        // TODO Switch to banner when banner can be uploaded
-        image: ecoverseData.ecoverse.context?.visual?.avatar,
+        image: ecoverseData.ecoverse.context?.visual?.banner,
         tags: ecoverseData.ecoverse.tagset?.tags || [],
       } as ContributionCardDetails;
 
@@ -62,8 +61,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         name: challengeData.ecoverse.challenge.displayName,
         type: 'challenge',
-        // TODO Switch to banner when banner can be uploaded
-        image: challengeData.ecoverse.challenge.context?.visual?.avatar,
+        image: challengeData.ecoverse.challenge.context?.visual?.banner,
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
       } as ContributionCardDetails;
 
@@ -71,8 +69,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         name: opportunityData.ecoverse.opportunity.displayName,
         type: 'challenge',
-        // TODO Switch to banner when banner can be uploaded
-        image: opportunityData.ecoverse.opportunity.context?.visual?.avatar,
+        image: opportunityData.ecoverse.opportunity.context?.visual?.banner,
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
       } as ContributionCardDetails;
   }, [ecoverseData, challengeData, opportunityData]);
