@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme =>
     card: {
       background: theme.palette.neutralLight.main,
     },
+    icon: {
+      marginLeft: theme.spacing(1),
+    },
   })
 );
 
@@ -30,7 +33,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions }) 
           <Typography variant="h3" weight="boldLight">
             {t('components.contributions.title')}
             <Tooltip title={t('components.contributions.help')} arrow placement="right">
-              <Help color="primary" />
+              <Help color="primary" className={styles.icon} />
             </Tooltip>
           </Typography>
         }

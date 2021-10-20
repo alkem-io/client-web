@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme =>
     card: {
       background: theme.palette.neutralLight.main,
     },
+    icon: {
+      marginLeft: theme.spacing(1),
+    },
   })
 );
 
@@ -30,7 +33,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
           <Typography variant="h3" weight="boldLight">
             {t('components.associates.title', { count: associates.length })}
             <Tooltip title={t('components.associates.help')} arrow placement="right">
-              <Help color="primary" />
+              <Help color="primary" className={styles.icon} />
             </Tooltip>
           </Typography>
         }

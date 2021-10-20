@@ -65,12 +65,11 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
     <div className={className}>
       <div className={styles.tagWrapper}>
         {tagsToDisplay.map((x, i) => (
-          <Tooltip title={x} arrow placement="bottom">
+          <Tooltip key={i} title={x} arrow placement="bottom">
             <Chip
               classes={{
                 iconSmall: styles.iconSmall,
               }}
-              key={i}
               label={x}
               variant="outlined"
               color="primary"
