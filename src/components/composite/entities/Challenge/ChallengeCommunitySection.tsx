@@ -51,7 +51,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
         return children([]);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseId, challengeId]
   );
 
   const memoizedNode = useMemo(

@@ -797,12 +797,6 @@ export const OpportunityPageFragmentDoc = gql`
     id
     nameID
     displayName
-    community {
-      id
-      members {
-        id
-      }
-    }
     activity {
       id
       name

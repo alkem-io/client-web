@@ -11,13 +11,6 @@ fragment OpportunityPage on Opportunity {
   id
   nameID
   displayName
-  # user ids
-  community {
-    id
-    members {
-      id
-    }
-  }
   activity {
     id
     name

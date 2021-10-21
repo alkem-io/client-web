@@ -6143,11 +6143,6 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
-      }>;
       activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       lifecycle?: Maybe<{
         __typename?: 'Lifecycle';
@@ -6213,11 +6208,6 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  community?: Maybe<{
-    __typename?: 'Community';
-    id: string;
-    members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
-  }>;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   lifecycle?: Maybe<{
     __typename?: 'Lifecycle';

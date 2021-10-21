@@ -27,6 +27,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
       ecoverseId,
       opportunityId,
     },
+    skip: !ecoverseId || !opportunityId,
     errorPolicy: 'all',
   });
   const { isFeatureEnabled } = useConfig();
@@ -55,7 +56,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
         return children([]);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseId, opportunityId]
   );
 
   const memoizedNode = useMemo(

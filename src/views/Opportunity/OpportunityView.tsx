@@ -5,7 +5,7 @@ import { ApolloError } from '@apollo/client';
 import { Box, Container } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { View } from '../../models/container';
-import { OpportunityPageFragment, Reference, User } from '../../models/graphql-schema';
+import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -33,10 +33,10 @@ import InterestModal from '../../components/composite/entities/Ecoverse/Interest
 import ActorGroupCreateModal from '../../components/composite/entities/Opportunity/ActorGroupCreateModal';
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
-import { CommunitySection } from '../CommunitySection/CommunitySectionView';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import { createStyles } from '../../hooks';
+import { createStyles, useOpportunity } from '../../hooks';
+import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -122,11 +122,12 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
   const { t } = useTranslation();
   const styles = useStyles();
 
+  const { ecoverseId } = useOpportunity();
+
   const opportunity = entities.opportunity;
   const { id, context, displayName } = opportunity;
   const contextId = context?.id ?? '';
   const ecosystemModelId = context?.ecosystemModel?.id ?? '';
-  const members = (opportunity?.community?.members ?? []) as User[];
   const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { background = '', tagline = '', who = '', impact = '', vision = '', aspects = [], visual } = context ?? {};
@@ -402,10 +403,12 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
       )}
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
-        <CommunitySection
+        <OpportunityCommunitySection
           title={t('pages.opportunity.sections.community.header')}
           subTitle={t('pages.opportunity.sections.community.subheader')}
-          users={members}
+          ecoverseId={ecoverseId}
+          opportunityId={id}
+          body={context?.who}
           shuffle={true}
         />
       </AuthenticationBackdrop>

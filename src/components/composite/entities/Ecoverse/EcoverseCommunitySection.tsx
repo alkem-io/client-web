@@ -47,7 +47,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
         return children([]);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseNameId]
   );
 
   const memoizedNode = useMemo(
