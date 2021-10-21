@@ -147,7 +147,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             });
           }}
         >
-          {({ handleSubmit, isSubmitting }) => {
+          {({ values, handleSubmit, isSubmitting }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -158,7 +158,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     <Button
                       text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
-                      disabled={isSubmitting || removingMessage}
+                      disabled={isSubmitting || removingMessage || !values['community-update']}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
                   </Grid>

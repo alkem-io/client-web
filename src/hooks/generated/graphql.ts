@@ -774,6 +774,7 @@ export const EcoversePageFragmentDoc = gql`
   fragment EcoversePage on Ecoverse {
     ...EcoverseInfo
     activity {
+      id
       name
       value
     }
@@ -788,6 +789,80 @@ export const ProjectInfoFragmentDoc = gql`
     description
     lifecycle {
       state
+    }
+  }
+`;
+export const OpportunityPageFragmentDoc = gql`
+  fragment OpportunityPage on Opportunity {
+    id
+    nameID
+    displayName
+    community {
+      id
+      members {
+        id
+      }
+    }
+    activity {
+      id
+      name
+      value
+    }
+    lifecycle {
+      id
+      machineDef
+      state
+      nextEvents
+      stateIsFinal
+    }
+    relations {
+      id
+      type
+      actorRole
+      actorName
+      actorType
+      description
+    }
+    context {
+      id
+      background
+      tagline
+      who
+      impact
+      vision
+      references {
+        id
+        name
+        uri
+      }
+      aspects {
+        id
+        title
+      }
+      visual {
+        id
+        banner
+      }
+      ecosystemModel {
+        id
+        actorGroups {
+          id
+          name
+          actors {
+            id
+            name
+            description
+            value
+            impact
+          }
+        }
+      }
+    }
+    projects {
+      id
+      nameID
+      displayName
+      description
     }
   }
 `;
@@ -7197,122 +7272,6 @@ export type OpportunityNameQueryResult = Apollo.QueryResult<
 export function refetchOpportunityNameQuery(variables?: SchemaTypes.OpportunityNameQueryVariables) {
   return { query: OpportunityNameDocument, variables: variables };
 }
-export const OpportunityProfileDocument = gql`
-  query opportunityProfile($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      opportunity(ID: $opportunityId) {
-        id
-        nameID
-        displayName
-        lifecycle {
-          state
-        }
-        context {
-          ...ContextDetails
-          aspects {
-            id
-            title
-            framing
-            explanation
-          }
-          ecosystemModel {
-            id
-            actorGroups {
-              id
-              name
-              description
-              actors {
-                id
-                name
-                description
-                value
-                impact
-              }
-            }
-          }
-        }
-        community {
-          members {
-            displayName
-          }
-        }
-        tagset {
-          name
-          tags
-        }
-        projects {
-          ...ProjectDetails
-        }
-        relations {
-          id
-          type
-          actorRole
-          actorName
-          actorType
-          description
-        }
-        activity {
-          name
-          value
-        }
-      }
-    }
-  }
-  ${ContextDetailsFragmentDoc}
-  ${ProjectDetailsFragmentDoc}
-`;
-
-/**
- * __useOpportunityProfileQuery__
- *
- * To run a query within a React component, call `useOpportunityProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityProfileQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityProfileQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityProfileQuery,
-    SchemaTypes.OpportunityProfileQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
-    OpportunityProfileDocument,
-    options
-  );
-}
-export function useOpportunityProfileLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityProfileQuery,
-    SchemaTypes.OpportunityProfileQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityProfileQuery, SchemaTypes.OpportunityProfileQueryVariables>(
-    OpportunityProfileDocument,
-    options
-  );
-}
-export type OpportunityProfileQueryHookResult = ReturnType<typeof useOpportunityProfileQuery>;
-export type OpportunityProfileLazyQueryHookResult = ReturnType<typeof useOpportunityProfileLazyQuery>;
-export type OpportunityProfileQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityProfileQuery,
-  SchemaTypes.OpportunityProfileQueryVariables
->;
-export function refetchOpportunityProfileQuery(variables?: SchemaTypes.OpportunityProfileQueryVariables) {
-  return { query: OpportunityProfileDocument, variables: variables };
-}
 export const OpportunityProfileInfoDocument = gql`
   query opportunityProfileInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -7451,67 +7410,6 @@ export type OpportunityRelationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityRelationsQuery(variables?: SchemaTypes.OpportunityRelationsQueryVariables) {
   return { query: OpportunityRelationsDocument, variables: variables };
-}
-export const OpportunityTemplateDocument = gql`
-  query opportunityTemplate {
-    configuration {
-      template {
-        opportunities {
-          aspects
-          actorGroups
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityTemplateQuery__
- *
- * To run a query within a React component, call `useOpportunityTemplateQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityTemplateQuery({
- *   variables: {
- *   },
- * });
- */
-export function useOpportunityTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityTemplateQuery,
-    SchemaTypes.OpportunityTemplateQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
-    OpportunityTemplateDocument,
-    options
-  );
-}
-export function useOpportunityTemplateLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityTemplateQuery,
-    SchemaTypes.OpportunityTemplateQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
-    OpportunityTemplateDocument,
-    options
-  );
-}
-export type OpportunityTemplateQueryHookResult = ReturnType<typeof useOpportunityTemplateQuery>;
-export type OpportunityTemplateLazyQueryHookResult = ReturnType<typeof useOpportunityTemplateLazyQuery>;
-export type OpportunityTemplateQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityTemplateQuery,
-  SchemaTypes.OpportunityTemplateQueryVariables
->;
-export function refetchOpportunityTemplateQuery(variables?: SchemaTypes.OpportunityTemplateQueryVariables) {
-  return { query: OpportunityTemplateDocument, variables: variables };
 }
 export const OpportunityUserIdsDocument = gql`
   query opportunityUserIds($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
@@ -9362,6 +9260,123 @@ export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.RemoveUserAsOpportunityAdminMutation,
   SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
 >;
+export const OpportunityPageDocument = gql`
+  query opportunityPage($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        ...OpportunityPage
+      }
+    }
+  }
+  ${OpportunityPageFragmentDoc}
+`;
+
+/**
+ * __useOpportunityPageQuery__
+ *
+ * To run a query within a React component, call `useOpportunityPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityPageQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityPageQuery, SchemaTypes.OpportunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityPageQuery, SchemaTypes.OpportunityPageQueryVariables>(
+    OpportunityPageDocument,
+    options
+  );
+}
+export function useOpportunityPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityPageQuery, SchemaTypes.OpportunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityPageQuery, SchemaTypes.OpportunityPageQueryVariables>(
+    OpportunityPageDocument,
+    options
+  );
+}
+export type OpportunityPageQueryHookResult = ReturnType<typeof useOpportunityPageQuery>;
+export type OpportunityPageLazyQueryHookResult = ReturnType<typeof useOpportunityPageLazyQuery>;
+export type OpportunityPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityPageQuery,
+  SchemaTypes.OpportunityPageQueryVariables
+>;
+export function refetchOpportunityPageQuery(variables?: SchemaTypes.OpportunityPageQueryVariables) {
+  return { query: OpportunityPageDocument, variables: variables };
+}
+export const OpportunityTemplateDocument = gql`
+  query opportunityTemplate {
+    configuration {
+      template {
+        opportunities {
+          aspects
+          actorGroups
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityTemplateQuery__
+ *
+ * To run a query within a React component, call `useOpportunityTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityTemplateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOpportunityTemplateQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityTemplateQuery,
+    SchemaTypes.OpportunityTemplateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
+    options
+  );
+}
+export function useOpportunityTemplateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityTemplateQuery,
+    SchemaTypes.OpportunityTemplateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityTemplateQuery, SchemaTypes.OpportunityTemplateQueryVariables>(
+    OpportunityTemplateDocument,
+    options
+  );
+}
+export type OpportunityTemplateQueryHookResult = ReturnType<typeof useOpportunityTemplateQuery>;
+export type OpportunityTemplateLazyQueryHookResult = ReturnType<typeof useOpportunityTemplateLazyQuery>;
+export type OpportunityTemplateQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityTemplateQuery,
+  SchemaTypes.OpportunityTemplateQueryVariables
+>;
+export function refetchOpportunityTemplateQuery(variables?: SchemaTypes.OpportunityTemplateQueryVariables) {
+  return { query: OpportunityTemplateDocument, variables: variables };
+}
 export const AssignUserToOrganizationDocument = gql`
   mutation assignUserToOrganization($input: AssignOrganizationMemberInput!) {
     assignUserToOrganization(membershipData: $input) {

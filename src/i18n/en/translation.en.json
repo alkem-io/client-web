@@ -571,8 +571,8 @@
           }
         },
         "community": {
-          "title": "Community",
-          "subtitle": "Connect with the users contributing, get updates and discuss!",
+          "header": "Community",
+          "subheader": "Connect with the users contributing, get updates and discuss!",
           "body": ""
         }
       }
