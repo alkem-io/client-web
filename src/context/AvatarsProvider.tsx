@@ -4,7 +4,7 @@ import { useUserAvatarsQuery } from '../hooks/generated/graphql';
 import { User } from '../models/graphql-schema';
 
 interface AvatarsProviderProps {
-  users?: User[];
+  users?: Pick<User, 'id'>[];
   count?: number;
   children: (users: User[]) => React.ReactNode;
 }

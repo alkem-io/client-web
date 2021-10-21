@@ -4,19 +4,19 @@ import Tab from '@material-ui/core/Tab/Tab';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
-import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
+import Button from '../../components/core/Button';
+import Icon from '../../components/core/Icon';
+import Markdown from '../../components/core/Markdown';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { CommunicationMessageResult, User } from '../../models/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
-import Button from '../../components/core/Button';
-import Icon from '../../components/core/Icon';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
-import Markdown from '../../components/core/Markdown';
 
 export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
 
@@ -27,6 +27,7 @@ interface CommunitySectionProps {
   users: User[];
   shuffle?: boolean;
   updates?: CommunicationMessageResult[];
+  updateSenders?: Pick<User, 'id'>[];
   discussions?: CommunicationMessageResult[];
 }
 
@@ -45,6 +46,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   body,
   users,
   updates,
+  updateSenders,
   discussions,
   shuffle = false,
 }) => {
@@ -90,7 +92,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
                 <Box>
                   {updates && (
-                    <AvatarsProvider users={users}>
+                    <AvatarsProvider users={updateSenders}>
                       {detailedUsers => (
                         <CommunityUpdatesView
                           entities={{
