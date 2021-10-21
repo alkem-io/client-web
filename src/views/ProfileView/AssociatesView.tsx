@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles, Tooltip } from '@material-ui/core';
-import { Help } from '@material-ui/icons';
+import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
+import HelpButton from '../../components/core/HelpButton';
 import Typography from '../../components/core/Typography';
 
 const ASSOCIATE_CARDS_COUNT = 10;
@@ -16,9 +16,6 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       background: theme.palette.neutralLight.main,
-    },
-    icon: {
-      marginLeft: theme.spacing(1),
     },
   })
 );
@@ -33,9 +30,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
         title={
           <Typography variant="h3" weight="boldLight">
             {t('components.associates.title', { count: associates.length })}
-            <Tooltip title={t('components.associates.help')} arrow placement="right">
-              <Help color="primary" className={styles.icon} />
-            </Tooltip>
+            <HelpButton helpText={t('components.associates.help')} />
           </Typography>
         }
       />

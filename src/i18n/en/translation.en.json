@@ -405,6 +405,9 @@
         },
         "website": {
           "title": "Website"
+        },
+        "work": {
+          "title": "Work"
         }
       }
     },
@@ -414,6 +417,10 @@
     },
     "contributions": {
       "title": "Contributions",
+      "help": "The Hubs and Challenges that this organization is contributing to."
+    },
+    "pending-applications": {
+      "title": "Pending Applications",
       "help": "The Hubs and Challenges that this organization is contributing to."
     },
     "verified-status": {

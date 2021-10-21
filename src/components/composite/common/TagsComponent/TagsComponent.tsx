@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme =>
 
 interface Props {
   tags: string[];
-  count: number;
+  count?: number;
   className?: any;
   keepInRow?: boolean;
 }
@@ -74,8 +74,8 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
               size="small"
               icon={<FiberManualRecordIcon fontSize="small" />}
               className={clsx(styles.tagMargin, {
-                [styles[`count-${count}`]]: keepInRow && count <= 5,
-                [styles.maxWidth]: !keepInRow && count > 5,
+                [styles[`count-${count}`]]: keepInRow && count && count <= 5,
+                [styles.maxWidth]: !keepInRow && (!count || (count && count > 5)),
               })}
             />
           </Tooltip>

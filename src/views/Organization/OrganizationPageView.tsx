@@ -55,7 +55,11 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
             <AssociatesView associates={associates} />
           </Grid>
           <Grid item xs={12}>
-            <ContributionsView contributions={contributions} />
+            <ContributionsView
+              title={t('components.contributions.title')}
+              helpText={t('components.contributions.help')}
+              contributions={contributions}
+            />
           </Grid>
         </Grid>
       </Grid>

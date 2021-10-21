@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles, Tooltip } from '@material-ui/core';
-import { Help } from '@material-ui/icons';
+import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ContributionCard } from '../../components/composite/common/cards';
-import Typography from '../../components/core/Typography';
+import HelpButton from '../../components/core/HelpButton';
 import ContributionDetailsContainer from '../../containers/ContributionDetails/ContributionDetailsContainer';
 import { ContributionItem } from '../../models/entities/contribution';
 
 export interface ContributionViewProps {
+  title: string;
+  helpText?: string;
   contributions: ContributionItem[];
 }
 
@@ -16,29 +16,30 @@ const useStyles = makeStyles(theme =>
     card: {
       background: theme.palette.neutralLight.main,
     },
-    icon: {
-      marginLeft: theme.spacing(1),
+    cardHeader: {
+      paddingBottom: theme.spacing(1),
+    },
+    cardContent: {
+      paddingTop: theme.spacing(1),
     },
   })
 );
 
-export const ContributionsView: FC<ContributionViewProps> = ({ contributions }) => {
+export const ContributionsView: FC<ContributionViewProps> = ({ title, helpText, contributions }) => {
   const styles = useStyles();
-  const { t } = useTranslation();
 
   return (
     <Card elevation={0} className={styles.card} square>
       <CardHeader
+        className={styles.cardHeader}
         title={
-          <Typography variant="h3" weight="boldLight">
-            {t('components.contributions.title')}
-            <Tooltip title={t('components.contributions.help')} arrow placement="right">
-              <Help color="primary" className={styles.icon} />
-            </Tooltip>
+          <Typography variant="h3">
+            {title}
+            {helpText && <HelpButton helpText={helpText} />}
           </Typography>
         }
       ></CardHeader>
-      <CardContent>
+      <CardContent className={styles.cardContent}>
         <Grid container spacing={2}>
           {contributions.map((x, i) => (
             <Grid item key={i}>

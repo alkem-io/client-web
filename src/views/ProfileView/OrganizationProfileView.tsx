@@ -31,7 +31,7 @@ export interface OrganizationProfileViewProps {
     socialLinks?: SocialLinkItem[];
     tagsets: { name: string; tags: string[] }[];
     links: string[];
-    varified?: boolean;
+    verified?: boolean;
   };
   permissions: {
     canEdit: boolean;
@@ -111,7 +111,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             )
           }
           title={
-            <Box padding={1}>{entity.varified !== undefined && <VerifiedStatus verified={entity.varified} />}</Box>
+            <Box padding={1}>{entity.verified !== undefined && <VerifiedStatus verified={entity.verified} />}</Box>
           }
         />
       </CardMedia>
@@ -136,15 +136,6 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
               <Detail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
             </Grid>
           </Grid>
-          {/* {website && (
-            <Grid item>
-              <Typography color="primary" weight="boldLight">
-                <Public className={styles.icon} />
-                {t('components.profile.fields.website.title')}
-              </Typography>
-              <Link href={website}>{website} </Link>
-            </Grid>
-          )} */}
           <Grid item>
             <Detail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
@@ -164,7 +155,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
               {t('components.profile.fields.links.title')}
             </Typography>
             {entity.links?.map((l, i) => (
-              <Link key={i} href={l}>
+              <Link key={i} href={l} target="_blank">
                 {l}
               </Link>
             ))}

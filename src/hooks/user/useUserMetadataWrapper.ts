@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { Role } from '../../models/Role';
+import { ContributionItem } from '../../models/entities/contribution';
 import { AuthorizationCredential, User, UserMembershipDetailsFragment } from '../../models/graphql-schema';
+import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
 
 export interface UserMetadata {
@@ -21,9 +22,46 @@ export interface UserMetadata {
   challenges: string[];
   ecoverses: string[];
   communities: Record<string, string>;
+  contributions: ContributionItem[];
+  pendingApplications: ContributionItem[];
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
+
+const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
+  if (!membershipData) return [];
+
+  const ecoverses = membershipData.ecoverses.map<ContributionItem>(e => ({
+    ecoverseId: e.ecoverseID,
+  }));
+
+  const challenges = membershipData.ecoverses.flatMap<ContributionItem>(e =>
+    e.challenges.map(c => ({
+      ecoverseId: e.nameID,
+      challengeId: c.nameID,
+    }))
+  );
+
+  const opportunities = membershipData.ecoverses.flatMap<ContributionItem>(e =>
+    e.opportunities.map(o => ({
+      ecoverseId: e.nameID,
+      opportunityId: o.nameID,
+    }))
+  );
+  return [...ecoverses, ...challenges, ...opportunities];
+};
+
+const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) => {
+  if (!membershipData) return [];
+
+  return (
+    membershipData.applications?.map<ContributionItem>(a => ({
+      ecoverseId: a.ecoverseID,
+      challengeId: a.challengeID,
+      opportunityId: a.opportunityID,
+    })) || []
+  );
+};
 
 export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
@@ -93,6 +131,8 @@ export const useUserMetadataWrapper = () => {
         organizations,
         ecoverses,
         communities,
+        contributions: getContributions(membershipData),
+        pendingApplications: getPendingApplications(membershipData),
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);

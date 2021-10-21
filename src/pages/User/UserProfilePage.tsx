@@ -3,6 +3,7 @@ import { Loading } from '../../components/core';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfileView, { UserProfileViewProps } from '../../views/User/UserProfileView';
 import { Error404 } from '../';
+import { ThemeProviderV2 } from '../../context/ThemeProvider';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -27,6 +28,10 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
     isCurrentUser: currentUser?.user.id === userMetadata.user.id,
   };
 
-  return <UserProfileView entities={{ userMetadata, verified }} options={options} />;
+  return (
+    <ThemeProviderV2>
+      <UserProfileView entities={{ userMetadata, verified }} options={options} />
+    </ThemeProviderV2>
+  );
 };
 export default UserProfilePage;
