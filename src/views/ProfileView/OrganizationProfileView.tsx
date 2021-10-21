@@ -56,7 +56,9 @@ const useStyles = makeStyles(theme =>
       background: theme.palette.neutralLight.main,
     },
     media: {
-      background: theme.palette.neutralMedium.main,
+      // TODO Use theme palette colors (primary, pacific blue, positive)
+      // background: `linear-gradient(90deg, ${theme.palette.primary.main} 1%, rgba(0,188,212,1) 43%, ${theme.palette.positive.main} 100%)`,
+      background: 'linear-gradient(90deg, rgba(0,129,143,1) 1%, rgba(0,188,212,1) 43%, rgba(0,168,143,1) 100%)',
       height: 140,
     },
     content: {
