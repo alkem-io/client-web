@@ -3,6 +3,7 @@ export enum SocialNetworkEnum {
   github = 'github',
   twitter = 'twitter',
   email = 'email',
+  website = 'website',
 }
 
 export const toSocialNetworkEnum = (type: string): SocialNetworkEnum | undefined => {

@@ -84,12 +84,14 @@ const useStyles = makeStyles(theme =>
     headerAction: {
       alignSelf: 'flex-end',
     },
+    icon: {
+      marginRight: theme.spacing(1),
+    },
   })
 );
 export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { website } = entity;
   return (
     <Card elevation={0} className={styles.card} square>
       <CardMedia className={styles.media} image={entity.banner}>
@@ -135,14 +137,15 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
               <Detail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
             </Grid>
           </Grid>
-          {website && (
+          {/* {website && (
             <Grid item>
               <Typography color="primary" weight="boldLight">
+                <Public className={styles.icon} />
                 {t('components.profile.fields.website.title')}
               </Typography>
               <Link href={website}>{website} </Link>
             </Grid>
-          )}
+          )} */}
           <Grid item>
             <Detail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
