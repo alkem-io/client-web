@@ -403,6 +403,7 @@ export const OrganizationInfoFragmentDoc = gql`
     nameID
     displayName
     contactEmail
+    domain
     verification {
       id
       status

@@ -2,14 +2,14 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
 import { SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
-import { useOrganization, useUserContext } from '../../hooks';
+import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
 import { Container } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
-import { AuthorizationCredential, Credential, OrganizationInfoFragment } from '../../models/graphql-schema';
+import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 export interface OrganizationContainerEntities {
@@ -23,6 +23,7 @@ export interface OrganizationContainerEntities {
   permissions: {
     canEdit: boolean;
   };
+  website?: string;
 }
 
 export interface OrganizationContainerActions {}
@@ -37,6 +38,8 @@ export interface OrganizationPageContainerProps
 
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization } = useOrganization();
+
+  const usersWithRoles = useUserCardRoleName((organization?.members || []) as User[], organizationId);
 
   const { data: membershipData, loading: orgMembershipLoading } = useMembershipOrganizationQuery({
     variables: {
@@ -95,33 +98,10 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   };
 
   const associates = useMemo(() => {
-    const toRole = (credentials: Credential[] = []) => {
-      let result = 'Member';
-
-      if (
-        credentials.findIndex(
-          c =>
-            (c.type === AuthorizationCredential.OrganizationAdmin && c.resourceID === organizationId) ||
-            c.type === AuthorizationCredential.GlobalAdmin
-        ) > -1
-      ) {
-        result = 'Admin';
-      }
-
-      if (
-        credentials.findIndex(
-          c => c.type === AuthorizationCredential.OrganizationOwner && c.resourceID === organizationId
-        ) > -1
-      ) {
-        result = 'Owner';
-      }
-      return result;
-    };
-
     return (
-      organization?.members?.map<UserCardProps>(x => ({
+      usersWithRoles.map<UserCardProps>(x => ({
         displayName: x.displayName,
-        roleName: toRole(x.agent?.credentials),
+        roleName: x.roleName,
         avatarSrc: x.profile?.avatar || '',
         tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
         url: buildUserProfileUrl(x.nameID),
@@ -129,7 +109,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         country: COUNTRIES_BY_CODE[x.country],
       })) || []
     );
-  }, [organization]);
+  }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
     const { ecoversesHosting = [], challengesLeading = [] } = membershipData?.membershipOrganization || {};

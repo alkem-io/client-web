@@ -2495,6 +2495,7 @@ export type OrganizationInfoFragment = {
   nameID: string;
   displayName: string;
   contactEmail?: Maybe<string>;
+  domain?: Maybe<string>;
   website?: Maybe<string>;
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
@@ -5510,6 +5511,7 @@ export type OrganizationInfoQuery = {
     nameID: string;
     displayName: string;
     contactEmail?: Maybe<string>;
+    domain?: Maybe<string>;
     website?: Maybe<string>;
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {

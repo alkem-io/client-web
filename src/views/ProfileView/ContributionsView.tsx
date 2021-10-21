@@ -27,7 +27,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions }) 
   const { t } = useTranslation();
 
   return (
-    <Card elevation={0} className={styles.card}>
+    <Card elevation={0} className={styles.card} square>
       <CardHeader
         title={
           <Typography variant="h3" weight="boldLight">
@@ -39,7 +39,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions }) 
         }
       ></CardHeader>
       <CardContent>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           {contributions.map((x, i) => (
             <Grid item key={i}>
               <ContributionDetailsContainer entities={x}>

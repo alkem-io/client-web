@@ -8,12 +8,12 @@ interface AssociateCardProps extends Omit<UserCardProps, 'url'> {}
 const useStyles = makeStyles(theme =>
   createStyles({
     avatar: {
-      width: theme.spacing(9),
-      height: theme.spacing(7),
+      width: theme.spacing(12),
+      height: theme.spacing(9),
     },
     wrapper: {
-      width: theme.spacing(9),
-      height: theme.spacing(10),
+      width: theme.spacing(12),
+      height: theme.spacing(13),
     },
     text: {
       fontSize: 10,
@@ -32,7 +32,7 @@ export const AssociateCard: FC<AssociateCardProps> = props => {
           {displayName[0]}
         </Avatar>
       </Tooltip>
-      <Typography color="primary" weight="boldLight" className={styles.text}>
+      <Typography color="primary" weight="boldLight" className={styles.text} clamp={1}>
         {displayName}
       </Typography>
       {/* TODO Put Icon infornt of the role */}

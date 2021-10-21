@@ -32,6 +32,7 @@ export interface OrganizationProfileViewProps {
     tagsets: { name: string; tags: string[] }[];
     links: string[];
     varified?: boolean;
+    website?: string;
   };
   permissions: {
     canEdit: boolean;
@@ -59,22 +60,22 @@ const useStyles = makeStyles(theme =>
       // TODO Use theme palette colors (primary, pacific blue, positive)
       // background: `linear-gradient(90deg, ${theme.palette.primary.main} 1%, rgba(0,188,212,1) 43%, ${theme.palette.positive.main} 100%)`,
       background: 'linear-gradient(90deg, rgba(0,129,143,1) 1%, rgba(0,188,212,1) 43%, rgba(0,168,143,1) 100%)',
-      height: 140,
+      height: theme.spacing(14),
     },
     content: {
-      paddingTop: theme.spacing(6),
-      paddingLeft: theme.spacing(6),
-      paddingRight: theme.spacing(6),
+      paddingTop: theme.spacing(7),
+      paddingLeft: theme.spacing(7),
+      paddingRight: theme.spacing(7),
     },
     avatar: {
-      width: theme.spacing(13),
-      height: theme.spacing(13),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
     },
     header: {
       alignItems: 'flex-end',
-      paddingTop: theme.spacing(6),
-      paddingLeft: theme.spacing(6),
-      paddingRight: theme.spacing(6),
+      paddingTop: theme.spacing(3),
+      paddingLeft: theme.spacing(7),
+      paddingRight: theme.spacing(3),
     },
     headerTitle: {
       display: 'flex',
@@ -88,9 +89,9 @@ const useStyles = makeStyles(theme =>
 export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity, permissions }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-
+  const { website } = entity;
   return (
-    <Card elevation={0} className={styles.card}>
+    <Card elevation={0} className={styles.card} square>
       <CardMedia className={styles.media} image={entity.banner}>
         <CardHeader
           classes={{
@@ -134,17 +135,27 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
               <Detail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
             </Grid>
           </Grid>
+          {website && (
+            <Grid item>
+              <Typography color="primary" weight="boldLight">
+                {t('components.profile.fields.website.title')}
+              </Typography>
+              <Link href={website}>{website} </Link>
+            </Grid>
+          )}
           <Grid item>
             <Detail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
-          {entity.tagsets?.map((tagset, i) => (
-            <Grid item key={i}>
-              <Typography color="primary" weight="boldLight">
-                {tagset.name}
-              </Typography>
-              <TagsComponent tags={tagset.tags} count={5} />
-            </Grid>
-          ))}
+          {entity.tagsets
+            ?.filter(t => t.tags.length > 0)
+            .map((tagset, i) => (
+              <Grid item key={i}>
+                <Typography color="primary" weight="boldLight">
+                  {tagset.name}
+                </Typography>
+                <TagsComponent tags={tagset.tags} count={5} />
+              </Grid>
+            ))}
 
           <Grid item container direction="column">
             <Typography color="primary" weight="boldLight">

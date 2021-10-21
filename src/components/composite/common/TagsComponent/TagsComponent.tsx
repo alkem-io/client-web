@@ -2,9 +2,7 @@ import React, { FC } from 'react';
 import Chip from '@material-ui/core/Chip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { useTranslation } from 'react-i18next';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Tooltip from '@material-ui/core/Tooltip';
-import { createStyles } from '@material-ui/core';
+import { createStyles, makeStyles, Tooltip } from '@material-ui/core';
 import clsx from 'clsx';
 
 const useStyles = makeStyles(theme =>

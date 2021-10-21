@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, createStyles, Grid, Link, makeStyles, Tooltip } from '@material-ui/core';
+import { Card, CardContent, CardHeader, createStyles, Grid, makeStyles, Tooltip } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
-import { RouterLink } from '../../components/core/RouterLink';
 import Typography from '../../components/core/Typography';
+import { ASSOCIATE_CARDS_COUNT } from '../../models/constants/cards.constants';
 
 interface AssociatesViewProps {
   associates: UserCardProps[];
@@ -27,7 +27,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
   const { t } = useTranslation();
 
   return (
-    <Card elevation={0} className={styles.card}>
+    <Card elevation={0} className={styles.card} square>
       <CardHeader
         title={
           <Typography variant="h3" weight="boldLight">
@@ -40,15 +40,17 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
       />
       <CardContent>
         <Grid item container spacing={2}>
-          {associates.slice(0, 10).map((x, i) => (
+          {associates.slice(0, ASSOCIATE_CARDS_COUNT).map((x, i) => (
             <Grid key={i} item>
               <AssociateCard {...x} />
             </Grid>
           ))}
           <Grid item container justifyContent="flex-end">
+            {/* Hide untill the search page is ready. */}
+            {/*
             <Link component={RouterLink} to="/user/search">
               {t('buttons.see-more')}
-            </Link>
+            </Link> */}
           </Grid>
         </Grid>
       </CardContent>

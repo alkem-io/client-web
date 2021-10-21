@@ -10,7 +10,7 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
   const { organization, displayName, loading } = useOrganization();
 
-  const rootPaths = useMemo(() => [{ value: '/', name: 'organization', real: true }], [paths]);
+  const rootPaths = useMemo(() => [{ value: '/', name: 'organization', real: false }], [paths]);
   const currentPaths = useMemo(
     () => (organization ? [...rootPaths, { value: url, name: displayName, real: true }] : rootPaths),
     [rootPaths, displayName]

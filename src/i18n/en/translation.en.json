@@ -402,6 +402,9 @@
         },
         "location": {
           "title": "Location"
+        },
+        "website": {
+          "title": "Website"
         }
       }
     },
