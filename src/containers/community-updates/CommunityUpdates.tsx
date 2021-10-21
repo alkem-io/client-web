@@ -42,10 +42,13 @@ export interface CommunityUpdatesEntities {
 }
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
+  const handleError = useApolloErrorHandler();
   const { communityId } = entities;
 
   const { data, loading } = useCommunityUpdatesQuery({ variables: { communityId } });
-  const [sendUpdate, { loading: loadingSendUpdate }] = useSendCommunityUpdateMutation();
+  const [sendUpdate, { loading: loadingSendUpdate }] = useSendCommunityUpdateMutation({
+    onError: handleError,
+  });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
