@@ -33,15 +33,15 @@ export const theme: ThemeOptions = {
   },
 };
 
-const currentTheme = createTheme(theme);
+const defaultMUITheme = createTheme(theme);
 
 theme.overrides = {
-  ...currentTheme.overrides,
-  ...buttonOverrides(currentTheme),
-  ...dialogOverrides(currentTheme),
-  ...chipOverrides(currentTheme),
-  ...iconOverrides(currentTheme),
-  ...cardOverrides(currentTheme),
+  ...defaultMUITheme.overrides,
+  ...buttonOverrides(defaultMUITheme),
+  ...dialogOverrides(defaultMUITheme),
+  ...chipOverrides(defaultMUITheme),
+  ...iconOverrides(defaultMUITheme),
+  ...cardOverrides(defaultMUITheme),
 };
 
 declare module '@material-ui/core/styles/createTheme' {
