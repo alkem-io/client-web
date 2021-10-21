@@ -9,7 +9,7 @@ import {
   useRemoveUpdateCommunityMutation,
   useSendCommunityUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { CommunicationMessageResult, Community } from '../../models/graphql-schema';
+import { CommunicationMessageResult, Community, User } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
 import { DocumentNode, useQuery } from '@apollo/client';
 import { logger } from '../../services/logging/winston/logger';
@@ -39,6 +39,7 @@ export interface CommunityUpdatesState {
 
 export interface CommunityUpdatesEntities {
   messages: CommunicationMessageResult[];
+  senders: Pick<User, 'id'>[];
 }
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
@@ -74,10 +75,13 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     [sendUpdate, communityId]
   );
 
+  const messages = data?.community.updatesRoom?.messages || [];
+  const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
+
   return (
     <>
       {children(
-        { messages: data?.community.updatesRoom?.messages || [] },
+        { messages, senders },
         { onLoadMore: () => {}, onSubmit, onRemove },
         {
           retrievingUpdateMessages: loading,
@@ -174,6 +178,7 @@ export interface CommunityUpdatesDataState {
 
 export interface CommunityUpdatesDataEntities {
   messages: CommunicationMessageResult[];
+  senders: Pick<User, 'id'>[];
 }
 
 // TODO - need to merge this into the CommunityUpdatesContainer once
@@ -189,6 +194,7 @@ export const CommunityUpdatesDataContainer = <TQuery, TVariables>({
   const roomId = roomIdSelector(data);
 
   const updateMessages = useCommunityUpdateSubscriptionSelector(messages, roomId);
+  const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
-  return <>{children({ messages: updateMessages }, { retrievingUpdateMessages: loading })}</>;
+  return <>{children({ messages: updateMessages, senders }, { retrievingUpdateMessages: loading })}</>;
 };
