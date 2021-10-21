@@ -2,10 +2,6 @@ export enum SocialNetworkEnum {
   linkedin = 'linkedin',
   github = 'github',
   twitter = 'twitter',
-  facebook = 'facebook',
-  instagram = 'instagram',
-  pinterest = 'pinterest',
-  reddit = 'reddit',
   email = 'email',
 }
 

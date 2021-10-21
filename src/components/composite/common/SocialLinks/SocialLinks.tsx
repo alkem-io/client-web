@@ -1,5 +1,5 @@
 import { Link } from '@material-ui/core';
-import { Block, Facebook, GitHub, Instagram, LinkedIn, Mail, Reddit, Twitter } from '@material-ui/icons';
+import { Block, GitHub, LinkedIn, Mail, Twitter } from '@material-ui/icons';
 import React, { FC } from 'react';
 import { SocialNetworkEnum } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';
@@ -15,18 +15,12 @@ const getSocialIcon = (type: SocialNetworkEnum) => {
   switch (type) {
     case SocialNetworkEnum.email:
       return <Mail fontSize={fontSize} />;
-    case SocialNetworkEnum.facebook:
-      return <Facebook fontSize={fontSize} />;
     case SocialNetworkEnum.github:
       return <GitHub fontSize={fontSize} />;
-    case SocialNetworkEnum.instagram:
-      return <Instagram fontSize={fontSize} />;
     case SocialNetworkEnum.linkedin:
       return <LinkedIn fontSize={fontSize} />;
     case SocialNetworkEnum.twitter:
       return <Twitter fontSize={fontSize} />;
-    case SocialNetworkEnum.reddit:
-      return <Reddit fontSize={fontSize} />;
     default:
       return <Block />;
   }
