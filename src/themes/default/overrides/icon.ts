@@ -1,7 +1,7 @@
-import { ThemeOptions } from '@material-ui/core';
+import { Theme } from '@material-ui/core';
 import { Overrides } from '@material-ui/core/styles/overrides';
 
-const iconOverrides = (theme: ThemeOptions): Overrides | undefined => {
+const iconOverrides = (theme: Theme): Overrides | undefined => {
   if (!theme) {
     return undefined;
   }

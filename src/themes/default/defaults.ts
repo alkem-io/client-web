@@ -7,14 +7,11 @@ import chipOverrides from './overrides/chip';
 import iconOverrides from './overrides/icon';
 import cardOverrides from './overrides/card';
 
-const space = 10;
-
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: typographyOptions,
   shape: { borderRadius: 5 },
-  space: space,
-  spacing: times => times * space,
+  spacing: 10,
   breakpoints: {
     values: {
       xs: 0,
@@ -36,18 +33,19 @@ export const theme: ThemeOptions = {
   },
 };
 
+const defaultMUITheme = createTheme(theme);
+
 theme.overrides = {
-  ...theme.overrides,
-  ...buttonOverrides(theme),
-  ...dialogOverrides(theme),
-  ...chipOverrides(theme),
-  ...iconOverrides(theme),
-  ...cardOverrides(theme),
+  ...defaultMUITheme.overrides,
+  ...buttonOverrides(defaultMUITheme),
+  ...dialogOverrides(defaultMUITheme),
+  ...chipOverrides(defaultMUITheme),
+  ...iconOverrides(defaultMUITheme),
+  ...cardOverrides(defaultMUITheme),
 };
 
 declare module '@material-ui/core/styles/createTheme' {
   interface Theme {
-    space: number;
     sidebar: {
       maxWidth: number;
       minWidth: number;
@@ -57,13 +55,12 @@ declare module '@material-ui/core/styles/createTheme' {
     };
   }
   interface ThemeOptions {
-    space: number;
-    sidebar: {
-      maxWidth: number;
-      minWidth: number;
+    sidebar?: {
+      maxWidth?: number;
+      minWidth?: number;
     };
-    earlyAccessAlert: {
-      height: number;
+    earlyAccessAlert?: {
+      height?: number;
     };
   }
 }

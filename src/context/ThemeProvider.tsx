@@ -1,5 +1,5 @@
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import React, { FC } from 'react';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { defaultTheme } from '../themes/default';
 
 const ThemeProvider: FC<{}> = ({ children }) => {
@@ -7,4 +7,19 @@ const ThemeProvider: FC<{}> = ({ children }) => {
   return <MuiThemeProvider theme={defaultTheme}>{children}</MuiThemeProvider>;
 };
 
-export { ThemeProvider };
+const ThemeProviderV2: FC<{}> = ({ children }) => {
+  return (
+    <MuiThemeProvider
+      theme={theme =>
+        createTheme({
+          ...theme,
+          spacing: 8,
+        })
+      }
+    >
+      {children}
+    </MuiThemeProvider>
+  );
+};
+
+export { ThemeProvider, ThemeProviderV2 };
