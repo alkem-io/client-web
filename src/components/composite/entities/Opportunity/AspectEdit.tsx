@@ -8,15 +8,12 @@ import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   useCreateAspectMutation,
-  useOpportunityProfileQuery,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../../../hooks/generated/graphql';
 import { createStyles } from '../../../../hooks/useTheme';
 import { Aspect } from '../../../../models/graphql-schema';
 import { replaceAll } from '../../../../utils/replaceAll';
-
-import { Loading } from '../../../core';
 import Button from '../../../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import { TextArea } from '../../../core/TextInput';
@@ -28,6 +25,7 @@ interface Props {
   data?: Aspect;
   id?: string;
   opportunityId: string;
+  contextId: string;
   actorGroupId?: string;
   isCreate?: boolean;
   existingAspectNames?: string[];
@@ -51,16 +49,13 @@ const useContextEditStyles = createStyles(theme => ({
   },
 }));
 
-const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existingAspectNames }) => {
+const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextId, existingAspectNames }) => {
   const { t } = useTranslation();
   const { ecoverseNameId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
-  const { data: opportunity, loading: loadingOpportunity } = useOpportunityProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId },
-  });
-  const contextId = opportunity?.ecoverse?.opportunity?.context?.id;
+
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
   const isCreate = !id;
 
@@ -121,8 +116,6 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, existing
   };
 
   let submitWired;
-
-  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
     <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="aspect-edit-dialog-title">

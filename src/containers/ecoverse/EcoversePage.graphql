@@ -7,6 +7,7 @@ query ecoversePage($ecoverseId: UUID_NAMEID!) {
 fragment EcoversePage on Ecoverse {
   ...EcoverseInfo
   activity {
+    id
     name
     value
   }

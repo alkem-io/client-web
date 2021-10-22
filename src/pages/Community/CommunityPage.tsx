@@ -82,6 +82,7 @@ const CommunityPage: FC<Props> = ({
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
+    errorPolicy: 'all',
   });
   const hostOrganization = _orgProfile?.organization;
 

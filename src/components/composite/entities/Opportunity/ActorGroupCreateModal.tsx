@@ -2,11 +2,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
-import {
-  refetchOpportunityActorGroupsQuery,
-  useCreateActorGroupMutation,
-  useOpportunityProfileQuery,
-} from '../../../../hooks/generated/graphql';
+import { refetchOpportunityActorGroupsQuery, useCreateActorGroupMutation } from '../../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../../hooks';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Button from '../../../core/Button';
@@ -19,10 +15,11 @@ interface P {
   onHide: () => void;
   show: boolean;
   opportunityId: string;
+  ecosystemModelId: string;
   availableActorGroupNames: string[];
 }
 
-const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableActorGroupNames }) => {
+const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, ecosystemModelId, availableActorGroupNames }) => {
   const { t } = useTranslation();
   const { ecoverseNameId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
@@ -32,10 +29,7 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
   });
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
   const [description, setDescription] = useState<string>('');
-  const { data, loading: loadingOpportunity } = useOpportunityProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId },
-  });
-  const ecosystemModelId = data?.ecoverse?.opportunity?.context?.ecosystemModel?.id;
+
   const isFormValid = name && description && description.length >= 2 && description.length <= 380;
 
   const onDescriptionInput = ({ target: { value } }) => {
@@ -59,8 +53,6 @@ const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, availableAc
         setDescription('');
       });
   };
-
-  if (loadingOpportunity) return <Loading text={'Loading opportunity'} />;
 
   return (
     <Dialog open={show} maxWidth="md" aria-labelledby="actor-group-dialog-title">

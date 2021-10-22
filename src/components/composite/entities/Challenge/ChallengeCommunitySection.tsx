@@ -31,7 +31,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
 
   const addCommunityUpdatesContainer = useCallback(
     (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
-      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS) && ecoverseId && challengeId) {
         return (
           <CommunityUpdatesDataContainer<ChallengeCommunityMessagesQuery, ChallengeCommunityMessagesQueryVariables>
             entities={{
@@ -53,7 +53,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
         return children(undefined);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseId, challengeId]
   );
 
   const memoizedNode = useMemo(
