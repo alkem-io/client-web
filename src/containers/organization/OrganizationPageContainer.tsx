@@ -60,6 +60,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       }))
       .filter(isSocialLink);
     if (organization?.contactEmail) result.push({ type: SocialNetworkEnum.email, url: organization?.contactEmail });
+    if (organization?.website) result.push({ type: SocialNetworkEnum.website, url: organization?.website });
 
     return result;
   }, [organization]);
@@ -68,8 +69,6 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     let result = (organization?.profile.references || [])
       .filter(x => !isSocialNetworkSupported(x.name))
       .map(s => s.uri);
-
-    if (organization?.website) result = [organization.website, ...result];
 
     return result;
   }, [organization]);
