@@ -1,2 +1,0 @@
-export const ASSOCIATE_CARDS_COUNT = 10;
-export const CONTRIBUTION_CARDS_COUNT = 10;

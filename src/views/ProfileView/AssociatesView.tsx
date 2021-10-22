@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
 import Typography from '../../components/core/Typography';
-import { ASSOCIATE_CARDS_COUNT } from '../../models/constants/cards.constants';
+
+const ASSOCIATE_CARDS_COUNT = 10;
 
 interface AssociatesViewProps {
   associates: UserCardProps[];
