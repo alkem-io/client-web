@@ -1,7 +1,7 @@
-import { SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
+import { Theme } from '@material-ui/core';
 import { Overrides } from '@material-ui/core/styles/overrides';
 
-const dialogOverrides = (theme: ThemeOptions): Overrides | undefined => {
+const dialogOverrides = (theme: Theme): Overrides | undefined => {
   if (!theme) {
     return undefined;
   }
@@ -13,8 +13,8 @@ const dialogOverrides = (theme: ThemeOptions): Overrides | undefined => {
     },
     MuiDialogContent: {
       dividers: {
-        borderTopColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
-        borderBottomColor: (theme?.palette?.neutralMedium as SimplePaletteColorOptions).main,
+        borderTopColor: theme.palette.neutralMedium.main,
+        borderBottomColor: theme.palette.neutralMedium.main,
       },
     },
   };

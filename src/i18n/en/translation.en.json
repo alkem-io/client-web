@@ -370,6 +370,54 @@
     },
     "settingsButton": {
       "tooltip": "Settings"
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Description"
+        },
+        "phone": {
+          "title": "Phone"
+        },
+        "telephone": {
+          "title": "Telephone"
+        },
+        "mobile": {
+          "title": "Mobile"
+        },
+        "keywords": {
+          "title": "Keywords"
+        },
+        "skills": {
+          "title": "Skills"
+        },
+        "capabilities": {
+          "title": "Capabilities"
+        },
+        "links": {
+          "title": "Links"
+        },
+        "location": {
+          "title": "Location"
+        },
+        "website": {
+          "title": "Website"
+        }
+      }
+    },
+    "associates": {
+      "title": "Associates ({{count}})",
+      "help": "Users associated with this organization."
+    },
+    "contributions": {
+      "title": "Contributions",
+      "help": "The Hubs and Challenges that this organization is contributing to."
+    },
+    "verified-status": {
+      "help": "Verification status: has the identity and information about this Organization been formally verified."
     }
   },
   "navigation": {
@@ -412,6 +460,9 @@
       }
     },
     "organization": {
+      "settings": {
+        "tooltip": "Organization settings"
+      },
       "ecoverses": {
         "title": "Challenge Hubs hosting",
         "subtitle": "Challenge Hubs which this organization is hosting",
