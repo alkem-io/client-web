@@ -414,7 +414,10 @@
     },
     "contributions": {
       "title": "Contributions",
-      "help": "Shows different challenges and opportunities you are contributing to."
+      "help": "The Hubs and Challenges that this organization is contributing to."
+    },
+    "verified-status": {
+      "help": "Verification status: has the identity and information about this Organization been formally verified."
     }
   },
   "navigation": {

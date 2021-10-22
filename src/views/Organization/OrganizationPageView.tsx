@@ -40,7 +40,6 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
       tagsets,
       socialLinks,
       links,
-      website: organization?.domain,
     }),
     [organization, tagsets, socialLinks, links]
   );

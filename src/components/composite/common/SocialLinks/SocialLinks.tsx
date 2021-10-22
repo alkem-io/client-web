@@ -1,7 +1,7 @@
 import { Link } from '@material-ui/core';
 import { Block, GitHub, LinkedIn, Mail, Public, Twitter } from '@material-ui/icons';
 import React, { FC } from 'react';
-import { SocialNetworkEnum } from '../../../../models/enums/SocialNetworks';
+import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';
 
 interface ContactDetailsProps {
@@ -16,11 +16,11 @@ const getSocialIcon = (type: SocialNetworkEnum) => {
     case SocialNetworkEnum.email:
       return <Mail fontSize={fontSize} />;
     case SocialNetworkEnum.github:
-      return <GitHub fontSize={fontSize} />;
+      return <GitHub fontSize={fontSize} htmlColor="#000000" />;
     case SocialNetworkEnum.linkedin:
-      return <LinkedIn fontSize={fontSize} />;
+      return <LinkedIn fontSize={fontSize} htmlColor="#0e76a8" />;
     case SocialNetworkEnum.twitter:
-      return <Twitter fontSize={fontSize} />;
+      return <Twitter fontSize={fontSize} htmlColor="#00acee" />;
     case SocialNetworkEnum.website:
       return <Public fontSize={fontSize} />;
     default:
@@ -28,7 +28,7 @@ const getSocialIcon = (type: SocialNetworkEnum) => {
   }
 };
 
-const getSocialLink = (type: SocialNetworkEnum, url: string) => {
+const getSocialLinkUrl = (type: SocialNetworkEnum, url: string) => {
   if (type === SocialNetworkEnum.email) {
     if (!url.startsWith('mailto:')) {
       return `mailto:${url.trimStart()}`;
@@ -49,11 +49,13 @@ export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
         {title}
       </Typography>
 
-      {items?.map((item, i) => (
-        <Link key={i} href={getSocialLink(item.type, item.url)} rel="noreferrer" tabIndex={0}>
-          {getSocialIcon(item.type)}
-        </Link>
-      ))}
+      {items
+        ?.sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type])
+        .map((item, i) => (
+          <Link key={i} href={getSocialLinkUrl(item.type, item.url)} rel="noreferrer" tabIndex={0}>
+            {getSocialIcon(item.type)}
+          </Link>
+        ))}
     </>
   );
 };

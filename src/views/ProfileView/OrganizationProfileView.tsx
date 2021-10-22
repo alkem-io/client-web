@@ -32,7 +32,6 @@ export interface OrganizationProfileViewProps {
     tagsets: { name: string; tags: string[] }[];
     links: string[];
     varified?: boolean;
-    website?: string;
   };
   permissions: {
     canEdit: boolean;

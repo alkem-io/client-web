@@ -60,7 +60,6 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       }))
       .filter(isSocialLink);
     if (organization?.contactEmail) result.push({ type: SocialNetworkEnum.email, url: organization?.contactEmail });
-    if (organization?.domain) result.push({ type: SocialNetworkEnum.website, url: organization?.domain });
 
     return result;
   }, [organization]);
