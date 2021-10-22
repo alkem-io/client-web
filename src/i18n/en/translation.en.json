@@ -357,6 +357,7 @@
     "communityUpdates": {
       "title": "Let your community know what's next",
       "updatesTitle": "Published updates",
+      "msg-not-empty": "Message cannot be empty",
       "actions": {
         "add": {
           "buttonTitle": "Post Update"

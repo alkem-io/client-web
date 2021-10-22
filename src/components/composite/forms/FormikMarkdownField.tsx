@@ -53,7 +53,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   return (
     <FormGroup>
       <div className={styles.withTooltipIcon}>
-        <InputLabel required={required}>{title}</InputLabel>
+        {title !== '' && <InputLabel required={required}>{title}</InputLabel>}
         {tooltipTitle && (
           <Tooltip title={tooltipTitle} arrow placement="top" aria-label={`tooltip-${title}`}>
             <InfoIcon fontSize="inherit" color="primary" />

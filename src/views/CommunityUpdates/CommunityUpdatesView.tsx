@@ -88,6 +88,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
+  // styling
+  const styles = useStyles();
+  // components
+  const getMarkdownInput = useMarkdownInputField();
+  const notify = useNotification();
+  const { t } = useTranslation();
   // entities
   const { messages, members } = entities;
   const { loadingMessages, removingMessage } = state;
@@ -97,7 +103,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': yup.string(),
+    'community-update': yup.string().required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
@@ -114,13 +120,6 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   useEffect(() => {
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
-
-  // styling
-  const styles = useStyles();
-  // components
-  const getMarkdownInput = useMarkdownInputField();
-  const notify = useNotification();
-  const { t } = useTranslation();
 
   return (
     <>
@@ -147,18 +146,18 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             });
           }}
         >
-          {({ values, handleSubmit, isSubmitting }) => {
+          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '' })}
+                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '', required: true })}
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
                       text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
-                      disabled={isSubmitting || removingMessage || !values['community-update']}
+                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
                   </Grid>
