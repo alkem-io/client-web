@@ -36,7 +36,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
 
   const addCommunityUpdatesContainer = useCallback(
     (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
-      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS) && ecoverseId && opportunityId) {
         return (
           <CommunityUpdatesDataContainer<OpportunityCommunityMessagesQuery, OpportunityCommunityMessagesQueryVariables>
             entities={{

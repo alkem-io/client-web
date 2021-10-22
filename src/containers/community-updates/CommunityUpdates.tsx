@@ -189,11 +189,7 @@ export const CommunityUpdatesDataContainer = <TQuery, TVariables>({
   entities,
 }: CommunityUpdatesDataContainerProps<TQuery, TVariables>) => {
   const { document, variables, messageSelector, roomIdSelector } = entities;
-
-  // if any of the variables is falsy skip the query
-  const skip = Object.values(variables).some(x => !x);
-
-  const { data, loading } = useQuery<TQuery, TVariables>(document, { variables, skip });
+  const { data, loading } = useQuery<TQuery, TVariables>(document, { variables });
   const messages = useMemo(() => messageSelector(data), [data, messageSelector]);
   const roomId = roomIdSelector(data);
 
