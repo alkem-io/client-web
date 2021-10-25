@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
 import { ContributionItem } from '../../models/entities/contribution';
 import { AuthorizationCredential, User, UserMembershipDetailsFragment } from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
@@ -21,9 +22,12 @@ export interface UserMetadata {
   opportunities: string[];
   challenges: string[];
   ecoverses: string[];
+  keywords: string[];
+  skills: string[];
   communities: Record<string, string>;
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
+  associatedOrganizations: { nameId: string }[];
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
@@ -76,6 +80,8 @@ export const useUserMetadataWrapper = () => {
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
+      const associatedOrganizations: UserMetadata['associatedOrganizations'] =
+        membershipData?.organizations.map(o => ({ nameId: o.nameID })) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
       const communities =
         membershipData?.communities.reduce((aggr, value) => {
@@ -114,7 +120,7 @@ export const useUserMetadataWrapper = () => {
         isChallengeAdmin(ecoverseId, challengeId) ||
         hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
 
-      const metadata = {
+      const metadata: UserMetadata = {
         user,
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
@@ -132,8 +138,11 @@ export const useUserMetadataWrapper = () => {
         organizations,
         ecoverses,
         communities,
+        keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
+        skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
         contributions: getContributions(membershipData),
         pendingApplications: getPendingApplications(membershipData),
+        associatedOrganizations,
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);

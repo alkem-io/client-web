@@ -19,11 +19,12 @@ import SocialLinks, { isSocialLink } from '../../components/composite/common/Soc
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
 import HelpButton from '../../components/core/HelpButton';
 import Typography from '../../components/core/Typography';
+import AssociatedOrganizationContainer from '../../containers/organization/AssociatedOrganizationContainer';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import { ContributionsView } from '../ProfileView';
 
-// TODO [ATS]: It is Copy/Pasted from OrganizationProfileView
+// TODO [ATS]: It is Copy/Pasted from OrganizationProfileView reduce it if possible.
 const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   if (!value) return null;
   return (
@@ -93,9 +94,8 @@ const useStyles = makeStyles(theme =>
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata }, options }) => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
-  const { user, contributions, pendingApplications } = userMetadata;
+  const { user, contributions, pendingApplications, keywords, skills } = userMetadata;
   const styles = useStyles();
-  const tagsets = user.profile?.tagsets;
   const references = user.profile?.references;
   const bio = user.profile?.description;
   const { displayName, city, country, phone } = user;
@@ -174,14 +174,20 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
                 <Grid item>
                   <Detail title={t('components.profile.fields.bio.title')} value={bio} />
                 </Grid>
-                {tagsets?.map((tagset, i) => (
-                  <Grid item key={i}>
-                    <Typography color="primary" weight="boldLight">
-                      {tagset.name}
-                    </Typography>
-                    <TagsComponent tags={tagset.tags} />
-                  </Grid>
-                ))}
+
+                <Grid item>
+                  <Typography color="primary" weight="boldLight">
+                    {t('components.profile.fields.keywords.title')}
+                  </Typography>
+                  <TagsComponent tags={keywords} />
+                </Grid>
+
+                <Grid item>
+                  <Typography color="primary" weight="boldLight">
+                    {t('components.profile.fields.skills.title')}
+                  </Typography>
+                  <TagsComponent tags={skills} />
+                </Grid>
 
                 <Grid item container direction="column">
                   <Typography color="primary" weight="boldLight">
@@ -202,16 +208,31 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <CardHeader
               title={
                 <MUITypography variant="h3">
-                  Associated Organizations
-                  <HelpButton helpText={'Put help text here'} />
+                  {t('pages.user-profile.associated-organizations.title')}
+                  <HelpButton helpText={t('pages.user-profile.associated-organizations.help')} />
                 </MUITypography>
               }
             />
             <CardContent>
               <Grid container direction="column">
-                <Grid item>
-                  <AssociatedOrganizationCard name={'Digicampus'} members={32} verified />
-                </Grid>
+                {userMetadata.associatedOrganizations.map((o, i) => (
+                  <AssociatedOrganizationContainer key={i} entities={{ organizationNameId: o.nameId }}>
+                    {(entities, state) => (
+                      <Grid item>
+                        <AssociatedOrganizationCard
+                          name={entities.name}
+                          avatar={entities.avatar}
+                          information={entities.information}
+                          role={entities.role}
+                          members={entities.membersCount}
+                          verified={entities.verified}
+                          loading={state.loading}
+                          url={entities.url}
+                        />
+                      </Grid>
+                    )}
+                  </AssociatedOrganizationContainer>
+                ))}
               </Grid>
             </CardContent>
           </Card>
@@ -221,16 +242,15 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         <Grid container>
           <Grid item xs={12}>
             <ContributionsView
-              title={t('components.contributions.title')}
-              helpText={t('components.contributions.help')}
+              title={t('pages.user-profile.communities.title')}
+              helpText={t('pages.user-profile.communities.help')}
               contributions={contributions}
             />
           </Grid>
           <Grid item xs={12}>
-            {/* TODO [ATS]: Change translation to be for Organization and User */}
             <ContributionsView
-              title={t('components.pending-applications.title')}
-              helpText={t('components.pending-applications.help')}
+              title={t('pages.user-profile.pending-applications.title')}
+              helpText={t('pages.user-profile.pending-applications.help')}
               contributions={pendingApplications}
             />
           </Grid>

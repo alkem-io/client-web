@@ -55,7 +55,7 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
   const styles = useStyles();
 
   const tagsToDisplay = tags.slice(0, count);
-  const moreTags = tags.slice(count);
+  const moreTags = count ? tags.slice(count) : [];
   const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
   const moreTagsTooltipTitle = moreTags.join(', ');
 
