@@ -72,6 +72,7 @@ const CommunityPage: FC<Props> = ({
   const { data, loading } = useCommunityPageQuery({
     variables: { communityId },
     skip: !communityId,
+    errorPolicy: 'all', // skip error returned from communications if any
   });
   const community = data?.community;
   const groups = community?.groups || [];
@@ -107,7 +108,6 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
-      {/* search by role name */}
       <CardFilter data={membersWithRole} valueGetter={userWithRoleValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
           <CardContainer cardHeight={USER_CARD_HEIGHT}>
