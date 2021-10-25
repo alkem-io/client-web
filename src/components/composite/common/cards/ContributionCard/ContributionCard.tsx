@@ -36,7 +36,6 @@ const useStyles = makeStyles(theme =>
       maxHeight: '100%',
     },
     entityType: {
-      fontSize: 12,
       color: '#FFFFFF',
     },
     entityTypeWrapper: {
