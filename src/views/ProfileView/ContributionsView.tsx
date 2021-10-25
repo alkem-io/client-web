@@ -38,7 +38,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ title, helpText, 
             {helpText && <HelpButton helpText={helpText} />}
           </Typography>
         }
-      ></CardHeader>
+      />
       <CardContent className={styles.cardContent}>
         <Grid container spacing={2}>
           {contributions.map((x, i) => (

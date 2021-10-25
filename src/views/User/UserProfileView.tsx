@@ -14,14 +14,12 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import { SettingsButton } from '../../components/composite';
-import AssociatedOrganizationCard from '../../components/composite/common/cards/Organization/AssociatedOrganizationCard';
 import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
-import HelpButton from '../../components/core/HelpButton';
 import Typography from '../../components/core/Typography';
-import AssociatedOrganizationContainer from '../../containers/organization/AssociatedOrganizationContainer';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
+import AssociatedOrganizationsView from '../Organization/AssociatedOrganizationsView';
 import { ContributionsView } from '../ProfileView';
 
 // TODO [ATS]: It is Copy/Pasted from OrganizationProfileView reduce it if possible.
@@ -204,38 +202,11 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
           </Card>
         </Grid>
         <Grid item>
-          <Card elevation={0} className={styles.card} square>
-            <CardHeader
-              title={
-                <MUITypography variant="h3">
-                  {t('pages.user-profile.associated-organizations.title')}
-                  <HelpButton helpText={t('pages.user-profile.associated-organizations.help')} />
-                </MUITypography>
-              }
-            />
-            <CardContent>
-              <Grid container direction="column">
-                {userMetadata.associatedOrganizations.map((o, i) => (
-                  <AssociatedOrganizationContainer key={i} entities={{ organizationNameId: o.nameId }}>
-                    {(entities, state) => (
-                      <Grid item>
-                        <AssociatedOrganizationCard
-                          name={entities.name}
-                          avatar={entities.avatar}
-                          information={entities.information}
-                          role={entities.role}
-                          members={entities.membersCount}
-                          verified={entities.verified}
-                          loading={state.loading}
-                          url={entities.url}
-                        />
-                      </Grid>
-                    )}
-                  </AssociatedOrganizationContainer>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
+          <AssociatedOrganizationsView
+            organizationNameIDs={userMetadata.organizationNameIDs}
+            title={t('pages.user-profile.associated-organizations.title')}
+            helpText={t('pages.user-profile.associated-organizations.help')}
+          />
         </Grid>
       </Grid>
       <Grid item xs={12} xl={6}>

@@ -27,7 +27,7 @@ export interface UserMetadata {
   communities: Record<string, string>;
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
-  associatedOrganizations: { nameId: string }[];
+  organizationNameIDs: string[];
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
@@ -80,8 +80,8 @@ export const useUserMetadataWrapper = () => {
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
-      const associatedOrganizations: UserMetadata['associatedOrganizations'] =
-        membershipData?.organizations.map(o => ({ nameId: o.nameID })) || [];
+      const organizationNameIDs: UserMetadata['organizationNameIDs'] =
+        membershipData?.organizations.map(o => o.nameID) || [];
       const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
       const communities =
         membershipData?.communities.reduce((aggr, value) => {
@@ -142,7 +142,7 @@ export const useUserMetadataWrapper = () => {
         skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
         contributions: getContributions(membershipData),
         pendingApplications: getPendingApplications(membershipData),
-        associatedOrganizations,
+        organizationNameIDs: organizationNameIDs,
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);
