@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme =>
 
 const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
   name,
+  avatar,
   information,
   role,
   members,
@@ -80,7 +81,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           loading ? (
             <Skeleton animation="wave" variant="rect" width={64} height={64} />
           ) : (
-            <Avatar variant="square" src={''} style={{ width: '64px', height: '64px' }}>
+            <Avatar variant="square" src={avatar} style={{ width: '64px', height: '64px' }}>
               {name[0]}
             </Avatar>
           )

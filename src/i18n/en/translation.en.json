@@ -414,15 +414,15 @@
     },
     "associates": {
       "title": "Associates ({{count}})",
-      "help": "Users associated with this organization."
+      "help": "Users associated with this organization"
     },
     "contributions": {
       "title": "Contributions",
-      "help": "The Hubs and Challenges that this organization is contributing to."
+      "help": "The Hubs and Challenges that this organization is contributing to"
     },
     "pending-applications": {
       "title": "Pending Applications",
-      "help": "The Hubs and Challenges that this organization is contributing to."
+      "help": "The Hubs and Challenges that this organization is contributing to"
     }
   },
   "navigation": {
@@ -482,7 +482,7 @@
         "no-data": "None"
       },
       "verified-status": {
-        "help": "Verification status: has the identity and information about this Organization been formally verified."
+        "help": "Verification status: has the identity and information about this Organization been formally verified"
       }
     },
     "ecoverse": {
@@ -746,15 +746,15 @@
       },
       "communities": {
         "title": "Communities",
-        "help": "Communities the user is part of."
+        "help": "Communities the user is part of"
       },
       "pending-applications": {
         "title": "Pending Applications",
-        "help": "Applications Pending for this user."
+        "help": "Applications Pending for this user"
       },
       "associated-organizations": {
         "title": "Associated Organizations",
-        "help": "Organizations who the user is related to."
+        "help": "Organizations who the user is related to"
       }
     },
     "authentication-required": {
