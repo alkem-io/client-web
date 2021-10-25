@@ -112,6 +112,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
   const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
 
+  const displayCardActions = canCopy || canRemove || !disableCollapse;
+  const lastItemIndex = orderedMessages.length - 1;
+
   //effects
   useEffect(() => {
     setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
@@ -190,7 +193,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             </Card>
           </Grid>
         )}
-        {orderedMessages.map(m => {
+        {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           const removed = removedMessageId === m.id && state.removingMessage;
@@ -243,45 +246,47 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     {!(expanded || disableCollapse) && <Box className={styles.rootFade}></Box>}
                   </Collapse>
                 </CardContent>
-                <CardActions disableSpacing>
-                  {canCopy && (
-                    <Tooltip title="Copy content to clipboard" placement="right">
-                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                        <IconButton>
-                          <FileCopyIcon />
+                {displayCardActions && (
+                  <CardActions disableSpacing>
+                    {canCopy && (
+                      <Tooltip title="Copy content to clipboard" placement="right">
+                        <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                          <IconButton>
+                            <FileCopyIcon />
+                          </IconButton>
+                        </CopyToClipboard>
+                      </Tooltip>
+                    )}
+                    {canRemove && (
+                      <Tooltip title="Remove community update" placement="right">
+                        <IconButton
+                          onClick={() => {
+                            setRemovedMessageId(m.id);
+                            setShowConfirmationDialog(true);
+                          }}
+                        >
+                          <DeleteOutlineIcon />
                         </IconButton>
-                      </CopyToClipboard>
-                    </Tooltip>
-                  )}
-                  {canRemove && (
-                    <Tooltip title="Remove community update" placement="right">
-                      <IconButton
-                        onClick={() => {
-                          setRemovedMessageId(m.id);
-                          setShowConfirmationDialog(true);
-                        }}
-                      >
-                        <DeleteOutlineIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {!disableCollapse && (
-                    <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
-                      <IconButton
-                        className={clsx(styles.expand, {
-                          [styles.expandOpen]: expanded,
-                        })}
-                        onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </CardActions>
+                      </Tooltip>
+                    )}
+                    {!disableCollapse && (
+                      <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
+                        <IconButton
+                          className={clsx(styles.expand, {
+                            [styles.expandOpen]: expanded,
+                          })}
+                          onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
+                          aria-expanded={expanded}
+                          aria-label="show more"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </CardActions>
+                )}
               </Card>
-              {disableElevation && <Divider variant="inset" />}
+              {disableElevation && i !== lastItemIndex && <Divider variant="inset" />}
             </Grid>
           );
         })}
