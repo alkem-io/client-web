@@ -71,6 +71,7 @@ export const useUserMetadataWrapper = () => {
       if (!user) {
         return;
       }
+
       const ecoverses = membershipData?.ecoverses.map(getDisplayName) || [];
       const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];

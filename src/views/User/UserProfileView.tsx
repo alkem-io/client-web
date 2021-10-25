@@ -14,8 +14,10 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import { SettingsButton } from '../../components/composite';
+import AssociatedOrganizationCard from '../../components/composite/common/cards/Organization/AssociatedOrganizationCard';
 import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
+import HelpButton from '../../components/core/HelpButton';
 import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
@@ -55,6 +57,13 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       background: theme.palette.neutralLight.main,
+    },
+    cardHeader: {
+      padding: theme.spacing(1),
+    },
+    cardHeaderAction: {
+      margin: 0,
+      paddingRight: theme.spacing(3),
     },
     media: {
       background: theme.palette.neutralMedium.main,
@@ -114,78 +123,99 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} xl={6}>
-        <Card elevation={0} className={styles.card}>
-          <CardHeader
-            classes={{
-              action: styles.headerAction,
-              title: styles.headerTitle,
-            }}
-            avatar={
-              <>
-                <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar}>
-                  {user.firstName[0]}
-                </Avatar>
-                <Box paddingTop={1}>
-                  <SocialLinks title="" items={socialLinks} />
-                </Box>
-              </>
-            }
-            className={styles.header}
-            action={
-              isCurrentUser && (
-                <SettingsButton
-                  color={'primary'}
-                  to={`${url}/edit`}
-                  tooltip={t('pages.user-profile.tooltips.settings')}
-                />
-              )
-            }
-            title={
-              <Grid container spacing={1} direction="column">
-                <Grid item>
-                  <MUITypography variant="h2">{displayName}</MUITypography>
+      <Grid item container xs={12} xl={6} direction="column" spacing={2}>
+        <Grid item>
+          <Card elevation={0} className={styles.card}>
+            <CardHeader
+              classes={{
+                action: styles.headerAction,
+                title: styles.headerTitle,
+              }}
+              avatar={
+                <>
+                  <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar}>
+                    {user.firstName[0]}
+                  </Avatar>
+                  <Box paddingTop={1}>
+                    <SocialLinks title="" items={socialLinks} />
+                  </Box>
+                </>
+              }
+              className={styles.header}
+              action={
+                isCurrentUser && (
+                  <SettingsButton
+                    color={'primary'}
+                    to={`${url}/edit`}
+                    tooltip={t('pages.user-profile.tooltips.settings')}
+                  />
+                )
+              }
+              title={
+                <Grid container spacing={1} direction="column">
+                  <Grid item>
+                    <MUITypography variant="h2">{displayName}</MUITypography>
+                  </Grid>
+                  <Grid item>
+                    <Detail title={t('components.profile.fields.location.title')} value={location} />
+                  </Grid>
+                  <Grid item>
+                    <Detail title={t('components.profile.fields.work.title')} value={'work work'} />
+                  </Grid>
+                  <Grid item>
+                    <Detail title={t('components.profile.fields.telephone.title')} value={phone} />
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Detail title={t('components.profile.fields.location.title')} value={location} />
-                </Grid>
-                <Grid item>
-                  <Detail title={t('components.profile.fields.work.title')} value={'work work'} />
-                </Grid>
-                <Grid item>
-                  <Detail title={t('components.profile.fields.telephone.title')} value={phone} />
-                </Grid>
-              </Grid>
-            }
-          />
+              }
+            />
 
-          <CardContent className={styles.content}>
-            <Grid container spacing={2} direction="column">
-              <Grid item>
-                <Detail title={t('components.profile.fields.bio.title')} value={bio} />
-              </Grid>
-              {tagsets?.map((tagset, i) => (
-                <Grid item key={i}>
-                  <Typography color="primary" weight="boldLight">
-                    {tagset.name}
-                  </Typography>
-                  <TagsComponent tags={tagset.tags} />
+            <CardContent className={styles.content}>
+              <Grid container spacing={2} direction="column">
+                <Grid item>
+                  <Detail title={t('components.profile.fields.bio.title')} value={bio} />
                 </Grid>
-              ))}
-
-              <Grid item container direction="column">
-                <Typography color="primary" weight="boldLight">
-                  {t('components.profile.fields.links.title')}
-                </Typography>
-                {links?.map((l, i) => (
-                  <Link key={i} href={l} target="_blank">
-                    {l}
-                  </Link>
+                {tagsets?.map((tagset, i) => (
+                  <Grid item key={i}>
+                    <Typography color="primary" weight="boldLight">
+                      {tagset.name}
+                    </Typography>
+                    <TagsComponent tags={tagset.tags} />
+                  </Grid>
                 ))}
+
+                <Grid item container direction="column">
+                  <Typography color="primary" weight="boldLight">
+                    {t('components.profile.fields.links.title')}
+                  </Typography>
+                  {links?.map((l, i) => (
+                    <Link key={i} href={l} target="_blank">
+                      {l}
+                    </Link>
+                  ))}
+                </Grid>
               </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item>
+          <Card elevation={0} className={styles.card} square>
+            <CardHeader
+              title={
+                <MUITypography variant="h3">
+                  Associated Organizations
+                  <HelpButton helpText={'Put help text here'} />
+                </MUITypography>
+              }
+            />
+            <CardContent>
+              <Grid container direction="column">
+                <Grid item>
+                  <AssociatedOrganizationCard name={'Digicampus'} members={32} verified />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
       <Grid item xs={12} xl={6}>
         <Grid container>

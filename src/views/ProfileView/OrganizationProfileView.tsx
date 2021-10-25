@@ -111,7 +111,11 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             )
           }
           title={
-            <Box padding={1}>{entity.verified !== undefined && <VerifiedStatus verified={entity.verified} />}</Box>
+            <Box padding={1}>
+              {entity.verified !== undefined && (
+                <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
+              )}
+            </Box>
           }
         />
       </CardMedia>
