@@ -28,7 +28,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
 
   const addCommunityUpdatesContainer = useCallback(
     (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
-      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS) && ecoverseNameId) {
         return (
           <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
             entities={{
@@ -49,7 +49,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
         return children(undefined);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseNameId]
   );
 
   const memoizedNode = useMemo(

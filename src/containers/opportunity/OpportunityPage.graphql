@@ -1,0 +1,87 @@
+query opportunityPage($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      ...OpportunityPage
+    }
+  }
+}
+
+fragment OpportunityPage on Opportunity {
+  id
+  nameID
+  displayName
+  activity {
+    id
+    name
+    value
+  }
+  lifecycle {
+    id
+    machineDef
+    state
+    nextEvents
+    stateIsFinal
+  }
+  relations {
+    id
+    type
+    actorRole
+    actorName
+    actorType
+    description
+  }
+  context {
+    id
+    background
+    tagline
+    who
+    impact
+    vision
+    references {
+      id
+      name
+      uri
+    }
+    aspects {
+      id
+      title
+    }
+    visual {
+      id
+      banner
+    }
+    ecosystemModel {
+      id
+      actorGroups {
+        id
+        name
+        actors {
+          id
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+  #
+  projects {
+    id
+    nameID
+    displayName
+    description
+  }
+}
+
+query opportunityTemplate {
+  configuration {
+    template {
+      opportunities {
+        aspects
+        actorGroups
+      }
+    }
+  }
+}

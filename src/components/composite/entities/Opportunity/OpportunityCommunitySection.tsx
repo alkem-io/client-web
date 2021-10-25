@@ -29,13 +29,14 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
       ecoverseId,
       opportunityId,
     },
+    skip: !ecoverseId || !opportunityId,
     errorPolicy: 'all',
   });
   const { isFeatureEnabled } = useConfig();
 
   const addCommunityUpdatesContainer = useCallback(
     (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
-      if (isFeatureEnabled(FEATURE_COMMUNICATIONS)) {
+      if (isFeatureEnabled(FEATURE_COMMUNICATIONS) && ecoverseId && opportunityId) {
         return (
           <CommunityUpdatesDataContainer<OpportunityCommunityMessagesQuery, OpportunityCommunityMessagesQueryVariables>
             entities={{
@@ -57,7 +58,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
         return children(undefined);
       }
     },
-    [isFeatureEnabled]
+    [isFeatureEnabled, ecoverseId, opportunityId]
   );
 
   const memoizedNode = useMemo(
