@@ -18,21 +18,23 @@ import TagsComponent from '../../components/composite/common/TagsComponent/TagsC
 import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
 import Typography from '../../components/core/Typography';
 
+export interface OrganizationProfileViewEntity {
+  displayName: string;
+  settingsUrl: string;
+  settingsTooltip: string;
+  location?: string;
+  telephone?: string;
+  avatar?: string;
+  banner?: string;
+  bio?: string;
+  socialLinks?: SocialLinkItem[];
+  tagsets: { name: string; tags: string[] }[];
+  links: string[];
+  verified?: boolean;
+}
+
 export interface OrganizationProfileViewProps {
-  entity: {
-    avatar?: string;
-    banner?: string;
-    displayName: string;
-    settingsUrl: string;
-    settingsTooltip: string;
-    location?: string;
-    telephone?: string;
-    bio?: string;
-    socialLinks?: SocialLinkItem[];
-    tagsets: { name: string; tags: string[] }[];
-    links: string[];
-    verified?: boolean;
-  };
+  entity: OrganizationProfileViewEntity;
   permissions: {
     canEdit: boolean;
   };
