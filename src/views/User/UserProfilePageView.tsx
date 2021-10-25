@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsView from '../Organization/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import { ContributionsView } from '../ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../ProfileView/UserProfileView';
 
