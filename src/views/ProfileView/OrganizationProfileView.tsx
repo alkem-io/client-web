@@ -13,6 +13,7 @@ import {
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsButton } from '../../components/composite';
+import ProfileDetail from '../../components/composite/common/ProfileDetail/ProfileDetail';
 import SocialLinks, { SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
@@ -39,18 +40,6 @@ export interface OrganizationProfileViewProps {
     canEdit: boolean;
   };
 }
-
-const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
-  if (value === undefined) return null;
-  return (
-    <>
-      <Typography color="primary" weight="boldLight">
-        {title}
-      </Typography>
-      <Typography>{value}</Typography>
-    </>
-  );
-};
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -132,18 +121,18 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             </Grid>
           </Grid>
           <Grid item>
-            <Detail title={t('components.profile.fields.location.title')} value={entity.location} />
+            <ProfileDetail title={t('components.profile.fields.location.title')} value={entity.location} />
           </Grid>
           <Grid item container spacing={2} alignItems="flex-start">
             <Grid item xs={6}>
               <SocialLinks title="Contact" items={entity.socialLinks} />
             </Grid>
             <Grid item xs={6}>
-              <Detail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
+              <ProfileDetail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
             </Grid>
           </Grid>
           <Grid item>
-            <Detail title={t('components.profile.fields.bio.title')} value={entity.bio} />
+            <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
           {entity.tagsets
             ?.filter(t => t.tags.length > 0)
