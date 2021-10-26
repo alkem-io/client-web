@@ -10,16 +10,11 @@ export const typographyOptions: TypographyOptions = {
   h4: { fontFamily: monserrat, fontSize: 22 },
   h5: { fontFamily: sourceSansPro, fontSize: 18 },
   caption: { fontFamily: monserrat, fontSize: 12 },
+  body: { fontFamily: sourceSansPro, fontSize: 16 },
   body1: { fontFamily: sourceSansPro, fontSize: 16 },
   body2: { fontFamily: sourceSansPro, fontSize: 14 },
   button: { fontFamily: monserrat, fontSize: 14 },
 };
-
 declare module '@material-ui/core/styles/createTypography' {
-  interface TypographyOptions {
-    [key: string]: {
-      fontFamily: string;
-      fontSize: number;
-    };
-  }
+  interface TypographyOptions extends Partial<Record<Variant | 'body', TypographyStyleOptions> & FontStyleOptions> {}
 }

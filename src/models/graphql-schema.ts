@@ -2695,6 +2695,9 @@ export type UserMembershipDetailsFragment = {
       communityID: string;
       displayName: string;
       state: string;
+      ecoverseID: string;
+      challengeID?: Maybe<string>;
+      opportunityID?: Maybe<string>;
     }>
   >;
 };
@@ -5008,6 +5011,9 @@ export type MembershipUserQuery = {
         communityID: string;
         displayName: string;
         state: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
       }>
     >;
   };
@@ -5904,6 +5910,9 @@ export type UserProfileQuery = {
         communityID: string;
         displayName: string;
         state: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
       }>
     >;
   };

@@ -654,6 +654,9 @@ export const UserMembershipDetailsFragmentDoc = gql`
       communityID
       displayName
       state
+      ecoverseID
+      challengeID
+      opportunityID
     }
   }
 `;
