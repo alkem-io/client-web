@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       height: '100%',
+      minHeight: theme.spacing(18),
       width: theme.spacing(32),
     },
     cardContent: {

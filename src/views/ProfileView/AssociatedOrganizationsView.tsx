@@ -11,7 +11,7 @@ interface AssociatedOrganizationsViewProps extends ProfileCardProps {
 export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> = ({ organizationNameIDs, ...rest }) => {
   return (
     <ProfileCard {...rest}>
-      <Grid container direction="column">
+      <Grid container direction="column" spacing={1}>
         {organizationNameIDs.map((oNameID, i) => (
           <AssociatedOrganizationContainer key={i} entities={{ organizationNameId: oNameID }}>
             {(entities, state) => (
