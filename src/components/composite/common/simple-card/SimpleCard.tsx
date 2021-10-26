@@ -15,13 +15,15 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   card: {
-    transition: 'box-shadow 0.15s ease-in-out',
     border: `1px solid ${theme.palette.neutralMedium.main}`,
+  },
+  clickableCard: {
+    transition: 'box-shadow 0.15s ease-in-out',
+    overflow: 'hidden',
 
     '&:hover': {
       boxShadow: `5px 5px 10px ${hexToRGBA(theme.palette.neutral.main, 0.15)}`,
     },
-    overflow: 'hidden',
   },
   section: {
     padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
@@ -57,7 +59,7 @@ const SimpleCard: FC<Props> = ({ title, description, tags = [], url = '' }) => {
     <div className={styles.relative}>
       <ConditionalLink to={url} condition={!!url}>
         <Card
-          className={clsx(url ? styles.card : undefined)}
+          className={clsx(styles.card, url ? styles.clickableCard : undefined)}
           bodyProps={{
             classes: {
               background: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
