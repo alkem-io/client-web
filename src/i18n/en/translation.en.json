@@ -357,6 +357,7 @@
     "communityUpdates": {
       "title": "Let your community know what's next",
       "updatesTitle": "Published updates",
+      "msg-not-empty": "Message cannot be empty",
       "actions": {
         "add": {
           "buttonTitle": "Post Update"
@@ -370,6 +371,58 @@
     },
     "settingsButton": {
       "tooltip": "Settings"
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Description"
+        },
+        "phone": {
+          "title": "Phone"
+        },
+        "telephone": {
+          "title": "Telephone"
+        },
+        "mobile": {
+          "title": "Mobile"
+        },
+        "keywords": {
+          "title": "Keywords"
+        },
+        "skills": {
+          "title": "Skills"
+        },
+        "capabilities": {
+          "title": "Capabilities"
+        },
+        "links": {
+          "title": "Links"
+        },
+        "location": {
+          "title": "Location"
+        },
+        "website": {
+          "title": "Website"
+        },
+        "work": {
+          "title": "Work"
+        }
+      }
+    },
+    "associates": {
+      "title": "Associates ({{count}})",
+      "help": "Users associated with this organization"
+    },
+    "contributions": {
+      "title": "Contributions",
+      "help": "The Hubs and Challenges that this organization is contributing to"
+    },
+    "pending-applications": {
+      "title": "Pending Applications",
+      "help": "The Hubs and Challenges that this organization is contributing to"
     }
   },
   "navigation": {
@@ -412,6 +465,9 @@
       }
     },
     "organization": {
+      "settings": {
+        "tooltip": "Organization settings"
+      },
       "ecoverses": {
         "title": "Challenge Hubs hosting",
         "subtitle": "Challenge Hubs which this organization is hosting",
@@ -424,6 +480,9 @@
       },
       "users": {
         "no-data": "None"
+      },
+      "verified-status": {
+        "help": "Verification status: has the identity and information about this Organization been formally verified"
       }
     },
     "ecoverse": {
@@ -571,8 +630,8 @@
           }
         },
         "community": {
-          "title": "Community",
-          "subtitle": "Connect with the users contributing, get updates and discuss!",
+          "header": "Community",
+          "subheader": "Connect with the users contributing, get updates and discuss!",
           "body": ""
         }
       }
@@ -684,6 +743,18 @@
       "member-of": "Member of",
       "applications": {
         "title": "Pending applications"
+      },
+      "communities": {
+        "title": "Communities",
+        "help": "Communities the user is part of"
+      },
+      "pending-applications": {
+        "title": "Pending Applications",
+        "help": "Applications Pending for this user"
+      },
+      "associated-organizations": {
+        "title": "Associated Organizations",
+        "help": "Organizations who the user is related to"
       }
     },
     "authentication-required": {

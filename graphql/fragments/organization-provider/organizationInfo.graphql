@@ -3,6 +3,7 @@ fragment OrganizationInfo on Organization {
   nameID
   displayName
   contactEmail
+  domain
   verification {
     id
     status
@@ -14,7 +15,13 @@ fragment OrganizationInfo on Organization {
     description
     tagsets {
       id
+      name
       tags
+    }
+    references {
+      id
+      name
+      uri
     }
   }
   members {

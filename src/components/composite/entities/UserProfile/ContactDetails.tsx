@@ -9,7 +9,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { COUNTRIES } from '../../../../models/constants';
 import Typography from '../../../core/Typography';
 
-const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
+export const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
     <>
       {value && (

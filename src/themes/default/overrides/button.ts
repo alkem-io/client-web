@@ -1,20 +1,20 @@
+import { Theme } from '@material-ui/core';
 import { Overrides } from '@material-ui/core/styles/overrides';
-import { SimplePaletteColorOptions, ThemeOptions } from '@material-ui/core';
-import { TypeBackground } from '@material-ui/core/styles/createPalette';
 import hexToRGBA from '../../../utils/hexToRGBA';
 
-const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
+const buttonOverrides = (theme: Theme): Overrides | undefined => {
   if (!theme) {
     return undefined;
   }
+
   return {
     MuiButton: {
       root: {
-        padding: `${(theme?.spacing as Function)(1.5)}px ${(theme?.spacing as Function)(2)}px`,
+        padding: theme.spacing(1.5, 2),
         display: 'inline-flex',
         width: 'auto',
         flexDirection: 'row',
-        borderRadius: theme?.shape?.borderRadius,
+        borderRadius: theme.shape.borderRadius,
         borderWidth: 1,
         transition: 'background-color 0.5s ease-out',
         borderStyle: 'double',
@@ -27,7 +27,7 @@ const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
           borderRadius: 0,
         },
         '&.small': {
-          padding: `${(theme?.spacing as Function)(0.5)}px ${(theme?.spacing as Function)(1)}px`,
+          padding: theme.spacing(0.5, 1),
         },
 
         '&.block': {
@@ -43,25 +43,26 @@ const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
         },
       },
       outlinedPrimary: {
-        padding: `${(theme?.spacing as Function)(1.5)}px ${(theme?.spacing as Function)(2)}px`,
-        color: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
-        borderColor: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
-        background: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
+        padding: theme.spacing(1.5, 2),
+        color: theme.palette.neutralLight.main,
+        borderColor: theme.palette.primary.main,
+        background: theme.palette.primary.main,
 
         '&:hover': {
-          color: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
-          backgroundColor: hexToRGBA((theme?.palette?.primary as SimplePaletteColorOptions)?.main, 0.7),
+          color: theme.palette.neutralLight.main,
+
+          backgroundColor: hexToRGBA(theme.palette.primary.main, 0.7),
         },
 
         '&.inset': {
-          borderColor: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
+          borderColor: theme.palette.neutralLight.main,
           borderRightColor: 'transparent',
           borderTopColor: 'transparent',
           borderBottomColor: 'transparent',
 
           '&:hover': {
-            color: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
-            background: (theme?.palette?.background as TypeBackground)?.paper,
+            color: theme.palette.primary.main,
+            background: theme.palette.background.paper,
             cursor: 'pointer',
           },
 
@@ -71,18 +72,18 @@ const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
         },
       },
       outlined: {
-        padding: `${(theme?.spacing as Function)(1.5)}px ${(theme?.spacing as Function)(2)}px`,
-        color: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
-        borderColor: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
-        background: (theme?.palette?.background as TypeBackground)?.paper,
+        padding: theme.spacing(1.5, 2),
+        color: theme.palette.primary.main,
+        borderColor: theme.palette.primary.main,
+        background: theme.palette.background.paper,
 
         '&:hover': {
-          color: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
-          background: (theme?.palette?.primary as SimplePaletteColorOptions)?.main,
+          color: theme.palette.neutralLight.main,
+          background: theme.palette.primary.main,
         },
 
         '&:focus': {
-          outline: `1px auto ${(theme?.palette?.primary as SimplePaletteColorOptions)?.main}`,
+          outline: `1px auto ${theme.palette.primary.main}`,
 
           '&.inset': {
             outline: 'none',
@@ -94,15 +95,15 @@ const buttonOverrides = (theme: ThemeOptions): Overrides | undefined => {
     MuiButtonBase: {
       root: {
         '&$disabled': {
-          color: (theme?.palette?.background as TypeBackground)?.paper,
-          borderColor: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
-          background: (theme?.palette?.neutralLight as SimplePaletteColorOptions)?.main,
+          color: theme.palette.background.paper,
+          borderColor: theme.palette.neutralLight.main,
+          background: theme.palette.neutralLight.main,
           opacity: 0.8,
           cursor: 'default',
 
           '&:hover': {
-            color: (theme?.palette?.background as TypeBackground)?.paper,
-            background: hexToRGBA((theme?.palette?.neutralMedium as SimplePaletteColorOptions)?.main, 0.7),
+            color: theme.palette.background.paper,
+            background: hexToRGBA(theme.palette.neutralMedium.main, 0.7),
             cursor: 'not-allowed',
           },
 

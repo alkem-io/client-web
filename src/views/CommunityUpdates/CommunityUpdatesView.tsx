@@ -88,6 +88,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
+  // styling
+  const styles = useStyles();
+  // components
+  const getMarkdownInput = useMarkdownInputField();
+  const notify = useNotification();
+  const { t } = useTranslation();
   // entities
   const { messages, members } = entities;
   const { loadingMessages, removingMessage } = state;
@@ -97,7 +103,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': yup.string(),
+    'community-update': yup.string().required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
@@ -105,6 +111,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
   const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
+
+  const displayCardActions = canCopy || canRemove || !disableCollapse;
+  const lastItemIndex = orderedMessages.length - 1;
 
   //effects
   useEffect(() => {
@@ -114,13 +123,6 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   useEffect(() => {
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
-
-  // styling
-  const styles = useStyles();
-  // components
-  const getMarkdownInput = useMarkdownInputField();
-  const notify = useNotification();
-  const { t } = useTranslation();
 
   return (
     <>
@@ -147,18 +149,18 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             });
           }}
         >
-          {({ handleSubmit, isSubmitting }) => {
+          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '' })}
+                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '', required: true })}
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
                       text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
-                      disabled={isSubmitting || removingMessage}
+                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
                   </Grid>
@@ -191,7 +193,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             </Card>
           </Grid>
         )}
-        {orderedMessages.map(m => {
+        {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           const removed = removedMessageId === m.id && state.removingMessage;
@@ -244,45 +246,47 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     {!(expanded || disableCollapse) && <Box className={styles.rootFade}></Box>}
                   </Collapse>
                 </CardContent>
-                <CardActions disableSpacing>
-                  {canCopy && (
-                    <Tooltip title="Copy content to clipboard" placement="right">
-                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                        <IconButton>
-                          <FileCopyIcon />
+                {displayCardActions && (
+                  <CardActions disableSpacing>
+                    {canCopy && (
+                      <Tooltip title="Copy content to clipboard" placement="right">
+                        <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                          <IconButton>
+                            <FileCopyIcon />
+                          </IconButton>
+                        </CopyToClipboard>
+                      </Tooltip>
+                    )}
+                    {canRemove && (
+                      <Tooltip title="Remove community update" placement="right">
+                        <IconButton
+                          onClick={() => {
+                            setRemovedMessageId(m.id);
+                            setShowConfirmationDialog(true);
+                          }}
+                        >
+                          <DeleteOutlineIcon />
                         </IconButton>
-                      </CopyToClipboard>
-                    </Tooltip>
-                  )}
-                  {canRemove && (
-                    <Tooltip title="Remove community update" placement="right">
-                      <IconButton
-                        onClick={() => {
-                          setRemovedMessageId(m.id);
-                          setShowConfirmationDialog(true);
-                        }}
-                      >
-                        <DeleteOutlineIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {!disableCollapse && (
-                    <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
-                      <IconButton
-                        className={clsx(styles.expand, {
-                          [styles.expandOpen]: expanded,
-                        })}
-                        onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </CardActions>
+                      </Tooltip>
+                    )}
+                    {!disableCollapse && (
+                      <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
+                        <IconButton
+                          className={clsx(styles.expand, {
+                            [styles.expandOpen]: expanded,
+                          })}
+                          onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
+                          aria-expanded={expanded}
+                          aria-label="show more"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </CardActions>
+                )}
               </Card>
-              {disableElevation && <Divider variant="inset" />}
+              {disableElevation && i !== lastItemIndex && <Divider variant="inset" />}
             </Grid>
           );
         })}

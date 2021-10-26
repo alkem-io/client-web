@@ -27,6 +27,7 @@ import CardFilter from '../../components/core/card-filter/CardFilter';
 import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
 import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -71,10 +72,12 @@ const CommunityPage: FC<Props> = ({
   const { data, loading } = useCommunityPageQuery({
     variables: { communityId },
     skip: !communityId,
+    errorPolicy: 'all', // skip error returned from communications if any
   });
   const community = data?.community;
   const groups = community?.groups || [];
   const updates = community?.updatesRoom?.messages || [];
+  const updateSenders = updates.map(x => ({ id: x.sender }));
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
   const membersWithRole = useUserCardRoleName(members as User[], parentId);
@@ -82,6 +85,7 @@ const CommunityPage: FC<Props> = ({
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
+    errorPolicy: 'all',
   });
   const hostOrganization = _orgProfile?.organization;
 
@@ -104,7 +108,6 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
-      {/* search by role name */}
       <CardFilter data={membersWithRole} valueGetter={userWithRoleValueGetter} tagsValueGetter={userTagsValueGetter}>
         {filteredData => (
           <CardContainer cardHeight={USER_CARD_HEIGHT}>
@@ -196,23 +199,27 @@ const CommunityPage: FC<Props> = ({
       )}
       {hasUpdates && (
         <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
-          <CommunityUpdatesView
-            entities={{
-              members: members as User[],
-              messages: updates,
-            }}
-            options={{
-              hideHeaders: true,
-              itemsPerRow: 1,
-              disableElevation: true,
-              disableCollapse: true,
-            }}
-            state={{
-              loadingMessages: false,
-              submittingMessage: false,
-              removingMessage: false,
-            }}
-          />
+          <AvatarsProvider users={updateSenders}>
+            {detailedUsers => (
+              <CommunityUpdatesView
+                entities={{
+                  members: detailedUsers,
+                  messages: updates,
+                }}
+                options={{
+                  hideHeaders: true,
+                  itemsPerRow: 1,
+                  disableElevation: true,
+                  disableCollapse: true,
+                }}
+                state={{
+                  loadingMessages: false,
+                  submittingMessage: false,
+                  removingMessage: false,
+                }}
+              />
+            )}
+          </AvatarsProvider>
         </Box>
       )}
       <Divider />

@@ -277,10 +277,19 @@ interface AspectCardProps {
   framing?: string;
   explanation?: string;
   opportunityId: string;
+  contextId: string;
   isAdmin: boolean;
 }
 
-export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanation, opportunityId, isAdmin }) => {
+export const AspectCard: FC<AspectCardProps> = ({
+  id,
+  title,
+  framing,
+  explanation,
+  opportunityId,
+  contextId,
+  isAdmin,
+}) => {
   const { ecoverseNameId } = useEcoverse();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
@@ -337,6 +346,7 @@ export const AspectCard: FC<AspectCardProps> = ({ id, title, framing, explanatio
         onHide={() => setEditOpened(false)}
         data={{ id, title, framing: framing || '', explanation: explanation || '' }}
         opportunityId={opportunityId}
+        contextId={contextId}
         id={id}
       />
       <RemoveModal
@@ -353,10 +363,17 @@ interface NewAspectProps {
   text: string;
   actorGroupId;
   opportunityId: string;
+  contextId: string;
   existingAspectNames: string[];
 }
 
-export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportunityId, existingAspectNames }) => {
+export const NewAspectCard: FC<NewAspectProps> = ({
+  text,
+  actorGroupId,
+  opportunityId,
+  contextId,
+  existingAspectNames,
+}) => {
   const styles = useNewActorCardStyles();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
 
@@ -374,6 +391,7 @@ export const NewAspectCard: FC<NewAspectProps> = ({ text, actorGroupId, opportun
         onHide={() => setEditOpened(false)}
         actorGroupId={actorGroupId}
         opportunityId={opportunityId}
+        contextId={contextId}
         existingAspectNames={existingAspectNames}
       />
     </div>

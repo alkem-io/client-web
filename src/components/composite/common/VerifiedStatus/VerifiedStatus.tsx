@@ -1,44 +1,38 @@
-import { Chip, makeStyles } from '@material-ui/core';
-import React, { ElementType, FC } from 'react';
+import { createStyles, makeStyles, Tooltip } from '@material-ui/core';
+import { Help } from '@material-ui/icons';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import Typography from '../../../core/Typography';
 
 interface VerifiedStatusProps {
   verified: boolean;
   to?: string;
+  helpText?: string;
 }
 
-const useVerifiedStatusStyles = makeStyles(theme => ({
-  verified: {
-    color: theme.palette.success.main,
-    borderColor: theme.palette.success.main,
-  },
-  notVerified: {
-    color: theme.palette.warning.main,
-    borderColor: theme.palette.warning.main,
-  },
-}));
+const useStyles = makeStyles(theme =>
+  createStyles({
+    icon: {
+      marginLeft: theme.spacing(1),
+    },
+  })
+);
 
-export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, to }) => {
+export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) => {
   const { t } = useTranslation();
-  const styles = useVerifiedStatusStyles();
+  const styles = useStyles();
 
-  const verifiedProps: { component?: ElementType; to?: string; clickable?: boolean } = to
-    ? { component: Link, to, clickable: true }
-    : {};
+  const color = verified ? 'success' : 'warning';
 
   return (
-    <Chip
-      classes={{
-        colorPrimary: styles.verified,
-        colorSecondary: styles.notVerified,
-      }}
-      label={verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
-      size="small"
-      variant="outlined"
-      color={verified ? 'primary' : 'secondary'}
-      {...verifiedProps}
-    />
+    <Typography weight="bold" color={color}>
+      {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
+      {helpText && (
+        <Tooltip title={helpText} arrow placement="right">
+          <Help color="primary" className={styles.icon} />
+        </Tooltip>
+      )}
+    </Typography>
   );
 };
 export default VerifiedStatus;
