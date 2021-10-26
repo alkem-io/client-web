@@ -8,9 +8,15 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useAuthenticationContext, useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
-import { useEcoversesQuery, useServerMetadataQuery } from '../../../../hooks/generated/graphql';
-import { useGlobalState } from '../../../../hooks/useGlobalState';
+import {
+  useAuthenticationContext,
+  useConfig,
+  useNavigation,
+  useUserContext,
+  useUserScope,
+  useGlobalState,
+} from '../../../../hooks';
+import { useServerMetadataQuery, useSidebarEcoversesListQuery } from '../../../../hooks/generated/graphql';
 import {
   AUTH_LOGIN_PATH,
   AUTH_REGISTER_PATH,
@@ -33,7 +39,7 @@ import Main from './Main';
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
-  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
+  const { data: ecoversesData, loading: loadingEcoverses } = useSidebarEcoversesListQuery();
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading, isFeatureEnabled } = useConfig();
