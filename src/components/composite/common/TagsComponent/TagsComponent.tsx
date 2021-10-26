@@ -54,7 +54,7 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const tagsToDisplay = count !== undefined ? tags.slice(0, count) : tags;
+  const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
   const moreTags = count ? tags.slice(count) : [];
   const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
   const moreTagsTooltipTitle = moreTags.join(', ');
@@ -75,7 +75,7 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
               icon={<FiberManualRecordIcon fontSize="small" />}
               className={clsx(styles.tagMargin, {
                 [styles[`count-${count}`]]: keepInRow && count && count <= 5,
-                [styles.maxWidth]: !keepInRow && (!count || (count && count > 5)),
+                [styles.maxWidth]: !keepInRow && (!count || count > 5),
               })}
             />
           </Tooltip>
