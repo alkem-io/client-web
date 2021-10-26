@@ -133,7 +133,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
               <ProfileDetail title={t('components.profile.fields.location.title')} value={location} />
             </Grid>
             <Grid item>
-              <ProfileDetail title={t('components.profile.fields.work.title')} value={'N/A'} />
+              <ProfileDetail title={t('components.profile.fields.work.title')} value={''} />
             </Grid>
             <Grid item>
               <ProfileDetail title={t('components.profile.fields.telephone.title')} value={phone} />
