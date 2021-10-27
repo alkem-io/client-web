@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       height: '100%',
+      minHeight: theme.spacing(18),
       width: theme.spacing(32),
     },
     cardContent: {
@@ -36,7 +37,6 @@ const useStyles = makeStyles(theme =>
       maxHeight: '100%',
     },
     entityType: {
-      fontSize: 12,
       color: '#FFFFFF',
     },
     entityTypeWrapper: {
@@ -81,7 +81,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
                 </Grid>
                 <Grid item>
                   <Box className={styles.entityTypeWrapper}>
-                    <Typography variant="body1" className={styles.entityType}>
+                    <Typography variant="body" className={styles.entityType}>
                       {type && t(`common.${type}` as const)}
                     </Typography>
                   </Box>

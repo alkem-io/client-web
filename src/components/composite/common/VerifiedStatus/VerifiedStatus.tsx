@@ -7,6 +7,7 @@ import Typography from '../../../core/Typography';
 interface VerifiedStatusProps {
   verified: boolean;
   to?: string;
+  helpText?: string;
 }
 
 const useStyles = makeStyles(theme =>
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified }) => {
+export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -26,9 +27,11 @@ export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified }) => {
   return (
     <Typography weight="bold" color={color}>
       {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
-      <Tooltip title={t('components.verified-status.help')} arrow placement="right">
-        <Help color="primary" className={styles.icon} />
-      </Tooltip>
+      {helpText && (
+        <Tooltip title={helpText} arrow placement="right">
+          <Help color="primary" className={styles.icon} />
+        </Tooltip>
+      )}
     </Typography>
   );
 };

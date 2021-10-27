@@ -177,14 +177,13 @@ const CommunityPage: FC<Props> = ({
         </Typography>
       )}
       <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
-        {groups.map(({ id, name, profile }, i) => (
+        {groups.map(({ name, profile }, i) => (
           <SimpleCard
             key={i}
             title={name}
             avatar={profile?.avatar}
             description={profile?.description}
             tags={profile?.tagsets?.flatMap(y => y.tags)}
-            url={settingsUrl && `${settingsUrl}/community/groups/${id}`}
           />
         ))}
       </CardContainer>

@@ -11,6 +11,14 @@ fragment ChallengeProfile on Challenge {
   id
   nameID
   displayName
+  activity {
+    id
+    name
+    value
+  }
+  leadOrganizations {
+    ...OrganizationDetails
+  }
   lifecycle {
     id
     machineDef
@@ -28,7 +36,6 @@ fragment ChallengeProfile on Challenge {
       displayName
     }
   }
-
   tagset {
     id
     name
@@ -36,11 +43,17 @@ fragment ChallengeProfile on Challenge {
   }
   opportunities {
     id
+    nameID
     displayName
+    activity {
+      id
+      name
+      value
+    }
     lifecycle {
+      id
       state
     }
-    nameID
     context {
       ...ContextDetails
     }
@@ -55,15 +68,9 @@ fragment ChallengeProfile on Challenge {
       }
     }
     tagset {
+      id
       name
       tags
     }
-  }
-  activity {
-    name
-    value
-  }
-  leadOrganizations {
-    ...OrganizationDetails
   }
 }

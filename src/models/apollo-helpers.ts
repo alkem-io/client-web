@@ -206,7 +206,7 @@ export type CommunicationMessageReceivedKeySpecifier = (
   | 'message'
   | 'roomId'
   | 'roomName'
-  | 'userID'
+  | 'userEmail'
   | CommunicationMessageReceivedKeySpecifier
 )[];
 export type CommunicationMessageReceivedFieldPolicy = {
@@ -214,7 +214,7 @@ export type CommunicationMessageReceivedFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   roomId?: FieldPolicy<any> | FieldReadFunction<any>;
   roomName?: FieldPolicy<any> | FieldReadFunction<any>;
-  userID?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationMessageResultKeySpecifier = (
   | 'id'

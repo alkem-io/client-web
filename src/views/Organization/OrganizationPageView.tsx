@@ -9,7 +9,7 @@ import { OrganizationVerificationEnum } from '../../models/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
 import AssociatesView from '../ProfileView/AssociatesView';
 import ContributionsView from '../ProfileView/ContributionsView';
-import OrganizationProfileView, { OrganizationProfileViewProps } from '../ProfileView/OrganizationProfileView';
+import OrganizationProfileView, { OrganizationProfileViewEntity } from '../ProfileView/OrganizationProfileView';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -29,18 +29,19 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
     [keywords, capabilities]
   );
 
-  const entity: OrganizationProfileViewProps['entity'] = useMemo(
-    () => ({
-      avatar: organization?.profile.avatar,
-      displayName: organization?.displayName || '',
-      settingsTooltip: t('pages.organization.settings.tooltip'),
-      settingsUrl: buildAdminOrganizationUrl(organization?.nameID || ''),
-      bio: organization?.profile.description,
-      varified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-      tagsets,
-      socialLinks,
-      links,
-    }),
+  const entity = useMemo(
+    () =>
+      ({
+        avatar: organization?.profile.avatar,
+        displayName: organization?.displayName || '',
+        settingsTooltip: t('pages.organization.settings.tooltip'),
+        settingsUrl: buildAdminOrganizationUrl(organization?.nameID || ''),
+        bio: organization?.profile.description,
+        verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
+        tagsets,
+        socialLinks,
+        links,
+      } as OrganizationProfileViewEntity),
     [organization, tagsets, socialLinks, links]
   );
 
@@ -55,7 +56,11 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
             <AssociatesView associates={associates} />
           </Grid>
           <Grid item xs={12}>
-            <ContributionsView contributions={contributions} />
+            <ContributionsView
+              title={t('components.contributions.title')}
+              helpText={t('components.contributions.help')}
+              contributions={contributions}
+            />
           </Grid>
         </Grid>
       </Grid>
