@@ -323,23 +323,23 @@ export type CommunicationMessageReceived = {
   __typename?: 'CommunicationMessageReceived';
   /** The community to which this message corresponds */
   communityId?: Maybe<Scalars['String']>;
-  /** The message that has been sent. */
+  /** The update message that has been sent. */
   message: CommunicationMessageResult;
   /** The identifier of the room */
   roomId: Scalars['String'];
   /** The public name of the room */
   roomName: Scalars['String'];
-  /** The User that should receive the message */
-  userID: Scalars['String'];
+  /** The user email that should receive the message */
+  userEmail: Scalars['String'];
 };
 
 export type CommunicationMessageResult = {
   __typename?: 'CommunicationMessageResult';
-  /** The id for the message event. */
+  /** The id for the message event (Matrix) */
   id: Scalars['String'];
   /** The message being sent */
   message: Scalars['String'];
-  /** The sender user ID */
+  /** The sender email */
   sender: Scalars['String'];
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
@@ -678,9 +678,9 @@ export type DeleteUserInput = {
 
 export type DirectRoom = {
   __typename?: 'DirectRoom';
-  /** The identifier of the direct room */
+  /** The identifier of the room */
   id: Scalars['String'];
-  /** The messages that have been sent to the Direct Room. */
+  /** The messages that have been sent to the Room. */
   messages: Array<CommunicationMessageResult>;
   /** The recepient userID */
   receiverID?: Maybe<Scalars['String']>;
@@ -706,7 +706,7 @@ export type Ecoverse = {
   activity?: Maybe<Array<Nvp>>;
   /** The Agent representing this Ecoverse. */
   agent?: Maybe<Agent>;
-  /** A particular User Application within this Hub. */
+  /** All applications to join */
   application: Application;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
@@ -2000,8 +2000,6 @@ export type UpdateUserInput = {
   nameID?: Maybe<Scalars['NameID']>;
   phone?: Maybe<Scalars['String']>;
   profileData?: Maybe<UpdateProfileInput>;
-  /** Set this user profile as being used as a service account or not. */
-  serviceProfile?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateVisualInput = {
@@ -2695,6 +2693,9 @@ export type UserMembershipDetailsFragment = {
       communityID: string;
       displayName: string;
       state: string;
+      ecoverseID: string;
+      challengeID?: Maybe<string>;
+      opportunityID?: Maybe<string>;
     }>
   >;
 };
@@ -3962,6 +3963,20 @@ export type ChallengeProfileQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+      leadOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: Maybe<string>;
+          description?: Maybe<string>;
+          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+        };
+      }>;
       lifecycle?: Maybe<{
         __typename?: 'Lifecycle';
         id: string;
@@ -3993,9 +4008,10 @@ export type ChallengeProfileQuery = {
         Array<{
           __typename?: 'Opportunity';
           id: string;
-          displayName: string;
           nameID: string;
-          lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+          displayName: string;
+          activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+          lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
           context?: Maybe<{
             __typename?: 'Context';
             id: string;
@@ -4019,23 +4035,9 @@ export type ChallengeProfileQuery = {
               lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
             }>
           >;
-          tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+          tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
         }>
       >;
-      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-        };
-      }>;
     };
   };
 };
@@ -4045,6 +4047,20 @@ export type ChallengeProfileFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  leadOrganizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    displayName: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      description?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+    };
+  }>;
   lifecycle?: Maybe<{
     __typename?: 'Lifecycle';
     id: string;
@@ -4074,9 +4090,10 @@ export type ChallengeProfileFragment = {
     Array<{
       __typename?: 'Opportunity';
       id: string;
-      displayName: string;
       nameID: string;
-      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; state?: Maybe<string> }>;
+      displayName: string;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+      lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
@@ -4100,23 +4117,9 @@ export type ChallengeProfileFragment = {
           lifecycle?: Maybe<{ __typename?: 'Lifecycle'; id: string; state?: Maybe<string> }>;
         }>
       >;
-      tagset?: Maybe<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
     }>
   >;
-  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
-  leadOrganizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      avatar?: Maybe<string>;
-      description?: Maybe<string>;
-      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-    };
-  }>;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
@@ -5008,6 +5011,9 @@ export type MembershipUserQuery = {
         communityID: string;
         displayName: string;
         state: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
       }>
     >;
   };
@@ -5904,6 +5910,9 @@ export type UserProfileQuery = {
         communityID: string;
         displayName: string;
         state: string;
+        ecoverseID: string;
+        challengeID?: Maybe<string>;
+        opportunityID?: Maybe<string>;
       }>
     >;
   };

@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
-import { SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
+import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
@@ -51,8 +51,6 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   });
 
   const socialLinks = useMemo(() => {
-    const isSocialLink = (item: { type?: string; url: string }): item is SocialLinkItem => !!item?.type;
-
     const result = (organization?.profile.references || [])
       .map(s => ({
         type: toSocialNetworkEnum(s.name),

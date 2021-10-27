@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { Loading } from '../../components/core';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
-import UserProfileView, { UserProfileViewProps } from '../../views/User/UserProfileView';
+import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 import { Error404 } from '../';
+import { ThemeProviderV2 } from '../../context/ThemeProvider';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -23,10 +24,14 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   if (!userMetadata) return <Error404 />;
 
-  const options: UserProfileViewProps['options'] = {
-    isCurrentUser: currentUser?.user.id === userMetadata.user.id,
+  const options: UserProfileViewPageProps['options'] = {
+    isCurrentUser: currentUser?.user.id === userMetadata.user.id || false,
   };
 
-  return <UserProfileView entities={{ userMetadata, verified }} options={options} />;
+  return (
+    <ThemeProviderV2>
+      <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
+    </ThemeProviderV2>
+  );
 };
 export default UserProfilePage;
