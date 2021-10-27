@@ -37,6 +37,8 @@ const getSocialLinkUrl = (type: SocialNetworkEnum, url: string) => {
   return url;
 };
 
+export const isSocialLink = (item: { type?: string; url: string }): item is SocialLinkItem => !!item?.type;
+
 export interface SocialLinkItem {
   type: SocialNetworkEnum;
   url: string;
