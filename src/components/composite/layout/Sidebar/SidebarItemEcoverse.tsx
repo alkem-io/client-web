@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
+import { SidebarEcoverseFragment } from '../../../../models/graphql-schema';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
@@ -8,7 +8,7 @@ import Button from '../../../core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
 interface SidebarItemEcoverseProps {
-  ecoverse: EcoverseDetailsFragment;
+  ecoverse: SidebarEcoverseFragment;
   hideLabel?: boolean;
   centerLabel?: boolean;
 }

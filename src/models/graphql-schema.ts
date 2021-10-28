@@ -2128,6 +2128,18 @@ export type Visual = {
   id: Scalars['UUID'];
 };
 
+export type AdminEcoverseFragment = {
+  __typename?: 'Ecoverse';
+  id: string;
+  nameID: string;
+  displayName: string;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
+};
+
 export type ApplicationInfoFragment = {
   __typename?: 'Application';
   id: string;
@@ -2626,6 +2638,18 @@ export type OrganizationSearchResultFragment = {
 };
 
 export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
+
+export type SidebarEcoverseFragment = {
+  __typename?: 'Ecoverse';
+  id: string;
+  nameID: string;
+  displayName: string;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
+  }>;
+};
 
 export type UserAgentFragment = {
   __typename?: 'User';
@@ -3398,6 +3422,23 @@ export type UploadAvatarMutationVariables = Exact<{
 export type UploadAvatarMutation = {
   __typename?: 'Mutation';
   uploadAvatar: { __typename?: 'Profile'; id: string; avatar?: Maybe<string> };
+};
+
+export type AdminEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminEcoversesListQuery = {
+  __typename?: 'Query';
+  ecoverses: Array<{
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+  }>;
 };
 
 export type AllOpportunitiesQueryVariables = Exact<{
@@ -5704,6 +5745,23 @@ export type ServerMetadataQuery = {
     __typename?: 'Metadata';
     services: Array<{ __typename?: 'ServiceMetadata'; name?: Maybe<string>; version?: Maybe<string> }>;
   };
+};
+
+export type SidebarEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SidebarEcoversesListQuery = {
+  __typename?: 'Query';
+  ecoverses: Array<{
+    __typename?: 'Ecoverse';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: Maybe<{
+      __typename?: 'Context';
+      id: string;
+      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
+    }>;
+  }>;
 };
 
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;

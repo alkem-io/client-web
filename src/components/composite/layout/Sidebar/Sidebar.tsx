@@ -9,9 +9,8 @@ import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useConfig, UserMetadata } from '../../../../hooks';
-import { createStyles } from '../../../../hooks/useTheme';
-import { EcoverseDetailsFragment } from '../../../../models/graphql-schema';
+import { useConfig, UserMetadata, createStyles } from '../../../../hooks';
+import { SidebarEcoverseFragment } from '../../../../models/graphql-schema';
 import { Image } from '../../../core/Image';
 import Tag from '../../../core/Tag';
 import SidebarItem from './SidebarItem';
@@ -19,7 +18,7 @@ import SidebarItemEcoverse from './SidebarItemEcoverse';
 
 interface SidebarProps {
   isUserAuth?: boolean;
-  ecoverses: EcoverseDetailsFragment[];
+  ecoverses: SidebarEcoverseFragment[];
   userMetadata?: UserMetadata;
   drawerProps?: DrawerProps;
 }
