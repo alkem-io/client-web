@@ -18,6 +18,11 @@ const ThemeProviderV2: FC<{}> = ({ children }) => {
           typography: {
             ...typographyOptionsV2,
           },
+          props: {
+            MuiAvatar: {
+              variant: 'square',
+            },
+          },
         })
       }
     >

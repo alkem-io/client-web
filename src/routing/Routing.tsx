@@ -5,6 +5,7 @@ import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
+import DiscussionsPage from '../pages/DiscussionsPage';
 import { AdminRoute } from './admin/AdminRoute';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
@@ -64,6 +65,9 @@ export const Routing: FC = () => {
       </Route>
       <Route exact path="/restricted">
         <Restricted />
+      </Route>
+      <Route path="/discussions">
+        <DiscussionsPage />
       </Route>
       <Route exact path="/">
         <HomePage />
