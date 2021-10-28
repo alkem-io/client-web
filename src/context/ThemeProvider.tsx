@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import React, { FC } from 'react';
 import { defaultTheme } from '../themes/default';
+import { typographyOptionsV2 } from '../themes/defaultV2/typography';
 
 const ThemeProvider: FC<{}> = ({ children }) => {
   // can merge external configuration for the theme and pass it to the provider
@@ -14,6 +15,9 @@ const ThemeProviderV2: FC<{}> = ({ children }) => {
         createTheme({
           ...theme,
           spacing: 8,
+          typography: {
+            ...typographyOptionsV2,
+          },
         })
       }
     >

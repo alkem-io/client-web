@@ -71,7 +71,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     if (opportunityData)
       return {
         name: opportunityData.ecoverse.opportunity.displayName,
-        type: 'challenge',
+        type: 'opportunity',
         image: opportunityData.ecoverse.opportunity.context?.visual?.banner,
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
         url: buildOpportunityUrl(

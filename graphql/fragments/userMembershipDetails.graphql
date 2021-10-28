@@ -39,5 +39,8 @@ fragment UserMembershipDetails on UserMembership {
     communityID
     displayName
     state
+    ecoverseID
+    challengeID
+    opportunityID
   }
 }
