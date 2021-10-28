@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme =>
 
 interface Props {
   tags: string[];
-  count: number;
+  count?: number;
   className?: any;
   keepInRow?: boolean;
 }
@@ -54,8 +54,8 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const tagsToDisplay = tags.slice(0, count);
-  const moreTags = tags.slice(count);
+  const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
+  const moreTags = count ? tags.slice(count) : [];
   const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
   const moreTagsTooltipTitle = moreTags.join(', ');
 
@@ -74,8 +74,8 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
               size="small"
               icon={<FiberManualRecordIcon fontSize="small" />}
               className={clsx(styles.tagMargin, {
-                [styles[`count-${count}`]]: keepInRow && count <= 5,
-                [styles.maxWidth]: !keepInRow && count > 5,
+                [styles[`count-${count}`]]: keepInRow && count && count <= 5,
+                [styles.maxWidth]: !keepInRow && (!count || count > 5),
               })}
             />
           </Tooltip>

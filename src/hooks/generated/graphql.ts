@@ -679,6 +679,9 @@ export const UserMembershipDetailsFragmentDoc = gql`
       communityID
       displayName
       state
+      ecoverseID
+      challengeID
+      opportunityID
     }
   }
 `;
@@ -703,6 +706,14 @@ export const ChallengeProfileFragmentDoc = gql`
     id
     nameID
     displayName
+    activity {
+      id
+      name
+      value
+    }
+    leadOrganizations {
+      ...OrganizationDetails
+    }
     lifecycle {
       id
       machineDef
@@ -727,11 +738,17 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     opportunities {
       id
+      nameID
       displayName
+      activity {
+        id
+        name
+        value
+      }
       lifecycle {
+        id
         state
       }
-      nameID
       context {
         ...ContextDetails
       }
@@ -746,20 +763,14 @@ export const ChallengeProfileFragmentDoc = gql`
         }
       }
       tagset {
+        id
         name
         tags
       }
     }
-    activity {
-      name
-      value
-    }
-    leadOrganizations {
-      ...OrganizationDetails
-    }
   }
-  ${ContextDetailsFragmentDoc}
   ${OrganizationDetailsFragmentDoc}
+  ${ContextDetailsFragmentDoc}
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
