@@ -140,6 +140,7 @@ export const CommunityMessagesFragmentDoc = gql`
   fragment CommunityMessages on Community {
     id
     communication {
+      id
       updates {
         id
         messages {
@@ -5783,6 +5784,7 @@ export const CommunityPageDocument = gql`
         ...CommunityPageMembers
       }
       communication {
+        id
         updates {
           id
           messages {
@@ -9239,6 +9241,7 @@ export const CommunityUpdatesDocument = gql`
       id
       displayName
       communication {
+        id
         updates {
           id
           messages {

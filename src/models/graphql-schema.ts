@@ -2320,6 +2320,7 @@ export type CommunityMessagesFragment = {
   id: string;
   communication?: Maybe<{
     __typename?: 'Communication';
+    id: string;
     updates?: Maybe<{
       __typename?: 'Updates';
       id: string;
@@ -4485,6 +4486,7 @@ export type ChallengeCommunityMessagesQuery = {
         id: string;
         communication?: Maybe<{
           __typename?: 'Communication';
+          id: string;
           updates?: Maybe<{
             __typename?: 'Updates';
             id: string;
@@ -4513,6 +4515,7 @@ export type EcoverseCommunityMessagesQuery = {
       id: string;
       communication?: Maybe<{
         __typename?: 'Communication';
+        id: string;
         updates?: Maybe<{
           __typename?: 'Updates';
           id: string;
@@ -4542,6 +4545,7 @@ export type OpportunityCommunityMessagesQuery = {
         id: string;
         communication?: Maybe<{
           __typename?: 'Communication';
+          id: string;
           updates?: Maybe<{
             __typename?: 'Updates';
             id: string;
@@ -4703,6 +4707,7 @@ export type CommunityPageQuery = {
     >;
     communication?: Maybe<{
       __typename?: 'Communication';
+      id: string;
       updates?: Maybe<{
         __typename?: 'Updates';
         id: string;
@@ -6159,6 +6164,7 @@ export type CommunityUpdatesQuery = {
     displayName: string;
     communication?: Maybe<{
       __typename?: 'Communication';
+      id: string;
       updates?: Maybe<{
         __typename?: 'Updates';
         id: string;

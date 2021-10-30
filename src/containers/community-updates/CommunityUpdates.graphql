@@ -3,6 +3,7 @@ query communityUpdates($communityId: UUID!) {
     id
     displayName
     communication {
+      id
       updates {
         id
         messages {
