@@ -19,7 +19,8 @@ query communityPage($communityId: UUID!) {
     members {
       ...CommunityPageMembers
     }
-    updatesRoom {
+    communication {
+      updates {
       id
       messages {
         id
@@ -27,6 +28,7 @@ query communityPage($communityId: UUID!) {
         sender
         timestamp
       }
+    }
     }
   }
 }

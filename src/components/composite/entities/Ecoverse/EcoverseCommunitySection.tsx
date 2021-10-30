@@ -36,8 +36,8 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
               variables: {
                 ecoverseId: ecoverseNameId,
               },
-              messageSelector: data => data?.ecoverse.community?.updatesRoom?.messages || [],
-              roomIdSelector: data => data?.ecoverse.community?.updatesRoom?.id || '',
+              messageSelector: data => data?.ecoverse.community?.communication?.updates?.messages || [],
+              roomIdSelector: data => data?.ecoverse.community?.communication?.updates?.id || '',
             }}
           >
             {(entities, { retrievingUpdateMessages }) =>

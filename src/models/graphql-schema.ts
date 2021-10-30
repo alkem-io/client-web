@@ -319,30 +319,49 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type Communication = {
+  __typename?: 'Communication';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The Discussions active in this Communication. */
+  discussions?: Maybe<Array<Discussion>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Updates for this Communication. */
+  updates?: Maybe<Updates>;
+};
+
+export type CommunicationCreateDiscussionInput = {
+  /** The category for the Discussion */
+  category?: Maybe<DiscussionCategory>;
+  /** The identifier for the Communication entity the Discussion is being created on. */
+  communicationID: Scalars['UUID'];
+  /** The starting message in the discussion */
+  message: Scalars['String'];
+  /** The title for the Discussion */
+  title: Scalars['String'];
+};
+
 export type CommunicationMessageReceived = {
   __typename?: 'CommunicationMessageReceived';
   /** The community to which this message corresponds */
   communityId?: Maybe<Scalars['String']>;
-  /** The update message that has been sent. */
-  message: CommunicationMessageResult;
+  /** The message that has been sent. */
+  message: Message;
   /** The identifier of the room */
   roomId: Scalars['String'];
   /** The public name of the room */
   roomName: Scalars['String'];
-  /** The user email that should receive the message */
-  userEmail: Scalars['String'];
+  /** The User that should receive the message */
+  userID: Scalars['String'];
 };
 
-export type CommunicationMessageResult = {
-  __typename?: 'CommunicationMessageResult';
-  /** The id for the message event (Matrix) */
+export type CommunicationRoom = {
+  __typename?: 'CommunicationRoom';
+  /** The identifier of the room */
   id: Scalars['String'];
-  /** The message being sent */
-  message: Scalars['String'];
-  /** The sender email */
-  sender: Scalars['String'];
-  /** The server timestamp in UTC */
-  timestamp: Scalars['Float'];
+  /** The messages that have been sent to the Room. */
+  messages: Array<Message>;
 };
 
 export type Community = Groupable & {
@@ -351,8 +370,8 @@ export type Community = Groupable & {
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** Room with messages for this community. */
-  discussionRoom?: Maybe<CommunityRoom>;
+  /** The Communications for this Community. */
+  communication?: Maybe<Communication>;
   /** The name of the Community */
   displayName: Scalars['String'];
   /** Groups of users related to a Community. */
@@ -361,30 +380,6 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** All users that are contributing to this Community. */
   members?: Maybe<Array<User>>;
-  /** Room with messages for this community. */
-  updatesRoom?: Maybe<CommunityRoom>;
-};
-
-export type CommunityRemoveMessageInput = {
-  /** The community the message is being sent to */
-  communityID: Scalars['String'];
-  /** The message id that should be removed */
-  messageId: Scalars['String'];
-};
-
-export type CommunityRoom = {
-  __typename?: 'CommunityRoom';
-  /** The identifier of the room */
-  id: Scalars['String'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<CommunicationMessageResult>;
-};
-
-export type CommunitySendMessageInput = {
-  /** The community the message is being sent to */
-  communityID: Scalars['String'];
-  /** The message being sent */
-  message: Scalars['String'];
 };
 
 export type Config = {
@@ -644,6 +639,10 @@ export type DeleteChallengeInput = {
   ID: Scalars['UUID'];
 };
 
+export type DeleteDiscussionInput = {
+  ID: Scalars['UUID'];
+};
+
 export type DeleteEcoverseInput = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -678,12 +677,47 @@ export type DeleteUserInput = {
 
 export type DirectRoom = {
   __typename?: 'DirectRoom';
-  /** The identifier of the room */
+  /** The identifier of the direct room */
   id: Scalars['String'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<CommunicationMessageResult>;
+  /** The messages that have been sent to the Direct Room. */
+  messages: Array<Message>;
   /** The recepient userID */
   receiverID?: Maybe<Scalars['String']>;
+};
+
+export type Discussion = {
+  __typename?: 'Discussion';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The category assigned to this Discussion. */
+  category: DiscussionCategory;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Messages for this Discussion. */
+  messages?: Maybe<Array<Message>>;
+  /** The title of the Discussion. */
+  title: Scalars['String'];
+};
+
+export enum DiscussionCategory {
+  General = 'GENERAL',
+  Ideas = 'IDEAS',
+  Questions = 'QUESTIONS',
+  Sharing = 'SHARING',
+}
+
+export type DiscussionRemoveMessageInput = {
+  /** The Discussion to remove a message from. */
+  discussionID: Scalars['UUID'];
+  /** The message id that should be removed */
+  messageID: Scalars['String'];
+};
+
+export type DiscussionSendMessageInput = {
+  /** The Discussion the message is being sent to */
+  discussionID: Scalars['UUID'];
+  /** The message being sent */
+  message: Scalars['String'];
 };
 
 export type EcosystemModel = {
@@ -706,7 +740,7 @@ export type Ecoverse = {
   activity?: Maybe<Array<Nvp>>;
   /** The Agent representing this Ecoverse. */
   agent?: Maybe<Agent>;
-  /** All applications to join */
+  /** A particular User Application within this Hub. */
   application: Application;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
@@ -894,6 +928,19 @@ export type MembershipUserResultEntryOrganization = {
   userGroups: Array<MembershipResultEntry>;
 };
 
+/** A message that was sent either as an Update or as part of a Discussion. */
+export type Message = {
+  __typename?: 'Message';
+  /** The id for the message event. */
+  id: Scalars['String'];
+  /** The message being sent */
+  message: Scalars['Markdown'];
+  /** The sender user ID */
+  sender: Scalars['UUID'];
+  /** The server timestamp in UTC */
+  timestamp: Scalars['Float'];
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Metrics about the activity on the platform */
@@ -944,6 +991,8 @@ export type Mutation = {
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
   createChildChallenge: Challenge;
+  /** Creates a new Discussion as part of this Communication. */
+  createDiscussion: Discussion;
   /** Creates a new Ecoverse. */
   createEcoverse: Ecoverse;
   /** Creates a new User Group in the specified Community. */
@@ -976,6 +1025,8 @@ export type Mutation = {
   deleteAspect: Aspect;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
+  /** Deletes the specified Discussion. */
+  deleteDiscussion: Discussion;
   /** Deletes the specified Ecoverse. */
   deleteEcoverse: Ecoverse;
   /** Deletes the specified Opportunity. */
@@ -1008,10 +1059,10 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
-  /** Removes a discussion message from the specified community */
-  removeMessageFromCommunityDiscussions: Scalars['String'];
-  /** Removes an update message from the specified community */
-  removeMessageFromCommunityUpdates: Scalars['String'];
+  /** Removes a message from the specified Discussion. */
+  removeMessageFromDiscussion: Discussion;
+  /** Removes an update message. */
+  removeUpdate: Scalars['String'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
   /** Removes a User from being an Ecoverse Admin. */
@@ -1034,16 +1085,18 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Sends a message to the discussions room on the community */
-  sendMessageToCommunityDiscussions: Scalars['String'];
-  /** Sends an update message on the specified community */
-  sendMessageToCommunityUpdates: Scalars['String'];
+  /** Sends a message to the specified Discussion */
+  sendMessageToDiscussion: Discussion;
+  /** Sends an update message. */
+  sendUpdate: Scalars['String'];
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
+  /** Updates the specified Discussion. */
+  updateDiscussion: Discussion;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
   /** Updates the Ecoverse. */
@@ -1144,6 +1197,10 @@ export type MutationCreateChildChallengeArgs = {
   challengeData: CreateChallengeOnChallengeInput;
 };
 
+export type MutationCreateDiscussionArgs = {
+  createData: CommunicationCreateDiscussionInput;
+};
+
 export type MutationCreateEcoverseArgs = {
   ecoverseData: CreateEcoverseInput;
 };
@@ -1202,6 +1259,10 @@ export type MutationDeleteAspectArgs = {
 
 export type MutationDeleteChallengeArgs = {
   deleteData: DeleteChallengeInput;
+};
+
+export type MutationDeleteDiscussionArgs = {
+  deleteData: DeleteDiscussionInput;
 };
 
 export type MutationDeleteEcoverseArgs = {
@@ -1268,12 +1329,12 @@ export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
 
-export type MutationRemoveMessageFromCommunityDiscussionsArgs = {
-  messageData: CommunityRemoveMessageInput;
+export type MutationRemoveMessageFromDiscussionArgs = {
+  messageData: DiscussionRemoveMessageInput;
 };
 
-export type MutationRemoveMessageFromCommunityUpdatesArgs = {
-  messageData: CommunityRemoveMessageInput;
+export type MutationRemoveUpdateArgs = {
+  messageData: UpdatesRemoveMessageInput;
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
@@ -1320,12 +1381,12 @@ export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
 };
 
-export type MutationSendMessageToCommunityDiscussionsArgs = {
-  messageData: CommunitySendMessageInput;
+export type MutationSendMessageToDiscussionArgs = {
+  messageData: DiscussionSendMessageInput;
 };
 
-export type MutationSendMessageToCommunityUpdatesArgs = {
-  messageData: CommunitySendMessageInput;
+export type MutationSendUpdateArgs = {
+  messageData: UpdatesSendMessageInput;
 };
 
 export type MutationUpdateActorArgs = {
@@ -1338,6 +1399,10 @@ export type MutationUpdateAspectArgs = {
 
 export type MutationUpdateChallengeArgs = {
   challengeData: UpdateChallengeInput;
+};
+
+export type MutationUpdateDiscussionArgs = {
+  updateData: UpdateDiscussionInput;
 };
 
 export type MutationUpdateEcosystemModelArgs = {
@@ -1900,6 +1965,13 @@ export type UpdateContextInput = {
   who?: Maybe<Scalars['Markdown']>;
 };
 
+export type UpdateDiscussionInput = {
+  ID: Scalars['UUID'];
+  /** The category for the Discussion */
+  category?: Maybe<DiscussionCategory>;
+  title?: Maybe<Scalars['String']>;
+};
+
 export type UpdateEcosystemModelInput = {
   ID: Scalars['UUID'];
   /** Update the Canvas for this Ecosystem Model. */
@@ -2000,12 +2072,38 @@ export type UpdateUserInput = {
   nameID?: Maybe<Scalars['NameID']>;
   phone?: Maybe<Scalars['String']>;
   profileData?: Maybe<UpdateProfileInput>;
+  /** Set this user profile as being used as a service account or not. */
+  serviceProfile?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateVisualInput = {
   avatar?: Maybe<Scalars['String']>;
   background?: Maybe<Scalars['String']>;
   banner?: Maybe<Scalars['String']>;
+};
+
+export type Updates = {
+  __typename?: 'Updates';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Messages in this Updates. */
+  messages?: Maybe<Array<Message>>;
+};
+
+export type UpdatesRemoveMessageInput = {
+  /** The message id that should be removed */
+  messageID: Scalars['String'];
+  /** The Updates the message is being removed from. */
+  updatesID: Scalars['UUID'];
+};
+
+export type UpdatesSendMessageInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The Updates the message is being sent to */
+  updatesID: Scalars['UUID'];
 };
 
 export type UploadProfileAvatarInput = {
@@ -2023,7 +2121,7 @@ export type User = Searchable & {
   authorization?: Maybe<Authorization>;
   city: Scalars['String'];
   /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunityRoom>>;
+  communityRooms?: Maybe<Array<CommunicationRoom>>;
   country: Scalars['String'];
   /** The direct rooms this user is a member of */
   directRooms?: Maybe<Array<DirectRoom>>;
@@ -2220,32 +2318,20 @@ export type CommunityDetailsFragment = {
 export type CommunityMessagesFragment = {
   __typename?: 'Community';
   id: string;
-  updatesRoom?: Maybe<{
-    __typename?: 'CommunityRoom';
-    id: string;
-    messages: Array<{
-      __typename?: 'CommunicationMessageResult';
+  communication?: Maybe<{
+    __typename?: 'Communication';
+    updates?: Maybe<{
+      __typename?: 'Updates';
       id: string;
-      sender: string;
-      message: string;
-      timestamp: number;
-    }>;
-  }>;
-  discussionRoom?: Maybe<{
-    __typename?: 'CommunityRoom';
-    id: string;
-    messages: Array<{
-      __typename?: 'CommunicationMessageResult';
-      id: string;
-      sender: string;
-      message: string;
-      timestamp: number;
+      messages?: Maybe<
+        Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+      >;
     }>;
   }>;
 };
 
 export type MessageDetailsFragment = {
-  __typename?: 'CommunicationMessageResult';
+  __typename?: 'Message';
   id: string;
   sender: string;
   message: string;
@@ -4397,26 +4483,14 @@ export type ChallengeCommunityMessagesQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
-        updatesRoom?: Maybe<{
-          __typename?: 'CommunityRoom';
-          id: string;
-          messages: Array<{
-            __typename?: 'CommunicationMessageResult';
+        communication?: Maybe<{
+          __typename?: 'Communication';
+          updates?: Maybe<{
+            __typename?: 'Updates';
             id: string;
-            sender: string;
-            message: string;
-            timestamp: number;
-          }>;
-        }>;
-        discussionRoom?: Maybe<{
-          __typename?: 'CommunityRoom';
-          id: string;
-          messages: Array<{
-            __typename?: 'CommunicationMessageResult';
-            id: string;
-            sender: string;
-            message: string;
-            timestamp: number;
+            messages?: Maybe<
+              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            >;
           }>;
         }>;
       }>;
@@ -4437,26 +4511,14 @@ export type EcoverseCommunityMessagesQuery = {
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
-      updatesRoom?: Maybe<{
-        __typename?: 'CommunityRoom';
-        id: string;
-        messages: Array<{
-          __typename?: 'CommunicationMessageResult';
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        updates?: Maybe<{
+          __typename?: 'Updates';
           id: string;
-          sender: string;
-          message: string;
-          timestamp: number;
-        }>;
-      }>;
-      discussionRoom?: Maybe<{
-        __typename?: 'CommunityRoom';
-        id: string;
-        messages: Array<{
-          __typename?: 'CommunicationMessageResult';
-          id: string;
-          sender: string;
-          message: string;
-          timestamp: number;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          >;
         }>;
       }>;
     }>;
@@ -4478,26 +4540,14 @@ export type OpportunityCommunityMessagesQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
-        updatesRoom?: Maybe<{
-          __typename?: 'CommunityRoom';
-          id: string;
-          messages: Array<{
-            __typename?: 'CommunicationMessageResult';
+        communication?: Maybe<{
+          __typename?: 'Communication';
+          updates?: Maybe<{
+            __typename?: 'Updates';
             id: string;
-            sender: string;
-            message: string;
-            timestamp: number;
-          }>;
-        }>;
-        discussionRoom?: Maybe<{
-          __typename?: 'CommunityRoom';
-          id: string;
-          messages: Array<{
-            __typename?: 'CommunicationMessageResult';
-            id: string;
-            sender: string;
-            message: string;
-            timestamp: number;
+            messages?: Maybe<
+              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            >;
           }>;
         }>;
       }>;
@@ -4651,15 +4701,14 @@ export type CommunityPageQuery = {
         }>;
       }>
     >;
-    updatesRoom?: Maybe<{
-      __typename?: 'CommunityRoom';
-      id: string;
-      messages: Array<{
-        __typename?: 'CommunicationMessageResult';
+    communication?: Maybe<{
+      __typename?: 'Communication';
+      updates?: Maybe<{
+        __typename?: 'Updates';
         id: string;
-        message: string;
-        sender: string;
-        timestamp: number;
+        messages?: Maybe<
+          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+        >;
       }>;
     }>;
   };
@@ -6108,31 +6157,30 @@ export type CommunityUpdatesQuery = {
     __typename?: 'Community';
     id: string;
     displayName: string;
-    updatesRoom?: Maybe<{
-      __typename?: 'CommunityRoom';
-      id: string;
-      messages: Array<{
-        __typename?: 'CommunicationMessageResult';
+    communication?: Maybe<{
+      __typename?: 'Communication';
+      updates?: Maybe<{
+        __typename?: 'Updates';
         id: string;
-        message: string;
-        sender: string;
-        timestamp: number;
+        messages?: Maybe<
+          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+        >;
       }>;
     }>;
   };
 };
 
-export type SendCommunityUpdateMutationVariables = Exact<{
-  msgData: CommunitySendMessageInput;
+export type SendUpdateMutationVariables = Exact<{
+  msgData: UpdatesSendMessageInput;
 }>;
 
-export type SendCommunityUpdateMutation = { __typename?: 'Mutation'; sendMessageToCommunityUpdates: string };
+export type SendUpdateMutation = { __typename?: 'Mutation'; sendUpdate: string };
 
 export type RemoveUpdateCommunityMutationVariables = Exact<{
-  msgData: CommunityRemoveMessageInput;
+  msgData: UpdatesRemoveMessageInput;
 }>;
 
-export type RemoveUpdateCommunityMutation = { __typename?: 'Mutation'; removeMessageFromCommunityUpdates: string };
+export type RemoveUpdateCommunityMutation = { __typename?: 'Mutation'; removeUpdate: string };
 
 export type OnMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
 
@@ -6143,13 +6191,7 @@ export type OnMessageReceivedSubscription = {
     roomId: string;
     roomName: string;
     communityId?: Maybe<string>;
-    message: {
-      __typename?: 'CommunicationMessageResult';
-      id: string;
-      message: string;
-      sender: string;
-      timestamp: number;
-    };
+    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
   };
 };
 

@@ -45,8 +45,8 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
                 ecoverseId,
                 opportunityId,
               },
-              messageSelector: data => data?.ecoverse.opportunity.community?.updatesRoom?.messages || [],
-              roomIdSelector: data => data?.ecoverse.opportunity.community?.updatesRoom?.id || '',
+              messageSelector: data => data?.ecoverse.opportunity.community?.communication?.updates?.messages || [],
+              roomIdSelector: data => data?.ecoverse.opportunity.community?.communication?.updates?.id || '',
             }}
           >
             {(entities, { retrievingUpdateMessages }) =>

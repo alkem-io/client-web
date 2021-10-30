@@ -1,20 +1,16 @@
 fragment CommunityMessages on Community {
   id
-  updatesRoom {
-    id
-    messages {
-      ...MessageDetails
-    }
-  }
-  discussionRoom {
-    id
-    messages {
-      ...MessageDetails
+  communication {
+    updates {
+      id
+      messages {
+        ...MessageDetails
+      }
     }
   }
 }
 
-fragment MessageDetails on CommunicationMessageResult {
+fragment MessageDetails on Message {
   id
   sender
   message
