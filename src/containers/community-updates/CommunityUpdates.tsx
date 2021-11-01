@@ -47,6 +47,9 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const { communityId } = entities;
 
   const { data, loading } = useCommunityUpdatesQuery({ variables: { communityId } });
+  const updatesId = data?.community?.communication?.updates?.id || '';
+  console.log(`Updates id: ${updatesId}`);
+
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
   });
@@ -54,7 +57,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
       const update = await sendUpdate({
-        variables: { msgData: { message, updatesID: communityId } },
+        variables: { msgData: { message, updatesID: updatesId } },
         refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
       });
       return update.data?.sendUpdate;
@@ -67,7 +70,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
     async messageId => {
       const update = await removeUpdate({
-        variables: { msgData: { messageID: messageId, updatesID: communityId } },
+        variables: { msgData: { messageID: messageId, updatesID: updatesId } },
         refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
       });
       return update.data?.removeUpdate;
