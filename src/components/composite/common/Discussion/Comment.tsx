@@ -1,5 +1,6 @@
 import { Avatar, Box, createStyles, Link, makeStyles, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import Markdown from '../../../core/Markdown';
 
 const useStyles = makeStyles(theme =>
@@ -14,13 +15,14 @@ const useStyles = makeStyles(theme =>
 interface DiscussionCommentProps {
   commentId: string;
   message: string;
-  createdOn: string;
+  createdOn: Date;
   createdBy: string;
   depth: number;
 }
 
 export const DiscussionComment: FC<DiscussionCommentProps> = ({ commentId, message, createdOn, createdBy, depth }) => {
   const styles = useStyles();
+  const { t } = useTranslation();
 
   const depthPadding = depth > 0 ? depth * 8 + 2 : 0;
 
@@ -35,7 +37,13 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ commentId, messa
             <Markdown>{message}</Markdown>
           </Typography>
           <Typography variant="body2">
-            {`${createdBy} on ${createdOn}`} - <Link href={`#${commentId}`}>Replay to this comment</Link>
+            {t('components.comment.posted', {
+              name: createdBy,
+              date: createdOn.toLocaleDateString(),
+            })}
+            <Box component="span" marginX={1}>
+              <Link href={`#${commentId}`}>{t('components.comment.reply')}</Link>
+            </Box>
           </Typography>
         </Box>
       </Box>

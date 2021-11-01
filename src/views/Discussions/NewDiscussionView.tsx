@@ -46,19 +46,28 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
         <Form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormikInputField name="title" title="Title" placeholder="Discussion title" />
+              <FormikInputField
+                name="title"
+                title={t('components.new-discussion.title.title')}
+                placeholder={t('components.new-discussion.title.placeholder')}
+              />
             </Grid>
             <Grid item xs={12}>
               <FormikMarkdownField
                 name="description"
-                title="Further information"
-                placeholder="Add further information on the discussion here."
+                title={t('components.new-discussion.description.title')}
+                placeholder={t('components.new-discussion.description.placeholder')}
                 rows={10}
                 multiline
               />
             </Grid>
             <Grid item>
-              <Button variant="primary" text="Post discussion" type="submit" disabled={!isValid || !dirty} />
+              <Button
+                variant="primary"
+                text={t('components.new-discussion.buttons.post')}
+                type="submit"
+                disabled={!isValid || !dirty}
+              />
             </Grid>
           </Grid>
         </Form>
