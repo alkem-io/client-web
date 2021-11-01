@@ -1,5 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { useConfig } from '../../hooks';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { Error404, PageProps } from '../../pages';
 import DiscussionListPage from '../../pages/Discussions/DiscussionListPage';
 import DiscussionPage from '../../pages/Discussions/DiscussionPage';
@@ -12,6 +14,10 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
   const { url, path } = useRouteMatch();
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'Discussions', real: true }], [paths]);
+
+  const { isFeatureEnabled } = useConfig();
+
+  if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
 
   return (
     <Switch>
