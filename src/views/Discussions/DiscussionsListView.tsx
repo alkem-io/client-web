@@ -11,7 +11,7 @@ export const DiscussionListView: FC = () => {
       title: 'Discussion subject title',
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
+      date: new Date('2021-10-18'),
       avatars: ['A', 'B', 'C', 'D'],
       count: 43,
     },
@@ -20,7 +20,7 @@ export const DiscussionListView: FC = () => {
       title: 'Discussion subject title',
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
+      date: new Date('2021-10-17'),
       avatars: ['A', 'D'],
       count: 1,
     },
@@ -46,7 +46,7 @@ export const DiscussionListView: FC = () => {
 
   return (
     <ProfileCard title="Discussions" helpText="List of all discussions">
-      <Filter data={data} sort>
+      <Filter data={data} sort={[{ key: 'date', name: 'Date' }]}>
         {filteredData => (
           <List>
             {filteredData.map((item, index) => (

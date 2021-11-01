@@ -1,20 +1,26 @@
-import { FormControl, Grid, MenuItem, OutlinedInput, Select } from '@material-ui/core';
+import { FormControl, Grid, OutlinedInput, TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import { sortBy as lSortBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+interface sortItem<T> {
+  key: keyof T;
+  name: string;
+}
 
 type FilterProps<T> = {
   data: T[];
   limitKeys?: Array<keyof T>;
-  sort?: boolean;
+  sort?: sortItem<T>[];
   children: (filteredData: T[]) => void;
 };
 
-export function Filter<T>({ data, limitKeys = [], sort = false, children }: FilterProps<T>): React.ReactElement {
+export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState<sortItem<T> | null>(null);
   const filteredData = useMemo(() => {
-    return data.filter(item => {
+    const filtered = data.filter(item => {
       if (!filterBy) return true;
       for (const key in item) {
         if (limitKeys.length) {
@@ -29,7 +35,12 @@ export function Filter<T>({ data, limitKeys = [], sort = false, children }: Filt
       }
       return false;
     });
-  }, [data, filterBy]);
+
+    if (sortBy) {
+      return lSortBy(filtered, sortBy.key);
+    }
+    return filtered;
+  }, [data, filterBy, sortBy]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -38,26 +49,24 @@ export function Filter<T>({ data, limitKeys = [], sort = false, children }: Filt
 
   return (
     <>
-      <Grid container item spacing={2} justifyContent="space-between">
-        <Grid item xs={sort ? 11 : 12}>
+      <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
+        <Grid item xs={sort ? 10 : 12}>
           <FormControl fullWidth size={'small'}>
             <OutlinedInput placeholder={t('components.filter.placeholder')} onChange={handleSearch} />
           </FormControl>
         </Grid>
         {sort && (
-          <Grid item xs={1}>
+          <Grid item xs={2}>
             <FormControl variant="outlined" fullWidth>
-              <Select
+              <Autocomplete
+                options={sort}
+                getOptionLabel={option => option.name}
+                renderInput={params => <TextField {...params} label="" margin="dense" variant="outlined" />}
                 value={sortBy}
-                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                  setSortBy(event.target.value as string);
+                onChange={(event: any, newValue: sortItem<T> | null) => {
+                  setSortBy(newValue);
                 }}
-                variant={'outlined'}
-                placeholder={'Sort by'}
-                input={<OutlinedInput placeholder={'Sorty by'} margin="dense" />}
-              >
-                <MenuItem value={'date'}>Date</MenuItem>
-              </Select>
+              />
             </FormControl>
           </Grid>
         )}
