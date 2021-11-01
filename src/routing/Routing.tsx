@@ -5,7 +5,8 @@ import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
-import DiscussionsPage from '../pages/DiscussionsPage';
+import DiscussionPage from '../pages/Discussions/DiscussionPage';
+import DiscussionListPage from '../pages/Discussions/DiscussionListPage';
 import { AdminRoute } from './admin/AdminRoute';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
@@ -17,6 +18,7 @@ import RestrictedRoute from './route.extensions';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
+import NewDiscussionPage from '../pages/Discussions/NewDiscussionPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -66,8 +68,15 @@ export const Routing: FC = () => {
       <Route exact path="/restricted">
         <Restricted />
       </Route>
-      <Route path="/discussions">
-        <DiscussionsPage />
+      {/* TODO [ATS] Extract in separate route*/}
+      <Route exact path="/discussions">
+        <DiscussionListPage />
+      </Route>
+      <Route exact path="/discussions/new">
+        <NewDiscussionPage />
+      </Route>
+      <Route path="/discussions/:discussionId">
+        <DiscussionPage />
       </Route>
       <Route exact path="/">
         <HomePage />
