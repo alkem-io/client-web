@@ -48,12 +48,6 @@ const useStyles = createStyles(theme => ({
     flexGrow: 1,
     overflowY: 'auto',
   },
-  logoLg: {
-    padding: `${theme.spacing(4)}px`,
-  },
-  logoSm: {
-    padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
-  },
   previewTag: {
     opacity: 1,
     zIndex: -1,
@@ -81,11 +75,10 @@ const Sidebar: FC<SidebarProps> = ({ isUserAuth, ecoverses, userMetadata, drawer
 
   const LogoComponent = useMemo(() => {
     const isLarge = upMd || !upSm;
-    const style = isLarge ? styles.logoLg : styles.logoSm;
     const src = isLarge ? '/logo.png' : '/logo192.png';
     return (
-      <Link component={RouterLink} to="/" className={style}>
-        <Box display="flex" flexDirection="column">
+      <Link component={RouterLink} to="/">
+        <Box display="flex" flexDirection="column" padding={isLarge ? 4 : 2}>
           <Image src={src} alt="alkemio" />
         </Box>
       </Link>
