@@ -1,8 +1,8 @@
 import { Box, Typography } from '@material-ui/core';
-import clsx from 'clsx';
+import Grid from '@material-ui/core/Grid';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Grid from '@material-ui/core/Grid';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import Button from '../../components/core/Button';
 import Image from '../../components/core/Image';
@@ -14,16 +14,11 @@ import { createStyles } from '../../hooks/useTheme';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 
 const useStyles = createStyles(theme => ({
   flexAlignCenter: {
     display: 'flex',
     alignItems: 'center',
-  },
-  flexGap: {
-    display: 'flex',
-    gap: theme.spacing(2),
   },
   flexCol: {
     display: 'flex',
@@ -150,18 +145,19 @@ const WelcomeSection = () => {
             </Grid>
           </Grid>
         </Section>
-        <div className={clsx(styles.flexCol, styles.flexGap)}>
-          {!isAuthenticated && (
-            <>
-              <Box p={0.5}></Box>
-              <div className={clsx(styles.flexGap, styles.flexAlignCenter)}>
+        {!isAuthenticated && (
+          <Box paddingY={2}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
                 <Button text={t('authentication.sign-in')} as={'a'} href={AUTH_LOGIN_PATH} />
-                OR
+              </Grid>
+              <Grid item>OR</Grid>
+              <Grid item>
                 <Button text={t('authentication.sign-up')} as={'a'} href={AUTH_REGISTER_PATH} />
-              </div>
-            </>
-          )}
-        </div>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </Section>
     </>
   );
