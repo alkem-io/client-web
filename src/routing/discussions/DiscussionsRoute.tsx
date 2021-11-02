@@ -19,7 +19,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
 
   const { isFeatureEnabled } = useConfig();
 
-  if (!!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
+  if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
 
   return (
     <Switch>

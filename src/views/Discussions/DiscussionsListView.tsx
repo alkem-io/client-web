@@ -1,10 +1,12 @@
 import { List } from '@material-ui/core';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Filter } from '../../components/Admin/Common/Filter';
 import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
 
 export const DiscussionListView: FC = () => {
+  const { t } = useTranslation();
   const data = [
     {
       id: '1',
@@ -63,7 +65,7 @@ export const DiscussionListView: FC = () => {
   ];
 
   return (
-    <ProfileCard title="Discussions" helpText="List of all discussions">
+    <ProfileCard title={t('common.discussions')} helpText={t('components.discussions-list.help')}>
       <Filter data={data} sort={[{ key: 'date', name: 'Date' }]}>
         {filteredData => (
           <List>
