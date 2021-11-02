@@ -15,7 +15,7 @@ export const Image: FC<React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImage
         onLoad={() => setIsLoaded(true)}
         onError={() => setIsLoaded(true)}
         className="image full"
-        style={{ opacity: isLoaded ? 1 : 0 }}
+        style={{ opacity: isLoaded ? 1 : 0, maxWidth: '100%', maxHeight: '100%' }}
         alt={alt}
         src={src}
         {...props}
