@@ -1,5 +1,6 @@
-import { createStyles, Grid, Link, makeStyles, Paper, Typography } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from '../../../core/Button';
 import { RouterLink } from '../../../core/RouterLink';
 
@@ -22,6 +23,7 @@ const useStyles = makeStyles(theme =>
 );
 
 export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, allowCreation = false, children }) => {
+  const { t } = useTranslation();
   const styles = useStyles();
 
   return (
@@ -34,9 +36,12 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, allowCrea
             </Grid>
             {allowCreation && (
               <Grid item>
-                <Link component={RouterLink} to="/discussions/new">
-                  <Button text={'Initiate discussions'} variant="primary" />
-                </Link>
+                <Button
+                  as={RouterLink}
+                  text={t('components.discussions-layout.buttons.new-discussion')}
+                  variant="primary"
+                  to="/discussions/new"
+                />
               </Grid>
             )}
           </Grid>

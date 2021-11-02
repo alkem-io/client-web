@@ -41,10 +41,20 @@ const PostComment: FC<PostCommentProps> = ({ onPost }) => {
         <Form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormikMarkdownField name="post" title="Comment on this discussion" placeholder="Comment" />
+              <FormikMarkdownField
+                name="post"
+                title={t('components.post-comment.fields.description.title')}
+                placeholder={t('components.post-comment.fields.description.placeholder')}
+              />
             </Grid>
             <Grid item>
-              <Button variant="primary" text="Post comment" type="submit" disabled={!isValid || !dirty} />
+              <Button
+                aria-label="post comment"
+                variant="primary"
+                text={t('components.post-comment.buttons.post')}
+                type="submit"
+                disabled={!isValid || !dirty}
+              />
             </Grid>
           </Grid>
         </Form>

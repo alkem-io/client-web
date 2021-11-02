@@ -19,7 +19,10 @@ export interface DiscussionOverviewProps {
   title: string;
   description: string;
   date: Date;
-  avatars: string[];
+  avatars: {
+    name: string;
+    src: string;
+  }[];
   count: number;
 }
 
@@ -66,8 +69,8 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ id, title, descriptio
           }}
         >
           {avatars.map((a, i) => (
-            <Avatar key={i} src="">
-              {a}
+            <Avatar key={i} src={a.src}>
+              {a.name[0]}
             </Avatar>
           ))}
         </AvatarGroup>

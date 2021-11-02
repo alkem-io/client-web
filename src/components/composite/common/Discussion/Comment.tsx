@@ -3,11 +3,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Markdown from '../../../core/Markdown';
 
+const AVATAR_SIZE = 8;
+
 const useStyles = makeStyles(theme =>
   createStyles({
     avatar: {
-      height: theme.spacing(8),
-      width: theme.spacing(8),
+      height: theme.spacing(AVATAR_SIZE),
+      width: theme.spacing(AVATAR_SIZE),
     },
   })
 );
@@ -24,7 +26,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ commentId, messa
   const styles = useStyles();
   const { t } = useTranslation();
 
-  const depthPadding = depth > 0 ? depth * 8 + 2 : 0;
+  const depthPadding = depth > 0 ? depth * AVATAR_SIZE + 2 : 0;
 
   return (
     <Box paddingY={2} display="flex" justifyContent="space-between">
@@ -42,7 +44,9 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ commentId, messa
               date: createdOn.toLocaleDateString(),
             })}
             <Box component="span" marginX={1}>
-              <Link href={`#${commentId}`}>{t('components.comment.reply')}</Link>
+              <Link arial-lable="reply" href={`#${commentId}`}>
+                {t('components.comment.reply')}
+              </Link>
             </Box>
           </Typography>
         </Box>

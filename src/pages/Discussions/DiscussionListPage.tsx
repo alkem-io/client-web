@@ -10,9 +10,12 @@ interface DiscussionsPageProps extends PageProps {}
 export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
+  // TODO [ATS]:  this will be constructed depending on the community.
+  const title = 'Discussions';
+
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title="Discussions" allowCreation>
+      <DiscussionsLayout title={title} allowCreation>
         <DiscussionListView />
       </DiscussionsLayout>
     </ThemeProviderV2>

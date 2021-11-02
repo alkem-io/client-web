@@ -67,8 +67,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                 <Box marginTop={2}>
                   {filteredComments.map((c, i) => (
                     <>
-                      <Divider />
                       <DiscussionComment key={i} {...c} />
+                      <Divider />
                     </>
                   ))}
                 </Box>
@@ -77,7 +77,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
           </Filter>
         </Grid>
 
-        <Divider />
         <Grid item container spacing={2}>
           <Grid item xs={12}>
             <Box paddingY={2}>

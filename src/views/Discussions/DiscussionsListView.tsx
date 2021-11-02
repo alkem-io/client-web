@@ -12,7 +12,12 @@ export const DiscussionListView: FC = () => {
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
       date: new Date('2021-10-18'),
-      avatars: ['A', 'B', 'C', 'D'],
+      avatars: [
+        { name: 'A', src: '' },
+        { name: 'B', src: '' },
+        { name: 'C', src: '' },
+        { name: 'D', src: '' },
+      ],
       count: 43,
     },
     {
@@ -21,7 +26,10 @@ export const DiscussionListView: FC = () => {
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
       date: new Date('2021-10-17'),
-      avatars: ['A', 'D'],
+      avatars: [
+        { name: 'A', src: '' },
+        { name: 'D', src: '' },
+      ],
       count: 1,
     },
     {
@@ -30,7 +38,12 @@ export const DiscussionListView: FC = () => {
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
       date: new Date('2021-10-19'),
-      avatars: ['A', 'B', 'C', 'D'],
+      avatars: [
+        { name: 'A', src: '' },
+        { name: 'B', src: '' },
+        { name: 'C', src: '' },
+        { name: 'D', src: '' },
+      ],
       count: 43,
     },
     {
@@ -39,7 +52,12 @@ export const DiscussionListView: FC = () => {
       description:
         'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
       date: new Date('2021-10-19'),
-      avatars: ['A', 'B', 'C', 'D'],
+      avatars: [
+        { name: 'A', src: '' },
+        { name: 'B', src: '' },
+        { name: 'C', src: '' },
+        { name: 'D', src: '' },
+      ],
       count: 43,
     },
   ];

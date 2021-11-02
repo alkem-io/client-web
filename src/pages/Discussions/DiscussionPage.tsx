@@ -58,9 +58,12 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   useUpdateNavigation({ currentPaths });
 
+  // TODO [ATS]:  this will be constructed depending on the community.
+  const title = 'Digital Twining - Discussion 1';
+
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title={'Digital Twining - Discussion 1'}>
+      <DiscussionsLayout title={title}>
         <DiscussionView {...item} />
       </DiscussionsLayout>
     </ThemeProviderV2>

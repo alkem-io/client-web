@@ -91,6 +91,7 @@
     "admin": "Admin",
     "member": "Member",
     "empty-string": "",
+    "discussions": "Discussions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -435,6 +436,22 @@
     "comment": {
       "posted": "{{name}} on {{- date}}",
       "reply": "Replay to this comment"
+    },
+    "discussions-layout": {
+      "buttons": {
+        "new-discussion": "Initiate discussions"
+      }
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Comment on this discussion",
+          "placeholder": "Add further information on the discussion here"
+        }
+      },
+      "buttons": {
+        "post": "Post comment"
+      }
     },
     "new-discussion": {
       "title": {

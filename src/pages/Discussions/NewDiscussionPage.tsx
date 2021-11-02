@@ -15,9 +15,12 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
 
   useUpdateNavigation({ currentPaths });
 
+  // TODO [ATS]:  this will be constructed depending on the community.
+  const title = 'Digital Twinning - Initiate Discussion';
+
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title="Digital Twinning - Initiate Discussion">
+      <DiscussionsLayout title={title}>
         <NewDiscussionView />
       </DiscussionsLayout>
     </ThemeProviderV2>
