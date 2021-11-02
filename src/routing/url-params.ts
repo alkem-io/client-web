@@ -11,6 +11,7 @@ export default interface UrlParams {
   applicationId: string;
   userId: string;
   role: AuthorizationCredential;
+  discussionId: string;
 }
 
 export const nameOfUrl = nameof<UrlParams>();

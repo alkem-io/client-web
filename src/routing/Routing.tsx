@@ -6,6 +6,7 @@ import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { AdminRoute } from './admin/AdminRoute';
+import DiscussionsRoute from './discussions/DiscussionsRoute';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
 import { MessagesRoute } from './messages/MessagesRoute';
@@ -64,6 +65,9 @@ export const Routing: FC = () => {
       </Route>
       <Route exact path="/restricted">
         <Restricted />
+      </Route>
+      <Route path="/discussions">
+        <DiscussionsRoute paths={[]} />
       </Route>
       <Route exact path="/">
         <HomePage />

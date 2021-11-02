@@ -91,6 +91,7 @@
     "admin": "Admin",
     "member": "Member",
     "empty-string": "",
+    "discussions": "Discussions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -423,6 +424,48 @@
     "pending-applications": {
       "title": "Pending Applications",
       "help": "The Hubs and Challenges that this organization is contributing to"
+    },
+    "discussions-list": {
+      "help": "List of all discussions",
+      "posted": "{{- date}} - {{count}} comment",
+      "posted_plural": "{{- date}} - {{count}} comments"
+    },
+    "discussion": {
+      "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments"
+    },
+    "comment": {
+      "posted": "{{name}} on {{- date}}",
+      "reply": "Replay to this comment"
+    },
+    "discussions-layout": {
+      "buttons": {
+        "new-discussion": "Initiate discussions"
+      }
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Comment on this discussion",
+          "placeholder": "Add further information on the discussion here"
+        }
+      },
+      "buttons": {
+        "post": "Post comment"
+      }
+    },
+    "new-discussion": {
+      "title": {
+        "title": "Title",
+        "placeholder": "Discussion title"
+      },
+      "description": {
+        "title": "Further information",
+        "placeholder": "Add further information on the discussion here"
+      },
+      "buttons": {
+        "post": "Post discussion"
+      }
     }
   },
   "navigation": {
@@ -770,10 +813,10 @@
   },
   "kratos": {
     "errors": {
+      "401": "Unauthenticated",
       "session": {
         "default": "Can't get session information!"
-      },
-      "401": "Unauthenticated"
+      }
     },
     "loading-flow": "Loading flow",
     "loading-error": "Loading error"
