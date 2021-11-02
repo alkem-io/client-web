@@ -48,7 +48,6 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const { data, loading } = useCommunityUpdatesQuery({ variables: { communityId } });
   const updatesId = data?.community?.communication?.updates?.id || '';
-  console.log(`Updates id: ${updatesId}`);
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
@@ -62,7 +61,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       });
       return update.data?.sendUpdate;
     },
-    [sendUpdate, communityId]
+    [sendUpdate, communityId, updatesId]
   );
 
   const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveUpdateCommunityMutation();
@@ -75,7 +74,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       });
       return update.data?.removeUpdate;
     },
-    [sendUpdate, communityId]
+    [sendUpdate, communityId, updatesId]
   );
 
   const messages = data?.community.communication?.updates?.messages || [];
