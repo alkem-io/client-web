@@ -46,7 +46,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ enti
   );
 
   const isMember =
-    (challengeId && challengeNameId ? user?.ofChallenge(ecoverseId) : user?.ofEcoverse(ecoverseId)) || false;
+    (challengeId && challengeNameId ? user?.ofChallenge(challengeId) : user?.ofEcoverse(ecoverseId)) || false;
   const applyUrl =
     challengeId && challengeNameId
       ? buildChallengeApplyUrl(ecoverseNameId, challengeNameId)

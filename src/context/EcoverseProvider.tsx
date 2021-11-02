@@ -32,7 +32,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const ecoverse = data?.ecoverse;
   const ecoverseId = ecoverse?.id || '';
   const displayName = ecoverse?.displayName || '';
-  const isPrivate = Boolean(ecoverse?.authorization?.anonymousReadAccess);
+  const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
 
   return (
     <EcoverseContext.Provider

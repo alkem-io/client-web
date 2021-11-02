@@ -1,25 +1,33 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { refetchEcoversesQuery, useDeleteEcoverseMutation, useEcoversesQuery } from '../../../hooks/generated/graphql';
+import {
+  refetchAdminEcoversesListQuery,
+  useAdminEcoversesListQuery,
+  useDeleteEcoverseMutation,
+} from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../..';
 import Loading from '../../../components/core/Loading/Loading';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../../components/Admin/SearchableList';
+import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 
 interface EcoverseListProps extends PageProps {}
 
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
-  const { data: ecoversesData, loading: loadingEcoverses } = useEcoversesQuery();
+  const { data: ecoversesData, loading: loadingEcoverses } = useAdminEcoversesListQuery();
   const ecoverseList = useMemo(
-    () => ecoversesData?.ecoverses.map(searchableListItemMapper(url)) || [],
+    () =>
+      ecoversesData?.ecoverses
+        .filter(x => (x.authorization?.myPrivileges ?? []).find(y => y === AuthorizationPrivilege.Update))
+        .map(searchableListItemMapper(url)) || [],
     [ecoversesData]
   );
 
   const [deleteEcoverse] = useDeleteEcoverseMutation({
-    refetchQueries: [refetchEcoversesQuery()],
+    refetchQueries: [refetchAdminEcoversesListQuery()],
     awaitRefetchQueries: true,
     onError: handleError,
   });
