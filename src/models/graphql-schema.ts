@@ -94,11 +94,11 @@ export type ApplicationEventInput = {
 export type ApplicationReceived = {
   __typename?: 'ApplicationReceived';
   /** The identifier of the application */
-  applicationId: Scalars['String'];
+  applicationID: Scalars['String'];
   /** The community that was applied to */
   communityID: Scalars['String'];
-  /** The nameID of the user that applied. */
-  userNameID: Scalars['String'];
+  /** The ID of the user that applied. */
+  userID: Scalars['String'];
 };
 
 export type ApplicationResultEntry = {
@@ -2293,6 +2293,7 @@ export type CommunityDetailsFragment = {
   id: string;
   displayName: string;
   applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
+  communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
   members?: Maybe<
     Array<{ __typename?: 'User'; id: string; displayName: string; firstName: string; lastName: string; email: string }>
   >;
@@ -2885,6 +2886,15 @@ export type CreateChallengeMutationVariables = Exact<{
 export type CreateChallengeMutation = {
   __typename?: 'Mutation';
   createChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+};
+
+export type CreateDiscussionMutationVariables = Exact<{
+  input: CommunicationCreateDiscussionInput;
+}>;
+
+export type CreateDiscussionMutation = {
+  __typename?: 'Mutation';
+  createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
 };
 
 export type CreateEcoverseMutationVariables = Exact<{
@@ -4371,6 +4381,7 @@ export type ChallengeCommunityQuery = {
         id: string;
         displayName: string;
         applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
+        communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
         members?: Maybe<
           Array<{
             __typename?: 'User';
@@ -4438,6 +4449,7 @@ export type EcoverseCommunityQuery = {
       id: string;
       displayName: string;
       applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
+      communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
       members?: Maybe<
         Array<{
           __typename?: 'User';
@@ -4578,6 +4590,7 @@ export type OpportunityCommunityQuery = {
         id: string;
         displayName: string;
         applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
+        communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
         members?: Maybe<
           Array<{
             __typename?: 'User';
@@ -6198,6 +6211,43 @@ export type OnMessageReceivedSubscription = {
     roomName: string;
     communityId?: Maybe<string>;
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type DiscussionDetailsFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>>;
+};
+
+export type CommunityDiscussionListQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityDiscussionListQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        discussions?: Maybe<
+          Array<{
+            __typename?: 'Discussion';
+            id: string;
+            title: string;
+            messages?: Maybe<
+              Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+            >;
+          }>
+        >;
+      }>;
+    }>;
   };
 };
 

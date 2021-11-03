@@ -9,6 +9,7 @@ import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
 import EcoverseCommunityPage from '../../pages/Community/EcoverseCommunityPage';
 import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
+import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import RestrictedRoute, { CredentialForResource } from '../route.extensions';
 import { nameOfUrl } from '../url-params';
 
@@ -45,6 +46,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
           <ChallengeRoute paths={currentPaths} />
         </ChallengeProvider>
       </Route>
+      <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
+        <DiscussionsRoute paths={[]} />
+      </RestrictedRoute>
       <RestrictedRoute path={`${path}/community`} requiredCredentials={requiredCredentials}>
         <EcoverseCommunityPage paths={currentPaths} />
       </RestrictedRoute>

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useChallenge, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
@@ -30,7 +30,7 @@ export interface ChallengeContainerState {
 }
 
 export interface ChallengePageContainerProps
-  extends Container<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
+  extends ContainerProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();

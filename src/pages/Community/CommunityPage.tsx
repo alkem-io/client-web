@@ -15,10 +15,9 @@ import Icon from '../../components/core/Icon';
 import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import { CardContainer } from '../../components/core/CardContainer';
-import { Typography } from '@material-ui/core';
+import { Link, Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -95,6 +94,9 @@ const CommunityPage: FC<Props> = ({
 
   return (
     <>
+      <Link component={RouterLink} to={`${url}/discussions`}>
+        Discussions
+      </Link>
       <Section>
         <SectionHeader
           text={parentDisplayName}

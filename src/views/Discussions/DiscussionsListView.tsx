@@ -3,66 +3,42 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../../components/Admin/Common/Filter';
 import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
-import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import DiscussionOverview, {
+  DiscussionOverviewProps,
+} from '../../components/composite/entities/Communication/DiscussionOverview';
+import { DiscussionDetailsFragment } from '../../models/graphql-schema';
+import { ViewProps } from '../../models/view';
 
-export const DiscussionListView: FC = () => {
+interface DiscussionListViewEntities {
+  discussions: DiscussionDetailsFragment[];
+}
+interface DiscussionListViewState {
+  loading: boolean;
+}
+interface DiscussionListViewActions {}
+interface DiscussionListViewOptions {}
+
+interface DiscussionListViewProps
+  extends ViewProps<
+    DiscussionListViewEntities,
+    DiscussionListViewActions,
+    DiscussionListViewState,
+    DiscussionListViewOptions
+  > {}
+
+export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const data = [
-    {
-      id: '1',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-18'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-    {
-      id: '2',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-17'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 1,
-    },
-    {
-      id: '3',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-    {
-      id: '4',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-  ];
+
+  const { discussions } = entities;
+
+  const data = discussions.map<DiscussionOverviewProps>(x => ({
+    id: x.id,
+    title: x.title,
+    description: '',
+    date: new Date(),
+    avatars: [],
+    count: 0,
+  }));
 
   return (
     <ProfileCard title={t('common.discussions')} helpText={t('components.discussions-list.help')}>

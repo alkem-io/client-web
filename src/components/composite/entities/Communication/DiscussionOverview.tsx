@@ -12,6 +12,7 @@ import {
 import { AvatarGroup } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router-dom';
 import { RouterLink } from '../../../core/RouterLink';
 
 export interface DiscussionOverviewProps {
@@ -38,13 +39,14 @@ const useStyles = makeStyles(theme =>
 const DiscussionOverview: FC<DiscussionOverviewProps> = ({ id, title, description, count, date, avatars }) => {
   const styles = useStyles();
   const { t } = useTranslation();
+  const { url } = useRouteMatch();
 
   return (
     <ListItem alignItems="center" disableGutters>
       <ListItemText
         primary={
           <Typography color="primary" variant="h3">
-            <Link component={RouterLink} to={`/discussions/${id}`}>
+            <Link component={RouterLink} to={`${url}/${id}`}>
               {title}
             </Link>
           </Typography>

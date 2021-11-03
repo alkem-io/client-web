@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
 import { EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
@@ -34,7 +34,7 @@ export interface EcoverseContainerState {
 }
 
 export interface EcoversePageContainerProps
-  extends Container<EcoverseContainerEntities, EcoverseContainerActions, EcoverseContainerState> {}
+  extends ContainerProps<EcoverseContainerEntities, EcoverseContainerActions, EcoverseContainerState> {}
 
 export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();

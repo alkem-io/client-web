@@ -1,0 +1,6 @@
+mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  createDiscussion(createData: $input) {
+    id
+    title
+  }
+}

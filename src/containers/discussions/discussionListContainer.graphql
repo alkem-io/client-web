@@ -1,0 +1,24 @@
+fragment DiscussionDetails on Discussion {
+  id
+  title
+  messages {
+    id
+    message
+    sender
+    timestamp
+  }
+}
+
+query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    community(ID: $communityId) {
+      id
+      communication {
+        id
+        discussions {
+          ...DiscussionDetails
+        }
+      }
+    }
+  }
+}
