@@ -40,8 +40,8 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
                 ecoverseId,
                 challengeId,
               },
-              messageSelector: data => data?.ecoverse.challenge.community?.updatesRoom?.messages || [],
-              roomIdSelector: data => data?.ecoverse.challenge.community?.updatesRoom?.id || '',
+              messageSelector: data => data?.ecoverse.challenge.community?.communication?.updates?.messages || [],
+              roomIdSelector: data => data?.ecoverse.challenge.community?.communication?.updates?.id || '',
             }}
           >
             {(entities, { retrievingUpdateMessages }) =>

@@ -36,11 +36,11 @@ import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
-import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { Message, User } from '../../models/graphql-schema';
 
 export interface CommunityUpdatesViewProps {
   entities: {
-    messages: CommunicationMessageResult[];
+    messages: Message[];
     members: User[];
   };
   state: {

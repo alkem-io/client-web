@@ -2,24 +2,27 @@ query communityUpdates($communityId: UUID!) {
   community(ID: $communityId) {
     id
     displayName
-    updatesRoom {
+    communication {
       id
-      messages {
+      updates {
         id
-        message
-        sender
-        timestamp
+        messages {
+          id
+          message
+          sender
+          timestamp
+        }
       }
     }
   }
 }
 
-mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
-  sendMessageToCommunityUpdates(messageData: $msgData)
+mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
+  sendUpdate(messageData: $msgData)
 }
 
-mutation removeUpdateCommunity($msgData: CommunityRemoveMessageInput!) {
-  removeMessageFromCommunityUpdates(messageData: $msgData)
+mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
+  removeUpdate(messageData: $msgData)
 }
 
 subscription onMessageReceived {

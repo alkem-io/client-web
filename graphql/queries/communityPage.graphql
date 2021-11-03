@@ -19,13 +19,16 @@ query communityPage($communityId: UUID!) {
     members {
       ...CommunityPageMembers
     }
-    updatesRoom {
+    communication {
       id
-      messages {
+      updates {
         id
-        message
-        sender
-        timestamp
+        messages {
+          id
+          message
+          sender
+          timestamp
+        }
       }
     }
   }
