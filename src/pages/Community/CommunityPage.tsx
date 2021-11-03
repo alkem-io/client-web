@@ -76,7 +76,7 @@ const CommunityPage: FC<Props> = ({
   });
   const community = data?.community;
   const groups = community?.groups || [];
-  const updates = community?.updatesRoom?.messages || [];
+  const updates = community?.communication?.updates?.messages || [];
   const updateSenders = updates.map(x => ({ id: x.sender }));
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];

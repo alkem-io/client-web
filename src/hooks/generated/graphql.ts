@@ -129,7 +129,7 @@ export const CommunityDetailsFragmentDoc = gql`
   ${GroupMembersFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
-  fragment MessageDetails on CommunicationMessageResult {
+  fragment MessageDetails on Message {
     id
     sender
     message
@@ -139,16 +139,13 @@ export const MessageDetailsFragmentDoc = gql`
 export const CommunityMessagesFragmentDoc = gql`
   fragment CommunityMessages on Community {
     id
-    updatesRoom {
+    communication {
       id
-      messages {
-        ...MessageDetails
-      }
-    }
-    discussionRoom {
-      id
-      messages {
-        ...MessageDetails
+      updates {
+        id
+        messages {
+          ...MessageDetails
+        }
       }
     }
   }
@@ -5786,13 +5783,16 @@ export const CommunityPageDocument = gql`
       members {
         ...CommunityPageMembers
       }
-      updatesRoom {
+      communication {
         id
-        messages {
+        updates {
           id
-          message
-          sender
-          timestamp
+          messages {
+            id
+            message
+            sender
+            timestamp
+          }
         }
       }
     }
@@ -9240,13 +9240,16 @@ export const CommunityUpdatesDocument = gql`
     community(ID: $communityId) {
       id
       displayName
-      updatesRoom {
+      communication {
         id
-        messages {
+        updates {
           id
-          message
-          sender
-          timestamp
+          messages {
+            id
+            message
+            sender
+            timestamp
+          }
         }
       }
     }
@@ -9299,54 +9302,51 @@ export type CommunityUpdatesQueryResult = Apollo.QueryResult<
 export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
 }
-export const SendCommunityUpdateDocument = gql`
-  mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
-    sendMessageToCommunityUpdates(messageData: $msgData)
+export const SendUpdateDocument = gql`
+  mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
+    sendUpdate(messageData: $msgData)
   }
 `;
-export type SendCommunityUpdateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.SendCommunityUpdateMutation,
-  SchemaTypes.SendCommunityUpdateMutationVariables
+export type SendUpdateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendUpdateMutation,
+  SchemaTypes.SendUpdateMutationVariables
 >;
 
 /**
- * __useSendCommunityUpdateMutation__
+ * __useSendUpdateMutation__
  *
- * To run a mutation, you first call `useSendCommunityUpdateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendCommunityUpdateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSendUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendUpdateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [sendCommunityUpdateMutation, { data, loading, error }] = useSendCommunityUpdateMutation({
+ * const [sendUpdateMutation, { data, loading, error }] = useSendUpdateMutation({
  *   variables: {
  *      msgData: // value for 'msgData'
  *   },
  * });
  */
-export function useSendCommunityUpdateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.SendCommunityUpdateMutation,
-    SchemaTypes.SendCommunityUpdateMutationVariables
-  >
+export function useSendUpdateMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.SendUpdateMutation, SchemaTypes.SendUpdateMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.SendCommunityUpdateMutation, SchemaTypes.SendCommunityUpdateMutationVariables>(
-    SendCommunityUpdateDocument,
+  return Apollo.useMutation<SchemaTypes.SendUpdateMutation, SchemaTypes.SendUpdateMutationVariables>(
+    SendUpdateDocument,
     options
   );
 }
-export type SendCommunityUpdateMutationHookResult = ReturnType<typeof useSendCommunityUpdateMutation>;
-export type SendCommunityUpdateMutationResult = Apollo.MutationResult<SchemaTypes.SendCommunityUpdateMutation>;
-export type SendCommunityUpdateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.SendCommunityUpdateMutation,
-  SchemaTypes.SendCommunityUpdateMutationVariables
+export type SendUpdateMutationHookResult = ReturnType<typeof useSendUpdateMutation>;
+export type SendUpdateMutationResult = Apollo.MutationResult<SchemaTypes.SendUpdateMutation>;
+export type SendUpdateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendUpdateMutation,
+  SchemaTypes.SendUpdateMutationVariables
 >;
 export const RemoveUpdateCommunityDocument = gql`
-  mutation removeUpdateCommunity($msgData: CommunityRemoveMessageInput!) {
-    removeMessageFromCommunityUpdates(messageData: $msgData)
+  mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
+    removeUpdate(messageData: $msgData)
   }
 `;
 export type RemoveUpdateCommunityMutationFn = Apollo.MutationFunction<

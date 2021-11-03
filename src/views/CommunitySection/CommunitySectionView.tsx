@@ -13,7 +13,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { Message, User } from '../../models/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
@@ -26,9 +26,9 @@ interface CommunitySectionProps {
   body?: string;
   users: User[];
   shuffle?: boolean;
-  updates?: CommunicationMessageResult[];
+  updates?: Message[];
   updateSenders?: Pick<User, 'id'>[];
-  discussions?: CommunicationMessageResult[];
+  discussions?: Message[];
 }
 
 const useCommunityStyles = makeStyles(theme => ({

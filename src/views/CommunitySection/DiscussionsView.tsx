@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
 import Typography from '../../components/core/Typography';
 import { createStyles } from '../../hooks/useTheme';
-import { CommunicationMessageResult } from '../../models/graphql-schema';
+import { Message } from '../../models/graphql-schema';
 
 const useDiscussionsStyles = createStyles(_theme => ({
   container: {
@@ -12,7 +12,7 @@ const useDiscussionsStyles = createStyles(_theme => ({
   },
 }));
 interface DiscussionsProps {
-  messages?: CommunicationMessageResult[];
+  messages?: Message[];
 }
 
 export const DiscussionsView: FC<DiscussionsProps> = ({ messages }) => {

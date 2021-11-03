@@ -1,15 +1,15 @@
 import { assign, createMachine } from 'xstate';
-import { CommunicationMessageResult } from '../../../models/graphql-schema';
+import { Message } from '../../../models/graphql-schema';
 
 export const ADD_MESSAGE = 'ADD_MESSAGE';
 export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 
 export type CommunicationMessageContext = {
-  messagesByRoom: Record<string, CommunicationMessageResult[]>;
+  messagesByRoom: Record<string, Message[]>;
 };
 export type CommunicationMessageEvent =
-  | { type: typeof ADD_MESSAGE; payload: { message: CommunicationMessageResult; roomId: string } }
-  | { type: typeof REMOVE_MESSAGE; payload: { roomId: string; messageId: CommunicationMessageResult['id'] } };
+  | { type: typeof ADD_MESSAGE; payload: { message: Message; roomId: string } }
+  | { type: typeof REMOVE_MESSAGE; payload: { roomId: string; messageId: Message['id'] } };
 export type CommunicationMessageState =
   | { value: 'visible'; context: { messagesByRoom: {} } }
   | { value: 'hidden'; context: { messagesByRoom: {} } };
