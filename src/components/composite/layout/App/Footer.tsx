@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container, Link } from '@material-ui/core';
 import { createStyles } from '../../../../hooks/useTheme';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
 import { useConfig } from '../../../../hooks';
+import { RouterLink } from '../../../core/RouterLink';
 
 const useFooterStyles = createStyles(theme => ({
   footer: {
@@ -47,43 +47,41 @@ const Footer: FC = ({ children }) => {
         <Grid item xs={12}>
           <Toolbar dense>
             <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
-              <Grid container item justifyContent={'flex-end'} spacing={2} wrap={'nowrap'}>
+              <Grid container item justifyContent={'center'} spacing={2} wrap={'nowrap'}>
                 <Grid item>
-                  <a href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
                     Terms
-                  </a>
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <a href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
                     Privacy
-                  </a>
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <a href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
                     Security
-                  </a>
+                  </Link>
                 </Grid>
-              </Grid>
-              <Grid item component={Box} display={{ xs: 'none', lg: 'block' }}>
-                <Link to={'/about'}>
-                  <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-                </Link>
-              </Grid>
-              <Grid container item justifyContent={'flex-start'} spacing={2} wrap={'nowrap'}>
+                <Grid item component={Box} display={{ xs: 'none', lg: 'block' }}>
+                  <Link component={RouterLink} to={'/about'}>
+                    <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+                  </Link>
+                </Grid>
                 <Grid item>
-                  <a href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
                     Feedback
-                  </a>
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <a href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
                     Support
-                  </a>
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <a href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
+                  <Link href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
                     About
-                  </a>
+                  </Link>
                 </Grid>
               </Grid>
             </Grid>
