@@ -27,6 +27,7 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment }) => {
   const handleSubmit = async (values: formValues, _helpers: FormikHelpers<formValues>) => {
     if (onPostComment) {
       await onPostComment(values.post);
+      _helpers.resetForm();
     }
   };
 
