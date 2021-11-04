@@ -1,34 +1,49 @@
-import { uniq } from 'lodash';
+import { sortBy, uniq } from 'lodash';
 import React, { FC, useCallback, useContext, useMemo } from 'react';
-import { useEcoverse } from '../../hooks';
-import { useCommunityDiscussionListQuery, useUserAvatarsQuery } from '../../hooks/generated/graphql';
+import { useApolloErrorHandler, useEcoverse } from '../../hooks';
+import {
+  refetchCommunityDiscussionListQuery,
+  useCommunityDiscussionListQuery,
+  useCreateDiscussionMutation,
+  usePostDiscussionCommentMutation,
+  useUserAvatarsQuery,
+} from '../../hooks/generated/graphql';
 import { Author } from '../../models/discussion/author';
 import { Discussion } from '../../models/discussion/discussion';
 import { Comment } from '../../models/discussion/comment';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
 import { MessageDetailsFragment } from '../../models/graphql-schema';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 interface DiscussionContextProps {
   discussionList: Discussion[];
   getDiscussion: (id: string) => Discussion | undefined;
+  handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
+  handleCreateDiscussion: (title: string, description: string) => Promise<void> | void;
   loading: boolean;
+  posting: boolean;
 }
 
 const DiscussionsContext = React.createContext<DiscussionContextProps>({
   discussionList: [],
   getDiscussion: (_id: string) => undefined, // might be handled better;
+  handlePostComment: (_discussionId, _comment) => {},
+  handleCreateDiscussion: (_title, _description) => {},
   loading: false,
+  posting: false,
 });
 
 interface DiscussionProviderProps {}
 
-const sortMessages = (messages: MessageDetailsFragment[] = []) => messages.sort((a, b) => a.timestamp - b.timestamp);
+const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(messages, item => item.timestamp);
 
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
+  const history = useHistory();
+  const handleError = useApolloErrorHandler();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
-  const { communityId, loading: loadingCommunity } = useCommunityContext();
-
+  const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
+  const { url } = useRouteMatch();
   const { data, loading: loadingDiscussionList } = useCommunityDiscussionListQuery({
     variables: {
       ecoverseId: ecoverseNameId,
@@ -88,12 +103,53 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const getDiscussion = useCallback((id: string) => discussionList.find(x => x.id === id), [discussionList]);
 
+  const [postComment, { loading: postingComment }] = usePostDiscussionCommentMutation();
+
+  const handlePostComment = async (discussionId: string, post: string) => {
+    await postComment({
+      variables: {
+        input: {
+          discussionID: discussionId,
+          message: post,
+        },
+      },
+    });
+  };
+
+  const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
+    onCompleted: data => {
+      history.replace(`${url}/${data.createDiscussion.id}`);
+    },
+    onError: handleError,
+    refetchQueries: [
+      refetchCommunityDiscussionListQuery({
+        communityId: communityId,
+        ecoverseId: ecoverseNameId,
+      }),
+    ],
+  });
+
+  const handleCreateDiscussion = async (title: string, description: string) => {
+    await createDiscussion({
+      variables: {
+        input: {
+          communicationID: communicationId,
+          message: description,
+          title: title,
+        },
+      },
+    });
+  };
+
   return (
     <DiscussionsContext.Provider
       value={{
         discussionList,
         getDiscussion,
+        handlePostComment,
+        handleCreateDiscussion,
         loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
+        posting: postingComment || creatingDiscussion,
       }}
     >
       {children}

@@ -5,6 +5,7 @@ import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation, useUrlParams } from '../../hooks';
+import { usePostDiscussionCommentMutation } from '../../hooks/generated/graphql';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
 
@@ -26,6 +27,19 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
     [paths, discussion]
   );
 
+  const [postComment] = usePostDiscussionCommentMutation();
+
+  const handlePost = async (post: string) => {
+    await postComment({
+      variables: {
+        input: {
+          discussionID: discussionId,
+          message: post,
+        },
+      },
+    });
+  };
+
   useUpdateNavigation({ currentPaths });
 
   if (!discussion) return null;
@@ -33,7 +47,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   return (
     <ThemeProviderV2>
       <DiscussionsLayout title={`${communityName}`}>
-        <DiscussionView discussion={discussion} />
+        <DiscussionView discussion={discussion} onPostComment={handlePost} />
       </DiscussionsLayout>
     </ThemeProviderV2>
   );

@@ -33,7 +33,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
         <OpportunityPage paths={currentPaths} />
       </Route>
       <RestrictedRoute path={`${path}/community/discussions`}>
-        <DiscussionsRoute paths={[]} />
+        <DiscussionsRoute paths={currentPaths} />
       </RestrictedRoute>
       <RestrictedRoute path={`${path}/community`}>
         <OpportunityCommunityPage paths={currentPaths} />

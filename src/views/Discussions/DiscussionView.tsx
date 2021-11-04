@@ -12,7 +12,7 @@ export interface DiscussionViewProps {
   onPostComment?: (comment: string) => Promise<void> | void;
 }
 
-export const DiscussionView: FC<DiscussionViewProps> = ({ discussion }) => {
+export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComment }) => {
   const { t } = useTranslation();
 
   const { title, description, author, createdAt, totalComments, comments } = discussion;
@@ -65,7 +65,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({ discussion }) => {
         <Grid item container spacing={2}>
           <Grid item xs={12}>
             <Box paddingY={2}>
-              <PostComment />
+              <PostComment onPostComment={onPostComment} />
             </Box>
           </Grid>
         </Grid>

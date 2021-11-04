@@ -31,7 +31,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment }) => {
   return (
     <Box paddingY={2} display="flex" justifyContent="space-between">
       <Box display="flex" flexDirection="row" paddingLeft={depthPadding}>
-        <Avatar className={styles.avatar} src="">
+        <Avatar className={styles.avatar} src={author?.avatarUrl}>
           {author?.displayName[0]}
         </Avatar>
         <Box display="flex" flexDirection="column" paddingX={2}>

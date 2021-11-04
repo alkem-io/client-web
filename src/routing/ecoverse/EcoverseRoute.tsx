@@ -47,7 +47,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         </ChallengeProvider>
       </Route>
       <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
-        <DiscussionsRoute paths={[]} />
+        <DiscussionsRoute paths={currentPaths} />
       </RestrictedRoute>
       <RestrictedRoute path={`${path}/community`} requiredCredentials={requiredCredentials}>
         <EcoverseCommunityPage paths={currentPaths} />
