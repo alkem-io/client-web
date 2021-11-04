@@ -9,6 +9,7 @@ import {
 interface CommunityContextProps {
   communityId: string;
   communicationId: string;
+  communityName: string;
   loading: boolean;
 }
 
@@ -16,6 +17,7 @@ const CommunityContext = React.createContext<CommunityContextProps>({
   loading: false,
   communityId: '',
   communicationId: '',
+  communityName: '',
 });
 
 interface CommunityProviderProps {}
@@ -53,6 +55,7 @@ const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
     <CommunityContext.Provider
       value={{
         communityId: community?.id || '',
+        communityName: community?.displayName || '',
         communicationId: community?.communication?.id || '',
         loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
       }}

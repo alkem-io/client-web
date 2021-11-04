@@ -13,18 +13,11 @@ import { AvatarGroup } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
+import { Discussion } from '../../../../models/discussion/discussion';
 import { RouterLink } from '../../../core/RouterLink';
 
 export interface DiscussionOverviewProps {
-  id: string;
-  title: string;
-  description: string;
-  date: Date;
-  avatars: {
-    name: string;
-    src: string;
-  }[];
-  count: number;
+  discussion: Discussion;
 }
 
 const useStyles = makeStyles(theme =>
@@ -36,10 +29,12 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const DiscussionOverview: FC<DiscussionOverviewProps> = ({ id, title, description, count, date, avatars }) => {
+const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
+
+  const { id, title, description, createdAt, authors = [], totalComments } = discussion;
 
   return (
     <ListItem alignItems="center" disableGutters>
@@ -56,8 +51,8 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ id, title, descriptio
             <Typography color="textPrimary">{description}</Typography>
             <Typography variant="body2">
               {t('components.discussions-list.posted', {
-                date: date.toLocaleDateString(),
-                count,
+                date: createdAt.toLocaleDateString(),
+                count: totalComments,
               })}
             </Typography>
           </Box>
@@ -70,9 +65,9 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ id, title, descriptio
             avatar: styles.avatar,
           }}
         >
-          {avatars.map((a, i) => (
-            <Avatar key={i} src={a.src}>
-              {a.name[0]}
+          {authors.map((a, i) => (
+            <Avatar key={i} src={a.avatarUrl}>
+              {a.firstName[0]}
             </Avatar>
           ))}
         </AvatarGroup>

@@ -5966,7 +5966,10 @@ export type UserAvatarsQuery = {
   usersById: Array<{
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
+    firstName: string;
+    lastName: string;
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   }>;
 };
@@ -6218,7 +6221,7 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
-  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>>;
+  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
 export type CommunityDiscussionListQueryVariables = Exact<{
@@ -6242,7 +6245,7 @@ export type CommunityDiscussionListQuery = {
             id: string;
             title: string;
             messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
           }>
         >;

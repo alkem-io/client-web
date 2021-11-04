@@ -783,12 +783,10 @@ export const DiscussionDetailsFragmentDoc = gql`
     id
     title
     messages {
-      id
-      message
-      sender
-      timestamp
+      ...MessageDetails
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
@@ -8837,7 +8835,10 @@ export const UserAvatarsDocument = gql`
   query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       id
+      nameID
       displayName
+      firstName
+      lastName
       profile {
         id
         avatar

@@ -2,10 +2,7 @@ fragment DiscussionDetails on Discussion {
   id
   title
   messages {
-    id
-    message
-    sender
-    timestamp
+    ...MessageDetails
   }
 }
 
