@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
-import DiscussionListContainer from '../../containers/discussions/DiscussionListContainer';
 import { useCommunityContext } from '../../context/CommunityProvider';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
@@ -15,6 +15,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
+  const { discussionList, loading } = useDiscussionsContext();
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -24,20 +25,20 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
         title={t('components.discussions-list.name', { community: communityName })}
         newUrl={`${url}/new`}
       >
-        <DiscussionListContainer>
-          {(_entities, _state) => (
-            <DiscussionListView
-              entities={{
-                discussions: _entities.discussionList,
-              }}
-              state={{
-                loading: _state.loading,
-              }}
-              actions={{}}
-              options={{}}
-            />
-          )}
-        </DiscussionListContainer>
+        {/* <DiscussionListContainer>
+          {(_entities, _state) => ( */}
+        <DiscussionListView
+          entities={{
+            discussions: discussionList,
+          }}
+          state={{
+            loading: loading,
+          }}
+          actions={{}}
+          options={{}}
+        />
+        {/* )}
+        </DiscussionListContainer> */}
       </DiscussionsLayout>
     </ThemeProviderV2>
   );

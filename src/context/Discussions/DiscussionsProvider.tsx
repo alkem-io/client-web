@@ -1,29 +1,31 @@
 import { uniq } from 'lodash';
-import React, { FC, useCallback, useMemo } from 'react';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import { useEcoverse } from '../../hooks';
 import { useCommunityDiscussionListQuery, useUserAvatarsQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
 import { Author } from '../../models/discussion/author';
-import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
-import { MessageDetailsFragment } from '../../models/graphql-schema';
+import { Comment } from '../../models/discussion/comment';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { useCommunityContext } from '../CommunityProvider';
+import { MessageDetailsFragment } from '../../models/graphql-schema';
 
-export interface DiscussionListEntities {
+interface DiscussionContextProps {
   discussionList: Discussion[];
-}
-export interface DiscussionListState {
+  getDiscussion: (id: string) => Discussion | undefined;
   loading: boolean;
 }
-export interface DiscussionListActions {}
 
-export interface DiscussionListContainerProps
-  extends ContainerProps<DiscussionListEntities, DiscussionListActions, DiscussionListState> {}
+const DiscussionsContext = React.createContext<DiscussionContextProps>({
+  discussionList: [],
+  getDiscussion: (_id: string) => undefined, // might be handled better;
+  loading: false,
+});
+
+interface DiscussionProviderProps {}
 
 const sortMessages = (messages: MessageDetailsFragment[] = []) => messages.sort((a, b) => a.timestamp - b.timestamp);
 
-const DiscussionListContainer: FC<DiscussionListContainerProps> = ({ children }) => {
+const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
 
@@ -48,6 +50,7 @@ const DiscussionListContainer: FC<DiscussionListContainerProps> = ({ children })
     () =>
       avatarData?.usersById.map<Author>(a => ({
         id: a.id,
+        displayName: a.displayName,
         firstName: a.firstName,
         lastName: a.lastName,
         avatarUrl: a.profile?.avatar || '',
@@ -83,18 +86,23 @@ const DiscussionListContainer: FC<DiscussionListContainerProps> = ({ children })
     };
   });
 
+  const getDiscussion = useCallback((id: string) => discussionList.find(x => x.id === id), [discussionList]);
+
   return (
-    <>
-      {children(
-        {
-          discussionList,
-        },
-        {
-          loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
-        },
-        {}
-      )}
-    </>
+    <DiscussionsContext.Provider
+      value={{
+        discussionList,
+        getDiscussion,
+        loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
+      }}
+    >
+      {children}
+    </DiscussionsContext.Provider>
   );
 };
-export default DiscussionListContainer;
+
+const useDiscussionsContext = () => {
+  return useContext(DiscussionsContext);
+};
+
+export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext };

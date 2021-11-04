@@ -5,34 +5,17 @@ import Filter from '../../components/Admin/Common/Filter';
 import DiscussionComment from '../../components/composite/common/Discussion/Comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import Markdown from '../../components/core/Markdown';
+import { Discussion } from '../../models/discussion/discussion';
 
 export interface DiscussionViewProps {
-  title: string;
-  createdBy: string;
-  createdOn: Date;
-  description: string;
-  avatars: string[];
-  count: number;
-  comments: Comment[];
+  discussion: Discussion;
+  onPostComment?: (comment: string) => Promise<void> | void;
 }
 
-export interface Comment {
-  commentId: string;
-  message: string;
-  createdOn: Date;
-  createdBy: string;
-  depth: number;
-}
-
-export const DiscussionView: FC<DiscussionViewProps> = ({
-  title,
-  description,
-  count,
-  createdBy,
-  createdOn,
-  comments,
-}) => {
+export const DiscussionView: FC<DiscussionViewProps> = ({ discussion }) => {
   const { t } = useTranslation();
+
+  const { title, description, author, createdAt, totalComments, comments } = discussion;
 
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
@@ -45,9 +28,9 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <Box display="flex">
               <Box component="i">
                 {t('components.discussion.posted', {
-                  name: createdBy,
-                  date: createdOn.toLocaleDateString(),
-                  count,
+                  name: author?.displayName,
+                  date: createdAt.toLocaleDateString(),
+                  count: totalComments,
                 })}
               </Box>
             </Box>
@@ -60,21 +43,23 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
         </Grid>
 
         <Grid item>
-          <Filter data={comments}>
-            {filteredComments => {
-              if (filteredComments.length === 0) return null;
-              return (
-                <Box marginTop={2}>
-                  {filteredComments.map((c, i) => (
-                    <>
-                      <DiscussionComment key={i} {...c} />
-                      <Divider />
-                    </>
-                  ))}
-                </Box>
-              );
-            }}
-          </Filter>
+          {comments && comments.length > 0 && (
+            <Filter data={comments}>
+              {filteredComments => {
+                if (filteredComments.length === 0) return null;
+                return (
+                  <Box marginTop={2}>
+                    {filteredComments.map((c, i) => (
+                      <>
+                        <DiscussionComment key={i} comment={c} />
+                        <Divider />
+                      </>
+                    ))}
+                  </Box>
+                );
+              }}
+            </Filter>
+          )}
         </Grid>
 
         <Grid item container spacing={2}>

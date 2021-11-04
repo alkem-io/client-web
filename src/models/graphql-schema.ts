@@ -6254,6 +6254,20 @@ export type CommunityDiscussionListQuery = {
   };
 };
 
+export type PostDiscussionCommentMutationVariables = Exact<{
+  input: DiscussionSendMessageInput;
+}>;
+
+export type PostDiscussionCommentMutation = {
+  __typename?: 'Mutation';
+  sendMessageToDiscussion: {
+    __typename?: 'Discussion';
+    id: string;
+    title: string;
+    messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
+  };
+};
+
 export type EcoversePageQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
