@@ -25,3 +25,10 @@ mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
     ...DiscussionDetails
   }
 }
+
+mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  createDiscussion(createData: $input) {
+    id
+    title
+  }
+}

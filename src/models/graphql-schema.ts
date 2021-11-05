@@ -2888,15 +2888,6 @@ export type CreateChallengeMutation = {
   createChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
-export type CreateDiscussionMutationVariables = Exact<{
-  input: CommunicationCreateDiscussionInput;
-}>;
-
-export type CreateDiscussionMutation = {
-  __typename?: 'Mutation';
-  createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
-};
-
 export type CreateEcoverseMutationVariables = Exact<{
   input: CreateEcoverseInput;
 }>;
@@ -6266,6 +6257,15 @@ export type PostDiscussionCommentMutation = {
     title: string;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
+};
+
+export type CreateDiscussionMutationVariables = Exact<{
+  input: CommunicationCreateDiscussionInput;
+}>;
+
+export type CreateDiscussionMutation = {
+  __typename?: 'Mutation';
+  createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
 };
 
 export type EcoversePageQueryVariables = Exact<{

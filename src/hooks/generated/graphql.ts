@@ -1245,54 +1245,6 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
 >;
-export const CreateDiscussionDocument = gql`
-  mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
-    createDiscussion(createData: $input) {
-      id
-      title
-    }
-  }
-`;
-export type CreateDiscussionMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateDiscussionMutation,
-  SchemaTypes.CreateDiscussionMutationVariables
->;
-
-/**
- * __useCreateDiscussionMutation__
- *
- * To run a mutation, you first call `useCreateDiscussionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateDiscussionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createDiscussionMutation, { data, loading, error }] = useCreateDiscussionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateDiscussionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateDiscussionMutation,
-    SchemaTypes.CreateDiscussionMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateDiscussionMutation, SchemaTypes.CreateDiscussionMutationVariables>(
-    CreateDiscussionDocument,
-    options
-  );
-}
-export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
-export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
-export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateDiscussionMutation,
-  SchemaTypes.CreateDiscussionMutationVariables
->;
 export const CreateEcoverseDocument = gql`
   mutation createEcoverse($input: CreateEcoverseInput!) {
     createEcoverse(ecoverseData: $input) {
@@ -9612,6 +9564,54 @@ export type PostDiscussionCommentMutationResult = Apollo.MutationResult<SchemaTy
 export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostDiscussionCommentMutation,
   SchemaTypes.PostDiscussionCommentMutationVariables
+>;
+export const CreateDiscussionDocument = gql`
+  mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+    createDiscussion(createData: $input) {
+      id
+      title
+    }
+  }
+`;
+export type CreateDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateDiscussionMutation,
+  SchemaTypes.CreateDiscussionMutationVariables
+>;
+
+/**
+ * __useCreateDiscussionMutation__
+ *
+ * To run a mutation, you first call `useCreateDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDiscussionMutation, { data, loading, error }] = useCreateDiscussionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateDiscussionMutation,
+    SchemaTypes.CreateDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateDiscussionMutation, SchemaTypes.CreateDiscussionMutationVariables>(
+    CreateDiscussionDocument,
+    options
+  );
+}
+export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
+export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
+export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateDiscussionMutation,
+  SchemaTypes.CreateDiscussionMutationVariables
 >;
 export const EcoversePageDocument = gql`
   query ecoversePage($ecoverseId: UUID_NAMEID!) {
