@@ -1,4 +1,5 @@
-import { List } from '@material-ui/core';
+import { List, ListItemText } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../../components/Admin/Common/Filter';
@@ -24,22 +25,38 @@ interface DiscussionListViewProps
     DiscussionListViewOptions
   > {}
 
-export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities }) => {
+export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
 
   const { discussions } = entities;
+  const { loading } = state;
 
   return (
     <ProfileCard title={t('common.discussions')} helpText={t('components.discussions-list.help')}>
-      <Filter data={discussions} sort={[{ key: 'createdAt', name: 'Date' }]}>
-        {filteredData => (
-          <List>
-            {filteredData.map((item, index) => (
-              <DiscussionOverview key={index} discussion={item} />
-            ))}
-          </List>
-        )}
-      </Filter>
+      {loading && (
+        <List>
+          <ListItemText
+            primary={<Skeleton animation="wave" />}
+            secondary={
+              <>
+                <Skeleton animation="wave" />
+                <Skeleton animation="wave" />
+              </>
+            }
+          />
+        </List>
+      )}
+      {!loading && (
+        <Filter data={discussions} sort={[{ key: 'createdAt', name: 'Date' }]}>
+          {filteredData => (
+            <List>
+              {filteredData.map((item, index) => (
+                <DiscussionOverview key={index} discussion={item} />
+              ))}
+            </List>
+          )}
+        </Filter>
+      )}
     </ProfileCard>
   );
 };

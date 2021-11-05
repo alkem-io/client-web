@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
+import { Loading } from '../../components/core';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
@@ -15,9 +16,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   const { discussionId } = useUrlParams();
 
-  const { communityName } = useCommunityContext();
+  const { communityName, loading: loadingCommunity } = useCommunityContext();
 
-  const { getDiscussion, handlePostComment } = useDiscussionsContext();
+  const { getDiscussion, handlePostComment, loading: loadingDiscussions } = useDiscussionsContext();
 
   const discussion = getDiscussion(discussionId);
 
@@ -27,6 +28,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   );
 
   useUpdateNavigation({ currentPaths });
+
+  if (loadingDiscussions || loadingCommunity) return <Loading />;
 
   if (!discussion) return null;
 

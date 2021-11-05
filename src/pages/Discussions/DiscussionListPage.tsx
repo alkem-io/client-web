@@ -25,8 +25,6 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
         title={t('components.discussions-list.name', { community: communityName })}
         newUrl={`${url}/new`}
       >
-        {/* <DiscussionListContainer>
-          {(_entities, _state) => ( */}
         <DiscussionListView
           entities={{
             discussions: discussionList,
@@ -37,8 +35,6 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
           actions={{}}
           options={{}}
         />
-        {/* )}
-        </DiscussionListContainer> */}
       </DiscussionsLayout>
     </ThemeProviderV2>
   );
