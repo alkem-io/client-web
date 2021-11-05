@@ -1,9 +1,11 @@
 import { Avatar, Box, createStyles, makeStyles, Tooltip } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import React, { FC } from 'react';
+import Link from '@material-ui/core/Link';
 import Typography from '../../../../core/Typography';
 import UserCard, { UserCardProps } from '../user-card/UserCard';
 
-interface AssociateCardProps extends Omit<UserCardProps, 'url'> {}
+interface AssociateCardProps extends UserCardProps {}
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -23,23 +25,25 @@ const useStyles = makeStyles(theme =>
 
 export const AssociateCard: FC<AssociateCardProps> = props => {
   const styles = useStyles();
-  const { displayName, roleName, avatarSrc } = props;
+  const { displayName, roleName, avatarSrc, url } = props;
 
   return (
-    <Box className={styles.wrapper}>
-      <Tooltip arrow title={<UserCard {...props} url="" />}>
-        <Avatar variant="square" className={styles.avatar} src={avatarSrc}>
-          {displayName[0]}
-        </Avatar>
-      </Tooltip>
-      <Typography color="primary" weight="boldLight" className={styles.text} clamp={1}>
-        {displayName}
-      </Typography>
-      {/* TODO Put Icon infornt of the role */}
-      <Typography weight="boldLight" className={styles.text}>
-        {roleName}
-      </Typography>
-    </Box>
+    <Link component={RouterLink} to={url} underline="none">
+      <Box className={styles.wrapper}>
+        <Tooltip arrow title={<UserCard {...props} url="" />}>
+          <Avatar variant="square" className={styles.avatar} src={avatarSrc}>
+            {displayName[0]}
+          </Avatar>
+        </Tooltip>
+        <Typography color="primary" weight="boldLight" className={styles.text} clamp={1}>
+          {displayName}
+        </Typography>
+        {/* TODO Put Icon infornt of the role */}
+        <Typography weight="boldLight" className={styles.text}>
+          {roleName}
+        </Typography>
+      </Box>
+    </Link>
   );
 };
 export default AssociateCard;
