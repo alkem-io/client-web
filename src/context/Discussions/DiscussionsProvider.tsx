@@ -1,20 +1,20 @@
 import { sortBy, uniq } from 'lodash';
 import React, { FC, useCallback, useContext, useMemo } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
   refetchCommunityDiscussionListQuery,
+  useAuthorDetailsQuery,
   useCommunityDiscussionListQuery,
   useCreateDiscussionMutation,
   usePostDiscussionCommentMutation,
-  useUserAvatarsQuery,
 } from '../../hooks/generated/graphql';
 import { Author } from '../../models/discussion/author';
-import { Discussion } from '../../models/discussion/discussion';
 import { Comment } from '../../models/discussion/comment';
+import { Discussion } from '../../models/discussion/discussion';
+import { MessageDetailsFragment } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
-import { MessageDetailsFragment } from '../../models/graphql-schema';
-import { useHistory, useRouteMatch } from 'react-router-dom';
 
 interface DiscussionContextProps {
   discussionList: Discussion[];
@@ -56,14 +56,14 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const senders = uniq(discussions.flatMap(d => d.messages?.map(m => m.sender) || []));
 
-  const { data: avatarData, loading: loadingAvatars } = useUserAvatarsQuery({
+  const { data: authorData, loading: loadingAvatars } = useAuthorDetailsQuery({
     variables: { ids: senders },
     skip: senders.length === 0,
   });
 
   const authors = useMemo(
     () =>
-      avatarData?.usersById.map<Author>(a => ({
+      authorData?.usersById.map<Author>(a => ({
         id: a.id,
         displayName: a.displayName,
         firstName: a.firstName,
@@ -71,7 +71,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         avatarUrl: a.profile?.avatar || '',
         url: buildUserProfileUrl(a.nameID),
       })),
-    [avatarData]
+    [authorData]
   );
 
   const getAuthor = useCallback((senderId: string) => authors?.find(a => a.id === senderId), [authors]);

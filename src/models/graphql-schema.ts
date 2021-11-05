@@ -5957,10 +5957,7 @@ export type UserAvatarsQuery = {
   usersById: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
     displayName: string;
-    firstName: string;
-    lastName: string;
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   }>;
 };
@@ -6266,6 +6263,23 @@ export type CreateDiscussionMutationVariables = Exact<{
 export type CreateDiscussionMutation = {
   __typename?: 'Mutation';
   createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+};
+
+export type AuthorDetailsQueryVariables = Exact<{
+  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type AuthorDetailsQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
+  }>;
 };
 
 export type EcoversePageQueryVariables = Exact<{

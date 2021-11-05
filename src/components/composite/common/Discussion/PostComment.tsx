@@ -7,7 +7,7 @@ import Button from '../../../core/Button';
 import FormikMarkdownField from '../../forms/FormikMarkdownField';
 
 export interface PostCommentProps {
-  onPostComment?: (comment: string) => void;
+  onPostComment?: (comment: string) => Promise<void> | void;
 }
 interface formValues {
   post: string;
