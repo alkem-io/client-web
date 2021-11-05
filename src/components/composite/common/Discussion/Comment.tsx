@@ -41,7 +41,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment }) => {
           <Typography variant="body2">
             {t('components.comment.posted', {
               name: author?.displayName,
-              date: createdAt.toLocaleDateString(),
+              date: createdAt.toLocaleString(),
             })}
             <Box component="span" marginX={1}>
               <Link arial-lable="reply" href={`#${id}`}>

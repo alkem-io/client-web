@@ -9,13 +9,13 @@ import { Discussion } from '../../models/discussion/discussion';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
-  onPostComment?: (comment: string) => Promise<void> | void;
+  onPostComment?: (discussionId: string, comment: string) => Promise<void> | void;
 }
 
 export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComment }) => {
   const { t } = useTranslation();
 
-  const { title, description, author, createdAt, totalComments, comments } = discussion;
+  const { id, title, description, author, createdAt, totalComments, comments } = discussion;
 
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
@@ -65,7 +65,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComm
         <Grid item container spacing={2}>
           <Grid item xs={12}>
             <Box paddingY={2}>
-              <PostComment onPostComment={onPostComment} />
+              <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />
             </Box>
           </Grid>
         </Grid>
