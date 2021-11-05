@@ -11,6 +11,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { Member } from '../../models/User';
 import AuthorizationPageProps from './AuthorizationPageProps';
+import { UserDisplayNameFragment } from '../../models/graphql-schema';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
@@ -35,7 +36,7 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
     onError: handleError,
   });
 
-  const handleAdd = (member: Member) => {
+  const handleAdd = (member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {

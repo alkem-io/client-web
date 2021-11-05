@@ -1,11 +1,15 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential } from '../models/graphql-schema';
-import { useCommunityMembersQuery, useUsersQuery, useUsersWithCredentialsQuery } from './generated/graphql';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../models/graphql-schema';
+import {
+  useCommunityMembersQuery,
+  useUsersDisplayNameQuery,
+  useUsersWithCredentialsSimpleListQuery,
+} from './generated/graphql';
 import { Member } from '../models/User';
 import { useEcoverse } from './useEcoverse';
 
 export interface AvailableMembersResults {
-  available: Member[];
+  available: UserDisplayNameFragment[];
   current: Member[];
   loading: boolean;
   error: boolean;
@@ -30,18 +34,18 @@ export const useAvailableMembers = (
     data: _allUsers,
     loading: loadingUsers,
     error: userError,
-  } = useUsersQuery({
+  } = useUsersDisplayNameQuery({
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     skip: Boolean(parentCommunityId || parentMembers),
   });
-  const allUsers = _allUsers?.users;
+  const allUsers = _allUsers?.users as UserDisplayNameFragment[];
 
   const {
     data: _current,
     loading: loadingMembers,
     error: membersError,
-  } = useUsersWithCredentialsQuery({
+  } = useUsersWithCredentialsSimpleListQuery({
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     variables: {
@@ -70,9 +74,12 @@ export const useAvailableMembers = (
 
   const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingEcoverse;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
-  const entityMembers = parentMembers || _parentCommunityMembers?.ecoverse.community?.members || allUsers || [];
+  const entityMembers = (parentMembers ||
+    _parentCommunityMembers?.ecoverse.community?.members ||
+    allUsers ||
+    []) as UserDisplayNameFragment[];
 
-  const availableMembers = useMemo<Member[]>(
+  const availableMembers = useMemo<UserDisplayNameFragment[]>(
     () => entityMembers.filter(p => current.findIndex(m => m.id === p.id) < 0),
     [entityMembers, current]
   );

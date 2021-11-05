@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Member } from '../../../models/User';
 import { Loading } from '../../core';
 import { Filter } from '../Common/Filter';
+import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 
 const TABLE_HEIGHT = 600;
 
@@ -21,12 +22,12 @@ export interface EditMembersProps {
   deleteExecutor?: boolean;
   executor?: Member;
   members: Member[];
-  availableMembers: Member[];
+  availableMembers: UserDisplayNameFragment[];
   addingMember?: boolean;
   removingMember?: boolean;
   loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
-  onAdd?: (member: Member) => void;
+  onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
 }
 
@@ -116,7 +117,7 @@ export const EditMembers: FC<EditMembersProps> = ({
       </Grid>
       <Grid item sm={4}>
         Available users:
-        <Filter data={availableMembers} limitKeys={['displayName', 'firstName', 'lastName']}>
+        <Filter data={availableMembers} limitKeys={['displayName']}>
           {filteredData => {
             return (
               <>
@@ -164,8 +165,8 @@ const InternalLoading: FC<{ span?: number }> = ({ span = 2 }) => {
 };
 
 interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
-  filteredMembers?: Member[];
-  availableMembers?: Member[];
+  filteredMembers?: UserDisplayNameFragment[];
+  availableMembers?: UserDisplayNameFragment[];
   loading: boolean;
 }
 
@@ -206,8 +207,8 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 
   return (
     <>
-      {filteredMembers.map(m => (
-        <TableRow key={m.email} className={styles.trow}>
+      {filteredMembers.map((m, i) => (
+        <TableRow key={i} className={styles.trow}>
           <TableCell>
             {onAdd && (
               <IconButton

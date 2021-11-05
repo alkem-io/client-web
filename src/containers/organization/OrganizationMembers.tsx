@@ -10,7 +10,7 @@ import {
   useRemoveUserFromOrganizationMutation,
 } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
-import { AuthorizationCredential, Organization } from '../../models/graphql-schema';
+import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
 const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
@@ -36,11 +36,11 @@ export interface OrganizationMembersProps {
 }
 
 export interface OrganizationMembersActions {
-  handleAssignMember: (member: Member) => void;
+  handleAssignMember: (member: UserDisplayNameFragment) => void;
   handleRemoveMember: (member: Member) => void;
-  handleAssignAdmin: (member: Member) => void;
+  handleAssignAdmin: (member: UserDisplayNameFragment) => void;
   handleRemoveAdmin: (member: Member) => void;
-  handleAssignOwner: (member: Member) => void;
+  handleAssignOwner: (member: UserDisplayNameFragment) => void;
   handleRemoveOwner: (member: Member) => void;
 }
 
@@ -55,7 +55,7 @@ export interface OrganizationMembersState {
 }
 
 export interface OrganizationMembersEntities {
-  availableMembers: Member[];
+  availableMembers: UserDisplayNameFragment[];
   allMembers: Member[];
   currentMember?: Member;
 }
@@ -89,7 +89,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   });
 
   const handleAssignMember = useCallback(
-    (_member: Member) => {
+    (_member: UserDisplayNameFragment) => {
       grantMember({
         variables: {
           input: {
@@ -129,7 +129,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleAssignAdmin = useCallback(
-    (_member: Member) => {
+    (_member: UserDisplayNameFragment) => {
       grantAdmin({
         variables: {
           input: {
@@ -169,7 +169,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleAssignOwner = useCallback(
-    (_member: Member) => {
+    (_member: UserDisplayNameFragment) => {
       grantOwner({
         variables: {
           input: {

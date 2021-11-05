@@ -5,7 +5,7 @@ import {
   useAssignUserAsOpportunityAdminMutation,
   useRemoveUserAsOpportunityAdminMutation,
 } from '../../hooks/generated/graphql';
-import { AuthorizationCredential, Community, Opportunity } from '../../models/graphql-schema';
+import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
@@ -28,7 +28,7 @@ export interface OpportunityMembersProps {
 }
 
 export interface OpportunityMembersActions {
-  handleAssignAdmin: (member: Member) => void;
+  handleAssignAdmin: (member: UserDisplayNameFragment) => void;
   handleRemoveAdmin: (member: Member) => void;
 }
 
@@ -39,7 +39,7 @@ export interface OpportunityMembersState {
 }
 
 export interface OpportunityMembersEntities {
-  availableMembers: Member[];
+  availableMembers: UserDisplayNameFragment[];
   allMembers: Member[];
   currentMember?: Member;
 }
@@ -58,7 +58,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
   });
 
   const handleAssignAdmin = useCallback(
-    (_member: Member) => {
+    (_member: UserDisplayNameFragment) => {
       grantAdmin({
         variables: {
           input: {

@@ -6,7 +6,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {
@@ -34,7 +34,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     onError: handleError,
   });
 
-  const handleAdd = (_member: Member) => {
+  const handleAdd = (_member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {

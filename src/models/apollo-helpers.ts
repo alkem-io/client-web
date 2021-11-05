@@ -66,15 +66,15 @@ export type ApplicationFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationReceivedKeySpecifier = (
-  | 'applicationId'
+  | 'applicationID'
   | 'communityID'
-  | 'userNameID'
+  | 'userID'
   | ApplicationReceivedKeySpecifier
 )[];
 export type ApplicationReceivedFieldPolicy = {
-  applicationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  applicationID?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  userNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationResultEntryKeySpecifier = (
   | 'challengeID'
