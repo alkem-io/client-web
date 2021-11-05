@@ -131,7 +131,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        <AvailalbeMembersFragment
+                        <AvailableMembersFragment
                           availableMembers={availableMembers}
                           filteredMembers={filteredData}
                           loading={loadingAvailableMembers}
@@ -169,7 +169,7 @@ interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'adding
   loading: boolean;
 }
 
-const AvailalbeMembersFragment: FC<AvailableMembersProps> = ({
+const AvailableMembersFragment: FC<AvailableMembersProps> = ({
   filteredMembers,
   availableMembers,
   loading,
