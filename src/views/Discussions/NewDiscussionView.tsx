@@ -42,7 +42,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
       enableReinitialize
       onSubmit={handleSubmit}
     >
-      {({ isValid, dirty }) => (
+      {({ isValid, dirty, isSubmitting }) => (
         <Form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -50,6 +50,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
                 name="title"
                 title={t('components.new-discussion.title.title')}
                 placeholder={t('components.new-discussion.title.placeholder')}
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item xs={12}>
@@ -59,14 +60,15 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
                 placeholder={t('components.new-discussion.description.placeholder')}
                 rows={10}
                 multiline
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item>
               <Button
                 variant="primary"
-                text={t('components.new-discussion.buttons.post')}
+                text={isSubmitting ? t('buttons.processing') : t('components.new-discussion.buttons.post')}
                 type="submit"
-                disabled={!isValid || !dirty}
+                disabled={!isValid || !dirty || isSubmitting}
               />
             </Grid>
           </Grid>

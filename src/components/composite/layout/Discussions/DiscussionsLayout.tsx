@@ -6,7 +6,7 @@ import { RouterLink } from '../../../core/RouterLink';
 
 interface DiscussionsLayoutProps {
   title: string;
-  allowCreation?: boolean;
+  newUrl?: string;
 }
 
 const useStyles = makeStyles(theme =>
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, allowCreation = false, children }) => {
+export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, newUrl, children }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -34,13 +34,13 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, allowCrea
             <Grid item>
               <Typography variant="h1">{title}</Typography>
             </Grid>
-            {allowCreation && (
+            {newUrl && (
               <Grid item>
                 <Button
                   as={RouterLink}
                   text={t('components.discussions-layout.buttons.new-discussion')}
                   variant="primary"
-                  to="/discussions/new"
+                  to={newUrl}
                 />
               </Grid>
             )}

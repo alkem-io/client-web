@@ -1,80 +1,62 @@
-import { List } from '@material-ui/core';
+import { List, ListItemText } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../../components/Admin/Common/Filter';
 import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import { Discussion } from '../../models/discussion/discussion';
+import { ViewProps } from '../../models/view';
 
-export const DiscussionListView: FC = () => {
+interface DiscussionListViewEntities {
+  discussions: Discussion[];
+}
+interface DiscussionListViewState {
+  loading: boolean;
+}
+interface DiscussionListViewActions {}
+interface DiscussionListViewOptions {}
+
+interface DiscussionListViewProps
+  extends ViewProps<
+    DiscussionListViewEntities,
+    DiscussionListViewActions,
+    DiscussionListViewState,
+    DiscussionListViewOptions
+  > {}
+
+export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
-  const data = [
-    {
-      id: '1',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-18'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-    {
-      id: '2',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-17'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 1,
-    },
-    {
-      id: '3',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-    {
-      id: '4',
-      title: 'Discussion subject title',
-      description:
-        'Discussion information to be placed here. In approximately two to three sentences, this is an even long sentence. Another one been added!',
-      date: new Date('2021-10-19'),
-      avatars: [
-        { name: 'A', src: '' },
-        { name: 'B', src: '' },
-        { name: 'C', src: '' },
-        { name: 'D', src: '' },
-      ],
-      count: 43,
-    },
-  ];
+
+  const { discussions } = entities;
+  const { loading } = state;
 
   return (
     <ProfileCard title={t('common.discussions')} helpText={t('components.discussions-list.help')}>
-      <Filter data={data} sort={[{ key: 'date', name: 'Date' }]}>
-        {filteredData => (
-          <List>
-            {filteredData.map((item, index) => (
-              <DiscussionOverview key={index} {...item} />
-            ))}
-          </List>
-        )}
-      </Filter>
+      {loading && (
+        <List>
+          <ListItemText
+            primary={<Skeleton animation="wave" />}
+            secondary={
+              <>
+                <Skeleton animation="wave" />
+                <Skeleton animation="wave" />
+              </>
+            }
+          />
+        </List>
+      )}
+      {!loading && (
+        <Filter data={discussions} sort={[{ key: 'createdAt', name: 'Date' }]}>
+          {filteredData => (
+            <List>
+              {filteredData.map((item, index) => (
+                <DiscussionOverview key={index} discussion={item} />
+              ))}
+            </List>
+          )}
+        </Filter>
+      )}
     </ProfileCard>
   );
 };

@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { CommunityProvider } from '../context/CommunityProvider';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { AdminRoute } from './admin/AdminRoute';
-import DiscussionsRoute from './discussions/DiscussionsRoute';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
 import { MessagesRoute } from './messages/MessagesRoute';
@@ -66,15 +66,14 @@ export const Routing: FC = () => {
       <Route exact path="/restricted">
         <Restricted />
       </Route>
-      <Route path="/discussions">
-        <DiscussionsRoute paths={[]} />
-      </Route>
       <Route exact path="/">
         <HomePage />
       </Route>
       <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
-          <EcoverseRoute paths={[{ value: '/', name: t('common.ecoverses'), real: true }]} />
+          <CommunityProvider>
+            <EcoverseRoute paths={[{ value: '/', name: t('common.ecoverses'), real: true }]} />
+          </CommunityProvider>
         </EcoverseProvider>
       </Route>
       <Route path="*">

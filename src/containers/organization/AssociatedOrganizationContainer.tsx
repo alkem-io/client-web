@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useUserCardRoleName, useUserContext } from '../../hooks';
 import { useOrganizationInfoQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { OrganizationVerificationEnum, User } from '../../models/graphql-schema';
 import { buildOrganizationUrl } from '../../utils/urlBuilders';
 
@@ -24,7 +24,7 @@ export interface OrganizationContainerState {
 }
 
 export interface OrganizationDetailsContainerProps
-  extends Container<OrganizationContainerEntities, OrganizationContainerActions, OrganizationContainerState> {
+  extends ContainerProps<OrganizationContainerEntities, OrganizationContainerActions, OrganizationContainerState> {
   entities: {
     organizationNameId: string;
   };

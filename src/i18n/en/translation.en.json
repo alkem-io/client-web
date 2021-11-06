@@ -426,6 +426,7 @@
       "help": "The Hubs and Challenges that this organization is contributing to"
     },
     "discussions-list": {
+      "name": "Discussions - {{community}}",
       "help": "List of all discussions",
       "posted": "{{- date}} - {{count}} comment",
       "posted_plural": "{{- date}} - {{count}} comments"

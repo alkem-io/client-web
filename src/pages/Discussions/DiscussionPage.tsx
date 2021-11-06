@@ -1,70 +1,42 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
+import { Loading } from '../../components/core';
+import { useCommunityContext } from '../../context/CommunityProvider';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation, useUrlParams } from '../../hooks';
-import DiscussionView, { DiscussionViewProps } from '../../views/Discussions/DiscussionView';
+import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
 
 interface DiscussionPageProps extends PageProps {}
-
-const item: DiscussionViewProps = {
-  title: 'Discussion subject title',
-  description: `## Lorem ipsum dolor
-
-sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.`,
-  createdBy: 'Isabella Bookmaker',
-  createdOn: new Date('2021-10-19 10:30'),
-  avatars: ['A', 'B', 'C', 'D'],
-  count: 43,
-  comments: [
-    {
-      commentId: '1',
-      message:
-        'Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added! Discussion comment to be placed here. In approximately two to three sentences. Another one been added!',
-      createdBy: 'Isabella Bookmaker',
-      createdOn: new Date('2021-10-19 10:30'),
-      depth: 0,
-    },
-    {
-      commentId: '2',
-      message: 'Discussion comment to be placed here. In approximately two to three sentences. Another one been added!',
-      createdBy: 'Isabella Bookmaker',
-      createdOn: new Date('2021-10-19 10:45'),
-      depth: 1,
-    },
-    {
-      commentId: '3',
-      message: 'Discussion comment to be placed here. In approximately two to three sentences. Another one been added!',
-      createdBy: 'Isabella Bookmaker',
-      createdOn: new Date('2021-10-19 10:45'),
-      depth: 1,
-    },
-    {
-      commentId: '4',
-      message: 'Discussion comment to be placed here. In approximately two to three sentences. Another one been added!',
-      createdBy: 'Isabella Bookmaker',
-      createdOn: new Date('2021-10-19 10:45'),
-      depth: 0,
-    },
-  ],
-};
 
 export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
 
   const { discussionId } = useUrlParams();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: discussionId, real: false }], [paths]);
+
+  const { communityName, loading: loadingCommunity } = useCommunityContext();
+
+  const { getDiscussion, handlePostComment, loading: loadingDiscussions } = useDiscussionsContext();
+
+  const discussion = getDiscussion(discussionId);
+
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: discussion?.title, real: false }],
+    [paths, discussion]
+  );
 
   useUpdateNavigation({ currentPaths });
 
-  // TODO [ATS]:  this will be constructed depending on the community.
-  const title = 'Digital Twining - Discussion 1';
+  if (loadingDiscussions || loadingCommunity) return <Loading />;
+
+  if (!discussion) return null;
 
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title={title}>
-        <DiscussionView {...item} />
+      <DiscussionsLayout title={`${communityName}`}>
+        <DiscussionView discussion={discussion} onPostComment={handlePostComment} />
       </DiscussionsLayout>
     </ThemeProviderV2>
   );
