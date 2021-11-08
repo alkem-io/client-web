@@ -2778,6 +2778,8 @@ export type UserDetailsFragment = {
   }>;
 };
 
+export type UserDisplayNameFragment = { __typename?: 'User'; id: string; displayName: string };
+
 export type UserMembershipDetailsFragment = {
   __typename?: 'UserMembership';
   ecoverses: Array<{
@@ -4646,16 +4648,7 @@ export type CommunityMembersQuery = {
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
-      members?: Maybe<
-        Array<{
-          __typename?: 'User';
-          id: string;
-          displayName: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-        }>
-      >;
+      members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
     }>;
   };
 };
@@ -6066,6 +6059,13 @@ export type UsersQuery = {
   }>;
 };
 
+export type UsersDisplayNameQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UsersDisplayNameQuery = {
+  __typename?: 'Query';
+  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+};
+
 export type UsersWithCredentialsQueryVariables = Exact<{
   input: UsersWithAuthorizationCredentialInput;
 }>;
@@ -6080,6 +6080,22 @@ export type UsersWithCredentialsQuery = {
     lastName: string;
     email: string;
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
+  }>;
+};
+
+export type UsersWithCredentialsSimpleListQueryVariables = Exact<{
+  input: UsersWithAuthorizationCredentialInput;
+}>;
+
+export type UsersWithCredentialsSimpleListQuery = {
+  __typename?: 'Query';
+  usersWithAuthorizationCredential: Array<{
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
   }>;
 };
 

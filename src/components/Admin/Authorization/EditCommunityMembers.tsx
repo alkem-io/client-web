@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import {
-  refetchUsersWithCredentialsQuery,
+  refetchUsersWithCredentialsSimpleListQuery,
   useAssignUserToCommunityMutation,
   useRemoveUserFromCommunityMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { EditMembers } from '../Community/EditMembers';
 import { WithCommunity } from '../Community/CommunityTypes';
 
@@ -38,7 +38,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
     onError: handleError,
   });
 
-  const handleAdd = (_member: Member) => {
+  const handleAdd = (_member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {
@@ -47,7 +47,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
         },
       },
       refetchQueries: [
-        refetchUsersWithCredentialsQuery({
+        refetchUsersWithCredentialsSimpleListQuery({
           input: { type: credential, resourceID: resourceId },
         }),
       ],
@@ -64,7 +64,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
         },
       },
       refetchQueries: [
-        refetchUsersWithCredentialsQuery({
+        refetchUsersWithCredentialsSimpleListQuery({
           input: { type: credential, resourceID: resourceId },
         }),
       ],

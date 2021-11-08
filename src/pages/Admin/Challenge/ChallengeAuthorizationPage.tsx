@@ -12,6 +12,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
+import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 
 const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     onError: handleError,
   });
 
-  const handleAdd = (member: Member) => {
+  const handleAdd = (member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {
