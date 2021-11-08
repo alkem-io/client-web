@@ -16,7 +16,7 @@ import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
-import { NameSegment } from '../Common/NameSegment';
+import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 
 const emptyOrganization = {
   nameID: '',
@@ -106,8 +106,8 @@ export const OrganizationForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('forms.validations.required')),
-    nameID: yup.string().required(t('forms.validations.required')),
+    name: nameSegmentSchema.fields?.name || yup.string(),
+    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     avatar: profileSegmentSchema.fields?.avatar || yup.string(),
     description: profileSegmentSchema.fields?.description || yup.string(),
     contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
