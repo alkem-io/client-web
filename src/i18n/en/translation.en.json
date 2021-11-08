@@ -220,7 +220,7 @@
       "updated": "Last updated on {{date}}"
     },
     "edit-members": {
-      "no-available-memebers": "No users available to add; please check members of containing community",
+      "no-available-members": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
     },
     "application-button": {
@@ -229,7 +229,7 @@
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
       },
       "dialog-parent-app-pending": {
-        "title": "Parrent application pending!",
+        "title": "Parent application pending!",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       }
     },
