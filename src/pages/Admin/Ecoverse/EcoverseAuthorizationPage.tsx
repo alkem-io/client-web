@@ -12,6 +12,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
+import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     onError: handleError,
   });
 
-  const handleAdd = (member: Member) => {
+  const handleAdd = (member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {

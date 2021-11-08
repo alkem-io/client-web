@@ -637,6 +637,12 @@ export const UserDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserDisplayNameFragmentDoc = gql`
+  fragment UserDisplayName on User {
+    id
+    displayName
+  }
+`;
 export const UserMembershipDetailsFragmentDoc = gql`
   fragment UserMembershipDetails on UserMembership {
     ecoverses {
@@ -5719,12 +5725,12 @@ export const CommunityMembersDocument = gql`
       community(ID: $communityId) {
         id
         members {
-          ...GroupMembers
+          ...UserDisplayName
         }
       }
     }
   }
-  ${GroupMembersFragmentDoc}
+  ${UserDisplayNameFragmentDoc}
 `;
 
 /**
@@ -8940,6 +8946,60 @@ export type UsersQueryResult = Apollo.QueryResult<SchemaTypes.UsersQuery, Schema
 export function refetchUsersQuery(variables?: SchemaTypes.UsersQueryVariables) {
   return { query: UsersDocument, variables: variables };
 }
+export const UsersDisplayNameDocument = gql`
+  query usersDisplayName {
+    users {
+      ...UserDisplayName
+    }
+  }
+  ${UserDisplayNameFragmentDoc}
+`;
+
+/**
+ * __useUsersDisplayNameQuery__
+ *
+ * To run a query within a React component, call `useUsersDisplayNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersDisplayNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersDisplayNameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersDisplayNameQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>(
+    UsersDisplayNameDocument,
+    options
+  );
+}
+export function useUsersDisplayNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersDisplayNameQuery,
+    SchemaTypes.UsersDisplayNameQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>(
+    UsersDisplayNameDocument,
+    options
+  );
+}
+export type UsersDisplayNameQueryHookResult = ReturnType<typeof useUsersDisplayNameQuery>;
+export type UsersDisplayNameLazyQueryHookResult = ReturnType<typeof useUsersDisplayNameLazyQuery>;
+export type UsersDisplayNameQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersDisplayNameQuery,
+  SchemaTypes.UsersDisplayNameQueryVariables
+>;
+export function refetchUsersDisplayNameQuery(variables?: SchemaTypes.UsersDisplayNameQueryVariables) {
+  return { query: UsersDisplayNameDocument, variables: variables };
+}
 export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
@@ -9004,6 +9064,71 @@ export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUsersWithCredentialsQuery(variables?: SchemaTypes.UsersWithCredentialsQueryVariables) {
   return { query: UsersWithCredentialsDocument, variables: variables };
+}
+export const UsersWithCredentialsSimpleListDocument = gql`
+  query usersWithCredentialsSimpleList($input: UsersWithAuthorizationCredentialInput!) {
+    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
+      id
+      displayName
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUsersWithCredentialsSimpleListQuery__
+ *
+ * To run a query within a React component, call `useUsersWithCredentialsSimpleListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersWithCredentialsSimpleListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersWithCredentialsSimpleListQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersWithCredentialsSimpleListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersWithCredentialsSimpleListQuery,
+    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UsersWithCredentialsSimpleListQuery,
+    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+  >(UsersWithCredentialsSimpleListDocument, options);
+}
+export function useUsersWithCredentialsSimpleListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersWithCredentialsSimpleListQuery,
+    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UsersWithCredentialsSimpleListQuery,
+    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+  >(UsersWithCredentialsSimpleListDocument, options);
+}
+export type UsersWithCredentialsSimpleListQueryHookResult = ReturnType<typeof useUsersWithCredentialsSimpleListQuery>;
+export type UsersWithCredentialsSimpleListLazyQueryHookResult = ReturnType<
+  typeof useUsersWithCredentialsSimpleListLazyQuery
+>;
+export type UsersWithCredentialsSimpleListQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersWithCredentialsSimpleListQuery,
+  SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+>;
+export function refetchUsersWithCredentialsSimpleListQuery(
+  variables?: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+) {
+  return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
 export const EcoverseContributionDetailsDocument = gql`
   query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {

@@ -4,7 +4,7 @@ query communityMembers($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     community(ID: $communityId) {
       id
       members {
-        ...GroupMembers
+        ...UserDisplayName
       }
     }
   }
