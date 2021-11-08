@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, Container } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { View } from '../../models/view';
+import { ViewProps } from '../../models/view';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -116,7 +116,7 @@ export interface OpportunityViewOptions {
 }
 
 export interface OpportunityViewProps
-  extends View<OpportunityViewEntities, OpportunityViewActions, OpportunityViewState, OpportunityViewOptions> {}
+  extends ViewProps<OpportunityViewEntities, OpportunityViewActions, OpportunityViewState, OpportunityViewOptions> {}
 
 const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, options }) => {
   const { t } = useTranslation();

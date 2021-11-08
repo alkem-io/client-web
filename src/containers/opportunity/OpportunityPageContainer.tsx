@@ -3,7 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationCredential, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
@@ -56,7 +56,7 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends Container<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
+  extends ContainerProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();

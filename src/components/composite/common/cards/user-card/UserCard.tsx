@@ -60,19 +60,19 @@ export interface UserCardProps {
   country?: string;
 }
 
-const INITAL_ELEVATION = 1;
+const INITIAL_ELEVATION = 1;
 const FINAL_ELEVATION = 8;
 
 const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
   const styles = useStyles();
   const location = [city, country].filter(x => !!x).join(', ');
-  const [elevation, setElevation] = useState(INITAL_ELEVATION);
+  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
   return (
     <Link component={RouterLink} to={url} underline="none">
       <Card
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITAL_ELEVATION)}
+        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
       >
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>

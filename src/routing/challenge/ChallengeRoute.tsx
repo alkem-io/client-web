@@ -7,6 +7,7 @@ import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
 import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import ApplyRoute from '../application/apply.route';
+import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
@@ -40,6 +41,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
       <Route exact path={path}>
         <ChallengePage paths={currentPaths} />
       </Route>
+      <RestrictedRoute path={`${path}/community/discussions`}>
+        <DiscussionsRoute paths={currentPaths} />
+      </RestrictedRoute>
       <RestrictedRoute path={`${path}/community`}>
         <ChallengeCommunityPage paths={currentPaths} />
       </RestrictedRoute>

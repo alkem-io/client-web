@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import { useAuthenticationContext, useUserContext } from '../../hooks';
 import { useUserApplicationsQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildEcoverseApplyUrl } from '../../utils/urlBuilders';
 
 interface ApplicationContainerEntities {
@@ -14,7 +14,7 @@ interface ApplicationContainerState {
 }
 
 interface ApplicationContainerProps
-  extends Container<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+  extends ContainerProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   entities: {
     ecoverseId: string;
     ecoverseNameId: string;

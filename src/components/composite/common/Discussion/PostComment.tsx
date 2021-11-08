@@ -7,13 +7,13 @@ import Button from '../../../core/Button';
 import FormikMarkdownField from '../../forms/FormikMarkdownField';
 
 export interface PostCommentProps {
-  onPost?: (post: string) => void;
+  onPostComment?: (comment: string) => Promise<void> | void;
 }
 interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPost }) => {
+const PostComment: FC<PostCommentProps> = ({ onPostComment }) => {
   const { t } = useTranslation();
 
   const initialValues: formValues = {
@@ -25,8 +25,9 @@ const PostComment: FC<PostCommentProps> = ({ onPost }) => {
   });
 
   const handleSubmit = async (values: formValues, _helpers: FormikHelpers<formValues>) => {
-    if (onPost) {
-      await onPost(values.post);
+    if (onPostComment) {
+      await onPostComment(values.post);
+      _helpers.resetForm();
     }
   };
 
@@ -37,7 +38,7 @@ const PostComment: FC<PostCommentProps> = ({ onPost }) => {
       enableReinitialize
       onSubmit={handleSubmit}
     >
-      {({ isValid, dirty }) => (
+      {({ isValid, dirty, isSubmitting }) => (
         <Form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -45,15 +46,16 @@ const PostComment: FC<PostCommentProps> = ({ onPost }) => {
                 name="post"
                 title={t('components.post-comment.fields.description.title')}
                 placeholder={t('components.post-comment.fields.description.placeholder')}
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item>
               <Button
                 aria-label="post comment"
                 variant="primary"
-                text={t('components.post-comment.buttons.post')}
+                text={isSubmitting ? t('buttons.processing') : t('components.post-comment.buttons.post')}
                 type="submit"
-                disabled={!isValid || !dirty}
+                disabled={!isValid || !dirty || isSubmitting}
               />
             </Grid>
           </Grid>

@@ -11,7 +11,7 @@ export const nameSegmentSchema = yup.object().shape({
     .required(i18next.t('forms.validations.required'))
     .min(3, 'NameID should be at least 3 symbols long')
     .max(25, 'Exceeded the limit of 25 characters')
-    .matches(/^\S*$/, 'nameID cannot contain spaces'),
+    .matches(/^[a-z0-9-]*$/, 'NameID can contain only lower case latin characters, numbers and hyphens'),
 });
 
 interface NameSegmentProps {
