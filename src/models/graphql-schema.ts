@@ -6629,3 +6629,25 @@ export type OrganizationMembersQuery = {
     >;
   };
 };
+
+export type UserCardsContainerQueryVariables = Exact<{
+  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserCardsContainerQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    city: string;
+    country: string;
+    profile?: Maybe<{
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+    }>;
+  }>;
+};

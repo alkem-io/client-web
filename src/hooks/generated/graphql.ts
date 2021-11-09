@@ -10392,3 +10392,73 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
 export function refetchOrganizationMembersQuery(variables?: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
 }
+export const UserCardsContainerDocument = gql`
+  query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
+    usersById(IDs: $ids) {
+      id
+      nameID
+      displayName
+      city
+      country
+      profile {
+        id
+        avatar
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserCardsContainerQuery__
+ *
+ * To run a query within a React component, call `useUserCardsContainerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCardsContainerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserCardsContainerQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useUserCardsContainerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export function useUserCardsContainerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export type UserCardsContainerQueryHookResult = ReturnType<typeof useUserCardsContainerQuery>;
+export type UserCardsContainerLazyQueryHookResult = ReturnType<typeof useUserCardsContainerLazyQuery>;
+export type UserCardsContainerQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserCardsContainerQuery,
+  SchemaTypes.UserCardsContainerQueryVariables
+>;
+export function refetchUserCardsContainerQuery(variables?: SchemaTypes.UserCardsContainerQueryVariables) {
+  return { query: UserCardsContainerDocument, variables: variables };
+}

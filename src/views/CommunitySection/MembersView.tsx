@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
-import Avatar from '../../components/core/Avatar';
+import { useTranslation } from 'react-i18next';
+import UserAvatar from '../../components/composite/common/UserAvatar/UserAvatar';
+import { Loading } from '../../components/core';
 import AvatarContainer from '../../components/core/AvatarContainer';
 import Typography from '../../components/core/Typography';
-import { AvatarsProvider } from '../../context/AvatarsProvider';
+import UserCardsContainer from '../../containers/user/UserCardsContainer';
 import { User } from '../../models/graphql-schema';
 import shuffleCollection from '../../utils/shuffleCollection';
 
@@ -12,15 +14,24 @@ interface MembersProps {
 }
 
 export const MembersView: FC<MembersProps> = ({ shuffle = false, users }) => {
+  const { t } = useTranslation();
+
+  const shuffled = shuffle ? shuffleCollection(users) : users;
+  const userIDs = shuffled.slice(0, 20).map(x => x.id);
+
   return (
-    <AvatarsProvider users={users}>
-      {populated => {
-        const avatars = shuffle ? shuffleCollection(populated) : populated;
+    <UserCardsContainer userIDs={userIDs}>
+      {(entities, state) => {
+        const { users: populated } = entities;
+        const { loading } = state;
+
+        if (loading) return <Loading />;
+
         return (
           <>
-            <AvatarContainer title={'Active community members'}>
-              {avatars.map((u, i) => (
-                <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
+            <AvatarContainer title={t('components.members-view.title')}>
+              {populated.map((u, i) => (
+                <UserAvatar key={i} {...u} roleName={t('common.member')} />
               ))}
             </AvatarContainer>
             <div style={{ flexBasis: '100%' }} />
@@ -32,7 +43,7 @@ export const MembersView: FC<MembersProps> = ({ shuffle = false, users }) => {
           </>
         );
       }}
-    </AvatarsProvider>
+    </UserCardsContainer>
   );
 };
 export default MembersView;
