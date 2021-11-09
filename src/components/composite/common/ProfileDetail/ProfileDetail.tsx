@@ -6,12 +6,11 @@ interface ProfileDetailProps {
   value?: string;
 }
 
-const ProfileDetail: FC<ProfileDetailProps> = ({ title, value }) => {
+const ProfileDetail: FC<ProfileDetailProps> = ({ title, value, ...rest }) => {
   if (!value) return null;
-
   return (
     <>
-      <Typography color="primary" weight="boldLight">
+      <Typography color="primary" weight="boldLight" {...rest}>
         {title}
       </Typography>
       <Typography>{value}</Typography>

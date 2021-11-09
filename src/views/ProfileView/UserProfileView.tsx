@@ -110,7 +110,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         }}
         avatar={
           <>
-            <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar}>
+            <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar} aria-label="user-avatar">
               {user.firstName[0]}
             </Avatar>
             <Box paddingTop={1}>
@@ -130,13 +130,17 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
               <MUITypography variant="h2">{displayName}</MUITypography>
             </Grid>
             <Grid item>
-              <ProfileDetail title={t('components.profile.fields.location.title')} value={location} />
+              <ProfileDetail
+                title={t('components.profile.fields.location.title')}
+                value={location}
+                aria-label="location"
+              />
             </Grid>
             <Grid item>
-              <ProfileDetail title={t('components.profile.fields.work.title')} value={''} />
+              <ProfileDetail title={t('components.profile.fields.work.title')} value={''} aria-label="work" />
             </Grid>
             <Grid item>
-              <ProfileDetail title={t('components.profile.fields.telephone.title')} value={phone} />
+              <ProfileDetail title={t('components.profile.fields.telephone.title')} value={phone} aria-label="phone" />
             </Grid>
           </Grid>
         }
@@ -145,25 +149,25 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
       <CardContent className={styles.content}>
         <Grid container spacing={2} direction="column">
           <Grid item>
-            <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} />
+            <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
           </Grid>
 
           <Grid item>
-            <Typography color="primary" weight="boldLight">
+            <Typography color="primary" weight="boldLight" aria-label="keywords">
               {t('components.profile.fields.keywords.title')}
             </Typography>
             <TagsComponent tags={keywords} />
           </Grid>
 
           <Grid item>
-            <Typography color="primary" weight="boldLight">
+            <Typography color="primary" weight="boldLight" aria-label="skills">
               {t('components.profile.fields.skills.title')}
             </Typography>
             <TagsComponent tags={skills} />
           </Grid>
 
           <Grid item container direction="column">
-            <Typography color="primary" weight="boldLight">
+            <Typography color="primary" weight="boldLight" aria-label="links">
               {t('components.profile.fields.links.title')}
             </Typography>
             {links?.map((l, i) => (

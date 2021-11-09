@@ -54,7 +54,13 @@ export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
       {items
         ?.sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type])
         .map((item, i) => (
-          <Link key={i} href={getSocialLinkUrl(item.type, item.url)} rel="noreferrer" tabIndex={0}>
+          <Link
+            key={i}
+            href={getSocialLinkUrl(item.type, item.url)}
+            rel="noreferrer"
+            tabIndex={0}
+            aria-label="social-link"
+          >
             {getSocialIcon(item.type)}
           </Link>
         ))}

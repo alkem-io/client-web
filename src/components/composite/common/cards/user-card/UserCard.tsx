@@ -68,7 +68,7 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
   const location = [city, country].filter(x => !!x).join(', ');
   const [elevation, setElevation] = useState(INITIAL_ELEVATION);
   return (
-    <Link component={RouterLink} to={url} underline="none">
+    <Link component={RouterLink} to={url} underline="none" aria-label="user-card">
       <Card
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}

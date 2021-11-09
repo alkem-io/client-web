@@ -42,7 +42,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
   const styles = useStyles();
 
   return (
-    <LinkCard to={url}>
+    <LinkCard to={url} aria-label="associated-organization-card">
       <CardHeader
         className={styles.cardHeader}
         classes={{

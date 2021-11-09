@@ -28,7 +28,7 @@ export const AssociateCard: FC<AssociateCardProps> = props => {
   const { displayName, roleName, avatarSrc, url } = props;
 
   return (
-    <Link component={RouterLink} to={url} underline="none">
+    <Link component={RouterLink} to={url} underline="none" aria-label="associate-card">
       <Box className={styles.wrapper}>
         <Tooltip arrow title={<UserCard {...props} url="" />}>
           <Avatar variant="square" className={styles.avatar} src={avatarSrc}>
