@@ -12,10 +12,11 @@ type FilterProps<T> = {
   data: T[];
   limitKeys?: Array<keyof T>;
   sort?: sortItem<T>[];
+  placeholder?: string;
   children: (filteredData: T[]) => void;
 };
 
-export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<T>): React.ReactElement {
+export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [sortBy, setSortBy] = useState<sortItem<T> | null>(null);
@@ -52,7 +53,7 @@ export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
         <Grid item xs={sort ? 10 : 12}>
           <FormControl fullWidth size={'small'}>
-            <OutlinedInput placeholder={t('components.filter.placeholder')} onChange={handleSearch} />
+            <OutlinedInput placeholder={placeholder ?? t('components.filter.placeholder')} onChange={handleSearch} />
           </FormControl>
         </Grid>
         {sort && (
