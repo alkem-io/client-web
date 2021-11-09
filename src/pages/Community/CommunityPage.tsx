@@ -6,7 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { useUpdateNavigation, useUserCardRoleName } from '../../hooks';
+import { useConfig, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
@@ -27,6 +27,7 @@ import { userTagsValueGetter } from '../../components/core/card-filter/value-get
 import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -80,7 +81,7 @@ const CommunityPage: FC<Props> = ({
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
   const membersWithRole = useUserCardRoleName(members as User[], parentId);
-
+  const { isFeatureEnabled } = useConfig();
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
@@ -94,9 +95,6 @@ const CommunityPage: FC<Props> = ({
 
   return (
     <>
-      <Link component={RouterLink} to={`${url}/discussions`}>
-        Discussions
-      </Link>
       <Section>
         <SectionHeader
           text={parentDisplayName}
@@ -224,6 +222,11 @@ const CommunityPage: FC<Props> = ({
         </Box>
       )}
       <Divider />
+      {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+        <Link component={RouterLink} to={`${url}/discussions`}>
+          Discussions
+        </Link>
+      )}
     </>
   );
 };
