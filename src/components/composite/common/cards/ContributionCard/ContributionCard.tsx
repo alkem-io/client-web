@@ -56,7 +56,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   const { name = '', type, tags = [], image, url = '' } = details || {};
 
   return (
-    <LinkCard to={url} className={styles.card}>
+    <LinkCard to={url} className={styles.card} aria-label="contribution-card">
       {loading ? (
         <Skeleton variant="rect" className={styles.cardMedia} animation="wave" />
       ) : (

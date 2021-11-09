@@ -26,7 +26,7 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef(({ title, helpText, 
   const styles = useStyles();
 
   return (
-    <Card ref={ref} elevation={0} className={styles.card} square>
+    <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
       <CardHeader
         className={styles.cardHeader}
         title={

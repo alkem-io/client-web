@@ -25,6 +25,7 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
                   verified={entities.verified}
                   url={entities.url}
                   loading={state.loading}
+                  aria-label="organization"
                 />
               </Grid>
             )}
