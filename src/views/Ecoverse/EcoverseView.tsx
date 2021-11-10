@@ -31,6 +31,7 @@ import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChall
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
 import { createStyles, useUserContext } from '../../hooks';
 import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -170,12 +171,14 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
 
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
-        <EcoverseCommunitySection
-          title={t('pages.ecoverse.sections.community.header')}
-          subTitle={t('pages.ecoverse.sections.community.subheader')}
-          body={context?.who}
-          shuffle={true}
-        />
+        <DiscussionsProvider>
+          <EcoverseCommunitySection
+            title={t('pages.ecoverse.sections.community.header')}
+            subTitle={t('pages.ecoverse.sections.community.subheader')}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
       </AuthenticationBackdrop>
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>

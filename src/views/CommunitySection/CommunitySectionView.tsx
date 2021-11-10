@@ -14,6 +14,7 @@ import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { Message, User } from '../../models/graphql-schema';
+import { Discussion } from '../../models/discussion/discussion';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
@@ -28,7 +29,7 @@ interface CommunitySectionProps {
   shuffle?: boolean;
   updates?: Message[];
   updateSenders?: Pick<User, 'id'>[];
-  discussions?: Message[];
+  discussions?: Discussion[];
 }
 
 const useCommunityStyles = makeStyles(theme => ({
@@ -39,6 +40,13 @@ const useCommunityStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(0),
   },
 }));
+
+type TabConfig = {
+  name: string;
+  label: string;
+  enabled: boolean;
+  showOnly?: boolean;
+};
 
 export const CommunitySection: FC<CommunitySectionProps> = ({
   title,
@@ -60,14 +68,17 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   };
 
   const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
-  const tabList = [
-    { name: 'members', label: 'Members', enabled: true },
-    { name: 'updates', label: `Updates ${updatesCountLabel}`, enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
+  const tabList: TabConfig[] = [
+    { name: 'members', label: t('common.members'), enabled: true },
+    {
+      name: 'updates',
+      label: `${t('common.updates')} ${updatesCountLabel}`,
+      enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
+    },
     {
       name: 'discussion',
-      label: 'Discussion (Coming soon)',
+      label: t('common.discussions'),
       enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
-      showOnly: true,
     },
   ].filter(x => x.enabled);
 
@@ -118,7 +129,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               </TabPanel>
 
               <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
-                <DiscussionsView messages={discussions} />
+                <DiscussionsView discussions={discussions} />
               </TabPanel>
             </>
           )}
