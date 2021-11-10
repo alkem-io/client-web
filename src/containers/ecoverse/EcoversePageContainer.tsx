@@ -42,6 +42,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
   const { ecoverseId, ecoverseNameId, loading } = useEcoverse();
   const { data: _ecoverse, loading: loadingEcoverse } = useEcoversePageQuery({
     variables: { ecoverseId: ecoverseNameId },
+    errorPolicy: 'all',
   });
 
   const { user, isAuthenticated } = useUserContext();
