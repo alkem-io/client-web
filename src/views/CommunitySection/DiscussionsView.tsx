@@ -18,13 +18,13 @@ interface DiscussionsProps {
   discussions?: Discussion[];
 }
 
-export const DiscussionsView: FC<DiscussionsProps> = ({ discussions = [] }) => {
+export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
   const { t } = useTranslation();
   const styles = useDiscussionsStyles();
 
   let messagesComponent = <Typography>{t('common.no-discussions')}</Typography>;
 
-  if (discussions) {
+  if (discussions && discussions.length > 0) {
     messagesComponent = (
       <>
         {discussions
