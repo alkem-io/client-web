@@ -54,33 +54,37 @@ const useGlobalStyles = createStyles(theme => ({
     },
   },
 }));
-
-const Root: FC = () => {
+const GlobalStyles: FC = ({ children }) => {
   useGlobalStyles();
+  return <>{children}</>;
+};
+const Root: FC = () => {
   return (
     <ThemeProvider>
-      <ConfigProvider apiUrl={graphQLEndpoint}>
-        <SentryErrorBoundaryProvider>
-          <WinstonProvider logger={logger}>
-            <GlobalStateProvider>
-              <BrowserRouter>
-                <AuthenticationProvider>
-                  <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
-                    <NavigationProvider>
-                      <UserProvider>
-                        <App>
-                          <ScrollToTop />
-                          <Routing />
-                        </App>
-                      </UserProvider>
-                    </NavigationProvider>
-                  </AlkemioApolloProvider>
-                </AuthenticationProvider>
-              </BrowserRouter>
-            </GlobalStateProvider>
-          </WinstonProvider>
-        </SentryErrorBoundaryProvider>
-      </ConfigProvider>
+      <GlobalStyles>
+        <ConfigProvider apiUrl={graphQLEndpoint}>
+          <SentryErrorBoundaryProvider>
+            <WinstonProvider logger={logger}>
+              <GlobalStateProvider>
+                <BrowserRouter>
+                  <AuthenticationProvider>
+                    <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                      <NavigationProvider>
+                        <UserProvider>
+                          <App>
+                            <ScrollToTop />
+                            <Routing />
+                          </App>
+                        </UserProvider>
+                      </NavigationProvider>
+                    </AlkemioApolloProvider>
+                  </AuthenticationProvider>
+                </BrowserRouter>
+              </GlobalStateProvider>
+            </WinstonProvider>
+          </SentryErrorBoundaryProvider>
+        </ConfigProvider>
+      </GlobalStyles>
     </ThemeProvider>
   );
 };
