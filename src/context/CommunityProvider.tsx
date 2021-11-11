@@ -34,7 +34,7 @@ const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !challengeNameId,
+    skip: !ecoverseNameId || !challengeNameId || Boolean(opportunityNameId),
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCommunityQuery({

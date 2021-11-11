@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { CommunityProvider } from '../context/CommunityProvider';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
+import { CommunityProvider } from '../context/CommunityProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { AdminRoute } from './admin/AdminRoute';
