@@ -5781,36 +5781,39 @@ export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMe
   return { query: CommunityMembersDocument, variables: variables };
 }
 export const CommunityPageDocument = gql`
-  query communityPage($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      groups {
+      community(ID: $communityId) {
         id
-        name
-        profile {
+        displayName
+        groups {
           id
-          avatar
-          description
-          tagsets {
+          name
+          profile {
             id
-            name
-            tags
+            avatar
+            description
+            tagsets {
+              id
+              name
+              tags
+            }
           }
         }
-      }
-      members {
-        ...CommunityPageMembers
-      }
-      communication {
-        id
-        updates {
+        members {
+          ...CommunityPageMembers
+        }
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -5831,6 +5834,7 @@ export const CommunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityPageQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -9374,19 +9378,22 @@ export function refetchOpportunityContributionDetailsQuery(
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      communication {
+      community(ID: $communityId) {
         id
-        updates {
+        displayName
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -9406,6 +9413,7 @@ export const CommunityUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUpdatesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -10391,4 +10399,82 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationMembersQuery(variables?: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
+}
+export const UserCardsContainerDocument = gql`
+  query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
+    usersById(IDs: $ids) {
+      id
+      nameID
+      displayName
+      city
+      country
+      profile {
+        id
+        avatar
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      agent {
+        id
+        credentials {
+          id
+          resourceID
+          type
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserCardsContainerQuery__
+ *
+ * To run a query within a React component, call `useUserCardsContainerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCardsContainerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserCardsContainerQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useUserCardsContainerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export function useUserCardsContainerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export type UserCardsContainerQueryHookResult = ReturnType<typeof useUserCardsContainerQuery>;
+export type UserCardsContainerLazyQueryHookResult = ReturnType<typeof useUserCardsContainerLazyQuery>;
+export type UserCardsContainerQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserCardsContainerQuery,
+  SchemaTypes.UserCardsContainerQueryVariables
+>;
+export function refetchUserCardsContainerQuery(variables?: SchemaTypes.UserCardsContainerQueryVariables) {
+  return { query: UserCardsContainerDocument, variables: variables };
 }

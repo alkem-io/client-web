@@ -18,7 +18,7 @@ import { useDiscussionsContext } from '../../../../context/Discussions/Discussio
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
 export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
-  const { ecoverseNameId } = useEcoverse();
+  const { ecoverseNameId, ecoverseId } = useEcoverse();
   const { discussionList } = useDiscussionsContext();
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
     variables: {
@@ -62,6 +62,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
           updates={entities?.messages}
           updateSenders={entities?.senders}
           discussions={discussionList}
+          parentEntityId={ecoverseId}
           {...rest}
         />
       )),

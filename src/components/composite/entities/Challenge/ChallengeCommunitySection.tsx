@@ -66,6 +66,7 @@ export const ChallengeCommunitySection: FC<ChallengeCommunitySectionProps> = ({ 
           updates={entities?.messages}
           updateSenders={entities?.senders}
           discussions={discussionList}
+          parentEntityId={challengeId}
           {...rest}
         />
       )),

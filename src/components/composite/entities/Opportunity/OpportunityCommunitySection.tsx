@@ -71,6 +71,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
           updates={entities?.messages}
           updateSenders={entities?.senders}
           discussions={discussionList}
+          parentEntityId={opportunityId}
           {...rest}
         />
       )),
