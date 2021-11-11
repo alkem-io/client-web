@@ -1,4 +1,4 @@
-import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@material-ui/core/styles/createPalette';
+import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
 
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#00BCD4' },
@@ -11,7 +11,7 @@ export const paletteOptions: PaletteOptions = {
   divider: '#00BCD440',
 };
 
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/material/styles/createPalette' {
   interface PaletteOptions {
     positive: PaletteColorOptions;
     negative: PaletteColorOptions;

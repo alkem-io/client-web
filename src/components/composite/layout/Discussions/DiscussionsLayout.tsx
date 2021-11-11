@@ -1,4 +1,6 @@
-import { createStyles, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../../../core/Button';

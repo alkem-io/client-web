@@ -52,7 +52,7 @@ const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag
         bodyProps={{
           classes: {
             background: theme => hexToRGBA(theme.palette.neutral.main, 0.7),
-            padding: theme => `${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
+            padding: theme => `${theme.spacing(4)} ${theme.spacing(3)} ${theme.spacing(1)}`,
           },
         }}
         primaryTextProps={{

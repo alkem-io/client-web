@@ -1,4 +1,4 @@
-import { Box, Popover } from '@material-ui/core';
+import { Box, Popover } from '@mui/material';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
@@ -19,7 +19,7 @@ const useStyles = createStyles(theme => ({
   },
   userHeader: {
     background: theme.palette.neutralLight.main,
-    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
   },
 }));
 

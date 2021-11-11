@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import React, { FC } from 'react';

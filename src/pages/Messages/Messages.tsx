@@ -1,4 +1,4 @@
-import { Fade } from '@material-ui/core';
+import { Fade } from '@mui/material';
 import clsx from 'clsx';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useRef, useState } from 'react';
@@ -76,7 +76,7 @@ const useMessageStyles = createStyles(theme => ({
     marginRight: theme.spacing(10),
   },
   message: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     border: `1px solid ${theme.palette.neutralLight.main}`,
     borderRadius: theme.shape.borderRadius,
     cursor: 'pointer',
@@ -156,7 +156,7 @@ export const DummyChat: FC = () => {
       bodyProps={{
         classes: {
           background: theme => theme.palette.neutralLight.main,
-          padding: theme => `${theme.spacing(1)}px`,
+          padding: theme => theme.spacing(1),
         },
         className: clsx(styles.container),
       }}
@@ -199,7 +199,7 @@ const useContactStyles = createStyles(theme => ({
     height: '100%',
   },
   contact: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     marginBotton: theme.spacing(1),
     background: theme.palette.background.paper,
     cursor: 'pointer',
@@ -236,7 +236,7 @@ const DummyChatList: FC = () => {
       bodyProps={{
         classes: {
           background: theme => theme.palette.neutralLight.main,
-          padding: theme => `${theme.spacing(0.5)}px`,
+          padding: theme => theme.spacing(0.5),
         },
       }}
     >

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { FunctionComponent, SVGProps } from 'react';
-import { Palette } from '@material-ui/core/styles/createPalette';
+import { Palette } from '@mui/material/styles';
 import { createStyles } from '../../hooks/useTheme';
 
 const useIconStyles = createStyles(theme => ({

@@ -8,13 +8,13 @@ const useToolbarStyles = createStyles(theme => ({
     flexDirection: 'row',
   },
   paddingDefault: {
-    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(4)} ${theme.spacing(4)}`,
   },
   paddingDense: {
-    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
   },
   responsivePadding: {
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },

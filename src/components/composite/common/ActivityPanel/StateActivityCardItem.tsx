@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Dialog } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-import Grid from '@material-ui/core/Grid';
+import { Tooltip, Dialog } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+import Grid from '@mui/material/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { createStyles } from '../../../../hooks';
@@ -80,7 +80,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
         <Grid item className={styles.item}>
           <Typography>State</Typography>
           <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-            <IconButton color="primary" onClick={() => setModalVisible(true)}>
+            <IconButton color="primary" onClick={() => setModalVisible(true)} size="large">
               <InfoIcon />
             </IconButton>
           </Tooltip>

@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Theme } from '@material-ui/core/styles';
-import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
+import { Theme } from '@mui/material/styles';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
+import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
 
 interface HeaderProps {
   text: string | React.ReactNode;
@@ -28,10 +28,10 @@ const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
     minHeight: '58px',
     padding: props =>
       agnosticFunctor(props.color)(theme, {}) ||
-      `${theme.spacing(2)}px ${theme.spacing(6)}px ${theme.spacing(2)}px ${theme.spacing(4)}px`,
+      `${theme.spacing(2)} ${theme.spacing(6)} ${theme.spacing(2)} ${theme.spacing(4)}`,
 
     '& span': {
-      [theme.breakpoints.down('lg')]: {
+      [theme.breakpoints.down('xl')]: {
         minHeight: 0,
       },
     },
@@ -158,7 +158,7 @@ const useMatchedTermsStyles = createStyles(theme => ({
   tagsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    maxHeight: `${theme.spacing(9)}px`,
+    maxHeight: theme.spacing(9),
     overflow: 'hidden',
   },
   title: {
@@ -170,8 +170,8 @@ const useMatchedTermsStyles = createStyles(theme => ({
     width: 'fit-content',
     borderRadius: 15,
     textTransform: 'uppercase',
-    marginRight: `${theme.spacing(1)}px`,
-    marginBottom: `${theme.spacing(1)}px`,
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   primary: {
     backgroundColor: theme.palette.primary.main,
@@ -220,17 +220,17 @@ const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
     flexGrow: 1,
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight.main,
     padding: props =>
-      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
+      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)} ${theme.spacing(3)} ${theme.spacing(1)}`,
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.spacing(3),
     },
@@ -318,7 +318,7 @@ const useCardStyles = createStyles<Theme, ClassProps>(theme => ({
     textTransform: 'uppercase',
     letterSpacing: theme.spacing(0.3),
     fontWeight: 800,
-    lineHeight: `${theme.spacing(4)}px`,
+    lineHeight: theme.spacing(4),
   },
 }));
 

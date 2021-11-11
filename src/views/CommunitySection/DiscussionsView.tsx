@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { FC } from 'react';
 import Typography from '../../components/core/Typography';
 import { createStyles } from '../../hooks/useTheme';

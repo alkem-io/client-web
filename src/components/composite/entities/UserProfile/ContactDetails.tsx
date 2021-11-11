@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { Box } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { createStyles } from '../../../../hooks/useTheme';
 import { User } from '../../../../models/graphql-schema';
 import Card from '../../../core/Card';

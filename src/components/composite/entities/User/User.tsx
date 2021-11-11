@@ -7,7 +7,7 @@ import Typography from '../../../core/Typography';
 const useUserStyles = createStyles(theme => ({
   flex: {
     display: 'flex',
-    gap: `${theme.spacing(1)}px`,
+    gap: theme.spacing(1),
     padding: theme.spacing(1),
     margin: -theme.spacing(1),
 

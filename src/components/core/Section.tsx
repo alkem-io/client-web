@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Grid, { GridSize } from '@material-ui/core/Grid';
-import { Theme } from '@material-ui/core/styles';
-import { Box, Container, makeStyles } from '@material-ui/core';
-import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
+import Grid, { GridSize } from '@mui/material/Grid';
+import { Theme, Breakpoints } from '@mui/material/styles';
+import { Box, Container } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
@@ -26,7 +26,7 @@ const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
   header: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: `${theme.spacing(2)}px`,
+    gap: theme.spacing(2),
     alignItems: 'center',
     color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main} !important`,
   },
@@ -128,7 +128,7 @@ const useContentStyles = createStyles(theme => ({
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },

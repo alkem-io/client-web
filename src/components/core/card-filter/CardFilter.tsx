@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import { Chip } from '@material-ui/core';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import { Chip } from '@mui/material';
 import filterFn, { ValueType } from './filterFn';
 import mostCommonTags from './most-common-tags';
 
@@ -47,7 +47,7 @@ const CardFilter = <T extends RequiredFields>({ data, tagsValueGetter, valueGett
           disableCloseOnSelect
           options={tags}
           getOptionLabel={option => option}
-          getOptionSelected={(option, value) => option === value}
+          isOptionEqualToValue={(option, value) => option === value}
           groupBy={() => 'Tags'}
           onChange={handleChange}
           renderTags={(value, getTagProps) =>

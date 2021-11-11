@@ -10,7 +10,7 @@ const useButtonStyles = createStyles(theme => ({
     position: 'relative',
   },
   input: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     paddingTop: theme.spacing(4),
     color: theme.palette.neutral.main,
 
@@ -25,7 +25,7 @@ const useButtonStyles = createStyles(theme => ({
     fontSize: theme.typography.h3.fontSize,
   },
   textArea: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     paddingTop: theme.spacing(4),
     color: theme.palette.neutral.main,
 

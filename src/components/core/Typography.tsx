@@ -1,9 +1,8 @@
+import { Palette, TypographyVariant } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import _clamp from 'clamp-js';
 import clsx from 'clsx';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
-import _clamp from 'clamp-js';
-import { Palette } from '@material-ui/core/styles/createPalette';
-import { TypographyOptions } from '@material-ui/core/styles/createTypography';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { replaceAll } from '../../utils/replaceAll';
 
 const useTypographyStyles = makeStyles(theme => ({
@@ -95,7 +94,7 @@ const fontWeight: FontWeight = {
 };
 
 interface TypographyProps extends Record<string, unknown> {
-  variant?: keyof TypographyOptions;
+  variant?: TypographyVariant | 'body'; // TODO [ATS] define 'body'
   className?: string;
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;

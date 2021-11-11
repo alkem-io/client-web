@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FieldArray, useField } from 'formik';
 import React, { FC, useCallback } from 'react';
 import * as yup from 'yup';

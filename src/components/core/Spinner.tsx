@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { createStyles } from '../../hooks/useTheme';
-import { CircularProgress, CircularProgressProps } from '@material-ui/core';
+import { CircularProgress, CircularProgressProps } from '@mui/material';
 
 interface SpinnerProps extends CircularProgressProps {}
 

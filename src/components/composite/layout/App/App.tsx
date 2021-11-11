@@ -1,5 +1,5 @@
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useSelector } from '@xstate/react';
 import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
 import React, { useRef, useState } from 'react';
@@ -106,7 +106,7 @@ const App = ({ children }): React.ReactElement => {
             <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
               {/* <Navigation maximize={isVisible} userMetadata={user} /> */}
               {!upSm && (
-                <IconButton onClick={() => setDrawerOpen(x => !x)}>
+                <IconButton onClick={() => setDrawerOpen(x => !x)} size="large">
                   <Icon component={ListIcon} color="inherit" size={isVisible ? 'lg' : 'sm'} />
                 </IconButton>
               )}

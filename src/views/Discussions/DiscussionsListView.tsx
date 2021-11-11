@@ -1,5 +1,5 @@
-import { List, ListItemText } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { List, ListItemText } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../../components/Admin/Common/Filter';

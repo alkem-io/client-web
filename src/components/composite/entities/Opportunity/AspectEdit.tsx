@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
+import { Grid } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';

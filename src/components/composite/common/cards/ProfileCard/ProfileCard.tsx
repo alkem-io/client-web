@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, forwardRef } from 'react';
 import HelpButton from '../../../../core/HelpButton';
 
@@ -22,22 +24,24 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const ProfileCard: FC<ProfileCardProps> = forwardRef(({ title, helpText, children }, ref) => {
-  const styles = useStyles();
+export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | null, ProfileCardProps>(
+  ({ title, helpText, children }, ref) => {
+    const styles = useStyles();
 
-  return (
-    <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
-      <CardHeader
-        className={styles.cardHeader}
-        title={
-          <Typography variant="h3">
-            {title}
-            {helpText && <HelpButton helpText={helpText} />}
-          </Typography>
-        }
-      />
-      <CardContent className={styles.cardContent}>{children}</CardContent>
-    </Card>
-  );
-});
+    return (
+      <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
+        <CardHeader
+          className={styles.cardHeader}
+          title={
+            <Typography variant="h3">
+              {title}
+              {helpText && <HelpButton helpText={helpText} />}
+            </Typography>
+          }
+        />
+        <CardContent className={styles.cardContent}>{children}</CardContent>
+      </Card>
+    );
+  }
+);
 export default ProfileCard;

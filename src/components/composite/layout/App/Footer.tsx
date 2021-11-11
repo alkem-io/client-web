@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import Grid from '@material-ui/core/Grid';
-import { Box, Container, Link } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import { Box, Container, Link } from '@mui/material';
 import { createStyles } from '../../../../hooks/useTheme';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';

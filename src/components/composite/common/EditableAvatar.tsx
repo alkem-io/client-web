@@ -7,7 +7,7 @@ import Avatar, { AvatarProps, useAvatarStyles } from '../../core/Avatar';
 import { Spinner } from '../../core/Spinner';
 import UploadButton from '../../core/UploadButton';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 const useEditableAvatarStyles = createStyles(() => ({
   outerEditableAvatarWrapper: {

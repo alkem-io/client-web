@@ -1,4 +1,4 @@
-import { SvgIcon, SvgIconProps } from '@material-ui/core';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 import React, { FC } from 'react';
 
 export const FontDownloadIcon: FC<SvgIconProps> = props => {

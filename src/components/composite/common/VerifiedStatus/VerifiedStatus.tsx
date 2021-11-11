@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Tooltip } from '@material-ui/core';
-import { Help } from '@material-ui/icons';
+import { Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Help } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Typography from '../../../core/Typography';

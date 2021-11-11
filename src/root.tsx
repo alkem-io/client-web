@@ -16,6 +16,7 @@ import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ScrollToTop from './routing/ScrollToTop';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
@@ -60,32 +61,34 @@ const GlobalStyles: FC = ({ children }) => {
 };
 const Root: FC = () => {
   return (
-    <ThemeProvider>
-      <GlobalStyles>
-        <ConfigProvider apiUrl={graphQLEndpoint}>
-          <SentryErrorBoundaryProvider>
-            <WinstonProvider logger={logger}>
-              <GlobalStateProvider>
-                <BrowserRouter>
-                  <AuthenticationProvider>
-                    <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
-                      <NavigationProvider>
-                        <UserProvider>
-                          <App>
-                            <ScrollToTop />
-                            <Routing />
-                          </App>
-                        </UserProvider>
-                      </NavigationProvider>
-                    </AlkemioApolloProvider>
-                  </AuthenticationProvider>
-                </BrowserRouter>
-              </GlobalStateProvider>
-            </WinstonProvider>
-          </SentryErrorBoundaryProvider>
-        </ConfigProvider>
-      </GlobalStyles>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider>
+        <GlobalStyles>
+          <ConfigProvider apiUrl={graphQLEndpoint}>
+            <SentryErrorBoundaryProvider>
+              <WinstonProvider logger={logger}>
+                <GlobalStateProvider>
+                  <BrowserRouter>
+                    <AuthenticationProvider>
+                      <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                        <NavigationProvider>
+                          <UserProvider>
+                            <App>
+                              <ScrollToTop />
+                              <Routing />
+                            </App>
+                          </UserProvider>
+                        </NavigationProvider>
+                      </AlkemioApolloProvider>
+                    </AuthenticationProvider>
+                  </BrowserRouter>
+                </GlobalStateProvider>
+              </WinstonProvider>
+            </SentryErrorBoundaryProvider>
+          </ConfigProvider>
+        </GlobalStyles>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 export default Root;

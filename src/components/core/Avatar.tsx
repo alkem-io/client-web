@@ -5,7 +5,7 @@ import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from './Image';
 import Typography from './Typography';
-import { Theme, Tooltip } from '@material-ui/core';
+import { Theme, Tooltip } from '@mui/material';
 
 export const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
   avatarWrapper: {

@@ -1,4 +1,6 @@
-import { Avatar, Box, createStyles, Link, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Box, Link, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Comment } from '../../../../models/discussion/comment';

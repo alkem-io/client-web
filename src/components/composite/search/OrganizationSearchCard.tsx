@@ -1,5 +1,5 @@
 import React, { FC, memo, useMemo, useState } from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
 import { createStyles } from '../../../hooks';
@@ -29,7 +29,7 @@ const OrganizationCardStyles = createStyles(theme => ({
     gap: theme.spacing(1),
   },
   section: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(3)}`,
   },
   avatarsDiv: {
     display: 'flex',
@@ -69,7 +69,7 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
         bodyProps={{
           classes: {
             background: theme => theme.palette.background.paper,
-            padding: theme => `${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
+            padding: theme => `${theme.spacing(4)} ${theme.spacing(3)} ${theme.spacing(1)}`,
           },
           className: styles.body,
         }}

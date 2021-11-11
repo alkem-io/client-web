@@ -1,5 +1,7 @@
-import { Box, CardActionArea, CardContent, CardMedia, createStyles, Grid, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Box, CardActionArea, CardContent, CardMedia, Grid } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
@@ -58,7 +60,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
       {loading ? (
-        <Skeleton variant="rect" className={styles.cardMedia} animation="wave" />
+        <Skeleton variant="rectangular" className={styles.cardMedia} animation="wave" />
       ) : (
         <CardMedia image={image} className={styles.cardMedia}>
           {/* Workaround console error when image is missing. */}
@@ -70,7 +72,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
           <Grid item container justifyContent="space-between" alignItems="flex-start" spacing={2} wrap="nowrap">
             {loading ? (
               <Grid item xs={12}>
-                <Skeleton variant="rect" animation="wave"></Skeleton>
+                <Skeleton variant="rectangular" animation="wave"></Skeleton>
               </Grid>
             ) : (
               <>
@@ -92,7 +94,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
           <Grid item container>
             <Grid item xs={12}>
               {loading ? (
-                <Skeleton variant="rect" animation="wave" />
+                <Skeleton variant="rectangular" animation="wave" />
               ) : (
                 <TagsComponent tags={tags} count={2} keepInRow />
               )}

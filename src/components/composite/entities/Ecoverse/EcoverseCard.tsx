@@ -1,5 +1,5 @@
-import { Box } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Box } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import * as React from 'react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';

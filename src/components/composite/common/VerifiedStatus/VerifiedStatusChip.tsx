@@ -1,4 +1,5 @@
-import { Chip, makeStyles } from '@material-ui/core';
+import { Chip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { ElementType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

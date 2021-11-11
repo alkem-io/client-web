@@ -1,5 +1,5 @@
-import { FormControl, Grid, OutlinedInput, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { FormControl, Grid, OutlinedInput, TextField } from '@mui/material';
+import { Autocomplete } from '@mui/material';
 import { sortBy as lSortBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

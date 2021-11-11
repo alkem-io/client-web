@@ -5,11 +5,11 @@ const useMainStyles = createStyles(theme => ({
   backdrop: {
     backgroundColor: theme.palette.background.paper,
     opacity: 0.5,
-    filter: `blur(${theme.spacing(0.5)}px)`,
-    '-webkit-filter': `blur(${theme.spacing(0.5)}px)`,
-    '-moz-filter': `blur(${theme.spacing(0.5)}px)`,
-    '-o-filter': `blur(${theme.spacing(0.5)}px)`,
-    '-ms-filter': `blur(${theme.spacing(0.5)}px)`,
+    filter: `blur(${theme.spacing(0.5)})`,
+    '-webkit-filter': `blur(${theme.spacing(0.5)})`,
+    '-moz-filter': `blur(${theme.spacing(0.5)})`,
+    '-o-filter': `blur(${theme.spacing(0.5)})`,
+    '-ms-filter': `blur(${theme.spacing(0.5)})`,
   },
 }));
 

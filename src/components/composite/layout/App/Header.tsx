@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import ReactVisibilitySensor from 'react-visibility-sensor';
-import Grid from '@material-ui/core/Grid';
-import { Container } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import { Container } from '@mui/material';
 import { createStyles } from '../../../../hooks/useTheme';
 import hexToRgba from '../../../../utils/hexToRGBA';
 import Toolbar from '../../../core/Toolbar';
@@ -54,17 +54,17 @@ const useHeaderStyles = createStyles(theme => ({
     color: theme.palette.background.paper,
   },
   toolbar: {
-    padding: `${theme.spacing(4)}px 0`,
+    padding: `${theme.spacing(4)} 0`,
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },
   },
   toolbarDense: {
-    padding: `${theme.spacing(2)}px 0`,
+    padding: `${theme.spacing(2)} 0`,
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },

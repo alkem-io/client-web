@@ -1,6 +1,6 @@
-import { Box, Drawer, DrawerProps, Link } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Box, Drawer, DrawerProps, Link } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
 import { ReactComponent as EnvelopeIcon } from 'bootstrap-icons/icons/envelope.svg';
 import { ReactComponent as HouseIcon } from 'bootstrap-icons/icons/house.svg';
@@ -59,7 +59,7 @@ const useStyles = createStyles(theme => ({
     transform: 'scale(0.5)',
   },
   copyright: {
-    padding: `${theme.spacing(2)}px`,
+    padding: theme.spacing(2),
   },
 }));
 

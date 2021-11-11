@@ -1,5 +1,5 @@
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
@@ -75,7 +75,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
             title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activity}
             lifecycle={challenge?.lifecycle}
-            classes={{ padding: theme => `${theme.spacing(4)}px` }}
+            classes={{ padding: theme => theme.spacing(4) }}
           />
         }
         classes={{

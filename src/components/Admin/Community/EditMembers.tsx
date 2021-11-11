@@ -1,20 +1,21 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import { Box, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
 import { UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
 
 const TABLE_HEIGHT = 600;
 

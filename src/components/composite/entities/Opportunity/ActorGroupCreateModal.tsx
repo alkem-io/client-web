@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog';
-import Grid from '@material-ui/core/Grid';
+import Dialog from '@mui/material/Dialog';
+import Grid from '@mui/material/Grid';
 import { refetchOpportunityActorGroupsQuery, useCreateActorGroupMutation } from '../../../../hooks/generated/graphql';
 import { useEcoverse } from '../../../../hooks';
 import { replaceAll } from '../../../../utils/replaceAll';
@@ -9,7 +9,7 @@ import Button from '../../../core/Button';
 import { Loading } from '../../../core';
 import { TextArea } from '../../../core/TextInput';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
-import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 
 interface P {
   onHide: () => void;

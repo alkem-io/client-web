@@ -1,5 +1,5 @@
-import { Chip, OutlinedTextFieldProps, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Chip, OutlinedTextFieldProps, TextField } from '@mui/material';
+import { Autocomplete } from '@mui/material';
 import { isArray } from 'lodash';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 

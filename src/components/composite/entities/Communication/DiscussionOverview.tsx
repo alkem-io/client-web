@@ -1,15 +1,7 @@
-import {
-  Avatar,
-  Box,
-  createStyles,
-  Link,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { AvatarGroup } from '@material-ui/lab';
+import { Avatar, Box, Link, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { AvatarGroup } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';

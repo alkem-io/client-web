@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import Grid, { GridSize } from '@material-ui/core/Grid';
-import { Box, Theme } from '@material-ui/core';
-import { Container, ContainerProps } from '@material-ui/core';
+import Grid, { GridSize } from '@mui/material/Grid';
+import { Box, Theme } from '@mui/material';
+import { Container, ContainerProps } from '@mui/material';
 import { createStyles } from '../../hooks/useTheme';
 import Typography from './Typography';
 
@@ -36,7 +36,7 @@ const useCardContainerStyles = createStyles<Theme, ClassProps>(theme => ({
     '& .alkemio-card': {
       height: (props: CardContainerProps) => {
         if (props.fullHeight) return '100%';
-        return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.spacing(1.5)}px)`;
+        return props.cardHeight ? `${props.cardHeight}px` : `calc(100% - ${theme.spacing(1.5)})`;
       },
     },
   },

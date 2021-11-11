@@ -1,20 +1,20 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import { Typography } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Tooltip from '@material-ui/core/Tooltip/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import InfoIcon from '@material-ui/icons/Info';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import { Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
 import { ApplicationDialog, ApplicationDialogDataType } from '../../components/composite';
 import Tag from '../../components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../models/constants';
 import { createStyles } from '../../hooks';
 import { ApplicationDialogDetails } from '../../containers/application/PendingApplicationContainer';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 const useStyles = createStyles(theme => ({
   listDetail: {
@@ -31,7 +31,7 @@ const useStyles = createStyles(theme => ({
     gap: theme.spacing(0.5),
   },
   row: {
-    padding: `${theme.spacing(0.5)}px 0`,
+    padding: `${theme.spacing(0.5)} 0`,
   },
   noPadding: {
     padding: 0,
@@ -112,6 +112,7 @@ const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, act
                 color={'primary'}
                 onClick={() => actions.handleDialogOpen(entities.application)}
                 disabled={state.isDeleting}
+                size="large"
               >
                 <InfoIcon />
               </IconButton>
@@ -123,6 +124,7 @@ const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, act
                   className={styles.noPadding}
                   onClick={() => actions.handleDelete(entities.application)}
                   disabled={state.isDeleting}
+                  size="large"
                 >
                   <DeleteIcon color={'error'} />
                 </IconButton>

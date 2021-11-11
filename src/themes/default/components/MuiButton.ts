@@ -1,14 +1,16 @@
-import { Theme } from '@material-ui/core';
-import { Overrides } from '@material-ui/core/styles/overrides';
+import { Components, Theme } from '@mui/material/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
 
-const buttonOverrides = (theme: Theme): Overrides | undefined => {
+const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
   if (!theme) {
     return undefined;
   }
 
   return {
-    MuiButton: {
+    defaultProps: {
+      disableRipple: true,
+    },
+    styleOverrides: {
       root: {
         padding: theme.spacing(1.5, 2),
         display: 'inline-flex',
@@ -48,25 +50,25 @@ const buttonOverrides = (theme: Theme): Overrides | undefined => {
         borderColor: theme.palette.primary.main,
         background: theme.palette.primary.main,
 
-        '&:hover': {
+        '&$hover': {
           color: theme.palette.neutralLight.main,
 
           backgroundColor: hexToRGBA(theme.palette.primary.main, 0.7),
         },
 
-        '&.inset': {
+        '&$inset': {
           borderColor: theme.palette.neutralLight.main,
           borderRightColor: 'transparent',
           borderTopColor: 'transparent',
           borderBottomColor: 'transparent',
 
-          '&:hover': {
+          '&$hover': {
             color: theme.palette.primary.main,
             background: theme.palette.background.paper,
             cursor: 'pointer',
           },
 
-          '&:focus': {
+          '&$focus': {
             outline: 'none',
           },
         },
@@ -77,44 +79,20 @@ const buttonOverrides = (theme: Theme): Overrides | undefined => {
         borderColor: theme.palette.primary.main,
         background: theme.palette.background.paper,
 
-        '&:hover': {
+        '&$hover': {
           color: theme.palette.neutralLight.main,
           background: theme.palette.primary.main,
         },
 
-        '&:focus': {
+        '&$focus': {
           outline: `1px auto ${theme.palette.primary.main}`,
 
-          '&.inset': {
+          '&$inset': {
             outline: 'none',
-          },
-        },
-      },
-      label: { lineHeight: 1.5 },
-    },
-    MuiButtonBase: {
-      root: {
-        '&$disabled': {
-          color: theme.palette.background.paper,
-          borderColor: theme.palette.neutralLight.main,
-          background: theme.palette.neutralLight.main,
-          opacity: 0.8,
-          cursor: 'default',
-
-          '&:hover': {
-            color: theme.palette.background.paper,
-            background: hexToRGBA(theme.palette.neutralMedium.main, 0.7),
-            cursor: 'not-allowed',
-          },
-
-          '&:focus': {
-            '&.inset': {
-              outline: 'none',
-            },
           },
         },
       },
     },
   };
 };
-export default buttonOverrides;
+export default MuiButton;

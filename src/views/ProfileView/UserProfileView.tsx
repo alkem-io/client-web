@@ -1,15 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  createStyles,
-  Grid,
-  Link,
-  makeStyles,
-  Typography as MUITypography,
-} from '@material-ui/core';
+import { Avatar, Box, Card, CardContent, CardHeader, Grid, Link, Typography as MUITypography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';

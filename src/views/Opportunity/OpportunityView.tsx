@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import React, { FC, SyntheticEvent, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, Container } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Box, Container } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { ViewProps } from '../../models/view';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
@@ -152,7 +152,7 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
             title={t('pages.activity.title', { blockName: t('pages.opportunity.title') })}
             lifecycle={opportunity.lifecycle}
             items={entities.activity}
-            classes={{ padding: theme => `${theme.spacing(4)}px` }}
+            classes={{ padding: theme => theme.spacing(4) }}
           />
         }
       >

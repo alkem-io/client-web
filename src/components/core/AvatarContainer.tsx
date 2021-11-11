@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { createStyles } from '../../hooks/useTheme';

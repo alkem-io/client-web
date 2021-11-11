@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@mui/material/Dialog';
 import * as yup from 'yup';
 import {
   refetchOpportunityActorGroupsQuery,

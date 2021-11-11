@@ -1,11 +1,11 @@
-import { Grid } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Grid } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Tooltip from '@mui/material/Tooltip';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../../hooks';
@@ -25,7 +25,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     gap: theme.spacing(4),
     alignItems: 'center',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       flexWrap: 'wrap',
       gap: theme.spacing(2),
     },
@@ -35,7 +35,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     alignItems: 'center',
     gap: theme.spacing(1),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -44,7 +44,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -79,7 +79,7 @@ const useUserPopUpStyles = createStyles(theme => ({
       // textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
   marginBottom: {

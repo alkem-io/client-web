@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Tag, { TagProps } from '../../../core/Tag';
 import Typography from '../../../core/Typography';
 import Card from '../../../core/Card';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 const useMemberOfStyles = createStyles(theme => ({
   listDetail: {

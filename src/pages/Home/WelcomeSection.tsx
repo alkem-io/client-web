@@ -1,5 +1,5 @@
-import { Box, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Box, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
@@ -25,14 +25,14 @@ const useStyles = createStyles(theme => ({
     flexDirection: 'column',
   },
   link: {
-    marginTop: `${theme.spacing(2)}px`,
-    marginRight: `${theme.spacing(4)}px`,
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(4),
     '&:hover': {
       color: theme.palette.background.paper,
     },
   },
   banner: {
-    padding: `${theme.spacing(2)}px 0`,
+    padding: `${theme.spacing(2)} 0`,
   },
   bannerText: {
     color: theme.palette.background.paper,

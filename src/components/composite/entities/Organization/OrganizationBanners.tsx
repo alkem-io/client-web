@@ -1,6 +1,6 @@
-import { Link } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Link } from '@mui/material';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import OrganizationPopUp from './OrganizationPopUp';
 const useOrganizationStyles = createStyles(theme => ({
   organizationWrapper: {
     display: 'flex',
-    gap: `${theme.spacing(1)}px`,
+    gap: theme.spacing(1),
     flexWrap: 'wrap',
     '&:hover': {
       cursor: 'pointer',
@@ -38,8 +38,8 @@ const useOrganizationStyles = createStyles(theme => ({
     objectFit: 'contain',
   },
   link: {
-    marginTop: `${theme.spacing(2)}px`,
-    marginRight: `${theme.spacing(4)}px`,
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(4),
   },
 }));
 

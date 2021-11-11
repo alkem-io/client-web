@@ -1,6 +1,6 @@
-import withStyles from '@material-ui/core/styles/withStyles';
-import { Theme } from '@material-ui/core';
-import MuiDialogActions from '@material-ui/core/DialogActions';
+import withStyles from '@mui/styles/withStyles';
+import { Theme } from '@mui/material';
+import MuiDialogActions from '@mui/material/DialogActions';
 
 const DialogActions = withStyles((theme: Theme) => ({
   root: {

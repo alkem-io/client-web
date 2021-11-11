@@ -1,4 +1,5 @@
-import { TypographyOptions } from '@material-ui/core/styles/createTypography';
+import { TypographyVariant } from '@mui/material/styles';
+import { TypographyOptions } from '@mui/material/styles/createTypography';
 
 export const monserrat = '"MONTSERRAT"';
 export const sourceSansPro = '"Source Sans Pro"';
@@ -15,6 +16,7 @@ export const typographyOptions: TypographyOptions = {
   body2: { fontFamily: sourceSansPro, fontSize: 14 },
   button: { fontFamily: monserrat, fontSize: 14 },
 };
-declare module '@material-ui/core/styles/createTypography' {
-  interface TypographyOptions extends Partial<Record<Variant | 'body', TypographyStyleOptions> & FontStyleOptions> {}
+declare module '@mui/material/styles/createTypography' {
+  interface TypographyOptions
+    extends Partial<Record<TypographyVariant | 'body', TypographyStyleOptions> & FontStyleOptions> {}
 }

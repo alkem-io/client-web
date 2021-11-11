@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { SidebarEcoverseFragment } from '../../../../models/graphql-schema';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import Avatar from '../../../core/Avatar';
 import clsx from 'clsx';
 import Button from '../../../core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 
 interface SidebarItemEcoverseProps {
   ecoverse: SidebarEcoverseFragment;

@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import React, { FC, MutableRefObject, useCallback } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 import { Lifecycle } from '../../models/graphql-schema';
 import { useTheme } from '../../hooks';
 

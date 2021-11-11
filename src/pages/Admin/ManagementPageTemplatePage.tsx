@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { Container, Link, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Container, Link, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 import Button from '../../components/core/Button';
 import Card from '../../components/core/Card';

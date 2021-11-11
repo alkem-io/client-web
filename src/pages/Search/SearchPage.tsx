@@ -1,9 +1,9 @@
-import { Box, Container, OutlinedInput } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import { Box, Container, OutlinedInput } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -131,7 +131,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     }
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const typename = event.target.value;
     const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
 

@@ -1,5 +1,5 @@
-import { Box, Container } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Box, Container } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';

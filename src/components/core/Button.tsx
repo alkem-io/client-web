@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC, forwardRef } from 'react';
-import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@material-ui/core';
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import hexToRGBA from '../../utils/hexToRGBA';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   whiteStatic: {
@@ -147,7 +147,7 @@ const Button: FC<ButtonProps> = forwardRef(
         }}
         component={Component as any}
         variant="outlined"
-        color={variant === 'primary' ? 'primary' : 'default'}
+        // color={variant === 'primary' ? 'primary' : 'default'}
         startIcon={startIcon}
         disabled={disabled}
         {...props}

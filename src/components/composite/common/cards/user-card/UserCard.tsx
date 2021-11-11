@@ -1,14 +1,14 @@
 import React, { FC, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Link from '@material-ui/core/Link';
-import { SvgIcon, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import Box from '@material-ui/core/Box';
-import PersonIcon from '@material-ui/icons/Person';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import makeStyles from '@mui/styles/makeStyles';
+import Link from '@mui/material/Link';
+import { SvgIcon, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Box from '@mui/material/Box';
+import PersonIcon from '@mui/icons-material/Person';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 import Image from '../../../../core/Image';
 

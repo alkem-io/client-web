@@ -1,12 +1,11 @@
-import { emphasize, Theme } from '@material-ui/core';
-import { Overrides } from '@material-ui/core/styles/overrides';
+import { Components, emphasize, Theme } from '@mui/material/styles';
 
-const chipOverrides = (theme: Theme): Overrides | undefined => {
+const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
   if (!theme) {
     return undefined;
   }
   return {
-    MuiChip: {
+    styleOverrides: {
       colorPrimary: {
         color: theme.palette.neutralLight.main,
         fontWeight: 'bold',
@@ -22,4 +21,4 @@ const chipOverrides = (theme: Theme): Overrides | undefined => {
     },
   };
 };
-export default chipOverrides;
+export default MuiChip;

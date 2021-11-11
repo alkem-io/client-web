@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
+import makeStyles from '@mui/styles/makeStyles';
+import Tooltip from '@mui/material/Tooltip';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';

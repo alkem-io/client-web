@@ -1,4 +1,4 @@
-import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from '@material-ui/core';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useContext, useState } from 'react';
 import { KratosUIContext } from '../KratosUI';

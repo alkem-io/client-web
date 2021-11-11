@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
-import { FormGroup, FormHelperText, InputLabel, InputProps } from '@material-ui/core';
+import { FormGroup, FormHelperText, InputLabel, InputProps } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
-import Tooltip from '@material-ui/core/Tooltip';
-import InfoIcon from '@material-ui/icons/Info';
+import Tooltip from '@mui/material/Tooltip';
+import InfoIcon from '@mui/icons-material/Info';
 import { useField } from 'formik';
 import { createStyles } from '../../../hooks';
 

@@ -1,4 +1,4 @@
-import { TypographyOptions } from '@material-ui/core/styles/createTypography';
+import { TypographyOptions } from '@mui/material/styles/createTypography';
 import { sourceSansPro, typographyOptions } from '../default/typography';
 
 export const typographyOptionsV2: TypographyOptions = {
