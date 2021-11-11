@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, Container } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { View } from '../../models/view';
+import { ViewProps } from '../../models/view';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -37,6 +37,7 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import { createStyles, useOpportunity } from '../../hooks';
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -116,7 +117,7 @@ export interface OpportunityViewOptions {
 }
 
 export interface OpportunityViewProps
-  extends View<OpportunityViewEntities, OpportunityViewActions, OpportunityViewState, OpportunityViewOptions> {}
+  extends ViewProps<OpportunityViewEntities, OpportunityViewActions, OpportunityViewState, OpportunityViewOptions> {}
 
 const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, options }) => {
   const { t } = useTranslation();
@@ -403,14 +404,16 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
       )}
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
-        <OpportunityCommunitySection
-          title={t('pages.opportunity.sections.community.header')}
-          subTitle={t('pages.opportunity.sections.community.subheader')}
-          ecoverseId={ecoverseId}
-          opportunityId={id}
-          body={context?.who}
-          shuffle={true}
-        />
+        <DiscussionsProvider>
+          <OpportunityCommunitySection
+            title={t('pages.opportunity.sections.community.header')}
+            subTitle={t('pages.opportunity.sections.community.subheader')}
+            ecoverseId={ecoverseId}
+            opportunityId={id}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
       </AuthenticationBackdrop>
       <Divider />
       <div ref={projectRef} />

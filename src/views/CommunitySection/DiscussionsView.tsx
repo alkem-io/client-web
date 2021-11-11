@@ -1,8 +1,11 @@
-import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
-import Typography from '../../components/core/Typography';
-import { createStyles } from '../../hooks/useTheme';
-import { CommunicationMessageResult } from '../../models/graphql-schema';
+import { useTranslation } from 'react-i18next';
+import { Typography } from '@material-ui/core';
+import { createStyles } from '../../hooks';
+import { Discussion } from '../../models/discussion/discussion';
+import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+
+const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 
 const useDiscussionsStyles = createStyles(_theme => ({
   container: {
@@ -12,27 +15,24 @@ const useDiscussionsStyles = createStyles(_theme => ({
   },
 }));
 interface DiscussionsProps {
-  messages?: CommunicationMessageResult[];
+  discussions?: Discussion[];
 }
 
-export const DiscussionsView: FC<DiscussionsProps> = ({ messages }) => {
+export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
+  const { t } = useTranslation();
   const styles = useDiscussionsStyles();
 
-  let messagesComponent = <Typography> No discussions</Typography>;
+  let messagesComponent = <Typography>{t('common.no-discussions')}</Typography>;
 
-  if (messages) {
+  if (discussions && discussions.length > 0) {
     messagesComponent = (
       <>
-        {messages.map((m, i) => (
-          <Box key={i} marginBottom={5}>
-            <Typography>{m.message}</Typography>
-            <Box textAlign={'right'}>
-              <Typography color={'neutralMedium'} variant="caption">{`${m.sender} - ${new Date(
-                m.timestamp
-              ).toLocaleString()}`}</Typography>
-            </Box>
-          </Box>
-        ))}
+        {discussions
+          .slice(0, DISCUSSIONS_NUMBER_IN_WINDOW)
+          .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+          .map((x, i) => (
+            <DiscussionOverview key={i} discussion={x} />
+          ))}
       </>
     );
   }

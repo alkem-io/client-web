@@ -1,0 +1,12 @@
+fragment SidebarEcoverse on Ecoverse {
+  id
+  nameID
+  displayName
+  context {
+    id
+    visual {
+      id
+      avatar
+    }
+  }
+}

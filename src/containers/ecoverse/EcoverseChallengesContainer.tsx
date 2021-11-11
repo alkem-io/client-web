@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useChallengeCardsQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { Challenge } from '../../models/graphql-schema';
 
 export interface EcoverseChallengesContainerEntities {
@@ -16,7 +16,7 @@ export interface EcoverseChallengesContainerState {
 }
 
 export interface EcoverseChallengesContainerProps
-  extends Container<
+  extends ContainerProps<
     EcoverseChallengesContainerEntities,
     EcoverseChallengesContainerActions,
     EcoverseChallengesContainerState

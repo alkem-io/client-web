@@ -4,6 +4,7 @@ import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, OpportunityPage, PageProps } from '../../pages';
 import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
+import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import RestrictedRoute from '../route.extensions';
 import { ProjectRoute } from './ProjectRoute';
 
@@ -31,6 +32,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
       <Route exact path={path}>
         <OpportunityPage paths={currentPaths} />
       </Route>
+      <RestrictedRoute path={`${path}/community/discussions`}>
+        <DiscussionsRoute paths={currentPaths} />
+      </RestrictedRoute>
       <RestrictedRoute path={`${path}/community`}>
         <OpportunityCommunityPage paths={currentPaths} />
       </RestrictedRoute>

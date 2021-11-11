@@ -41,7 +41,9 @@
     "processing": "Processing...",
     "details": "Details",
     "settings": "Settings",
-    "member": "Member"
+    "member": "Member",
+    "profile": "Profile",
+    "view-profile": "View Profile"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -85,12 +87,17 @@
     "users": "Users",
     "update": "Update",
     "updates": "Updates",
+    "no-updates": "No updates",
     "no-tags": "No tags available",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
     "member": "Member",
+    "members": "Members",
     "empty-string": "",
+    "discussion": "Discussion",
+    "discussions": "Discussions",
+    "no-discussions": "No discussions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -219,7 +226,7 @@
       "updated": "Last updated on {{date}}"
     },
     "edit-members": {
-      "no-available-memebers": "No users available to add; please check members of containing community",
+      "no-available-members": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
     },
     "application-button": {
@@ -228,7 +235,7 @@
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
       },
       "dialog-parent-app-pending": {
-        "title": "Parrent application pending!",
+        "title": "Parent application pending!",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       }
     },
@@ -423,6 +430,52 @@
     "pending-applications": {
       "title": "Pending Applications",
       "help": "The Hubs and Challenges that this organization is contributing to"
+    },
+    "discussions-list": {
+      "name": "Discussions - {{community}}",
+      "help": "List of all discussions",
+      "posted": "{{- date}} - {{count}} comment",
+      "posted_plural": "{{- date}} - {{count}} comments"
+    },
+    "discussion": {
+      "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments"
+    },
+    "comment": {
+      "posted": "{{name}} on {{- date}}",
+      "reply": "Replay to this comment"
+    },
+    "discussions-layout": {
+      "buttons": {
+        "new-discussion": "Initiate discussions"
+      }
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Comment on this discussion",
+          "placeholder": "Add further information on the discussion here"
+        }
+      },
+      "buttons": {
+        "post": "Post comment"
+      }
+    },
+    "new-discussion": {
+      "title": {
+        "title": "Title",
+        "placeholder": "Discussion title"
+      },
+      "description": {
+        "title": "Further information",
+        "placeholder": "Add further information on the discussion here"
+      },
+      "buttons": {
+        "post": "Post discussion"
+      }
+    },
+    "members-view": {
+      "title": "Active community members"
     }
   },
   "navigation": {
@@ -438,6 +491,12 @@
     }
   },
   "pages": {
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Search in name or tags",
+        "available-placeholder": "Search in name"
+      }
+    },
     "activity": {
       "title": "{{blockName}} activity",
       "ecoverses": "Hubs",
@@ -770,10 +829,10 @@
   },
   "kratos": {
     "errors": {
+      "401": "Unauthenticated",
       "session": {
         "default": "Can't get session information!"
-      },
-      "401": "Unauthenticated"
+      }
     },
     "loading-flow": "Loading flow",
     "loading-error": "Loading error"

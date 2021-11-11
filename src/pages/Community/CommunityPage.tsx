@@ -6,7 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { useUpdateNavigation, useUserCardRoleName } from '../../hooks';
+import { useConfig, useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
@@ -15,10 +15,9 @@ import Icon from '../../components/core/Icon';
 import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
 import Loading from '../../components/core/Loading/Loading';
 import { CardContainer } from '../../components/core/CardContainer';
-import { Typography } from '@material-ui/core';
+import { Link, Typography } from '@material-ui/core';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { Image } from '../../components/core/Image';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -28,6 +27,7 @@ import { userTagsValueGetter } from '../../components/core/card-filter/value-get
 import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -69,19 +69,21 @@ const CommunityPage: FC<Props> = ({
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
+  const { ecoverseId } = useEcoverse();
+
   const { data, loading } = useCommunityPageQuery({
-    variables: { communityId },
+    variables: { ecoverseId, communityId },
     skip: !communityId,
     errorPolicy: 'all', // skip error returned from communications if any
   });
-  const community = data?.community;
+  const community = data?.ecoverse.community;
   const groups = community?.groups || [];
-  const updates = community?.updatesRoom?.messages || [];
+  const updates = community?.communication?.updates?.messages || [];
   const updateSenders = updates.map(x => ({ id: x.sender }));
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
   const membersWithRole = useUserCardRoleName(members as User[], parentId);
-
+  const { isFeatureEnabled } = useConfig();
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
@@ -177,14 +179,13 @@ const CommunityPage: FC<Props> = ({
         </Typography>
       )}
       <CardContainer cardHeight={RECOMMENDED_HEIGHT}>
-        {groups.map(({ id, name, profile }, i) => (
+        {groups.map(({ name, profile }, i) => (
           <SimpleCard
             key={i}
             title={name}
             avatar={profile?.avatar}
             description={profile?.description}
             tags={profile?.tagsets?.flatMap(y => y.tags)}
-            url={settingsUrl && `${settingsUrl}/community/groups/${id}`}
           />
         ))}
       </CardContainer>
@@ -223,6 +224,11 @@ const CommunityPage: FC<Props> = ({
         </Box>
       )}
       <Divider />
+      {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+        <Link component={RouterLink} to={`${url}/discussions`}>
+          Discussions
+        </Link>
+      )}
     </>
   );
 };

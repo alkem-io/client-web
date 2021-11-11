@@ -7,9 +7,9 @@ import {
   useCommunityUpdatesQuery,
   useOnMessageReceivedSubscription,
   useRemoveUpdateCommunityMutation,
-  useSendCommunityUpdateMutation,
+  useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { CommunicationMessageResult, Community, User } from '../../models/graphql-schema';
+import { Message, Community, User, Ecoverse } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
 import { DocumentNode, useQuery } from '@apollo/client';
 import { logger } from '../../services/logging/winston/logger';
@@ -17,6 +17,7 @@ import { logger } from '../../services/logging/winston/logger';
 export interface CommunityUpdatesContainerProps {
   entities: {
     communityId: Community['id'];
+    ecoverseId: Ecoverse['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,
@@ -38,28 +39,30 @@ export interface CommunityUpdatesState {
 }
 
 export interface CommunityUpdatesEntities {
-  messages: CommunicationMessageResult[];
+  messages: Message[];
   senders: Pick<User, 'id'>[];
 }
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
-  const { communityId } = entities;
+  const { communityId, ecoverseId } = entities;
 
-  const { data, loading } = useCommunityUpdatesQuery({ variables: { communityId } });
-  const [sendUpdate, { loading: loadingSendUpdate }] = useSendCommunityUpdateMutation({
+  const { data, loading } = useCommunityUpdatesQuery({ variables: { ecoverseId, communityId } });
+  const updatesId = data?.ecoverse.community?.communication?.updates?.id || '';
+
+  const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
       const update = await sendUpdate({
-        variables: { msgData: { message, communityID: communityId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+        variables: { msgData: { message, updatesID: updatesId } },
+        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
       });
-      return update.data?.sendMessageToCommunityUpdates;
+      return update.data?.sendUpdate;
     },
-    [sendUpdate, communityId]
+    [sendUpdate, communityId, updatesId]
   );
 
   const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveUpdateCommunityMutation();
@@ -67,15 +70,15 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
     async messageId => {
       const update = await removeUpdate({
-        variables: { msgData: { messageId, communityID: communityId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+        variables: { msgData: { messageID: messageId, updatesID: updatesId } },
+        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
       });
-      return update.data?.removeMessageFromCommunityUpdates;
+      return update.data?.removeUpdate;
     },
-    [sendUpdate, communityId]
+    [sendUpdate, communityId, updatesId]
   );
 
-  const messages = data?.community.updatesRoom?.messages || [];
+  const messages = data?.ecoverse.community?.communication?.updates?.messages || [];
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
   return (
@@ -139,10 +142,7 @@ export const CommunityUpdatesSubscriptionContainer: FC<{}> = ({ children }) => {
   return <>{children}</>;
 };
 
-export function useCommunityUpdateSubscriptionSelector(
-  initialMessages?: CommunicationMessageResult[],
-  roomId?: string
-) {
+export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message[], roomId?: string) {
   const { entities } = useGlobalState();
   const { communityUpdateService } = entities;
 
@@ -166,7 +166,7 @@ export interface CommunityUpdatesDataContainerProps<TQuery, TVariables> {
   entities: {
     variables: TVariables;
     document: DocumentNode;
-    messageSelector: (query?: TQuery) => CommunicationMessageResult[];
+    messageSelector: (query?: TQuery) => Message[];
     roomIdSelector: (query?: TQuery) => string;
   };
   children: (entities: CommunityUpdatesDataEntities, loading: CommunityUpdatesDataState) => React.ReactNode;
@@ -177,7 +177,7 @@ export interface CommunityUpdatesDataState {
 }
 
 export interface CommunityUpdatesDataEntities {
-  messages: CommunicationMessageResult[];
+  messages: Message[];
   senders: Pick<User, 'id'>[];
 }
 

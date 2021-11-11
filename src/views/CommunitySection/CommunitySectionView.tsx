@@ -13,12 +13,14 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { Message, User } from '../../models/graphql-schema';
+import { Discussion } from '../../models/discussion/discussion';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
 
-export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
+export interface CommunitySectionPropsExt
+  extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
 
 interface CommunitySectionProps {
   title: string;
@@ -26,9 +28,10 @@ interface CommunitySectionProps {
   body?: string;
   users: User[];
   shuffle?: boolean;
-  updates?: CommunicationMessageResult[];
+  updates?: Message[];
   updateSenders?: Pick<User, 'id'>[];
-  discussions?: CommunicationMessageResult[];
+  discussions?: Discussion[];
+  parentEntityId: string;
 }
 
 const useCommunityStyles = makeStyles(theme => ({
@@ -40,6 +43,13 @@ const useCommunityStyles = makeStyles(theme => ({
   },
 }));
 
+type TabConfig = {
+  name: string;
+  label: string;
+  enabled: boolean;
+  showOnly?: boolean;
+};
+
 export const CommunitySection: FC<CommunitySectionProps> = ({
   title,
   subTitle,
@@ -49,6 +59,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   updateSenders,
   discussions,
   shuffle = false,
+  parentEntityId,
 }) => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
@@ -60,14 +71,17 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   };
 
   const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
-  const tabList = [
-    { name: 'members', label: 'Members', enabled: true },
-    { name: 'updates', label: `Updates ${updatesCountLabel}`, enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS) },
+  const tabList: TabConfig[] = [
+    { name: 'members', label: t('common.members'), enabled: true },
+    {
+      name: 'updates',
+      label: `${t('common.updates')} ${updatesCountLabel}`,
+      enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
+    },
     {
       name: 'discussion',
-      label: 'Discussion (Coming soon)',
+      label: t('common.discussions'),
       enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
-      showOnly: true,
     },
   ].filter(x => x.enabled);
 
@@ -84,7 +98,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             ))}
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
-            <MembersView shuffle={shuffle} users={users} />
+            <MembersView shuffle={shuffle} users={users} entityId={parentEntityId} />
             <Button text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
@@ -118,7 +132,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               </TabPanel>
 
               <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
-                <DiscussionsView messages={discussions} />
+                <DiscussionsView discussions={discussions} />
               </TabPanel>
             </>
           )}

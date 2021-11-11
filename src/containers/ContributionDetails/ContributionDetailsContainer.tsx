@@ -5,7 +5,7 @@ import {
   useEcoverseContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
 } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 
@@ -20,7 +20,7 @@ export interface EntityDetailsContainerState {
 export interface EntityDetailsContainerActions {}
 
 export interface EntityDetailsContainerProps
-  extends Container<EntityDetailsContainerEntities, EntityDetailsContainerActions, EntityDetailsContainerState> {
+  extends ContainerProps<EntityDetailsContainerEntities, EntityDetailsContainerActions, EntityDetailsContainerState> {
   entities: ContributionItem;
 }
 

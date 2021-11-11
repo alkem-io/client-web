@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import { useAuthenticationContext, useUserContext } from '../../hooks';
 import { useUserApplicationsQuery } from '../../hooks/generated/graphql';
-import { Container } from '../../models/container';
+import { ContainerProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildEcoverseApplyUrl } from '../../utils/urlBuilders';
 
 interface ApplicationContainerEntities {
@@ -14,7 +14,7 @@ interface ApplicationContainerState {
 }
 
 interface ApplicationContainerProps
-  extends Container<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+  extends ContainerProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   entities: {
     ecoverseId: string;
     ecoverseNameId: string;
@@ -46,7 +46,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ enti
   );
 
   const isMember =
-    (challengeId && challengeNameId ? user?.ofChallenge(ecoverseId) : user?.ofEcoverse(ecoverseId)) || false;
+    (challengeId && challengeNameId ? user?.ofChallenge(challengeId) : user?.ofEcoverse(ecoverseId)) || false;
   const applyUrl =
     challengeId && challengeNameId
       ? buildChallengeApplyUrl(ecoverseNameId, challengeNameId)

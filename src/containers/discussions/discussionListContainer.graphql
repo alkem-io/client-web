@@ -1,0 +1,49 @@
+fragment DiscussionDetails on Discussion {
+  id
+  title
+  messages {
+    ...MessageDetails
+  }
+}
+
+query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    community(ID: $communityId) {
+      id
+      communication {
+        id
+        discussions {
+          ...DiscussionDetails
+        }
+      }
+    }
+  }
+}
+
+mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
+  sendMessageToDiscussion(messageData: $input) {
+    ...DiscussionDetails
+  }
+}
+
+mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  createDiscussion(createData: $input) {
+    id
+    title
+  }
+}
+
+query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+  usersById(IDs: $ids) {
+    id
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      id
+      avatar
+    }
+  }
+}
+

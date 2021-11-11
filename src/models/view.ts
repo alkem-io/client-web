@@ -1,4 +1,4 @@
-export type View<TEntities = {}, TActions = {}, TState = {}, TOptions = {}> = {
+export type ViewProps<TEntities = {}, TActions = {}, TState = {}, TOptions = {}> = {
   entities: TEntities;
   state: TState;
   actions: TActions;

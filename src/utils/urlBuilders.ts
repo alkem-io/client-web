@@ -49,3 +49,8 @@ export const buildProjectUrl = (
   opportunityNameId: string,
   projectNameId: string
 ) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
+
+export const buildDiscussionUrl = (url: string, id: string) => {
+  const stripUrl = url.replace('/community/discussions', '');
+  return `${stripUrl}/community/discussions/${id}`;
+};

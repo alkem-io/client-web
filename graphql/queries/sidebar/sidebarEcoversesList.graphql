@@ -1,0 +1,5 @@
+query sidebarEcoversesList {
+  ecoverses {
+    ...SidebarEcoverse
+  }
+}

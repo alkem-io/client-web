@@ -1,17 +1,18 @@
 import Dialog from '@material-ui/core/Dialog';
 import React, { FC } from 'react';
-import { DefaultNamespace, DefaultResources, TFuncKey, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import TranslationKey from '../../../types/TranslationKey';
 import { Loading } from '../../core';
 import Button from '../../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 
 interface ConfirmationDialogProps {
   entities: {
-    titleId?: TFuncKey<DefaultNamespace, DefaultResources>;
+    titleId?: TranslationKey;
     title?: string;
-    contentId?: TFuncKey<DefaultNamespace, DefaultResources>;
+    contentId?: TranslationKey;
     content?: string;
-    confirmButtonTextId?: TFuncKey<DefaultNamespace, DefaultResources>;
+    confirmButtonTextId?: TranslationKey;
     confirmButtonText?: string;
   };
   actions: {

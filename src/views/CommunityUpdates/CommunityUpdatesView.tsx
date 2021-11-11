@@ -36,11 +36,11 @@ import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
-import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { Message, User } from '../../models/graphql-schema';
 
 export interface CommunityUpdatesViewProps {
   entities: {
-    messages: CommunicationMessageResult[];
+    messages: Message[];
     members: User[];
   };
   state: {
@@ -123,6 +123,10 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   useEffect(() => {
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
+
+  if (orderedMessages.length === 0) {
+    return <Typography>{t('common.no-updates')}</Typography>;
+  }
 
   return (
     <>
