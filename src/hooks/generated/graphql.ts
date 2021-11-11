@@ -5781,36 +5781,39 @@ export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMe
   return { query: CommunityMembersDocument, variables: variables };
 }
 export const CommunityPageDocument = gql`
-  query communityPage($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      groups {
+      community(ID: $communityId) {
         id
-        name
-        profile {
+        displayName
+        groups {
           id
-          avatar
-          description
-          tagsets {
+          name
+          profile {
             id
-            name
-            tags
+            avatar
+            description
+            tagsets {
+              id
+              name
+              tags
+            }
           }
         }
-      }
-      members {
-        ...CommunityPageMembers
-      }
-      communication {
-        id
-        updates {
+        members {
+          ...CommunityPageMembers
+        }
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -5831,6 +5834,7 @@ export const CommunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityPageQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -9374,19 +9378,22 @@ export function refetchOpportunityContributionDetailsQuery(
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      communication {
+      community(ID: $communityId) {
         id
-        updates {
+        displayName
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -9406,6 +9413,7 @@ export const CommunityUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUpdatesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });

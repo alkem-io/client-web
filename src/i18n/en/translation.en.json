@@ -487,6 +487,12 @@
     }
   },
   "pages": {
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Search in name or tags",
+        "available-placeholder": "Search in name"
+      }
+    },
     "activity": {
       "title": "{{blockName}} activity",
       "ecoverses": "Hubs",

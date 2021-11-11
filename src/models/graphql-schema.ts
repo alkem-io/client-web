@@ -1642,8 +1642,6 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** A community. A valid community ID needs to be specified. */
-  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1676,10 +1674,6 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
-};
-
-export type QueryCommunityArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -4654,63 +4648,68 @@ export type CommunityMembersQuery = {
 };
 
 export type CommunityPageQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityPageQuery = {
   __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
+  ecoverse: {
+    __typename?: 'Ecoverse';
     id: string;
-    displayName: string;
-    groups?: Maybe<
-      Array<{
-        __typename?: 'UserGroup';
-        id: string;
-        name: string;
-        profile?: Maybe<{
-          __typename?: 'Profile';
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      groups?: Maybe<
+        Array<{
+          __typename?: 'UserGroup';
           id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
-        }>;
-      }>
-    >;
-    members?: Maybe<
-      Array<{
-        __typename?: 'User';
-        id: string;
-        nameID: string;
-        displayName: string;
-        country: string;
-        city: string;
-        email: string;
-        agent?: Maybe<{
-          __typename?: 'Agent';
+          name: string;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            description?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
           id: string;
-          credentials?: Maybe<
-            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          nameID: string;
+          displayName: string;
+          country: string;
+          city: string;
+          email: string;
+          agent?: Maybe<{
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Maybe<
+              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            >;
+          }>;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            description?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        updates?: Maybe<{
+          __typename?: 'Updates';
+          id: string;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
           >;
         }>;
-        profile?: Maybe<{
-          __typename?: 'Profile';
-          id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-        }>;
-      }>
-    >;
-    communication?: Maybe<{
-      __typename?: 'Communication';
-      id: string;
-      updates?: Maybe<{
-        __typename?: 'Updates';
-        id: string;
-        messages?: Maybe<
-          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
-        >;
       }>;
     }>;
   };
@@ -6173,24 +6172,29 @@ export type OpportunityContributionDetailsQuery = {
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityUpdatesQuery = {
   __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
+  ecoverse: {
+    __typename?: 'Ecoverse';
     id: string;
-    displayName: string;
-    communication?: Maybe<{
-      __typename?: 'Communication';
+    community?: Maybe<{
+      __typename?: 'Community';
       id: string;
-      updates?: Maybe<{
-        __typename?: 'Updates';
+      displayName: string;
+      communication?: Maybe<{
+        __typename?: 'Communication';
         id: string;
-        messages?: Maybe<
-          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
-        >;
+        updates?: Maybe<{
+          __typename?: 'Updates';
+          id: string;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+          >;
+        }>;
       }>;
     }>;
   };
