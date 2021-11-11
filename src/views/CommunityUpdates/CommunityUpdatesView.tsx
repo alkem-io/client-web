@@ -124,6 +124,10 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
 
+  if (orderedMessages.length === 0) {
+    return <Typography>{t('common.no-updates')}</Typography>;
+  }
+
   return (
     <>
       {!hideHeaders && (

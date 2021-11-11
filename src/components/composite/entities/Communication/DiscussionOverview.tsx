@@ -57,6 +57,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
             </Typography>
           </Box>
         }
+        disableTypography={true}
       />
       <ListItemAvatar>
         <AvatarGroup

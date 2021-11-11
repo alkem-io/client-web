@@ -13,11 +13,13 @@ import {
 } from '../../../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../../../../views/CommunitySection/CommunitySectionView';
 import { Loading } from '../../../core';
+import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
 
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
 export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
   const { ecoverseNameId, ecoverseId } = useEcoverse();
+  const { discussionList } = useDiscussionsContext();
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
     variables: {
       ecoverseId: ecoverseNameId,
@@ -59,12 +61,12 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
           users={(usersQuery?.ecoverse.community?.members as User[]) || []}
           updates={entities?.messages}
           updateSenders={entities?.senders}
-          discussions={[]}
+          discussions={discussionList}
           parentEntityId={ecoverseId}
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer, usersQuery]
+    [addCommunityUpdatesContainer, usersQuery, discussionList]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;

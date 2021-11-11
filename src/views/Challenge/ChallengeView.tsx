@@ -31,6 +31,7 @@ import { createStyles, useChallenge, useEcoverse } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { buildAdminChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 interface ChallengeViewProps {
   entities: ChallengeContainerEntities;
@@ -192,13 +193,15 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
         })}
         show={!isAuthenticated}
       >
-        <ChallengeCommunitySection
-          challengeId={challengeNameId}
-          ecoverseId={ecoverseNameId}
-          title={t('pages.challenge.sections.community.header')}
-          subTitle={t('pages.challenge.sections.community.subheader')}
-          body={who}
-        />
+        <DiscussionsProvider>
+          <ChallengeCommunitySection
+            challengeId={challengeNameId}
+            ecoverseId={ecoverseNameId}
+            title={t('pages.challenge.sections.community.header')}
+            subTitle={t('pages.challenge.sections.community.subheader')}
+            body={who}
+          />
+        </DiscussionsProvider>
       </BackdropWithMessage>
       <Divider />
       <BackdropWithMessage
