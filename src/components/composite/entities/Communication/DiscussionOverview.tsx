@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import { Discussion } from '../../../../models/discussion/discussion';
 import { RouterLink } from '../../../core/RouterLink';
+import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
@@ -41,7 +42,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
       <ListItemText
         primary={
           <Typography color="primary" variant="h3">
-            <Link component={RouterLink} to={`${url}/${id}`}>
+            <Link component={RouterLink} to={buildDiscussionUrl(url, id)}>
               {title}
             </Link>
           </Typography>
