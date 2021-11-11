@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { CommunityProvider } from '../../context/CommunityProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { Error404, PageProps } from '../../pages';
@@ -24,24 +23,22 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
 
   return (
-    <CommunityProvider>
-      <DiscussionsProvider>
-        <Switch>
-          <Route exact path={path}>
-            <DiscussionListPage paths={currentPaths} />
-          </Route>
-          <Route exact path={`${path}/new`}>
-            <NewDiscussionPage paths={currentPaths} />
-          </Route>
-          <Route path={`${path}/:${nameOfUrl.discussionId}`}>
-            <DiscussionPage paths={currentPaths} />
-          </Route>
-          <Route path="*">
-            <Error404 />
-          </Route>
-        </Switch>
-      </DiscussionsProvider>
-    </CommunityProvider>
+    <DiscussionsProvider>
+      <Switch>
+        <Route exact path={path}>
+          <DiscussionListPage paths={currentPaths} />
+        </Route>
+        <Route exact path={`${path}/new`}>
+          <NewDiscussionPage paths={currentPaths} />
+        </Route>
+        <Route path={`${path}/:${nameOfUrl.discussionId}`}>
+          <DiscussionPage paths={currentPaths} />
+        </Route>
+        <Route path="*">
+          <Error404 />
+        </Route>
+      </Switch>
+    </DiscussionsProvider>
   );
 };
 export default DiscussionsRoute;
