@@ -41,7 +41,9 @@
     "processing": "Processing...",
     "details": "Details",
     "settings": "Settings",
-    "member": "Member"
+    "member": "Member",
+    "profile": "Profile",
+    "view-profile": "View Profile"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -467,6 +469,9 @@
       "buttons": {
         "post": "Post discussion"
       }
+    },
+    "members-view": {
+      "title": "Active community members"
     }
   },
   "navigation": {

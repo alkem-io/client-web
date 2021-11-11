@@ -18,7 +18,8 @@ import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
 
-export interface CommunitySectionPropsExt extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users'> {}
+export interface CommunitySectionPropsExt
+  extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
 
 interface CommunitySectionProps {
   title: string;
@@ -29,6 +30,7 @@ interface CommunitySectionProps {
   updates?: Message[];
   updateSenders?: Pick<User, 'id'>[];
   discussions?: Message[];
+  parentEntityId: string;
 }
 
 const useCommunityStyles = makeStyles(theme => ({
@@ -49,6 +51,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   updateSenders,
   discussions,
   shuffle = false,
+  parentEntityId,
 }) => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
@@ -84,7 +87,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             ))}
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
-            <MembersView shuffle={shuffle} users={users} />
+            <MembersView shuffle={shuffle} users={users} entityId={parentEntityId} />
             <Button text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (

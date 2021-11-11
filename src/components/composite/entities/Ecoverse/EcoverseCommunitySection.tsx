@@ -17,7 +17,7 @@ import { Loading } from '../../../core';
 interface EcoverseCommunitySectionProps extends CommunitySectionPropsExt {}
 
 export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ...rest }) => {
-  const { ecoverseNameId } = useEcoverse();
+  const { ecoverseNameId, ecoverseId } = useEcoverse();
   const { data: usersQuery, loading: usersLoading } = useEcoverseUserIdsQuery({
     variables: {
       ecoverseId: ecoverseNameId,
@@ -60,6 +60,7 @@ export const EcoverseCommunitySection: FC<EcoverseCommunitySectionProps> = ({ ..
           updates={entities?.messages}
           updateSenders={entities?.senders}
           discussions={[]}
+          parentEntityId={ecoverseId}
           {...rest}
         />
       )),
