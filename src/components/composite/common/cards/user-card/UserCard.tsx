@@ -62,7 +62,6 @@ export interface UserCardProps {
 }
 
 const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
-  console.log('rerender');
   const styles = useStyles();
   const location = [city, country].filter(x => !!x).join(', ');
   const [elevation, setElevation] = useState(INITIAL_ELEVATION);

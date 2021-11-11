@@ -6649,5 +6649,12 @@ export type UserCardsContainerQuery = {
       avatar?: Maybe<string>;
       tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
     }>;
+    agent?: Maybe<{
+      __typename?: 'Agent';
+      id: string;
+      credentials?: Maybe<
+        Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      >;
+    }>;
   }>;
 };

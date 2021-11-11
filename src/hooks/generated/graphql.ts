@@ -10409,6 +10409,14 @@ export const UserCardsContainerDocument = gql`
           tags
         }
       }
+      agent {
+        id
+        credentials {
+          id
+          resourceID
+          type
+        }
+      }
     }
   }
 `;

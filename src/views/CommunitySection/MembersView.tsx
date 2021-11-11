@@ -11,16 +11,17 @@ import shuffleCollection from '../../utils/shuffleCollection';
 interface MembersProps {
   shuffle?: boolean;
   users: User[];
+  entityId: string;
 }
 
-export const MembersView: FC<MembersProps> = ({ shuffle = false, users }) => {
+export const MembersView: FC<MembersProps> = ({ shuffle = false, users, entityId }) => {
   const { t } = useTranslation();
 
   const shuffled = shuffle ? shuffleCollection(users) : users;
   const userIDs = shuffled.slice(0, 20).map(x => x.id);
 
   return (
-    <UserCardsContainer userIDs={userIDs}>
+    <UserCardsContainer userIDs={userIDs} resourceId={entityId}>
       {(entities, state) => {
         const { users: populated } = entities;
         const { loading } = state;
@@ -31,7 +32,7 @@ export const MembersView: FC<MembersProps> = ({ shuffle = false, users }) => {
           <>
             <AvatarContainer title={t('components.members-view.title')}>
               {populated.map((u, i) => (
-                <UserAvatar key={i} {...u} roleName={t('common.member')} />
+                <UserAvatar key={i} {...u} />
               ))}
             </AvatarContainer>
             <div style={{ flexBasis: '100%' }} />

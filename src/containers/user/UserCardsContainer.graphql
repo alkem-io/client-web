@@ -14,5 +14,13 @@ query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
         tags
       }
     }
+    agent {
+      id
+      credentials {
+        id
+        resourceID
+        type
+      }
+    }
   }
 }
