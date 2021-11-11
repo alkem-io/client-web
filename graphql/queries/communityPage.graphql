@@ -1,33 +1,36 @@
-query communityPage($communityId: UUID!) {
-  community(ID: $communityId) {
+query communityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    displayName
-    groups {
+    community(ID: $communityId) {
       id
-      name
-      profile {
+      displayName
+      groups {
         id
-        avatar
-        description
-        tagsets {
+        name
+        profile {
           id
-          name
-          tags
+          avatar
+          description
+          tagsets {
+            id
+            name
+            tags
+          }
         }
       }
-    }
-    members {
-      ...CommunityPageMembers
-    }
-    communication {
-      id
-      updates {
+      members {
+        ...CommunityPageMembers
+      }
+      communication {
         id
-        messages {
+        updates {
           id
-          message
-          sender
-          timestamp
+          messages {
+            id
+            message
+            sender
+            timestamp
+          }
         }
       }
     }

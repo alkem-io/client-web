@@ -821,7 +821,6 @@ export type ProjectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'community'
   | 'configuration'
   | 'ecoverse'
   | 'ecoverses'
@@ -841,7 +840,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  community?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;

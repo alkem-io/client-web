@@ -4,7 +4,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdates';
 import { AvatarsProvider } from '../../../context/AvatarsProvider';
-import { useUpdateNavigation } from '../../../hooks';
+import { useEcoverse, useUpdateNavigation } from '../../../hooks';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../../common';
 
@@ -15,13 +15,15 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  if (!communityId) {
+  const { ecoverseId } = useEcoverse();
+
+  if (!communityId || !ecoverseId) {
     return <Container maxWidth="xl">No community</Container>;
   }
 
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesContainer entities={{ communityId }}>
+      <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
         {(entities, actions, loading) => (
           <AvatarsProvider users={entities.senders}>
             {populatedUsers => (

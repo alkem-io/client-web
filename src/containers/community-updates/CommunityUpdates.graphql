@@ -1,16 +1,19 @@
-query communityUpdates($communityId: UUID!) {
-  community(ID: $communityId) {
+query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    displayName
-    communication {
+    community(ID: $communityId) {
       id
-      updates {
+      displayName
+      communication {
         id
-        messages {
+        updates {
           id
-          message
-          sender
-          timestamp
+          messages {
+            id
+            message
+            sender
+            timestamp
+          }
         }
       }
     }
