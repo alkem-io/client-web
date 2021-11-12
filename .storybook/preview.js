@@ -1,5 +1,7 @@
-import { muiTheme } from 'storybook-addon-material-ui';
-import { defaultTheme } from '../src/themes/default';
+import { muiTheme } from 'storybook-addon-material-ui5';
+import { ThemeProvider } from '../src/context/ThemeProvider';
+import { StyledEngineProvider } from '@mui/material/styles';
+
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
@@ -10,4 +12,13 @@ export const parameters = {
   },
 };
 
-export const decorators = [muiTheme([defaultTheme])];
+// export const decorators = [muiTheme([defaultTheme])];
+export const decorators = [
+  Story => (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider>
+        <Story />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  ),
+];

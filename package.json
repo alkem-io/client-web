@@ -65,6 +65,7 @@
     "react-visibility-sensor": "^5.1.1",
     "remark-gfm": "^1.0.0",
     "replace-special-characters": "^1.2.5",
+    "storybook-addon-mui-mode": "^0.0.14",
     "typescript": "~4.1.3",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
@@ -90,6 +91,9 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
+  "resolutions": {
+    "**/@emotion/styled": "^11.0.0"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -110,6 +114,7 @@
     "@graphql-codegen/typescript-operations": "^2.1.1",
     "@graphql-codegen/typescript-react-apollo": "^3.1.1",
     "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-docs": "^6.3.12",
     "@storybook/addon-essentials": "^6.3.12",
     "@storybook/addon-links": "^6.3.12",
     "@storybook/node-logger": "^6.3.12",
@@ -125,7 +130,7 @@
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
     "prettier": "2.3.2",
-    "storybook-addon-material-ui": "^0.9.0-alpha.24"
+    "storybook-addon-material-ui5": "^1.0.0"
   },
   "husky": {
     "hooks": {

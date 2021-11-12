@@ -1,10 +1,4 @@
-import {
-  createTheme,
-  Theme,
-  ThemeProvider as MuiThemeProvider,
-  StyledEngineProvider,
-  adaptV4Theme,
-} from '@mui/material/styles';
+import { createTheme, StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
 import { defaultTheme } from '../themes/default';
 import { typographyOptionsV2 } from '../themes/defaultV2/typography';
@@ -33,15 +27,13 @@ const ThemeProviderV2: FC<{}> = ({ children }) => {
     <StyledEngineProvider injectFirst>
       <MuiThemeProvider
         theme={(theme: Theme) =>
-          createTheme(
-            adaptV4Theme({
-              ...theme,
-              spacing: 8,
-              typography: {
-                ...typographyOptionsV2,
-              },
-            })
-          )
+          createTheme({
+            ...theme,
+            spacing: 8,
+            typography: {
+              ...typographyOptionsV2,
+            },
+          })
         }
       >
         {children}
