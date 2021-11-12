@@ -140,6 +140,7 @@ services:
       - COMMUNICATIONS_ENABLED
       - SYNAPSE_SERVER_URL=http://synapse:8008
       - SUBSCRIPTIONS_ENABLED
+      - NOTIFICATIONS_ENABLED
     restart: always
     ports:
       - 4000
