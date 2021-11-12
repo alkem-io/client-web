@@ -128,7 +128,7 @@ const useContentStyles = createStyles(theme => ({
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
 
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },

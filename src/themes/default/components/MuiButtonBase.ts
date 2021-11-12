@@ -9,7 +9,7 @@ const MuiButtonBase = (theme: Theme): Components['MuiButtonBase'] | undefined =>
   return {
     styleOverrides: {
       root: {
-        '&$disabled': {
+        '&:disabled': {
           color: theme.palette.background.paper,
           borderColor: theme.palette.neutralLight.main,
           background: theme.palette.neutralLight.main,

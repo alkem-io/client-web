@@ -11,7 +11,7 @@ import { createStyles } from '../../hooks/useTheme';
 const useAboutStyles = createStyles(theme => ({
   content: {
     padding: theme.spacing(4),
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       padding: theme.spacing(2),
     },
   },
@@ -38,7 +38,7 @@ const useAboutStyles = createStyles(theme => ({
     position: 'absolute',
     transform: 'translate3d(-50%, 5%, 0)',
     left: '50%',
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       width: 1500,
       height: 1500,
       transform: 'translate3d(-50%, 10%, 0)',

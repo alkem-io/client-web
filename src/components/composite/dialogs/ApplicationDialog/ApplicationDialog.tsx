@@ -26,7 +26,7 @@ const appStyles = createStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       flexWrap: 'wrap',
       gap: theme.spacing(2),
     },
@@ -36,7 +36,7 @@ const appStyles = createStyles(theme => ({
     alignItems: 'center',
     gap: theme.spacing(1),
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -45,7 +45,7 @@ const appStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },

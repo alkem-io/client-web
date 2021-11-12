@@ -222,15 +222,15 @@ const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
     padding: props =>
       agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)} ${theme.spacing(3)} ${theme.spacing(1)}`,
 
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.spacing(3),
     },

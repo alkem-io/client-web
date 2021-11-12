@@ -14,7 +14,7 @@ const useToolbarStyles = createStyles(theme => ({
     padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
   },
   responsivePadding: {
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },

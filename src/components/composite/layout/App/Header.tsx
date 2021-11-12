@@ -56,7 +56,7 @@ const useHeaderStyles = createStyles(theme => ({
   toolbar: {
     padding: `${theme.spacing(4)} 0`,
 
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },
@@ -64,7 +64,7 @@ const useHeaderStyles = createStyles(theme => ({
   toolbarDense: {
     padding: `${theme.spacing(2)} 0`,
 
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },

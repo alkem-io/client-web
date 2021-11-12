@@ -53,7 +53,9 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
                   </Grid>
 
                   <Grid container item justifyContent={'flex-end'}>
-                    <Button type={'submit'} variant={'primary'} disabled={isSubmitting} text={t('buttons.create')} />
+                    <Button type={'submit'} color={'primary'} disabled={isSubmitting}>
+                      {t('buttons.create')}
+                    </Button>
                   </Grid>
                 </Grid>
               </Form>

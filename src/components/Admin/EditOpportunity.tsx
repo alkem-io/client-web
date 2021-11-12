@@ -119,12 +119,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <Button disabled={isLoading} color="primary" onClick={() => submitWired()}>
+          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+        </Button>
       </Grid>
     </Grid>
   );
