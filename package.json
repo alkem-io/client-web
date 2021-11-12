@@ -86,7 +86,9 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "browserslist": {
     "production": [
@@ -107,6 +109,12 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.1",
     "@graphql-codegen/typescript-operations": "^2.1.1",
     "@graphql-codegen/typescript-react-apollo": "^3.1.1",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/node-logger": "^6.3.12",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.3.12",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/react-copy-to-clipboard": "^5.0.0",
@@ -116,7 +124,8 @@
     "gulp": "^4.0.2",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
-    "prettier": "2.3.2"
+    "prettier": "2.3.2",
+    "storybook-addon-material-ui": "^0.9.0-alpha.24"
   },
   "husky": {
     "hooks": {
@@ -138,5 +147,17 @@
   "engines": {
     "node": ">=14.17.3",
     "npm": ">=7"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   }
 }
