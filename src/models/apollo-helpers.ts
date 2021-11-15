@@ -664,6 +664,8 @@ export type OpportunityKeySpecifier = (
   | 'id'
   | 'lifecycle'
   | 'nameID'
+  | 'parentId'
+  | 'parentNameID'
   | 'projects'
   | 'relations'
   | 'tagset'
@@ -679,6 +681,8 @@ export type OpportunityFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentId?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;

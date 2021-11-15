@@ -111,7 +111,7 @@ services:
 
   alkemio_server:
     container_name: alkemio_client_server
-    image: alkemio/server:v0.14.1
+    image: alkemio/server:v0.15.0
     depends_on:
       - mysql_db
       - ipfs
@@ -140,6 +140,7 @@ services:
       - COMMUNICATIONS_ENABLED
       - SYNAPSE_SERVER_URL=http://synapse:8008
       - SUBSCRIPTIONS_ENABLED
+      - NOTIFICATIONS_ENABLED
     restart: always
     ports:
       - 4000
@@ -189,3 +190,28 @@ services:
       - RABBITMQ_SECURE_PASSWORD=yes
     volumes:
       - 'rabbitmq_data:/bitnami'
+
+  notification:
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    container_name: alkemio_client_notifications
+    hostname: notifications
+    image: alkemio/notifications:v0.3.2
+    environment:
+      - RABBITMQ_HOST
+      - LOGGING_CONSOLE_ENABLED
+      - LOGGING_LEVEL_CONSOLE
+      - EMAIL_SMTP_HOST
+      - ENVIRONMENT=dev
+      - ALKEMIO_SERVER_ENDPOINT
+      - KRATOS_API_PUBLIC_ENDPOINT
+      - SERVICE_ACCOUNT_USERNAME
+      - SERVICE_ACCOUNT_PASSWORD
+      - WAIT_HOSTS=alkemio_server:4000
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+    restart: always
+    networks:
+      - alkemio_client_net
+    command: sh -c "/wait && npm run start"

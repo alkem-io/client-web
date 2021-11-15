@@ -24,7 +24,7 @@ All further configuration is obtained from the server configuration graphql sche
 Instantiate dependent services:
 
 ```bash
-   docker-compose -f quickstart-services.yml --env-file .env.docker up --build --force-recreate
+npm run start:services
 ```
 
 In the project directory, you can run:

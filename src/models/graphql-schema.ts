@@ -1469,6 +1469,10 @@ export type Opportunity = Searchable & {
   lifecycle?: Maybe<Lifecycle>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The parent entity (challenge) ID. */
+  parentId?: Maybe<Scalars['String']>;
+  /** The parent entity name (challenge) ID. */
+  parentNameID?: Maybe<Scalars['String']>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
   /** The set of Relations within the context of this Opportunity. */
@@ -6160,7 +6164,8 @@ export type OpportunityContributionDetailsQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string }>;
+      parentId?: Maybe<string>;
+      parentNameID?: Maybe<string>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
