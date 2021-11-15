@@ -1,4 +1,3 @@
-import { muiTheme } from 'storybook-addon-material-ui5';
 import { ThemeProvider } from '../src/context/ThemeProvider';
 import { StyledEngineProvider } from '@mui/material/styles';
 

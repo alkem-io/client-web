@@ -9,6 +9,7 @@ export const paletteOptions: PaletteOptions = {
   neutralLight: { main: '#F9F9F9' },
   background: { paper: '#FFF' },
   divider: '#00BCD440',
+  mode: 'light',
 };
 
 declare module '@mui/material/styles/createPalette' {
