@@ -76,7 +76,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
         url: buildOpportunityUrl(
           opportunityData.ecoverse.nameID,
-          opportunityData.ecoverse.opportunity.challenge?.nameID || '',
+          opportunityData.ecoverse.opportunity.parentNameID || '',
           opportunityData.ecoverse.opportunity.nameID
         ),
       } as ContributionCardDetails;
