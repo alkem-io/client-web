@@ -124,9 +124,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
 
-  if (orderedMessages.length === 0) {
-    return <Typography>{t('common.no-updates')}</Typography>;
-  }
+  // if (orderedMessages.length === 0) {
+  //   return <Typography>{t('common.no-updates')}</Typography>;
+  // }
 
   return (
     <>
@@ -196,6 +196,11 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
               </CardActions>
             </Card>
           </Grid>
+        )}
+        {orderedMessages.length === 0 && (
+          <Typography align={'center'} variant={'subtitle1'}>
+            {t('common.no-updates')}
+          </Typography>
         )}
         {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
