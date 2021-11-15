@@ -9300,10 +9300,8 @@ export const OpportunityContributionDetailsDocument = gql`
         id
         nameID
         displayName
-        challenge {
-          id
-          nameID
-        }
+        parentId
+        parentNameID
         tagset {
           id
           name

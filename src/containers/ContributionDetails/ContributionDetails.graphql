@@ -54,10 +54,8 @@ query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: 
       id
       nameID
       displayName
-      challenge {
-        id
-        nameID
-      }
+      parentId
+      parentNameID
       tagset {
         id
         name
