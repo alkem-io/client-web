@@ -47,7 +47,14 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
         </List>
       )}
       {!loading && (
-        <Filter data={discussions} sort={[{ key: 'createdAt', name: 'Date' }]}>
+        <Filter
+          data={discussions}
+          limitKeys={['title']}
+          sort={[
+            { key: 'createdAt', name: 'Newest', order: 'desc', default: true },
+            { key: 'createdAt', name: 'Oldest', order: 'asc' },
+          ]}
+        >
           {filteredData => (
             <List>
               {filteredData.map((item, index) => (
