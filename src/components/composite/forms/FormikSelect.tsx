@@ -23,7 +23,7 @@ interface FormikSelectProps extends SelectProps {
   name: string;
   required?: boolean;
   disabled?: boolean;
-  values: { id: string; name: string; icon?: React.ReactElement }[];
+  values: { id: string; name: string; icon?: React.ComponentType<any> }[];
   placeholder?: string;
 }
 
@@ -53,7 +53,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            <span className={styles.icon}>{el.icon}</span>
+            {el.icon && <el.icon className={styles.icon} />}
             {el.name}
           </MenuItem>
         ))}

@@ -87,6 +87,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     return {
       id: x.id,
       title: x.title,
+      category: x.category,
       author: getAuthor(firstMessage?.sender || ''),
       authors: getAuthors(sortedMessages.map(m => m.sender)),
       description: firstMessage?.message || '',

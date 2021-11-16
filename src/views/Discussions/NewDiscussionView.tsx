@@ -3,36 +3,33 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
-import EmojiObjectsOutlinedIcon from '@material-ui/icons/EmojiObjectsOutlined';
-import HelpOutlinedIcon from '@material-ui/icons/HelpOutlined';
-import ShareOutlinedIcon from '@material-ui/icons/ShareOutlined';
 import FormikInputField from '../../components/composite/forms/FormikInputField';
 import FormikMarkdownField from '../../components/composite/forms/FormikMarkdownField';
 import Button from '../../components/core/Button';
 import FormikSelect from '../../components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../models/graphql-schema';
+import { getDiscussionCategoryIcon } from '../../utils/discussions/get-discussion-category-icon';
 
 const discussionCategories = [
   {
     id: DiscussionCategory.General,
     name: DiscussionCategory.General,
-    icon: <QuestionAnswerOutlinedIcon fontSize="inherit" />,
+    icon: getDiscussionCategoryIcon(DiscussionCategory.General),
   },
   {
     id: DiscussionCategory.Ideas,
     name: DiscussionCategory.Ideas,
-    icon: <EmojiObjectsOutlinedIcon fontSize="inherit" />,
+    icon: getDiscussionCategoryIcon(DiscussionCategory.Ideas),
   },
   {
     id: DiscussionCategory.Questions,
     name: DiscussionCategory.Questions,
-    icon: <HelpOutlinedIcon fontSize="inherit" />,
+    icon: getDiscussionCategoryIcon(DiscussionCategory.Questions),
   },
   {
     id: DiscussionCategory.Sharing,
     name: DiscussionCategory.Sharing,
-    icon: <ShareOutlinedIcon fontSize="inherit" />,
+    icon: getDiscussionCategoryIcon(DiscussionCategory.Sharing),
   },
 ];
 

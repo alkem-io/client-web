@@ -8,6 +8,7 @@ import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation, useUrlParams } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
+import { getDiscussionCategoryIcon } from '../../utils/discussions/get-discussion-category-icon';
 
 interface DiscussionPageProps extends PageProps {}
 
@@ -16,7 +17,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   const { discussionId } = useUrlParams();
 
-  const { communityName, loading: loadingCommunity } = useCommunityContext();
+  const { loading: loadingCommunity } = useCommunityContext();
 
   const { getDiscussion, handlePostComment, loading: loadingDiscussions } = useDiscussionsContext();
 
@@ -33,9 +34,11 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   if (!discussion) return null;
 
+  const Icon = getDiscussionCategoryIcon(discussion.category);
+
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title={`${communityName}`}>
+      <DiscussionsLayout title={discussion.title} icon={<Icon />}>
         <DiscussionView discussion={discussion} onPostComment={handlePostComment} />
       </DiscussionsLayout>
     </ThemeProviderV2>

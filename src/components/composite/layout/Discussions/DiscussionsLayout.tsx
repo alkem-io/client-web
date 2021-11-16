@@ -6,6 +6,7 @@ import { RouterLink } from '../../../core/RouterLink';
 
 interface DiscussionsLayoutProps {
   title: string;
+  icon?: React.ReactElement;
   newUrl?: string;
 }
 
@@ -19,10 +20,18 @@ const useStyles = makeStyles(theme =>
       paddingLeft: theme.spacing(4),
       paddingRight: theme.spacing(4),
     },
+    icon: {
+      color: theme.palette.primary.main,
+      paddingRight: theme.spacing(1),
+
+      '&>*': {
+        fontSize: theme.typography.h1.fontSize,
+      },
+    },
   })
 );
 
-export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, newUrl, children }) => {
+export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, icon, newUrl, children }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -31,7 +40,8 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({ title, newUrl, c
       <Grid item container>
         <Paper elevation={0} square className={styles.paper}>
           <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
+            <Grid container item alignItems={'center'}>
+              <span className={styles.icon}>{icon}</span>
               <Typography variant="h1">{title}</Typography>
             </Grid>
             {newUrl && (
