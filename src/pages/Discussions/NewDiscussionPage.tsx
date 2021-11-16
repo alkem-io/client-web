@@ -22,7 +22,9 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
   return (
     <ThemeProviderV2>
       <DiscussionsLayout title={title}>
-        <NewDiscussionView onPost={values => handleCreateDiscussion(values.title, values.description)} />
+        <NewDiscussionView
+          onPost={values => handleCreateDiscussion(values.title, values.category, values.description)}
+        />
       </DiscussionsLayout>
     </ThemeProviderV2>
   );

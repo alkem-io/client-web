@@ -12,7 +12,7 @@ import {
 import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
-import { MessageDetailsFragment } from '../../models/graphql-schema';
+import { DiscussionCategory, MessageDetailsFragment } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
 
@@ -20,7 +20,7 @@ interface DiscussionContextProps {
   discussionList: Discussion[];
   getDiscussion: (id: string) => Discussion | undefined;
   handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
-  handleCreateDiscussion: (title: string, description: string) => Promise<void> | void;
+  handleCreateDiscussion: (title: string, category: DiscussionCategory, description: string) => Promise<void> | void;
   loading: boolean;
   posting: boolean;
 }
@@ -29,7 +29,7 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   discussionList: [],
   getDiscussion: (_id: string) => undefined, // might be handled better;
   handlePostComment: (_discussionId, _comment) => {},
-  handleCreateDiscussion: (_title, _description) => {},
+  handleCreateDiscussion: (_title, _category, _description) => {},
   loading: false,
   posting: false,
 });
@@ -129,13 +129,14 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     ],
   });
 
-  const handleCreateDiscussion = async (title: string, description: string) => {
+  const handleCreateDiscussion = async (title: string, category: DiscussionCategory, description: string) => {
     await createDiscussion({
       variables: {
         input: {
           communicationID: communicationId,
           message: description,
           title: title,
+          category: category,
         },
       },
     });

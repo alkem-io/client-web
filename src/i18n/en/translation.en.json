@@ -466,6 +466,9 @@
         "title": "Title",
         "placeholder": "Discussion title"
       },
+      "category": {
+        "title": "Category"
+      },
       "description": {
         "title": "Further information",
         "placeholder": "Add further information on the discussion here"
