@@ -1,5 +1,5 @@
 import { sortBy, uniq } from 'lodash';
-import React, { FC, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
@@ -12,6 +12,7 @@ import {
 import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
+import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import { MessageDetailsFragment } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
@@ -89,6 +90,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       title: x.title,
       author: getAuthor(firstMessage?.sender || ''),
       authors: getAuthors(sortedMessages.map(m => m.sender)),
+      category: x.category,
       description: firstMessage?.message || '',
       createdAt: firstMessage ? new Date(firstMessage.timestamp) : new Date(),
       totalComments: sortedMessages.slice(1).length,
@@ -161,4 +163,12 @@ const useDiscussionsContext = () => {
   return useContext(DiscussionsContext);
 };
 
-export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext };
+const useDiscussionCategoryFilter = (discussions: Discussion[]) => {
+  const [categoryFilter, setCategoryFilter] = useState<DiscussionCategoryExt>(DiscussionCategoryExtEnum.All);
+  const filtered = useMemo(() => {
+    return discussions.filter(d => categoryFilter === DiscussionCategoryExtEnum.All || d.category === categoryFilter);
+  }, [discussions, categoryFilter]);
+  return { filtered, categoryFilter, setCategoryFilter };
+};
+
+export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext, useDiscussionCategoryFilter };

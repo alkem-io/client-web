@@ -1,6 +1,7 @@
 fragment DiscussionDetails on Discussion {
   id
   title
+  category
   messages {
     ...MessageDetails
   }
@@ -46,4 +47,3 @@ query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     }
   }
 }
-

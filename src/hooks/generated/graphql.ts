@@ -788,6 +788,7 @@ export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
     title
+    category
     messages {
       ...MessageDetails
     }

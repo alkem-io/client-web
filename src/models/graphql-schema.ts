@@ -6234,6 +6234,7 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  category: DiscussionCategory;
   messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
@@ -6257,6 +6258,7 @@ export type CommunityDiscussionListQuery = {
             __typename?: 'Discussion';
             id: string;
             title: string;
+            category: DiscussionCategory;
             messages?: Maybe<
               Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
@@ -6277,6 +6279,7 @@ export type PostDiscussionCommentMutation = {
     __typename?: 'Discussion';
     id: string;
     title: string;
+    category: DiscussionCategory;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
 };

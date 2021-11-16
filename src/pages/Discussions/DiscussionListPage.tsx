@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
+import DiscussionCategorySelector from '../../components/composite/entities/Communication/DiscussionCategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
-import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
@@ -16,6 +17,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading } = useDiscussionsContext();
+  const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
 
   useUpdateNavigation({ currentPaths: paths });
 
@@ -24,10 +26,16 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
       <DiscussionsLayout
         title={t('components.discussions-list.name', { community: communityName })}
         newUrl={`${url}/new`}
+        categorySelector={
+          <DiscussionCategorySelector
+            onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
+            value={categoryFilter}
+          />
+        }
       >
         <DiscussionListView
           entities={{
-            discussions: discussionList,
+            discussions: filtered,
           }}
           state={{
             loading: loading,

@@ -204,6 +204,12 @@
         "new": "New",
         "edit": "Edit",
         "read-only": "Read only"
+      },
+      "discussion-category": {
+        "GENERAL": "General",
+        "IDEAS": "Ideas",
+        "QUESTIONS": "Questions",
+        "SHARING": "Sharing"
       }
     }
   },
@@ -434,8 +440,8 @@
     "discussions-list": {
       "name": "Discussions - {{community}}",
       "help": "List of all discussions",
-      "posted": "{{- date}} - {{count}} comment",
-      "posted_plural": "{{- date}} - {{count}} comments"
+      "posted": "{{name}} on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
     },
     "discussion": {
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
@@ -476,6 +482,13 @@
     },
     "members-view": {
       "title": "Active community members"
+    },
+    "discussion-category-selector": {
+      "ALL": "SHOW ALL",
+      "GENERAL": "GENERAL",
+      "IDEAS": "IDEAS",
+      "QUESTIONS": "QUESTIONS",
+      "SHARING": "SHARING"
     }
   },
   "navigation": {
