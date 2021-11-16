@@ -439,7 +439,9 @@
     },
     "discussion": {
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments"
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "summary": "{{count}} Comment{{plural}} - {{people}} Person contributed",
+      "summary-plural": "{{count}} Comment{{plural}} - {{people}} People contributed"
     },
     "comment": {
       "posted": "{{name}} on {{- date}}",
