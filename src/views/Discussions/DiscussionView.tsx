@@ -7,19 +7,32 @@ import PostComment from '../../components/composite/common/Discussion/PostCommen
 import { Discussion } from '../../models/discussion/discussion';
 import { Comment } from '../../models/discussion/comment';
 import TranslationKey from '../../types/TranslationKey';
+import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
+  currentUserId?: string;
   onPostComment?: (discussionId: string, comment: string) => Promise<void> | void;
+  onDeleteDiscussion?: (ID: string) => Promise<void> | void;
+  onDeleteComment?: (ID: string) => Promise<void> | void;
 }
 
-export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComment }) => {
+export const DiscussionView: FC<DiscussionViewProps> = ({
+  discussion,
+  currentUserId,
+  onPostComment,
+  onDeleteDiscussion,
+  onDeleteComment,
+}) => {
   const { t } = useTranslation();
 
-  const { id, description, author, authors, createdAt, totalComments, comments } = discussion;
+  const { id, description, author, authors, createdAt, totalComments, comments, myPrivileges } = discussion;
 
   const plural = authors.length !== 1;
-  const summaryKey = `components.discussion.summary${plural ? '-  plural' : ''}` as TranslationKey;
+  const summaryKey = `components.discussion.summary${plural ? '-plural' : ''}` as TranslationKey;
+
+  const canPost = myPrivileges.some(x => x === AuthorizationPrivilege.Create);
+  const canDeleteDiscussion = myPrivileges.some(x => x === AuthorizationPrivilege.Delete);
 
   const initialComment = {
     id,
@@ -32,7 +45,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComm
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
       <Grid item xs={12} container direction="column">
         <Grid item>
-          <DiscussionComment comment={initialComment} />
+          <DiscussionComment comment={initialComment} canDelete={canDeleteDiscussion} onDelete={onDeleteDiscussion} />
         </Grid>
 
         <Grid item>
@@ -55,7 +68,14 @@ export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComm
                       <Grid container spacing={3}>
                         {filteredComments.map((c, i) => (
                           <Grid item xs={12}>
-                            <DiscussionComment key={i} comment={c} />
+                            <DiscussionComment
+                              key={i}
+                              comment={c}
+                              /*todo swap comment when "delete comment mutation" is present*/
+                              /*canDelete={Boolean(currentUserId && c.author?.id === currentUserId)}*/
+                              canDelete={Boolean(currentUserId && currentUserId === 'mock id')}
+                              onDelete={onDeleteComment}
+                            />
                           </Grid>
                         ))}
                       </Grid>
@@ -70,7 +90,12 @@ export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComm
         <Grid item container spacing={2}>
           <Grid item xs={12}>
             <Box paddingY={2}>
-              <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />
+              {!canPost && <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />}
+              {canPost && (
+                <Box paddingY={4} display="flex" justifyContent="center">
+                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+                </Box>
+              )}
             </Box>
           </Grid>
         </Grid>

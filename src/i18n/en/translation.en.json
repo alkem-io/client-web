@@ -441,7 +441,8 @@
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
       "summary": "{{count}} Comment{{plural}} - {{people}} Person contributed",
-      "summary-plural": "{{count}} Comment{{plural}} - {{people}} People contributed"
+      "summary-plural": "{{count}} Comment{{plural}} - {{people}} People contributed",
+      "cant-post": "You can't reply to this discussion"
     },
     "comment": {
       "posted": "{{name}} on {{- date}}",

@@ -3,6 +3,7 @@ import { Avatar, Box, createStyles, makeStyles, Typography } from '@material-ui/
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
+import IconButton from '@material-ui/core/IconButton';
 
 const AVATAR_SIZE = 5;
 
@@ -11,19 +12,21 @@ const useStyles = makeStyles(theme =>
     avatar: {
       height: theme.spacing(AVATAR_SIZE),
       width: theme.spacing(AVATAR_SIZE),
-      paddingRight: theme.spacing(2),
+      marginRight: theme.spacing(2),
     },
   })
 );
 
 interface DiscussionCommentProps {
   comment: Comment;
+  canDelete: boolean;
+  onDelete?: (ID: string) => Promise<void> | void;
 }
 
-export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment }) => {
+export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete }) => {
   const styles = useStyles();
 
-  const { author, body } = comment;
+  const { author, body, id } = comment;
 
   return (
     <Box border={1} borderColor="neutralMedium.main" borderRadius={4}>
@@ -37,7 +40,11 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment }) => {
             <Typography>{comment.createdAt.toLocaleString()}</Typography>
           </Box>
         </Box>
-        <DeleteOutlinedIcon fontSize="large" />
+        {canDelete && onDelete && (
+          <IconButton aria-label="Delete" onClick={() => onDelete(id)}>
+            <DeleteOutlinedIcon fontSize="large" />
+          </IconButton>
+        )}
       </Box>
       <Box paddingX={1} paddingY={1.5}>
         <Typography>

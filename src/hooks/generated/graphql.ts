@@ -789,6 +789,9 @@ export const DiscussionDetailsFragmentDoc = gql`
     id
     title
     category
+    authorization {
+      myPrivileges
+    }
     messages {
       ...MessageDetails
     }
@@ -1966,6 +1969,54 @@ export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.De
 export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteChallengeMutation,
   SchemaTypes.DeleteChallengeMutationVariables
+>;
+export const DeleteDiscussionDocument = gql`
+  mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
+    deleteDiscussion(deleteData: $deleteData) {
+      id
+      title
+    }
+  }
+`;
+export type DeleteDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
+>;
+
+/**
+ * __useDeleteDiscussionMutation__
+ *
+ * To run a mutation, you first call `useDeleteDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDiscussionMutation, { data, loading, error }] = useDeleteDiscussionMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteDiscussionMutation,
+    SchemaTypes.DeleteDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteDiscussionMutation, SchemaTypes.DeleteDiscussionMutationVariables>(
+    DeleteDiscussionDocument,
+    options
+  );
+}
+export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
+export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
+export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
 >;
 export const DeleteEcoverseDocument = gql`
   mutation deleteEcoverse($input: DeleteEcoverseInput!) {

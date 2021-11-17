@@ -5,7 +5,7 @@ import { Loading } from '../../components/core';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
-import { useUpdateNavigation, useUrlParams } from '../../hooks';
+import { useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
 import { getDiscussionCategoryIcon } from '../../utils/discussions/get-discussion-category-icon';
@@ -14,12 +14,17 @@ interface DiscussionPageProps extends PageProps {}
 
 export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
-
   const { discussionId } = useUrlParams();
-
   const { loading: loadingCommunity } = useCommunityContext();
+  const { user } = useUserContext();
 
-  const { getDiscussion, handlePostComment, loading: loadingDiscussions } = useDiscussionsContext();
+  const {
+    getDiscussion,
+    handlePostComment,
+    handleDeleteDiscussion,
+    handleDeleteComment,
+    loading: loadingDiscussions,
+  } = useDiscussionsContext();
 
   const discussion = getDiscussion(discussionId);
 
@@ -35,11 +40,18 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   if (!discussion) return null;
 
   const Icon = getDiscussionCategoryIcon(discussion.category);
+  const currentUserId = user?.user.id;
 
   return (
     <ThemeProviderV2>
       <DiscussionsLayout title={discussion.title} icon={<Icon />} enablePaper={false}>
-        <DiscussionView discussion={discussion} onPostComment={handlePostComment} />
+        <DiscussionView
+          currentUserId={currentUserId}
+          discussion={discussion}
+          onPostComment={handlePostComment}
+          onDeleteDiscussion={handleDeleteDiscussion}
+          onDeleteComment={handleDeleteComment}
+        />
       </DiscussionsLayout>
     </ThemeProviderV2>
   );

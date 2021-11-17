@@ -7,12 +7,18 @@ import {
   useAuthorDetailsQuery,
   useCommunityDiscussionListQuery,
   useCreateDiscussionMutation,
+  useDeleteDiscussionMutation,
   usePostDiscussionCommentMutation,
 } from '../../hooks/generated/graphql';
 import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
-import { DiscussionCategory, MessageDetailsFragment } from '../../models/graphql-schema';
+import {
+  DiscussionCategory,
+  MessageDetailsFragment,
+  Message,
+  Discussion as DiscussionGraphql,
+} from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
 
@@ -21,8 +27,11 @@ interface DiscussionContextProps {
   getDiscussion: (id: string) => Discussion | undefined;
   handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
   handleCreateDiscussion: (title: string, category: DiscussionCategory, description: string) => Promise<void> | void;
+  handleDeleteDiscussion: (ID: DiscussionGraphql['id']) => Promise<void> | void;
+  handleDeleteComment: (ID: Message['id']) => Promise<void> | void;
   loading: boolean;
   posting: boolean;
+  deleting: boolean;
 }
 
 const DiscussionsContext = React.createContext<DiscussionContextProps>({
@@ -30,8 +39,11 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   getDiscussion: (_id: string) => undefined, // might be handled better;
   handlePostComment: (_discussionId, _comment) => {},
   handleCreateDiscussion: (_title, _category, _description) => {},
+  handleDeleteDiscussion: _ID => {},
+  handleDeleteComment: _ID => {},
   loading: false,
   posting: false,
+  deleting: false,
 });
 
 interface DiscussionProviderProps {}
@@ -88,6 +100,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       id: x.id,
       title: x.title,
       category: x.category,
+      myPrivileges: x.authorization?.myPrivileges ?? [],
       author: getAuthor(firstMessage?.sender || ''),
       authors: getAuthors(sortedMessages.map(m => m.sender)),
       description: firstMessage?.message || '',
@@ -130,6 +143,21 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     ],
   });
 
+  const [deleteDiscussion, { loading: deletingDiscussion }] = useDeleteDiscussionMutation({
+    onCompleted: () => {
+      history.replace(`${url}`);
+    },
+    onError: handleError,
+    refetchQueries: [
+      refetchCommunityDiscussionListQuery({
+        communityId: communityId,
+        ecoverseId: ecoverseNameId,
+      }),
+    ],
+  });
+
+  const deletingComment = false;
+
   const handleCreateDiscussion = async (title: string, category: DiscussionCategory, description: string) => {
     await createDiscussion({
       variables: {
@@ -143,6 +171,20 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     });
   };
 
+  const handleDeleteDiscussion = async (ID: string) => {
+    await deleteDiscussion({
+      variables: {
+        deleteData: {
+          ID,
+        },
+      },
+    });
+  };
+
+  const handleDeleteComment = async () => {
+    throw new Error('Not implemented');
+  };
+
   return (
     <DiscussionsContext.Provider
       value={{
@@ -150,8 +192,11 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         getDiscussion,
         handlePostComment,
         handleCreateDiscussion,
+        handleDeleteDiscussion,
+        handleDeleteComment,
         loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
         posting: postingComment || creatingDiscussion,
+        deleting: deletingDiscussion || deletingComment,
       }}
     >
       {children}

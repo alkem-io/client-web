@@ -2,6 +2,9 @@ fragment DiscussionDetails on Discussion {
   id
   title
   category
+  authorization {
+    myPrivileges
+  }
   messages {
     ...MessageDetails
   }

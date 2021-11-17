@@ -3152,6 +3152,15 @@ export type DeleteChallengeMutation = {
   deleteChallenge: { __typename?: 'Challenge'; id: string; nameID: string };
 };
 
+export type DeleteDiscussionMutationVariables = Exact<{
+  deleteData: DeleteDiscussionInput;
+}>;
+
+export type DeleteDiscussionMutation = {
+  __typename?: 'Mutation';
+  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+};
+
 export type DeleteEcoverseMutationVariables = Exact<{
   input: DeleteEcoverseInput;
 }>;
@@ -6293,6 +6302,7 @@ export type DiscussionDetailsFragment = {
   id: string;
   title: string;
   category: DiscussionCategory;
+  authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
@@ -6317,6 +6327,10 @@ export type CommunityDiscussionListQuery = {
             id: string;
             title: string;
             category: DiscussionCategory;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
             messages?: Maybe<
               Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
@@ -6338,6 +6352,7 @@ export type PostDiscussionCommentMutation = {
     id: string;
     title: string;
     category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
 };
