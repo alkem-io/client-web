@@ -1,11 +1,12 @@
-import { Box, Divider, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../components/Admin/Common/Filter';
 import DiscussionComment from '../../components/composite/common/Discussion/Comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
-import Markdown from '../../components/core/Markdown';
 import { Discussion } from '../../models/discussion/discussion';
+import { Comment } from '../../models/discussion/comment';
+import TranslationKey from '../../types/TranslationKey';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -15,50 +16,54 @@ export interface DiscussionViewProps {
 export const DiscussionView: FC<DiscussionViewProps> = ({ discussion, onPostComment }) => {
   const { t } = useTranslation();
 
-  const { id, title, description, author, createdAt, totalComments, comments } = discussion;
+  const { id, description, author, authors, createdAt, totalComments, comments } = discussion;
+
+  const plural = authors.length !== 1;
+  const summaryKey = `components.discussion.summary${plural ? '-  plural' : ''}` as TranslationKey;
+
+  const initialComment = {
+    id,
+    author,
+    createdAt,
+    body: description,
+  } as Comment;
 
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
       <Grid item xs={12} container direction="column">
         <Grid item>
-          <Typography variant="h2">{title}</Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="h5">
-            <Box display="flex">
-              <Box component="i">
-                {t('components.discussion.posted', {
-                  name: author?.displayName,
-                  date: createdAt.toLocaleDateString(),
-                  count: totalComments,
-                })}
-              </Box>
-            </Box>
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography>
-            <Markdown>{description}</Markdown>
-          </Typography>
+          <DiscussionComment comment={initialComment} />
         </Grid>
 
         <Grid item>
           {comments && comments.length > 0 && (
-            <Filter data={comments}>
-              {filteredComments => {
-                if (filteredComments.length === 0) return null;
-                return (
-                  <Box marginTop={2}>
-                    {filteredComments.map((c, i) => (
-                      <>
-                        <DiscussionComment key={i} comment={c} />
-                        <Divider />
-                      </>
-                    ))}
-                  </Box>
-                );
-              }}
-            </Filter>
+            <>
+              <Box paddingY={2}>
+                <Typography variant={'h4'}>
+                  {t(summaryKey, {
+                    count: totalComments,
+                    plural: totalComments === 1 ? '' : 's',
+                    people: authors.length,
+                  })}
+                </Typography>
+              </Box>
+              <Filter data={comments}>
+                {filteredComments => {
+                  if (filteredComments.length === 0) return null;
+                  return (
+                    <Box marginTop={2}>
+                      <Grid container spacing={3}>
+                        {filteredComments.map((c, i) => (
+                          <Grid item xs={12}>
+                            <DiscussionComment key={i} comment={c} />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  );
+                }}
+              </Filter>
+            </>
           )}
         </Grid>
 

@@ -1,16 +1,17 @@
-import { Avatar, Box, createStyles, Link, makeStyles, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Avatar, Box, createStyles, makeStyles, Typography } from '@material-ui/core';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
 
-const AVATAR_SIZE = 8;
+const AVATAR_SIZE = 5;
 
 const useStyles = makeStyles(theme =>
   createStyles({
     avatar: {
       height: theme.spacing(AVATAR_SIZE),
       width: theme.spacing(AVATAR_SIZE),
+      paddingRight: theme.spacing(2),
     },
   })
 );
@@ -21,35 +22,27 @@ interface DiscussionCommentProps {
 
 export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment }) => {
   const styles = useStyles();
-  const { t } = useTranslation();
 
-  const { id, author, body, createdAt } = comment;
-
-  const depth = 0;
-  const depthPadding = depth > 0 ? depth * AVATAR_SIZE + 2 : 0;
+  const { author, body } = comment;
 
   return (
-    <Box paddingY={2} display="flex" justifyContent="space-between">
-      <Box display="flex" flexDirection="row" paddingLeft={depthPadding}>
-        <Avatar className={styles.avatar} src={author?.avatarUrl}>
-          {author?.displayName[0]}
-        </Avatar>
-        <Box display="flex" flexDirection="column" paddingX={2}>
-          <Typography>
-            <Markdown>{body}</Markdown>
-          </Typography>
-          <Typography variant="body2">
-            {t('components.comment.posted', {
-              name: author?.displayName,
-              date: createdAt.toLocaleString(),
-            })}
-            <Box component="span" marginX={1}>
-              <Link arial-lable="reply" href={`#${id}`}>
-                {t('components.comment.reply')}
-              </Link>
-            </Box>
-          </Typography>
+    <Box border={1} borderColor="neutralMedium.main" borderRadius={4}>
+      <Box padding={1} display="flex" alignItems="center" justifyContent="space-between" bgcolor="neutralMedium.main">
+        <Box display="flex" alignItems="center">
+          <Avatar className={styles.avatar} src={author?.avatarUrl}>
+            {author?.displayName[0]}
+          </Avatar>
+          <Box>
+            <Typography>{comment.author?.displayName}</Typography>
+            <Typography>{comment.createdAt.toLocaleString()}</Typography>
+          </Box>
         </Box>
+        <DeleteOutlinedIcon fontSize="large" />
+      </Box>
+      <Box paddingX={1} paddingY={1.5}>
+        <Typography>
+          <Markdown>{body}</Markdown>
+        </Typography>
       </Box>
     </Box>
   );
