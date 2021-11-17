@@ -53,7 +53,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
               <Typography variant="h1">{title}</Typography>
             </Grid>
             {newUrl && (
-              <Grid container item justifyContent={'flex-end'} wrap="nowrap">
+              <Grid item justifyContent={'flex-end'} wrap="nowrap">
                 <Button
                   as={RouterLink}
                   text={t('components.discussions-layout.buttons.new-discussion')}
