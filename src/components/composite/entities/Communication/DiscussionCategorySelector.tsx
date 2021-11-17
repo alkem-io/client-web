@@ -1,5 +1,6 @@
 import { Box, emphasize, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import List from '@material-ui/core/List';
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../../../models/enums/DiscussionCategoriesExt';
@@ -25,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     },
   },
   selected: {},
+  icon: {
+    color: theme.palette.neutralLight.main,
+  },
 }));
 
 export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = ({
@@ -50,7 +54,11 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
         onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
       >
         <ListItemIcon>
-          <DiscussionIcon category={DiscussionCategoryExtEnum.All} />
+          <DiscussionIcon
+            className={clsx({ [styles.icon]: value === DiscussionCategoryExtEnum.All })}
+            color="primary"
+            category={DiscussionCategoryExtEnum.All}
+          />
         </ListItemIcon>
         <ListItemText>
           <Box component="span" fontWeight="bold">
@@ -70,7 +78,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
           onClick={() => handleSelect(k)}
         >
           <ListItemIcon>
-            <DiscussionIcon category={k} />
+            <DiscussionIcon className={clsx({ [styles.icon]: value === k })} color="primary" category={k} />
           </ListItemIcon>
           <ListItemText>
             <Box component="span" fontWeight="bold">

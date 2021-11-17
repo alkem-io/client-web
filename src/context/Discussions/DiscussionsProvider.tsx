@@ -13,15 +13,20 @@ import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
-import { MessageDetailsFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, MessageDetailsFragment } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
+
+interface Permissions {
+  canCreateDiscussion: boolean;
+}
 
 interface DiscussionContextProps {
   discussionList: Discussion[];
   getDiscussion: (id: string) => Discussion | undefined;
   handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
   handleCreateDiscussion: (title: string, description: string) => Promise<void> | void;
+  permissions: Permissions;
   loading: boolean;
   posting: boolean;
 }
@@ -31,6 +36,9 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   getDiscussion: (_id: string) => undefined, // might be handled better;
   handlePostComment: (_discussionId, _comment) => {},
   handleCreateDiscussion: (_title, _description) => {},
+  permissions: {
+    canCreateDiscussion: false,
+  },
   loading: false,
   posting: false,
 });
@@ -118,6 +126,15 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     });
   };
 
+  const permissions: Permissions = useMemo(
+    () => ({
+      canCreateDiscussion:
+        data?.ecoverse.community?.communication?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ||
+        false,
+    }),
+    [data]
+  );
+
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
     onCompleted: data => {
       history.replace(`${url}/${data.createDiscussion.id}`);
@@ -150,6 +167,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         getDiscussion,
         handlePostComment,
         handleCreateDiscussion,
+        permissions,
         loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
         posting: postingComment || creatingDiscussion,
       }}

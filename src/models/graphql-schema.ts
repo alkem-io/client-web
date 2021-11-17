@@ -6235,6 +6235,7 @@ export type DiscussionDetailsFragment = {
   id: string;
   title: string;
   category: DiscussionCategory;
+  authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
@@ -6253,12 +6254,17 @@ export type CommunityDiscussionListQuery = {
       communication?: Maybe<{
         __typename?: 'Communication';
         id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
         discussions?: Maybe<
           Array<{
             __typename?: 'Discussion';
             id: string;
             title: string;
             category: DiscussionCategory;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
             messages?: Maybe<
               Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
@@ -6280,6 +6286,7 @@ export type PostDiscussionCommentMutation = {
     id: string;
     title: string;
     category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
 };

@@ -16,7 +16,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
-  const { discussionList, loading } = useDiscussionsContext();
+  const { discussionList, loading, permissions } = useDiscussionsContext();
   const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
 
   useUpdateNavigation({ currentPaths: paths });
@@ -26,6 +26,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
       <DiscussionsLayout
         title={t('components.discussions-list.name', { community: communityName })}
         newUrl={`${url}/new`}
+        canCreateDiscussion={permissions.canCreateDiscussion}
         categorySelector={
           <DiscussionCategorySelector
             onSelect={selectedCategory => setCategoryFilter(selectedCategory)}

@@ -2,6 +2,9 @@ fragment DiscussionDetails on Discussion {
   id
   title
   category
+  authorization {
+    myPrivileges
+  }
   messages {
     ...MessageDetails
   }
@@ -13,6 +16,9 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
       id
       communication {
         id
+        authorization {
+          myPrivileges
+        }
         discussions {
           ...DiscussionDetails
         }

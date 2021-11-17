@@ -789,6 +789,9 @@ export const DiscussionDetailsFragmentDoc = gql`
     id
     title
     category
+    authorization {
+      myPrivileges
+    }
     messages {
       ...MessageDetails
     }
@@ -9586,6 +9589,9 @@ export const CommunityDiscussionListDocument = gql`
         id
         communication {
           id
+          authorization {
+            myPrivileges
+          }
           discussions {
             ...DiscussionDetails
           }
