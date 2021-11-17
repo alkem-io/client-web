@@ -442,7 +442,9 @@
       "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
       "summary": "{{count}} Comment{{plural}} - {{people}} Person contributed",
       "summary-plural": "{{count}} Comment{{plural}} - {{people}} People contributed",
-      "cant-post": "You can't reply to this discussion"
+      "cant-post": "You can't reply to this discussion",
+      "delete-discussion": "Delete discussion?",
+      "delete-comment": "Delete comment?"
     },
     "comment": {
       "posted": "{{name}} on {{- date}}",

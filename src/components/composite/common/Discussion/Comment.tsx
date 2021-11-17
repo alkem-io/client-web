@@ -47,9 +47,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
         )}
       </Box>
       <Box paddingX={1} paddingY={1.5}>
-        <Typography>
-          <Markdown>{body}</Markdown>
-        </Typography>
+        <Markdown>{body}</Markdown>
       </Box>
     </Box>
   );
