@@ -38,7 +38,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title={discussion.title} icon={<Icon />}>
+      <DiscussionsLayout title={discussion.title} icon={<Icon />} enablePaper={false}>
         <DiscussionView discussion={discussion} onPostComment={handlePostComment} />
       </DiscussionsLayout>
     </ThemeProviderV2>
