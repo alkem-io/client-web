@@ -1,4 +1,16 @@
-import { Box, Link, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  createStyles,
+  Link,
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import { AvatarGroup } from '@material-ui/lab';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
@@ -10,24 +22,26 @@ export interface DiscussionOverviewProps {
   discussion: Discussion;
 }
 
-// const useStyles = makeStyles(theme =>
-//   createStyles({
-//     avatar: {
-//       height: theme.spacing(3.5),
-//       width: theme.spacing(3.5),
-//     },
-//   })
-// );
+const useStyles = makeStyles(theme =>
+  createStyles({
+    avatar: {
+      height: theme.spacing(3.5),
+      width: theme.spacing(3.5),
+    },
+  })
+);
+
+const SHOW_AVATARS = false;
 
 const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
-  // const styles = useStyles();
+  const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
 
-  const { id, title, createdAt, author, totalComments, category } = discussion;
+  const { id, title, createdAt, author, authors = [], totalComments, category } = discussion;
 
   return (
-    <ListItem alignItems="center" disableGutters>
+    <ListItem alignItems="flex-start" disableGutters>
       <ListItemIcon>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>
@@ -52,20 +66,22 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
         }
         disableTypography={true}
       />
-      {/* <ListItemAvatar>
-        <AvatarGroup
-          max={3}
-          classes={{
-            avatar: styles.avatar,
-          }}
-        >
-          {authors.map((a, i) => (
-            <Avatar key={i} src={a.avatarUrl}>
-              {a.firstName[0]}
-            </Avatar>
-          ))}
-        </AvatarGroup>
-      </ListItemAvatar> */}
+      {SHOW_AVATARS && (
+        <ListItemAvatar>
+          <AvatarGroup
+            max={3}
+            classes={{
+              avatar: styles.avatar,
+            }}
+          >
+            {authors.map((a, i) => (
+              <Avatar key={i} src={a.avatarUrl}>
+                {a.firstName[0]}
+              </Avatar>
+            ))}
+          </AvatarGroup>
+        </ListItemAvatar>
+      )}
     </ListItem>
   );
 };
