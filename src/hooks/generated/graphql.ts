@@ -9581,6 +9581,7 @@ export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<Sche
 export const CommunityDiscussionListDocument = gql`
   query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     ecoverse(ID: $ecoverseId) {
+      id
       community(ID: $communityId) {
         id
         communication {

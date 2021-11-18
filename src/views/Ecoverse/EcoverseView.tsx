@@ -32,6 +32,8 @@ import { EcoverseContainerEntities, EcoverseContainerState } from '../../contain
 import { createStyles, useUserContext } from '../../hooks';
 import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -138,6 +140,13 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
                   </Grid>
                 </Grid>
               );
+            if (cEntities?.challenges && cEntities?.challenges.length === 0) {
+              return (
+                <Box paddingBottom={2} display="flex" justifyContent="center">
+                  <Typography>{t('pages.ecoverse.sections.challenges.no-data')}</Typography>
+                </Box>
+              );
+            }
             return (
               <CardFilter
                 data={cEntities?.challenges || []}
