@@ -97,7 +97,6 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
-    "no-discussions": "No discussions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -501,6 +500,12 @@
       "IDEAS": "IDEAS",
       "QUESTIONS": "QUESTIONS",
       "SHARING": "SHARING"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data": "Create a discussion",
+        "explore": "Explore discussions"
+      }
     }
   },
   "navigation": {
