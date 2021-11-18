@@ -6,15 +6,14 @@ import DiscussionComment from '../../components/composite/common/Discussion/Comm
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import { Discussion } from '../../models/discussion/discussion';
 import { Comment } from '../../models/discussion/comment';
-import TranslationKey from '../../types/TranslationKey';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
   currentUserId?: string;
   onPostComment?: (discussionId: string, comment: string) => Promise<void> | void;
-  onDeleteDiscussion?: (ID: string) => Promise<void> | void;
-  onDeleteComment?: (ID: string) => Promise<void> | void;
+  onDeleteDiscussion?: (id: string) => Promise<void> | void;
+  onDeleteComment?: (id: string) => Promise<void> | void;
 }
 
 export const DiscussionView: FC<DiscussionViewProps> = ({
@@ -28,12 +27,10 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 
   const { id, description, author, authors, createdAt, totalComments, comments, myPrivileges } = discussion;
 
-  const plural = authors.length !== 1;
-  const summaryKey = `components.discussion.summary${plural ? '-plural' : ''}` as TranslationKey;
-
   const canPost = myPrivileges.some(x => x === AuthorizationPrivilege.Create);
   const canDeleteDiscussion = myPrivileges.some(x => x === AuthorizationPrivilege.Delete);
 
+  // construct the discussion info as a comment with ID of the discussion for easier update/delete
   const initialComment = {
     id,
     author,
@@ -53,10 +50,9 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <>
               <Box paddingY={2}>
                 <Typography variant={'h4'}>
-                  {t(summaryKey, {
-                    count: totalComments,
-                    plural: totalComments === 1 ? '' : 's',
-                    people: authors.length,
+                  {t('components.discussion.summary1', {
+                    comment: totalComments,
+                    contributed: authors.length,
                   })}
                 </Typography>
               </Box>
@@ -71,9 +67,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                             <DiscussionComment
                               key={i}
                               comment={c}
-                              /*todo swap comment when "delete comment mutation" is present*/
-                              /*canDelete={Boolean(currentUserId && c.author?.id === currentUserId)}*/
-                              canDelete={Boolean(currentUserId && currentUserId === 'mock id')}
+                              canDelete={Boolean(currentUserId && c.author?.id === currentUserId)}
                               onDelete={onDeleteComment}
                             />
                           </Grid>

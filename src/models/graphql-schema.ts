@@ -3369,6 +3369,15 @@ export type RemoveUserAsOrganizationOwnerMutation = {
   removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type RemoveMessageFromDiscussionMutationVariables = Exact<{
+  messageData: DiscussionRemoveMessageInput;
+}>;
+
+export type RemoveMessageFromDiscussionMutation = {
+  __typename?: 'Mutation';
+  removeMessageFromDiscussion: { __typename?: 'Discussion'; id: string };
+};
+
 export type RemoveUserFromCommunityMutationVariables = Exact<{
   input: RemoveCommunityMemberInput;
 }>;

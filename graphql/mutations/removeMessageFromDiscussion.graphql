@@ -1,0 +1,5 @@
+mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
+  removeMessageFromDiscussion(messageData: $messageData) {
+    id
+  }
+}

@@ -9,6 +9,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
   usePostDiscussionCommentMutation,
+  useRemoveMessageFromDiscussionMutation,
 } from '../../hooks/generated/graphql';
 import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
@@ -28,7 +29,7 @@ interface DiscussionContextProps {
   handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
   handleCreateDiscussion: (title: string, category: DiscussionCategory, description: string) => Promise<void> | void;
   handleDeleteDiscussion: (ID: DiscussionGraphql['id']) => Promise<void> | void;
-  handleDeleteComment: (ID: Message['id']) => Promise<void> | void;
+  handleDeleteComment: (ID: DiscussionGraphql['id'], msgID: Message['id']) => Promise<void> | void;
   loading: boolean;
   posting: boolean;
   deleting: boolean;
@@ -40,7 +41,7 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   handlePostComment: (_discussionId, _comment) => {},
   handleCreateDiscussion: (_title, _category, _description) => {},
   handleDeleteDiscussion: _ID => {},
-  handleDeleteComment: _ID => {},
+  handleDeleteComment: (_ID, _msgID) => {},
   loading: false,
   posting: false,
   deleting: false,
@@ -156,7 +157,15 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     ],
   });
 
-  const deletingComment = false;
+  const [deleteMessage, { loading: deletingComment }] = useRemoveMessageFromDiscussionMutation({
+    onError: handleError,
+    refetchQueries: [
+      refetchCommunityDiscussionListQuery({
+        communityId: communityId,
+        ecoverseId: ecoverseNameId,
+      }),
+    ],
+  });
 
   const handleCreateDiscussion = async (title: string, category: DiscussionCategory, description: string) => {
     await createDiscussion({
@@ -181,8 +190,15 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     });
   };
 
-  const handleDeleteComment = async () => {
-    throw new Error('Not implemented');
+  const handleDeleteComment = async (ID: string, msgID: string) => {
+    await deleteMessage({
+      variables: {
+        messageData: {
+          discussionID: ID,
+          messageID: msgID,
+        },
+      },
+    });
   };
 
   return (

@@ -3043,6 +3043,54 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
+export const RemoveMessageFromDiscussionDocument = gql`
+  mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
+    removeMessageFromDiscussion(messageData: $messageData) {
+      id
+    }
+  }
+`;
+export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveMessageFromDiscussionMutation,
+  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+>;
+
+/**
+ * __useRemoveMessageFromDiscussionMutation__
+ *
+ * To run a mutation, you first call `useRemoveMessageFromDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMessageFromDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMessageFromDiscussionMutation, { data, loading, error }] = useRemoveMessageFromDiscussionMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveMessageFromDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveMessageFromDiscussionMutation,
+    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveMessageFromDiscussionMutation,
+    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+  >(RemoveMessageFromDiscussionDocument, options);
+}
+export type RemoveMessageFromDiscussionMutationHookResult = ReturnType<typeof useRemoveMessageFromDiscussionMutation>;
+export type RemoveMessageFromDiscussionMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveMessageFromDiscussionMutation>;
+export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveMessageFromDiscussionMutation,
+  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+>;
 export const RemoveUserFromCommunityDocument = gql`
   mutation removeUserFromCommunity($input: RemoveCommunityMemberInput!) {
     removeUserFromCommunity(membershipData: $input) {

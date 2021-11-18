@@ -8,28 +8,28 @@ import FormikMarkdownField from '../../components/composite/forms/FormikMarkdown
 import Button from '../../components/core/Button';
 import FormikSelect from '../../components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../models/graphql-schema';
-import { getDiscussionCategoryIcon } from '../../utils/discussions/get-discussion-category-icon';
+import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
 
 const discussionCategories = [
   {
     id: DiscussionCategory.General,
     name: DiscussionCategory.General,
-    icon: getDiscussionCategoryIcon(DiscussionCategory.General),
+    icon: <DiscussionIcon category={DiscussionCategory.General} />,
   },
   {
     id: DiscussionCategory.Ideas,
     name: DiscussionCategory.Ideas,
-    icon: getDiscussionCategoryIcon(DiscussionCategory.Ideas),
+    icon: <DiscussionIcon category={DiscussionCategory.Ideas} />,
   },
   {
     id: DiscussionCategory.Questions,
     name: DiscussionCategory.Questions,
-    icon: getDiscussionCategoryIcon(DiscussionCategory.Questions),
+    icon: <DiscussionIcon category={DiscussionCategory.Questions} />,
   },
   {
     id: DiscussionCategory.Sharing,
     name: DiscussionCategory.Sharing,
-    icon: getDiscussionCategoryIcon(DiscussionCategory.Sharing),
+    icon: <DiscussionIcon category={DiscussionCategory.Sharing} />,
   },
 ];
 

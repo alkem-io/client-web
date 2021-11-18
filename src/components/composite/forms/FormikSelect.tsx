@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
   icon: {
     paddingRight: theme.spacing(1),
     color: theme.palette.primary.main,
+    fontSize: theme.typography.body1.fontSize,
   },
 }));
 
@@ -23,7 +24,7 @@ interface FormikSelectProps extends SelectProps {
   name: string;
   required?: boolean;
   disabled?: boolean;
-  values: { id: string; name: string; icon?: React.ComponentType<any> }[];
+  values: { id: string; name: string; icon?: React.ReactElement }[];
   placeholder?: string;
 }
 
@@ -53,7 +54,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            {el.icon && <el.icon className={styles.icon} />}
+            {el.icon && <span className={styles.icon}>{el.icon}</span>}
             {el.name}
           </MenuItem>
         ))}

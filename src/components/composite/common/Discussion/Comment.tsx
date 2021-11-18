@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Avatar, Box, createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Box, createStyles, makeStyles, Typography, useTheme } from '@material-ui/core';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
@@ -20,19 +20,20 @@ const useStyles = makeStyles(theme =>
 interface DiscussionCommentProps {
   comment: Comment;
   canDelete: boolean;
-  onDelete?: (ID: string) => Promise<void> | void;
+  onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
 }
 
 export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete }) => {
   const styles = useStyles();
 
   const { author, body, id } = comment;
+  const theme = useTheme();
 
   return (
-    <Box border={1} borderColor="neutralMedium.main" borderRadius={4}>
+    <Box border={1} borderColor="neutralMedium.main" borderRadius={theme.shape.borderRadius}>
       <Box padding={1} display="flex" alignItems="center" justifyContent="space-between" bgcolor="neutralMedium.main">
         <Box display="flex" alignItems="center">
-          <Avatar className={styles.avatar} src={author?.avatarUrl}>
+          <Avatar className={styles.avatar} src={author?.avatarUrl} variant="rounded">
             {author?.displayName[0]}
           </Avatar>
           <Box>

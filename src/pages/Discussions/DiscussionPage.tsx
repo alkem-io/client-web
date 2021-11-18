@@ -8,9 +8,9 @@ import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
-import { getDiscussionCategoryIcon } from '../../utils/discussions/get-discussion-category-icon';
 import RemoveModal from '../../components/core/RemoveModal';
 import { useTranslation } from 'react-i18next';
+import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
 
 interface DiscussionPageProps extends PageProps {}
 
@@ -23,6 +23,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   const [showDeleteDiscModal, setShowDeleteDiscModal] = useState<boolean>(false);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState<boolean>(false);
+  // holds the ID of discussion or comment for deletion after the dialog is confirmed
   const [itemToDelete, setItemToDelete] = useState<string | undefined>(undefined);
 
   const {
@@ -46,7 +47,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   if (!discussion) return null;
 
-  const Icon = getDiscussionCategoryIcon(discussion.category);
   const currentUserId = user?.user.id;
 
   const deleteDiscussionHandler = (id: string) => {
@@ -65,9 +65,27 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
     setItemToDelete(undefined);
   };
 
+  const onConfirmDiscDialog = () => {
+    if (itemToDelete) {
+      handleDeleteDiscussion(itemToDelete);
+      setShowDeleteDiscModal(false);
+    }
+  };
+
+  const onConfirmCommentDialog = () => {
+    if (itemToDelete) {
+      handleDeleteComment(discussion.id, itemToDelete);
+      setShowDeleteCommentModal(false);
+    }
+  };
+
   return (
     <ThemeProviderV2>
-      <DiscussionsLayout title={discussion.title} icon={<Icon />} enablePaper={false}>
+      <DiscussionsLayout
+        title={discussion.title}
+        icon={<DiscussionIcon category={discussion.category} />}
+        enablePaper={false}
+      >
         <DiscussionView
           currentUserId={currentUserId}
           discussion={discussion}
@@ -79,13 +97,13 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
       <RemoveModal
         show={showDeleteDiscModal}
         onCancel={onCancelModal}
-        onConfirm={() => itemToDelete && handleDeleteDiscussion(itemToDelete)}
+        onConfirm={onConfirmDiscDialog}
         text={t('components.discussion.delete-discussion')}
       />
       <RemoveModal
         show={showDeleteCommentModal}
         onCancel={onCancelModal}
-        onConfirm={() => itemToDelete && handleDeleteComment(itemToDelete)}
+        onConfirm={onConfirmCommentDialog}
         text={t('components.discussion.delete-comment')}
       />
     </ThemeProviderV2>
