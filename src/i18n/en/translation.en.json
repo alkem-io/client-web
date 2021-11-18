@@ -440,11 +440,9 @@
     "discussion": {
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
-      "contributions": "{{count}} Person contributed",
-      "contributions_plural": "{{count}} People contributed",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
       "comment": "{{count}} Comment",
       "comment_plural": "{{count}} Comments",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
       "contributed": "{{count}} Person contributed",
       "contributed_plural": "{{count}} People contributed",
       "cant-post": "You can't reply to this discussion",
