@@ -439,7 +439,15 @@
     },
     "discussion": {
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments"
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "comment": "{{count}} Comment",
+      "comment_plural": "{{count}} Comments",
+      "contributed": "{{count}} Person contributed",
+      "contributed_plural": "{{count}} People contributed",
+      "cant-post": "You can't reply to this discussion",
+      "delete-discussion": "Delete discussion?",
+      "delete-comment": "Delete comment?"
     },
     "comment": {
       "posted": "{{name}} on {{- date}}",
@@ -466,12 +474,15 @@
         "title": "Title",
         "placeholder": "Discussion title"
       },
+      "category": {
+        "title": "Category"
+      },
       "description": {
         "title": "Further information",
         "placeholder": "Add further information on the discussion here"
       },
       "buttons": {
-        "post": "Post discussion"
+        "post": "Create discussion"
       }
     },
     "members-view": {
