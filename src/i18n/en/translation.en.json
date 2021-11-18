@@ -595,7 +595,8 @@
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
-          "body": ""
+          "body": "",
+          "no-data": "No challenges available for this hub"
         },
         "community": {
           "header": "Community",

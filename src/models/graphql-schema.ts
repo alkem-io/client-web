@@ -6324,6 +6324,7 @@ export type CommunityDiscussionListQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
+    id: string;
     community?: Maybe<{
       __typename?: 'Community';
       id: string;

@@ -12,6 +12,7 @@ fragment DiscussionDetails on Discussion {
 
 query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
   ecoverse(ID: $ecoverseId) {
+    id
     community(ID: $communityId) {
       id
       communication {

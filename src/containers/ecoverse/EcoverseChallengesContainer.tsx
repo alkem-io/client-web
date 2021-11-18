@@ -33,6 +33,7 @@ export const EcoverseChallengesContainer: FC<EcoverseChallengesContainerProps> =
     loading: loadingChallenges,
   } = useChallengeCardsQuery({
     variables: { ecoverseId: entities.ecoverseNameId },
+    skip: !entities.ecoverseNameId,
   });
 
   return (
