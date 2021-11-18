@@ -1,9 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@material-ui/core';
+import Link from '@material-ui/core/Link';
 import { createStyles } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import { RouterLink } from '../../components/core/RouterLink';
+import { useRouteMatch } from 'react-router';
+import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 
@@ -21,8 +24,13 @@ interface DiscussionsProps {
 export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
   const { t } = useTranslation();
   const styles = useDiscussionsStyles();
+  const { url } = useRouteMatch();
 
-  let messagesComponent = <Typography>{t('common.no-discussions')}</Typography>;
+  let messagesComponent = (
+    <Link component={RouterLink} to={buildNewDiscussionUrl(url)}>
+      {t('components.community-section.discussions.no-data')}
+    </Link>
+  );
 
   if (discussions && discussions.length > 0) {
     messagesComponent = (
@@ -33,6 +41,9 @@ export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
           .map((x, i) => (
             <DiscussionOverview key={i} discussion={x} />
           ))}
+        <Link component={RouterLink} to={buildDiscussionsUrl(url)}>
+          {t('components.community-section.discussions.explore')}
+        </Link>
       </>
     );
   }

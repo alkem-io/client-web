@@ -561,6 +561,7 @@ export type MutationKeySpecifier = (
   | 'updateProject'
   | 'updateUser'
   | 'updateUserGroup'
+  | 'updateUserPreference'
   | 'uploadAvatar'
   | MutationKeySpecifier
 )[];
@@ -646,6 +647,7 @@ export type MutationFieldPolicy = {
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateUserPreference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadAvatar?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
@@ -989,6 +991,7 @@ export type UserKeySpecifier = (
   | 'lastName'
   | 'nameID'
   | 'phone'
+  | 'preferences'
   | 'profile'
   | UserKeySpecifier
 )[];
@@ -1008,6 +1011,7 @@ export type UserFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
@@ -1041,6 +1045,38 @@ export type UserMembershipFieldPolicy = {
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserPreferenceKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'userPreferenceDefinition'
+  | 'value'
+  | UserPreferenceKeySpecifier
+)[];
+export type UserPreferenceFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  userPreferenceDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserPreferenceDefinitionKeySpecifier = (
+  | 'authorization'
+  | 'description'
+  | 'displayName'
+  | 'group'
+  | 'id'
+  | 'type'
+  | 'valueType'
+  | UserPreferenceDefinitionKeySpecifier
+)[];
+export type UserPreferenceDefinitionFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  group?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  valueType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserTemplateKeySpecifier = ('name' | 'tagsets' | UserTemplateKeySpecifier)[];
 export type UserTemplateFieldPolicy = {
@@ -1356,6 +1392,14 @@ export type StrictTypedTypePolicies = {
   UserMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserMembershipKeySpecifier | (() => undefined | UserMembershipKeySpecifier);
     fields?: UserMembershipFieldPolicy;
+  };
+  UserPreference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserPreferenceKeySpecifier | (() => undefined | UserPreferenceKeySpecifier);
+    fields?: UserPreferenceFieldPolicy;
+  };
+  UserPreferenceDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserPreferenceDefinitionKeySpecifier | (() => undefined | UserPreferenceDefinitionKeySpecifier);
+    fields?: UserPreferenceDefinitionFieldPolicy;
   };
   UserTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserTemplateKeySpecifier | (() => undefined | UserTemplateKeySpecifier);
