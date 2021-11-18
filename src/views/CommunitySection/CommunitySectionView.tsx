@@ -71,6 +71,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   };
 
   const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
+  const discussionsCountLabel = discussions?.length ? `(${discussions?.length})` : '';
   const tabList: TabConfig[] = [
     { name: 'members', label: t('common.members'), enabled: true },
     {
@@ -80,7 +81,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     },
     {
       name: 'discussion',
-      label: t('common.discussions'),
+      label: `${t('common.discussions')} ${discussionsCountLabel}`,
       enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
     },
   ].filter(x => x.enabled);
