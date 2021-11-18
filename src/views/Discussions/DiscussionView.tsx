@@ -50,7 +50,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <>
               <Box paddingY={2}>
                 <Typography variant={'h4'}>
-                  {t('components.discussion.summary1', {
+                  {t('components.discussion.summary', {
                     comment: totalComments,
                     contributed: authors.length,
                   })}
