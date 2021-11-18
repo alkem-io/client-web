@@ -3152,6 +3152,15 @@ export type DeleteChallengeMutation = {
   deleteChallenge: { __typename?: 'Challenge'; id: string; nameID: string };
 };
 
+export type DeleteDiscussionMutationVariables = Exact<{
+  deleteData: DeleteDiscussionInput;
+}>;
+
+export type DeleteDiscussionMutation = {
+  __typename?: 'Mutation';
+  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+};
+
 export type DeleteEcoverseMutationVariables = Exact<{
   input: DeleteEcoverseInput;
 }>;
@@ -3358,6 +3367,15 @@ export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
 export type RemoveUserAsOrganizationOwnerMutation = {
   __typename?: 'Mutation';
   removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveMessageFromDiscussionMutationVariables = Exact<{
+  messageData: DiscussionRemoveMessageInput;
+}>;
+
+export type RemoveMessageFromDiscussionMutation = {
+  __typename?: 'Mutation';
+  removeMessageFromDiscussion: { __typename?: 'Discussion'; id: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -6292,6 +6310,8 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  category: DiscussionCategory;
+  authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
@@ -6311,11 +6331,17 @@ export type CommunityDiscussionListQuery = {
       communication?: Maybe<{
         __typename?: 'Communication';
         id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
         discussions?: Maybe<
           Array<{
             __typename?: 'Discussion';
             id: string;
             title: string;
+            category: DiscussionCategory;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
             messages?: Maybe<
               Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
@@ -6336,6 +6362,8 @@ export type PostDiscussionCommentMutation = {
     __typename?: 'Discussion';
     id: string;
     title: string;
+    category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
 };

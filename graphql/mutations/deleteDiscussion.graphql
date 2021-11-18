@@ -1,0 +1,6 @@
+mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
+  deleteDiscussion(deleteData: $deleteData) {
+    id
+    title
+  }
+}
