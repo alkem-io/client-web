@@ -6330,6 +6330,7 @@ export type CommunityDiscussionListQuery = {
       communication?: Maybe<{
         __typename?: 'Communication';
         id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
         discussions?: Maybe<
           Array<{
             __typename?: 'Discussion';

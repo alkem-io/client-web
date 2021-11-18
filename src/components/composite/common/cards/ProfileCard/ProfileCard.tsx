@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Card, CardContent, CardHeader, createStyles, makeStyles, Typography } from '@material-ui/core';
 import React, { FC, forwardRef } from 'react';
 import HelpButton from '../../../../core/HelpButton';
 
@@ -31,7 +31,9 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef(({ title, helpText, 
         className={styles.cardHeader}
         title={
           <Typography variant="h3">
-            {title}
+            <Box component="span" fontWeight="bold">
+              {title}
+            </Box>
             {helpText && <HelpButton helpText={helpText} />}
           </Typography>
         }

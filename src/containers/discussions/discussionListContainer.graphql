@@ -16,6 +16,9 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
       id
       communication {
         id
+        authorization {
+          myPrivileges
+        }
         discussions {
           ...DiscussionDetails
         }
@@ -50,4 +53,3 @@ query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     }
   }
 }
-

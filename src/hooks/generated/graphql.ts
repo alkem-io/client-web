@@ -9685,6 +9685,9 @@ export const CommunityDiscussionListDocument = gql`
         id
         communication {
           id
+          authorization {
+            myPrivileges
+          }
           discussions {
             ...DiscussionDetails
           }

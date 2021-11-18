@@ -9,6 +9,7 @@ interface DiscussionsLayoutProps {
   title: string;
   icon?: React.ReactElement;
   newUrl?: string;
+  canCreateDiscussion?: boolean;
   categorySelector?: ReactNode;
   enablePaper?: boolean;
 }
@@ -47,13 +48,15 @@ const useStyles = makeStyles(theme =>
     categorySelector: {},
   })
 );
+
 export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
   title,
-  icon,
   newUrl,
+  canCreateDiscussion = false,
   categorySelector,
-  enablePaper = true,
   children,
+  icon,
+  enablePaper = true,
 }) => {
   const { t } = useTranslation();
   const styles = useStyles();
@@ -84,6 +87,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
                   text={t('components.discussions-layout.buttons.new-discussion')}
                   variant="primary"
                   to={newUrl}
+                  disabled={!canCreateDiscussion}
                 />
               </Grid>
             )}

@@ -1,5 +1,5 @@
 import { sortBy, uniq } from 'lodash';
-import React, { FC, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
@@ -14,14 +14,20 @@ import {
 import { Author } from '../../models/discussion/author';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
+import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import {
-  DiscussionCategory,
-  MessageDetailsFragment,
-  Message,
+  AuthorizationPrivilege,
   Discussion as DiscussionGraphql,
+  DiscussionCategory,
+  Message,
+  MessageDetailsFragment,
 } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
+
+interface Permissions {
+  canCreateDiscussion: boolean;
+}
 
 interface DiscussionContextProps {
   discussionList: Discussion[];
@@ -30,6 +36,7 @@ interface DiscussionContextProps {
   handleCreateDiscussion: (title: string, category: DiscussionCategory, description: string) => Promise<void> | void;
   handleDeleteDiscussion: (ID: DiscussionGraphql['id']) => Promise<void> | void;
   handleDeleteComment: (ID: DiscussionGraphql['id'], msgID: Message['id']) => Promise<void> | void;
+  permissions: Permissions;
   loading: boolean;
   posting: boolean;
   deleting: boolean;
@@ -42,6 +49,9 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   handleCreateDiscussion: (_title, _category, _description) => {},
   handleDeleteDiscussion: _ID => {},
   handleDeleteComment: (_ID, _msgID) => {},
+  permissions: {
+    canCreateDiscussion: false,
+  },
   loading: false,
   posting: false,
   deleting: false,
@@ -131,6 +141,15 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     });
   };
 
+  const permissions: Permissions = useMemo(
+    () => ({
+      canCreateDiscussion:
+        data?.ecoverse.community?.communication?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ||
+        false,
+    }),
+    [data]
+  );
+
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
     onCompleted: data => {
       history.replace(`${url}/${data.createDiscussion.id}`);
@@ -208,6 +227,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         getDiscussion,
         handlePostComment,
         handleCreateDiscussion,
+        permissions,
         handleDeleteDiscussion,
         handleDeleteComment,
         loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAvatars,
@@ -224,4 +244,12 @@ const useDiscussionsContext = () => {
   return useContext(DiscussionsContext);
 };
 
-export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext };
+const useDiscussionCategoryFilter = (discussions: Discussion[]) => {
+  const [categoryFilter, setCategoryFilter] = useState<DiscussionCategoryExt>(DiscussionCategoryExtEnum.All);
+  const filtered = useMemo(() => {
+    return discussions.filter(d => categoryFilter === DiscussionCategoryExtEnum.All || d.category === categoryFilter);
+  }, [discussions, categoryFilter]);
+  return { filtered, categoryFilter, setCategoryFilter };
+};
+
+export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext, useDiscussionCategoryFilter };
