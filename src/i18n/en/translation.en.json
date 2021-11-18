@@ -439,6 +439,7 @@
     },
     "discussions-list": {
       "name": "Discussions - {{community}}",
+      "title": "Discussions ({{count}})",
       "help": "List of all discussions",
       "posted": "{{name}} on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} on {{- date}} - {{count}} comments"

@@ -32,7 +32,10 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
   const { loading } = state;
 
   return (
-    <ProfileCard title={t('common.discussions')} helpText={t('components.discussions-list.help')}>
+    <ProfileCard
+      title={t('components.discussions-list.title', { count: discussions.length })}
+      helpText={t('components.discussions-list.help')}
+    >
       {loading && (
         <List>
           <ListItemText
