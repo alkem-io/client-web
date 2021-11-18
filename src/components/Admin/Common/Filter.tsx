@@ -1,4 +1,4 @@
-import { FormControl, Grid, MenuItem, OutlinedInput, Select } from '@material-ui/core';
+import { FormControl, Grid, makeStyles, MenuItem, OutlinedInput, Select } from '@material-ui/core';
 import { orderBy } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,8 +18,13 @@ type FilterProps<T> = {
   children: (filteredData: T[]) => void;
 };
 
+const useStyles = makeStyles(() => ({
+  select: { margin: 0 },
+}));
+
 export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
+  const styles = useStyles();
   const [filterBy, setFilterBy] = useState('');
   const [sortBy, setSortBy] = useState<sortItem<T> | undefined>(undefined);
 
@@ -70,7 +75,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
         </Grid>
         {sort && (
           <Grid item xs={2}>
-            <FormControl variant="outlined" fullWidth margin="dense">
+            <FormControl className={styles.select} variant="outlined" fullWidth margin="dense">
               <Select
                 value={keyFromSortItem(sortBy)}
                 onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
