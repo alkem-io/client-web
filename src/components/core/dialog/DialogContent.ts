@@ -1,11 +1,10 @@
 import MuiDialogContent from '@mui/material/DialogContent';
-import { Theme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
-import withStyles from '@mui/styles/withStyles';
-
-const DialogContent = withStyles((theme: Theme) => ({
+const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   root: {
     padding: theme.spacing(2),
   },
-}))(MuiDialogContent);
+}));
+
 export default DialogContent;
