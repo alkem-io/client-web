@@ -44,6 +44,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   disabled = false,
   placeholder,
   autoComplete,
+  rows = 10,
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
@@ -73,6 +74,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           disabled: disabled,
           autoComplete: autoComplete,
           onBlur: field.onBlur,
+          rows,
         }}
       />
       <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>

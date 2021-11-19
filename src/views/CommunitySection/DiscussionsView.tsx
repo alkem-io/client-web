@@ -1,8 +1,14 @@
-import { Box } from '@mui/material';
+import Link from '@material-ui/core/Link';
 import React, { FC } from 'react';
-import Typography from '../../components/core/Typography';
-import { createStyles } from '../../hooks/useTheme';
-import { Message } from '../../models/graphql-schema';
+import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router';
+import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import { RouterLink } from '../../components/core/RouterLink';
+import { createStyles } from '../../hooks';
+import { Discussion } from '../../models/discussion/discussion';
+import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
+
+const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 
 const useDiscussionsStyles = createStyles(_theme => ({
   container: {
@@ -12,27 +18,32 @@ const useDiscussionsStyles = createStyles(_theme => ({
   },
 }));
 interface DiscussionsProps {
-  messages?: Message[];
+  discussions?: Discussion[];
 }
 
-export const DiscussionsView: FC<DiscussionsProps> = ({ messages }) => {
+export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
+  const { t } = useTranslation();
   const styles = useDiscussionsStyles();
+  const { url } = useRouteMatch();
 
-  let messagesComponent = <Typography> No discussions</Typography>;
+  let messagesComponent = (
+    <Link component={RouterLink} to={buildNewDiscussionUrl(url)}>
+      {t('components.community-section.discussions.no-data')}
+    </Link>
+  );
 
-  if (messages) {
+  if (discussions && discussions.length > 0) {
     messagesComponent = (
       <>
-        {messages.map((m, i) => (
-          <Box key={i} marginBottom={5}>
-            <Typography>{m.message}</Typography>
-            <Box textAlign={'right'}>
-              <Typography color={'neutralMedium'} variant="caption">{`${m.sender} - ${new Date(
-                m.timestamp
-              ).toLocaleString()}`}</Typography>
-            </Box>
-          </Box>
-        ))}
+        {discussions
+          .slice(0, DISCUSSIONS_NUMBER_IN_WINDOW)
+          .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+          .map((x, i) => (
+            <DiscussionOverview key={i} discussion={x} />
+          ))}
+        <Link component={RouterLink} to={buildDiscussionsUrl(url)}>
+          {t('components.community-section.discussions.explore')}
+        </Link>
       </>
     );
   }

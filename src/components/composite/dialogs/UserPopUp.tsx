@@ -1,3 +1,4 @@
+import Link from '@material-ui/core/Link';
 import { Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Table from '@mui/material/Table';
@@ -5,16 +6,17 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../../hooks';
 import { createStyles } from '../../../hooks/useTheme';
+import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { Loading } from '../../core';
 import Avatar from '../../core/Avatar';
 import Button from '../../core/Button';
 import Delimiter from '../../core/Delimiter';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
+import { RouterLink } from '../../core/RouterLink';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import Typography from '../../core/Typography';
@@ -243,11 +245,9 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Tooltip placement={'top'} title={'Coming soon'} id={'more-tags'}>
-          <span>
-            <Button variant={'primary'} disabled={true} text={t('buttons.send-message')} />
-          </span>
-        </Tooltip>
+        <Link component={RouterLink} to={buildUserProfileUrl(user?.nameID || '')} underline="none">
+          <Button variant={'primary'} text={t('buttons.view-profile')} arial-label="user-profile-button" />
+        </Link>
       </DialogActions>
     </Dialog>
   );

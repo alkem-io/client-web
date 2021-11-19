@@ -31,6 +31,9 @@ import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChall
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
 import { createStyles, useUserContext } from '../../hooks';
 import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {
@@ -137,6 +140,13 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
                   </Grid>
                 </Grid>
               );
+            if (cEntities?.challenges && cEntities?.challenges.length === 0) {
+              return (
+                <Box paddingBottom={2} display="flex" justifyContent="center">
+                  <Typography>{t('pages.ecoverse.sections.challenges.no-data')}</Typography>
+                </Box>
+              );
+            }
             return (
               <CardFilter
                 data={cEntities?.challenges || []}
@@ -170,12 +180,14 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
 
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
-        <EcoverseCommunitySection
-          title={t('pages.ecoverse.sections.community.header')}
-          subTitle={t('pages.ecoverse.sections.community.subheader')}
-          body={context?.who}
-          shuffle={true}
-        />
+        <DiscussionsProvider>
+          <EcoverseCommunitySection
+            title={t('pages.ecoverse.sections.community.header')}
+            subTitle={t('pages.ecoverse.sections.community.subheader')}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
       </AuthenticationBackdrop>
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>

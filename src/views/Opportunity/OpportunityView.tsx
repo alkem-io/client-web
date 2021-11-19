@@ -37,6 +37,7 @@ import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-ea
 import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import { createStyles, useOpportunity } from '../../hooks';
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 const useStyles = createStyles(theme => ({
   tag: {
@@ -403,14 +404,16 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
       )}
       <Divider />
       <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
-        <OpportunityCommunitySection
-          title={t('pages.opportunity.sections.community.header')}
-          subTitle={t('pages.opportunity.sections.community.subheader')}
-          ecoverseId={ecoverseId}
-          opportunityId={id}
-          body={context?.who}
-          shuffle={true}
-        />
+        <DiscussionsProvider>
+          <OpportunityCommunitySection
+            title={t('pages.opportunity.sections.community.header')}
+            subTitle={t('pages.opportunity.sections.community.subheader')}
+            ecoverseId={ecoverseId}
+            opportunityId={id}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
       </AuthenticationBackdrop>
       <Divider />
       <div ref={projectRef} />

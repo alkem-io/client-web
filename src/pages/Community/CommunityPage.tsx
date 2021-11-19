@@ -6,7 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
-import { useConfig, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
+import { useConfig, useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SettingsButton } from '../../components/composite';
 import Divider from '../../components/core/Divider';
@@ -69,12 +69,14 @@ const CommunityPage: FC<Props> = ({
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
+  const { ecoverseId } = useEcoverse();
+
   const { data, loading } = useCommunityPageQuery({
-    variables: { communityId },
+    variables: { ecoverseId, communityId },
     skip: !communityId,
     errorPolicy: 'all', // skip error returned from communications if any
   });
-  const community = data?.community;
+  const community = data?.ecoverse.community;
   const groups = community?.groups || [];
   const updates = community?.communication?.updates?.messages || [];
   const updateSenders = updates.map(x => ({ id: x.sender }));

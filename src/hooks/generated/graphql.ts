@@ -788,6 +788,10 @@ export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
     title
+    category
+    authorization {
+      myPrivileges
+    }
     messages {
       ...MessageDetails
     }
@@ -1966,6 +1970,54 @@ export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteChallengeMutation,
   SchemaTypes.DeleteChallengeMutationVariables
 >;
+export const DeleteDiscussionDocument = gql`
+  mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
+    deleteDiscussion(deleteData: $deleteData) {
+      id
+      title
+    }
+  }
+`;
+export type DeleteDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
+>;
+
+/**
+ * __useDeleteDiscussionMutation__
+ *
+ * To run a mutation, you first call `useDeleteDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDiscussionMutation, { data, loading, error }] = useDeleteDiscussionMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteDiscussionMutation,
+    SchemaTypes.DeleteDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteDiscussionMutation, SchemaTypes.DeleteDiscussionMutationVariables>(
+    DeleteDiscussionDocument,
+    options
+  );
+}
+export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
+export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
+export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
+>;
 export const DeleteEcoverseDocument = gql`
   mutation deleteEcoverse($input: DeleteEcoverseInput!) {
     deleteEcoverse(deleteData: $input) {
@@ -2990,6 +3042,54 @@ export type RemoveUserAsOrganizationOwnerMutationResult =
 export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
+>;
+export const RemoveMessageFromDiscussionDocument = gql`
+  mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
+    removeMessageFromDiscussion(messageData: $messageData) {
+      id
+    }
+  }
+`;
+export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveMessageFromDiscussionMutation,
+  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+>;
+
+/**
+ * __useRemoveMessageFromDiscussionMutation__
+ *
+ * To run a mutation, you first call `useRemoveMessageFromDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMessageFromDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMessageFromDiscussionMutation, { data, loading, error }] = useRemoveMessageFromDiscussionMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveMessageFromDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveMessageFromDiscussionMutation,
+    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveMessageFromDiscussionMutation,
+    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+  >(RemoveMessageFromDiscussionDocument, options);
+}
+export type RemoveMessageFromDiscussionMutationHookResult = ReturnType<typeof useRemoveMessageFromDiscussionMutation>;
+export type RemoveMessageFromDiscussionMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveMessageFromDiscussionMutation>;
+export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveMessageFromDiscussionMutation,
+  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
 export const RemoveUserFromCommunityDocument = gql`
   mutation removeUserFromCommunity($input: RemoveCommunityMemberInput!) {
@@ -5781,36 +5881,39 @@ export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMe
   return { query: CommunityMembersDocument, variables: variables };
 }
 export const CommunityPageDocument = gql`
-  query communityPage($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      groups {
+      community(ID: $communityId) {
         id
-        name
-        profile {
+        displayName
+        groups {
           id
-          avatar
-          description
-          tagsets {
+          name
+          profile {
             id
-            name
-            tags
+            avatar
+            description
+            tagsets {
+              id
+              name
+              tags
+            }
           }
         }
-      }
-      members {
-        ...CommunityPageMembers
-      }
-      communication {
-        id
-        updates {
+        members {
+          ...CommunityPageMembers
+        }
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -5831,6 +5934,7 @@ export const CommunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityPageQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -9296,10 +9400,8 @@ export const OpportunityContributionDetailsDocument = gql`
         id
         nameID
         displayName
-        challenge {
-          id
-          nameID
-        }
+        parentId
+        parentNameID
         tagset {
           id
           name
@@ -9374,19 +9476,22 @@ export function refetchOpportunityContributionDetailsQuery(
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($communityId: UUID!) {
-    community(ID: $communityId) {
+  query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
       id
-      displayName
-      communication {
+      community(ID: $communityId) {
         id
-        updates {
+        displayName
+        communication {
           id
-          messages {
+          updates {
             id
-            message
-            sender
-            timestamp
+            messages {
+              id
+              message
+              sender
+              timestamp
+            }
           }
         }
       }
@@ -9406,6 +9511,7 @@ export const CommunityUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUpdatesQuery({
  *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -9575,10 +9681,14 @@ export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<Sche
 export const CommunityDiscussionListDocument = gql`
   query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     ecoverse(ID: $ecoverseId) {
+      id
       community(ID: $communityId) {
         id
         communication {
           id
+          authorization {
+            myPrivileges
+          }
           discussions {
             ...DiscussionDetails
           }
@@ -10391,4 +10501,82 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationMembersQuery(variables?: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
+}
+export const UserCardsContainerDocument = gql`
+  query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
+    usersById(IDs: $ids) {
+      id
+      nameID
+      displayName
+      city
+      country
+      profile {
+        id
+        avatar
+        tagsets {
+          id
+          name
+          tags
+        }
+      }
+      agent {
+        id
+        credentials {
+          id
+          resourceID
+          type
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserCardsContainerQuery__
+ *
+ * To run a query within a React component, call `useUserCardsContainerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCardsContainerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserCardsContainerQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useUserCardsContainerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export function useUserCardsContainerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserCardsContainerQuery,
+    SchemaTypes.UserCardsContainerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
+    UserCardsContainerDocument,
+    options
+  );
+}
+export type UserCardsContainerQueryHookResult = ReturnType<typeof useUserCardsContainerQuery>;
+export type UserCardsContainerLazyQueryHookResult = ReturnType<typeof useUserCardsContainerLazyQuery>;
+export type UserCardsContainerQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserCardsContainerQuery,
+  SchemaTypes.UserCardsContainerQueryVariables
+>;
+export function refetchUserCardsContainerQuery(variables?: SchemaTypes.UserCardsContainerQueryVariables) {
+  return { query: UserCardsContainerDocument, variables: variables };
 }

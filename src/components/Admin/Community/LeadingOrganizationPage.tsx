@@ -19,6 +19,7 @@ import {
 import { useApolloErrorHandler } from '../../../hooks';
 import { OrganizationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
 import Avatar from '../../core/Avatar';
+import { Filter } from '../Common/Filter';
 
 const useStyles = makeStyles(theme => ({
   iconButtonSuccess: {
@@ -26,6 +27,10 @@ const useStyles = makeStyles(theme => ({
   },
   iconButtonNegative: {
     color: theme.palette.negative.main,
+  },
+  gridContainer: {
+    height: 400,
+    paddingTop: theme.spacing(1),
   },
 }));
 
@@ -120,7 +125,7 @@ const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
         id: x.id,
         avatarSrc: x.profile.avatar,
         name: x.displayName,
-        tags: (x.profile?.tagsets || []).flatMap(y => y.tags).join(','),
+        tags: (x.profile?.tagsets || []).flatMap(y => y.tags).join(', '),
       } as OrganizationDetailsVm)
   );
 };
@@ -145,26 +150,44 @@ const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
-        <div style={{ height: 400 }}>
-          <DataGrid
-            rows={leading}
-            columns={leadingColumns(t, styles, onRemove)}
-            density="compact"
-            hideFooter={true}
-            loading={isUpdating}
-          />
-        </div>
+        <Filter
+          data={leading}
+          placeholder={t('pages.lead-organization.search.leading-placeholder')}
+          limitKeys={['name', 'tags']}
+        >
+          {filteredData => (
+            <div className={styles.gridContainer}>
+              <DataGrid
+                rows={filteredData}
+                columns={leadingColumns(t, styles, onRemove)}
+                density="compact"
+                hideFooter={true}
+                loading={isUpdating}
+                disableColumnFilter={true}
+              />
+            </div>
+          )}
+        </Filter>
       </Grid>
       <Grid item xs={6}>
-        <div style={{ height: 400 }}>
-          <DataGrid
-            rows={available}
-            columns={availableColumns(t, styles, onAdd)}
-            density="compact"
-            hideFooter={true}
-            loading={isUpdating}
-          />
-        </div>
+        <Filter
+          data={available}
+          placeholder={t('pages.lead-organization.search.available-placeholder')}
+          limitKeys={['name']}
+        >
+          {filteredData => (
+            <div className={styles.gridContainer}>
+              <DataGrid
+                rows={filteredData}
+                columns={availableColumns(t, styles, onAdd)}
+                density="compact"
+                hideFooter={true}
+                loading={isUpdating}
+                disableColumnFilter={true}
+              />
+            </div>
+          )}
+        </Filter>
       </Grid>
     </Grid>
   );
@@ -177,7 +200,6 @@ const leadingColumns = (t: TFunction, styles: ClassNameMap<string>, onRemove: (o
       field: 'avatarSrc',
       headerName: t('common.avatar'),
       width: 130,
-      filterable: false,
       renderCell: params => <Avatar src={params.value as string} />,
     },
     { field: 'name', headerName: 'Name', flex: 1 },
@@ -189,7 +211,6 @@ const leadingColumns = (t: TFunction, styles: ClassNameMap<string>, onRemove: (o
     {
       field: 'id',
       width: 140,
-      filterable: false,
       headerName: t('common.remove'),
       renderCell: params => (
         <IconButton
@@ -210,7 +231,6 @@ const availableColumns = (t: TFunction, styles: ClassNameMap<string>, onAdd: (or
     {
       field: 'id',
       width: 110,
-      filterable: false,
       headerName: t('common.add'),
       renderCell: params => (
         <IconButton
@@ -225,7 +245,6 @@ const availableColumns = (t: TFunction, styles: ClassNameMap<string>, onAdd: (or
     },
     {
       field: 'avatarSrc',
-      filterable: false,
       headerName: t('common.avatar'),
       width: 130,
       renderCell: params => <Avatar src={params.value as string} />,

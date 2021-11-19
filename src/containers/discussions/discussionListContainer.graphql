@@ -1,6 +1,10 @@
 fragment DiscussionDetails on Discussion {
   id
   title
+  category
+  authorization {
+    myPrivileges
+  }
   messages {
     ...MessageDetails
   }
@@ -8,10 +12,14 @@ fragment DiscussionDetails on Discussion {
 
 query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
   ecoverse(ID: $ecoverseId) {
+    id
     community(ID: $communityId) {
       id
       communication {
         id
+        authorization {
+          myPrivileges
+        }
         discussions {
           ...DiscussionDetails
         }
@@ -46,4 +54,3 @@ query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     }
   }
 }
-

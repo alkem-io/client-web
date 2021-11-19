@@ -9,7 +9,7 @@ import {
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { Message, Community, User } from '../../models/graphql-schema';
+import { Message, Community, User, Ecoverse } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
 import { DocumentNode, useQuery } from '@apollo/client';
 import { logger } from '../../services/logging/winston/logger';
@@ -17,6 +17,7 @@ import { logger } from '../../services/logging/winston/logger';
 export interface CommunityUpdatesContainerProps {
   entities: {
     communityId: Community['id'];
+    ecoverseId: Ecoverse['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,
@@ -44,10 +45,10 @@ export interface CommunityUpdatesEntities {
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
-  const { communityId } = entities;
+  const { communityId, ecoverseId } = entities;
 
-  const { data, loading } = useCommunityUpdatesQuery({ variables: { communityId } });
-  const updatesId = data?.community?.communication?.updates?.id || '';
+  const { data, loading } = useCommunityUpdatesQuery({ variables: { ecoverseId, communityId } });
+  const updatesId = data?.ecoverse.community?.communication?.updates?.id || '';
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
@@ -57,7 +58,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     async message => {
       const update = await sendUpdate({
         variables: { msgData: { message, updatesID: updatesId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
       });
       return update.data?.sendUpdate;
     },
@@ -70,14 +71,14 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     async messageId => {
       const update = await removeUpdate({
         variables: { msgData: { messageID: messageId, updatesID: updatesId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId })],
+        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
       });
       return update.data?.removeUpdate;
     },
     [sendUpdate, communityId, updatesId]
   );
 
-  const messages = data?.community.communication?.updates?.messages || [];
+  const messages = data?.ecoverse.community?.communication?.updates?.messages || [];
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
   return (

@@ -1113,6 +1113,8 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
+  /** Updates an user preference */
+  updateUserPreference: UserPreference;
   /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
 };
@@ -1437,6 +1439,10 @@ export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
 };
 
+export type MutationUpdateUserPreferenceArgs = {
+  userPreferenceData: UpdateUserPreferenceInput;
+};
+
 export type MutationUploadAvatarArgs = {
   file: Scalars['Upload'];
   uploadData: UploadProfileAvatarInput;
@@ -1469,6 +1475,10 @@ export type Opportunity = Searchable & {
   lifecycle?: Maybe<Lifecycle>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The parent entity (challenge) ID. */
+  parentId?: Maybe<Scalars['String']>;
+  /** The parent entity name (challenge) ID. */
+  parentNameID?: Maybe<Scalars['String']>;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
   /** The set of Relations within the context of this Opportunity. */
@@ -1642,8 +1652,6 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** A community. A valid community ID needs to be specified. */
-  community: Community;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1676,10 +1684,6 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
-};
-
-export type QueryCommunityArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type QueryEcoverseArgs = {
@@ -2076,6 +2080,14 @@ export type UpdateUserInput = {
   serviceProfile?: Maybe<Scalars['Boolean']>;
 };
 
+export type UpdateUserPreferenceInput = {
+  /** Type of the user preference */
+  type: UserPreferenceType;
+  /** ID of the user */
+  userID: Scalars['UUID'];
+  value: Scalars['String'];
+};
+
 export type UpdateVisualInput = {
   avatar?: Maybe<Scalars['String']>;
   background?: Maybe<Scalars['String']>;
@@ -2137,6 +2149,8 @@ export type User = Searchable & {
   nameID: Scalars['NameID'];
   /** The phone number for this User. */
   phone: Scalars['String'];
+  /** List of user preferences */
+  preferences?: Maybe<Array<UserPreference>>;
   /** The profile for this User */
   profile?: Maybe<Profile>;
 };
@@ -2179,6 +2193,48 @@ export type UserMembership = {
   /** Details of the Organizations the user is a member of, with child memberships. */
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
+
+export type UserPreference = {
+  __typename?: 'UserPreference';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The preference definition */
+  userPreferenceDefinition: UserPreferenceDefinition;
+  /** Value of the preference */
+  value: Scalars['String'];
+};
+
+export type UserPreferenceDefinition = {
+  __typename?: 'UserPreferenceDefinition';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** Preference description */
+  description: Scalars['String'];
+  /** The name */
+  displayName: Scalars['String'];
+  /** The group */
+  group: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Type of preference */
+  type: UserPreferenceType;
+  /** Preference value type */
+  valueType: UserPreferenceValueType;
+};
+
+export enum UserPreferenceType {
+  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
+}
+
+export enum UserPreferenceValueType {
+  Boolean = 'BOOLEAN',
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING',
+}
 
 export type UserSendMessageInput = {
   /** The message being sent */
@@ -3096,6 +3152,15 @@ export type DeleteChallengeMutation = {
   deleteChallenge: { __typename?: 'Challenge'; id: string; nameID: string };
 };
 
+export type DeleteDiscussionMutationVariables = Exact<{
+  deleteData: DeleteDiscussionInput;
+}>;
+
+export type DeleteDiscussionMutation = {
+  __typename?: 'Mutation';
+  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+};
+
 export type DeleteEcoverseMutationVariables = Exact<{
   input: DeleteEcoverseInput;
 }>;
@@ -3302,6 +3367,15 @@ export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
 export type RemoveUserAsOrganizationOwnerMutation = {
   __typename?: 'Mutation';
   removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveMessageFromDiscussionMutationVariables = Exact<{
+  messageData: DiscussionRemoveMessageInput;
+}>;
+
+export type RemoveMessageFromDiscussionMutation = {
+  __typename?: 'Mutation';
+  removeMessageFromDiscussion: { __typename?: 'Discussion'; id: string };
 };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
@@ -4654,63 +4728,68 @@ export type CommunityMembersQuery = {
 };
 
 export type CommunityPageQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityPageQuery = {
   __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
+  ecoverse: {
+    __typename?: 'Ecoverse';
     id: string;
-    displayName: string;
-    groups?: Maybe<
-      Array<{
-        __typename?: 'UserGroup';
-        id: string;
-        name: string;
-        profile?: Maybe<{
-          __typename?: 'Profile';
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      groups?: Maybe<
+        Array<{
+          __typename?: 'UserGroup';
           id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
-        }>;
-      }>
-    >;
-    members?: Maybe<
-      Array<{
-        __typename?: 'User';
-        id: string;
-        nameID: string;
-        displayName: string;
-        country: string;
-        city: string;
-        email: string;
-        agent?: Maybe<{
-          __typename?: 'Agent';
+          name: string;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            description?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
           id: string;
-          credentials?: Maybe<
-            Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          nameID: string;
+          displayName: string;
+          country: string;
+          city: string;
+          email: string;
+          agent?: Maybe<{
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Maybe<
+              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            >;
+          }>;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            description?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        updates?: Maybe<{
+          __typename?: 'Updates';
+          id: string;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
           >;
         }>;
-        profile?: Maybe<{
-          __typename?: 'Profile';
-          id: string;
-          avatar?: Maybe<string>;
-          description?: Maybe<string>;
-          tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-        }>;
-      }>
-    >;
-    communication?: Maybe<{
-      __typename?: 'Communication';
-      id: string;
-      updates?: Maybe<{
-        __typename?: 'Updates';
-        id: string;
-        messages?: Maybe<
-          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
-        >;
       }>;
     }>;
   };
@@ -6161,7 +6240,8 @@ export type OpportunityContributionDetailsQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      challenge?: Maybe<{ __typename?: 'Challenge'; id: string; nameID: string }>;
+      parentId?: Maybe<string>;
+      parentNameID?: Maybe<string>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       context?: Maybe<{
         __typename?: 'Context';
@@ -6173,24 +6253,29 @@ export type OpportunityContributionDetailsQuery = {
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityUpdatesQuery = {
   __typename?: 'Query';
-  community: {
-    __typename?: 'Community';
+  ecoverse: {
+    __typename?: 'Ecoverse';
     id: string;
-    displayName: string;
-    communication?: Maybe<{
-      __typename?: 'Communication';
+    community?: Maybe<{
+      __typename?: 'Community';
       id: string;
-      updates?: Maybe<{
-        __typename?: 'Updates';
+      displayName: string;
+      communication?: Maybe<{
+        __typename?: 'Communication';
         id: string;
-        messages?: Maybe<
-          Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
-        >;
+        updates?: Maybe<{
+          __typename?: 'Updates';
+          id: string;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+          >;
+        }>;
       }>;
     }>;
   };
@@ -6225,6 +6310,8 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  category: DiscussionCategory;
+  authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
@@ -6237,17 +6324,24 @@ export type CommunityDiscussionListQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
+    id: string;
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
       communication?: Maybe<{
         __typename?: 'Communication';
         id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
         discussions?: Maybe<
           Array<{
             __typename?: 'Discussion';
             id: string;
             title: string;
+            category: DiscussionCategory;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
             messages?: Maybe<
               Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
             >;
@@ -6268,6 +6362,8 @@ export type PostDiscussionCommentMutation = {
     __typename?: 'Discussion';
     id: string;
     title: string;
+    category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
     messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
   };
 };
@@ -6628,4 +6724,33 @@ export type OrganizationMembersQuery = {
       }>
     >;
   };
+};
+
+export type UserCardsContainerQueryVariables = Exact<{
+  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserCardsContainerQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    city: string;
+    country: string;
+    profile?: Maybe<{
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+    }>;
+    agent?: Maybe<{
+      __typename?: 'Agent';
+      id: string;
+      credentials?: Maybe<
+        Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      >;
+    }>;
+  }>;
 };

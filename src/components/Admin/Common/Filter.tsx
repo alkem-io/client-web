@@ -1,24 +1,39 @@
-import { FormControl, Grid, OutlinedInput, TextField } from '@mui/material';
-import { Autocomplete } from '@mui/material';
-import { sortBy as lSortBy } from 'lodash';
-import React, { useMemo, useState } from 'react';
+import { FormControl, Grid, MenuItem, OutlinedInput, Select } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { orderBy } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 interface sortItem<T> {
   key: keyof T;
   name: string;
+  order?: 'asc' | 'desc';
+  default?: boolean;
 }
 
 type FilterProps<T> = {
   data: T[];
   limitKeys?: Array<keyof T>;
+  includeKeys?: Array<keyof T>;
   sort?: sortItem<T>[];
+  placeholder?: string;
   children: (filteredData: T[]) => void;
 };
 
-export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<T>): React.ReactElement {
+const useStyles = makeStyles(() => ({
+  select: { margin: 0 },
+}));
+
+export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
+  const styles = useStyles();
   const [filterBy, setFilterBy] = useState('');
-  const [sortBy, setSortBy] = useState<sortItem<T> | null>(null);
+  const [sortBy, setSortBy] = useState<sortItem<T> | undefined>(undefined);
+
+  useEffect(() => {
+    const defaultSort = sort?.find(s => s.default);
+    if (defaultSort) setSortBy(defaultSort);
+  }, [sort]);
+
   const filteredData = useMemo(() => {
     const filtered = data.filter(item => {
       if (!filterBy) return true;
@@ -37,7 +52,7 @@ export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<
     });
 
     if (sortBy) {
-      return lSortBy(filtered, sortBy.key);
+      return orderBy(filtered, sortBy.key, sortBy.order);
     }
     return filtered;
   }, [data, filterBy, sortBy]);
@@ -47,26 +62,31 @@ export function Filter<T>({ data, limitKeys = [], sort, children }: FilterProps<
     setFilterBy(value);
   };
 
+  const keyFromSortItem = (item?: sortItem<T>) => {
+    return item ? `${item.key}-${item.order}` : '';
+  };
+
   return (
     <>
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
         <Grid item xs={sort ? 10 : 12}>
           <FormControl fullWidth size={'small'}>
-            <OutlinedInput placeholder={t('components.filter.placeholder')} onChange={handleSearch} />
+            <OutlinedInput placeholder={placeholder ?? t('components.filter.placeholder')} onChange={handleSearch} />
           </FormControl>
         </Grid>
         {sort && (
           <Grid item xs={2}>
-            <FormControl variant="outlined" fullWidth>
-              <Autocomplete
-                options={sort}
-                getOptionLabel={option => option.name}
-                renderInput={params => <TextField {...params} label="" margin="dense" variant="outlined" />}
-                value={sortBy}
-                onChange={(event: any, newValue: sortItem<T> | null) => {
-                  setSortBy(newValue);
-                }}
-              />
+            <FormControl className={styles.select} variant="outlined" fullWidth margin="dense">
+              <Select
+                value={keyFromSortItem(sortBy)}
+                onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
+              >
+                {sort.map((s, i) => (
+                  <MenuItem key={i} value={keyFromSortItem(s)}>
+                    {s.name}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
           </Grid>
         )}

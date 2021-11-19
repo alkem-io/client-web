@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, forwardRef } from 'react';
@@ -34,7 +34,9 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | nul
           className={styles.cardHeader}
           title={
             <Typography variant="h3">
-              {title}
+              <Box component="span" fontWeight="bold">
+                {title}
+              </Box>
               {helpText && <HelpButton helpText={helpText} />}
             </Typography>
           }

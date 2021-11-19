@@ -193,6 +193,11 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             </Card>
           </Grid>
         )}
+        {orderedMessages.length === 0 && (
+          <Typography align={'center'} variant={'subtitle1'}>
+            {t('common.no-updates')}
+          </Typography>
+        )}
         {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;

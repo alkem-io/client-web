@@ -1,16 +1,16 @@
-import React, { FC, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Avatar } from '@material-ui/core';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import { SvgIcon, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import makeStyles from '@mui/styles/makeStyles';
-import Link from '@mui/material/Link';
-import { SvgIcon, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Box from '@mui/material/Box';
-import PersonIcon from '@mui/icons-material/Person';
+import Link from '@mui/material/Link';
+import makeStyles from '@mui/styles/makeStyles';
+import React, { FC, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import TagsComponent from '../../TagsComponent/TagsComponent';
-import Image from '../../../../core/Image';
 
 // todo: unify card height on a later stage
 // Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
@@ -18,17 +18,19 @@ export const USER_CARD_HEIGHT = 416;
 const IMAGE_HEIGHT = 188;
 const TAG_CONTAINER_HEIGHT = 82;
 const TAG_DISPLAY_COUNT = 3;
+const INITIAL_ELEVATION = 1;
+const FINAL_ELEVATION = 8;
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
+  avatar: {
+    height: IMAGE_HEIGHT,
+    width: IMAGE_HEIGHT,
+  },
   imageContainer: {
     display: 'flex',
     justifyContent: 'center',
     height: IMAGE_HEIGHT,
-
-    '& > img': {
-      borderRadius: theme.shape.borderRadius,
-    },
   },
   cardContent: {
     padding: 0,
@@ -60,9 +62,6 @@ export interface UserCardProps {
   country?: string;
 }
 
-const INITIAL_ELEVATION = 1;
-const FINAL_ELEVATION = 8;
-
 const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
   const styles = useStyles();
   const location = [city, country].filter(x => !!x).join(', ');
@@ -76,7 +75,15 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
       >
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
-            <Image src={avatarSrc} aria-label="User avatar" alt={`${displayName}\`s avatar`} />
+            <Avatar
+              className={styles.avatar}
+              src={avatarSrc}
+              aria-label="User avatar"
+              alt={`${displayName}\`s avatar`}
+              variant="rounded"
+            >
+              {displayName[0]}
+            </Avatar>
           </div>
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>

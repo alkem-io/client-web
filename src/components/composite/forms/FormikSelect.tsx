@@ -1,13 +1,22 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, OutlinedInput, Select, SelectProps } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
 import React, { FC } from 'react';
+
+const useStyles = makeStyles(theme => ({
+  icon: {
+    paddingRight: theme.spacing(1),
+    color: theme.palette.primary.main,
+    fontSize: theme.typography.body1.fontSize,
+  },
+}));
 
 interface FormikSelectProps extends SelectProps {
   title: string;
   name: string;
   required?: boolean;
   disabled?: boolean;
-  values: { id: string; name: string }[];
+  values: { id: string; name: string; icon?: React.ReactElement }[];
   placeholder?: string;
 }
 
@@ -20,6 +29,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   placeholder,
 }) => {
   const [field, meta] = useField(name);
+  const styles = useStyles();
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth variant="outlined" error={!!meta.error}>
@@ -36,6 +46,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
+            {el.icon && <span className={styles.icon}>{el.icon}</span>}
             {el.name}
           </MenuItem>
         ))}

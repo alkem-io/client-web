@@ -41,7 +41,9 @@
     "processing": "Processing...",
     "details": "Details",
     "settings": "Settings",
-    "member": "Member"
+    "member": "Member",
+    "profile": "Profile",
+    "view-profile": "View Profile"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -85,12 +87,15 @@
     "users": "Users",
     "update": "Update",
     "updates": "Updates",
+    "no-updates": "No updates",
     "no-tags": "No tags available",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
     "member": "Member",
+    "members": "Members",
     "empty-string": "",
+    "discussion": "Discussion",
     "discussions": "Discussions",
     "genders": {
       "notSpecified": "not specified",
@@ -198,6 +203,12 @@
         "new": "New",
         "edit": "Edit",
         "read-only": "Read only"
+      },
+      "discussion-category": {
+        "GENERAL": "General",
+        "IDEAS": "Ideas",
+        "QUESTIONS": "Questions",
+        "SHARING": "Sharing"
       }
     }
   },
@@ -427,13 +438,22 @@
     },
     "discussions-list": {
       "name": "Discussions - {{community}}",
+      "title": "Discussions ({{count}})",
       "help": "List of all discussions",
-      "posted": "{{- date}} - {{count}} comment",
-      "posted_plural": "{{- date}} - {{count}} comments"
+      "posted": "{{name}} on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
     },
     "discussion": {
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments"
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "comment": "{{count}} Comment",
+      "comment_plural": "{{count}} Comments",
+      "contributed": "{{count}} Person contributed",
+      "contributed_plural": "{{count}} People contributed",
+      "cant-post": "You can't reply to this discussion",
+      "delete-discussion": "Delete discussion?",
+      "delete-comment": "Delete comment?"
     },
     "comment": {
       "posted": "{{name}} on {{- date}}",
@@ -460,12 +480,31 @@
         "title": "Title",
         "placeholder": "Discussion title"
       },
+      "category": {
+        "title": "Category"
+      },
       "description": {
         "title": "Further information",
         "placeholder": "Add further information on the discussion here"
       },
       "buttons": {
-        "post": "Post discussion"
+        "post": "Create discussion"
+      }
+    },
+    "members-view": {
+      "title": "Active community members"
+    },
+    "discussion-category-selector": {
+      "ALL": "SHOW ALL",
+      "GENERAL": "GENERAL",
+      "IDEAS": "IDEAS",
+      "QUESTIONS": "QUESTIONS",
+      "SHARING": "SHARING"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data": "Create a discussion",
+        "explore": "Explore discussions"
       }
     }
   },
@@ -482,6 +521,12 @@
     }
   },
   "pages": {
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Search in name or tags",
+        "available-placeholder": "Search in name"
+      }
+    },
     "activity": {
       "title": "{{blockName}} activity",
       "ecoverses": "Hubs",
@@ -550,7 +595,8 @@
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
-          "body": ""
+          "body": "",
+          "no-data": "No challenges available for this hub"
         },
         "community": {
           "header": "Community",

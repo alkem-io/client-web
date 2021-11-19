@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
+import { CommunityProvider } from '../../context/CommunityProvider';
 import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { AuthorizationCredential } from '../../models/graphql-schema';
@@ -43,7 +44,9 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
         <ChallengeProvider>
-          <ChallengeRoute paths={currentPaths} />
+          <CommunityProvider>
+            <ChallengeRoute paths={currentPaths} />
+          </CommunityProvider>
         </ChallengeProvider>
       </Route>
       <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>

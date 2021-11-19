@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
+import { CommunityProvider } from '../../context/CommunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
@@ -35,7 +36,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
     <Switch>
       <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
-          <OpportunityRoute paths={currentPaths} />
+          <CommunityProvider>
+            <OpportunityRoute paths={currentPaths} />
+          </CommunityProvider>
         </OpportunityProvider>
       </Route>
       <Route exact path={path}>

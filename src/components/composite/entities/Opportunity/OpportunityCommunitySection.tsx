@@ -13,6 +13,7 @@ import {
 } from '../../../../models/graphql-schema';
 import CommunitySection, { CommunitySectionPropsExt } from '../../../../views/CommunitySection/CommunitySectionView';
 import { Loading } from '../../../core';
+import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
 
 interface OpportunityCommunitySectionProps extends CommunitySectionPropsExt {
   ecoverseId: string;
@@ -33,6 +34,7 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
     errorPolicy: 'all',
   });
   const { isFeatureEnabled } = useConfig();
+  const { discussionList } = useDiscussionsContext();
 
   const addCommunityUpdatesContainer = useCallback(
     (children: (entities?: CommunityUpdatesDataEntities) => React.ReactElement) => {
@@ -68,11 +70,12 @@ export const OpportunityCommunitySection: FC<OpportunityCommunitySectionProps> =
           users={(usersQuery?.ecoverse.opportunity.community?.members as User[]) || []}
           updates={entities?.messages}
           updateSenders={entities?.senders}
-          discussions={[]}
+          discussions={discussionList}
+          parentEntityId={opportunityId}
           {...rest}
         />
       )),
-    [addCommunityUpdatesContainer, usersQuery]
+    [addCommunityUpdatesContainer, usersQuery, discussionList]
   );
 
   if (usersLoading) return <Loading text={'Loading community data'} />;
