@@ -1,5 +1,4 @@
 import { ThemeProvider } from '../src/context/ThemeProvider';
-import { StyledEngineProvider } from '@mui/material/styles';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -12,12 +11,14 @@ export const parameters = {
 };
 
 // export const decorators = [muiTheme([defaultTheme])];
-export const decorators = [
-  Story => (
-    <StyledEngineProvider injectFirst>
+const withThemeProvider = (Story, context) => {
+  return (
+    <Emotion10ThemeProvider theme={defaultTheme}>
       <ThemeProvider>
-        <Story />
+        <Story {...context} />
       </ThemeProvider>
-    </StyledEngineProvider>
-  ),
-];
+    </Emotion10ThemeProvider>
+  );
+};
+
+export const decorators = [withThemeProvider];
