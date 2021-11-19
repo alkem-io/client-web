@@ -49,4 +49,11 @@ declare module '@mui/material/styles' {
   }
 }
 
+declare module '@mui/material' {
+  interface Color {
+    main: string;
+    dark: string;
+  }
+}
+
 export const defaultTheme = createTheme(theme);

@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles';
+import { alpha, Components, Theme } from '@mui/material/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
 
 const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
@@ -7,6 +7,38 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
   }
 
   return {
+    variants: [
+      {
+        props: { variant: 'contained', color: 'grey' },
+        style: {
+          color: theme.palette.getContrastText(theme.palette.grey[300]),
+        },
+      },
+      {
+        props: { variant: 'outlined', color: 'grey' },
+        style: {
+          color: theme.palette.primary.main,
+          borderColor: theme.palette.primary.main,
+          '&.Mui-disabled': {
+            border: `1px solid ${theme.palette.action.disabledBackground}`,
+          },
+          '&:hover': {
+            color: theme.palette.neutralLight.main,
+            borderColor: theme.palette.primary.main,
+            backgroundColor: alpha(theme.palette.primary.main, 0.7),
+          },
+        },
+      },
+      {
+        props: { color: 'grey', variant: 'text' },
+        style: {
+          color: theme.palette.text.primary,
+          '&:hover': {
+            backgroundColor: alpha(theme.palette.text.primary, theme.palette.action.hoverOpacity),
+          },
+        },
+      },
+    ],
     defaultProps: {
       disableRipple: true,
     },
@@ -50,25 +82,25 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
         borderColor: theme.palette.primary.main,
         background: theme.palette.primary.main,
 
-        '&$hover': {
+        '&:hover': {
           color: theme.palette.neutralLight.main,
 
           backgroundColor: hexToRGBA(theme.palette.primary.main, 0.7),
         },
 
-        '&$inset': {
+        '&.inset': {
           borderColor: theme.palette.neutralLight.main,
           borderRightColor: 'transparent',
           borderTopColor: 'transparent',
           borderBottomColor: 'transparent',
 
-          '&$hover': {
+          '&:hover': {
             color: theme.palette.primary.main,
             background: theme.palette.background.paper,
             cursor: 'pointer',
           },
 
-          '&$focus': {
+          '&:focus': {
             outline: 'none',
           },
         },
@@ -79,15 +111,15 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
         borderColor: theme.palette.primary.main,
         background: theme.palette.background.paper,
 
-        '&$hover': {
+        '&:hover': {
           color: theme.palette.neutralLight.main,
           background: theme.palette.primary.main,
         },
 
-        '&$focus': {
+        '&:focus': {
           outline: `1px auto ${theme.palette.primary.main}`,
 
-          '&$inset': {
+          '&.inset': {
             outline: 'none',
           },
         },
@@ -95,4 +127,11 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
     },
   };
 };
+
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    grey: true;
+  }
+}
+
 export default MuiButton;

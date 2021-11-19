@@ -68,6 +68,7 @@ const useStyles = makeStyles(theme => ({
 
     '&:hover': {
       color: theme.palette.background.default,
+      borderColor: theme.palette.error.main,
       background: hexToRGBA(theme.palette.error.main, 0.7),
     },
 
@@ -120,7 +121,6 @@ const Button: FC<ButtonProps> = forwardRef(
       small = false,
       block = false,
       disabled = false,
-      children,
       as: Component = 'button',
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onClick = () => {},
@@ -147,12 +147,12 @@ const Button: FC<ButtonProps> = forwardRef(
         }}
         component={Component as any}
         variant="outlined"
-        color={'primary'}
+        color={variant === 'primary' ? 'primary' : 'grey'}
         startIcon={startIcon}
         disabled={disabled}
         {...props}
       >
-        {text}
+        <span>{text}</span>
       </MuiButton>
     );
   }

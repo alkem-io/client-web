@@ -1,4 +1,5 @@
 import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#00BCD4' },
@@ -10,6 +11,10 @@ export const paletteOptions: PaletteOptions = {
   background: { paper: '#FFF' },
   divider: '#00BCD440',
   mode: 'light',
+  grey: {
+    main: grey[300],
+    dark: grey[400],
+  },
 };
 
 declare module '@mui/material/styles/createPalette' {

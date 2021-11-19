@@ -37,6 +37,27 @@ Negative.args = {
   text: 'Button',
 };
 
+export const Transparent = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+Transparent.args = {
+  variant: 'transparent',
+  text: 'Button',
+};
+
+export const SemiTransparent = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+SemiTransparent.args = {
+  variant: 'semiTransparent',
+  text: 'Button',
+};
+
+export const WhiteStatic = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+WhiteStatic.args = {
+  variant: 'whiteStatic',
+  text: 'Button',
+};
+
 // export const Secondary = Template.bind({});
 // Secondary.args = {
 //   label: 'Button',
