@@ -369,7 +369,7 @@ export type CommunicationAdminRoomMembershipResult = {
 
 export type CommunicationCreateDiscussionInput = {
   /** The category for the Discussion */
-  category?: Maybe<DiscussionCategory>;
+  category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
   /** The starting message in the discussion */
