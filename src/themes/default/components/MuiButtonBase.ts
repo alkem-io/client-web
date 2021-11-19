@@ -9,21 +9,21 @@ const MuiButtonBase = (theme: Theme): Components['MuiButtonBase'] | undefined =>
   return {
     styleOverrides: {
       root: {
-        '&:disabled': {
+        '&.Mui-disabled': {
           color: theme.palette.background.paper,
           borderColor: theme.palette.neutralLight.main,
           background: theme.palette.neutralLight.main,
           opacity: 0.8,
           cursor: 'default',
 
-          '&$hover': {
+          '&:hover': {
             color: theme.palette.background.paper,
             background: hexToRGBA(theme.palette.neutralMedium.main, 0.7),
             cursor: 'not-allowed',
           },
 
-          '&$focus': {
-            '&$inset': {
+          '&:focus': {
+            '&.inset': {
               outline: 'none',
             },
           },
