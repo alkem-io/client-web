@@ -39,9 +39,7 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
         },
       },
     ],
-    defaultProps: {
-      disableRipple: true,
-    },
+
     styleOverrides: {
       root: {
         padding: theme.spacing(1.5, 2),

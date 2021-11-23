@@ -30,6 +30,9 @@ const MuiButtonBase = (theme: Theme): Components['MuiButtonBase'] | undefined =>
         },
       },
     },
+    defaultProps: {
+      disableRipple: true,
+    },
   };
 };
 export default MuiButtonBase;

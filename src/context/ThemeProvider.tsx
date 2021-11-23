@@ -24,21 +24,19 @@ const ThemeProvider: FC<{}> = ({ children }) => {
 
 const ThemeProviderV2: FC<{}> = ({ children }) => {
   return (
-    <StyledEngineProvider injectFirst>
-      <MuiThemeProvider
-        theme={(theme: Theme) =>
-          createTheme({
-            ...theme,
-            spacing: 8,
-            typography: {
-              ...typographyOptionsV2,
-            },
-          })
-        }
-      >
-        {children}
-      </MuiThemeProvider>
-    </StyledEngineProvider>
+    <MuiThemeProvider
+      theme={(theme: Theme) =>
+        createTheme({
+          ...theme,
+          spacing: 8,
+          typography: {
+            ...typographyOptionsV2,
+          },
+        })
+      }
+    >
+      {children}
+    </MuiThemeProvider>
   );
 };
 
