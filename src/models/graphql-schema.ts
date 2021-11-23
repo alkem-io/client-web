@@ -17,6 +17,8 @@ export type Scalars = {
   JSON: string;
   /** A decentralized identifier (DID) as per the W3C standard. */
   Markdown: string;
+  /** An identifier that originates from the underlying messaging platform. */
+  MessageID: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
   /** A uuid identifier. Length 36 charachters. */
@@ -331,9 +333,43 @@ export type Communication = {
   updates?: Maybe<Updates>;
 };
 
+export type CommunicationAdminEnsureAccessInput = {
+  communityID: Scalars['UUID'];
+};
+
+export type CommunicationAdminMembershipInput = {
+  communityID: Scalars['UUID'];
+};
+
+export type CommunicationAdminMembershipResult = {
+  __typename?: 'CommunicationAdminMembershipResult';
+  /** Display name of the result */
+  displayName: Scalars['String'];
+  /** A unique identifier for this comunication room membership result. */
+  id: Scalars['String'];
+  /** Rooms in this Communication */
+  rooms: Array<CommunicationAdminRoomMembershipResult>;
+};
+
+export type CommunicationAdminRoomMembershipResult = {
+  __typename?: 'CommunicationAdminRoomMembershipResult';
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** Members of the room that are not members of the Community. */
+  extraMembers: Array<Scalars['String']>;
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
+  /** Name of the room */
+  members: Array<Scalars['String']>;
+  /** Members of the community that are missing from the room */
+  missingMembers: Array<Scalars['String']>;
+  /** The matrix room ID */
+  roomID: Scalars['String'];
+};
+
 export type CommunicationCreateDiscussionInput = {
   /** The category for the Discussion */
-  category?: Maybe<DiscussionCategory>;
+  category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
   /** The starting message in the discussion */
@@ -710,7 +746,7 @@ export type DiscussionRemoveMessageInput = {
   /** The Discussion to remove a message from. */
   discussionID: Scalars['UUID'];
   /** The message id that should be removed */
-  messageID: Scalars['String'];
+  messageID: Scalars['MessageID'];
 };
 
 export type DiscussionSendMessageInput = {
@@ -932,7 +968,7 @@ export type MembershipUserResultEntryOrganization = {
 export type Message = {
   __typename?: 'Message';
   /** The id for the message event. */
-  id: Scalars['String'];
+  id: Scalars['MessageID'];
   /** The message being sent */
   message: Scalars['Markdown'];
   /** The sender user ID */
@@ -951,6 +987,8 @@ export type Metadata = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Ensure all community members are registered for communications. */
+  adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1060,9 +1098,9 @@ export type Mutation = {
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a message from the specified Discussion. */
-  removeMessageFromDiscussion: Discussion;
+  removeMessageFromDiscussion: Scalars['MessageID'];
   /** Removes an update message. */
-  removeUpdate: Scalars['String'];
+  removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
   /** Removes a User from being an Ecoverse Admin. */
@@ -1085,10 +1123,10 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Sends a message to the specified Discussion */
-  sendMessageToDiscussion: Discussion;
-  /** Sends an update message. */
-  sendUpdate: Scalars['String'];
+  /** Sends a message to the specified Discussion.  */
+  sendMessageToDiscussion: Message;
+  /** Sends an update message. Returns the id of the new Update message. */
+  sendUpdate: Message;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified Aspect. */
@@ -1113,10 +1151,12 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
-  /** Updates an user preference */
-  updateUserPreference: UserPreference;
   /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
+};
+
+export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
+  communicationData: CommunicationAdminEnsureAccessInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -1439,10 +1479,6 @@ export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
 };
 
-export type MutationUpdateUserPreferenceArgs = {
-  userPreferenceData: UpdateUserPreferenceInput;
-};
-
 export type MutationUploadAvatarArgs = {
   file: Scalars['Upload'];
   uploadData: UploadProfileAvatarInput;
@@ -1652,6 +1688,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** All Users that are members of a given room */
+  adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -1684,6 +1722,10 @@ export type Query = {
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryAdminCommunicationMembershipArgs = {
+  communicationData: CommunicationAdminMembershipInput;
 };
 
 export type QueryEcoverseArgs = {
@@ -2080,14 +2122,6 @@ export type UpdateUserInput = {
   serviceProfile?: Maybe<Scalars['Boolean']>;
 };
 
-export type UpdateUserPreferenceInput = {
-  /** Type of the user preference */
-  type: UserPreferenceType;
-  /** ID of the user */
-  userID: Scalars['UUID'];
-  value: Scalars['String'];
-};
-
 export type UpdateVisualInput = {
   avatar?: Maybe<Scalars['String']>;
   background?: Maybe<Scalars['String']>;
@@ -2149,8 +2183,6 @@ export type User = Searchable & {
   nameID: Scalars['NameID'];
   /** The phone number for this User. */
   phone: Scalars['String'];
-  /** List of user preferences */
-  preferences?: Maybe<Array<UserPreference>>;
   /** The profile for this User */
   profile?: Maybe<Profile>;
 };
@@ -2193,48 +2225,6 @@ export type UserMembership = {
   /** Details of the Organizations the user is a member of, with child memberships. */
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
-
-export type UserPreference = {
-  __typename?: 'UserPreference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
-  /** Value of the preference */
-  value: Scalars['String'];
-};
-
-export type UserPreferenceDefinition = {
-  __typename?: 'UserPreferenceDefinition';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** Preference description */
-  description: Scalars['String'];
-  /** The name */
-  displayName: Scalars['String'];
-  /** The group */
-  group: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of preference */
-  type: UserPreferenceType;
-  /** Preference value type */
-  valueType: UserPreferenceValueType;
-};
-
-export enum UserPreferenceType {
-  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
-  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-}
-
-export enum UserPreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
-}
 
 export type UserSendMessageInput = {
   /** The message being sent */
@@ -3373,10 +3363,7 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
   messageData: DiscussionRemoveMessageInput;
 }>;
 
-export type RemoveMessageFromDiscussionMutation = {
-  __typename?: 'Mutation';
-  removeMessageFromDiscussion: { __typename?: 'Discussion'; id: string };
-};
+export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
 
 export type RemoveUserFromCommunityMutationVariables = Exact<{
   input: RemoveCommunityMemberInput;
@@ -6273,7 +6260,7 @@ export type CommunityUpdatesQuery = {
           __typename?: 'Updates';
           id: string;
           messages?: Maybe<
-            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+            Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
           >;
         }>;
       }>;
@@ -6285,7 +6272,10 @@ export type SendUpdateMutationVariables = Exact<{
   msgData: UpdatesSendMessageInput;
 }>;
 
-export type SendUpdateMutation = { __typename?: 'Mutation'; sendUpdate: string };
+export type SendUpdateMutation = {
+  __typename?: 'Mutation';
+  sendUpdate: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+};
 
 export type RemoveUpdateCommunityMutationVariables = Exact<{
   msgData: UpdatesRemoveMessageInput;
@@ -6302,7 +6292,7 @@ export type OnMessageReceivedSubscription = {
     roomId: string;
     roomName: string;
     communityId?: Maybe<string>;
-    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
   };
 };
 
@@ -6358,14 +6348,7 @@ export type PostDiscussionCommentMutationVariables = Exact<{
 
 export type PostDiscussionCommentMutation = {
   __typename?: 'Mutation';
-  sendMessageToDiscussion: {
-    __typename?: 'Discussion';
-    id: string;
-    title: string;
-    category: DiscussionCategory;
-    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
-    messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
-  };
+  sendMessageToDiscussion: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
 };
 
 export type CreateDiscussionMutationVariables = Exact<{

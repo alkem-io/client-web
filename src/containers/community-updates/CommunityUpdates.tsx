@@ -28,7 +28,7 @@ export interface CommunityUpdatesContainerProps {
 
 export interface CommunityUpdatesActions {
   onLoadMore: () => void; // TODO will be implemented in a separate issue
-  onSubmit: (message: string, communityId: Community['id']) => Promise<string | undefined>;
+  onSubmit: (message: string, communityId: Community['id']) => Promise<Message | undefined>;
   onRemove: (messageId: string, communityId: Community['id']) => Promise<string | undefined>;
 }
 
