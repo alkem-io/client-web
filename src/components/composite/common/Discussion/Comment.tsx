@@ -1,5 +1,6 @@
 import IconButton from '@material-ui/core/IconButton';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import { DeleteOutlined } from '@mui/icons-material';
+
 import { Avatar, Box, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -46,7 +47,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
         </Box>
         {canDelete && onDelete && (
           <IconButton aria-label="Delete" onClick={() => onDelete(id)}>
-            <DeleteOutlinedIcon fontSize="large" />
+            <DeleteOutlined fontSize="large" />
           </IconButton>
         )}
       </Box>
