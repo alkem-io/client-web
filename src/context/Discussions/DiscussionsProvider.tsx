@@ -3,6 +3,7 @@ import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useApolloErrorHandler, useEcoverse } from '../../hooks';
 import {
+  MessageDetailsFragmentDoc,
   refetchCommunityDiscussionListQuery,
   useAuthorDetailsQuery,
   useCommunityDiscussionListQuery,
@@ -132,6 +133,26 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const handlePostComment = async (discussionId: string, post: string) => {
     await postComment({
+      update(cache, { data }) {
+        cache.modify({
+          id: cache.identify({
+            id: discussionId,
+            __typename: 'Discussion',
+          }),
+          fields: {
+            messages(existingMessages = []) {
+              if (data) {
+                const newMessage = cache.writeFragment({
+                  data: data?.sendMessageToDiscussion,
+                  fragment: MessageDetailsFragmentDoc,
+                });
+                return [...existingMessages, newMessage];
+              }
+              return existingMessages;
+            },
+          },
+        });
+      },
       variables: {
         input: {
           discussionID: discussionId,
