@@ -1,10 +1,8 @@
-import IconButton from '@mui/material/IconButton';
 import { DeleteOutlined } from '@mui/icons-material';
-
 import { Avatar, Box, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
 import React, { FC } from 'react';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
@@ -31,10 +29,9 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
   const styles = useStyles();
 
   const { author, body, id } = comment;
-  const theme = useTheme();
 
   return (
-    <Box border={1} borderColor="neutralMedium.main" borderRadius={theme.shape.borderRadius}>
+    <Box border={1} borderColor="neutralMedium.main" borderRadius={1}>
       <Box padding={1} display="flex" alignItems="center" justifyContent="space-between" bgcolor="neutralMedium.main">
         <Box display="flex" alignItems="center">
           <Avatar className={styles.avatar} src={author?.avatarUrl} variant="rounded">
