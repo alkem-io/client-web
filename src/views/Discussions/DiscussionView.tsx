@@ -29,6 +29,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 
   const canPost = myPrivileges.some(x => x === AuthorizationPrivilege.Create);
   const canDeleteDiscussion = myPrivileges.some(x => x === AuthorizationPrivilege.Delete);
+  const canDeleteComment = (authorId?: string) =>
+    (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
 
   // construct the discussion info as a comment with ID of the discussion for easier update/delete
   const initialComment = {
@@ -67,7 +69,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                             <DiscussionComment
                               key={i}
                               comment={c}
-                              canDelete={Boolean(currentUserId && c.author?.id === currentUserId)}
+                              canDelete={canDeleteComment(c.author?.id)}
                               onDelete={onDeleteComment}
                             />
                           </Grid>
