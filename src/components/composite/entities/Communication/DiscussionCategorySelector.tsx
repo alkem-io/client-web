@@ -6,9 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../../../models/enums/DiscussionCategoriesExt';
 import { DiscussionCategory } from '../../../../models/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
+import { ConditionalTooltip } from '../../../core/ConditionalTooltip';
 
 interface DiscussionCategorySelectorProps {
   value?: DiscussionCategoryExt;
+  showLabels?: boolean;
   onSelect?: (category: DiscussionCategoryExt) => void;
 }
 
@@ -33,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = ({
   value = DiscussionCategoryExtEnum.All,
+  showLabels = true,
   onSelect,
 }) => {
   const { t } = useTranslation();
@@ -44,48 +47,66 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
 
   return (
     <List>
-      <ListItem
-        classes={{
-          root: styles.root,
-          selected: styles.selected,
-        }}
-        button
-        selected={value === DiscussionCategoryExtEnum.All}
-        onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
+      <ConditionalTooltip
+        show={!showLabels}
+        arrow
+        placement="right-end"
+        title={t('components.discussion-category-selector.ALL')}
       >
-        <ListItemIcon>
-          <DiscussionIcon
-            className={clsx({ [styles.icon]: value === DiscussionCategoryExtEnum.All })}
-            color="primary"
-            category={DiscussionCategoryExtEnum.All}
-          />
-        </ListItemIcon>
-        <ListItemText>
-          <Box component="span" fontWeight="bold">
-            {t('components.discussion-category-selector.ALL')}
-          </Box>
-        </ListItemText>
-      </ListItem>
-      {Object.values(DiscussionCategory).map((k, i) => (
         <ListItem
-          key={i}
           classes={{
             root: styles.root,
             selected: styles.selected,
           }}
           button
-          selected={value === k}
-          onClick={() => handleSelect(k)}
+          selected={value === DiscussionCategoryExtEnum.All}
+          onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
         >
           <ListItemIcon>
-            <DiscussionIcon className={clsx({ [styles.icon]: value === k })} color="primary" category={k} />
+            <DiscussionIcon
+              className={clsx({ [styles.icon]: value === DiscussionCategoryExtEnum.All })}
+              color="primary"
+              category={DiscussionCategoryExtEnum.All}
+            />
           </ListItemIcon>
-          <ListItemText>
-            <Box component="span" fontWeight="bold">
-              {t(`components.discussion-category-selector.${k}` as const)}
-            </Box>
-          </ListItemText>
+          {showLabels && (
+            <ListItemText>
+              <Box component="span" fontWeight="bold">
+                {t('components.discussion-category-selector.ALL')}
+              </Box>
+            </ListItemText>
+          )}
         </ListItem>
+      </ConditionalTooltip>
+      {Object.values(DiscussionCategory).map((k, i) => (
+        <ConditionalTooltip
+          show={!showLabels}
+          arrow
+          placement="right-end"
+          title={t(`components.discussion-category-selector.${k}` as const)}
+        >
+          <ListItem
+            key={i}
+            classes={{
+              root: styles.root,
+              selected: styles.selected,
+            }}
+            button
+            selected={value === k}
+            onClick={() => handleSelect(k)}
+          >
+            <ListItemIcon>
+              <DiscussionIcon className={clsx({ [styles.icon]: value === k })} color="primary" category={k} />
+            </ListItemIcon>
+            {showLabels && (
+              <ListItemText>
+                <Box component="span" fontWeight="bold">
+                  {t(`components.discussion-category-selector.${k}` as const)}
+                </Box>
+              </ListItemText>
+            )}
+          </ListItem>
+        </ConditionalTooltip>
       ))}
     </List>
   );

@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
+import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
+import { Theme } from '@material-ui/core';
 import DiscussionCategorySelector from '../../components/composite/entities/Communication/DiscussionCategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
@@ -21,6 +23,8 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
 
   useUpdateNavigation({ currentPaths: paths });
 
+  const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+
   return (
     <ThemeProviderV2>
       <DiscussionsLayout
@@ -31,6 +35,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
           <DiscussionCategorySelector
             onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
             value={categoryFilter}
+            showLabels={!mediumScreen}
           />
         }
       >
