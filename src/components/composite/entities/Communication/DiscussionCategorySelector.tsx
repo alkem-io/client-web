@@ -1,5 +1,4 @@
-import { Box, emphasize, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { ListItemProps, styled } from '@mui/material';
+import { alpha, Box, List, ListItemButton, ListItemIcon, ListItemProps, ListItemText, styled } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../../../models/enums/DiscussionCategoriesExt';
@@ -12,15 +11,15 @@ interface DiscussionCategorySelectorProps {
 }
 
 const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) => ({
-  '&.MuiListItemMuiListItemButton-root.Mui-selected': {
+  '&.Mui-selected': {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.neutralLight.main,
     '&:hover': {
-      backgroundColor: emphasize(theme.palette.primary.main, 0.5),
+      backgroundColor: alpha(theme.palette.primary.main, 0.5),
     },
   },
   '&:hover': {
-    backgroundColor: emphasize(theme.palette.primary.main, 0.5),
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
   },
 }));
 

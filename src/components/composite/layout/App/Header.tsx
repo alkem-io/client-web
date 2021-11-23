@@ -54,7 +54,7 @@ const useHeaderStyles = createStyles(theme => ({
     color: theme.palette.background.paper,
   },
   toolbar: {
-    padding: `${theme.spacing(4)} 0`,
+    padding: theme.spacing(0, 0),
 
     [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(0),
