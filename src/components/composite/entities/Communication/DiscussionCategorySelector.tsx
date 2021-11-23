@@ -1,5 +1,4 @@
-import { Box, emphasize, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import List from '@material-ui/core/List';
+import { Box, emphasize, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { ListItemProps, styled } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +11,8 @@ interface DiscussionCategorySelectorProps {
   onSelect?: (category: DiscussionCategoryExt) => void;
 }
 
-const StyledListItem = styled(ListItem)<ListItemProps>(({ theme }) => ({
-  '&.MuiListItem-root.Mui-selected': {
+const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) => ({
+  '&.MuiListItemMuiListItemButton-root.Mui-selected': {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.neutralLight.main,
     '&:hover': {
@@ -49,8 +48,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
 
   return (
     <List>
-      <StyledListItem
-        button
+      <StyledListItemButton
         selected={value === DiscussionCategoryExtEnum.All}
         onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
       >
@@ -66,9 +64,9 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
             {t('components.discussion-category-selector.ALL')}
           </Box>
         </ListItemText>
-      </StyledListItem>
+      </StyledListItemButton>
       {Object.values(DiscussionCategory).map((k, i) => (
-        <StyledListItem key={i} button selected={value === k} onClick={() => handleSelect(k)}>
+        <StyledListItemButton key={i} selected={value === k} onClick={() => handleSelect(k)}>
           <ListItemIcon>
             <StyledDiscussionIcon selected={value === k} color="primary" category={k} />
           </ListItemIcon>
@@ -77,7 +75,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
               {t(`components.discussion-category-selector.${k}` as const)}
             </Box>
           </ListItemText>
-        </StyledListItem>
+        </StyledListItemButton>
       ))}
     </List>
   );

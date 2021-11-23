@@ -32,8 +32,8 @@ import { EcoverseContainerEntities, EcoverseContainerState } from '../../contain
 import { createStyles, useUserContext } from '../../hooks';
 import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const useStyles = createStyles(theme => ({
   buttonsWrapper: {

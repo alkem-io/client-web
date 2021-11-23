@@ -1,13 +1,12 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Theme } from '@mui/material/styles';
+import { Breakpoint, Theme } from '@mui/material/styles';
 import { createStyles } from '../../hooks/useTheme';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Tooltip from '@mui/material/Tooltip';
-import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
 
 interface HeaderProps {
   text: string | React.ReactNode;
@@ -238,11 +237,11 @@ const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
 }));
 
 export interface ClassProps {
-  background?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  padding?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  color?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  lineHeight?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  actions?: number | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => number | boolean);
+  background?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  padding?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  color?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  lineHeight?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  actions?: number | ((theme: Theme, media: Record<Breakpoint, boolean>) => number | boolean);
 }
 
 interface BodyProps {

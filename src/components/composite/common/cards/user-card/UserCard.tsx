@@ -1,7 +1,6 @@
-import { Avatar } from '@material-ui/core';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import { SvgIcon, Typography } from '@mui/material';
+import { Avatar, SvgIcon, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';

@@ -1,4 +1,4 @@
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { DeleteOutlined } from '@mui/icons-material';
 
 import { Avatar, Box, Typography } from '@mui/material';

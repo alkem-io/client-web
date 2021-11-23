@@ -5,7 +5,6 @@ import DiscussionCategorySelector from '../../components/composite/entities/Comm
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { ThemeProviderV2 } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
@@ -22,30 +21,28 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <ThemeProviderV2>
-      <DiscussionsLayout
-        title={t('components.discussions-list.name', { community: communityName })}
-        newUrl={`${url}/new`}
-        canCreateDiscussion={permissions.canCreateDiscussion}
-        categorySelector={
-          <DiscussionCategorySelector
-            onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
-            value={categoryFilter}
-          />
-        }
-      >
-        <DiscussionListView
-          entities={{
-            discussions: filtered,
-          }}
-          state={{
-            loading: loading,
-          }}
-          actions={{}}
-          options={{}}
+    <DiscussionsLayout
+      title={t('components.discussions-list.name', { community: communityName })}
+      newUrl={`${url}/new`}
+      canCreateDiscussion={permissions.canCreateDiscussion}
+      categorySelector={
+        <DiscussionCategorySelector
+          onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
+          value={categoryFilter}
         />
-      </DiscussionsLayout>
-    </ThemeProviderV2>
+      }
+    >
+      <DiscussionListView
+        entities={{
+          discussions: filtered,
+        }}
+        state={{
+          loading: loading,
+        }}
+        actions={{}}
+        options={{}}
+      />
+    </DiscussionsLayout>
   );
 };
 export default DiscussionListPage;

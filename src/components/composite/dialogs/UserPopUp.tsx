@@ -1,4 +1,4 @@
-import Link from '@material-ui/core/Link';
+import Link from '@mui/material/Link';
 import { Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Table from '@mui/material/Table';
