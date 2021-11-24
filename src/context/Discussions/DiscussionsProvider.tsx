@@ -212,7 +212,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       variables: {
         input: {
           communicationID: communicationId,
-          message: description,
+          description: description,
           title: title,
           category: category,
         },

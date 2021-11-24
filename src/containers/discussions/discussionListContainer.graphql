@@ -38,6 +38,9 @@ mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
   createDiscussion(createData: $input) {
     id
     title
+    description
+    createdBy
+    timestamp
   }
 }
 

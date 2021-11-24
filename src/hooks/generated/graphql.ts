@@ -9803,6 +9803,9 @@ export const CreateDiscussionDocument = gql`
     createDiscussion(createData: $input) {
       id
       title
+      description
+      createdBy
+      timestamp
     }
   }
 `;
