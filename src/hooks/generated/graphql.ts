@@ -3045,9 +3045,7 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
 >;
 export const RemoveMessageFromDiscussionDocument = gql`
   mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
-    removeMessageFromDiscussion(messageData: $messageData) {
-      id
-    }
+    removeMessageFromDiscussion(messageData: $messageData)
   }
 `;
 export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
@@ -9487,16 +9485,14 @@ export const CommunityUpdatesDocument = gql`
           updates {
             id
             messages {
-              id
-              message
-              sender
-              timestamp
+              ...MessageDetails
             }
           }
         }
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -9548,8 +9544,11 @@ export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUp
 }
 export const SendUpdateDocument = gql`
   mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
-    sendUpdate(messageData: $msgData)
+    sendUpdate(messageData: $msgData) {
+      ...MessageDetails
+    }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export type SendUpdateMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendUpdateMutation,
@@ -9640,13 +9639,11 @@ export const OnMessageReceivedDocument = gql`
       roomName
       communityId
       message {
-        id
-        message
-        sender
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -9752,10 +9749,10 @@ export function refetchCommunityDiscussionListQuery(variables?: SchemaTypes.Comm
 export const PostDiscussionCommentDocument = gql`
   mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
     sendMessageToDiscussion(messageData: $input) {
-      ...DiscussionDetails
+      ...MessageDetails
     }
   }
-  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
   SchemaTypes.PostDiscussionCommentMutation,

@@ -49,7 +49,7 @@ export interface CommunityUpdatesViewProps {
     removingMessage: boolean;
   };
   actions?: {
-    onSubmit?: (value: string) => Promise<string | undefined>;
+    onSubmit?: (message: string) => Promise<Message | undefined>;
     onRemove?: (messageId: string) => Promise<string | undefined>;
   };
   options?: {
@@ -141,8 +141,8 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             const onSubmit = actions?.onSubmit;
             if (onSubmit) {
-              const messageId = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
-              setStubMessageId(messageId || null);
+              const message = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
+              setStubMessageId(message?.id || null);
             }
             resetForm({
               values: initialValues,

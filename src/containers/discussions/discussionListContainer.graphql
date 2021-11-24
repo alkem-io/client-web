@@ -30,7 +30,7 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
 
 mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
   sendMessageToDiscussion(messageData: $input) {
-    ...DiscussionDetails
+    ...MessageDetails
   }
 }
 

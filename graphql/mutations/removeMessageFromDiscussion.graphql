@@ -1,5 +1,3 @@
 mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
-  removeMessageFromDiscussion(messageData: $messageData) {
-    id
-  }
+  removeMessageFromDiscussion(messageData: $messageData)
 }
