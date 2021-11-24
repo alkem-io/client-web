@@ -117,6 +117,10 @@ export const CommunityDetailsFragmentDoc = gql`
     }
     communication {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
     members {
       ...GroupMembers

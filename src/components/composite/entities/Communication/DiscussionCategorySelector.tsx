@@ -25,11 +25,21 @@ const useStyles = makeStyles(theme => ({
     },
     '&:hover': {
       backgroundColor: emphasize(theme.palette.primary.main, 0.5),
+      color: theme.palette.neutralLight.main,
+      '& > * > svg': {
+        color: theme.palette.neutralLight.main,
+      },
     },
   },
   selected: {},
   icon: {
     color: theme.palette.neutralLight.main,
+  },
+  centerIcon: {
+    justifyContent: 'center',
+  },
+  noGutters: {
+    padding: 0,
   },
 }));
 
@@ -46,7 +56,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
   };
 
   return (
-    <List>
+    <List disablePadding>
       <ConditionalTooltip
         show={!showLabels}
         arrow
@@ -54,6 +64,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
         title={t('components.discussion-category-selector.ALL')}
       >
         <ListItem
+          disableGutters={!showLabels}
           classes={{
             root: styles.root,
             selected: styles.selected,
@@ -62,7 +73,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
           selected={value === DiscussionCategoryExtEnum.All}
           onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
         >
-          <ListItemIcon>
+          <ListItemIcon className={clsx({ [styles.centerIcon]: !showLabels })}>
             <DiscussionIcon
               className={clsx({ [styles.icon]: value === DiscussionCategoryExtEnum.All })}
               color="primary"
@@ -80,13 +91,15 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
       </ConditionalTooltip>
       {Object.values(DiscussionCategory).map((k, i) => (
         <ConditionalTooltip
+          key={i}
           show={!showLabels}
           arrow
           placement="right-end"
           title={t(`components.discussion-category-selector.${k}` as const)}
         >
           <ListItem
-            key={i}
+            disableGutters={!showLabels}
+            key={`list-item-${i}`}
             classes={{
               root: styles.root,
               selected: styles.selected,
@@ -95,7 +108,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
             selected={value === k}
             onClick={() => handleSelect(k)}
           >
-            <ListItemIcon>
+            <ListItemIcon className={clsx({ [styles.centerIcon]: !showLabels })}>
               <DiscussionIcon className={clsx({ [styles.icon]: value === k })} color="primary" category={k} />
             </ListItemIcon>
             {showLabels && (

@@ -5,11 +5,13 @@ import {
   useEcoverseCommunityQuery,
   useOpportunityCommunityQuery,
 } from '../hooks/generated/graphql';
+import { AuthorizationPrivilege } from '../models/graphql-schema';
 
 interface CommunityContextProps {
   communityId: string;
   communicationId: string;
   communityName: string;
+  communicationPrivileges: AuthorizationPrivilege[];
   loading: boolean;
 }
 
@@ -18,6 +20,7 @@ const CommunityContext = React.createContext<CommunityContextProps>({
   communityId: '',
   communicationId: '',
   communityName: '',
+  communicationPrivileges: [],
 });
 
 interface CommunityProviderProps {}
@@ -57,6 +60,7 @@ const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
         communityId: community?.id || '',
         communityName: community?.displayName || '',
         communicationId: community?.communication?.id || '',
+        communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
         loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
       }}
     >

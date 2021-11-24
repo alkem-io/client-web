@@ -503,7 +503,8 @@
     },
     "community-section": {
       "discussions": {
-        "no-data": "Create a discussion",
+        "no-data-create": "No discussions. Create a new discussion",
+        "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
     }
