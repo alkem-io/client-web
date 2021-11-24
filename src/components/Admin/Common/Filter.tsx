@@ -65,7 +65,6 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
         <Grid item xs={sort ? 10 : 12}>
           <TextField
-            label={'filter'}
             placeholder={placeholder ?? t('components.filter.placeholder')}
             onChange={handleSearch}
             size="small"
@@ -81,7 +80,6 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
               value={keyFromSortItem(sortBy)}
               onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
               inputProps={{ 'aria-label': 'Discussions sort order' }}
-              label={'Order'}
               size="small"
             >
               {sort.map((s, i) => (

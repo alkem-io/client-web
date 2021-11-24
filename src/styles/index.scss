@@ -1,9 +1,20 @@
-// Bootstrap global definitions. Must be romeved when Typography and Cards are migrated to MUI
-@import "functions";
-@import "variables";
-@import "mixins";
-@import "root";
-@import "reboot";
-@import "type";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Source+Sans+Pro:wght@400;900&display=swap');
 // https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL - Open Font License
+
+$spacer: 1rem !default;
+$headings-margin-bottom: $spacer / 2 !default;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: $headings-margin-bottom;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box; // 1
+}
