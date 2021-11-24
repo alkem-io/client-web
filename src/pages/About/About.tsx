@@ -6,9 +6,9 @@ import Button from '../../components/core/Button';
 import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
 import { useServerMetadataQuery } from '../../hooks/generated/graphql';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useAboutStyles = createStyles(theme => ({
+const useAboutStyles = makeStyles(theme => ({
   content: {
     padding: theme.spacing(4),
     [theme.breakpoints.down('xl')]: {

@@ -1,5 +1,8 @@
 import { Context } from '@apollo/client';
 import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC } from 'react';
@@ -9,6 +12,9 @@ import ActivityCard from '../../components/composite/common/ActivityPanel/Activi
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
+import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
+import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
+import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
 import CardFilter from '../../components/core/card-filter/CardFilter';
@@ -23,19 +29,14 @@ import Icon from '../../components/core/Icon';
 import { Image } from '../../components/core/Image';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
-import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
-import { createStyles, useUserContext } from '../../hooks';
-import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { useUserContext } from '../../hooks';
+import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(1),

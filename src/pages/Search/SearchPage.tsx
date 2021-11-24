@@ -4,9 +4,16 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ChallengeSearchCard,
+  OpportunitySearchCard,
+  OrganizationSearchCard,
+  UserCard,
+} from '../../components/composite/search';
 import { Loading } from '../../components/core';
 import { CardContainer } from '../../components/core/CardContainer';
 import Divider from '../../components/core/Divider';
@@ -14,18 +21,12 @@ import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import {
-  ChallengeSearchCard,
-  OpportunitySearchCard,
-  OrganizationSearchCard,
-  UserCard,
-} from '../../components/composite/search';
-import { createStyles, useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 
-const useStyles = createStyles(() => ({
+const useStyles = makeStyles(() => ({
   formControl: {
     minWidth: 150,
   },

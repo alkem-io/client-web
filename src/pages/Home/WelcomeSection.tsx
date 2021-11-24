@@ -10,12 +10,12 @@ import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { useAuthenticationContext, useConfig } from '../../hooks';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
 import getActivityCount from '../../utils/get-activity-count';
 import hexToRGBA from '../../utils/hexToRGBA';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   flexAlignCenter: {
     display: 'flex',
     alignItems: 'center',

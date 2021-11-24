@@ -1,5 +1,5 @@
 import React, { FC, memo, useMemo, useState } from 'react';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { useUserMetadata } from '../../../hooks';
 import { User } from '../../../models/graphql-schema';
 import hexToRGBA from '../../../utils/hexToRGBA';
@@ -15,7 +15,7 @@ export interface UserCardProps extends User {
   terms?: Array<string>;
 }
 
-const userCardStyles = createStyles(theme => ({
+const userCardStyles = makeStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {

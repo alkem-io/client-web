@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FunctionComponent, SVGProps } from 'react';
 import { Palette } from '@mui/material/styles';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useIconStyles = createStyles(theme => ({
+const useIconStyles = makeStyles(theme => ({
   xs: {},
   sm: { fontSize: 24 },
   md: { fontSize: 32 },

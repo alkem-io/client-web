@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
-const useButtonStyles = createStyles(theme => ({
+const useButtonStyles = makeStyles(theme => ({
   inputContainer: {
     display: 'flex',
     flexDirection: 'column',

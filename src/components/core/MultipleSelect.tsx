@@ -6,10 +6,10 @@ import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 
 import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 
-const useMultipleSelectStyles = createStyles(theme => ({
+const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
     position: 'relative',
     marginTop: -3,

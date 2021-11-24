@@ -5,9 +5,10 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
+import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createStyles, useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
@@ -19,7 +20,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog'
 import TextInput, { TextArea } from '../../../core/TextInput';
 import Typography from '../../../core/Typography';
 
-const useStyles = createStyles(() => ({
+const useStyles = makeStyles(() => ({
   formControl: {
     minWidth: 150,
   },

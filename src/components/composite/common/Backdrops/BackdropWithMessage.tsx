@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Backdrop from '../../../core/Backdrop';
 import Typography from '../../../core/Typography';
 
-const useBackdropStyles = createStyles(theme => ({
+const useBackdropStyles = makeStyles(theme => ({
   backdropContainer: {
     position: 'absolute',
     display: 'flex',

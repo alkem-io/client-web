@@ -10,7 +10,7 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../hooks';
 import { useEcoverse } from '../../../../hooks';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Actor } from '../../../../models/graphql-schema';
 import Button from '../../../core/Button';
 import TextInput, { TextArea } from '../../../core/TextInput';
@@ -26,7 +26,7 @@ interface Props {
   isCreate?: boolean;
 }
 
-const useContextEditStyles = createStyles(theme => ({
+const useContextEditStyles = makeStyles(theme => ({
   field: {
     marginBottom: theme.spacing(2),
   },

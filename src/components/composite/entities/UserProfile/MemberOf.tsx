@@ -1,4 +1,4 @@
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Tag, { TagProps } from '../../../core/Tag';
@@ -6,7 +6,7 @@ import Typography from '../../../core/Typography';
 import Card from '../../../core/Card';
 import { Box } from '@mui/material';
 
-const useMemberOfStyles = createStyles(theme => ({
+const useMemberOfStyles = makeStyles(theme => ({
   listDetail: {
     padding: theme.spacing(1),
     marginTop: theme.spacing(1),

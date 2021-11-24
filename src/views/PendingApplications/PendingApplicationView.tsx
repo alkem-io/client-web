@@ -12,11 +12,11 @@ import { ApplicationWithType } from '../../utils/application/getApplicationWithT
 import { ApplicationDialog, ApplicationDialogDataType } from '../../components/composite';
 import Tag from '../../components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../models/constants';
-import { createStyles } from '../../hooks';
+import { makeStyles } from '@mui/styles';
 import { ApplicationDialogDetails } from '../../containers/application/PendingApplicationContainer';
 import IconButton from '@mui/material/IconButton';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   listDetail: {
     padding: theme.spacing(1),
     marginTop: theme.spacing(1),

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Breakpoint, Theme } from '@mui/material/styles';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
@@ -17,7 +17,7 @@ interface HeaderProps {
   tooltip?: boolean;
 }
 
-const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   header: {
     display: 'flex',
     alignItems: 'center',
@@ -47,7 +47,7 @@ export const HeaderCaption: FC<HeaderProps> = ({ text, className, classes }) => 
   );
 };
 
-const usePrimaryTextStyles = createStyles<Theme, ClassProps>(theme => ({
+const usePrimaryTextStyles = makeStyles<Theme, ClassProps>(theme => ({
   primaryText: {
     display: 'flex',
     wordBreak: 'break-word',
@@ -100,7 +100,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   );
 };
 
-const useActionsStyle = createStyles(() => ({
+const useActionsStyle = makeStyles(() => ({
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -134,7 +134,7 @@ export const CardActions: FC<CardActionsProps> = ({ actions }) => {
   );
 };
 
-const useTagStyles = createStyles<Theme, ClassProps>(theme => ({
+const useTagStyles = makeStyles<Theme, ClassProps>(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
@@ -153,7 +153,7 @@ export const CardTag: FC<CardTagProps> = ({ text, className, color, actions = 0,
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
 
-const useMatchedTermsStyles = createStyles(theme => ({
+const useMatchedTermsStyles = makeStyles(theme => ({
   tagsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -211,7 +211,7 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
   );
 };
 
-const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
+const useBodyStyles = makeStyles<Theme, ClassProps>(theme => ({
   body: {
     display: 'flex',
     width: '100%',
@@ -297,7 +297,7 @@ export interface CardProps extends Record<string, unknown> {
   onClick?: () => any;
 }
 
-const useCardStyles = createStyles<Theme, ClassProps>(theme => ({
+const useCardStyles = makeStyles<Theme, ClassProps>(theme => ({
   root: {
     flexGrow: 1,
     display: 'flex',

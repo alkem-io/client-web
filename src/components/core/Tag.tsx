@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useTagStyles = createStyles(theme => ({
+const useTagStyles = makeStyles(theme => ({
   tag: {
     padding: `${theme.spacing(0.7)} ${theme.spacing(1.4)}`,
     display: 'inline-flex',

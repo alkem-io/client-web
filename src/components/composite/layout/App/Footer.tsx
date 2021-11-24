@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box, Container, Link } from '@mui/material';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
 import { useConfig } from '../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
 
-const useFooterStyles = createStyles(theme => ({
+const useFooterStyles = makeStyles(theme => ({
   footer: {
     marginTop: theme.spacing(2),
     maxWidth: 1380,

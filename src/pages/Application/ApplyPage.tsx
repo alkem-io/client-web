@@ -1,4 +1,5 @@
 import { Box, Container, Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,14 +12,14 @@ import Image from '../../components/core/Image';
 import { Loading } from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';
-import { createStyles, useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { CreateNvpInput } from '../../models/graphql-schema';
-import { PageProps } from '../common';
 import getApplicationTypeKey from '../../utils/translation/get-application-type-key';
+import { PageProps } from '../common';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   thankYouDiv: {
     height: '100%',
     width: '100%',

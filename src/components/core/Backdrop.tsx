@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useMainStyles = createStyles(theme => ({
+const useMainStyles = makeStyles(theme => ({
   backdrop: {
     backgroundColor: theme.palette.background.paper,
     opacity: 0.5,

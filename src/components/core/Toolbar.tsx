@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC, RefObject } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useToolbarStyles = createStyles(theme => ({
+const useToolbarStyles = makeStyles(theme => ({
   toolbar: {
     display: 'flex',
     flexDirection: 'row',

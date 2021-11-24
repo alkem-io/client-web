@@ -4,7 +4,7 @@ import * as React from 'react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Nvp } from '../../../../models/graphql-schema';
 import getActivityCount from '../../../../utils/get-activity-count';
 import hexToRGBA from '../../../../utils/hexToRGBA';
@@ -33,7 +33,7 @@ interface EcoverseCardProps {
   tags: string[];
 }
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = makeStyles(theme => ({
   relative: {
     position: 'relative',
     flexGrow: 1,

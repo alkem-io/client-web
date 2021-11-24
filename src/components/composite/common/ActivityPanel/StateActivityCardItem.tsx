@@ -6,7 +6,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import Grid from '@mui/material/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { createStyles } from '../../../../hooks';
+import { makeStyles } from '@mui/styles';
 import { Lifecycle, Maybe } from '../../../../models/graphql-schema';
 import Typography from '../../../core/Typography';
 import LifecycleVisualizer from '../../../core/Lifecycle';
@@ -16,7 +16,7 @@ export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;
 }
 
-const useCardStyles = createStyles(() => ({
+const useCardStyles = makeStyles(() => ({
   item: {
     display: 'flex',
     alignItems: 'center',
@@ -28,7 +28,7 @@ const useCardStyles = createStyles(() => ({
   },
 }));
 
-const useDialogStyles = createStyles(() => ({
+const useDialogStyles = makeStyles(() => ({
   content: {
     display: 'flex',
     justifyContent: 'center',

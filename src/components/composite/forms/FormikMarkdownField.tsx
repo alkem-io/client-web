@@ -5,9 +5,9 @@ import MDEditor from '@uiw/react-md-editor';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useField } from 'formik';
-import { createStyles } from '../../../hooks';
+import { makeStyles } from '@mui/styles';
 
-const useStyle = createStyles(theme => ({
+const useStyle = makeStyles(theme => ({
   padding: {
     /*
       select the inner div only if state classes are applied

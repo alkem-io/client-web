@@ -1,13 +1,12 @@
+import { Box, Container } from '@mui/material';
+import Grid, { GridSize } from '@mui/material/Grid';
+import { Breakpoints, Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Grid, { GridSize } from '@mui/material/Grid';
-import { Theme, Breakpoints } from '@mui/material/styles';
-import { Box, Container } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
-import { createStyles } from '../../hooks/useTheme';
 
 interface HeaderProps {
   text?: string;
@@ -19,7 +18,7 @@ interface HeaderProps {
   editComponent?: React.ReactNode;
 }
 
-const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
     display: 'flex',
   },
@@ -77,7 +76,7 @@ export const Header: FC<HeaderProps> = ({
   );
 };
 
-const useSubHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useSubHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   header: {
     color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
   },
@@ -98,7 +97,7 @@ export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, cla
   );
 };
 
-const useBodyStyles = createStyles(() => ({
+const useBodyStyles = makeStyles(() => ({
   bodyWrap: {},
 }));
 
@@ -117,7 +116,7 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
   );
 };
 
-const useContentStyles = createStyles(theme => ({
+const useContentStyles = makeStyles(theme => ({
   gutters: {
     padding: theme.spacing(4),
   },

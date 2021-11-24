@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { User } from '../../../../models/graphql-schema';
 import Card from '../../../core/Card';
 import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
@@ -24,7 +24,7 @@ export const Detail: FC<{ title: string; value?: string }> = ({ title, value }) 
   );
 };
 
-const useContactDetailsStyles = createStyles(theme => ({
+const useContactDetailsStyles = makeStyles(theme => ({
   edit: {
     fill: theme.palette.neutral.main,
     '&:hover': {

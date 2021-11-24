@@ -1,10 +1,10 @@
 import React, { FC, memo, ReactElement, useState } from 'react';
 import { default as CoreCard } from '../../core/Card';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { Activities, ActivityItem } from '../common/ActivityPanel/Activities';
 
-const getStyles = createStyles(theme => ({
+const getStyles = makeStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     border: `1px solid ${theme.palette.neutralMedium.main}`,

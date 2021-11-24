@@ -1,6 +1,7 @@
 import { Box, Drawer, DrawerProps, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as ChatIcon } from 'bootstrap-icons/icons/chat.svg';
 import { ReactComponent as EnvelopeIcon } from 'bootstrap-icons/icons/envelope.svg';
 import { ReactComponent as HouseIcon } from 'bootstrap-icons/icons/house.svg';
@@ -9,7 +10,7 @@ import { ReactComponent as SlidersIcon } from 'bootstrap-icons/icons/sliders.svg
 import clsx from 'clsx';
 import React, { FC, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useConfig, UserMetadata, createStyles } from '../../../../hooks';
+import { useConfig, UserMetadata } from '../../../../hooks';
 import { SidebarEcoverseFragment } from '../../../../models/graphql-schema';
 import { Image } from '../../../core/Image';
 import Tag from '../../../core/Tag';
@@ -23,7 +24,7 @@ interface SidebarProps {
   drawerProps?: DrawerProps;
 }
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   sidebarContainer: {
     display: 'flex',
     flexDirection: 'column',

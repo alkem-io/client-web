@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { CircularProgress, CircularProgressProps } from '@mui/material';
 
 interface SpinnerProps extends CircularProgressProps {}
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   spinner: {
     color: theme.palette.primary.main,
   },

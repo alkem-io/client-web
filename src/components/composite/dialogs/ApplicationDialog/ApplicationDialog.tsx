@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { createStyles } from '../../../../hooks';
+import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../models/graphql-schema';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import Avatar from '../../../core/Avatar';
@@ -10,7 +10,7 @@ import LifecycleButton from '../../../core/LifecycleButton';
 import { Optional } from '../../../../types/util';
 import { Loading } from '../../../core';
 
-const appStyles = createStyles(theme => ({
+const appStyles = makeStyles(theme => ({
   minHeight: {
     minHeight: '100px',
     display: 'flex',

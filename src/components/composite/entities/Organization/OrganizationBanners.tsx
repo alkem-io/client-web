@@ -5,14 +5,14 @@ import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import { createStyles } from '../../../../hooks';
+import { makeStyles } from '@mui/styles';
 import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
 import OrganizationPopUp from './OrganizationPopUp';
 
-const useOrganizationStyles = createStyles(theme => ({
+const useOrganizationStyles = makeStyles(theme => ({
   organizationWrapper: {
     display: 'flex',
     gap: theme.spacing(1),

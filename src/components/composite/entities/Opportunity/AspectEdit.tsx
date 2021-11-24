@@ -11,7 +11,7 @@ import {
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../../../hooks/generated/graphql';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Aspect } from '../../../../models/graphql-schema';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Button from '../../../core/Button';
@@ -31,7 +31,7 @@ interface Props {
   existingAspectNames?: string[];
 }
 
-const useContextEditStyles = createStyles(theme => ({
+const useContextEditStyles = makeStyles(theme => ({
   field: {
     marginBottom: theme.spacing(2),
   },

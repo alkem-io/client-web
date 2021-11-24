@@ -5,7 +5,7 @@ import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { UserMetadata } from '../../../../hooks';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Button from '../../../core/Button';
@@ -13,7 +13,7 @@ import Icon from '../../../core/Icon';
 import Typography from '../../../core/Typography';
 import User from './User';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   popover: {
     padding: 0,
   },

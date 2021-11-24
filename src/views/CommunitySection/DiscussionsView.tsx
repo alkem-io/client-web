@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
 import { RouterLink } from '../../components/core/RouterLink';
-import { createStyles } from '../../hooks';
+import { makeStyles } from '@mui/styles';
 import { Discussion } from '../../models/discussion/discussion';
 import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 
-const useDiscussionsStyles = createStyles(_theme => ({
+const useDiscussionsStyles = makeStyles(_theme => ({
   container: {
     maxHeight: '480px',
     overflow: 'auto',

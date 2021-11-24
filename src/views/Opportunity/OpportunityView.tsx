@@ -35,11 +35,12 @@ import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import { createStyles, useOpportunity } from '../../hooks';
+import { useOpportunity } from '../../hooks';
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   tag: {
     top: -theme.spacing(2),
     left: 0,

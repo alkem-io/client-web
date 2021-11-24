@@ -11,7 +11,7 @@ import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { createStyles } from './hooks';
+import { makeStyles } from '@mui/styles';
 import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
@@ -20,7 +20,7 @@ import { env } from './types/env';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
-const useGlobalStyles = createStyles(theme => ({
+const useGlobalStyles = makeStyles(theme => ({
   '@global': {
     '*::-webkit-scrollbar': {
       width: '0.4em',

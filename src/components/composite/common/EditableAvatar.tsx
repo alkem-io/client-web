@@ -2,14 +2,14 @@ import clsx from 'clsx';
 import React, { FC, useCallback } from 'react';
 import { useUploadAvatarMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Avatar, { AvatarProps, useAvatarStyles } from '../../core/Avatar';
 import { Spinner } from '../../core/Spinner';
 import UploadButton from '../../core/UploadButton';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 
-const useEditableAvatarStyles = createStyles(() => ({
+const useEditableAvatarStyles = makeStyles(() => ({
   outerEditableAvatarWrapper: {
     display: 'flex',
     flexDirection: 'column',

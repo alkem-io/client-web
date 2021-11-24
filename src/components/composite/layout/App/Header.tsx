@@ -3,13 +3,13 @@ import React, { FC, RefObject, useState } from 'react';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import hexToRgba from '../../../../utils/hexToRGBA';
 import Toolbar from '../../../core/Toolbar';
 
 const appBarZIndex = 100;
 
-const useHeaderStyles = createStyles(theme => ({
+const useHeaderStyles = makeStyles(theme => ({
   earlyAccessAlert: {
     width: 'calc(100% + 30px)',
     marginLeft: -15,

@@ -2,7 +2,7 @@ import React, { FC, memo, useMemo, useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
-import { createStyles } from '../../../hooks';
+import { makeStyles } from '@mui/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import OrganizationPopUp from '../entities/Organization/OrganizationPopUp';
 import TagContainer from '../../core/TagContainer';
@@ -10,7 +10,7 @@ import Tag from '../../core/Tag';
 import { OrganizationSearchResultFragment } from '../../../models/graphql-schema';
 import EntitySearchCardProps from './EntitySearchCardProps';
 
-const OrganizationCardStyles = createStyles(theme => ({
+const OrganizationCardStyles = makeStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     '&:hover': {

@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import React, { forwardRef } from 'react';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
 
-const useUserStyles = createStyles(theme => ({
+const useUserStyles = makeStyles(theme => ({
   flex: {
     display: 'flex',
     gap: theme.spacing(1),

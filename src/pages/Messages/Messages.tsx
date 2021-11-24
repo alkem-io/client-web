@@ -8,7 +8,7 @@ import Spinner from '../../components/core/Spinner';
 import Typography from '../../components/core/Typography';
 import { useConfig } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { PageProps } from '../common';
 
@@ -58,7 +58,7 @@ const messages = [
   },
 ];
 
-const useMessageStyles = createStyles(theme => ({
+const useMessageStyles = makeStyles(theme => ({
   messageContainer: {
     display: 'flex',
     marginTop: theme.spacing(2),
@@ -194,7 +194,7 @@ export const DummyChat: FC = () => {
   );
 };
 
-const useContactStyles = createStyles(theme => ({
+const useContactStyles = makeStyles(theme => ({
   contactContainer: {
     height: '100%',
   },

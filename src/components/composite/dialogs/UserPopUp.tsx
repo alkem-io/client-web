@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../../hooks';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { Loading } from '../../core';
 import Avatar from '../../core/Avatar';
@@ -21,7 +21,7 @@ import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import Typography from '../../core/Typography';
 
-const useUserPopUpStyles = createStyles(theme => ({
+const useUserPopUpStyles = makeStyles(theme => ({
   header: {
     display: 'flex',
     gap: theme.spacing(4),

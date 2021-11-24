@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Grid, { GridSize } from '@mui/material/Grid';
 import { Box, Theme } from '@mui/material';
 import { Container, ContainerProps } from '@mui/material';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
 interface CardContainerProps extends ContainerProps {
@@ -31,7 +31,7 @@ interface ClassProps {
   fullHeight?: boolean;
 }
 
-const useCardContainerStyles = createStyles<Theme, ClassProps>(theme => ({
+const useCardContainerStyles = makeStyles<Theme, ClassProps>(theme => ({
   root: {
     '& .alkemio-card': {
       height: (props: CardContainerProps) => {

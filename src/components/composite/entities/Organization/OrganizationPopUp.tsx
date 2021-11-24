@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Dialog from '@mui/material/Dialog';
 import { useMembershipOrganizationQuery, useOrganizationDetailsQuery } from '../../../../hooks/generated/graphql';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Avatar from '../../../core/Avatar';
 import { Loading } from '../../../core';
 import Typography from '../../../core/Typography';
@@ -19,7 +19,7 @@ import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 
-const groupPopUpStyles = createStyles(theme => ({
+const groupPopUpStyles = makeStyles(theme => ({
   header: {
     display: 'flex',
     gap: theme.spacing(4),

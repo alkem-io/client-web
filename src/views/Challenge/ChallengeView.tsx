@@ -1,16 +1,18 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
 import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
-import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
 import SettingsButton from '../../components/composite/common/SettingsButton/SettingsButton';
+import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
+import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
+import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import { OrganizationBanners } from '../../components/composite/entities/Organization/OrganizationBanners';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
@@ -24,21 +26,20 @@ import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { createStyles, useChallenge, useEcoverse } from '../../hooks';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import { useChallenge, useEcoverse } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { buildAdminChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 interface ChallengeViewProps {
   entities: ChallengeContainerEntities;
   state: ChallengeContainerState;
 }
 
-const useChallengeStyles = createStyles(theme => ({
+const useChallengeStyles = makeStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(1),

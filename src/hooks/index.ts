@@ -1,4 +1,3 @@
-export * from './useTheme';
 export * from './user/useUserContext';
 export * from './user/useUserMetadata';
 export * from './user/useUserMetadataWrapper';

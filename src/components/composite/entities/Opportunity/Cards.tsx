@@ -1,3 +1,4 @@
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.svg';
 import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
@@ -6,7 +7,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
-import { createStyles, useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsQuery,
@@ -25,7 +26,7 @@ import Typography from '../../../core/Typography';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = makeStyles(theme => ({
   item: {
     display: 'flex',
     flexGrow: 1,
@@ -215,7 +216,7 @@ interface NewActorProps {
   opportunityId: string;
 }
 
-const useNewActorCardStyles = createStyles(theme => ({
+const useNewActorCardStyles = makeStyles(theme => ({
   card: {
     color: theme.palette.primary.main,
     transition: 'box-shadow 0.15s ease-in-out',

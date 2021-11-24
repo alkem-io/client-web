@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Dialog from '@mui/material/Dialog';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Avatar from '../../core/Avatar';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
@@ -11,7 +11,7 @@ import { Grid } from '@mui/material';
 import TagContainer from '../../core/TagContainer';
 import Tag from '../../core/Tag';
 
-const getStyles = createStyles(theme => ({
+const getStyles = makeStyles(theme => ({
   title: {
     textTransform: 'capitalize',
   },

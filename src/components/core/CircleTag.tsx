@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
-const useCircleTagStyles = createStyles(theme => ({
+const useCircleTagStyles = makeStyles(theme => ({
   tag: {
     display: 'inline-flex',
     borderRadius: '50%',
