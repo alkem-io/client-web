@@ -792,15 +792,14 @@ export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
     title
+    description
+    createdBy
+    timestamp
     category
     authorization {
       myPrivileges
     }
-    messages {
-      ...MessageDetails
-    }
   }
-  ${MessageDetailsFragmentDoc}
 `;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
@@ -9692,12 +9691,16 @@ export const CommunityDiscussionListDocument = gql`
           }
           discussions {
             ...DiscussionDetails
+            messages {
+              ...MessageDetails
+            }
           }
         }
       }
     }
   }
   ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -9801,13 +9804,10 @@ export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
-      id
-      title
-      description
-      createdBy
-      timestamp
+      ...DiscussionDetails
     }
   }
+  ${DiscussionDetailsFragmentDoc}
 `;
 export type CreateDiscussionMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateDiscussionMutation,

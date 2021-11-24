@@ -1,12 +1,12 @@
 fragment DiscussionDetails on Discussion {
   id
   title
+  description
+  createdBy
+  timestamp
   category
   authorization {
     myPrivileges
-  }
-  messages {
-    ...MessageDetails
   }
 }
 
@@ -22,6 +22,9 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
         }
         discussions {
           ...DiscussionDetails
+          messages {
+            ...MessageDetails
+          }
         }
       }
     }
@@ -36,11 +39,7 @@ mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
 
 mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
   createDiscussion(createData: $input) {
-    id
-    title
-    description
-    createdBy
-    timestamp
+    ...DiscussionDetails
   }
 }
 

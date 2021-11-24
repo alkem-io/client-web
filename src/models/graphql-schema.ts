@@ -325,12 +325,18 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Communication. */
+  discussion?: Maybe<Discussion>;
   /** The Discussions active in this Communication. */
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Updates for this Communication. */
   updates?: Maybe<Updates>;
+};
+
+export type CommunicationDiscussionArgs = {
+  ID: Scalars['String'];
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -355,10 +361,6 @@ export type CommunicationAdminOrphanedUsageResult = {
   __typename?: 'CommunicationAdminOrphanedUsageResult';
   /** Rooms in the Communication platform that are not used */
   rooms: Array<CommunicationAdminRoomResult>;
-};
-
-export type CommunicationAdminRemoveOrphanedRoomInput = {
-  roomID: Scalars['String'];
 };
 
 export type CommunicationAdminRoomMembershipResult = {
@@ -1021,8 +1023,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
-  /** Remove an orphaned room from messaging platform. */
-  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1193,10 +1193,6 @@ export type Mutation = {
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
-};
-
-export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
-  orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -6434,9 +6430,11 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
   category: DiscussionCategory;
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
-  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
 export type CommunityDiscussionListQueryVariables = Exact<{
@@ -6461,14 +6459,17 @@ export type CommunityDiscussionListQuery = {
             __typename?: 'Discussion';
             id: string;
             title: string;
+            description: string;
+            createdBy: string;
+            timestamp?: Maybe<number>;
             category: DiscussionCategory;
+            messages?: Maybe<
+              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            >;
             authorization?: Maybe<{
               __typename?: 'Authorization';
               myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
             }>;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
           }>
         >;
       }>;
@@ -6498,6 +6499,8 @@ export type CreateDiscussionMutation = {
     description: string;
     createdBy: string;
     timestamp?: Maybe<number>;
+    category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   };
 };
 

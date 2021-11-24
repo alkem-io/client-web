@@ -78,7 +78,10 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussions = data?.ecoverse.community?.communication?.discussions || [];
 
-  const senders = uniq(discussions.flatMap(d => d.messages?.map(m => m.sender) || []));
+  const senders = uniq([
+    ...discussions.map(d => d.createdBy),
+    ...discussions.flatMap(d => d.messages?.map(m => m.sender) || []),
+  ]);
 
   const { data: authorData, loading: loadingAvatars } = useAuthorDetailsQuery({
     variables: { ids: senders },
@@ -106,17 +109,16 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussionList = discussions.map<Discussion>(x => {
     const sortedMessages = sortMessages(x.messages);
-    const firstMessage = sortedMessages[0];
 
     return {
       id: x.id,
       title: x.title,
       category: x.category,
       myPrivileges: x.authorization?.myPrivileges ?? [],
-      author: getAuthor(firstMessage?.sender || ''),
+      author: getAuthor(x.createdBy || ''),
       authors: getAuthors(sortedMessages.map(m => m.sender)),
-      description: firstMessage?.message || '',
-      createdAt: firstMessage ? new Date(firstMessage.timestamp) : new Date(),
+      description: x.description,
+      createdAt: x.timestamp ? new Date(x.timestamp) : new Date(),
       totalComments: sortedMessages.slice(1).length,
       comments: sortedMessages.slice(1).map<Comment>(m => ({
         id: m.id,

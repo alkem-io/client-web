@@ -203,6 +203,7 @@ export type ChallengeTemplateFieldPolicy = {
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
+  | 'discussion'
   | 'discussions'
   | 'id'
   | 'updates'
@@ -210,6 +211,7 @@ export type CommunicationKeySpecifier = (
 )[];
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -537,7 +539,6 @@ export type MetadataFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
-  | 'adminCommunicationRemoveOrphanedRoom'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
@@ -625,7 +626,6 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
