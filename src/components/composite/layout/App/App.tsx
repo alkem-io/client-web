@@ -1,8 +1,5 @@
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useSelector } from '@xstate/react';
-import { ReactComponent as ListIcon } from 'bootstrap-icons/icons/list.svg';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -16,7 +13,7 @@ import {
   useUserScope,
   useGlobalState,
 } from '../../../../hooks';
-import { useServerMetadataQuery, useSidebarEcoversesListQuery } from '../../../../hooks/generated/graphql';
+import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
 import {
   AUTH_LOGIN_PATH,
   AUTH_REGISTER_PATH,
@@ -26,12 +23,9 @@ import {
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Button from '../../../core/Button';
-import Icon from '../../../core/Icon';
-import IconButton from '../../../core/IconButton';
 import Loading from '../../../core/Loading/Loading';
 import Section from '../../../core/Section';
 import UserSegment from '../../entities/User/UserSegment';
-import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
 import Header from './Header';
 import Main from './Main';
@@ -39,7 +33,6 @@ import Main from './Main';
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
-  const { data: ecoversesData, loading: loadingEcoverses } = useSidebarEcoversesListQuery();
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading, isFeatureEnabled } = useConfig();
@@ -58,11 +51,8 @@ const App = ({ children }): React.ReactElement => {
     return state.matches('visible');
   });
 
-  const theme = useTheme();
-  const upSm = useMediaQuery(theme.breakpoints.up('sm'));
   useUserScope(user);
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
       console.table({
@@ -88,28 +78,16 @@ const App = ({ children }): React.ReactElement => {
     );
   };
 
-  if (loading || configLoading || loadingEcoverses) {
+  if (loading || configLoading) {
     return <Loading text={'Loading Application ...'} />;
   }
 
   return addUpdateSubscription(
     <div id="app">
-      <Sidebar
-        isUserAuth={Boolean(user)}
-        ecoverses={ecoversesData?.ecoverses || []}
-        userMetadata={user}
-        drawerProps={{ open: drawerOpen, onClose: () => setDrawerOpen(false) }}
-      />
       <div id="main">
         <Header innerRef={headerRef}>
           {isVisible => (
             <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-              {/* <Navigation maximize={isVisible} userMetadata={user} /> */}
-              {!upSm && (
-                <IconButton onClick={() => setDrawerOpen(x => !x)} size="large">
-                  <Icon component={ListIcon} color="inherit" size={isVisible ? 'lg' : 'sm'} />
-                </IconButton>
-              )}
               <div style={{ display: 'flex', flexGrow: 1 }} />
               {loginVisible && (
                 <>
