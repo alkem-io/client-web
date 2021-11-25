@@ -5,8 +5,30 @@ fragment DiscussionDetails on Discussion {
   createdBy
   timestamp
   category
+  commentsCount
   authorization {
     myPrivileges
+  }
+}
+
+query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      communication {
+        id
+        authorization {
+          myPrivileges
+        }
+        discussion(ID: $discussionId) {
+          ...DiscussionDetails
+          messages {
+            ...MessageDetails
+          }
+        }
+      }
+    }
   }
 }
 
@@ -22,9 +44,6 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
         }
         discussions {
           ...DiscussionDetails
-          messages {
-            ...MessageDetails
-          }
         }
       }
     }

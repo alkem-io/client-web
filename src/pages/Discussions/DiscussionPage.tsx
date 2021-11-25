@@ -1,23 +1,23 @@
 import React, { FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
+import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { Loading } from '../../components/core';
+import RemoveModal from '../../components/core/RemoveModal';
 import { useCommunityContext } from '../../context/CommunityProvider';
+import { useDiscussionContext } from '../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { ThemeProviderV2 } from '../../context/ThemeProvider';
-import { useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
+import { useUpdateNavigation, useUserContext } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
-import RemoveModal from '../../components/core/RemoveModal';
-import { useTranslation } from 'react-i18next';
-import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
 
 interface DiscussionPageProps extends PageProps {}
 
 export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { discussionId } = useUrlParams();
   const { loading: loadingCommunity } = useCommunityContext();
   const { user } = useUserContext();
 
@@ -26,15 +26,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   // holds the ID of discussion or comment for deletion after the dialog is confirmed
   const [itemToDelete, setItemToDelete] = useState<string | undefined>(undefined);
 
-  const {
-    getDiscussion,
-    handlePostComment,
-    handleDeleteDiscussion,
-    handleDeleteComment,
-    loading: loadingDiscussions,
-  } = useDiscussionsContext();
-
-  const discussion = getDiscussion(discussionId);
+  const { discussion, handlePostComment, handleDeleteComment, loading: loadingDiscussions } = useDiscussionContext();
+  const { handleDeleteDiscussion } = useDiscussionsContext();
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: discussion?.title, real: false }],
