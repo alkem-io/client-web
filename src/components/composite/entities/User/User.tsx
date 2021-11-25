@@ -1,97 +1,63 @@
-import clsx from 'clsx';
 import React, { forwardRef } from 'react';
-import { makeStyles } from '@mui/styles';
-import Avatar from '../../../core/Avatar';
-import Typography from '../../../core/Typography';
+import { Grid, styled } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
 
-const useUserStyles = makeStyles(theme => ({
-  flex: {
-    display: 'flex',
-    gap: theme.spacing(1),
-    padding: theme.spacing(1),
-    margin: -theme.spacing(1),
+const PREFIX = 'User';
 
-    '&:hover': {
-      textDecoration: 'none',
-    },
-  },
-  center: {
-    alignItems: 'center',
-  },
-  horizontal: {
-    flexDirection: 'row',
-  },
-  vertical: {
-    flexDirection: 'column',
-  },
-  children: {
-    // flex: '1 1 auto',
+const classes = {
+  textPaddingRight: `${PREFIX}-textPaddingRight`,
+  cursorPointer: `${PREFIX}-cursorPointer`,
+  nameStyle: `${PREFIX}-nameStyle`,
+  titleStyle: `${PREFIX}-titleStyle`,
+};
 
-    '&.horizontal': {
-      marginLeft: theme.spacing(2),
-    },
-    '&.vertical': {
-      marginLeft: theme.spacing(2),
-      // marginTop: theme.spacing(0.5),
-      // marginBottom: theme.spacing(0.5),
-    },
-    '&.horizontal.reversed': {
-      marginLeft: 0,
-      marginRight: theme.spacing(2),
-    },
-    '&.vertical.reversed': {
-      marginLeft: 0,
-      marginRight: theme.spacing(2),
-      // marginTop: theme.spacing(0.5),
-      // marginBottom: theme.spacing(0.5),
-    },
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.textPaddingRight}`]: {
+    paddingRight: theme.spacing(1.5),
   },
-  reversedLayout: {
-    flexDirection: 'row-reverse',
+  [`& .${classes.cursorPointer}`]: {
+    cursor: 'pointer',
+  },
+  [`& .${classes.nameStyle}`]: {
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  [`& .${classes.titleStyle}`]: {
+    fontWeight: 'medium',
+    textTransform: 'uppercase',
   },
 }));
 
 interface UserProps {
-  orientation: 'horizontal' | 'vertical';
   name: string;
   title: string;
   src: string | undefined;
   onClick?: () => void;
-  reverseLayout?: boolean;
 }
 
-const User = forwardRef<unknown, UserProps>(
-  ({ orientation = 'vertical', name, title, src, reverseLayout = false, onClick }, ref) => {
-    const styles = useUserStyles();
-
-    const childrenClasses = clsx(styles.children, orientation, reverseLayout && 'reversed');
-    const size = orientation === 'vertical' ? 'md' : 'sm';
-
-    return (
-      <div
-        onClick={onClick}
-        className={clsx(styles.flex, styles.center, styles.horizontal, reverseLayout && styles.reversedLayout)}
-        style={{ cursor: 'pointer' }}
-      >
-        <Avatar size={size} src={src} ref={ref as any} />
-        <div
-          className={clsx(
-            styles.flex,
-            styles[orientation],
-            orientation === 'horizontal' && reverseLayout && styles.reversedLayout
-          )}
-        >
-          <Typography variant="caption" color="neutral" weight="bold" className={childrenClasses}>
-            {name}
-          </Typography>
-          <Typography variant="caption" color="neutralMedium" weight="medium" className={childrenClasses}>
-            {title}
-          </Typography>
-        </div>
-        {/* <UserRoles /> */}
-      </div>
-    );
-  }
-);
+const User = forwardRef<unknown, UserProps>(({ name, title, src, onClick }, ref) => {
+  return (
+    <Root>
+      <Grid container alignItems="center">
+        <Grid display="flex" direction="column" flexWrap="nowrap" alignItems="end">
+          <Grid item className={classes.textPaddingRight}>
+            <Typography variant="caption" color="neutral.main" noWrap className={classes.nameStyle}>
+              {name}
+            </Typography>
+          </Grid>
+          <Grid item className={classes.textPaddingRight}>
+            <Typography variant="caption" color="neutralMedium.main" noWrap className={classes.titleStyle}>
+              {title}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid item onClick={onClick}>
+          <Avatar src={src} className={classes.cursorPointer} ref={ref as any} />
+        </Grid>
+      </Grid>
+    </Root>
+  );
+});
 
 export default User;

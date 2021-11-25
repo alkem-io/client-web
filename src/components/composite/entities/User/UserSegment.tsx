@@ -24,12 +24,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface UserSegmentProps {
-  orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
   emailVerified: boolean;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
+const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
   const { t } = useTranslation();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -47,11 +46,9 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
         <User
           name={user.displayName}
           title={role}
-          orientation={orientation}
           src={user.profile?.avatar}
           ref={popoverAnchor as any}
           onClick={() => setDropdownOpen(true)}
-          reverseLayout
         />
         <Popover
           open={dropdownOpen}

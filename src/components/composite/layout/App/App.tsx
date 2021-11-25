@@ -1,55 +1,25 @@
-import { useSelector } from '@xstate/react';
-import React, { useRef } from 'react';
+import React from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import {
-  useAuthenticationContext,
-  useConfig,
-  useNavigation,
-  useUserContext,
-  useUserScope,
-  useGlobalState,
-} from '../../../../hooks';
+import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
-import {
-  AUTH_LOGIN_PATH,
-  AUTH_REGISTER_PATH,
-  FEATURE_COMMUNICATIONS,
-  FEATURE_SUBSCRIPTIONS,
-} from '../../../../models/constants';
+import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../models/constants';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
-import Button from '../../../core/Button';
 import Loading from '../../../core/Loading/Loading';
 import Section from '../../../core/Section';
-import UserSegment from '../../entities/User/UserSegment';
 import Footer from './Footer';
-import Header from './Header';
 import Main from './Main';
+import TopNavigation from '../TopNavigation/TopNavigation';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthenticationContext();
 
-  const { user, loading, verified } = useUserContext();
+  const { user, loading } = useUserContext();
   const { loading: configLoading, isFeatureEnabled } = useConfig();
   const { paths } = useNavigation();
-  const {
-    ui: { loginNavigationService, userSegmentService },
-  } = useGlobalState();
-
-  const loginVisible = useSelector(loginNavigationService, state => {
-    return state.matches('visible');
-  });
-
-  const headerRef = useRef<HTMLElement>(null);
-
-  const isUserSegmentVisible = useSelector(userSegmentService, state => {
-    return state.matches('visible');
-  });
 
   useUserScope(user);
 
@@ -85,43 +55,7 @@ const App = ({ children }): React.ReactElement => {
   return addUpdateSubscription(
     <div id="app">
       <div id="main">
-        <Header innerRef={headerRef}>
-          {isVisible => (
-            <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexGrow: 1 }} />
-              {loginVisible && (
-                <>
-                  {!isAuthenticated && (
-                    <Button
-                      as={Link}
-                      to={AUTH_LOGIN_PATH}
-                      text={t('authentication.sign-in')}
-                      style={{ marginLeft: 20 }}
-                      small
-                      variant="primary"
-                    />
-                  )}
-                  {!isAuthenticated && (
-                    <Button
-                      as={Link}
-                      to={AUTH_REGISTER_PATH}
-                      text={t('authentication.sign-up')}
-                      style={{ marginLeft: 20 }}
-                      small
-                    />
-                  )}
-                </>
-              )}
-              {isUserSegmentVisible && user && (
-                <UserSegment
-                  userMetadata={user}
-                  orientation={isVisible ? 'vertical' : 'horizontal'}
-                  emailVerified={verified}
-                />
-              )}
-            </div>
-          )}
-        </Header>
+        <TopNavigation />
         <Main>
           {paths.length > 0 && (
             <Section
