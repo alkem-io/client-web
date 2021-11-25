@@ -1,5 +1,5 @@
 import { sortBy, uniq } from 'lodash';
-import React, { FC, useContext, useMemo } from 'react';
+import React, { FC, useContext } from 'react';
 import { useApolloErrorHandler, useEcoverse, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
@@ -14,15 +14,10 @@ import { Discussion } from '../../models/discussion/discussion';
 import { Discussion as DiscussionGraphql, Message, MessageDetailsFragment } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
 
-interface Permissions {
-  canPost: boolean;
-}
-
 interface DiscussionContextProps {
   discussion?: Discussion;
   handlePostComment: (discussionId: string, comment: string) => Promise<void> | void;
   handleDeleteComment: (ID: DiscussionGraphql['id'], msgID: Message['id']) => Promise<void> | void;
-  permissions: Permissions;
   loading: boolean;
   posting: boolean;
   deleting: boolean;
@@ -32,9 +27,6 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
   discussion: undefined,
   handlePostComment: (_discussionId, _comment) => {},
   handleDeleteComment: (_ID, _msgID) => {},
-  permissions: {
-    canPost: false,
-  },
   loading: false,
   posting: false,
   deleting: false,
@@ -115,13 +107,6 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     });
   };
 
-  const permissions: Permissions = useMemo(
-    () => ({
-      canPost: true, // TODO [ATS]: Should be populated.
-    }),
-    [data]
-  );
-
   const [deleteMessage, { loading: deletingComment }] = useRemoveMessageFromDiscussionMutation({
     onError: handleError,
     refetchQueries: [
@@ -148,7 +133,6 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       value={{
         discussion,
         handlePostComment,
-        permissions,
         handleDeleteComment,
         loading: loadingEcoverse || loadingCommunity || loadingAuthors || loading,
         posting: postingComment,
