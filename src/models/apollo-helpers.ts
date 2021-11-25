@@ -203,6 +203,7 @@ export type ChallengeTemplateFieldPolicy = {
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
+  | 'discussion'
   | 'discussions'
   | 'id'
   | 'updates'
@@ -210,6 +211,7 @@ export type CommunicationKeySpecifier = (
 )[];
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -350,16 +352,24 @@ export type DirectRoomFieldPolicy = {
 export type DiscussionKeySpecifier = (
   | 'authorization'
   | 'category'
+  | 'commentsCount'
+  | 'createdBy'
+  | 'description'
   | 'id'
   | 'messages'
+  | 'timestamp'
   | 'title'
   | DiscussionKeySpecifier
 )[];
 export type DiscussionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   category?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
@@ -1114,7 +1124,6 @@ export type UserPreferenceFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserPreferenceDefinitionKeySpecifier = (
-  | 'authorization'
   | 'description'
   | 'displayName'
   | 'group'
@@ -1124,7 +1133,6 @@ export type UserPreferenceDefinitionKeySpecifier = (
   | UserPreferenceDefinitionKeySpecifier
 )[];
 export type UserPreferenceDefinitionFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;

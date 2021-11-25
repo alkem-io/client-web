@@ -325,12 +325,18 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Communication. */
+  discussion?: Maybe<Discussion>;
   /** The Discussions active in this Communication. */
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Updates for this Communication. */
   updates?: Maybe<Updates>;
+};
+
+export type CommunicationDiscussionArgs = {
+  ID: Scalars['String'];
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -388,8 +394,8 @@ export type CommunicationCreateDiscussionInput = {
   category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
-  /** The starting message in the discussion */
-  message: Scalars['String'];
+  /** The description for the Discussion */
+  description?: Maybe<Scalars['String']>;
   /** The title for the Discussion */
   title: Scalars['String'];
 };
@@ -747,10 +753,18 @@ export type Discussion = {
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
   category: DiscussionCategory;
+  /** The number of comments. */
+  commentsCount: Scalars['Float'];
+  /** The id of the user that created this discussion. */
+  createdBy: Scalars['UUID'];
+  /** The description of this Discussion. */
+  description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages for this Discussion. */
   messages?: Maybe<Array<Message>>;
+  /** The timestamp for the creation of this Discussion. */
+  timestamp?: Maybe<Scalars['Float']>;
   /** The title of the Discussion. */
   title: Scalars['String'];
 };
@@ -2043,6 +2057,8 @@ export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
   category?: Maybe<DiscussionCategory>;
+  /** The description for the Discussion */
+  description?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
 };
 
@@ -2278,8 +2294,6 @@ export type UserPreference = {
 
 export type UserPreferenceDefinition = {
   __typename?: 'UserPreferenceDefinition';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
   /** Preference description */
   description: Scalars['String'];
   /** The name */
@@ -2296,6 +2310,10 @@ export type UserPreferenceDefinition = {
 
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
+  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -6412,9 +6430,11 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
   category: DiscussionCategory;
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
-  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
 };
 
 export type CommunityDiscussionListQueryVariables = Exact<{
@@ -6439,14 +6459,17 @@ export type CommunityDiscussionListQuery = {
             __typename?: 'Discussion';
             id: string;
             title: string;
+            description: string;
+            createdBy: string;
+            timestamp?: Maybe<number>;
             category: DiscussionCategory;
+            messages?: Maybe<
+              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            >;
             authorization?: Maybe<{
               __typename?: 'Authorization';
               myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
             }>;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
           }>
         >;
       }>;
@@ -6469,7 +6492,16 @@ export type CreateDiscussionMutationVariables = Exact<{
 
 export type CreateDiscussionMutation = {
   __typename?: 'Mutation';
-  createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+  createDiscussion: {
+    __typename?: 'Discussion';
+    id: string;
+    title: string;
+    description: string;
+    createdBy: string;
+    timestamp?: Maybe<number>;
+    category: DiscussionCategory;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+  };
 };
 
 export type AuthorDetailsQueryVariables = Exact<{
