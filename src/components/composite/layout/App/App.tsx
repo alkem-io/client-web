@@ -145,7 +145,7 @@ const App = ({ children }): React.ReactElement => {
           )}
         </Header>
         <Main>
-          {paths.length > 0 && (
+          {/* {paths.length > 0 && (
             <Section
               hideDetails
               gutters={{ content: false, details: false, root: true }}
@@ -155,7 +155,7 @@ const App = ({ children }): React.ReactElement => {
             >
               <Breadcrumbs paths={paths} />
             </Section>
-          )}
+          )} */}
           {children}
         </Main>
         <Footer />
