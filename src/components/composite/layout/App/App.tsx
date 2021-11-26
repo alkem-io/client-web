@@ -12,7 +12,7 @@ import Loading from '../../../core/Loading/Loading';
 import Section from '../../../core/Section';
 import Footer from './Footer';
 import Main from './Main';
-import TopNavigation from '../TopNavigation/TopNavigation';
+import TopBar from '../TopBar/TopBar';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
@@ -55,7 +55,7 @@ const App = ({ children }): React.ReactElement => {
   return addUpdateSubscription(
     <div id="app">
       <div id="main">
-        <TopNavigation />
+        <TopBar />
         <Main>
           {paths.length > 0 && (
             <Section
