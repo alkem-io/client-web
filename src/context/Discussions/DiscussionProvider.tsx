@@ -13,6 +13,7 @@ import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import { Discussion as DiscussionGraphql, Message, MessageDetailsFragment } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
+import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
@@ -108,6 +109,8 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   };
 
   const [deleteMessage, { loading: deletingComment }] = useRemoveMessageFromDiscussionMutation({
+    update: (cache, { data }) =>
+      data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
