@@ -1,40 +1,21 @@
 import { Context } from '@apollo/client';
-import { Grid } from '@mui/material';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
-import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
-import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsButton } from '../../components/composite';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
-import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
 import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
-import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
-import CardFilter from '../../components/core/card-filter/CardFilter';
-import {
-  entityTagsValueGetter,
-  entityValueGetter,
-} from '../../components/core/card-filter/value-getters/entity-value-getter';
-import { CardContainer } from '../../components/core/CardContainer';
 import Divider from '../../components/core/Divider';
-import ErrorBlock from '../../components/core/ErrorBlock';
-import Icon from '../../components/core/Icon';
 import { Image } from '../../components/core/Image';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { useUserContext } from '../../hooks';
-import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
+import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const useStyles = makeStyles(theme => ({
   buttonsWrapper: {
@@ -55,17 +36,69 @@ interface EcoverseDashboardViewProps {
 
 export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
   const styles = useStyles();
-  const { ecoverse, permissions, activity, projects, isAuthenticated, hideChallenges } = entities;
+  const { ecoverse, permissions, activity } = entities;
   const { displayName: name = '', nameID: ecoverseNameId = '', id: ecoverseId = '', context } = ecoverse || {};
   const ecoverseBanner = ecoverse?.context?.visual?.banner;
-  const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
+  const { tagline = '', vision = '', references = [] } = context || ({} as Context);
   const learnMore = references?.find(x => x.name === 'website');
 
   return (
     <>
-      <Grid container spacing={3}></Grid>
+      <Section
+        avatar={
+          ecoverseBanner ? (
+            <Image src={ecoverseBanner} alt={`${name} logo`} className={styles.ecoverseBannerImg} />
+          ) : (
+            <div />
+          )
+        }
+        details={
+          <ActivityCard title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })} items={activity} />
+        }
+      >
+        <SectionHeader
+          text={name}
+          editComponent={
+            permissions.canEdit && (
+              <SettingsButton
+                color={'primary'}
+                to={buildAdminEcoverseUrl(ecoverseNameId)}
+                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
+              />
+            )
+          }
+        />
+
+        <SubHeader text={tagline} />
+        <Body>
+          <Markdown children={vision} />
+          <div className={styles.buttonsWrapper}>
+            {learnMore && <Button text={t('buttons.learn-more')} as={'a'} href={`${learnMore.uri}`} target="_blank" />}
+            <ApplicationButtonContainer
+              entities={{
+                ecoverseId,
+                ecoverseNameId,
+                ecoverseName: ecoverse?.displayName || '',
+              }}
+            >
+              {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+            </ApplicationButtonContainer>
+          </div>
+        </Body>
+      </Section>
+
+      <Divider />
+      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
+        <DiscussionsProvider>
+          <EcoverseCommunitySection
+            title={t('pages.ecoverse.sections.community.header')}
+            subTitle={t('pages.ecoverse.sections.community.subheader')}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
+      </AuthenticationBackdrop>
     </>
   );
 };

@@ -8,14 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import {
-  useAuthenticationContext,
-  useConfig,
-  useNavigation,
-  useUserContext,
-  useUserScope,
-  useGlobalState,
-} from '../../../../hooks';
+import { useAuthenticationContext, useConfig, useGlobalState, useUserContext, useUserScope } from '../../../../hooks';
 import { useServerMetadataQuery, useSidebarEcoversesListQuery } from '../../../../hooks/generated/graphql';
 import {
   AUTH_LOGIN_PATH,
@@ -24,12 +17,10 @@ import {
   FEATURE_SUBSCRIPTIONS,
 } from '../../../../models/constants';
 import { ScrollButton } from '../../../core';
-import Breadcrumbs from '../../../core/Breadcrumbs';
 import Button from '../../../core/Button';
 import Icon from '../../../core/Icon';
 import IconButton from '../../../core/IconButton';
 import Loading from '../../../core/Loading/Loading';
-import Section from '../../../core/Section';
 import UserSegment from '../../entities/User/UserSegment';
 import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
@@ -43,7 +34,7 @@ const App = ({ children }): React.ReactElement => {
 
   const { user, loading, verified } = useUserContext();
   const { loading: configLoading, isFeatureEnabled } = useConfig();
-  const { paths } = useNavigation();
+  // const { paths } = useNavigation();
   const {
     ui: { loginNavigationService, userSegmentService },
   } = useGlobalState();

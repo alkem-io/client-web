@@ -12,8 +12,11 @@ import { styled, Tab, TabProps, Tabs } from '@mui/material';
 import React, { FC } from 'react';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useUpdateNavigation } from '../../hooks';
+import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
+import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
 import EcoverseDashboardView from '../../views/Ecoverse/EcoverseDashboardView';
 import { PageProps } from '../common';
+import EcoverseCommunityPage from '../Community/EcoverseCommunityPage';
 
 interface EcoversePageProps extends PageProps {}
 
@@ -52,11 +55,17 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
             <TabPanel value="dashboard">
               <EcoverseDashboardView entities={entities} state={state} />
             </TabPanel>
-            <TabPanel value="context">Item Two</TabPanel>
-            <TabPanel value="community">Item Three</TabPanel>
-            <TabPanel value="challenges">Item Three</TabPanel>
+            <TabPanel value="context">
+              <EcoverseContextView entities={entities} state={state} />
+            </TabPanel>
+            <TabPanel value="community">
+              <EcoverseCommunityPage paths={paths} />
+            </TabPanel>
+            <TabPanel value="challenges">
+              <EcoverseChallengesView entities={entities} state={state} />
+            </TabPanel>
             <TabPanel value="discussions">Item Three</TabPanel>
-            <TabPanel value="canvases">Item Three</TabPanel>
+            <TabPanel value="canvases">Comming soon</TabPanel>
             <TabPanel value="settings">Item Three</TabPanel>
             {/* <EcoverseView entities={entities} state={state} />{' '} */}
           </TabContext>

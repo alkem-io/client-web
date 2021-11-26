@@ -36,36 +36,40 @@ const CardFilter = <T extends RequiredFields>({ data, tagsValueGetter, valueGett
   }
 
   return (
-    <Grid container spacing={2} direction="column" alignItems="center">
-      <Grid container item xs={10}>
-        <Autocomplete
-          aria-label="Filter"
-          id="card-filter"
-          multiple
-          fullWidth
-          freeSolo
-          disableCloseOnSelect
-          options={tags}
-          getOptionLabel={option => option}
-          isOptionEqualToValue={(option, value) => option === value}
-          groupBy={() => 'Tags'}
-          onChange={handleChange}
-          renderTags={(value, getTagProps) =>
-            value.map((option, index) => (
-              <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
-            ))
-          }
-          renderInput={params => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder="Filter by..."
-              label={t('components.card-filter.title')}
-            />
-          )}
-        />
+    <Grid container spacing={2} alignItems="center">
+      <Grid item container justifyContent="center">
+        <Grid item xs={11}>
+          <Autocomplete
+            aria-label="Filter"
+            id="card-filter"
+            multiple
+            fullWidth
+            freeSolo
+            disableCloseOnSelect
+            options={tags}
+            getOptionLabel={option => option}
+            isOptionEqualToValue={(option, value) => option === value}
+            groupBy={() => 'Tags'}
+            onChange={handleChange}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
+              ))
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Filter by..."
+                label={t('components.card-filter.title')}
+              />
+            )}
+          />
+        </Grid>
       </Grid>
-      <Grid container>{children(filteredData)}</Grid>
+      <Grid item container>
+        {children(filteredData)}
+      </Grid>
     </Grid>
   );
 };
