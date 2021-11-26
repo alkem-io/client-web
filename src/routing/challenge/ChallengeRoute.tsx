@@ -12,6 +12,7 @@ import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
+import { ChallengeProvider } from '../../context/ChallengeProvider';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -33,30 +34,34 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
-      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <CommunityProvider>
-            <OpportunityRoute paths={currentPaths} />
-          </CommunityProvider>
-        </OpportunityProvider>
-      </Route>
-      <Route exact path={path}>
-        <ChallengePage paths={currentPaths} />
-      </Route>
-      <RestrictedRoute path={`${path}/community/discussions`}>
-        <DiscussionsRoute paths={currentPaths} />
-      </RestrictedRoute>
-      <RestrictedRoute path={`${path}/community`}>
-        <ChallengeCommunityPage paths={currentPaths} />
-      </RestrictedRoute>
-      <Route path={path}>
-        <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    <ChallengeProvider>
+      <CommunityProvider>
+        <Switch>
+          <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
+            <OpportunityProvider>
+              <CommunityProvider>
+                <OpportunityRoute paths={currentPaths} />
+              </CommunityProvider>
+            </OpportunityProvider>
+          </Route>
+          <Route exact path={path}>
+            <ChallengePage paths={currentPaths} />
+          </Route>
+          <RestrictedRoute path={`${path}/community/discussions`}>
+            <DiscussionsRoute paths={currentPaths} />
+          </RestrictedRoute>
+          <RestrictedRoute path={`${path}/community`}>
+            <ChallengeCommunityPage paths={currentPaths} />
+          </RestrictedRoute>
+          <Route path={path}>
+            <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
+          </Route>
+          <Route path="*">
+            <Error404 />
+          </Route>
+        </Switch>
+      </CommunityProvider>
+    </ChallengeProvider>
   );
 };
 export default ChallengeRoute;

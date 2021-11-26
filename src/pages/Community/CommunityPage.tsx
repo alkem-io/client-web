@@ -1,33 +1,32 @@
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import { ReactComponent as BuildingIcon } from 'bootstrap-icons/icons/building.svg';
-import { ReactComponent as PersonBoundingBoxIcon } from 'bootstrap-icons/icons/person-bounding-box.svg';
-import { ReactComponent as ChatDotsIcon } from 'bootstrap-icons/icons/chat-dots.svg';
-import React, { FC, useMemo } from 'react';
-import { useRouteMatch, Link as RouterLink } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { PageProps } from '../common';
-import { useConfig, useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { SettingsButton } from '../../components/composite';
-import Divider from '../../components/core/Divider';
-import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
-import Icon from '../../components/core/Icon';
-import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
-import Loading from '../../components/core/Loading/Loading';
-import { CardContainer } from '../../components/core/CardContainer';
 import { Link, Typography } from '@mui/material';
-import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import Box from '@mui/material/Box';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
-import { Image } from '../../components/core/Image';
 import makeStyles from '@mui/styles/makeStyles';
+import { ReactComponent as BuildingIcon } from 'bootstrap-icons/icons/building.svg';
+import { ReactComponent as ChatDotsIcon } from 'bootstrap-icons/icons/chat-dots.svg';
+import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as PersonBoundingBoxIcon } from 'bootstrap-icons/icons/person-bounding-box.svg';
+import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
+import { SettingsButton } from '../../components/composite';
+import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
 import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
 import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
-import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import Icon from '../../components/core/Icon';
+import { Image } from '../../components/core/Image';
+import Loading from '../../components/core/Loading/Loading';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
+import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
+import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
+import { PageProps } from '../common';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -83,7 +82,7 @@ const CommunityPage: FC<Props> = ({
   const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
   const membersWithRole = useUserCardRoleName(members as User[], parentId);
-  const { isFeatureEnabled } = useConfig();
+
   const { data: _orgProfile } = useOrganizationProfileInfoQuery({
     variables: { id: ecoverseHostId },
     skip: !ecoverseHostId,
@@ -222,12 +221,6 @@ const CommunityPage: FC<Props> = ({
             )}
           </AvatarsProvider>
         </Box>
-      )}
-      <Divider />
-      {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
-        <Link component={RouterLink} to={`${url}/discussions`}>
-          Discussions
-        </Link>
       )}
     </>
   );
