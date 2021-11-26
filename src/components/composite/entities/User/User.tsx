@@ -40,7 +40,7 @@ const User = forwardRef<unknown, UserProps>(({ name, title, src, onClick }, ref)
   return (
     <Root>
       <Grid container alignItems="center">
-        <Grid display="flex" direction="column" flexWrap="nowrap" alignItems="end">
+        <Grid container item direction="column" flexWrap="nowrap" alignItems="end" xs={6}>
           <Grid item className={classes.textPaddingRight}>
             <Typography variant="caption" color="neutral.main" noWrap className={classes.nameStyle}>
               {name}

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { styled } from '@mui/material';
+import Link from '@mui/material/Link';
 import { RouterLink } from '../../../core/RouterLink';
 import { ReactComponent as LogoPreview } from './logo-preview.svg';
-import { styled } from '@mui/material';
 
 const PREFIX = 'LogoComponent';
 
@@ -25,7 +25,7 @@ const Root = styled('div')(({ theme }) => ({
 const LogoComponent = () => {
   return (
     <Root>
-      <Link component={RouterLink} to="//">
+      <Link component={RouterLink} to="/">
         <LogoPreview className={classes.img} />
       </Link>
     </Root>
