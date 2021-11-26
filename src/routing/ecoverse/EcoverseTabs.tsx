@@ -32,7 +32,7 @@ export interface EcoverseTabsProps {
   children: (e: {
     pathGetter: (key: keyof typeof routes) => string;
     urlGetter: (key: keyof typeof routes) => string;
-    tabName?: string;
+    tabName: string;
     tabNames: EcoverseRoutesType;
   }) => React.ReactNode;
 }
@@ -107,7 +107,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.path, tabNames })}
+      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })}
     </>
   );
 };
