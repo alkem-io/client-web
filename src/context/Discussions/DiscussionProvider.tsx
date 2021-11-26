@@ -65,7 +65,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       authors: authors,
       description: discussionData.description,
       createdAt: discussionData.timestamp ? new Date(discussionData.timestamp) : new Date(),
-      totalComments: discussionData.commentsCount,
+      totalComments: sortedMessages.length,
       comments: sortedMessages.map<Comment>(m => ({
         id: m.id,
         body: m.message,
