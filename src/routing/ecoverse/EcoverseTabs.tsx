@@ -12,6 +12,8 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
+import { useEcoverse } from '../../hooks';
+import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: '/community/discussions',
@@ -41,7 +43,7 @@ const createGetter = function <T>(r: T, url: string) {
 const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
   const { path, url } = useRouteMatch();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
-
+  const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
 
@@ -95,13 +97,15 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
           value={pathGetter('canvases')}
           to={urlGetter('canvases')}
         />
-        <NavigationTab
-          icon={<SettingsOutlined />}
-          label="Settings"
-          component={RouterLink}
-          value={pathGetter('settings')}
-          to={urlGetter('settings')}
-        />
+        {permissions.viewerCanUpdate && (
+          <NavigationTab
+            icon={<SettingsOutlined />}
+            label="Settings"
+            component={RouterLink}
+            value={pathGetter('settings')}
+            to={buildAdminEcoverseUrl(ecoverseNameId)}
+          />
+        )}
       </Tabs>
       {children({ pathGetter, urlGetter, tabName: match?.path, tabNames })}
     </>

@@ -826,6 +826,9 @@ export const EcoverseDetailsFragmentDoc = gql`
 export const EcoverseInfoFragmentDoc = gql`
   fragment EcoverseInfo on Ecoverse {
     ...EcoverseDetails
+    authorization {
+      myPrivileges
+    }
     community {
       id
       displayName

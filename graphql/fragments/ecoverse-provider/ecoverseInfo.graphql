@@ -1,5 +1,8 @@
 fragment EcoverseInfo on Ecoverse {
   ...EcoverseDetails
+  authorization {
+    myPrivileges
+  }
   community {
     id
     displayName

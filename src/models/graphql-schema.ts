@@ -325,12 +325,18 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Communication. */
+  discussion?: Maybe<Discussion>;
   /** The Discussions active in this Communication. */
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Updates for this Communication. */
   updates?: Maybe<Updates>;
+};
+
+export type CommunicationDiscussionArgs = {
+  ID: Scalars['String'];
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -351,6 +357,12 @@ export type CommunicationAdminMembershipResult = {
   rooms: Array<CommunicationAdminRoomMembershipResult>;
 };
 
+export type CommunicationAdminOrphanedUsageResult = {
+  __typename?: 'CommunicationAdminOrphanedUsageResult';
+  /** Rooms in the Communication platform that are not used */
+  rooms: Array<CommunicationAdminRoomResult>;
+};
+
 export type CommunicationAdminRoomMembershipResult = {
   __typename?: 'CommunicationAdminRoomMembershipResult';
   /** Display name of the entity */
@@ -367,13 +379,23 @@ export type CommunicationAdminRoomMembershipResult = {
   roomID: Scalars['String'];
 };
 
+export type CommunicationAdminRoomResult = {
+  __typename?: 'CommunicationAdminRoomResult';
+  /** Display name of the result */
+  displayName: Scalars['String'];
+  /** The identifier for the orphaned room. */
+  id: Scalars['String'];
+  /** The members of the orphaned room */
+  members: Array<Scalars['String']>;
+};
+
 export type CommunicationCreateDiscussionInput = {
   /** The category for the Discussion */
   category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
-  /** The starting message in the discussion */
-  message: Scalars['String'];
+  /** The description for the Discussion */
+  description?: Maybe<Scalars['String']>;
   /** The title for the Discussion */
   title: Scalars['String'];
 };
@@ -394,6 +416,8 @@ export type CommunicationMessageReceived = {
 
 export type CommunicationRoom = {
   __typename?: 'CommunicationRoom';
+  /** The display name of the room */
+  displayName: Scalars['String'];
   /** The identifier of the room */
   id: Scalars['String'];
   /** The messages that have been sent to the Room. */
@@ -713,6 +737,8 @@ export type DeleteUserInput = {
 
 export type DirectRoom = {
   __typename?: 'DirectRoom';
+  /** The display name of the room */
+  displayName: Scalars['String'];
   /** The identifier of the direct room */
   id: Scalars['String'];
   /** The messages that have been sent to the Direct Room. */
@@ -727,10 +753,18 @@ export type Discussion = {
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
   category: DiscussionCategory;
+  /** The number of comments. */
+  commentsCount: Scalars['Float'];
+  /** The id of the user that created this discussion. */
+  createdBy: Scalars['UUID'];
+  /** The description of this Discussion. */
+  description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages for this Discussion. */
   messages?: Maybe<Array<Message>>;
+  /** The timestamp for the creation of this Discussion. */
+  timestamp?: Maybe<Scalars['Float']>;
   /** The title of the Discussion. */
   title: Scalars['String'];
 };
@@ -1151,6 +1185,8 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
+  /** Updates an user preference */
+  updateUserPreference: UserPreference;
   /** Uploads and sets an avatar image for the specified Profile. */
   uploadAvatar: Profile;
 };
@@ -1479,6 +1515,10 @@ export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
 };
 
+export type MutationUpdateUserPreferenceArgs = {
+  userPreferenceData: UpdateUserPreferenceInput;
+};
+
 export type MutationUploadAvatarArgs = {
   file: Scalars['Upload'];
   uploadData: UploadProfileAvatarInput;
@@ -1690,6 +1730,8 @@ export type Query = {
   __typename?: 'Query';
   /** All Users that are members of a given room */
   adminCommunicationMembership: CommunicationAdminMembershipResult;
+  /** Usage of the messaging platform that are not tied to the domain model. */
+  adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
@@ -2015,6 +2057,8 @@ export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
   category?: Maybe<DiscussionCategory>;
+  /** The description for the Discussion */
+  description?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
 };
 
@@ -2122,6 +2166,14 @@ export type UpdateUserInput = {
   serviceProfile?: Maybe<Scalars['Boolean']>;
 };
 
+export type UpdateUserPreferenceInput = {
+  /** Type of the user preference */
+  type: UserPreferenceType;
+  /** ID of the user */
+  userID: Scalars['UUID'];
+  value: Scalars['String'];
+};
+
 export type UpdateVisualInput = {
   avatar?: Maybe<Scalars['String']>;
   background?: Maybe<Scalars['String']>;
@@ -2183,6 +2235,8 @@ export type User = Searchable & {
   nameID: Scalars['NameID'];
   /** The phone number for this User. */
   phone: Scalars['String'];
+  /** The preferences for this user */
+  preferences: Array<UserPreference>;
   /** The profile for this User */
   profile?: Maybe<Profile>;
 };
@@ -2225,6 +2279,50 @@ export type UserMembership = {
   /** Details of the Organizations the user is a member of, with child memberships. */
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
+
+export type UserPreference = {
+  __typename?: 'UserPreference';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The preference definition */
+  userPreferenceDefinition: UserPreferenceDefinition;
+  /** Value of the preference */
+  value: Scalars['String'];
+};
+
+export type UserPreferenceDefinition = {
+  __typename?: 'UserPreferenceDefinition';
+  /** Preference description */
+  description: Scalars['String'];
+  /** The name */
+  displayName: Scalars['String'];
+  /** The group */
+  group: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Type of preference */
+  type: UserPreferenceType;
+  /** Preference value type */
+  valueType: UserPreferenceValueType;
+};
+
+export enum UserPreferenceType {
+  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
+  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
+  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
+}
+
+export enum UserPreferenceValueType {
+  Boolean = 'BOOLEAN',
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING',
+}
 
 export type UserSendMessageInput = {
   /** The message being sent */
@@ -2461,9 +2559,14 @@ export type EcoverseInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    id: string;
+    anonymousReadAccess: boolean;
+  }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';
@@ -4824,9 +4927,14 @@ export type EcoverseInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      id: string;
+      anonymousReadAccess: boolean;
+    }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -6389,9 +6497,14 @@ export type EcoversePageQuery = {
     nameID: string;
     displayName: string;
     activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      id: string;
+      anonymousReadAccess: boolean;
+    }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -6415,9 +6528,14 @@ export type EcoversePageFragment = {
   nameID: string;
   displayName: string;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    id: string;
+    anonymousReadAccess: boolean;
+  }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';
