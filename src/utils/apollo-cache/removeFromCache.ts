@@ -36,6 +36,12 @@ function removeFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, muta
 }
 export default removeFromCache;
 
+/***
+ * Removes entity from cache
+ * @param cache
+ * @param id
+ * @param typeName
+ */
 export function evictFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, id: string, typeName: string) {
   const normalizedId = cache.identify({ id: id, __typename: typeName });
 
