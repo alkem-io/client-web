@@ -6434,7 +6434,45 @@ export type DiscussionDetailsFragment = {
   createdBy: string;
   timestamp?: Maybe<number>;
   category: DiscussionCategory;
+  commentsCount: number;
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+};
+
+export type CommunityDiscussionQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+  discussionId: Scalars['String'];
+}>;
+
+export type CommunityDiscussionQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+        discussion?: Maybe<{
+          __typename?: 'Discussion';
+          id: string;
+          title: string;
+          description: string;
+          createdBy: string;
+          timestamp?: Maybe<number>;
+          category: DiscussionCategory;
+          commentsCount: number;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          >;
+          authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+        }>;
+      }>;
+    }>;
+  };
 };
 
 export type CommunityDiscussionListQueryVariables = Exact<{
@@ -6463,9 +6501,7 @@ export type CommunityDiscussionListQuery = {
             createdBy: string;
             timestamp?: Maybe<number>;
             category: DiscussionCategory;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
+            commentsCount: number;
             authorization?: Maybe<{
               __typename?: 'Authorization';
               myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
@@ -6500,6 +6536,7 @@ export type CreateDiscussionMutation = {
     createdBy: string;
     timestamp?: Maybe<number>;
     category: DiscussionCategory;
+    commentsCount: number;
     authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
   };
 };

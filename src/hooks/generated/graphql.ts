@@ -796,6 +796,7 @@ export const DiscussionDetailsFragmentDoc = gql`
     createdBy
     timestamp
     category
+    commentsCount
     authorization {
       myPrivileges
     }
@@ -9678,6 +9679,82 @@ export function useOnMessageReceivedSubscription(
 }
 export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
 export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
+export const CommunityDiscussionDocument = gql`
+  query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      community(ID: $communityId) {
+        id
+        communication {
+          id
+          authorization {
+            myPrivileges
+          }
+          discussion(ID: $discussionId) {
+            ...DiscussionDetails
+            messages {
+              ...MessageDetails
+            }
+          }
+        }
+      }
+    }
+  }
+  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityDiscussionQuery__
+ *
+ * To run a query within a React component, call `useCommunityDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityDiscussionQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      communityId: // value for 'communityId'
+ *      discussionId: // value for 'discussionId'
+ *   },
+ * });
+ */
+export function useCommunityDiscussionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityDiscussionQuery,
+    SchemaTypes.CommunityDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
+    CommunityDiscussionDocument,
+    options
+  );
+}
+export function useCommunityDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityDiscussionQuery,
+    SchemaTypes.CommunityDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
+    CommunityDiscussionDocument,
+    options
+  );
+}
+export type CommunityDiscussionQueryHookResult = ReturnType<typeof useCommunityDiscussionQuery>;
+export type CommunityDiscussionLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionLazyQuery>;
+export type CommunityDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityDiscussionQuery,
+  SchemaTypes.CommunityDiscussionQueryVariables
+>;
+export function refetchCommunityDiscussionQuery(variables?: SchemaTypes.CommunityDiscussionQueryVariables) {
+  return { query: CommunityDiscussionDocument, variables: variables };
+}
 export const CommunityDiscussionListDocument = gql`
   query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     ecoverse(ID: $ecoverseId) {
@@ -9691,16 +9768,12 @@ export const CommunityDiscussionListDocument = gql`
           }
           discussions {
             ...DiscussionDetails
-            messages {
-              ...MessageDetails
-            }
           }
         }
       }
     }
   }
   ${DiscussionDetailsFragmentDoc}
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
