@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
-import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
+import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
@@ -12,7 +12,6 @@ import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
-import { ChallengeProvider } from '../../context/ChallengeProvider';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -34,34 +33,30 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   }
 
   return (
-    <ChallengeProvider>
-      <CommunityProvider>
-        <Switch>
-          <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
-            <OpportunityProvider>
-              <CommunityProvider>
-                <OpportunityRoute paths={currentPaths} />
-              </CommunityProvider>
-            </OpportunityProvider>
-          </Route>
-          <Route exact path={path}>
-            <ChallengePage paths={currentPaths} />
-          </Route>
-          <RestrictedRoute path={`${path}/community/discussions`}>
-            <DiscussionsRoute paths={currentPaths} />
-          </RestrictedRoute>
-          <RestrictedRoute path={`${path}/community`}>
-            <ChallengeCommunityPage paths={currentPaths} />
-          </RestrictedRoute>
-          <Route path={path}>
-            <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
-          </Route>
-          <Route path="*">
-            <Error404 />
-          </Route>
-        </Switch>
-      </CommunityProvider>
-    </ChallengeProvider>
+    <Switch>
+      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
+        <OpportunityProvider>
+          <CommunityProvider>
+            <OpportunityRoute paths={currentPaths} />
+          </CommunityProvider>
+        </OpportunityProvider>
+      </Route>
+      <Route exact path={path}>
+        <ChallengePage paths={currentPaths} />
+      </Route>
+      <RestrictedRoute path={`${path}/community/discussions`}>
+        <DiscussionsRoute paths={currentPaths} />
+      </RestrictedRoute>
+      <RestrictedRoute path={`${path}/community`}>
+        <ChallengeCommunityPage paths={currentPaths} />
+      </RestrictedRoute>
+      <Route path={path}>
+        <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
+      </Route>
+      <Route path="*">
+        <Error404 />
+      </Route>
+    </Switch>
   );
 };
 export default ChallengeRoute;

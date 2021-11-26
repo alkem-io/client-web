@@ -2,7 +2,6 @@ import { Context } from '@apollo/client';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsButton } from '../../components/composite';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
@@ -15,7 +14,6 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const useStyles = makeStyles(theme => ({
   buttonsWrapper: {
@@ -37,7 +35,7 @@ interface EcoverseDashboardViewProps {
 export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { ecoverse, permissions, activity } = entities;
+  const { ecoverse, activity } = entities;
   const { displayName: name = '', nameID: ecoverseNameId = '', id: ecoverseId = '', context } = ecoverse || {};
   const ecoverseBanner = ecoverse?.context?.visual?.banner;
   const { tagline = '', vision = '', references = [] } = context || ({} as Context);
@@ -57,18 +55,7 @@ export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities
           <ActivityCard title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })} items={activity} />
         }
       >
-        <SectionHeader
-          text={name}
-          editComponent={
-            permissions.canEdit && (
-              <SettingsButton
-                color={'primary'}
-                to={buildAdminEcoverseUrl(ecoverseNameId)}
-                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
-              />
-            )
-          }
-        />
+        <SectionHeader text={name} />
 
         <SubHeader text={tagline} />
         <Body>

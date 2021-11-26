@@ -8,7 +8,6 @@ import { ReactComponent as PersonBoundingBoxIcon } from 'bootstrap-icons/icons/p
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { SettingsButton } from '../../components/composite';
 import UserCard, { USER_CARD_HEIGHT } from '../../components/composite/common/cards/user-card/UserCard';
 import SimpleCard, { RECOMMENDED_HEIGHT } from '../../components/composite/common/simple-card/SimpleCard';
 import CardFilter from '../../components/core/card-filter/CardFilter';
@@ -59,8 +58,6 @@ const CommunityPage: FC<Props> = ({
   parentTagline,
   ecoverseHostId = '',
   leadingOrganizations,
-  settingsUrl = '',
-  permissions,
 }) => {
   const styles = useStyles();
   const { url } = useRouteMatch();
@@ -97,12 +94,7 @@ const CommunityPage: FC<Props> = ({
   return (
     <>
       <Section>
-        <SectionHeader
-          text={parentDisplayName}
-          editComponent={
-            permissions.edit && <SettingsButton color={'primary'} to={settingsUrl} tooltip={t('buttons.settings')} />
-          }
-        />
+        <SectionHeader text={parentDisplayName} />
         <SubHeader text={parentTagline} />
       </Section>
       <Divider />
