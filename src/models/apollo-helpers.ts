@@ -203,6 +203,7 @@ export type ChallengeTemplateFieldPolicy = {
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
+  | 'discussion'
   | 'discussions'
   | 'id'
   | 'updates'
@@ -210,9 +211,56 @@ export type CommunicationKeySpecifier = (
 )[];
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunicationAdminMembershipResultKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'rooms'
+  | CommunicationAdminMembershipResultKeySpecifier
+)[];
+export type CommunicationAdminMembershipResultFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  rooms?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunicationAdminOrphanedUsageResultKeySpecifier = (
+  | 'rooms'
+  | CommunicationAdminOrphanedUsageResultKeySpecifier
+)[];
+export type CommunicationAdminOrphanedUsageResultFieldPolicy = {
+  rooms?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunicationAdminRoomMembershipResultKeySpecifier = (
+  | 'displayName'
+  | 'extraMembers'
+  | 'id'
+  | 'members'
+  | 'missingMembers'
+  | 'roomID'
+  | CommunicationAdminRoomMembershipResultKeySpecifier
+)[];
+export type CommunicationAdminRoomMembershipResultFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraMembers?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  members?: FieldPolicy<any> | FieldReadFunction<any>;
+  missingMembers?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunicationAdminRoomResultKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'members'
+  | CommunicationAdminRoomResultKeySpecifier
+)[];
+export type CommunicationAdminRoomResultFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  members?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationMessageReceivedKeySpecifier = (
   | 'communityId'
@@ -229,8 +277,9 @@ export type CommunicationMessageReceivedFieldPolicy = {
   roomName?: FieldPolicy<any> | FieldReadFunction<any>;
   userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationRoomKeySpecifier = ('id' | 'messages' | CommunicationRoomKeySpecifier)[];
+export type CommunicationRoomKeySpecifier = ('displayName' | 'id' | 'messages' | CommunicationRoomKeySpecifier)[];
 export type CommunicationRoomFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -293,8 +342,9 @@ export type CredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type DirectRoomKeySpecifier = ('id' | 'messages' | 'receiverID' | DirectRoomKeySpecifier)[];
+export type DirectRoomKeySpecifier = ('displayName' | 'id' | 'messages' | 'receiverID' | DirectRoomKeySpecifier)[];
 export type DirectRoomFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   receiverID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -302,16 +352,24 @@ export type DirectRoomFieldPolicy = {
 export type DiscussionKeySpecifier = (
   | 'authorization'
   | 'category'
+  | 'commentsCount'
+  | 'createdBy'
+  | 'description'
   | 'id'
   | 'messages'
+  | 'timestamp'
   | 'title'
   | DiscussionKeySpecifier
 )[];
 export type DiscussionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   category?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
@@ -480,6 +538,7 @@ export type MetadataFieldPolicy = {
   services?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'adminCommunicationEnsureAccessToCommunications'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
@@ -566,6 +625,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -827,6 +887,8 @@ export type ProjectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'adminCommunicationMembership'
+  | 'adminCommunicationOrphanedUsage'
   | 'configuration'
   | 'ecoverse'
   | 'ecoverses'
@@ -846,6 +908,8 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1060,7 +1124,6 @@ export type UserPreferenceFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserPreferenceDefinitionKeySpecifier = (
-  | 'authorization'
   | 'description'
   | 'displayName'
   | 'group'
@@ -1070,7 +1133,6 @@ export type UserPreferenceDefinitionKeySpecifier = (
   | UserPreferenceDefinitionKeySpecifier
 )[];
 export type UserPreferenceDefinitionFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1173,6 +1235,34 @@ export type StrictTypedTypePolicies = {
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);
     fields?: CommunicationFieldPolicy;
+  };
+  CommunicationAdminMembershipResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationAdminMembershipResultKeySpecifier
+      | (() => undefined | CommunicationAdminMembershipResultKeySpecifier);
+    fields?: CommunicationAdminMembershipResultFieldPolicy;
+  };
+  CommunicationAdminOrphanedUsageResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationAdminOrphanedUsageResultKeySpecifier
+      | (() => undefined | CommunicationAdminOrphanedUsageResultKeySpecifier);
+    fields?: CommunicationAdminOrphanedUsageResultFieldPolicy;
+  };
+  CommunicationAdminRoomMembershipResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationAdminRoomMembershipResultKeySpecifier
+      | (() => undefined | CommunicationAdminRoomMembershipResultKeySpecifier);
+    fields?: CommunicationAdminRoomMembershipResultFieldPolicy;
+  };
+  CommunicationAdminRoomResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationAdminRoomResultKeySpecifier
+      | (() => undefined | CommunicationAdminRoomResultKeySpecifier);
+    fields?: CommunicationAdminRoomResultFieldPolicy;
   };
   CommunicationMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

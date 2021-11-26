@@ -117,6 +117,10 @@ export const CommunityDetailsFragmentDoc = gql`
     }
     communication {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
     members {
       ...GroupMembers
@@ -788,15 +792,15 @@ export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
     title
+    description
+    createdBy
+    timestamp
     category
+    commentsCount
     authorization {
       myPrivileges
     }
-    messages {
-      ...MessageDetails
-    }
   }
-  ${MessageDetailsFragmentDoc}
 `;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
@@ -3045,9 +3049,7 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
 >;
 export const RemoveMessageFromDiscussionDocument = gql`
   mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
-    removeMessageFromDiscussion(messageData: $messageData) {
-      id
-    }
+    removeMessageFromDiscussion(messageData: $messageData)
   }
 `;
 export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
@@ -9487,16 +9489,14 @@ export const CommunityUpdatesDocument = gql`
           updates {
             id
             messages {
-              id
-              message
-              sender
-              timestamp
+              ...MessageDetails
             }
           }
         }
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -9548,8 +9548,11 @@ export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUp
 }
 export const SendUpdateDocument = gql`
   mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
-    sendUpdate(messageData: $msgData)
+    sendUpdate(messageData: $msgData) {
+      ...MessageDetails
+    }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export type SendUpdateMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendUpdateMutation,
@@ -9640,13 +9643,11 @@ export const OnMessageReceivedDocument = gql`
       roomName
       communityId
       message {
-        id
-        message
-        sender
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -9678,6 +9679,82 @@ export function useOnMessageReceivedSubscription(
 }
 export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
 export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
+export const CommunityDiscussionDocument = gql`
+  query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      community(ID: $communityId) {
+        id
+        communication {
+          id
+          authorization {
+            myPrivileges
+          }
+          discussion(ID: $discussionId) {
+            ...DiscussionDetails
+            messages {
+              ...MessageDetails
+            }
+          }
+        }
+      }
+    }
+  }
+  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityDiscussionQuery__
+ *
+ * To run a query within a React component, call `useCommunityDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityDiscussionQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      communityId: // value for 'communityId'
+ *      discussionId: // value for 'discussionId'
+ *   },
+ * });
+ */
+export function useCommunityDiscussionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityDiscussionQuery,
+    SchemaTypes.CommunityDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
+    CommunityDiscussionDocument,
+    options
+  );
+}
+export function useCommunityDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityDiscussionQuery,
+    SchemaTypes.CommunityDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
+    CommunityDiscussionDocument,
+    options
+  );
+}
+export type CommunityDiscussionQueryHookResult = ReturnType<typeof useCommunityDiscussionQuery>;
+export type CommunityDiscussionLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionLazyQuery>;
+export type CommunityDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityDiscussionQuery,
+  SchemaTypes.CommunityDiscussionQueryVariables
+>;
+export function refetchCommunityDiscussionQuery(variables?: SchemaTypes.CommunityDiscussionQueryVariables) {
+  return { query: CommunityDiscussionDocument, variables: variables };
+}
 export const CommunityDiscussionListDocument = gql`
   query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     ecoverse(ID: $ecoverseId) {
@@ -9752,10 +9829,10 @@ export function refetchCommunityDiscussionListQuery(variables?: SchemaTypes.Comm
 export const PostDiscussionCommentDocument = gql`
   mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
     sendMessageToDiscussion(messageData: $input) {
-      ...DiscussionDetails
+      ...MessageDetails
     }
   }
-  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
   SchemaTypes.PostDiscussionCommentMutation,
@@ -9800,10 +9877,10 @@ export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
-      id
-      title
+      ...DiscussionDetails
     }
   }
+  ${DiscussionDetailsFragmentDoc}
 `;
 export type CreateDiscussionMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateDiscussionMutation,

@@ -68,13 +68,13 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
   return (
     <>
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
-        <Grid item xs={sort ? 10 : 12}>
+        <Grid item xs={12} lg={sort ? 9 : 12}>
           <FormControl fullWidth size={'small'}>
             <OutlinedInput placeholder={placeholder ?? t('components.filter.placeholder')} onChange={handleSearch} />
           </FormControl>
         </Grid>
         {sort && (
-          <Grid item xs={2}>
+          <Grid item xs={12} lg={3}>
             <FormControl className={styles.select} variant="outlined" fullWidth margin="dense">
               <Select
                 value={keyFromSortItem(sortBy)}

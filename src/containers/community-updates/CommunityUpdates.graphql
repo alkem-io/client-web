@@ -9,10 +9,7 @@ query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
         updates {
           id
           messages {
-            id
-            message
-            sender
-            timestamp
+            ...MessageDetails
           }
         }
       }
@@ -21,7 +18,9 @@ query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
 }
 
 mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
-  sendUpdate(messageData: $msgData)
+  sendUpdate(messageData: $msgData) {
+    ...MessageDetails
+  }
 }
 
 mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
@@ -34,10 +33,7 @@ subscription onMessageReceived {
     roomName
     communityId
     message {
-      id
-      message
-      sender
-      timestamp
+      ...MessageDetails
     }
   }
 }
