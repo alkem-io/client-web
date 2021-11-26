@@ -31,9 +31,18 @@ function removeFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, muta
       throw Error("'__typename' attribute not found in the mutation object");
     }
 
-    const normalizedId = cache.identify({ id: id, __typename: __typename });
-    cache.evict({ id: normalizedId });
-    cache.gc();
+    evictFromCache(cache, id, __typename);
   }
 }
 export default removeFromCache;
+
+export function evictFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, id: string, typeName: string) {
+  const normalizedId = cache.identify({ id: id, __typename: typeName });
+
+  if (!normalizedId) {
+    throw new Error(`entity with id ${id} and typename ${typeName} not found in cache`);
+  }
+
+  cache.evict({ id: normalizedId });
+  cache.gc();
+}
