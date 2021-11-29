@@ -20,7 +20,7 @@ const routes = {
   discussions: '/community/discussions',
   community: '/community',
   dashboard: '/dashboard',
-  challenges: '/challenges',
+  opportunities: '/opportunities',
   canvases: '/canvases',
   settings: '/settings',
   context: '/context',
@@ -85,8 +85,8 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
           icon={<ContentPasteOutlined />}
           label={t('common.opportunities')}
           component={RouterLink}
-          value={pathGetter('challenges')}
-          to={urlGetter('challenges')}
+          value={pathGetter('opportunities')}
+          to={urlGetter('opportunities')}
         />
         <NavigationTab
           icon={<ForumOutlined />}
