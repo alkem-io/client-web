@@ -9,6 +9,7 @@ import {
 } from '@mui/icons-material';
 import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
@@ -42,6 +43,7 @@ const createGetter = function <T>(r: T, url: string) {
 
 const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
   const { path, url } = useRouteMatch();
+  const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
@@ -57,42 +59,42 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
       <Tabs value={match?.path} aria-label="basic tabs example">
         <NavigationTab
           icon={<DashboardOutlined />}
-          label="Dashboard"
+          label={t('common.dashboard')}
           component={RouterLink}
           value={pathGetter('dashboard')}
           to={urlGetter('dashboard')}
         />
         <NavigationTab
           icon={<TocOutlined />}
-          label="Context"
+          label={t('common.context')}
           component={RouterLink}
           value={pathGetter('context')}
           to={urlGetter('context')}
         />
         <NavigationTab
           icon={<GroupOutlined />}
-          label="Community"
+          label={t('common.community')}
           component={RouterLink}
           value={pathGetter('community')}
           to={urlGetter('community')}
         />
         <NavigationTab
           icon={<ContentPasteOutlined />}
-          label="Challenges"
+          label={t('common.challenges')}
           component={RouterLink}
           value={pathGetter('challenges')}
           to={urlGetter('challenges')}
         />
         <NavigationTab
           icon={<ForumOutlined />}
-          label="Discussions"
+          label={t('common.discussions')}
           component={RouterLink}
           value={pathGetter('discussions')}
           to={urlGetter('discussions')}
         />
         <NavigationTab
           icon={<WbIncandescentOutlined />}
-          label="Canvases"
+          label={t('common.canvases')}
           component={RouterLink}
           value={pathGetter('canvases')}
           to={urlGetter('canvases')}
@@ -100,7 +102,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
         {permissions.viewerCanUpdate && (
           <NavigationTab
             icon={<SettingsOutlined />}
-            label="Settings"
+            label={t('common.settings')}
             component={RouterLink}
             value={pathGetter('settings')}
             to={buildAdminEcoverseUrl(ecoverseNameId)}
