@@ -1,10 +1,11 @@
 import Link from '@mui/material/Link';
+import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import ConditionalLink from '../../components/core/ConditionalLink';
 import { RouterLink } from '../../components/core/RouterLink';
-import { makeStyles } from '@mui/styles';
 import { Discussion } from '../../models/discussion/discussion';
 import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
 
@@ -19,17 +20,18 @@ const useDiscussionsStyles = makeStyles(_theme => ({
 }));
 interface DiscussionsProps {
   discussions?: Discussion[];
+  canCreate: boolean;
 }
 
-export const DiscussionsView: FC<DiscussionsProps> = ({ discussions }) => {
+export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }) => {
   const { t } = useTranslation();
   const styles = useDiscussionsStyles();
   const { url } = useRouteMatch();
 
   let messagesComponent = (
-    <Link component={RouterLink} to={buildNewDiscussionUrl(url)}>
-      {t('components.community-section.discussions.no-data')}
-    </Link>
+    <ConditionalLink to={buildNewDiscussionUrl(url)} condition={canCreate}>
+      {t(`components.community-section.discussions.no-data-${canCreate ? 'create' : 'join'}` as const)}
+    </ConditionalLink>
   );
 
   if (discussions && discussions.length > 0) {

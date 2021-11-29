@@ -6,6 +6,10 @@ fragment CommunityDetails on Community {
   }
   communication {
     id
+    authorization {
+      id
+      myPrivileges
+    }
   }
   members {
     ...GroupMembers

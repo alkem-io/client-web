@@ -2437,7 +2437,15 @@ export type CommunityDetailsFragment = {
   id: string;
   displayName: string;
   applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
-  communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
+  communication?: Maybe<{
+    __typename?: 'Communication';
+    id: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+  }>;
   members?: Maybe<
     Array<{ __typename?: 'User'; id: string; displayName: string; firstName: string; lastName: string; email: string }>
   >;
@@ -4538,7 +4546,15 @@ export type ChallengeCommunityQuery = {
         id: string;
         displayName: string;
         applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
-        communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
+        communication?: Maybe<{
+          __typename?: 'Communication';
+          id: string;
+          authorization?: Maybe<{
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          }>;
+        }>;
         members?: Maybe<
           Array<{
             __typename?: 'User';
@@ -4606,7 +4622,15 @@ export type EcoverseCommunityQuery = {
       id: string;
       displayName: string;
       applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
-      communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
+      }>;
       members?: Maybe<
         Array<{
           __typename?: 'User';
@@ -4747,7 +4771,15 @@ export type OpportunityCommunityQuery = {
         id: string;
         displayName: string;
         applications?: Maybe<Array<{ __typename?: 'Application'; id: string }>>;
-        communication?: Maybe<{ __typename?: 'Communication'; id: string }>;
+        communication?: Maybe<{
+          __typename?: 'Communication';
+          id: string;
+          authorization?: Maybe<{
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          }>;
+        }>;
         members?: Maybe<
           Array<{
             __typename?: 'User';
@@ -6408,9 +6440,49 @@ export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
   title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
   category: DiscussionCategory;
+  commentsCount: number;
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
-  messages?: Maybe<Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>>;
+};
+
+export type CommunityDiscussionQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+  discussionId: Scalars['String'];
+}>;
+
+export type CommunityDiscussionQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      communication?: Maybe<{
+        __typename?: 'Communication';
+        id: string;
+        authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+        discussion?: Maybe<{
+          __typename?: 'Discussion';
+          id: string;
+          title: string;
+          description: string;
+          createdBy: string;
+          timestamp?: Maybe<number>;
+          category: DiscussionCategory;
+          commentsCount: number;
+          messages?: Maybe<
+            Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          >;
+          authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+        }>;
+      }>;
+    }>;
+  };
 };
 
 export type CommunityDiscussionListQueryVariables = Exact<{
@@ -6435,14 +6507,15 @@ export type CommunityDiscussionListQuery = {
             __typename?: 'Discussion';
             id: string;
             title: string;
+            description: string;
+            createdBy: string;
+            timestamp?: Maybe<number>;
             category: DiscussionCategory;
+            commentsCount: number;
             authorization?: Maybe<{
               __typename?: 'Authorization';
               myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
             }>;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
           }>
         >;
       }>;
@@ -6465,7 +6538,17 @@ export type CreateDiscussionMutationVariables = Exact<{
 
 export type CreateDiscussionMutation = {
   __typename?: 'Mutation';
-  createDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+  createDiscussion: {
+    __typename?: 'Discussion';
+    id: string;
+    title: string;
+    description: string;
+    createdBy: string;
+    timestamp?: Maybe<number>;
+    category: DiscussionCategory;
+    commentsCount: number;
+    authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
+  };
 };
 
 export type AuthorDetailsQueryVariables = Exact<{
