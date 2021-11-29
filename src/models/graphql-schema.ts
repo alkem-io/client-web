@@ -363,6 +363,10 @@ export type CommunicationAdminOrphanedUsageResult = {
   rooms: Array<CommunicationAdminRoomResult>;
 };
 
+export type CommunicationAdminRemoveOrphanedRoomInput = {
+  roomID: Scalars['String'];
+};
+
 export type CommunicationAdminRoomMembershipResult = {
   __typename?: 'CommunicationAdminRoomMembershipResult';
   /** Display name of the entity */
@@ -1023,6 +1027,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
+  /** Remove an orphaned room from messaging platform. */
+  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1193,6 +1199,10 @@ export type Mutation = {
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
+};
+
+export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
+  orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -2569,8 +2579,8 @@ export type EcoverseInfoFragment = {
   displayName: string;
   authorization?: Maybe<{
     __typename?: 'Authorization';
-    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     anonymousReadAccess: boolean;
   }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
@@ -4961,8 +4971,8 @@ export type EcoverseInfoQuery = {
     displayName: string;
     authorization?: Maybe<{
       __typename?: 'Authorization';
-      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       anonymousReadAccess: boolean;
     }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
@@ -6582,8 +6592,8 @@ export type EcoversePageQuery = {
     activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
     authorization?: Maybe<{
       __typename?: 'Authorization';
-      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       anonymousReadAccess: boolean;
     }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
@@ -6613,8 +6623,8 @@ export type EcoversePageFragment = {
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   authorization?: Maybe<{
     __typename?: 'Authorization';
-    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     anonymousReadAccess: boolean;
   }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;

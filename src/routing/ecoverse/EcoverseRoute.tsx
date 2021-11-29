@@ -1,6 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
+import { ChallengeProvider } from '../../context/ChallengeProvider';
+import { CommunityProvider } from '../../context/CommunityProvider';
 import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
@@ -34,7 +36,11 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
         <Redirect to={`${url}/dashboard`} />
       </Route>
       <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
-        <ChallengeRoute paths={currentPaths} />
+        <ChallengeProvider>
+          <CommunityProvider>
+            <ChallengeRoute paths={currentPaths} />
+          </CommunityProvider>
+        </ChallengeProvider>
       </Route>
       <Route path={`${path}/apply`}>
         <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
