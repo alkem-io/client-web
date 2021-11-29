@@ -2879,18 +2879,6 @@ export type OrganizationSearchResultFragment = {
 
 export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
-export type SidebarEcoverseFragment = {
-  __typename?: 'Ecoverse';
-  id: string;
-  nameID: string;
-  displayName: string;
-  context?: Maybe<{
-    __typename?: 'Context';
-    id: string;
-    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-  }>;
-};
-
 export type UserAgentFragment = {
   __typename?: 'User';
   agent?: Maybe<{
@@ -5992,23 +5980,6 @@ export type ServerMetadataQuery = {
     __typename?: 'Metadata';
     services: Array<{ __typename?: 'ServiceMetadata'; name?: Maybe<string>; version?: Maybe<string> }>;
   };
-};
-
-export type SidebarEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SidebarEcoversesListQuery = {
-  __typename?: 'Query';
-  ecoverses: Array<{
-    __typename?: 'Ecoverse';
-    id: string;
-    nameID: string;
-    displayName: string;
-    context?: Maybe<{
-      __typename?: 'Context';
-      id: string;
-      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-    }>;
-  }>;
 };
 
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
