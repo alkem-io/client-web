@@ -55,7 +55,6 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                       <DiscussionsRoute paths={paths} />
                     </RestrictedRoute>
                   </Switch>
-                  <DiscussionsRoute paths={paths} />
                 </TabPanel>
                 <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
               </TabContext>

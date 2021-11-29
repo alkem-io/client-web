@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
+import { Error404 } from '../';
 import { Loading } from '../../components/core';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
-import { Error404 } from '../';
-import { ThemeProviderV2 } from '../../context/ThemeProvider';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -28,10 +27,6 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
     isCurrentUser: currentUser?.user.id === userMetadata.user.id || false,
   };
 
-  return (
-    <ThemeProviderV2>
-      <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
-    </ThemeProviderV2>
-  );
+  return <UserProfilePageView entities={{ userMetadata, verified }} options={options} />;
 };
 export default UserProfilePage;

@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 const useMainStyles = makeStyles(() => ({
   main: {
     flexGrow: 1,
-    padding: '40px 0 0 0',
+    padding: '128px 0 0 0',
     maxWidth: 1380,
   },
 }));
