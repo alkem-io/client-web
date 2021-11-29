@@ -363,6 +363,10 @@ export type CommunicationAdminOrphanedUsageResult = {
   rooms: Array<CommunicationAdminRoomResult>;
 };
 
+export type CommunicationAdminRemoveOrphanedRoomInput = {
+  roomID: Scalars['String'];
+};
+
 export type CommunicationAdminRoomMembershipResult = {
   __typename?: 'CommunicationAdminRoomMembershipResult';
   /** Display name of the entity */
@@ -1023,6 +1027,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
+  /** Remove an orphaned room from messaging platform. */
+  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1193,6 +1199,10 @@ export type Mutation = {
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
+};
+
+export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
+  orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -2284,10 +2294,10 @@ export type UserPreference = {
   __typename?: 'UserPreference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: UserPreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
   /** Value of the preference */
   value: Scalars['String'];
 };
@@ -6438,6 +6448,17 @@ export type DiscussionDetailsFragment = {
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
 };
 
+export type DiscussionDetailsNoAuthFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
+  category: DiscussionCategory;
+  commentsCount: number;
+};
+
 export type CommunityDiscussionQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
@@ -6502,10 +6523,6 @@ export type CommunityDiscussionListQuery = {
             timestamp?: Maybe<number>;
             category: DiscussionCategory;
             commentsCount: number;
-            authorization?: Maybe<{
-              __typename?: 'Authorization';
-              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
-            }>;
           }>
         >;
       }>;
