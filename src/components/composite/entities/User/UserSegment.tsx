@@ -1,5 +1,4 @@
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Popover } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
@@ -11,62 +10,65 @@ import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
 import User from './User';
 
-const useStyles = makeStyles(theme => ({
-  popover: {
-    padding: 0,
-  },
-  userHeader: {
+const PREFIX = 'UserSegment';
+
+const classes = {
+  userHeader: `${PREFIX}-userHeader`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.userHeader}`]: {
     background: theme.palette.neutralLight.main,
-    padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+    padding: theme.spacing(2, 4),
   },
 }));
 
 interface UserSegmentProps {
-  orientation: 'vertical' | 'horizontal';
   userMetadata: UserMetadata;
   emailVerified: boolean;
 }
 
-const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVerified }) => {
+const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
   const { t } = useTranslation();
   const history = useHistory();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
-  const styles = useStyles();
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
     return roles.filter(r => !r.hidden)[0]?.name;
   }, [userMetadata]);
 
+  if (!user) {
+    return null;
+  }
+
   return (
-    user && (
-      <>
-        <User
-          name={user.displayName}
-          title={role}
-          orientation={orientation}
-          src={user.profile?.avatar}
-          ref={popoverAnchor as any}
-          onClick={() => setDropdownOpen(true)}
-          reverseLayout
-        />
-        <Popover
-          open={dropdownOpen}
-          anchorEl={popoverAnchor.current}
-          onClose={() => setDropdownOpen(false)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
+    <>
+      <User
+        name={user.displayName}
+        title={role}
+        src={user.profile?.avatar}
+        ref={popoverAnchor as any}
+        onClick={() => setDropdownOpen(true)}
+      />
+      <Popover
+        open={dropdownOpen}
+        anchorEl={popoverAnchor.current}
+        onClose={() => setDropdownOpen(false)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Root>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
-            <Box display="flex" flexDirection="column" alignItems="center" className={styles.userHeader}>
+            <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
               <Avatar size={'lg'} src={user.profile?.avatar} />
               <Box textAlign={'center'}>
                 <Typography variant="h3">{user.displayName}</Typography>
@@ -100,9 +102,9 @@ const UserSegment: FC<UserSegmentProps> = ({ orientation, userMetadata, emailVer
               </ListItemButton>
             </List>
           </Box>
-        </Popover>
-      </>
-    )
+        </Root>
+      </Popover>
+    </>
   );
 };
 
