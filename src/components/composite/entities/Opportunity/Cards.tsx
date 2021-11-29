@@ -113,7 +113,7 @@ export const RelationCard: FC<RelationCardProps> = ({
             <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
               {'REASON FOR COLLABORATION'}
             </Typography>
-            <Typography as="h3" variant="body">
+            <Typography as="h3" variant="body1">
               {description}
             </Typography>
           </>
@@ -181,7 +181,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
           {'wins how? (juice)'}
           <Icon component={CupStrawIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {value}
         </Typography>
         <Spacer variant="lg" />
@@ -189,7 +189,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
           {'required effort for pilot'}
           <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {impact}
         </Typography>
       </Card>
@@ -330,7 +330,7 @@ export const AspectCard: FC<AspectCardProps> = ({
           {'explanation'}
           <Icon component={InfoSquareIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {explanation}
         </Typography>
         <Spacer variant="lg" />
@@ -338,7 +338,7 @@ export const AspectCard: FC<AspectCardProps> = ({
           {'where we need help'}
           <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {framing}
         </Typography>
       </Card>

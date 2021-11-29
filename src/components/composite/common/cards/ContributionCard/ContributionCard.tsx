@@ -83,7 +83,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
                 </Grid>
                 <Grid item>
                   <Box className={styles.entityTypeWrapper}>
-                    <Typography variant="body" className={styles.entityType}>
+                    <Typography variant="body1" className={styles.entityType}>
                       {type && t(`common.${type}` as const)}
                     </Typography>
                   </Box>
