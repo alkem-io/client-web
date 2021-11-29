@@ -1,12 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
+import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { ThemeProvider } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import NewDiscussionView from '../../views/Discussions/NewDiscussionView';
 import { PageProps } from '../common';
-import { useCommunityContext } from '../../context/CommunityProvider';
 
 export interface NewDiscussionPageProps extends PageProps {}
 
@@ -22,13 +21,9 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
   const title = `${communityName} - Initiate Discussion`;
 
   return (
-    <ThemeProvider>
-      <DiscussionsLayout title={title}>
-        <NewDiscussionView
-          onPost={values => handleCreateDiscussion(values.title, values.category, values.description)}
-        />
-      </DiscussionsLayout>
-    </ThemeProvider>
+    <DiscussionsLayout title={title}>
+      <NewDiscussionView onPost={values => handleCreateDiscussion(values.title, values.category, values.description)} />
+    </DiscussionsLayout>
   );
 };
 export default NewDiscussionPage;

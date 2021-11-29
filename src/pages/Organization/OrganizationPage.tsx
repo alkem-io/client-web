@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import OrganizationPageContainer from '../../containers/organization/OrganizationPageContainer';
-import { ThemeProvider } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import OrganizationPageView from '../../views/Organization/OrganizationPageView';
 import { PageProps } from '../common';
@@ -11,13 +10,11 @@ export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <ThemeProvider>
-      <OrganizationPageContainer>
-        {(entities, state) => {
-          return <OrganizationPageView entities={entities} state={state} />;
-        }}
-      </OrganizationPageContainer>
-    </ThemeProvider>
+    <OrganizationPageContainer>
+      {(entities, state) => {
+        return <OrganizationPageView entities={entities} state={state} />;
+      }}
+    </OrganizationPageContainer>
   );
 };
 export default OrganizationPage;

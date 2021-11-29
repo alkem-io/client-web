@@ -8,7 +8,6 @@ import RemoveModal from '../../components/core/RemoveModal';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionContext } from '../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { ThemeProvider } from '../../context/ThemeProvider';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
 import { PageProps } from '../common';
@@ -73,7 +72,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   };
 
   return (
-    <ThemeProvider>
+    <>
       <DiscussionsLayout
         title={discussion.title}
         icon={<DiscussionIcon category={discussion.category} />}
@@ -99,7 +98,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
         onConfirm={onConfirmCommentDialog}
         text={t('components.discussion.delete-comment')}
       />
-    </ThemeProvider>
+    </>
   );
 };
 export default DiscussionPage;
