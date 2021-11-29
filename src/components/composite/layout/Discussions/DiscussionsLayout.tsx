@@ -68,10 +68,6 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
     [styles.title]: enablePaper,
     [styles.titleDense]: !enablePaper,
   } as const;
-  const childrenClasses = {
-    [styles.paper]: enablePaper,
-    [styles.children]: enablePaper,
-  } as const;
 
   return (
     <Grid container spacing={2}>
@@ -105,9 +101,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
           </Grid>
         )}
         <Grid item xs>
-          <Paper elevation={0} square className={clsx(childrenClasses)}>
-            {children}
-          </Paper>
+          {children}
         </Grid>
       </Grid>
     </Grid>

@@ -1,13 +1,14 @@
 import { Components, Theme } from '@mui/material/styles';
-const MuiButtonBase = (theme: Theme): Components['MuiButtonBase'] | undefined => {
+
+const MuiTooltip = (theme: Theme): Components['MuiTooltip'] | undefined => {
   if (!theme) {
     return undefined;
   }
 
   return {
     defaultProps: {
-      disableRipple: true,
+      arrow: true,
     },
   };
 };
-export default MuiButtonBase;
+export default MuiTooltip;

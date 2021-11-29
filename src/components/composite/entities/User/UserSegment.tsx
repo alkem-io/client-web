@@ -1,14 +1,12 @@
-import { Box, Popover, styled } from '@mui/material';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
 import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
-import Button from '../../../core/Button';
-import Icon from '../../../core/Icon';
 import Typography from '../../../core/Typography';
 import User from './User';
 
@@ -32,6 +30,7 @@ interface UserSegmentProps {
 
 const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
   const { t } = useTranslation();
+  const history = useHistory();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
@@ -78,36 +77,30 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
                 {role}
               </Typography>
             </Box>
-            <Box display="flex" textAlign="center">
-              <Button
-                as={Link}
-                to={buildUserProfileUrl(user.nameID)}
+            <List>
+              <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
+                  history.push(buildUserProfileUrl(user.nameID));
                 }}
-                variant="transparent"
-                inset
-                block
-                small
-                text={t('buttons.my-profile')}
-                startIcon={<Icon component={PersonFill} color="inherit" size="sm" />}
-              />
-            </Box>
-            <Box display="flex" textAlign="center">
-              <Button
-                as={Link}
-                to={'/identity/logout'}
+              >
+                <ListItemIcon>
+                  <PersonFill />
+                </ListItemIcon>
+                <ListItemText primary={t('buttons.my-profile')} />
+              </ListItemButton>
+              <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
+                  history.push('/identity/logout');
                 }}
-                variant="transparent"
-                inset
-                block
-                small
-                text={t('buttons.sign-out')}
-                startIcon={<Icon component={DoorOpenIcon} color="inherit" size="sm" />}
-              />
-            </Box>
+              >
+                <ListItemIcon>
+                  <DoorOpenIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('buttons.sign-out')} />
+              </ListItemButton>
+            </List>
           </Box>
         </Root>
       </Popover>

@@ -7,7 +7,7 @@ import Typography from './Typography';
 
 const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.default,
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
     flexGrow: 1,
