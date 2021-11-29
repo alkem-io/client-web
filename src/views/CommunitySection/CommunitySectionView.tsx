@@ -13,11 +13,12 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../compone
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { Message, User } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, Message, User } from '../../models/graphql-schema';
 import { Discussion } from '../../models/discussion/discussion';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
+import { useCommunityContext } from '../../context/CommunityProvider';
 
 export interface CommunitySectionPropsExt
   extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
@@ -69,6 +70,9 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
+
+  const { communicationPrivileges } = useCommunityContext();
+  const canCreateDiscussions = communicationPrivileges.some(x => x === AuthorizationPrivilege.Create);
 
   const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
   const discussionsCountLabel = discussions?.length ? `(${discussions?.length})` : '';
@@ -133,7 +137,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               </TabPanel>
 
               <TabPanel classes={{ root: styles.tabPanel }} value={'discussion'}>
-                <DiscussionsView discussions={discussions} />
+                <DiscussionsView discussions={discussions} canCreate={canCreateDiscussions} />
               </TabPanel>
             </>
           )}

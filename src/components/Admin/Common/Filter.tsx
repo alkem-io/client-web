@@ -63,7 +63,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
   return (
     <>
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
-        <Grid item xs={sort ? 10 : 12}>
+        <Grid item xs={12} lg={sort ? 9 : 12}>
           <TextField
             placeholder={placeholder ?? t('components.filter.placeholder')}
             onChange={handleSearch}
@@ -73,7 +73,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
           />
         </Grid>
         {sort && (
-          <Grid item xs={2}>
+          <Grid item xs={12} lg={3}>
             <TextField
               fullWidth
               select

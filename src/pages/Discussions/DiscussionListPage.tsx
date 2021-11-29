@@ -1,3 +1,4 @@
+import { Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
@@ -20,6 +21,8 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
 
   useUpdateNavigation({ currentPaths: paths });
 
+  const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+
   return (
     <DiscussionsLayout
       title={t('components.discussions-list.name', { community: communityName })}
@@ -29,6 +32,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
         <DiscussionCategorySelector
           onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
           value={categoryFilter}
+          showLabels={!mediumScreen}
         />
       }
     >

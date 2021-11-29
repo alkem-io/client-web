@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { DiscussionProvider } from '../../context/Discussions/DiscussionProvider';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -32,7 +33,9 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
           <NewDiscussionPage paths={currentPaths} />
         </Route>
         <Route path={`${path}/:${nameOfUrl.discussionId}`}>
-          <DiscussionPage paths={currentPaths} />
+          <DiscussionProvider>
+            <DiscussionPage paths={currentPaths} />
+          </DiscussionProvider>
         </Route>
         <Route path="*">
           <Error404 />

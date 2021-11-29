@@ -98,13 +98,13 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
       </Grid>
       <Grid item container spacing={2}>
         {categorySelector && (
-          <Grid item xs={2}>
+          <Grid item>
             <Paper elevation={0} square className={clsx(styles.paper, styles.categorySelector)}>
               {categorySelector}
             </Paper>
           </Grid>
         )}
-        <Grid item xs={categorySelector ? 10 : 12}>
+        <Grid item xs>
           <Paper elevation={0} square className={clsx(childrenClasses)}>
             {children}
           </Paper>
