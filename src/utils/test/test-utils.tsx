@@ -1,10 +1,9 @@
-import React, { FC, ReactElement } from 'react';
+import { Theme } from '@mui/material/styles';
 import { render, RenderOptions } from '@testing-library/react';
+import React, { FC, ReactElement } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import { ThemeProvider } from '../../context/ThemeProvider';
 import i18n from '../../i18n/config';
-import { I18nextProvider } from 'react-i18next';
-import { Theme } from '@mui/material/styles';
-import { StyledEngineProvider } from '@mui/material/styles';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -13,11 +12,9 @@ declare module '@mui/styles/defaultTheme' {
 
 const AllTheProviders: FC = ({ children }) => {
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider>
-        <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <ThemeProvider>
+      <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+    </ThemeProvider>
   );
 };
 

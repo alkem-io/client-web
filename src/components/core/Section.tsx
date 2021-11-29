@@ -107,7 +107,7 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
   return (
     <div className={clsx(styles.bodyWrap, className)}>
       {(text || svg) && (
-        <Typography as="p" variant="body" color="neutral" weight="medium">
+        <Typography as="p" variant="body1" color="neutral" weight="medium">
           {text || svg}
         </Typography>
       )}
