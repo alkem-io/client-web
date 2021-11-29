@@ -1,7 +1,6 @@
-import { Box, styled } from '@mui/material';
-import React, { FC, Fragment } from 'react';
+import { Box, Breadcrumbs as MUIBreadcrumbs, Link, styled } from '@mui/material';
+import React, { FC } from 'react';
 import { Path } from '../../context/NavigationProvider';
-import { Breadcrumbs as MUIBreadcrumbs, Link } from '@mui/material';
 import { RouterLink } from './RouterLink';
 
 const Root = styled('div')(({ theme }) => ({
@@ -17,16 +16,17 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ paths }) => {
   return (
     <Root>
       <MUIBreadcrumbs>
-        {paths.map((p, i) => (
-          <Fragment key={i}>
-            {p.real && (
-              <Link component={RouterLink} to={p.value}>
-                {p.name.toUpperCase()}
-              </Link>
-            )}
-            {!p.real && <Box component="span">{p.name.toUpperCase()}</Box>}
-          </Fragment>
-        ))}
+        {paths.map((p, i) => {
+          return p.real ? (
+            <Link key={i} component={RouterLink} to={p.value}>
+              {p.name.toUpperCase()}
+            </Link>
+          ) : (
+            <Box key={i} component="span">
+              {p.name.toUpperCase()}
+            </Box>
+          );
+        })}
       </MUIBreadcrumbs>
     </Root>
   );

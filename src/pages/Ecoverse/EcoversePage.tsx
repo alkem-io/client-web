@@ -23,7 +23,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
   const { isPrivate, ecoverseId } = useEcoverse();
-  const requiredCredentials: CredentialForResource[] =
+  const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
 
   return (
@@ -31,7 +31,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
       {(entities, state) => {
         if (!entities || !state) return null;
         return (
-          <EcoverseTabs>
+          <EcoverseTabs entities={entities}>
             {({ tabName, tabNames }) => (
               <TabContext value={tabName}>
                 <TabPanel value={tabNames['dashboard']}>
@@ -48,15 +48,16 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                 </TabPanel>
                 <TabPanel value={tabNames['discussions']}>
                   <Switch>
-                    <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
+                    <RestrictedRoute
+                      path={`${path}/community/discussions`}
+                      requiredCredentials={discussionsRequiredCredentials}
+                    >
                       <DiscussionsRoute paths={paths} />
                     </RestrictedRoute>
                   </Switch>
                   <DiscussionsRoute paths={paths} />
                 </TabPanel>
-                <TabPanel value={tabNames['canvases']}>
-                  <EcoverseChallengesView entities={entities} state={state} />
-                </TabPanel>
+                <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
               </TabContext>
             )}
           </EcoverseTabs>

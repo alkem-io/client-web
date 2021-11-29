@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
+import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse } from '../../hooks';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
@@ -36,18 +37,21 @@ export interface EcoverseTabsProps {
     tabName: string;
     tabNames: EcoverseRoutesType;
   }) => React.ReactNode;
+  entities: EcoverseContainerEntities;
 }
 const createGetter = function <T>(r: T, url: string) {
   return (key: keyof T) => `${url}${r[key]}`;
 };
 
-const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
+const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   const { path, url } = useRouteMatch();
   const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
+
+  const { isAuthenticated, hideChallenges } = entities;
 
   const tabNames = (Object.keys(routes) as Array<keyof EcoverseRoutesType>).reduce<EcoverseRoutesType>((acc, curr) => {
     acc[curr] = pathGetter(curr);
@@ -71,27 +75,36 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
           value={pathGetter('context')}
           to={urlGetter('context')}
         />
-        <NavigationTab
-          icon={<GroupOutlined />}
-          label={t('common.community')}
-          component={RouterLink}
-          value={pathGetter('community')}
-          to={urlGetter('community')}
-        />
-        <NavigationTab
-          icon={<ContentPasteOutlined />}
-          label={t('common.challenges')}
-          component={RouterLink}
-          value={pathGetter('challenges')}
-          to={urlGetter('challenges')}
-        />
-        <NavigationTab
-          icon={<ForumOutlined />}
-          label={t('common.discussions')}
-          component={RouterLink}
-          value={pathGetter('discussions')}
-          to={urlGetter('discussions')}
-        />
+        {isAuthenticated && (
+          <NavigationTab
+            disabled={!isAuthenticated}
+            icon={<GroupOutlined />}
+            label={t('common.community')}
+            component={RouterLink}
+            value={pathGetter('community')}
+            to={urlGetter('community')}
+          />
+        )}
+        {!hideChallenges && (
+          <NavigationTab
+            disabled={hideChallenges}
+            icon={<ContentPasteOutlined />}
+            label={t('common.challenges')}
+            component={RouterLink}
+            value={pathGetter('challenges')}
+            to={urlGetter('challenges')}
+          />
+        )}
+        {isAuthenticated && (
+          <NavigationTab
+            disabled={!isAuthenticated}
+            icon={<ForumOutlined />}
+            label={t('common.discussions')}
+            component={RouterLink}
+            value={pathGetter('discussions')}
+            to={urlGetter('discussions')}
+          />
+        )}
         <NavigationTab
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}

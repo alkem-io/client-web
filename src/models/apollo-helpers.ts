@@ -539,6 +539,7 @@ export type MetadataFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
+  | 'adminCommunicationRemoveOrphanedRoom'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
@@ -626,6 +627,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;

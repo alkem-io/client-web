@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { CommunityProvider } from '../../context/CommunityProvider';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
+import { CommunityProvider } from '../../context/CommunityProvider';
 import { useEcoverse } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
