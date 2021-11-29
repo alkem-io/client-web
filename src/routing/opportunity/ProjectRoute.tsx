@@ -18,10 +18,10 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>
-      <RestrictedRoute exact path={`${path}/new`} requiredCredentials={[]} strict={false}>
+      <RestrictedRoute exact path={`${path}new`} requiredCredentials={[]} strict={false}>
         <ProjectNewRoute paths={paths} />
       </RestrictedRoute>
-      <RestrictedRoute exact path={`${path}/:${nameOfUrl.projectNameId}`}>
+      <RestrictedRoute exact path={`${path}:${nameOfUrl.projectNameId}`}>
         <ProjectIndex paths={paths} />
       </RestrictedRoute>
       <Route path="*">

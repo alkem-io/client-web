@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, OpportunityPage, PageProps } from '../../pages';
-import { ProjectNewRoute } from './ProjectRoute';
+import { ProjectRoute } from './ProjectRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -30,8 +30,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
       <Route exact path={path}>
         <Redirect to={`${url}/dashboard`} />
       </Route>
-      <Route path={`${path}/projects/new`}>
-        <ProjectNewRoute paths={currentPaths} />
+      {/* /projects should be matched by the generic route, not this one. */}
+      <Route strict path={`${path}/projects/`}>
+        <ProjectRoute paths={currentPaths} />
       </Route>
       <Route path={path}>
         <OpportunityPage paths={currentPaths} />
