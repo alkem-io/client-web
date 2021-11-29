@@ -32,7 +32,9 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+      <Typography component="div" variant="h6">
+        {children}
+      </Typography>
       {onClose ? (
         <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} size="large">
           <CloseIcon />

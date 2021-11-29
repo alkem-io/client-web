@@ -61,7 +61,7 @@ const CircleTag: React.FC<TagProps> = ({ text, color = 'neutral', className, siz
   return (
     <span className={clsx(styles.tag, styles[color], styles[size], className)}>
       <Typography
-        variant="body"
+        variant="body1"
         color="inherit"
         weight={size === 'small' ? 'regular' : 'bold'}
         className={styles[`tagText-${size}`]}

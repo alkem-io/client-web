@@ -35,7 +35,7 @@ const useTypographyStyles = makeStyles(theme => ({
     fontSize: theme.typography.caption.fontSize,
     textTransform: 'uppercase',
   },
-  body: {
+  body1: {
     fontFamily: theme.typography.body1.fontFamily,
     fontSize: theme.typography.body1.fontSize,
   },
@@ -94,7 +94,7 @@ const fontWeight: FontWeight = {
 };
 
 interface TypographyProps extends Record<string, unknown> {
-  variant?: TypographyVariant | 'body'; // TODO [ATS] define 'body'
+  variant?: TypographyVariant;
   className?: string;
   color?: keyof Palette | 'inherit';
   weight?: keyof FontWeight;
