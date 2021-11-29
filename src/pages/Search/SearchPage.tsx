@@ -25,6 +25,7 @@ import { useUpdateNavigation } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
+import { useLocation } from 'react-router';
 
 const useStyles = makeStyles(() => ({
   formControl: {
@@ -110,6 +111,12 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
   const styles = useStyles();
 
+  const { search: params } = useLocation();
+  const queryParams = new URLSearchParams(params);
+  const queryParam = queryParams.get('terms') ?? '';
+  const termsFromUrl = queryParam ? queryParam?.split(',') : [];
+  const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
+
   const [results, setResults] = useState<ResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
@@ -129,18 +136,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       resetState();
     } else {
       searchQuery(newTerms, typesFilter.value);
-    }
-  };
-
-  const handleFilterChange = (event: SelectChangeEvent<string>) => {
-    const typename = event.target.value;
-    const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
-
-    if (filterKey) {
-      const filter = filtersConfig[filterKey];
-      setTypesFilter(filter);
-
-      searchQuery(searchTerms, filter.value);
     }
   };
 
@@ -164,6 +159,25 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     });
   };
 
+  if (!termsFromQuery && termsFromUrl.length > 0) {
+    const terms = termsFromUrl.map(x => ({ id: x, name: x }));
+    setTermsFromQuery(terms);
+
+    searchQuery(termsFromUrl, typesFilter.value);
+  }
+
+  const handleFilterChange = (event: SelectChangeEvent<string>) => {
+    const typename = event.target.value;
+    const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
+
+    if (filterKey) {
+      const filter = filtersConfig[filterKey];
+      setTypesFilter(filter);
+
+      searchQuery(searchTerms, filter.value);
+    }
+  };
+
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
@@ -171,7 +185,13 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         <Box marginBottom={2}>
           <SubHeader text={t('search.alternativesubheader')} />
         </Box>
-        <MultipleSelect label={'search for skills'} onChange={handleTermChange} elements={_tags} allowUnknownValues />
+        <MultipleSelect
+          label={'search for skills'}
+          onChange={handleTermChange}
+          defaultValue={termsFromQuery}
+          elements={_tags}
+          allowUnknownValues
+        />
       </Section>
       <Divider />
       {isSearching && (
