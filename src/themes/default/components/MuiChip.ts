@@ -7,18 +7,18 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
   return {
     styleOverrides: {
       outlined: {
-        borderColor: '#00A88F',
-        textColor: '#007482',
+        borderColor: theme.palette.secondary.main,
+        textColor: theme.palette.text.primary,
       },
       root: {
-        color: '#007482',
+        color: theme.palette.primary.main,
       },
       outlinedPrimary: {
-        borderColor: '#00A88F',
-        textColor: '#007482',
+        borderColor: theme.palette.secondary.main,
+        textColor: theme.palette.text.primary,
       },
       iconColorPrimary: {
-        color: '#00BCD4',
+        color: theme.palette.primary.main,
       },
       deleteIconColorPrimary: {
         color: theme.palette.neutralMedium.main,
@@ -27,6 +27,15 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
           // coefficient from material UI code base for hover effects
           color: emphasize(theme.palette.neutralMedium.main, 0.08),
         },
+      },
+      iconSmall: {
+        width: theme.spacing(2),
+        height: theme.spacing(2),
+        padding: '0.25rem',
+        marginRight: theme.spacing(-1),
+      },
+      labelSmall: {
+        lineHeight: '1rem',
       },
     },
     defaultProps: {
