@@ -6,20 +6,16 @@ import DiscussionCategorySelector from '../../components/composite/entities/Comm
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { useUpdateNavigation } from '../../hooks';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
-import { PageProps } from '../common';
 
-interface DiscussionsPageProps extends PageProps {}
+interface DiscussionsPageProps {}
 
-export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
+export const DiscussionListPage: FC<DiscussionsPageProps> = () => {
   const { url } = useRouteMatch();
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
   const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
-
-  useUpdateNavigation({ currentPaths: paths });
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
