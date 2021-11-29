@@ -21,11 +21,11 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
         color: '#00BCD4',
       },
       deleteIconColorPrimary: {
-        color: theme.palette.neutralLight.main,
+        color: theme.palette.neutralMedium.main,
 
         '&:hover': {
           // coefficient from material UI code base for hover effects
-          color: emphasize(theme.palette.neutralLight.main, 0.08),
+          color: emphasize(theme.palette.neutralMedium.main, 0.08),
         },
       },
     },
