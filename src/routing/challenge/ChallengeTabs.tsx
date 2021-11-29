@@ -59,7 +59,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
 
   return (
     <>
-      <Tabs value={match?.path} aria-label="basic tabs example">
+      <Tabs value={match?.path} aria-label="Challenge tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}

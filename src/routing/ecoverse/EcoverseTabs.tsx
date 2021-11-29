@@ -56,7 +56,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ children }) => {
 
   return (
     <>
-      <Tabs value={match?.path} aria-label="basic tabs example">
+      <Tabs value={match?.path} aria-label="Ecoverse tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}

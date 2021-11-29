@@ -16,7 +16,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 
 interface ChallengePageProps extends PageProps {}
 
-const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
+export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
   const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
   const { challengeId } = useChallenge();
@@ -61,5 +61,3 @@ const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement =>
     </ChallengePageContainer>
   );
 };
-
-export { ChallengePage as Challenge };
