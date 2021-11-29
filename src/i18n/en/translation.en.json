@@ -98,6 +98,11 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
+    "dashboard": "Dashboard",
+    "context": "Context",
+    "community": "Community",
+    "canvases": "Canvases",
+    "settings": "Settings",
     "search": "Search",
     "genders": {
       "notSpecified": "not specified",

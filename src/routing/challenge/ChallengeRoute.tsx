@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
-import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
+import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';

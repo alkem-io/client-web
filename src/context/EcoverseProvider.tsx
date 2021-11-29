@@ -1,7 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '../hooks';
 import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
-import { EcoverseInfoFragment } from '../models/graphql-schema';
+import { AuthorizationPrivilege, EcoverseInfoFragment } from '../models/graphql-schema';
+
+interface EcoversePermissions {
+  viewerCanUpdate: boolean;
+}
 
 interface EcoverseContextProps {
   ecoverse?: EcoverseInfoFragment;
@@ -10,6 +14,7 @@ interface EcoverseContextProps {
   displayName: string;
   isPrivate: boolean;
   loading: boolean;
+  permissions: EcoversePermissions;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
@@ -18,6 +23,9 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
   ecoverseId: '',
   ecoverseNameId: '',
   displayName: '',
+  permissions: {
+    viewerCanUpdate: false,
+  },
 });
 
 interface EcoverseProviderProps {}
@@ -34,12 +42,20 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const displayName = ecoverse?.displayName || '';
   const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
 
+  const permissions = useMemo<EcoversePermissions>(
+    () => ({
+      viewerCanUpdate: ecoverse?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+    }),
+    [ecoverse]
+  );
+
   return (
     <EcoverseContext.Provider
       value={{
         ecoverse,
         ecoverseId,
         ecoverseNameId,
+        permissions,
         displayName,
         isPrivate,
         loading,

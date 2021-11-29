@@ -9,10 +9,9 @@ import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../model
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
-import Section from '../../../core/Section';
+import TopBar from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
-import TopBar from '../TopBar/TopBar';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
@@ -57,17 +56,7 @@ const App = ({ children }): React.ReactElement => {
       <div id="main">
         <TopBar />
         <Main>
-          {paths.length > 0 && (
-            <Section
-              hideDetails
-              gutters={{ content: false, details: false, root: true }}
-              classes={{
-                padding: '0',
-              }}
-            >
-              <Breadcrumbs paths={paths} />
-            </Section>
-          )}
+          {paths.length > 0 && <Breadcrumbs paths={paths} />}
           {children}
         </Main>
         <Footer />
