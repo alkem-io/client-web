@@ -1,7 +1,6 @@
-import { createTheme, StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
 import { defaultTheme } from '../themes/default';
-import { typographyOptionsV2 } from '../themes/defaultV2/typography';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -22,22 +21,4 @@ const ThemeProvider: FC<{}> = ({ children }) => {
   );
 };
 
-const ThemeProviderV2: FC<{}> = ({ children }) => {
-  return (
-    <MuiThemeProvider
-      theme={(theme: Theme) =>
-        createTheme({
-          ...theme,
-          spacing: 8,
-          typography: {
-            ...typographyOptionsV2,
-          },
-        })
-      }
-    >
-      {children}
-    </MuiThemeProvider>
-  );
-};
-
-export { ThemeProvider, ThemeProviderV2 };
+export { ThemeProvider };

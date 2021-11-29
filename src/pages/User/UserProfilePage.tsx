@@ -3,7 +3,7 @@ import { Loading } from '../../components/core';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 import { Error404 } from '../';
-import { ThemeProviderV2 } from '../../context/ThemeProvider';
+import { ThemeProvider } from '../../context/ThemeProvider';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -29,9 +29,9 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
   };
 
   return (
-    <ThemeProviderV2>
+    <ThemeProvider>
       <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
-    </ThemeProviderV2>
+    </ThemeProvider>
   );
 };
 export default UserProfilePage;

@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { ThemeProviderV2 } from '../../context/ThemeProvider';
+import { ThemeProvider } from '../../context/ThemeProvider';
 import { useUpdateNavigation } from '../../hooks';
 import NewDiscussionView from '../../views/Discussions/NewDiscussionView';
 import { PageProps } from '../common';
@@ -22,13 +22,13 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
   const title = `${communityName} - Initiate Discussion`;
 
   return (
-    <ThemeProviderV2>
+    <ThemeProvider>
       <DiscussionsLayout title={title}>
         <NewDiscussionView
           onPost={values => handleCreateDiscussion(values.title, values.category, values.description)}
         />
       </DiscussionsLayout>
-    </ThemeProviderV2>
+    </ThemeProvider>
   );
 };
 export default NewDiscussionPage;

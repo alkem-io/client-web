@@ -7,8 +7,8 @@ import { typographyOptions } from './typography';
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: typographyOptions,
-  shape: { borderRadius: 5 },
-  spacing: 10,
+  shape: { borderRadius: 4 },
+  spacing: 8,
   breakpoints: {
     values: {
       xs: 0,

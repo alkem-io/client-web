@@ -6,9 +6,19 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
   }
   return {
     styleOverrides: {
-      colorPrimary: {
-        color: theme.palette.neutralLight.main,
-        fontWeight: 'bold',
+      outlined: {
+        borderColor: '#00A88F',
+        textColor: '#007482',
+      },
+      root: {
+        color: '#007482',
+      },
+      outlinedPrimary: {
+        borderColor: '#00A88F',
+        textColor: '#007482',
+      },
+      iconColorPrimary: {
+        color: '#00BCD4',
       },
       deleteIconColorPrimary: {
         color: theme.palette.neutralLight.main,
@@ -18,6 +28,9 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
           color: emphasize(theme.palette.neutralLight.main, 0.08),
         },
       },
+    },
+    defaultProps: {
+      size: 'small',
     },
   };
 };
