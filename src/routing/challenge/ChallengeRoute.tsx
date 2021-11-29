@@ -34,9 +34,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
       <Route exact path={path}>
         <Redirect to={`${url}/dashboard`} />
       </Route>
-      <Route path={path}>
-        <ChallengePage paths={currentPaths} />
-      </Route>
       <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <CommunityProvider>
@@ -46,6 +43,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
       </Route>
       <Route path={`${path}/apply`}>
         <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
+      </Route>
+      <Route path={path}>
+        <ChallengePage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
