@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from '@xstate/react';
 import { AppBar, Grid, Toolbar } from '@mui/material';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { useGlobalState } from '../../../../hooks';
 import SearchBar from './SearchBar';
 import TopNavbar from './TopNavbar';
@@ -15,7 +15,7 @@ const classes = {
 const Root = styled('div')(({ theme }) => ({
   width: '100%',
   [`& .${classes.bar}`]: {
-    backgroundColor: alpha(theme.palette.common.white, 0.8),
+    backgroundColor: theme.palette.common.white,
     boxShadow: 'unset',
 
     '& > *': {

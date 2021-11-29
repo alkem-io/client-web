@@ -31,7 +31,7 @@ const SearchBar = () => {
           <Grid item xs>
             <SearchComponent />
           </Grid>
-          <Grid container item xs={3} justifyContent="end">
+          <Grid container item xs={4} justifyContent="end">
             {!isAuthenticated && (
               <Button
                 aria-label="Login"
