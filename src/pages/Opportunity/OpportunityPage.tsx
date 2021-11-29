@@ -1,56 +1,112 @@
+import { TabContext, TabPanel } from '@mui/lab';
 import React, { FC } from 'react';
-import { useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../common';
+import { Switch, useRouteMatch } from 'react-router-dom';
 import { OpportunityPageContainer } from '../../containers';
-import { OpportunityView } from '../../views';
+import { useUpdateNavigation } from '../../hooks';
+import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
+import OpportunityTabs from '../../routing/opportunity/OpportunityTabs';
+import RestrictedRoute from '../../routing/route.extensions';
+import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
+import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
+import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
+import { PageProps } from '../common';
+import OpportunityCommunityPage from '../Community/OpportunityCommunityPage';
 
 interface OpportunityPageProps extends PageProps {}
 
 const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
+  const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
   return (
     <OpportunityPageContainer>
       {(entities, state, actions) => (
-        <OpportunityView
-          entities={{
-            opportunity: entities.opportunity,
-            activity: entities.activity,
-            opportunityProjects: entities.opportunityProjects,
-            availableActorGroupNames: entities.availableActorGroupNames,
-            existingAspectNames: entities.existingAspectNames,
-            url: entities.url,
-            links: entities.links,
-            meme: entities.meme,
-            relations: entities.relations,
+        <OpportunityTabs entities={entities}>
+          {({ tabName, tabNames }) => {
+            console.log(tabName);
+            console.log(tabNames);
+            return (
+              <TabContext value={tabName}>
+                <TabPanel value={tabNames['dashboard']}>
+                  <OpportunityDashboardView
+                    entities={{
+                      opportunity: entities.opportunity,
+                      activity: entities.activity,
+                      availableActorGroupNames: entities.availableActorGroupNames,
+                      existingAspectNames: entities.existingAspectNames,
+                      url: entities.url,
+                      links: entities.links,
+                      meme: entities.meme,
+                      relations: entities.relations,
+                    }}
+                    state={{
+                      loading: state.loading,
+                      showInterestModal: entities.showInterestModal,
+                      showActorGroupModal: entities.showActorGroupModal,
+                      error: state.error,
+                    }}
+                    actions={{
+                      onInterestOpen: actions.onInterestOpen,
+                      onInterestClose: actions.onInterestClose,
+                      onAddActorGroupOpen: actions.onAddActorGroupOpen,
+                      onAddActorGroupClose: actions.onAddActorGroupClose,
+                    }}
+                    options={{
+                      editAspect: entities.permissions.editAspect,
+                      editActorGroup: entities.permissions.editActorGroup,
+                      editActors: entities.permissions.editActors,
+                      removeRelations: entities.permissions.removeRelations,
+                      isMemberOfOpportunity: entities.permissions.isMemberOfOpportunity,
+                      isNoRelations: entities.permissions.isNoRelations,
+                      isAspectAddAllowed: entities.permissions.isAspectAddAllowed,
+                      isAuthenticated: entities.permissions.isAuthenticated,
+                    }}
+                  />
+                </TabPanel>
+                <TabPanel value={tabNames['context']}>
+                  <OpportunityContextView
+                    entities={{
+                      opportunity: entities.opportunity,
+                      meme: entities.meme,
+                    }}
+                    state={{
+                      loading: state.loading,
+                      error: state.error,
+                    }}
+                    actions={{
+                      onMemeError: actions.onMemeError,
+                    }}
+                    options={{
+                      hideMeme: entities.hideMeme,
+                    }}
+                  />
+                </TabPanel>
+                <TabPanel value={tabNames['projects']}>
+                  <OpportunityProjectsView
+                    entities={{
+                      opportunityProjects: entities.opportunityProjects,
+                    }}
+                    state={{}}
+                    actions={{}}
+                    options={{}}
+                  />
+                </TabPanel>
+                <TabPanel value={tabNames['community']}>
+                  <OpportunityCommunityPage paths={paths} />
+                </TabPanel>
+                <TabPanel value={tabNames['discussions']}>
+                  <Switch>
+                    <RestrictedRoute path={`${path}/community/discussions`}>
+                      <DiscussionsRoute paths={paths} />
+                    </RestrictedRoute>
+                  </Switch>
+                  <DiscussionsRoute paths={paths} />
+                </TabPanel>
+                <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
+              </TabContext>
+            );
           }}
-          state={{
-            loading: state.loading,
-            showInterestModal: entities.showInterestModal,
-            showActorGroupModal: entities.showActorGroupModal,
-            error: state.error,
-          }}
-          actions={{
-            onMemeError: actions.onMemeError,
-            onInterestOpen: actions.onInterestOpen,
-            onInterestClose: actions.onInterestClose,
-            onAddActorGroupOpen: actions.onAddActorGroupOpen,
-            onAddActorGroupClose: actions.onAddActorGroupClose,
-          }}
-          options={{
-            canEdit: entities.permissions.canEdit,
-            projectWrite: entities.permissions.projectWrite,
-            editAspect: entities.permissions.editAspect,
-            editActorGroup: entities.permissions.editActorGroup,
-            editActors: entities.permissions.editActors,
-            removeRelations: entities.permissions.removeRelations,
-            isMemberOfOpportunity: entities.permissions.isMemberOfOpportunity,
-            isNoRelations: entities.permissions.isNoRelations,
-            isAspectAddAllowed: entities.permissions.isAspectAddAllowed,
-            isAuthenticated: entities.permissions.isAuthenticated,
-            hideMeme: entities.hideMeme,
-          }}
-        />
+        </OpportunityTabs>
       )}
     </OpportunityPageContainer>
   );
