@@ -2423,6 +2423,11 @@ export type ChallengeInfoFragment = {
   displayName: string;
   nameID: string;
   community?: Maybe<{ __typename?: 'Community'; id: string }>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
   context?: Maybe<{
     __typename?: 'Context';
     id: string;
@@ -4058,6 +4063,11 @@ export type ChallengeInfoQuery = {
       displayName: string;
       nameID: string;
       community?: Maybe<{ __typename?: 'Community'; id: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
