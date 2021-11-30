@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { Switch, useRouteMatch } from 'react-router';
 import { TabContext, TabPanel } from '@mui/lab';
-import { Tab } from '@mui/material';
 import { useChallenge, useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
 import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
@@ -52,7 +51,7 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                   </Switch>
                   <DiscussionsRoute paths={paths} />
                 </TabPanel>
-                <Tab value={tabNames['canvases']} disabled />
+                <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
               </TabContext>
             )}
           </ChallengeTabs>
