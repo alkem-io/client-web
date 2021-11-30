@@ -2752,6 +2752,11 @@ export type OpportunityInfoFragment = {
     }>
   >;
   activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
 };
 
 export type OrganizationInfoFragment = {
@@ -5417,6 +5422,11 @@ export type OpportunityInfoQuery = {
         }>
       >;
       activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
     };
   };
 };

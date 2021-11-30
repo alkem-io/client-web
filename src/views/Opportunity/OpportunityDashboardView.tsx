@@ -1,24 +1,19 @@
-import clsx from 'clsx';
-import React, { FC, SyntheticEvent, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { ViewProps } from '../../models/view';
-import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import hexToRGBA from '../../utils/hexToRGBA';
-import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
-import { SettingsButton } from '../../components/composite';
-import Button from '../../components/core/Button';
-import Markdown from '../../components/core/Markdown';
-import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
-import Divider from '../../components/core/Divider';
-import Icon from '../../components/core/Icon';
+import { Box } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
-import { replaceAll } from '../../utils/replaceAll';
-import { CardContainer } from '../../components/core/CardContainer';
+import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
+import clsx from 'clsx';
+import React, { FC, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router-dom';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
+import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
+import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
+import ActorGroupCreateModal from '../../components/composite/entities/Opportunity/ActorGroupCreateModal';
 import {
   ActorCard,
   AspectCard,
@@ -26,25 +21,22 @@ import {
   NewAspectCard,
   RelationCard,
 } from '../../components/composite/entities/Opportunity/Cards';
-import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import Typography from '../../components/core/Typography';
-import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
-import ActorGroupCreateModal from '../../components/composite/entities/Opportunity/ActorGroupCreateModal';
-import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
-import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
-import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import { useOpportunity } from '../../hooks';
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
+import Button from '../../components/core/Button';
+import { CardContainer } from '../../components/core/CardContainer';
+import Divider from '../../components/core/Divider';
+import Icon from '../../components/core/Icon';
+import { RouterLink } from '../../components/core/RouterLink';
+import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { makeStyles } from '@mui/styles';
+import { useOpportunity } from '../../hooks';
+import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import { ViewProps } from '../../models/view';
+import hexToRGBA from '../../utils/hexToRGBA';
+import { replaceAll } from '../../utils/replaceAll';
 
 const useStyles = makeStyles(theme => ({
-  tag: {
-    top: -theme.spacing(2),
-    left: 0,
-  },
   offset: {
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(4),
@@ -59,24 +51,11 @@ const useStyles = makeStyles(theme => ({
     fontStyle: 'italic',
     textAlign: 'center',
   },
-  edit: {
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
 }));
 
-export type OpportunityProject = {
-  title: string;
-  type: 'display' | 'add' | 'more';
-  description?: string;
-  onSelect?: () => void;
-};
-
-export interface OpportunityViewEntities {
+export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
   activity: ActivityItem[];
-  opportunityProjects: OpportunityProject[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   url: string;
@@ -88,24 +67,21 @@ export interface OpportunityViewEntities {
   };
 }
 
-export interface OpportunityViewActions {
-  onMemeError: () => void;
+export interface OpportunityDashboardViewActions {
   onInterestOpen: () => void;
   onInterestClose: () => void;
   onAddActorGroupOpen: () => void;
   onAddActorGroupClose: () => void;
 }
 
-export interface OpportunityViewState {
+export interface OpportunityDashboardViewState {
   loading: boolean;
   showInterestModal: boolean;
   showActorGroupModal: boolean;
   error?: ApolloError;
 }
 
-export interface OpportunityViewOptions {
-  canEdit: boolean;
-  projectWrite: boolean;
+export interface OpportunityDashboardViewOptions {
   editAspect: boolean;
   editActorGroup: boolean;
   editActors: boolean;
@@ -114,14 +90,19 @@ export interface OpportunityViewOptions {
   isNoRelations: boolean;
   isAspectAddAllowed: boolean;
   isAuthenticated: boolean;
-  hideMeme: boolean;
 }
 
-export interface OpportunityViewProps
-  extends ViewProps<OpportunityViewEntities, OpportunityViewActions, OpportunityViewState, OpportunityViewOptions> {}
+export interface OpportunityDashboardViewProps
+  extends ViewProps<
+    OpportunityDashboardViewEntities,
+    OpportunityDashboardViewActions,
+    OpportunityDashboardViewState,
+    OpportunityDashboardViewOptions
+  > {}
 
-const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, options }) => {
+const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, actions, options }) => {
   const { t } = useTranslation();
+  const { url } = useRouteMatch();
   const styles = useStyles();
 
   const { ecoverseId } = useOpportunity();
@@ -132,7 +113,7 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
   const ecosystemModelId = context?.ecosystemModel?.id ?? '';
   const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { background = '', tagline = '', who = '', impact = '', vision = '', aspects = [], visual } = context ?? {};
+  const { aspects = [], visual } = context ?? {};
 
   const projectRef = useRef<HTMLDivElement>(null);
 
@@ -166,23 +147,16 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
               classes={{
                 color: theme => theme.palette.neutralLight.main,
               }}
-              editComponent={
-                options.canEdit && (
-                  <SettingsButton
-                    to={entities.url}
-                    tooltip={t('pages.opportunity.sections.header.buttons.settings.tooltip')}
-                  />
-                )
-              }
             />
           </Box>
           <Box flexDirection={'row'}>
             <Button
+              as={RouterLink}
+              to={`${url}/projects`}
               className={styles.offset}
               inset
               variant="semiTransparent"
               text={t('pages.opportunity.sections.header.buttons.projects.text')}
-              onClick={() => projectRef.current?.scrollIntoView({ behavior: 'smooth' })}
             />
             <>
               {entities.links.map((l, i) => (
@@ -200,79 +174,20 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
             </>
           </Box>
         </Box>
-        {/*{team && <Tag text={team.actorName} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />}*/}
       </Section>
-      <Container maxWidth="xl" className={'p-4'}>
-        <Grid container spacing={2}>
-          {tagline && (
-            <Grid item md={12}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SubHeader text={tagline} className={styles.tagline} />
-              </Section>
-            </Grid>
-          )}
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
-                <Body>
-                  <Markdown children={background} />
-                </Body>
-              </Section>
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
-                <Body>
-                  <Markdown children={vision} />
-                </Body>
-              </Section>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.who.header')} />
-                <Body>
-                  <Markdown children={who} />
-                </Body>
-              </Section>
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
-                <Body>
-                  <Markdown children={impact} />
-                </Body>
-              </Section>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6} />
-            {!options.hideMeme && (
-              <Grid item sm={12} md={6}>
-                <Section hideAvatar hideDetails gutters={{ content: true }}>
-                  <Body>
-                    {entities.meme && (
-                      <div>
-                        <img
-                          src={entities.meme.uri}
-                          alt={entities.meme.description}
-                          onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
-                            ev.currentTarget.style.display = 'none';
-                            actions.onMemeError();
-                          }}
-                          height={240}
-                        />
-                      </div>
-                    )}
-                  </Body>
-                </Section>
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
+      <Divider />
+      <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
+        <DiscussionsProvider>
+          <OpportunityCommunitySection
+            title={t('pages.opportunity.sections.community.header')}
+            subTitle={t('pages.opportunity.sections.community.subheader')}
+            ecoverseId={ecoverseId}
+            opportunityId={id}
+            body={context?.who}
+            shuffle={true}
+          />
+        </DiscussionsProvider>
+      </AuthenticationBackdrop>
       <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
@@ -287,6 +202,7 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
         </SectionHeader>
         <SubHeader text={t('pages.opportunity.sections.adoption-ecosystem.subheader')} />
       </Section>
+
       {actorGroups
         .filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
         .map(({ id: actorGroupId, actors = [], name }, index) => {
@@ -404,36 +320,9 @@ const OpportunityView: FC<OpportunityViewProps> = ({ entities, state, actions, o
         </CardContainer>
       )}
       <Divider />
-      <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
-        <DiscussionsProvider>
-          <OpportunityCommunitySection
-            title={t('pages.opportunity.sections.community.header')}
-            subTitle={t('pages.opportunity.sections.community.subheader')}
-            ecoverseId={ecoverseId}
-            opportunityId={id}
-            body={context?.who}
-            shuffle={true}
-          />
-        </DiscussionsProvider>
-      </AuthenticationBackdrop>
-      <Divider />
+
       <div ref={projectRef} />
-      <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-        <SectionHeader
-          text={t('pages.opportunity.sections.projects.header.text')}
-          tagText={t('pages.opportunity.sections.projects.header.tag')}
-        />
-        <SubHeader text={t('pages.opportunity.sections.projects.subheader')} />
-        <Body text={t('pages.opportunity.sections.projects.body')} />
-      </Section>
-      <CardContainer cardHeight={320} xs={12} md={6} lg={4} xl={3}>
-        {entities.opportunityProjects.map(({ type, ...rest }, i) => {
-          const Component = SwitchCardComponent({ type });
-          return <Component {...rest} key={i} />;
-        })}
-      </CardContainer>
-      <Divider />
     </>
   );
 };
-export default OpportunityView;
+export default OpportunityDashboardView;

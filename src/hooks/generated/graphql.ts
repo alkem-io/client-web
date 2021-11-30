@@ -408,6 +408,10 @@ export const OpportunityInfoFragmentDoc = gql`
       name
       value
     }
+    authorization {
+      id
+      myPrivileges
+    }
   }
   ${ContextDetailsFragmentDoc}
   ${ProjectDetailsFragmentDoc}
