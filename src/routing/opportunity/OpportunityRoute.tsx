@@ -1,11 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, OpportunityPage, PageProps } from '../../pages';
-import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
-import DiscussionsRoute from '../discussions/DiscussionsRoute';
-import RestrictedRoute from '../route.extensions';
 import { ProjectRoute } from './ProjectRoute';
 
 interface OpportunityRootProps extends PageProps {}
@@ -30,16 +28,14 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
   return (
     <Switch>
       <Route exact path={path}>
-        <OpportunityPage paths={currentPaths} />
+        <Redirect to={`${url}/dashboard`} />
       </Route>
-      <RestrictedRoute path={`${path}/community/discussions`}>
-        <DiscussionsRoute paths={currentPaths} />
-      </RestrictedRoute>
-      <RestrictedRoute path={`${path}/community`}>
-        <OpportunityCommunityPage paths={currentPaths} />
-      </RestrictedRoute>
-      <Route path={`${path}/projects`}>
-        <ProjectRoute paths={currentPaths} opportunityId={opportunity.id} />
+      {/* /projects should be matched by the generic route, not this one. */}
+      <Route strict path={`${path}/projects/`}>
+        <ProjectRoute paths={currentPaths} />
+      </Route>
+      <Route path={path}>
+        <OpportunityPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />

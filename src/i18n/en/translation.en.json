@@ -55,6 +55,7 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "login": "Login",
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
@@ -102,6 +103,7 @@
     "community": "Community",
     "canvases": "Canvases",
     "settings": "Settings",
+    "search": "Search",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

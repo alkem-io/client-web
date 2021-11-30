@@ -1,5 +1,4 @@
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { DiscussionProvider } from '../../context/Discussions/DiscussionProvider';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
@@ -13,11 +12,8 @@ import { nameOfUrl } from '../url-params';
 
 interface DiscussionsRouteProps extends PageProps {}
 
-export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
-  const { t } = useTranslation();
-  const { url, path } = useRouteMatch();
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: t('common.discussions'), real: true }], [paths]);
+export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
+  const { path } = useRouteMatch();
 
   const { isFeatureEnabled } = useConfig();
 
@@ -27,14 +23,14 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
     <DiscussionsProvider>
       <Switch>
         <Route exact path={path}>
-          <DiscussionListPage paths={currentPaths} />
+          <DiscussionListPage />
         </Route>
         <Route exact path={`${path}/new`}>
-          <NewDiscussionPage paths={currentPaths} />
+          <NewDiscussionPage />
         </Route>
         <Route path={`${path}/:${nameOfUrl.discussionId}`}>
           <DiscussionProvider>
-            <DiscussionPage paths={currentPaths} />
+            <DiscussionPage />
           </DiscussionProvider>
         </Route>
         <Route path="*">
