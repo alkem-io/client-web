@@ -1,10 +1,10 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
 interface DelimiterProps {}
 
-const useDelimiterStyle = createStyles(theme => ({
+const useDelimiterStyle = makeStyles(theme => ({
   line: {
     borderTop: '1px solid',
     borderColor: '#d9dadc',

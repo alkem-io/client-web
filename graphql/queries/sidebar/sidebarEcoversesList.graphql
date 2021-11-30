@@ -1,5 +1,0 @@
-query sidebarEcoversesList {
-  ecoverses {
-    ...SidebarEcoverse
-  }
-}

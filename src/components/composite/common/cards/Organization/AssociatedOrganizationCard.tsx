@@ -1,5 +1,7 @@
-import { Avatar, CardHeader, createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Avatar, CardHeader, Grid, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import CircleTag from '../../../../core/CircleTag';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
@@ -79,7 +81,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
         }
         avatar={
           loading ? (
-            <Skeleton animation="wave" variant="rect" width={64} height={64} />
+            <Skeleton animation="wave" variant="rectangular" width={64} height={64} />
           ) : (
             <Avatar variant="square" src={avatar} style={{ width: '64px', height: '64px' }}>
               {name[0]}

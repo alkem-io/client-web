@@ -1,4 +1,6 @@
-import { createStyles, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -66,10 +68,6 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
     [styles.title]: enablePaper,
     [styles.titleDense]: !enablePaper,
   } as const;
-  const childrenClasses = {
-    [styles.paper]: enablePaper,
-    [styles.children]: enablePaper,
-  } as const;
 
   return (
     <Grid container spacing={2}>
@@ -103,9 +101,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
           </Grid>
         )}
         <Grid item xs>
-          <Paper elevation={0} square className={clsx(childrenClasses)}>
-            {children}
-          </Paper>
+          {children}
         </Grid>
       </Grid>
     </Grid>

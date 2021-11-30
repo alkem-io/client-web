@@ -1,16 +1,16 @@
 import {
   Avatar,
+  AvatarGroup,
   Box,
-  createStyles,
   Link,
   ListItem,
   ListItemAvatar,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { AvatarGroup } from '@material-ui/lab';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
@@ -18,6 +18,7 @@ import { Discussion } from '../../../../models/discussion/discussion';
 import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 import { RouterLink } from '../../../core/RouterLink';
 import DiscussionIcon from './DiscussionIcon';
+
 export interface DiscussionOverviewProps {
   discussion: Discussion;
 }

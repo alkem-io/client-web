@@ -55,6 +55,7 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "login": "Login",
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
@@ -97,6 +98,12 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
+    "dashboard": "Dashboard",
+    "context": "Context",
+    "community": "Community",
+    "canvases": "Canvases",
+    "settings": "Settings",
+    "search": "Search",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

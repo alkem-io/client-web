@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Grid from '@material-ui/core/Grid';
-import { Container, ContainerProps } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import { Container, ContainerProps } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Image from '../../core/Image';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useAuthenticationLayout = createStyles(theme => ({
+const useAuthenticationLayout = makeStyles(theme => ({
   logo: {
     height: theme.spacing(4),
   },

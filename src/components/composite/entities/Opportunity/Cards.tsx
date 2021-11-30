@@ -1,3 +1,4 @@
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.svg';
 import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
 import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
@@ -6,7 +7,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
-import { createStyles, useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsQuery,
@@ -25,7 +26,7 @@ import Typography from '../../../core/Typography';
 import ActorEdit from './ActorEdit';
 import AspectEdit from './AspectEdit';
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = makeStyles(theme => ({
   item: {
     display: 'flex',
     flexGrow: 1,
@@ -112,7 +113,7 @@ export const RelationCard: FC<RelationCardProps> = ({
             <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
               {'REASON FOR COLLABORATION'}
             </Typography>
-            <Typography as="h3" variant="body">
+            <Typography as="h3" variant="body1">
               {description}
             </Typography>
           </>
@@ -180,7 +181,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
           {'wins how? (juice)'}
           <Icon component={CupStrawIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {value}
         </Typography>
         <Spacer variant="lg" />
@@ -188,7 +189,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
           {'required effort for pilot'}
           <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {impact}
         </Typography>
       </Card>
@@ -215,7 +216,7 @@ interface NewActorProps {
   opportunityId: string;
 }
 
-const useNewActorCardStyles = createStyles(theme => ({
+const useNewActorCardStyles = makeStyles(theme => ({
   card: {
     color: theme.palette.primary.main,
     transition: 'box-shadow 0.15s ease-in-out',
@@ -329,7 +330,7 @@ export const AspectCard: FC<AspectCardProps> = ({
           {'explanation'}
           <Icon component={InfoSquareIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {explanation}
         </Typography>
         <Spacer variant="lg" />
@@ -337,7 +338,7 @@ export const AspectCard: FC<AspectCardProps> = ({
           {'where we need help'}
           <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
         </Typography>
-        <Typography as="h3" variant="body">
+        <Typography as="h3" variant="body1">
           {framing}
         </Typography>
       </Card>

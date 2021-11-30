@@ -1,6 +1,6 @@
 import { SelfServiceError } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import { Loading } from '../../components/core/Loading/Loading';
 import { useKratosClient } from '../../hooks';
 import { useQueryParams } from '../../hooks';

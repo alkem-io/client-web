@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';

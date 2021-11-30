@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import Card from '../../components/core/Card';
 import { Loading } from '../../components/core';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';

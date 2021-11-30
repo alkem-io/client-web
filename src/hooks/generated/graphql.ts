@@ -408,6 +408,10 @@ export const OpportunityInfoFragmentDoc = gql`
       name
       value
     }
+    authorization {
+      id
+      myPrivileges
+    }
   }
   ${ContextDetailsFragmentDoc}
   ${ProjectDetailsFragmentDoc}
@@ -576,20 +580,6 @@ export const UserSearchResultFragmentDoc = gql`
   fragment UserSearchResult on UserGroup {
     name
     id
-  }
-`;
-export const SidebarEcoverseFragmentDoc = gql`
-  fragment SidebarEcoverse on Ecoverse {
-    id
-    nameID
-    displayName
-    context {
-      id
-      visual {
-        id
-        avatar
-      }
-    }
   }
 `;
 export const UserAgentFragmentDoc = gql`
@@ -830,6 +820,10 @@ export const EcoverseDetailsFragmentDoc = gql`
 export const EcoverseInfoFragmentDoc = gql`
   fragment EcoverseInfo on Ecoverse {
     ...EcoverseDetails
+    authorization {
+      id
+      myPrivileges
+    }
     community {
       id
       displayName
@@ -8538,63 +8532,6 @@ export type ServerMetadataQueryResult = Apollo.QueryResult<
 >;
 export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadataQueryVariables) {
   return { query: ServerMetadataDocument, variables: variables };
-}
-export const SidebarEcoversesListDocument = gql`
-  query sidebarEcoversesList {
-    ecoverses {
-      ...SidebarEcoverse
-    }
-  }
-  ${SidebarEcoverseFragmentDoc}
-`;
-
-/**
- * __useSidebarEcoversesListQuery__
- *
- * To run a query within a React component, call `useSidebarEcoversesListQuery` and pass it any options that fit your needs.
- * When your component renders, `useSidebarEcoversesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSidebarEcoversesListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSidebarEcoversesListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.SidebarEcoversesListQuery,
-    SchemaTypes.SidebarEcoversesListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SidebarEcoversesListQuery, SchemaTypes.SidebarEcoversesListQueryVariables>(
-    SidebarEcoversesListDocument,
-    options
-  );
-}
-export function useSidebarEcoversesListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SidebarEcoversesListQuery,
-    SchemaTypes.SidebarEcoversesListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SidebarEcoversesListQuery, SchemaTypes.SidebarEcoversesListQueryVariables>(
-    SidebarEcoversesListDocument,
-    options
-  );
-}
-export type SidebarEcoversesListQueryHookResult = ReturnType<typeof useSidebarEcoversesListQuery>;
-export type SidebarEcoversesListLazyQueryHookResult = ReturnType<typeof useSidebarEcoversesListLazyQuery>;
-export type SidebarEcoversesListQueryResult = Apollo.QueryResult<
-  SchemaTypes.SidebarEcoversesListQuery,
-  SchemaTypes.SidebarEcoversesListQueryVariables
->;
-export function refetchSidebarEcoversesListQuery(variables?: SchemaTypes.SidebarEcoversesListQueryVariables) {
-  return { query: SidebarEcoversesListDocument, variables: variables };
 }
 export const TagsetsTemplateDocument = gql`
   query tagsetsTemplate {

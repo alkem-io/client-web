@@ -1,25 +1,25 @@
-import { Box } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Box } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
 import { useServerMetadataQuery } from '../../hooks/generated/graphql';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useAboutStyles = createStyles(theme => ({
+const useAboutStyles = makeStyles(theme => ({
   content: {
-    padding: `${theme.spacing(4)}px`,
-    [theme.breakpoints.down('md')]: {
-      padding: `${theme.spacing(2)}px`,
+    padding: theme.spacing(4),
+    [theme.breakpoints.down('xl')]: {
+      padding: theme.spacing(2),
     },
   },
   logo: {
     height: theme.spacing(7),
   },
   mdHidden: {
-    [theme.breakpoints.down('lg')]: {
+    [theme.breakpoints.down('xl')]: {
       display: 'none',
       visibility: 'hidden',
       padding: 0,
@@ -38,7 +38,7 @@ const useAboutStyles = createStyles(theme => ({
     position: 'absolute',
     transform: 'translate3d(-50%, 5%, 0)',
     left: '50%',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       width: 1500,
       height: 1500,
       transform: 'translate3d(-50%, 10%, 0)',

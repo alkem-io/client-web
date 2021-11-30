@@ -1,4 +1,4 @@
-import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@material-ui/core';
+import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
 import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
@@ -40,7 +40,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
       ...InputProps,
       endAdornment: (
         <InputAdornment position="end">
-          <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
+          <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')} size="large">
             <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
           </IconButton>
         </InputAdornment>

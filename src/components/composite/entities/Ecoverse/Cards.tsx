@@ -1,15 +1,15 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Button from '../../../core/Button';
 import Card from '../../../core/Card';
 import Icon from '../../../core/Icon';
 import Typography from '../../../core/Typography';
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = makeStyles(theme => ({
   item: {
     display: 'flex',
     flexGrow: 1,
@@ -122,7 +122,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   );
 };
 
-const useAdditionalCardStyles = createStyles(theme => ({
+const useAdditionalCardStyles = makeStyles(theme => ({
   activeCard: {
     color: theme.palette.primary.main,
 

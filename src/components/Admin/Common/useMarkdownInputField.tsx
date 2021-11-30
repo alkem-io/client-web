@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import FormikMarkdownField from '../../composite/forms/FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';

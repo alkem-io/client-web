@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 
 const Divider: FC<{ noPadding?: boolean }> = ({ noPadding }) => {

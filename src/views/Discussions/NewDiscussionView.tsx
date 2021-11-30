@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { Input } from '@material-ui/core';
+import { Input } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC } from 'react';
 import { KratosProps } from './KratosProps';

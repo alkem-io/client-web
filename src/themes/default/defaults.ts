@@ -1,17 +1,14 @@
-import { createTheme, ThemeOptions } from '@material-ui/core';
+import { createTheme } from '@mui/material';
+import { ThemeOptions } from '@mui/material/styles';
+import componentsOverride from './components';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
-import buttonOverrides from './overrides/button';
-import dialogOverrides from './overrides/dialog';
-import chipOverrides from './overrides/chip';
-import iconOverrides from './overrides/icon';
-import cardOverrides from './overrides/card';
 
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: typographyOptions,
-  shape: { borderRadius: 5 },
-  spacing: 10,
+  shape: { borderRadius: 4 },
+  spacing: 8,
   breakpoints: {
     values: {
       xs: 0,
@@ -26,25 +23,12 @@ export const theme: ThemeOptions = {
     maxWidth: 280,
     minWidth: 90,
   },
-  props: {
-    MuiButtonBase: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-  },
 };
 
 const defaultMUITheme = createTheme(theme);
+theme.components = componentsOverride(defaultMUITheme);
 
-theme.overrides = {
-  ...defaultMUITheme.overrides,
-  ...buttonOverrides(defaultMUITheme),
-  ...dialogOverrides(defaultMUITheme),
-  ...chipOverrides(defaultMUITheme),
-  ...iconOverrides(defaultMUITheme),
-  ...cardOverrides(defaultMUITheme),
-};
-
-declare module '@material-ui/core/styles/createTheme' {
+declare module '@mui/material/styles' {
   interface Theme {
     sidebar: {
       maxWidth: number;
@@ -62,6 +46,13 @@ declare module '@material-ui/core/styles/createTheme' {
     earlyAccessAlert?: {
       height?: number;
     };
+  }
+}
+
+declare module '@mui/material' {
+  interface Color {
+    main: string;
+    dark: string;
   }
 }
 

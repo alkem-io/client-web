@@ -1,4 +1,4 @@
-import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
+import { CircularProgress, Dialog, DialogContent } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';

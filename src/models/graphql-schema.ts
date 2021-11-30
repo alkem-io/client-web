@@ -363,6 +363,10 @@ export type CommunicationAdminOrphanedUsageResult = {
   rooms: Array<CommunicationAdminRoomResult>;
 };
 
+export type CommunicationAdminRemoveOrphanedRoomInput = {
+  roomID: Scalars['String'];
+};
+
 export type CommunicationAdminRoomMembershipResult = {
   __typename?: 'CommunicationAdminRoomMembershipResult';
   /** Display name of the entity */
@@ -1023,6 +1027,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
+  /** Remove an orphaned room from messaging platform. */
+  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1193,6 +1199,10 @@ export type Mutation = {
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
+};
+
+export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
+  orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -2567,9 +2577,14 @@ export type EcoverseInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';
@@ -2737,6 +2752,11 @@ export type OpportunityInfoFragment = {
     }>
   >;
   activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
 };
 
 export type OrganizationInfoFragment = {
@@ -2878,18 +2898,6 @@ export type OrganizationSearchResultFragment = {
 };
 
 export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
-
-export type SidebarEcoverseFragment = {
-  __typename?: 'Ecoverse';
-  id: string;
-  nameID: string;
-  displayName: string;
-  context?: Maybe<{
-    __typename?: 'Context';
-    id: string;
-    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-  }>;
-};
 
 export type UserAgentFragment = {
   __typename?: 'User';
@@ -4954,9 +4962,14 @@ export type EcoverseInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -5409,6 +5422,11 @@ export type OpportunityInfoQuery = {
         }>
       >;
       activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
     };
   };
 };
@@ -5994,23 +6012,6 @@ export type ServerMetadataQuery = {
   };
 };
 
-export type SidebarEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SidebarEcoversesListQuery = {
-  __typename?: 'Query';
-  ecoverses: Array<{
-    __typename?: 'Ecoverse';
-    id: string;
-    nameID: string;
-    displayName: string;
-    context?: Maybe<{
-      __typename?: 'Context';
-      id: string;
-      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-    }>;
-  }>;
-};
-
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
 export type TagsetsTemplateQuery = {
@@ -6570,9 +6571,14 @@ export type EcoversePageQuery = {
     nameID: string;
     displayName: string;
     activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -6596,9 +6602,14 @@ export type EcoversePageFragment = {
   nameID: string;
   displayName: string;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
   community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';

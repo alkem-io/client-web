@@ -1,8 +1,8 @@
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Nvp } from '../../../../models/graphql-schema';
 import getActivityCount from '../../../../utils/get-activity-count';
 import hexToRGBA from '../../../../utils/hexToRGBA';
@@ -12,7 +12,7 @@ import Button from '../../../core/Button';
 import Card from '../../../core/Card';
 import Typography from '../../../core/Typography';
 
-const useCardStyles = createStyles(theme => ({
+const useCardStyles = makeStyles(theme => ({
   relative: {
     position: 'relative',
     flexGrow: 1,

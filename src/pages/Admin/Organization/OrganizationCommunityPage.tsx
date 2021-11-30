@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMembers from '../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../containers/organization/OrganizationMembers';

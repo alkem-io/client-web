@@ -1,56 +1,34 @@
-import React, { FC, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Box, Breadcrumbs as MUIBreadcrumbs, Link, styled } from '@mui/material';
+import React, { FC } from 'react';
 import { Path } from '../../context/NavigationProvider';
-import { createStyles } from '../../hooks';
-import Typography from './Typography';
+import { RouterLink } from './RouterLink';
 
-const useBreadcrumbStyles = createStyles(theme => ({
-  item: {
-    '&:hover': {
-      textDecoration: 'none',
-      color: theme.palette.primary.main,
-    },
-    textDecoration: 'none',
-  },
-  spacer: {
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-  },
+const Root = styled('div')(({ theme }) => ({
+  paddingLeft: theme.spacing(2),
+  fontWeight: 'bold',
 }));
 
 interface BreadcrumbProps {
-  className?: string;
-  classes?: unknown;
   paths: Path[];
 }
 
-const Breadcrumbs: FC<BreadcrumbProps> = ({ paths, classes, className }) => {
-  const styles = useBreadcrumbStyles(classes);
-
+const Breadcrumbs: FC<BreadcrumbProps> = ({ paths }) => {
   return (
-    <div className={className}>
-      {paths.map((p, i) => {
-        return (
-          <Fragment key={i}>
-            <Typography
-              as={p.real ? Link : 'span'}
-              to={p.value}
-              variant="button"
-              color={i === paths.length - 1 ? 'neutral' : 'neutralMedium'}
-              className={styles.item}
-              weight="bold"
-            >
-              {`${p.name}`}
-            </Typography>
-            {i !== paths.length - 1 && (
-              <Typography as={'span'} className={styles.spacer} color="neutralMedium" weight="bold">
-                /
-              </Typography>
-            )}
-          </Fragment>
-        );
-      })}
-    </div>
+    <Root>
+      <MUIBreadcrumbs>
+        {paths.map((p, i) => {
+          return p.real ? (
+            <Link key={i} component={RouterLink} to={p.value}>
+              {p.name.toUpperCase()}
+            </Link>
+          ) : (
+            <Box key={i} component="span">
+              {p.name.toUpperCase()}
+            </Box>
+          );
+        })}
+      </MUIBreadcrumbs>
+    </Root>
   );
 };
 

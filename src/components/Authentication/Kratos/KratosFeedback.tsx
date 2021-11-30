@@ -1,4 +1,4 @@
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText } from '@mui/material';
 import { UiNode } from '@ory/kratos-client';
 import React, { FC } from 'react';
 import { isInvalidNode } from './helpers';

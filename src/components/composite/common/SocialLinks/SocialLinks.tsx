@@ -1,5 +1,5 @@
-import { Link } from '@material-ui/core';
-import { Block, GitHub, LinkedIn, Mail, Public, Twitter } from '@material-ui/icons';
+import { Link } from '@mui/material';
+import { Block, GitHub, LinkedIn, Mail, Public, Twitter } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';

@@ -1,31 +1,28 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { useCreateProjectMutation, useProjectProfileQuery } from '../../hooks/generated/graphql';
-import { useEcoverse, useUrlParams } from '../../hooks';
-import { Error404, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
+import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
+import {
+  ProjectDetailsFragmentDoc,
+  useCreateProjectMutation,
+  useProjectProfileQuery,
+} from '../../hooks/generated/graphql';
 import { Project as ProjectType } from '../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../hooks';
+import { Error404, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
 import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
-/*local files imports end*/
 
-interface ProjectRootProps extends PageProps {
-  opportunityId: string;
-}
+interface ProjectRootProps extends PageProps {}
 
-export const ProjectRoute: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
+export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>
-      {
-        // TODO: set correct credentials
-      }
-      <RestrictedRoute exact path={`${path}/new`} requiredCredentials={[]} strict={false}>
-        <ProjectNew paths={paths} opportunityId={opportunityId} />
+      <RestrictedRoute exact path={`${path}new`} requiredCredentials={[]} strict={false}>
+        <ProjectNewRoute paths={paths} />
       </RestrictedRoute>
-      <RestrictedRoute exact path={`${path}/:${nameOfUrl.projectNameId}`}>
-        <ProjectIndex paths={paths} opportunityId={opportunityId} />
+      <RestrictedRoute exact path={`${path}:${nameOfUrl.projectNameId}`}>
+        <ProjectIndex paths={paths} />
       </RestrictedRoute>
       <Route path="*">
         <Error404 />
@@ -34,15 +31,15 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths, opportunityId }) => 
   );
 };
 
-const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
+export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const history = useHistory();
   const handleError = useApolloErrorHandler();
-
+  const { opportunityId } = useOpportunity();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
-    onCompleted: ({ createProject: project }) => {
-      history.push(`${paths[paths.length - 1].value}/projects/${project.nameID}`);
+    onCompleted: ({ createProject: _project }) => {
+      history.replace(url.split('/').reverse().slice(1).reverse().join('/'));
     },
     onError: handleError,
     refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
@@ -64,6 +61,24 @@ const ProjectNew: FC<ProjectRootProps> = ({ paths, opportunityId }) => {
               description,
               nameID,
             },
+          },
+          update: (cache, { data }) => {
+            const newProject = data?.createProject;
+            cache.modify({
+              id: cache.identify({
+                __typename: 'Opportunity', // TODO: Find a way to generate it.
+                id: opportunityId,
+              }),
+              fields: {
+                projects(existringProjects = []) {
+                  const newProjectRef = cache.writeFragment({
+                    data: newProject,
+                    fragment: ProjectDetailsFragmentDoc,
+                  });
+                  return [...existringProjects, newProjectRef];
+                },
+              },
+            });
           },
         })
       }
