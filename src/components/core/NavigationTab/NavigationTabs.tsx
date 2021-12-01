@@ -7,7 +7,7 @@ const createGetter = function <T>(r: T, url: string) {
 
 type Result<T> = Record<keyof T, { to: string; value: string }>;
 
-export interface NavigationTabsProps<T> {
+export interface NavigationTabsProps<T extends Record<string, string>> {
   routes: T;
   children: (routes: Result<T>, selectedTab?: string) => ReactNode;
 }
