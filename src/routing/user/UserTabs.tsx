@@ -31,6 +31,7 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
               {...routesObj['profile']}
             />
             <NavigationTab
+              disabled
               icon={<ContentPasteOutlined />}
               label={t('common.membership')}
               component={RouterLink}
@@ -38,12 +39,14 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
             />
 
             <NavigationTab
+              disabled
               icon={<ForumOutlined />}
               label={t('common.organizations')}
               component={RouterLink}
               {...routesObj['organizations']}
             />
             <NavigationTab
+              disabled
               icon={<SettingsOutlined />}
               label={t('common.notifications')}
               component={RouterLink}
