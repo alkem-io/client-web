@@ -2294,10 +2294,10 @@ export type UserPreference = {
   __typename?: 'UserPreference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: UserPreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
   /** Value of the preference */
   value: Scalars['String'];
 };
@@ -6378,6 +6378,31 @@ export type OpportunityContributionDetailsQuery = {
       }>;
     };
   };
+};
+
+export type ChallengesOverviewPageQueryVariables = Exact<{
+  membershipData: MembershipUserInput;
+}>;
+
+export type ChallengesOverviewPageQuery = {
+  __typename?: 'Query';
+  membershipUser: {
+    __typename?: 'UserMembership';
+    ecoverses: Array<{
+      __typename?: 'MembershipUserResultEntryEcoverse';
+      id: string;
+      nameID: string;
+      displayName: string;
+      challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string }>;
+    }>;
+  };
+};
+
+export type SimpleEcoverseFragment = {
+  __typename?: 'MembershipUserResultEntryEcoverse';
+  id: string;
+  nameID: string;
+  displayName: string;
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{

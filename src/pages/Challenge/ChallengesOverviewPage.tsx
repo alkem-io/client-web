@@ -14,7 +14,7 @@ export const ChallengesOverviewPage: FC<ChallengesOverviewPageProps> = () => {
       {(entities, state) => {
         if (!entities || !state) return null;
 
-        return <ChallengesOverviewView my={entities.userChallenges} hubs={entities.userHubs} />;
+        return <ChallengesOverviewView myChallenges={entities.userChallenges} hubs={entities.userHubs} />;
       }}
     </ChallengesOverviewPageContainer>
   );

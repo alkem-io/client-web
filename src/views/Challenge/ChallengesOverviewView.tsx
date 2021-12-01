@@ -1,42 +1,70 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChallengesOverviewSectionView } from './ChallengesOverviewSectionView';
+import { ChallengesPanelView } from './ChallengesPanelView';
 import { Box } from '@mui/material';
+import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
+import Grid from '@mui/material/Grid';
 
 export interface HubOverview {
+  id: string;
+  nameID: string;
   displayName: string;
-  challenges: any[];
+}
+
+interface ChallengeOverview {
+  id: string;
+  ecoverseId: string;
 }
 
 export interface ChallengesOverviewViewProps {
-  my: any[];
+  myChallenges: ChallengeOverview[];
   hubs: HubOverview[];
 }
 
-export const ChallengesOverviewView: FC<ChallengesOverviewViewProps> = ({ my, hubs }) => {
+export const ChallengesOverviewView: FC<ChallengesOverviewViewProps> = ({ myChallenges, hubs }) => {
   const { t } = useTranslation();
   return (
     <Box paddingY={2}>
-      <ChallengesOverviewSectionView
-        title={t('pages.challenges-overview.my.title', { count: my.length })}
-        subtitle={t('pages.challenges-overview.my.subtitle')}
-        helpText={t('pages.challenges-overview.my.help-text')}
-        ariaKey="my"
-        challenges={my}
-      />
-      {hubs.map(({ challenges, displayName: name }, i) => {
-        const count = challenges.length;
-        return (
-          <ChallengesOverviewSectionView
-            key={i}
-            title={t('pages.challenges-overview.my.title', { count, name })}
-            subtitle={t('pages.challenges-overview.my.subtitle', { name })}
-            helpText={t('pages.challenges-overview.my.help-text')}
-            ariaKey={name}
-            challenges={challenges}
-          />
-        );
-      })}
+      <Grid container rowSpacing={4}>
+        <Grid item xs={12}>
+          {myChallenges.map(x => null
+            // todo provide the view with the challenge card data like below
+            /*<ChallengesOverviewHubView
+              title={t('pages.challenges-overview.my.title', { count: my.length })}
+              subtitle={t('pages.challenges-overview.my.subtitle')}
+              helpText={t('pages.challenges-overview.my.help-text')}
+              ariaKey="my"
+              challenges={my}
+            />*/
+          )}
+
+        </Grid>
+        {hubs.map(({ displayName: hubName, nameID }, i) => {
+          return (
+            <EcoverseChallengesContainer
+              key={i}
+              entities={{
+                ecoverseNameId: nameID,
+              }}
+            >
+              {(cEntities) => {
+                const challenges = cEntities.challenges;
+                return (
+                  <Grid item xs={12}>
+                    <ChallengesPanelView
+                      title={t('pages.challenges-overview.hubs.title', { count: challenges.length, name: hubName })}
+                      subtitle={t('pages.challenges-overview.hubs.subtitle', { name: hubName })}
+                      helpText={t('pages.challenges-overview.hubs.help-text')}
+                      ariaKey={hubName}
+                      challenges={challenges}
+                    />
+                  </Grid>
+                )
+              }}
+            </EcoverseChallengesContainer>
+          );
+        })}
+      </Grid>
     </Box>
   );
 };

@@ -1,0 +1,17 @@
+query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
+  membershipUser(membershipData: $membershipData) {
+    ecoverses {
+      ...SimpleEcoverse
+      challenges {
+        id
+      }
+    }
+  }
+}
+
+fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
+  id
+  nameID
+  displayName
+}
+

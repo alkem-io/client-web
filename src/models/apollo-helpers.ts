@@ -1114,15 +1114,15 @@ export type UserMembershipFieldPolicy = {
 };
 export type UserPreferenceKeySpecifier = (
   | 'authorization'
+  | 'definition'
   | 'id'
-  | 'userPreferenceDefinition'
   | 'value'
   | UserPreferenceKeySpecifier
 )[];
 export type UserPreferenceFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  definition?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  userPreferenceDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserPreferenceDefinitionKeySpecifier = (

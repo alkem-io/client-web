@@ -782,6 +782,13 @@ export const AllCommunityDetailsFragmentDoc = gql`
     displayName
   }
 `;
+export const SimpleEcoverseFragmentDoc = gql`
+  fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
+    id
+    nameID
+    displayName
+  }
+`;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
@@ -9417,6 +9424,69 @@ export function refetchOpportunityContributionDetailsQuery(
   variables?: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
+export const ChallengesOverviewPageDocument = gql`
+  query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
+    membershipUser(membershipData: $membershipData) {
+      ecoverses {
+        ...SimpleEcoverse
+        challenges {
+          id
+        }
+      }
+    }
+  }
+  ${SimpleEcoverseFragmentDoc}
+`;
+
+/**
+ * __useChallengesOverviewPageQuery__
+ *
+ * To run a query within a React component, call `useChallengesOverviewPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengesOverviewPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengesOverviewPageQuery({
+ *   variables: {
+ *      membershipData: // value for 'membershipData'
+ *   },
+ * });
+ */
+export function useChallengesOverviewPageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengesOverviewPageQuery,
+    SchemaTypes.ChallengesOverviewPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengesOverviewPageQuery, SchemaTypes.ChallengesOverviewPageQueryVariables>(
+    ChallengesOverviewPageDocument,
+    options
+  );
+}
+export function useChallengesOverviewPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengesOverviewPageQuery,
+    SchemaTypes.ChallengesOverviewPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengesOverviewPageQuery, SchemaTypes.ChallengesOverviewPageQueryVariables>(
+    ChallengesOverviewPageDocument,
+    options
+  );
+}
+export type ChallengesOverviewPageQueryHookResult = ReturnType<typeof useChallengesOverviewPageQuery>;
+export type ChallengesOverviewPageLazyQueryHookResult = ReturnType<typeof useChallengesOverviewPageLazyQuery>;
+export type ChallengesOverviewPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengesOverviewPageQuery,
+  SchemaTypes.ChallengesOverviewPageQueryVariables
+>;
+export function refetchChallengesOverviewPageQuery(variables?: SchemaTypes.ChallengesOverviewPageQueryVariables) {
+  return { query: ChallengesOverviewPageDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {

@@ -6,10 +6,11 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
 import HelpButton from '../../components/core/HelpButton';
-import Grid from '@mui/material/Grid';
 import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
+import { CardContainer } from '../../components/core/CardContainer';
+import { useUserContext } from '../../hooks';
 
-export interface ChallengesOverviewSectionViewProps {
+export interface ChallengesOverviewHubViewProps {
   title: string;
   subtitle: string;
   helpText: string;
@@ -17,15 +18,17 @@ export interface ChallengesOverviewSectionViewProps {
   ariaKey: string;
 }
 
-export const ChallengesOverviewSectionView: FC<ChallengesOverviewSectionViewProps> = ({
+export const ChallengesPanelView: FC<ChallengesOverviewHubViewProps> = ({
   title,
   subtitle,
   helpText,
   challenges,
   ariaKey,
 }) => {
+  const { user } = useUserContext();
+
   return (
-    <Accordion>
+    <Accordion elevation={0} defaultExpanded={true}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls={`panel-${ariaKey}-content`}
@@ -42,13 +45,23 @@ export const ChallengesOverviewSectionView: FC<ChallengesOverviewSectionViewProp
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid container>
-          {challenges.map(({ id, activity, tags, url }, i) => (
-            <Grid key={i} item lg={3} md={4} xs={12}>
-              <ChallengeCard id={id} isMember={true} activity={activity} tags={tags} url={url} />
-            </Grid>
+        <CardContainer>
+          {challenges.map((challenge, i) => (
+            <ChallengeCard
+              key={i}
+              id={challenge.id}
+              displayName={challenge.displayName}
+              activity={challenge?.activity || []}
+              context={{
+                tagline: challenge?.context?.tagline || '',
+                visual: { background: challenge?.context?.visual?.background || '' },
+              }}
+              isMember={user?.ofChallenge(challenge.id) || false}
+              tags={challenge?.tagset?.tags || []}
+              url={challenge?.url}
+            />
           ))}
-        </Grid>
+        </CardContainer>
       </AccordionDetails>
     </Accordion>
   );
