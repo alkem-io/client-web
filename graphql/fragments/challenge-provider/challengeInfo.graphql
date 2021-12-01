@@ -5,6 +5,10 @@ fragment ChallengeInfo on Challenge {
   community {
     id
   }
+  authorization {
+    id
+    myPrivileges
+  }
   context {
     id
     tagline

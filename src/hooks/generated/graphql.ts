@@ -84,6 +84,10 @@ export const ChallengeInfoFragmentDoc = gql`
     community {
       id
     }
+    authorization {
+      id
+      myPrivileges
+    }
     context {
       id
       tagline

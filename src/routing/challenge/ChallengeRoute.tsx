@@ -1,16 +1,13 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import { Redirect, Route, Switch, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { Challenge as ChallengePage, Error404, PageProps } from '../../pages';
-import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
+import { ChallengePage, Error404, PageProps } from '../../pages';
 import ApplyRoute from '../application/apply.route';
-import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
-import RestrictedRoute from '../route.extensions';
 import { nameOfUrl } from '../url-params';
 
 interface ChallengeRootProps extends PageProps {}
@@ -34,6 +31,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
 
   return (
     <Switch>
+      <Route exact path={path}>
+        <Redirect to={`${url}/dashboard`} />
+      </Route>
       <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <CommunityProvider>
@@ -41,17 +41,11 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
           </CommunityProvider>
         </OpportunityProvider>
       </Route>
-      <Route exact path={path}>
-        <ChallengePage paths={currentPaths} />
-      </Route>
-      <RestrictedRoute path={`${path}/community/discussions`}>
-        <DiscussionsRoute paths={currentPaths} />
-      </RestrictedRoute>
-      <RestrictedRoute path={`${path}/community`}>
-        <ChallengeCommunityPage paths={currentPaths} />
-      </RestrictedRoute>
-      <Route path={path}>
+      <Route path={`${path}/apply`}>
         <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
+      </Route>
+      <Route path={path}>
+        <ChallengePage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
