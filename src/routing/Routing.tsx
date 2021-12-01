@@ -17,6 +17,7 @@ import RestrictedRoute from './route.extensions';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
+import { ChallengesOverviewPage } from '../pages/Challenge/ChallengesOverviewPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -49,6 +50,9 @@ export const Routing: FC = () => {
       <RestrictedRoute path="/user">
         <UserRoute />
       </RestrictedRoute>
+      <Route path="/challenges">
+        <ChallengesOverviewPage />
+      </Route>
       <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoute paths={[]} />
