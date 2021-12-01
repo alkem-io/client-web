@@ -104,6 +104,8 @@
     "canvases": "Canvases",
     "settings": "Settings",
     "search": "Search",
+    "notifications": "Notifications",
+    "my-profile": "My profile",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

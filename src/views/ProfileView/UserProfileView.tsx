@@ -112,7 +112,11 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         className={styles.header}
         action={
           isCurrentUser && (
-            <SettingsButton color={'primary'} to={`${url}/edit`} tooltip={t('pages.user-profile.tooltips.settings')} />
+            <SettingsButton
+              color={'primary'}
+              to={`${url}/settings/profile`}
+              tooltip={t('pages.user-profile.tooltips.settings')}
+            />
           )
         }
         title={
