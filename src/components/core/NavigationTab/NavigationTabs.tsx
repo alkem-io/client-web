@@ -12,7 +12,10 @@ export interface NavigationTabsProps<T extends Record<string, string>> {
   children: (routes: Result<T>, selectedTab?: string) => ReactNode;
 }
 
-function NavigationTabs<T>({ routes, children }: NavigationTabsProps<T>): React.ReactElement {
+function NavigationTabs<T extends Record<string, string>>({
+  routes,
+  children,
+}: NavigationTabsProps<T>): React.ReactElement {
   const { path, url } = useRouteMatch();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
