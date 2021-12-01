@@ -9,7 +9,7 @@ type Result<T> = Record<keyof T, { to: string; value: string }>;
 
 export interface NavigationTabsProps<T> {
   routes: T;
-  children: (routes: Result<T>, value?: string) => ReactNode;
+  children: (routes: Result<T>, selectedTab?: string) => ReactNode;
 }
 
 function NavigationTabs<T>({ routes, children }: NavigationTabsProps<T>): React.ReactElement {
@@ -17,7 +17,6 @@ function NavigationTabs<T>({ routes, children }: NavigationTabsProps<T>): React.
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
-  console.log(path);
 
   const result = useMemo(
     () =>
