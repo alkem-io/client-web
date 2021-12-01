@@ -15,7 +15,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import FormikInputField from '../../composite/forms/FormikInputField';
 
 interface GroupFormProps {

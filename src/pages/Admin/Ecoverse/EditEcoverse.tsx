@@ -10,7 +10,7 @@ import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 
 interface EcoverseEditProps extends PageProps {}
 

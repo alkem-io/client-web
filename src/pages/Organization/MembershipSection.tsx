@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { MembershipOrganizationResultEntryChallenge, MembershipResultEntry } from '../../models/graphql-schema';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { CardContainer } from '../../components/core/CardContainer';

@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { Tagset } from '../../../models/Profile';
 import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';

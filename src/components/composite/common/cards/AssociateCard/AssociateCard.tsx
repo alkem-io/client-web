@@ -1,7 +1,9 @@
-import { Avatar, Box, createStyles, makeStyles, Tooltip } from '@material-ui/core';
+import { Avatar, Box, Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Link as RouterLink } from 'react-router-dom';
 import React, { FC } from 'react';
-import Link from '@material-ui/core/Link';
+import Link from '@mui/material/Link';
 import Typography from '../../../../core/Typography';
 import UserCard, { UserCardProps } from '../user-card/UserCard';
 

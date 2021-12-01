@@ -1,16 +1,16 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
-const useButtonStyles = createStyles(theme => ({
+const useButtonStyles = makeStyles(theme => ({
   inputContainer: {
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
   },
   input: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     paddingTop: theme.spacing(4),
     color: theme.palette.neutral.main,
 
@@ -25,7 +25,7 @@ const useButtonStyles = createStyles(theme => ({
     fontSize: theme.typography.h3.fontSize,
   },
   textArea: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     paddingTop: theme.spacing(4),
     color: theme.palette.neutral.main,
 

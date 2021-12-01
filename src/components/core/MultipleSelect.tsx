@@ -6,10 +6,10 @@ import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 
 import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
-import { createStyles } from '../../hooks/useTheme';
-import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles } from '@mui/styles';
+import Tooltip from '@mui/material/Tooltip';
 
-const useMultipleSelectStyles = createStyles(theme => ({
+const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
     position: 'relative',
     marginTop: -3,
@@ -23,13 +23,13 @@ const useMultipleSelectStyles = createStyles(theme => ({
   },
   selectContainer: {
     position: 'relative',
-    height: `${theme.spacing(6)}px`,
+    height: theme.spacing(6),
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     boxSizing: 'border-box',
-    padding: `${theme.spacing(1)}px`,
+    padding: theme.spacing(1),
     overflowX: 'auto',
     overflowY: 'hidden',
     backgroundColor: `${theme.palette.background.paper}`,
@@ -38,7 +38,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
     scrollbarColor: `${theme.palette.primary.main} ${theme.palette.background.paper}`,
     scrollbarWidth: 'thin',
     border: `1px solid ${theme.palette.neutralMedium.main}`,
-    borderRadius: `${theme.spacing(5)}px`,
+    borderRadius: theme.spacing(5),
     '&:hover, &:active ': {
       boxShadow: '0 0 0 0.2rem #007bff25',
       borderColor: `${theme.palette.primary.main}`,
@@ -46,7 +46,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
     },
     '&::-webkit-scrollbar': {
       height: 6,
-      marginLeft: `${theme.spacing(2)}px`,
+      marginLeft: theme.spacing(2),
     },
     /* Track */
     '&::-webkit-scrollbar-track': {
@@ -75,7 +75,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
     width: 'fit-content',
     alignItems: 'center',
     margin: '0 10px 0 0',
-    borderRadius: `${theme.spacing(5)}px`,
+    borderRadius: theme.spacing(5),
     flexShrink: 0,
     overflowX: 'auto',
     transition: 'background-color 0.25s',
@@ -96,7 +96,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
   removeIcon: {
     flexShrink: 0,
     color: `${theme.palette.neutral.main}`,
-    marginLeft: `${theme.spacing(1)}px`,
+    marginLeft: theme.spacing(1),
     '&:hover': {
       color: `${theme.palette.negative.main}`,
       cursor: 'pointer',
@@ -110,8 +110,8 @@ const useMultipleSelectStyles = createStyles(theme => ({
     padding: '10px',
   },
   suggestionsTitle: {
-    marginTop: `${theme.spacing(3)}px`,
-    marginBottom: `${theme.spacing(2)}px`,
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(2),
     textTransform: 'uppercase',
   },
   suggestions: {
@@ -124,7 +124,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
     width: 'fit-content',
     alignItems: 'center',
     margin: '0 10px 0 0',
-    borderRadius: `${theme.spacing(5)}px`,
+    borderRadius: theme.spacing(5),
     flexShrink: 0,
     overflowX: 'auto',
     transition: 'background-color 0.25s',
@@ -136,7 +136,7 @@ const useMultipleSelectStyles = createStyles(theme => ({
     },
     padding: '11px 24px',
     backgroundColor: `${theme.palette.neutralMedium.main}`,
-    marginBottom: `${theme.spacing(1)}px`,
+    marginBottom: theme.spacing(1),
     '&:hover': {
       cursor: 'pointer',
       backgroundColor: `${theme.palette.primary.main}`,
@@ -283,7 +283,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           onClick={() => input.current.focus()}
         >
           <section className={styles.flexCenterContainer}>
-            <IconButton onClick={onSearch} className={styles.searchButton}>
+            <IconButton onClick={onSearch} className={styles.searchButton} size="large">
               <Icon component={SearchIcon} color="inherit" size={'sm'} />
             </IconButton>
             <Tooltip id="overlay-example" title={'You have reached the tags limit of 5'} open={isTooltipShown}>

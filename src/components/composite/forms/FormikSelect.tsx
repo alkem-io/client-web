@@ -1,13 +1,5 @@
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectProps,
-} from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { FormControl, FormHelperText, InputLabel, MenuItem, OutlinedInput, Select, SelectProps } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
 import React, { FC } from 'react';
 

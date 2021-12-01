@@ -1,4 +1,4 @@
-import { Box, Tooltip } from '@material-ui/core';
+import { Box, Tooltip } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import Tag from '../../../core/Tag';
 import TagContainer from '../../../core/TagContainer';

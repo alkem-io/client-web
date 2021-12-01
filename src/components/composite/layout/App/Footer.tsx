@@ -1,27 +1,18 @@
 import React, { FC } from 'react';
-import Grid from '@material-ui/core/Grid';
-import { Box, Container, Link } from '@material-ui/core';
-import { createStyles } from '../../../../hooks/useTheme';
+import Grid from '@mui/material/Grid';
+import { Box, Container, Link } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
 import { useConfig } from '../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
 
-const useFooterStyles = createStyles(theme => ({
+const useFooterStyles = makeStyles(theme => ({
   footer: {
+    marginTop: theme.spacing(2),
     maxWidth: 1380,
     width: '100%',
-    margin: 'auto',
-  },
-  column: {
-    display: 'flex',
-    gap: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.down('xl')]: {
-      justifyContent: 'center',
-    },
   },
   logo: {
     height: theme.spacing(2),
@@ -29,11 +20,6 @@ const useFooterStyles = createStyles(theme => ({
   footerSecondary: {
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  copyright: {
-    display: 'flex',
-    justifyContent: 'start',
-    position: 'relative',
   },
 }));
 

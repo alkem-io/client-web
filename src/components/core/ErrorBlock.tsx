@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as ErrorIcon } from 'bootstrap-icons/icons/exclamation-octagon.svg';
 import Icon from './Icon';
 import Typography from './Typography';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 
 const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
   const { t } = useTranslation();

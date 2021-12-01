@@ -2,11 +2,12 @@ import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Grid, makeStyles } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import { Grid } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { PushFunc, RemoveFunc } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
 import Typography from '../../core/Typography';
@@ -80,6 +81,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     }}
                     className={styles.iconButtonSuccess}
                     disabled={disabled || adding}
+                    size="large"
                   >
                     <AddIcon />
                   </IconButton>
@@ -132,6 +134,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       }}
                       className={styles.iconButtonNegative}
                       disabled={disabled || index === removing}
+                      size="large"
                     >
                       <RemoveIcon />
                     </IconButton>

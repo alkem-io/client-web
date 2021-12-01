@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import { makeStyles } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import makeStyles from '@mui/styles/makeStyles';
+import { ClassNameMap } from '@mui/styles';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { PageProps } from '../../../pages';

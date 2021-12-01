@@ -1,7 +1,7 @@
-import { makeStyles } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Tab from '@material-ui/core/Tab/Tab';
-import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab/Tab';
+import makeStyles from '@mui/styles/makeStyles';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';

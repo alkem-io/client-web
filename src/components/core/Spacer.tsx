@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
 interface SpacerProps {
   variant?: 'lg' | 'md';
 }
 
-const useSpacerStyles = createStyles(theme => ({
+const useSpacerStyles = makeStyles(theme => ({
   mdSpacer: {
     marginTop: theme.spacing(2),
   },

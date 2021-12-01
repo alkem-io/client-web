@@ -1,8 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useOpportunityInfoQuery } from '../hooks/generated/graphql';
-import { OpportunityInfoFragment } from '../models/graphql-schema';
+import { AuthorizationPrivilege, OpportunityInfoFragment } from '../models/graphql-schema';
 import { useChallenge } from '../hooks';
 import { useUrlParams } from '../hooks';
+
+interface OpportunityViewerPermissions {
+  viewerCanUpdate: boolean;
+}
 
 interface OpportunityContextProps {
   opportunity?: OpportunityInfoFragment;
@@ -14,6 +18,7 @@ interface OpportunityContextProps {
   ecoverseNameId: string;
   displayName: string;
   loading: boolean;
+  permissions: OpportunityViewerPermissions;
 }
 
 const OpportunityContext = React.createContext<OpportunityContextProps>({
@@ -25,6 +30,9 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   ecoverseId: '',
   ecoverseNameId: '',
   displayName: '',
+  permissions: {
+    viewerCanUpdate: false,
+  },
 });
 
 interface OpportunityProviderProps {}
@@ -42,6 +50,14 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const { challengeId } = useChallenge();
   const displayName = opportunity?.displayName || '';
 
+  const permissions = useMemo<OpportunityViewerPermissions>(
+    () => ({
+      viewerCanUpdate:
+        data?.ecoverse?.opportunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+    }),
+    [data]
+  );
+
   return (
     <OpportunityContext.Provider
       value={{
@@ -53,6 +69,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         opportunityId,
         opportunityNameId,
         displayName,
+        permissions,
         loading,
       }}
     >

@@ -1,20 +1,20 @@
 import clsx from 'clsx';
 import React, { FC, RefObject } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useToolbarStyles = createStyles(theme => ({
+const useToolbarStyles = makeStyles(theme => ({
   toolbar: {
     display: 'flex',
     flexDirection: 'row',
   },
   paddingDefault: {
-    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(4)} ${theme.spacing(4)}`,
   },
   paddingDense: {
-    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
   },
   responsivePadding: {
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },

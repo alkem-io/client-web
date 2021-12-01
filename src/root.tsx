@@ -1,3 +1,4 @@
+import { StyledEngineProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { WinstonProvider } from 'winston-react';
@@ -7,19 +8,19 @@ import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
+import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { createStyles } from './hooks';
+import { makeStyles } from '@mui/styles';
 import './i18n/config';
 import { Routing } from './routing/Routing';
+import ScrollToTop from './routing/ScrollToTop';
 import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
-import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
-import ScrollToTop from './routing/ScrollToTop';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
 
-const useGlobalStyles = createStyles(theme => ({
+const useGlobalStyles = makeStyles(theme => ({
   '@global': {
     '*::-webkit-scrollbar': {
       width: '0.4em',
@@ -54,34 +55,40 @@ const useGlobalStyles = createStyles(theme => ({
     },
   },
 }));
-
-const Root: FC = () => {
+const GlobalStyles: FC = ({ children }) => {
   useGlobalStyles();
+  return <>{children}</>;
+};
+const Root: FC = () => {
   return (
-    <ThemeProvider>
-      <ConfigProvider apiUrl={graphQLEndpoint}>
-        <SentryErrorBoundaryProvider>
-          <WinstonProvider logger={logger}>
-            <GlobalStateProvider>
-              <BrowserRouter>
-                <AuthenticationProvider>
-                  <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
-                    <NavigationProvider>
-                      <UserProvider>
-                        <App>
-                          <ScrollToTop />
-                          <Routing />
-                        </App>
-                      </UserProvider>
-                    </NavigationProvider>
-                  </AlkemioApolloProvider>
-                </AuthenticationProvider>
-              </BrowserRouter>
-            </GlobalStateProvider>
-          </WinstonProvider>
-        </SentryErrorBoundaryProvider>
-      </ConfigProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider>
+        <GlobalStyles>
+          <ConfigProvider apiUrl={graphQLEndpoint}>
+            <SentryErrorBoundaryProvider>
+              <WinstonProvider logger={logger}>
+                <GlobalStateProvider>
+                  <BrowserRouter>
+                    <AuthenticationProvider>
+                      <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                        <NavigationProvider>
+                          <UserProvider>
+                            <App>
+                              <ScrollToTop />
+                              <Routing />
+                            </App>
+                          </UserProvider>
+                        </NavigationProvider>
+                      </AlkemioApolloProvider>
+                    </AuthenticationProvider>
+                  </BrowserRouter>
+                </GlobalStateProvider>
+              </WinstonProvider>
+            </SentryErrorBoundaryProvider>
+          </ConfigProvider>
+        </GlobalStyles>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 export default Root;

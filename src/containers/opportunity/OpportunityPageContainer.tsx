@@ -9,8 +9,8 @@ import { useAuthenticationContext, useOpportunity, useUserContext } from '../../
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
 import { replaceAll } from '../../utils/replaceAll';
 import getActivityCount from '../../utils/get-activity-count';
-import { OpportunityProject } from '../../views';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { OpportunityProject } from '../../models/entities/opportunity';
 
 export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;

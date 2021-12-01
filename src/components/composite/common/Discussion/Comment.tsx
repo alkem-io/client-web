@@ -1,9 +1,11 @@
+import { DeleteOutlined } from '@mui/icons-material';
+import { Avatar, Box, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
-import { Avatar, Box, createStyles, makeStyles, Typography, useTheme } from '@material-ui/core';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
-import IconButton from '@material-ui/core/IconButton';
 
 const AVATAR_SIZE = 5;
 
@@ -27,10 +29,9 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
   const styles = useStyles();
 
   const { author, body, id } = comment;
-  const theme = useTheme();
 
   return (
-    <Box border={1} borderColor="neutralMedium.main" borderRadius={theme.shape.borderRadius}>
+    <Box border={1} borderColor="neutralMedium.main" borderRadius={1}>
       <Box padding={1} display="flex" alignItems="center" justifyContent="space-between" bgcolor="neutralMedium.main">
         <Box display="flex" alignItems="center">
           <Avatar className={styles.avatar} src={author?.avatarUrl} variant="rounded">
@@ -43,7 +44,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
         </Box>
         {canDelete && onDelete && (
           <IconButton aria-label="Delete" onClick={() => onDelete(id)}>
-            <DeleteOutlinedIcon fontSize="large" />
+            <DeleteOutlined fontSize="large" />
           </IconButton>
         )}
       </Box>

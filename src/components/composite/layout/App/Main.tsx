@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { Container } from '@material-ui/core';
-import { createStyles } from '../../../../hooks/useTheme';
+import { Container } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const useMainStyles = createStyles(() => ({
+const useMainStyles = makeStyles(() => ({
   main: {
     flexGrow: 1,
-    padding: '40px 0 0 0',
+    padding: '128px 0 0 0',
     maxWidth: 1380,
   },
 }));

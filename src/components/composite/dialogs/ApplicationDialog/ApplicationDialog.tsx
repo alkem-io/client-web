@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog/Dialog';
-import { createStyles } from '../../../../hooks';
+import Dialog from '@mui/material/Dialog/Dialog';
+import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../models/graphql-schema';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import Avatar from '../../../core/Avatar';
@@ -10,7 +10,7 @@ import LifecycleButton from '../../../core/LifecycleButton';
 import { Optional } from '../../../../types/util';
 import { Loading } from '../../../core';
 
-const appStyles = createStyles(theme => ({
+const appStyles = makeStyles(theme => ({
   minHeight: {
     minHeight: '100px',
     display: 'flex',
@@ -26,7 +26,7 @@ const appStyles = createStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexWrap: 'wrap',
       gap: theme.spacing(2),
     },
@@ -36,7 +36,7 @@ const appStyles = createStyles(theme => ({
     alignItems: 'center',
     gap: theme.spacing(1),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -45,7 +45,7 @@ const appStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },

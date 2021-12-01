@@ -1,26 +1,26 @@
+import { Box, OutlinedInput } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
+import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog';
-import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel/InputLabel';
-import Select from '@material-ui/core/Select/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
   useMeQuery,
 } from '../../../../hooks/generated/graphql';
-import { createStyles, useApolloErrorHandler } from '../../../../hooks';
-import { useEcoverse } from '../../../../hooks';
-import Button from '../../../core/Button';
 import { Loading } from '../../../core';
+import Button from '../../../core/Button';
+import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import TextInput, { TextArea } from '../../../core/TextInput';
 import Typography from '../../../core/Typography';
-import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
-import { Box, OutlinedInput } from '@material-ui/core';
 
-const useStyles = createStyles(() => ({
+const useStyles = makeStyles(() => ({
   formControl: {
     minWidth: 150,
   },
@@ -74,7 +74,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
     });
   };
 
-  const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleRoleChange = (event: SelectChangeEvent<string>) => {
     setRole(event.target.value as string);
   };
 

@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import hexToRGBA from '../../utils/hexToRGBA';
 
-const useIconButtonStyles = createStyles(theme => ({
+const useIconButtonStyles = makeStyles(theme => ({
   button: {
     display: 'flex',
     flexDirection: 'row',

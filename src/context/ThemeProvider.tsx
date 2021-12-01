@@ -1,35 +1,24 @@
-import { createTheme, Theme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
 import { defaultTheme } from '../themes/default';
-import { typographyOptionsV2 } from '../themes/defaultV2/typography';
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const ThemeProvider: FC<{}> = ({ children }) => {
   // can merge external configuration for the theme and pass it to the provider
-  return <MuiThemeProvider theme={defaultTheme}>{children}</MuiThemeProvider>;
-};
-
-const ThemeProviderV2: FC<{}> = ({ children }) => {
   return (
-    <MuiThemeProvider
-      theme={(theme: Theme) =>
-        createTheme({
-          ...theme,
-          spacing: 8,
-          typography: {
-            ...typographyOptionsV2,
-          },
-          props: {
-            ...theme.props,
-            MuiAvatar: {
-              variant: 'square',
-            },
-          },
-        })
-      }
-    >
-      {children}
-    </MuiThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <MuiThemeProvider theme={defaultTheme}>{children}</MuiThemeProvider>
+    </StyledEngineProvider>
   );
 };
 
-export { ThemeProvider, ThemeProviderV2 };
+export { ThemeProvider };

@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
-const useCircleTagStyles = createStyles(theme => ({
+const useCircleTagStyles = makeStyles(theme => ({
   tag: {
     display: 'inline-flex',
     borderRadius: '50%',
@@ -61,7 +61,7 @@ const CircleTag: React.FC<TagProps> = ({ text, color = 'neutral', className, siz
   return (
     <span className={clsx(styles.tag, styles[color], styles[size], className)}>
       <Typography
-        variant="body"
+        variant="body1"
         color="inherit"
         weight={size === 'small' ? 'regular' : 'bold'}
         className={styles[`tagText-${size}`]}

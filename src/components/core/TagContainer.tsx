@@ -1,7 +1,7 @@
 import React from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useIconStyles = createStyles(theme => ({
+const useIconStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'flex-start',
