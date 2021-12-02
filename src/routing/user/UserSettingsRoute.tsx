@@ -13,7 +13,7 @@ export const UserSettingsRoute: FC = () => {
         <Route exact path={`${path}`}>
           <Redirect to={`${url}/profile`} />
         </Route>
-        <Route path={`${path}`}>
+        <Route path={`${path}/profile`}>
           <EditUserProfilePage />
         </Route>
 

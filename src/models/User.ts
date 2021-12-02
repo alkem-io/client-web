@@ -62,9 +62,12 @@ export const defaultUser: UserModel = {
 /*
 Generated userForm interface for yup
 */
-export interface UserFromGenerated {
+export interface UserFormGenerated {
   firstName: string;
   email: string;
+  linkedin: string;
+  twitter: string;
+  github: string;
   displayName: string;
   avatar: string;
   tagsets: Tagset[];

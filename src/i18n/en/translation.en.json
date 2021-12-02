@@ -43,7 +43,8 @@
     "settings": "Settings",
     "member": "Member",
     "profile": "Profile",
-    "view-profile": "View Profile"
+    "view-profile": "View Profile",
+    "edit-photo": "Edit Photo"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -106,6 +107,7 @@
     "search": "Search",
     "notifications": "Notifications",
     "my-profile": "My profile",
+    "social": "Social",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

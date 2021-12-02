@@ -1,5 +1,5 @@
-import { Chip, OutlinedTextFieldProps, TextField } from '@mui/material';
-import { Autocomplete } from '@mui/material';
+import { FiberManualRecord } from '@mui/icons-material';
+import { Autocomplete, Chip, OutlinedTextFieldProps, TextField } from '@mui/material';
 import { isArray } from 'lodash';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 
@@ -35,7 +35,14 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
         disabled={readOnly || disabled}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} size="small" />
+            <Chip
+              color="primary"
+              variant="outlined"
+              label={option}
+              {...getTagProps({ index })}
+              size="small"
+              icon={<FiberManualRecord />}
+            />
           ))
         }
         renderInput={params => <TextField {...params} {...rest} variant="outlined" />}

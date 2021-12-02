@@ -23,7 +23,7 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
     <>
       <NavigationTabs routes={routes}>
         {(routesObj, value) => (
-          <Tabs value={value}>
+          <Tabs value={value} sx={{ marginBottom: 4 }}>
             <NavigationTab
               icon={<GroupOutlined />}
               label={t('common.my-profile')}
