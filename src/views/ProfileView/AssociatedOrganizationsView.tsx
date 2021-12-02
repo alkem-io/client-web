@@ -6,16 +6,21 @@ import AssociatedOrganizationContainer from '../../containers/organization/Assoc
 
 interface AssociatedOrganizationsViewProps extends ProfileCardProps {
   organizationNameIDs: string[];
+  dense?: boolean;
 }
 
-export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> = ({ organizationNameIDs, ...rest }) => {
+export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> = ({
+  organizationNameIDs,
+  dense = false,
+  ...rest
+}) => {
   return (
     <ProfileCard {...rest}>
-      <Grid container direction="column" spacing={2}>
+      <Grid container spacing={2}>
         {organizationNameIDs.map((oNameID, i) => (
           <AssociatedOrganizationContainer key={i} entities={{ organizationNameId: oNameID }}>
             {(entities, state) => (
-              <Grid item>
+              <Grid item xs={12} md={dense ? 6 : 12}>
                 <AssociatedOrganizationCard
                   name={entities.name}
                   avatar={entities.avatar}

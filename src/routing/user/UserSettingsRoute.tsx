@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
+import UserOrganizationsPage from '../../pages/User/UserOrganizationsPage';
+import UserMembershipPage from '../../pages/User/UserOrganizationsPage';
 import UserTabs from './UserTabs';
 
 export const UserSettingsRoute: FC = () => {
@@ -15,6 +17,12 @@ export const UserSettingsRoute: FC = () => {
         </Route>
         <Route path={`${path}/profile`}>
           <EditUserProfilePage />
+        </Route>
+        <Route path={`${path}/membership`}>
+          <UserMembershipPage />
+        </Route>
+        <Route path={`${path}/organizations`}>
+          <UserOrganizationsPage />
         </Route>
 
         <Route path="*">
