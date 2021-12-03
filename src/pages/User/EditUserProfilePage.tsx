@@ -101,4 +101,5 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
     />
   );
 };
+
 export default EditUserProfilePage;
