@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
+import UserMembershipPage from '../../pages/User/UserMembershipPage';
 import UserNotificationsPage from '../../pages/User/UserNotificationsPage';
 import UserOrganizationsPage from '../../pages/User/UserOrganizationsPage';
-import UserMembershipPage from '../../pages/User/UserOrganizationsPage';
 import UserTabs from './UserTabs';
 
 export const UserSettingsRoute: FC = () => {

@@ -1,7 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Loading } from '../../components/core';
 import { useUrlParams, useUserMetadata } from '../../hooks';
 import { ContributionsView } from '../../views/ProfileView';
 
@@ -12,8 +11,6 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { userId } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userId);
 
-  if (loading) return <Loading text={'Loading User Profile ...'} />;
-
   return (
     <Grid container rowSpacing={4}>
       <Grid item xs={12}>
@@ -21,6 +18,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
           title={t('common.my-memberships')}
           helpText={t('pages.user-profile.communities.help')}
           contributions={userMetadata?.contributions || []}
+          loading={loading}
         />
       </Grid>
       <Grid item xs={12}>
@@ -28,6 +26,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
           title={t('pages.user-profile.pending-applications.title')}
           helpText={t('pages.user-profile.pending-applications.help')}
           contributions={userMetadata?.pendingApplications || []}
+          loading={loading}
         />
       </Grid>
     </Grid>
