@@ -3,7 +3,6 @@ import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
 import UserMembershipPage from '../../pages/User/UserMembershipPage';
-import UserNotificationsPage from '../../pages/User/UserNotificationsPage';
 import UserOrganizationsPage from '../../pages/User/UserOrganizationsPage';
 
 import UserTabs from './UserTabs';
@@ -25,9 +24,6 @@ export const UserSettingsRoute: FC = () => {
         </Route>
         <Route path={`${path}/organizations`}>
           <UserOrganizationsPage />
-        </Route>
-        <Route path={`${path}/notifications`}>
-          <UserNotificationsPage />
         </Route>
 
         <Route path="*">
