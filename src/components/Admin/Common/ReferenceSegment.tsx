@@ -1,26 +1,15 @@
+import { DeleteOutline } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import { Grid, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Grid } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { PushFunc, RemoveFunc } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
-import Typography from '../../core/Typography';
 import FormikInputField from '../../composite/forms/FormikInputField';
-
-const useStyles = makeStyles(theme => ({
-  iconButtonSuccess: {
-    color: theme.palette.success.main,
-  },
-  iconButtonNegative: {
-    color: theme.palette.negative.main,
-  },
-}));
 
 export interface ReferenceSegmentProps {
   references: Reference[];
@@ -44,7 +33,6 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   onAdd,
   onRemove,
 }) => {
-  const styles = useStyles();
   const { t } = useTranslation();
   const [removing, setRemoving] = useState<number | undefined>();
   const [adding, setAdding] = useState(false);
@@ -63,40 +51,36 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   return (
     <FieldArray name={'references'}>
       {({ push, remove }) => (
-        <>
-          <Grid container item xs={12} spacing={2}>
-            <Grid item xs={11}>
-              <Typography variant={'h4'} color={'primary'}>
-                {t('components.referenceSegment.title')}
-              </Typography>
+        <Grid item container rowSpacing={2} columnSpacing={4}>
+          <Grid container item xs={12} alignItems="center" wrap="nowrap">
+            <Grid item>
+              <Typography variant={'h4'}>{t('components.referenceSegment.title')}</Typography>
             </Grid>
-            <Grid container item xs={1}>
+            <Grid item>
               <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
-                <span>
-                  <IconButton
-                    aria-label="Add"
-                    onClick={e => {
-                      e.preventDefault();
-                      handleAdd(push);
-                    }}
-                    className={styles.iconButtonSuccess}
-                    disabled={disabled || adding}
-                    size="large"
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </span>
+                <IconButton
+                  aria-label="Add"
+                  onClick={e => {
+                    e.preventDefault();
+                    handleAdd(push);
+                  }}
+                  color="primary"
+                  disabled={disabled || adding}
+                  size="large"
+                >
+                  <AddIcon />
+                </IconButton>
               </Tooltip>
             </Grid>
           </Grid>
           {references?.length === 0 ? (
-            <Grid item xs={12}>
+            <Grid item container>
               <Typography variant={'caption'}>{t('components.referenceSegment.missing-refreneces')}</Typography>
             </Grid>
           ) : (
             references?.map((ref, index) => (
-              <Grid key={index} container item xs={12} spacing={2}>
-                <Grid item xs={4}>
+              <Grid key={index} container item spacing={4} wrap="nowrap">
+                <Grid item xs="auto">
                   <FormikInputField
                     name={`references.${index}.name`}
                     title={'Name'}
@@ -104,7 +88,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     disabled={disabled || index === removing}
                   />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs>
                   <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
@@ -112,7 +96,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     disabled={disabled || index === removing}
                   />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs="auto">
                   <Tooltip
                     title={t('components.referenceSegment.tooltips.remove-reference') || ''}
                     id={'remove a reference'}
@@ -132,18 +116,17 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                           remove(index);
                         }
                       }}
-                      className={styles.iconButtonNegative}
                       disabled={disabled || index === removing}
                       size="large"
                     >
-                      <RemoveIcon />
+                      <DeleteOutline />
                     </IconButton>
                   </Tooltip>
                 </Grid>
               </Grid>
             ))
           )}
-        </>
+        </Grid>
       )}
     </FieldArray>
   );

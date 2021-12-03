@@ -21,6 +21,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   type,
   placeholder,
   autoComplete,
+  InputProps,
   ...rest
 }) => {
   const [field, meta] = useField(name);
@@ -42,6 +43,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
       autoComplete={autoComplete}
       fullWidth
       InputProps={{
+        ...InputProps,
         readOnly: readOnly,
       }}
       {...rest}

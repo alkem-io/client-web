@@ -1,8 +1,11 @@
 import { Link } from '@mui/material';
-import { Block, GitHub, LinkedIn, Mail, Public, Twitter } from '@mui/icons-material';
+import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';
+import GitHub from '../../../core/icons/GitHub';
+import LinkedIn from '../../../core/icons/LinkedIn';
+import Twitter from '../../../core/icons/Twitter';
 
 interface ContactDetailsProps {
   title: string;
@@ -16,11 +19,11 @@ const getSocialIcon = (type: SocialNetworkEnum) => {
     case SocialNetworkEnum.email:
       return <Mail fontSize={fontSize} />;
     case SocialNetworkEnum.github:
-      return <GitHub fontSize={fontSize} htmlColor="#000000" />;
+      return <GitHub fontSize={fontSize} />;
     case SocialNetworkEnum.linkedin:
-      return <LinkedIn fontSize={fontSize} htmlColor="#0e76a8" />;
+      return <LinkedIn fontSize={fontSize} />;
     case SocialNetworkEnum.twitter:
-      return <Twitter fontSize={fontSize} htmlColor="#00acee" />;
+      return <Twitter fontSize={fontSize} />;
     case SocialNetworkEnum.website:
       return <Public fontSize={fontSize} />;
     default:
