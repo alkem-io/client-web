@@ -46,6 +46,8 @@ fragment OpportunityPage on Opportunity {
     aspects {
       id
       title
+      explanation
+      framing
     }
     visual {
       id
