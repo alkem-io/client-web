@@ -530,6 +530,10 @@
   },
   "pages": {
     "challenges-overview": {
+      "filter": {
+        "title": "Search through challenges",
+        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      },
       "my": {
         "title": "My challenge ({{count}})",
         "title_plural": "My challenges ({{count}})",

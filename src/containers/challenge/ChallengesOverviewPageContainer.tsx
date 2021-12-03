@@ -44,11 +44,11 @@ export const ChallengesOverviewPageContainer: FC<ChallengePageContainerProps> = 
   const ecoverses = data?.membershipUser.ecoverses ?? [];
   const userChallenges: SimpleChallenge[] = ecoverses.flatMap(x => x?.challenges.map(y => ({
     id: y.id,
-    ecoverseId: x.id,
+    ecoverseId: x.ecoverseID,
   })));
 
   const userHubs: SimpleEcoverseFragment[] =
-    ecoverses.map(({ id, displayName, nameID }) => ({ id, displayName, nameID }));
+    ecoverses.map(({ ecoverseID, displayName, nameID }) => ({ ecoverseID, displayName, nameID }));
 
   return <>{children({ userChallenges, userHubs }, { loading, error }, {})}</>;
 };

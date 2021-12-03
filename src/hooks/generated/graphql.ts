@@ -46,16 +46,13 @@ export const ChallengeCardFragmentDoc = gql`
     displayName
     nameID
     activity {
+      id
       name
       value
     }
     context {
       id
       tagline
-      background
-      vision
-      impact
-      who
       visual {
         id
         background
@@ -784,7 +781,7 @@ export const AllCommunityDetailsFragmentDoc = gql`
 `;
 export const SimpleEcoverseFragmentDoc = gql`
   fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
-    id
+    ecoverseID
     nameID
     displayName
   }
@@ -9429,6 +9426,7 @@ export const ChallengesOverviewPageDocument = gql`
   query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
     membershipUser(membershipData: $membershipData) {
       ecoverses {
+        id
         ...SimpleEcoverse
         challenges {
           id

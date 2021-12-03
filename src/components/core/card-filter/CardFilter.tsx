@@ -15,16 +15,19 @@ export interface CardFilterProps<T extends RequiredFields> {
   data: T[];
   tagsValueGetter: (data: T) => string[];
   valueGetter: (data: T) => ValueType;
+  inputField?: boolean;
+  inputTerms?: string[];
   children: (filteredData: T[]) => React.ReactNode;
 }
 
-const CardFilter = <T extends RequiredFields>({ data, tagsValueGetter, valueGetter, children }: CardFilterProps<T>) => {
+const CardFilter = <T extends RequiredFields>({ data, inputField = true, inputTerms, tagsValueGetter, valueGetter, children }: CardFilterProps<T>) => {
   const { t } = useTranslation();
   const [terms, setTerms] = useState<string[]>([]);
 
   const tags = useMemo(() => mostCommonTags(data, tagsValueGetter), [data]);
 
-  const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms]);
+  const filterTerms = inputTerms ?? terms;
+  const filteredData = useMemo(() => filterFn(data, filterTerms, valueGetter), [data, filterTerms]);
 
   const handleChange = (e, value: string[]) => {
     const trimmedValues = value.map(x => x.trim().toLowerCase());
@@ -33,6 +36,10 @@ const CardFilter = <T extends RequiredFields>({ data, tagsValueGetter, valueGett
 
   if (!data.length) {
     return <>{children(data)}</>;
+  }
+
+  if (!inputField) {
+    return <Grid container>{children(filteredData)}</Grid>;
   }
 
   return (

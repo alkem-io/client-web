@@ -1,6 +1,7 @@
 query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   membershipUser(membershipData: $membershipData) {
     ecoverses {
+      id
       ...SimpleEcoverse
       challenges {
         id
@@ -10,7 +11,7 @@ query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
 }
 
 fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
-  id
+  ecoverseID
   nameID
   displayName
 }
