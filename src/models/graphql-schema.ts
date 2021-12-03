@@ -2247,7 +2247,7 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The preferences for this user */
   preferences: Array<UserPreference>;
-  /** The profile for this User */
+  /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
 
@@ -2294,10 +2294,10 @@ export type UserPreference = {
   __typename?: 'UserPreference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: UserPreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
   /** Value of the preference */
   value: Scalars['String'];
 };
@@ -2977,6 +2977,15 @@ export type UserMembershipDetailsFragment = {
       opportunityID?: Maybe<string>;
     }>
   >;
+};
+
+export type UpdateUserPreferencesMutationVariables = Exact<{
+  input: UpdateUserPreferenceInput;
+}>;
+
+export type UpdateUserPreferencesMutation = {
+  __typename?: 'Mutation';
+  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -6083,6 +6092,32 @@ export type UserProfileApplicationsQuery = {
         opportunityID?: Maybe<string>;
       }>
     >;
+  };
+};
+
+export type UserNotificationsPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserNotificationsPreferencesQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    preferences: Array<{
+      __typename?: 'UserPreference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'UserPreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: UserPreferenceType;
+        valueType: UserPreferenceValueType;
+      };
+    }>;
   };
 };
 
