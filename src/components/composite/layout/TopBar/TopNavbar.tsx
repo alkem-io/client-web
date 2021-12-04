@@ -4,6 +4,7 @@ import { Box, Button, Container, List } from '@mui/material';
 import { styled, alpha, emphasize } from '@mui/material/styles';
 import { RouterLink } from '../../../core/RouterLink';
 import { useUserContext } from '../../../../hooks';
+import { grey } from '@mui/material/colors';
 
 const PREFIX = 'TopNavbar';
 
@@ -21,15 +22,16 @@ const Root = styled('div')(({ theme }) => ({
     borderRadius: 0,
 
     '&:hover': {
-      backgroundColor: emphasize(theme.palette.primary.main, 0.3),
+      backgroundColor: emphasize(theme.palette.primary.main, 0.25),
     },
 
     '&.Mui-disabled': {
-      backgroundColor: alpha(theme.palette.common.white, 0.8),
+      backgroundColor: alpha(grey[800], 0.6),
+      opacity: 0.7,
     },
   },
   [`& .${classes.buttonSelected}`]: {
-    backgroundColor: emphasize(theme.palette.primary.main, 0.5),
+    backgroundColor: emphasize(theme.palette.primary.main, 0.2),
   },
   [`& .${classes.bar}`]: {
     flexGrow: 1,
