@@ -110,7 +110,7 @@ export const TopNavbarSpacer = () => {
     <Root sx={{ visibility: 'hidden' }}>
       <Box className={classes.bar}>
         <List disablePadding dense>
-          <Button>Spacer</Button>
+          <Button className={clsx(classes.button)}>Spacer</Button>
         </List>
       </Box>
     </Root>
