@@ -77,13 +77,7 @@ const TopNavbar = () => {
     <Root>
       <Box className={classes.bar}>
         <Container maxWidth="xl">
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-            disablePadding
-            dense
-            sx={{ display: 'flex', flexDirection: 'row' }}
-          >
+          <List component="nav" disablePadding dense sx={{ display: 'flex', flexDirection: 'row' }}>
             {menuItems.map(({ title, url, disabled, hidden }, i) => {
               if (hidden) {
                 return null;
@@ -110,4 +104,17 @@ const TopNavbar = () => {
     </Root>
   );
 };
+
+export const TopNavbarSpacer = () => {
+  return (
+    <Root sx={{ visibility: 'hidden' }}>
+      <Box className={classes.bar}>
+        <List disablePadding dense>
+          <Button>Spacer</Button>
+        </List>
+      </Box>
+    </Root>
+  );
+};
+
 export default TopNavbar;

@@ -61,4 +61,13 @@ const SearchBar = () => {
     </Container>
   );
 };
+
+export const SearchBarSpacer = () => {
+  return (
+    <Box paddingY={2}>
+      <LogoComponent />
+    </Box>
+  );
+};
+
 export default SearchBar;

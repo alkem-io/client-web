@@ -16,7 +16,6 @@ import {
 } from '../../components/composite/search';
 import { Loading } from '../../components/core';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -193,7 +192,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           allowUnknownValues
         />
       </Section>
-      <Divider />
       {isSearching && (
         <Container maxWidth="xl">
           <Loading />

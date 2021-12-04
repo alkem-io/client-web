@@ -3,8 +3,8 @@ import { styled } from '@mui/material/styles';
 import { useSelector } from '@xstate/react';
 import React from 'react';
 import { useGlobalState } from '../../../../hooks';
-import SearchBar from './SearchBar';
-import TopNavbar from './TopNavbar';
+import SearchBar, { SearchBarSpacer } from './SearchBar';
+import TopNavbar, { TopNavbarSpacer } from './TopNavbar';
 
 const PREFIX = 'TopBar';
 
@@ -42,4 +42,14 @@ const TopBar = () => {
     </Root>
   );
 };
+
+export const TopBarSpacer = () => {
+  return (
+    <>
+      <SearchBarSpacer />
+      <TopNavbarSpacer />
+    </>
+  );
+};
+
 export default TopBar;

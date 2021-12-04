@@ -10,7 +10,6 @@ import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
 import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { VisualSegment, visualSegmentSchema } from '../../Admin/Common/VisualSegment';
-import Divider from '../../core/Divider';
 import Typography from '../../core/Typography';
 
 export interface ProfileFormValuesType {
@@ -131,7 +130,6 @@ const ProfileForm: FC<Props> = ({
             <VisualSegment />
 
             {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
-            <Divider />
           </>
         );
       }}

@@ -22,7 +22,6 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -150,7 +149,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </div>
         </Body>
       </Section>
-      <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.challenge.sections.opportunities.header')} />
@@ -187,7 +185,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </CardContainer>
         )}
       </CardFilter>
-      <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', {
           blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
@@ -204,7 +201,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           />
         </DiscussionsProvider>
       </BackdropWithMessage>
-      <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}
         show={!isAuthenticated}
@@ -226,7 +222,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </CardContainer>
         )}
       </BackdropWithMessage>
-      <Divider />
     </>
   );
 };
