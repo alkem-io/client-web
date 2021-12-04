@@ -1,7 +1,7 @@
-import React from 'react';
-import { useSelector } from '@xstate/react';
-import { AppBar, Grid, Toolbar } from '@mui/material';
+import { AppBar } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSelector } from '@xstate/react';
+import React from 'react';
 import { useGlobalState } from '../../../../hooks';
 import SearchBar from './SearchBar';
 import TopNavbar from './TopNavbar';
@@ -17,10 +17,6 @@ const Root = styled('div')(({ theme }) => ({
   [`& .${classes.bar}`]: {
     backgroundColor: theme.palette.common.white,
     boxShadow: 'unset',
-
-    '& > *': {
-      padding: 0,
-    },
   },
 }));
 
@@ -40,16 +36,8 @@ const TopBar = () => {
   return (
     <Root>
       <AppBar position="fixed" className={classes.bar}>
-        <Toolbar>
-          <Grid container>
-            <Grid item xs={12}>
-              <SearchBar />
-            </Grid>
-            <Grid item xs={12}>
-              <TopNavbar />
-            </Grid>
-          </Grid>
-        </Toolbar>
+        <SearchBar />
+        <TopNavbar />
       </AppBar>
     </Root>
   );
