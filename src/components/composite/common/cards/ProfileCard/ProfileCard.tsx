@@ -33,7 +33,7 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | nul
         <CardHeader
           className={styles.cardHeader}
           title={
-            <Typography variant="h3">
+            <Typography variant="h4" alignItems="center" display="flex">
               <Box component="span" fontWeight="bold">
                 {title}
               </Box>

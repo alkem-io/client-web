@@ -6,7 +6,7 @@ import Icon from '../../components/core/Icon';
 import { useUpdateNavigation } from '../../hooks';
 import EcoversesSection from './EcoversesSection';
 import WelcomeSection from './WelcomeSection';
-import QuickStatsSection from './QuickStatsSection';
+import AlkemioActivitySection from './AlkemioActivitySection';
 import LoginSection from './LoginSection';
 import { Box, Grid } from '@mui/material';
 
@@ -26,7 +26,7 @@ export const HomePage = () => {
           <LoginSection />
         </Grid>
         <Grid item xs={12} md={6}>
-          <QuickStatsSection />
+          <AlkemioActivitySection />
         </Grid>
       </Grid>
       <Section avatar={<Icon component={Globe} color="primary" size="xl" />}>

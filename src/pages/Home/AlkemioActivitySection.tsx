@@ -1,13 +1,11 @@
-import { Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Activities, ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import Section, { SectionSpacer } from '../../components/core/Section/Section';
-import SectionHeader from '../../components/core/Section/SectionHeader';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import DashboardActivitySection from '../../components/composite/common/sections/DashboardActivitySection';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import getActivityCount from '../../utils/get-activity-count';
 
-const QuickStatsSection = () => {
+const AlkemioActivitySection = () => {
   const { t } = useTranslation();
 
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
@@ -51,13 +49,12 @@ const QuickStatsSection = () => {
   );
 
   return (
-    <Section>
-      <SectionHeader text={t('pages.activity.title', { blockName: 'All' })} />
-      <Typography variant="body1">{t('pages.activity.summary', { blockName: 'Alkemio' })}</Typography>
-      <SectionSpacer />
-      <Activities items={summary} asList={false} />
-    </Section>
+    <DashboardActivitySection
+      headerText={t('pages.activity.title', { blockName: 'All' })}
+      bodyText={t('pages.activity.summary', { blockName: 'Alkemio' })}
+      activities={summary}
+    />
   );
 };
 
-export default QuickStatsSection;
+export default AlkemioActivitySection;

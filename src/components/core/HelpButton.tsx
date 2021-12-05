@@ -20,7 +20,7 @@ export const HelpButton: FC<HelpButtonProps> = ({ helpText }) => {
   const styles = useStyles();
   return (
     <Tooltip title={helpText} arrow placement="right">
-      <Help color="primary" className={styles.icon} fontSize="small" />
+      <Help color="primary" className={styles.icon} />
     </Tooltip>
   );
 };
