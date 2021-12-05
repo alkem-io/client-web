@@ -232,7 +232,7 @@
   "components": {
     "tags-component": {
       "more": "+{{count}} more",
-      "no-tags": "No tags available"
+      "no-tags": "The {{name}} has not been tagged yet."
     },
     "remove-modal": {
       "title": "Confirm remove"

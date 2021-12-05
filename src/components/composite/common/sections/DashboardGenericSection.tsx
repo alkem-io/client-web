@@ -3,16 +3,18 @@ import Section, { SectionSpacer } from '../../../core/Section/Section';
 import SectionHeader from '../../../core/Section/SectionHeader';
 import SectionSubHeader from '../../../core/Section/SectionSubheader';
 
-interface DashboardBannerSectionProps {
+export interface DashboardGenericSectionProps {
   bannerUrl?: string;
   headerText?: string;
+  helpText?: string;
   primaryAction?: JSX.Element;
   subHeaderText?: string;
 }
 
-const DashboardBannerSection: FC<DashboardBannerSectionProps> = ({
+const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   bannerUrl,
   headerText,
+  helpText,
   primaryAction,
   subHeaderText,
   children,
@@ -21,7 +23,9 @@ const DashboardBannerSection: FC<DashboardBannerSectionProps> = ({
     <Section bannerUrl={bannerUrl}>
       {headerText && (
         <>
-          <SectionHeader text={headerText}>{primaryAction && primaryAction}</SectionHeader>
+          <SectionHeader text={headerText} helpText={helpText}>
+            {primaryAction}
+          </SectionHeader>
           <SectionSpacer />
         </>
       )}
@@ -36,4 +40,4 @@ const DashboardBannerSection: FC<DashboardBannerSectionProps> = ({
   );
 };
 
-export default DashboardBannerSection;
+export default DashboardGenericSection;

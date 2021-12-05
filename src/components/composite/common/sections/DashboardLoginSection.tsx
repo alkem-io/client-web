@@ -12,7 +12,7 @@ interface LoginSectionProps {
 const DashboardLoginSection: FC<LoginSectionProps> = ({ infomationText, actionText }) => {
   const { isAuthenticated } = useAuthenticationContext();
 
-  return isAuthenticated ? (
+  return !isAuthenticated ? (
     <Section>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="body1">{infomationText}</Typography>

@@ -1,18 +1,13 @@
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Icon from '../../components/core/Icon';
-import { useUpdateNavigation } from '../../hooks';
-import EcoversesSection from './EcoversesSection';
-import WelcomeSection from './WelcomeSection';
-import AlkemioActivitySection from './AlkemioActivitySection';
-import LoginSection from './LoginSection';
 import { Box, Grid } from '@mui/material';
+import React, { useMemo } from 'react';
+import { SectionSpacer } from '../../components/core/Section/Section';
+import { useUpdateNavigation } from '../../hooks';
+import AlkemioActivitySection from './AlkemioActivitySection';
+import EcoversesSection from './EcoversesSection';
+import LoginSection from './LoginSection';
+import WelcomeSection from './WelcomeSection';
 
 export const HomePage = () => {
-  const { t } = useTranslation();
-
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
 
@@ -22,19 +17,16 @@ export const HomePage = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <WelcomeSection />
-          <Box padding={1} />
+          <SectionSpacer />
           <LoginSection />
+          <SectionSpacer />
         </Grid>
         <Grid item xs={12} md={6}>
           <AlkemioActivitySection />
+          <SectionSpacer />
+          <EcoversesSection />
         </Grid>
       </Grid>
-      <Section avatar={<Icon component={Globe} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.home.sections.ecoverse.header')} />
-        <SubHeader text={t('pages.home.sections.ecoverse.subheader')} />
-        <Body text={t('pages.home.sections.ecoverse.body')} />
-      </Section>
-      <EcoversesSection />
     </>
   );
 };

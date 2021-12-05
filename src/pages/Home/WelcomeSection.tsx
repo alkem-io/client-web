@@ -1,7 +1,7 @@
 import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardBannerSection from '../../components/composite/common/sections/DashboardWelcomeSection';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { useConfig } from '../../hooks';
 
 const WelcomeSection = () => {
@@ -11,7 +11,7 @@ const WelcomeSection = () => {
   const banner = './alkemio-banner.png';
 
   return (
-    <DashboardBannerSection
+    <DashboardGenericSection
       bannerUrl={banner}
       headerText={t('pages.home.sections.welcome.header')}
       subHeaderText={t('pages.home.sections.welcome.subheader')}
@@ -29,7 +29,7 @@ const WelcomeSection = () => {
       }
     >
       <Typography variant="body1">{t('pages.home.sections.welcome.body')}</Typography>
-    </DashboardBannerSection>
+    </DashboardGenericSection>
   );
 };
 

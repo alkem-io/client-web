@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme =>
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       background: theme.palette.neutralMedium.main,
-      height: theme.spacing(8),
+      height: theme.spacing(10),
       maxHeight: '100%',
     },
     entityType: {
@@ -96,11 +96,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
           </Grid>
           <Grid item container>
             <Grid item xs={12}>
-              {loading ? (
-                <Skeleton variant="rectangular" animation="wave" />
-              ) : (
-                <TagsComponent tags={tags} count={2} keepInRow />
-              )}
+              {loading ? <Skeleton variant="rectangular" animation="wave" /> : <TagsComponent tags={tags} count={4} />}
             </Grid>
           </Grid>
         </Grid>

@@ -1,7 +1,7 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import {
-  ContributionCard,
+  ContributionCardV2,
   CONTRIBUTION_CARD_HEIGHT_SPACING,
   CONTRIBUTION_CARD_WIDTH_SPACING,
 } from '../../components/composite/common/cards';
@@ -50,7 +50,18 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
           contributions.map((x, i) => (
             <Grid item key={i}>
               <ContributionDetailsContainer entities={x}>
-                {(entities, state) => <ContributionCard details={entities.details} loading={state.loading} />}
+                {({ details = { name: 'blank', tags: [], url: '' } }, state) => (
+                  <ContributionCardV2
+                    details={{
+                      headerText: details?.name,
+                      labelText: details?.type,
+                      tags: details?.tags,
+                      url: details?.url,
+                      mediaUrl: details?.image,
+                    }}
+                    loading={state.loading}
+                  />
+                )}
               </ContributionDetailsContainer>
             </Grid>
           ))}
