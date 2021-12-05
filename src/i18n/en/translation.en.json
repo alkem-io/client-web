@@ -541,7 +541,8 @@
       }
     },
     "activity": {
-      "title": "{{blockName}} activity",
+      "title": "{{blockName}} Activity",
+      "summary": "A summary of everything that happens on {{blockName}}",
       "ecoverses": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
@@ -557,7 +558,8 @@
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising societies potential. Building a better future, together."
+          "body": "Realising societies potential. Building a better future, together.",
+          "join": "Want to join the community and see more?"
         },
         "ecoverse": {
           "header": "Explore the Challenge Hubs!",
