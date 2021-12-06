@@ -598,6 +598,10 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "dashboard": {
+          "organization": "Facilitating organization",
+          "activity": "Hub statistics"
+        },
         "header": {
           "buttons": {
             "settings": {

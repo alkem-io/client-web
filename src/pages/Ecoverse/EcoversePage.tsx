@@ -10,9 +10,9 @@ import EcoverseTabs from '../../routing/ecoverse/EcoverseTabs';
 import RestrictedRoute, { CredentialForResource } from '../../routing/route.extensions';
 import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
 import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
-import EcoverseDashboardView from '../../views/Ecoverse/EcoverseDashboardView';
 import { PageProps } from '../common';
 import EcoverseCommunityPage from '../Community/EcoverseCommunityPage';
+import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2';
 
 interface EcoversePageProps extends PageProps {
   // tabName?: string;
@@ -35,7 +35,18 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
             {({ tabName, tabNames }) => (
               <TabContext value={tabName}>
                 <TabPanel value={tabNames['dashboard']}>
-                  <EcoverseDashboardView entities={entities} state={state} />
+                  <EcoverseDashboardView2
+                    title={entities?.ecoverse?.displayName}
+                    bannerUrl={entities?.ecoverse?.context?.visual?.banner}
+                    tagline={entities?.ecoverse?.context?.tagline}
+                    vision={entities?.ecoverse?.context?.vision}
+                    organizationNameId={entities?.ecoverse?.host?.nameID}
+                    activity={entities.activity}
+                    challenges={[]}
+                    discussions={[]}
+                    updates={[]}
+                    loading={state.loading}
+                  />
                 </TabPanel>
                 <TabPanel value={tabNames['context']}>
                   <EcoverseContextView entities={entities} state={state} />
