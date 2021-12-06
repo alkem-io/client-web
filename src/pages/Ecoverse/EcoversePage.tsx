@@ -37,7 +37,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                 <TabPanel value={tabNames['dashboard']}>
                   <EcoverseDashboardView entities={entities} state={state} />
                 </TabPanel>
-                <TabPanel value={tabNames['context']}>
+                <TabPanel sx={{ paddingLeft: 0, paddingRight: 0 }} value={tabNames['context']}>
                   <EcoverseContextView entities={entities} state={state} />
                 </TabPanel>
                 <TabPanel value={tabNames['challenges']}>

@@ -862,6 +862,11 @@ export const OpportunityPageFragmentDoc = gql`
     id
     nameID
     displayName
+    tagset {
+      id
+      name
+      tags
+    }
     activity {
       id
       name

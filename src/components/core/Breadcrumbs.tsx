@@ -5,7 +5,6 @@ import { RouterLink } from './RouterLink';
 
 const Root = styled('div')(({ theme }) => ({
   padding: `${theme.spacing(2)} 0`,
-  fontWeight: 'bold',
 }));
 
 interface BreadcrumbProps {

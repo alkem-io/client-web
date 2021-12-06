@@ -2247,7 +2247,7 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The preferences for this user */
   preferences: Array<UserPreference>;
-  /** The profile for this User */
+  /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
 
@@ -2294,10 +2294,10 @@ export type UserPreference = {
   __typename?: 'UserPreference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: UserPreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
   /** Value of the preference */
   value: Scalars['String'];
 };
@@ -6713,6 +6713,7 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       lifecycle?: Maybe<{
         __typename?: 'Lifecycle';
@@ -6778,6 +6779,7 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   lifecycle?: Maybe<{
     __typename?: 'Lifecycle';

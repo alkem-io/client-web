@@ -1,21 +1,15 @@
 import { ApolloError } from '@apollo/client';
-import { Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { makeStyles } from '@mui/styles';
-import { ReactComponent as StopWatch } from 'bootstrap-icons/icons/stopwatch.svg';
-import React, { FC, SyntheticEvent } from 'react';
+import { Link, Typography } from '@mui/material';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Markdown from '../../components/core/Markdown';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
+import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
+import ContextSection from '../../components/composite/sections/ContextSection';
+import LifecycleSection from '../../components/composite/sections/LifecycleSection';
+import { SectionSpacer } from '../../components/core/Section/Section';
+import { Context, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-
-const useStyles = makeStyles(_theme => ({
-  tagline: {
-    fontStyle: 'italic',
-    textAlign: 'center',
-  },
-}));
 
 export interface OpportunityContextViewEntities {
   opportunity: OpportunityPageFragment;
@@ -31,9 +25,7 @@ export interface OpportunityContextViewState {
   error?: ApolloError;
 }
 
-export interface OpportunityContextViewOptions {
-  hideMeme: boolean;
-}
+export interface OpportunityContextViewOptions {}
 
 export interface OpportunityContextViewProps
   extends ViewProps<
@@ -43,89 +35,47 @@ export interface OpportunityContextViewProps
     OpportunityContextViewOptions
   > {}
 
-const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, actions, options }) => {
+const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const styles = useStyles();
 
   const opportunity = entities.opportunity;
-  const { context } = opportunity;
+  const { context, displayName, tagset } = opportunity;
 
-  const { background = '', tagline = '', who = '', impact = '', vision = '' } = context ?? {};
+  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
+  const banner = context?.visual?.banner;
+  const lifecycle = opportunity?.lifecycle;
+
+  const rightPanel = (
+    <>
+      <LifecycleSection lifecycle={lifecycle} />
+      <SectionSpacer />
+      <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
+        <TagsComponent tags={tagset?.tags || []} />
+      </DashboardGenericSection>
+      <SectionSpacer />
+      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
+        {references?.map((l, i) => (
+          <Link key={i} href={l.uri} target="_blank">
+            <Typography>{l.uri}</Typography>
+          </Link>
+        ))}
+      </DashboardGenericSection>
+    </>
+  );
 
   return (
-    <>
-      <Container maxWidth="xl" className={'p-4'}>
-        <Grid container spacing={2}>
-          {tagline && (
-            <Grid item md={12}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SubHeader text={tagline} className={styles.tagline} />
-              </Section>
-            </Grid>
-          )}
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.problem.header')} />
-                <Body>
-                  <Markdown children={background} />
-                </Body>
-              </Section>
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.long-term-vision.header')} icon={<StopWatch />} />
-                <Body>
-                  <Markdown children={vision} />
-                </Body>
-              </Section>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.who.header')} />
-                <Body>
-                  <Markdown children={who} />
-                </Body>
-              </Section>
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Section hideAvatar hideDetails gutters={{ content: true }}>
-                <SectionHeader text={t('pages.opportunity.sections.impact.header')} />
-                <Body>
-                  <Markdown children={impact} />
-                </Body>
-              </Section>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6} />
-            {!options.hideMeme && (
-              <Grid item sm={12} md={6}>
-                <Section hideAvatar hideDetails gutters={{ content: true }}>
-                  <Body>
-                    {entities.meme && (
-                      <div>
-                        <img
-                          src={entities.meme.uri}
-                          alt={entities.meme.description}
-                          onError={(ev: SyntheticEvent<HTMLImageElement, Event>) => {
-                            ev.currentTarget.style.display = 'none';
-                            actions.onMemeError();
-                          }}
-                          height={240}
-                        />
-                      </div>
-                    )}
-                  </Body>
-                </Section>
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
-    </>
+    <ContextLayout rightPanel={rightPanel}>
+      <ContextSection
+        banner={banner}
+        background={background}
+        displayName={displayName}
+        impact={impact}
+        tagline={tagline}
+        vision={vision}
+        who={who}
+      />
+      <SectionSpacer />
+    </ContextLayout>
   );
 };
 export default OpportunityContextView;

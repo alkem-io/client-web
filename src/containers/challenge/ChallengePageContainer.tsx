@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { useChallenge, useUserContext } from '../../hooks';
+import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
@@ -12,6 +12,9 @@ import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 
 export interface ChallengeContainerEntities {
+  ecoverseId: string;
+  ecoverseNameId: string;
+  ecoverseDisplayName: string;
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
   projects: Project[];
@@ -36,6 +39,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { t } = useTranslation();
   const history = useHistory();
   const { user, isAuthenticated } = useUserContext();
+  const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengeProfileQuery({
@@ -103,6 +107,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     <>
       {children(
         {
+          ecoverseId,
+          ecoverseNameId,
+          ecoverseDisplayName: ecoverse?.displayName || '',
           challenge: _challenge?.ecoverse.challenge,
           activity,
           permissions,
@@ -110,7 +117,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isMember: user?.ofChallenge(challengeId) || false,
           projects,
         },
-        { loading: loading || loadingProfile },
+        { loading: loading || loadingProfile || loadingEcoverseContext },
         {}
       )}
     </>

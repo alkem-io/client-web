@@ -1,18 +1,9 @@
-import React, { FC } from 'react';
 import { Container } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-
-const useMainStyles = makeStyles(() => ({
-  main: {
-    flexGrow: 1,
-  },
-}));
+import React, { FC } from 'react';
 
 export const Main: FC = ({ children }) => {
-  const styles = useMainStyles();
-
   return (
-    <Container maxWidth="xl" className={styles.main}>
+    <Container maxWidth="xl" sx={{ flexGrow: 1 }}>
       <>{children}</>
     </Container>
   );

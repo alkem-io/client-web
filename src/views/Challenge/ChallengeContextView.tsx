@@ -1,11 +1,16 @@
+import { Link, Typography } from '@mui/material';
 import React, { FC } from 'react';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import Icon from '../../components/core/Icon';
-import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Markdown from '../../components/core/Markdown';
 import { useTranslation } from 'react-i18next';
-import { Context } from '@apollo/client';
+import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
+import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
+import ContextSection from '../../components/composite/sections/ContextSection';
+import LifecycleSection from '../../components/composite/sections/LifecycleSection';
+import { SectionSpacer } from '../../components/core/Section/Section';
+import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
+import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
+import { Context } from '../../models/graphql-schema';
 
 interface ChallengeContextViewProps {
   entities: ChallengeContainerEntities;
@@ -14,18 +19,57 @@ interface ChallengeContextViewProps {
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const { challenge } = entities;
-  const { context } = challenge || {};
-  const { impact = '', background = '' } = context || ({} as Context);
+  const { challenge, ecoverseId, ecoverseNameId, ecoverseDisplayName } = entities;
+  const { context, tagset, displayName } = challenge || {};
+  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
+  const banner = context?.visual?.banner;
+  const challengeId = challenge?.id || '';
+  const challengeNameId = challenge?.nameID || '';
+  const lifecycle = challenge?.lifecycle;
+
+  const rightPanel = (
+    <>
+      <LifecycleSection lifecycle={lifecycle} />
+      <SectionSpacer />
+      <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
+        <TagsComponent tags={tagset?.tags || []} />
+      </DashboardGenericSection>
+      <SectionSpacer />
+      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
+        {references?.map((l, i) => (
+          <Link key={i} href={l.uri} target="_blank">
+            <Typography>{l.uri}</Typography>
+          </Link>
+        ))}
+      </DashboardGenericSection>
+    </>
+  );
+
   return (
-    <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
-      <SectionHeader text={t('pages.challenge.sections.opportunities.subheader')} />
-      <SubHeader>
-        <Markdown children={background} />
-      </SubHeader>
-      <Body>
-        <Markdown children={impact} />
-      </Body>
-    </Section>
+    <ContextLayout rightPanel={rightPanel}>
+      <ContextSection
+        primaryAction={
+          <ApplicationButtonContainer
+            entities={{
+              ecoverseId,
+              ecoverseNameId,
+              ecoverseName: ecoverseDisplayName,
+              challengeId,
+              challengeName: challenge?.displayName || '',
+              challengeNameId,
+            }}
+          >
+            {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+          </ApplicationButtonContainer>
+        }
+        banner={banner}
+        background={background}
+        displayName={displayName}
+        impact={impact}
+        tagline={tagline}
+        vision={vision}
+        who={who}
+      />
+    </ContextLayout>
   );
 };
