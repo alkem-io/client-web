@@ -796,6 +796,17 @@ export const DiscussionDetailsFragmentDoc = gql`
     }
   }
 `;
+export const DiscussionDetailsNoAuthFragmentDoc = gql`
+  fragment DiscussionDetailsNoAuth on Discussion {
+    id
+    title
+    description
+    createdBy
+    timestamp
+    category
+    commentsCount
+  }
+`;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
     id
@@ -9708,13 +9719,13 @@ export const CommunityDiscussionListDocument = gql`
             myPrivileges
           }
           discussions {
-            ...DiscussionDetails
+            ...DiscussionDetailsNoAuth
           }
         }
       }
     }
   }
-  ${DiscussionDetailsFragmentDoc}
+  ${DiscussionDetailsNoAuthFragmentDoc}
 `;
 
 /**
