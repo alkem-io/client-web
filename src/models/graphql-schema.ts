@@ -2975,6 +2975,15 @@ export type UserMembershipDetailsFragment = {
   >;
 };
 
+export type UpdateUserPreferencesMutationVariables = Exact<{
+  input: UpdateUserPreferenceInput;
+}>;
+
+export type UpdateUserPreferencesMutation = {
+  __typename?: 'Mutation';
+  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
+};
+
 export type AssignUserToCommunityMutationVariables = Exact<{
   input: AssignCommunityMemberInput;
 }>;
@@ -6077,6 +6086,32 @@ export type UserProfileApplicationsQuery = {
         opportunityID?: Maybe<string>;
       }>
     >;
+  };
+};
+
+export type UserNotificationsPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserNotificationsPreferencesQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    preferences: Array<{
+      __typename?: 'UserPreference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'UserPreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: UserPreferenceType;
+        valueType: UserPreferenceValueType;
+      };
+    }>;
   };
 };
 

@@ -879,6 +879,12 @@
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
+    },
+    "user-notfications-settings": {
+      "email-notifications": {
+        "title": "Email notifications",
+        "subheader": "Receive email notifications for the following events:"
+      }
     }
   },
   "operations": {

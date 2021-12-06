@@ -1,0 +1,17 @@
+query userNotificationsPreferences($userId: UUID_NAMEID_EMAIL!) {
+  user(ID: $userId) {
+    id
+    preferences {
+      id
+      definition {
+        id
+        description
+        displayName
+        group
+        type
+        valueType
+      }
+      value
+    }
+  }
+}
