@@ -1,17 +1,17 @@
 import { Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
+import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
-  refetchOpportunityActorGroupsQuery,
+  refetchOpportunityAspectsQuery,
   useCreateAspectMutation,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../../../hooks/generated/graphql';
-import { makeStyles } from '@mui/styles';
 import { Aspect } from '../../../../models/graphql-schema';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Button from '../../../core/Button';
@@ -79,14 +79,14 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
   const [createAspect] = useCreateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
