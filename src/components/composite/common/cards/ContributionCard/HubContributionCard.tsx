@@ -7,9 +7,9 @@ export interface HubContributionCardProps extends ContributionCardV2Props {
   activities: ActivityItem[];
 }
 
-const HubContributionCard: FC<HubContributionCardProps> = ({ details, loading, activities, children }) => {
+const HubContributionCard: FC<HubContributionCardProps> = ({ details, classes, loading, activities, children }) => {
   return (
-    <ContributionCardV2 details={details} loading={loading}>
+    <ContributionCardV2 details={details} classes={classes} loading={loading}>
       <SectionSpacer double />
       <Activities items={activities} />
       <SectionSpacer />

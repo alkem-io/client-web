@@ -1,6 +1,7 @@
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
@@ -24,6 +25,9 @@ export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;
+  classes?: {
+    label?: string;
+  };
   loading: boolean;
 }
 
@@ -69,7 +73,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   })
 );
 
-const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading, children }) => {
+const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading, classes, children }) => {
   const { headerText = '', labelText, tags = [], mediaUrl, mediaSize = 'medium', url = '', tagsFor } = details || {};
 
   const styles = useStyles({ mediaSize });
@@ -93,7 +97,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading, chi
               {headerText}
             </Typography>
             {labelText && (
-              <Box className={styles.entityTypeWrapper}>
+              <Box className={clsx(styles.entityTypeWrapper, classes?.label)}>
                 <Typography variant="caption" className={styles.entityType}>
                   {labelText}
                 </Typography>

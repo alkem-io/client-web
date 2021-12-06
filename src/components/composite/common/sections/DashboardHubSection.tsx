@@ -1,5 +1,7 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import makeStyles from '@mui/styles/makeStyles';
+import clsx from 'clsx';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
 import { Ecoverse, Nvp } from '../../../../models/graphql-schema';
@@ -10,7 +12,7 @@ import Section, { DashboardGenericSectionProps } from './DashboardGenericSection
 
 interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   entities: {
-    hubs: (Pick<Ecoverse, 'displayName' | 'context' | 'tagset' | 'nameID'> & {
+    hubs: (Pick<Ecoverse, 'id' | 'displayName' | 'context' | 'tagset' | 'nameID' | 'authorization'> & {
       activity?: Pick<Nvp, 'name' | 'value'>[];
     })[];
     user?: UserMetadata;
@@ -20,16 +22,41 @@ interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   };
 }
 
+const useStyles = makeStyles(theme => ({
+  memberTag: {
+    background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
+  },
+}));
+
 const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, children, ...props }) => {
-  const { hubs } = entities;
+  const { hubs, user } = entities;
   const { t } = useTranslation();
+  const styles = useStyles();
+  const isMember = useCallback(
+    (hubId: string) => {
+      return user?.ofEcoverse(hubId) || false;
+    },
+    [user]
+  );
+  const getCardLabel = useCallback(
+    (hubId: string, isHubAnonymous: boolean) => {
+      const isUserMember = isMember(hubId);
+      if (isUserMember) {
+        return t('components.card.member');
+      } else if (!isHubAnonymous) {
+        return t('components.card.private');
+      } else {
+        return undefined;
+      }
+    },
+    [isMember]
+  );
 
   return (
     <Section {...props}>
       {children}
       <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
         {hubs.map((ecoverse, i) => {
-          // const anonymousReadAccess = ecoverse?.authorization?.anonymousReadAccess;
           const activity = ecoverse.activity || [];
 
           return (
@@ -39,9 +66,13 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
                   headerText: ecoverse.displayName,
                   descriptionText: ecoverse?.context?.tagline,
                   mediaUrl: ecoverse?.context?.visual?.background,
+                  labelText: getCardLabel(ecoverse.id, ecoverse.authorization?.anonymousReadAccess || false),
                   tags: ecoverse.tagset?.tags || [],
                   tagsFor: 'hub',
                   url: buildEcoverseUrl(ecoverse.nameID),
+                }}
+                classes={{
+                  label: clsx(isMember(ecoverse.id) && styles.memberTag),
                 }}
                 loading={false}
                 activities={[
