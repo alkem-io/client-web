@@ -13,15 +13,18 @@ const DashboardLoginSection: FC<LoginSectionProps> = ({ infomationText, actionTe
   const { isAuthenticated } = useAuthenticationContext();
 
   return !isAuthenticated ? (
-    <Section>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="body1">{infomationText}</Typography>
-        <SectionSpacer />
-        <Button LinkComponent={'a'} href={AUTH_LOGIN_PATH} sx={{ flexShrink: 0 }}>
-          {actionText}
-        </Button>
-      </Box>
-    </Section>
+    <>
+      <SectionSpacer />
+      <Section>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="body1">{infomationText}</Typography>
+          <SectionSpacer />
+          <Button LinkComponent={'a'} href={AUTH_LOGIN_PATH} sx={{ flexShrink: 0 }}>
+            {actionText}
+          </Button>
+        </Box>
+      </Section>
+    </>
   ) : (
     <></>
   );

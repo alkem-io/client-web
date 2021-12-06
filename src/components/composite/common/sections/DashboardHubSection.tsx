@@ -33,9 +33,8 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
           const activity = ecoverse.activity || [];
 
           return (
-            <Grid item flexGrow={1} flexBasis={'50%'}>
+            <Grid item flexGrow={1} flexBasis={'50%'} key={i}>
               <HubContributionCard
-                key={i}
                 details={{
                   headerText: ecoverse.displayName,
                   descriptionText: ecoverse?.context?.tagline,

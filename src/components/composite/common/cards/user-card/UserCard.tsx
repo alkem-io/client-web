@@ -118,7 +118,7 @@ const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel }) => {
 
   return (
     <Grid container alignItems={'center'} className={styles.infoRowHeight}>
-      <Icon fontSize="inherit" className={styles.infoRowHeight} />
+      <Icon className={styles.infoRowHeight} />
       <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel}>
         {text}
       </Typography>

@@ -9,14 +9,16 @@ export interface DashboardGenericSectionProps {
   helpText?: string;
   primaryAction?: JSX.Element;
   subHeaderText?: string;
+  secondaryAction?: JSX.Element;
 }
 
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   bannerUrl,
   headerText,
+  subHeaderText,
   helpText,
   primaryAction,
-  subHeaderText,
+  secondaryAction,
   children,
 }) => {
   return (
@@ -36,6 +38,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
         </>
       )}
       {children}
+      {secondaryAction}
     </Section>
   );
 };

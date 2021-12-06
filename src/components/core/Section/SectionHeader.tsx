@@ -12,14 +12,16 @@ interface SectionHeaderProps {
 const SectionHeader: FC<SectionHeaderProps> = ({ text, helpText, children }) => {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Typography
-        variant="h4"
-        fontWeight={600}
-        dangerouslySetInnerHTML={{
-          __html: text,
-        }}
-      />
-      {helpText && <HelpButton helpText={helpText} />}
+      <Box display="flex" alignItems="center">
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          dangerouslySetInnerHTML={{
+            __html: text,
+          }}
+        />
+        {helpText && <HelpButton helpText={helpText} />}
+      </Box>
       <Spacer />
       {children}
     </Box>

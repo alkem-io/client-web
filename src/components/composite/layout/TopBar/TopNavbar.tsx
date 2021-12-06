@@ -62,7 +62,7 @@ const TopNavbar = () => {
       disabled: true,
     },
     {
-      title: 'contributions',
+      title: 'contributors',
       url: '/',
       disabled: true,
     },
