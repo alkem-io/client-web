@@ -7,8 +7,8 @@ import { useUserContext } from '../../hooks';
 
 export type SimpleChallenge = {
   id: string;
-  ecoverseId: string
-}
+  ecoverseId: string;
+};
 
 export interface ChallengesOverviewContainerEntities {
   userChallenges: SimpleChallenge[];
@@ -29,26 +29,31 @@ export interface ChallengePageContainerProps
     ChallengesOverviewContainerState
   > {}
 
-export const ChallengesOverviewPageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
+export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
   const { data, loading, error } = useChallengesOverviewPageQuery({
     variables: {
       membershipData: {
-        userID: user?.id || ''
-      }
+        userID: user?.id || '',
+      },
     },
     skip: !user,
   });
   const ecoverses = data?.membershipUser.ecoverses ?? [];
-  const userChallenges: SimpleChallenge[] = ecoverses.flatMap(x => x?.challenges.map(y => ({
-    id: y.id,
-    ecoverseId: x.ecoverseID,
-  })));
+  const userChallenges: SimpleChallenge[] = ecoverses.flatMap(x =>
+    x?.challenges.map(y => ({
+      id: y.id,
+      ecoverseId: x.ecoverseID,
+    }))
+  );
 
-  const userHubs: SimpleEcoverseFragment[] =
-    ecoverses.map(({ ecoverseID, displayName, nameID }) => ({ ecoverseID, displayName, nameID }));
+  const userHubs: SimpleEcoverseFragment[] = ecoverses.map(({ ecoverseID, displayName, nameID }) => ({
+    ecoverseID,
+    displayName,
+    nameID,
+  }));
 
   return <>{children({ userChallenges, userHubs }, { loading, error }, {})}</>;
 };

@@ -21,12 +21,12 @@ interface ChallengeOverview {
   ecoverseId: string;
 }
 
-export interface ChallengesOverviewViewProps {
+export interface ChallengeExplorerViewProps {
   myChallenges: ChallengeOverview[];
   hubs: HubOverview[];
 }
 
-export const ChallengesOverviewView: FC<ChallengesOverviewViewProps> = ({ myChallenges, hubs }) => {
+export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChallenges, hubs }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
@@ -35,9 +35,9 @@ export const ChallengesOverviewView: FC<ChallengesOverviewViewProps> = ({ myChal
       <Grid container rowSpacing={4}>
         <Grid item xs={12}>
           <Accordion
-            title={t('pages.challenges-overview.my.title', { count: myChallenges.length })}
-            subtitle={t('pages.challenges-overview.my.subtitle')}
-            helpText={t('pages.challenges-overview.my.help-text')}
+            title={t('pages.challenge-explorer.my.title', { count: myChallenges.length })}
+            subtitle={t('pages.challenge-explorer.my.subtitle')}
+            helpText={t('pages.challenge-explorer.my.help-text')}
             ariaKey="my"
           >
             <CardContainer>
@@ -78,12 +78,12 @@ export const ChallengesOverviewView: FC<ChallengesOverviewViewProps> = ({ myChal
                 return (
                   <Grid item xs={12}>
                     <Accordion
-                      title={t('pages.challenges-overview.hubs.title', {
+                      title={t('pages.challenge-explorer.hubs.title', {
                         count: cEntities.challenges.length,
                         name: hubName,
                       })}
-                      subtitle={t('pages.challenges-overview.hubs.subtitle', { name: hubName })}
-                      helpText={t('pages.challenges-overview.hubs.help-text')}
+                      subtitle={t('pages.challenge-explorer.hubs.subtitle', { name: hubName })}
+                      helpText={t('pages.challenge-explorer.hubs.help-text')}
                       ariaKey={hubName}
                     >
                       <CardContainer>

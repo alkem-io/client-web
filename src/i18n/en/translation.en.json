@@ -529,7 +529,7 @@
     }
   },
   "pages": {
-    "challenges-overview": {
+    "challenge-explorer": {
       "filter": {
         "title": "Search through challenges",
         "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
