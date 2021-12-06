@@ -800,6 +800,17 @@ export const DiscussionDetailsFragmentDoc = gql`
     }
   }
 `;
+export const DiscussionDetailsNoAuthFragmentDoc = gql`
+  fragment DiscussionDetailsNoAuth on Discussion {
+    id
+    title
+    description
+    createdBy
+    timestamp
+    category
+    commentsCount
+  }
+`;
 export const EcoverseDetailsFragmentDoc = gql`
   fragment EcoverseDetails on Ecoverse {
     id
@@ -901,6 +912,8 @@ export const OpportunityPageFragmentDoc = gql`
       aspects {
         id
         title
+        explanation
+        framing
       }
       visual {
         id
@@ -7167,7 +7180,9 @@ export const OpportunityActorGroupsDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         context {
+          id
           ecosystemModel {
             id
             actorGroups {
@@ -7244,8 +7259,11 @@ export const OpportunityAspectsDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         context {
+          id
           aspects {
+            id
             title
             framing
             explanation
@@ -9776,13 +9794,13 @@ export const CommunityDiscussionListDocument = gql`
             myPrivileges
           }
           discussions {
-            ...DiscussionDetails
+            ...DiscussionDetailsNoAuth
           }
         }
       }
     }
   }
-  ${DiscussionDetailsFragmentDoc}
+  ${DiscussionDetailsNoAuthFragmentDoc}
 `;
 
 /**

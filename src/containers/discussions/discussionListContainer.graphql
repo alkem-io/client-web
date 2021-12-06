@@ -11,6 +11,16 @@ fragment DiscussionDetails on Discussion {
   }
 }
 
+fragment DiscussionDetailsNoAuth on Discussion {
+  id
+  title
+  description
+  createdBy
+  timestamp
+  category
+  commentsCount
+}
+
 query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
   ecoverse(ID: $ecoverseId) {
     id
@@ -43,7 +53,7 @@ query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
           myPrivileges
         }
         discussions {
-          ...DiscussionDetails
+          ...DiscussionDetailsNoAuth
         }
       }
     }
