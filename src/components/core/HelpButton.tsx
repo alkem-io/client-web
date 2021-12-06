@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 
 interface HelpButtonProps {
   helpText: string;
+  fontSize?: 'inherit' | 'large' | 'medium' | 'small';
 }
 
 const useStyles = makeStyles(theme =>
@@ -16,11 +17,11 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const HelpButton: FC<HelpButtonProps> = ({ helpText }) => {
+export const HelpButton: FC<HelpButtonProps> = ({ helpText, fontSize = 'small' }) => {
   const styles = useStyles();
   return (
     <Tooltip title={helpText} arrow placement="right">
-      <Help color="primary" className={styles.icon} fontSize="small" />
+      <Help color="primary" className={styles.icon} fontSize={fontSize} />
     </Tooltip>
   );
 };
