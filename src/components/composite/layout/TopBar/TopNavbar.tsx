@@ -46,7 +46,7 @@ type MenuItem = {
 
 const TopNavbar = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { user } = useUserContext();
+  const { user, isAuthenticated } = useUserContext();
 
   const menuItems: MenuItem[] = [
     {
@@ -55,8 +55,9 @@ const TopNavbar = () => {
     },
     {
       title: 'challenges',
-      url: '/',
-      disabled: true,
+      url: '/challenges',
+      // not auth`d user view is going to be handled by https://github.com/alkem-io/client-web/issues/1424
+      disabled: !isAuthenticated,
     },
     {
       title: 'contributions',

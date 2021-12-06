@@ -44,7 +44,6 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
               {...routesObj['organizations']}
             />
             <NavigationTab
-              disabled
               icon={<SettingsOutlined />}
               label={t('common.notifications')}
               component={RouterLink}

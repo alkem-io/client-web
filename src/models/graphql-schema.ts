@@ -2413,15 +2413,11 @@ export type ChallengeCardFragment = {
   id: string;
   displayName: string;
   nameID: string;
-  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   context?: Maybe<{
     __typename?: 'Context';
     id: string;
     tagline?: Maybe<string>;
-    background?: Maybe<string>;
-    vision?: Maybe<string>;
-    impact?: Maybe<string>;
-    who?: Maybe<string>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -2977,6 +2973,15 @@ export type UserMembershipDetailsFragment = {
       opportunityID?: Maybe<string>;
     }>
   >;
+};
+
+export type UpdateUserPreferencesMutationVariables = Exact<{
+  input: UpdateUserPreferenceInput;
+}>;
+
+export type UpdateUserPreferencesMutation = {
+  __typename?: 'Mutation';
+  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -3939,15 +3944,11 @@ export type ChallengeCardQuery = {
       id: string;
       displayName: string;
       nameID: string;
-      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
         tagline?: Maybe<string>;
-        background?: Maybe<string>;
-        vision?: Maybe<string>;
-        impact?: Maybe<string>;
-        who?: Maybe<string>;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -3970,15 +3971,11 @@ export type ChallengeCardsQuery = {
         id: string;
         displayName: string;
         nameID: string;
-        activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+        activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
         context?: Maybe<{
           __typename?: 'Context';
           id: string;
           tagline?: Maybe<string>;
-          background?: Maybe<string>;
-          vision?: Maybe<string>;
-          impact?: Maybe<string>;
-          who?: Maybe<string>;
           visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
         }>;
         tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -6092,6 +6089,32 @@ export type UserProfileApplicationsQuery = {
   };
 };
 
+export type UserNotificationsPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserNotificationsPreferencesQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    preferences: Array<{
+      __typename?: 'UserPreference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'UserPreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: UserPreferenceType;
+        valueType: UserPreferenceValueType;
+      };
+    }>;
+  };
+};
+
 export type UserQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -6384,6 +6407,32 @@ export type OpportunityContributionDetailsQuery = {
       }>;
     };
   };
+};
+
+export type ChallengesOverviewPageQueryVariables = Exact<{
+  membershipData: MembershipUserInput;
+}>;
+
+export type ChallengesOverviewPageQuery = {
+  __typename?: 'Query';
+  membershipUser: {
+    __typename?: 'UserMembership';
+    ecoverses: Array<{
+      __typename?: 'MembershipUserResultEntryEcoverse';
+      id: string;
+      ecoverseID: string;
+      nameID: string;
+      displayName: string;
+      challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string }>;
+    }>;
+  };
+};
+
+export type SimpleEcoverseFragment = {
+  __typename?: 'MembershipUserResultEntryEcoverse';
+  ecoverseID: string;
+  nameID: string;
+  displayName: string;
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{

@@ -3,16 +3,13 @@ fragment ChallengeCard on Challenge {
   displayName
   nameID
   activity {
+    id
     name
     value
   }
   context {
     id
     tagline
-    background
-    vision
-    impact
-    who
     visual {
       id
       background
