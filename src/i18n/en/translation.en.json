@@ -535,14 +535,12 @@
         "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
       },
       "my": {
-        "title": "My challenge ({{count}})",
-        "title_plural": "My challenges ({{count}})",
+        "title": "My challenges ({{count}})",
         "subtitle": "This section shows you the challenges you are participating in.",
         "help-text": "Shows different organizations you are apart of, including the role you have."
       },
       "hubs": {
-        "title": "{{name}} challenge ({{count}})",
-        "title_plural": "{{name}} challenges ({{count}})",
+        "title": "{{name}} challenges ({{count}})",
         "subtitle": "This section shows you the challenges specific for the {{name}} hub.",
         "help-text": "Shows different organizations you are apart of, including the role you have."
       }
