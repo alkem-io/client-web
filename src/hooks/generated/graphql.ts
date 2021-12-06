@@ -908,6 +908,8 @@ export const OpportunityPageFragmentDoc = gql`
       aspects {
         id
         title
+        explanation
+        framing
       }
       visual {
         id
@@ -7174,7 +7176,9 @@ export const OpportunityActorGroupsDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         context {
+          id
           ecosystemModel {
             id
             actorGroups {
@@ -7251,8 +7255,11 @@ export const OpportunityAspectsDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       opportunity(ID: $opportunityId) {
+        id
         context {
+          id
           aspects {
+            id
             title
             framing
             explanation

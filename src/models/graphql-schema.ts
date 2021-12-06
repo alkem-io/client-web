@@ -2247,7 +2247,7 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The preferences for this user */
   preferences: Array<UserPreference>;
-  /** The profile for this User */
+  /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
 
@@ -5471,8 +5471,10 @@ export type OpportunityActorGroupsQuery = {
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
+      id: string;
       context?: Maybe<{
         __typename?: 'Context';
+        id: string;
         ecosystemModel?: Maybe<{
           __typename?: 'EcosystemModel';
           id: string;
@@ -5512,9 +5514,13 @@ export type OpportunityAspectsQuery = {
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
+      id: string;
       context?: Maybe<{
         __typename?: 'Context';
-        aspects?: Maybe<Array<{ __typename?: 'Aspect'; title: string; framing: string; explanation: string }>>;
+        id: string;
+        aspects?: Maybe<
+          Array<{ __typename?: 'Aspect'; id: string; title: string; framing: string; explanation: string }>
+        >;
       }>;
     };
   };
@@ -6749,7 +6755,9 @@ export type OpportunityPageQuery = {
         impact?: Maybe<string>;
         vision?: Maybe<string>;
         references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
-        aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string }>>;
+        aspects?: Maybe<
+          Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>
+        >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; banner: string }>;
         ecosystemModel?: Maybe<{
           __typename?: 'EcosystemModel';
@@ -6814,7 +6822,7 @@ export type OpportunityPageFragment = {
     impact?: Maybe<string>;
     vision?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
-    aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string }>>;
+    aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; banner: string }>;
     ecosystemModel?: Maybe<{
       __typename?: 'EcosystemModel';
