@@ -10,6 +10,8 @@ import { Project } from '../../models/Project';
 import { EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { Discussion } from '../../models/discussion/discussion';
 
 export interface EcoverseContainerEntities {
   ecoverse?: EcoversePageFragment;
@@ -23,6 +25,7 @@ export interface EcoverseContainerEntities {
   isAuthenticated: boolean;
   isMember: boolean;
   isGlobalAdmin: boolean;
+  discussionList: Discussion[];
 }
 
 export interface EcoverseContainerActions {}
@@ -39,11 +42,12 @@ export interface EcoversePageContainerProps
 export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { ecoverseId, ecoverseNameId, loading } = useEcoverse();
-  const { data: _ecoverse, loading: loadingEcoverse } = useEcoversePageQuery({
+  const { ecoverseId, ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
+  const { data: _ecoverse, loading: loadingEcoverseQuery } = useEcoversePageQuery({
     variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
   });
+  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const { user, isAuthenticated } = useUserContext();
 
@@ -120,6 +124,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
       {children(
         {
           ecoverse: _ecoverse?.ecoverse,
+          discussionList,
           isPrivate,
           hideChallenges,
           permissions,
@@ -130,7 +135,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           isGlobalAdmin,
         },
         {
-          loading: loading || loadingEcoverse,
+          loading: loadingEcoverseQuery || loadingEcoverse || loadingDiscussions,
           loadingProjects,
         },
         {}

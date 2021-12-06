@@ -6,6 +6,8 @@ import Markdown from '../../components/core/Markdown';
 import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ActivityView from '../Activity/ActivityView';
+import { Discussion } from '../../models/discussion/discussion';
+import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
@@ -15,7 +17,7 @@ export interface EcoverseDashboardView2Props {
   organizationNameId?: string;
   activity: ActivityItem[];
   updates: any[];
-  discussions: any[];
+  discussions: Discussion[];
   organization?: any;
   challenges: any[];
   community?: any;
@@ -29,6 +31,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   vision = '',
   organizationNameId,
   activity,
+  discussions,
   loading,
 }) => {
   const { t } = useTranslation();
@@ -53,8 +56,22 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
               <ActivityView activity={activity} loading={loading} />
             </DashboardGenericSection>
           </Grid>
-          <Grid item xs={12}></Grid>
-          <Grid item xs={12}></Grid>
+          <Grid item xs={12}>
+            <DashboardGenericSection
+              headerText={t('pages.ecoverse.sections.dashboard.updates')}
+            ></DashboardGenericSection>
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardGenericSection
+              headerText={t('pages.ecoverse.sections.dashboard.discussions')}
+              navText={t('buttons.see-all')}
+              navLink={'community/discussions'}
+            >
+              {discussions.map((item, index) => (
+                <DiscussionOverview key={index} discussion={item} />
+              ))}
+            </DashboardGenericSection>
+          </Grid>
         </Grid>
         <Grid container item md={6} xs={12} spacing={2}>
           <Grid item xs={12}>

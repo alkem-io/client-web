@@ -23,6 +23,7 @@
     "back": "Back",
     "edit": "Edit",
     "see-more": "See more",
+    "see-all": "See all",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -616,7 +617,9 @@
       "sections": {
         "dashboard": {
           "organization": "Facilitating organization",
-          "activity": "Hub statistics"
+          "activity": "Hub statistics",
+          "updates": "Updates",
+          "discussions": "Discussions"
         },
         "header": {
           "buttons": {
