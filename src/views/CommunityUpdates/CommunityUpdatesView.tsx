@@ -255,13 +255,13 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 {displayCardActions && (
                   <CardActions disableSpacing>
                     {canCopy && (
-                      <Tooltip title="Copy content to clipboard" placement="right">
-                        <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                        <Tooltip title="Copy content to clipboard" placement="right">
                           <IconButton size="large">
                             <FileCopyIcon />
                           </IconButton>
-                        </CopyToClipboard>
-                      </Tooltip>
+                        </Tooltip>
+                      </CopyToClipboard>
                     )}
                     {canRemove && (
                       <Tooltip title="Remove community update" placement="right">
