@@ -1,12 +1,12 @@
 import { Link } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';
 import GitHub from '../../../core/icons/GitHub';
 import LinkedIn from '../../../core/icons/LinkedIn';
 import Twitter from '../../../core/icons/Twitter';
-
+import * as yup from 'yup';
 interface ContactDetailsProps {
   title: string;
   items?: SocialLinkItem[];
@@ -47,26 +47,33 @@ export interface SocialLinkItem {
   url: string;
 }
 
+const schema = yup.string().url();
+
 export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
+  const filteredSortedItems = useMemo(
+    () =>
+      items
+        ?.filter(i => schema.isValidSync(i.url) && i.url)
+        .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
+    [items]
+  );
   return (
     <>
       <Typography color="primary" weight="boldLight">
         {title}
       </Typography>
 
-      {items
-        ?.sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type])
-        .map((item, i) => (
-          <Link
-            key={i}
-            href={getSocialLinkUrl(item.type, item.url)}
-            rel="noreferrer"
-            tabIndex={0}
-            aria-label="social-link"
-          >
-            {getSocialIcon(item.type)}
-          </Link>
-        ))}
+      {filteredSortedItems.map((item, i) => (
+        <Link
+          key={i}
+          href={getSocialLinkUrl(item.type, item.url)}
+          rel="noreferrer"
+          tabIndex={0}
+          aria-label="social-link"
+        >
+          {getSocialIcon(item.type)}
+        </Link>
+      ))}
     </>
   );
 };
