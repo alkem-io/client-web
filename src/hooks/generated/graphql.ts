@@ -938,6 +938,54 @@ export const OpportunityPageFragmentDoc = gql`
     }
   }
 `;
+export const UpdateUserPreferencesDocument = gql`
+  mutation updateUserPreferences($input: UpdateUserPreferenceInput!) {
+    updateUserPreference(userPreferenceData: $input) {
+      id
+      value
+    }
+  }
+`;
+export type UpdateUserPreferencesMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateUserPreferencesMutation,
+  SchemaTypes.UpdateUserPreferencesMutationVariables
+>;
+
+/**
+ * __useUpdateUserPreferencesMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserPreferencesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserPreferencesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserPreferencesMutation, { data, loading, error }] = useUpdateUserPreferencesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserPreferencesMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateUserPreferencesMutation,
+    SchemaTypes.UpdateUserPreferencesMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateUserPreferencesMutation,
+    SchemaTypes.UpdateUserPreferencesMutationVariables
+  >(UpdateUserPreferencesDocument, options);
+}
+export type UpdateUserPreferencesMutationHookResult = ReturnType<typeof useUpdateUserPreferencesMutation>;
+export type UpdateUserPreferencesMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserPreferencesMutation>;
+export type UpdateUserPreferencesMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateUserPreferencesMutation,
+  SchemaTypes.UpdateUserPreferencesMutationVariables
+>;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($input: AssignCommunityMemberInput!) {
     assignUserToCommunity(membershipData: $input) {
@@ -8745,6 +8793,79 @@ export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserProfileApplicationsQuery(variables?: SchemaTypes.UserProfileApplicationsQueryVariables) {
   return { query: UserProfileApplicationsDocument, variables: variables };
+}
+export const UserNotificationsPreferencesDocument = gql`
+  query userNotificationsPreferences($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
+      id
+      preferences {
+        id
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+        value
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserNotificationsPreferencesQuery__
+ *
+ * To run a query within a React component, call `useUserNotificationsPreferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserNotificationsPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserNotificationsPreferencesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserNotificationsPreferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserNotificationsPreferencesQuery,
+    SchemaTypes.UserNotificationsPreferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UserNotificationsPreferencesQuery,
+    SchemaTypes.UserNotificationsPreferencesQueryVariables
+  >(UserNotificationsPreferencesDocument, options);
+}
+export function useUserNotificationsPreferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserNotificationsPreferencesQuery,
+    SchemaTypes.UserNotificationsPreferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserNotificationsPreferencesQuery,
+    SchemaTypes.UserNotificationsPreferencesQueryVariables
+  >(UserNotificationsPreferencesDocument, options);
+}
+export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
+export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
+  typeof useUserNotificationsPreferencesLazyQuery
+>;
+export type UserNotificationsPreferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserNotificationsPreferencesQuery,
+  SchemaTypes.UserNotificationsPreferencesQueryVariables
+>;
+export function refetchUserNotificationsPreferencesQuery(
+  variables?: SchemaTypes.UserNotificationsPreferencesQueryVariables
+) {
+  return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
 export const UserDocument = gql`
   query user($id: UUID_NAMEID_EMAIL!) {
