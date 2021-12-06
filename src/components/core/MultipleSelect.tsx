@@ -154,6 +154,7 @@ const useMultipleSelectStyles = makeStyles(theme => ({
     '&::placeholder': {
       fontSize: 20,
     },
+    backgroundColor: theme.palette.background.paper,
   },
   disabled: {
     color: '#616161',
