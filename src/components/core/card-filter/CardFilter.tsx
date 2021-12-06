@@ -46,7 +46,7 @@ const CardFilter = <T extends RequiredFields>({
   }
 
   if (!inputFieldEnabled) {
-    return <Grid container>{children(filteredData)}</Grid>;
+    return <>{children(filteredData)}</>;
   }
 
   return (
