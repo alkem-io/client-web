@@ -534,6 +534,22 @@
     }
   },
   "pages": {
+    "challenge-explorer": {
+      "filter": {
+        "title": "Search through challenges",
+        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      },
+      "my": {
+        "title": "My challenges ({{count}})",
+        "subtitle": "This section shows you the challenges you are participating in.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      },
+      "hubs": {
+        "title": "{{name}} challenges ({{count}})",
+        "subtitle": "This section shows you the challenges specific for the {{name}} hub.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      }
+    },
     "lead-organization": {
       "search": {
         "leading-placeholder": "Search in name or tags",
@@ -874,6 +890,12 @@
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
+    },
+    "user-notfications-settings": {
+      "email-notifications": {
+        "title": "Email notifications",
+        "subheader": "Receive email notifications for the following events:"
+      }
     }
   },
   "operations": {

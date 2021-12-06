@@ -104,14 +104,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
           avatar: styles.headerAvatar,
         }}
         avatar={
-          <>
+          <Box display="flex" flexDirection="column">
             <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar} aria-label="user-avatar">
               {user.firstName[0]}
             </Avatar>
             <Box paddingTop={1}>
               <SocialLinks title="" items={socialLinks} />
             </Box>
-          </>
+          </Box>
         }
         className={styles.header}
         action={
