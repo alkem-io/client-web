@@ -58,6 +58,9 @@ const useStyles = makeStyles(theme =>
     headerTitle: {
       display: 'flex',
     },
+    headerAvatar: {
+      flexDirection: 'column',
+    },
     headerAction: {},
   })
 );
@@ -98,6 +101,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         classes={{
           action: styles.headerAction,
           title: styles.headerTitle,
+          avatar: styles.headerAvatar,
         }}
         avatar={
           <>

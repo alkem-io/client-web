@@ -39,7 +39,7 @@ const SkeletonItem = () => (
 export const ContributionsView: FC<ContributionViewProps> = ({ contributions, loading, ...rest }) => {
   return (
     <ProfileCard {...rest}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
         {loading && (
           <>
             <SkeletonItem />
@@ -48,7 +48,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
         )}
         {!loading &&
           contributions.map((x, i) => (
-            <Grid item key={i}>
+            <Grid item key={i} flexGrow={1} flexBasis={'50%'}>
               <ContributionDetailsContainer entities={x}>
                 {({ details = { name: 'blank', tags: [], url: '' } }, state) => (
                   <ContributionCardV2
