@@ -1,24 +1,12 @@
+import { Box } from '@mui/material';
 import clsx from 'clsx';
 import React, { FC, useCallback } from 'react';
-import { useUploadAvatarMutation } from '../../../hooks/generated/graphql';
+import { useTranslation } from 'react-i18next';
 import { useApolloErrorHandler } from '../../../hooks';
-import { makeStyles } from '@mui/styles';
+import { useUploadAvatarMutation } from '../../../hooks/generated/graphql';
 import Avatar, { AvatarProps, useAvatarStyles } from '../../core/Avatar';
 import { Spinner } from '../../core/Spinner';
 import UploadButton from '../../core/UploadButton';
-import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
-
-const useEditableAvatarStyles = makeStyles(() => ({
-  outerEditableAvatarWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  upload: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-  },
-}));
 
 interface EditableAvatarProps extends AvatarProps {
   profileId?: string;
@@ -27,7 +15,6 @@ interface EditableAvatarProps extends AvatarProps {
 const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
   const { t } = useTranslation();
   const avatarStyles = useAvatarStyles(classes);
-  const styles = useEditableAvatarStyles();
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
 
   const handleError = useApolloErrorHandler();
@@ -50,7 +37,7 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
   );
 
   return (
-    <div className={clsx(styles.outerEditableAvatarWrapper)}>
+    <Box display="flex" flexDirection="column" justifyContent="center">
       <Box marginY={1}>
         {loading ? (
           <div
@@ -63,7 +50,7 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
         )}
       </Box>
       {profileId && (
-        <div className={clsx(styles.upload)}>
+        <Box display="flex" justifyContent="center" width="100%">
           <UploadButton
             disabled={loading}
             accept={'image/*'}
@@ -72,11 +59,11 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
               if (file) handleAvatarChange(file);
             }}
             small
-            text={t('buttons.edit')}
+            text={t('buttons.edit-photo')}
           />
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

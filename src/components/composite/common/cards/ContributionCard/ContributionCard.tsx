@@ -16,6 +16,9 @@ export interface ContributionCardDetails {
   url: string;
 }
 
+export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
+export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
+
 export interface ContributionCardProps {
   details?: ContributionCardDetails;
   loading: boolean;
@@ -25,8 +28,8 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       height: '100%',
-      minHeight: theme.spacing(18),
-      width: theme.spacing(32),
+      minHeight: theme.spacing(CONTRIBUTION_CARD_HEIGHT_SPACING),
+      width: theme.spacing(CONTRIBUTION_CARD_WIDTH_SPACING),
     },
     cardContent: {
       padding: theme.spacing(1),
