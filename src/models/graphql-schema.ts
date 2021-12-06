@@ -6455,6 +6455,17 @@ export type DiscussionDetailsFragment = {
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
 };
 
+export type DiscussionDetailsNoAuthFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
+  category: DiscussionCategory;
+  commentsCount: number;
+};
+
 export type CommunityDiscussionQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
@@ -6519,10 +6530,6 @@ export type CommunityDiscussionListQuery = {
             timestamp?: Maybe<number>;
             category: DiscussionCategory;
             commentsCount: number;
-            authorization?: Maybe<{
-              __typename?: 'Authorization';
-              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
-            }>;
           }>
         >;
       }>;

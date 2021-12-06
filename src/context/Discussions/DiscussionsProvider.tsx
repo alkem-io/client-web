@@ -70,7 +70,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       id: x.id,
       title: x.title,
       category: x.category,
-      myPrivileges: x.authorization?.myPrivileges ?? [],
+      myPrivileges: [],
       author: getAuthor(x.createdBy || ''),
       authors: [],
       description: x.description,
