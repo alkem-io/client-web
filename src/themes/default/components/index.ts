@@ -7,6 +7,7 @@ import MuiDialog from './MuiDialog';
 import MuiDialogContent from './MuiDialogContent';
 import MuiIcon from './MuiIcon';
 import MuiLink from './MuiLInk';
+import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
 
 const componentsOverride = (theme: Theme): Components => ({
@@ -19,6 +20,7 @@ const componentsOverride = (theme: Theme): Components => ({
   MuiIcon: MuiIcon(theme),
   MuiLink: MuiLink(theme),
   MuiTab: MuiTab(theme),
+  MuiSkeleton: MuiSkeleton(theme),
 });
 
 export default componentsOverride;
