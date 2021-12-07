@@ -102,8 +102,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
 
   const isSaving = updateMutationLoading || createMutationLoading;
 
-  const handleCancel = () => history.goBack();
-
   const handleSave = async (editedUser: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = editedUser;
 
@@ -168,14 +166,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   return (
     <div>
       {isSaving && <Loading text={'Saving...'} />}
-      <UserForm
-        editMode={mode}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        title={title}
-        user={user}
-        onDelete={() => setModalOpened(true)}
-      />
+      <UserForm editMode={mode} onSave={handleSave} title={title} user={user} onDelete={() => setModalOpened(true)} />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}
