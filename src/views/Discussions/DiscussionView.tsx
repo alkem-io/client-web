@@ -41,61 +41,68 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   } as Comment;
 
   return (
-    <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
-      <Grid item xs={12} container direction="column">
-        <Grid item>
-          <DiscussionComment comment={initialComment} canDelete={canDeleteDiscussion} onDelete={onDeleteDiscussion} />
-        </Grid>
+    <>
+      <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
+        <Grid item xs={12} container direction="column">
+          <Grid item>
+            <DiscussionComment
+              comment={initialComment}
+              canDelete={canDeleteDiscussion}
+              onDelete={onDeleteDiscussion}
+              isRootComment
+            />
+          </Grid>
 
-        <Grid item>
-          {comments && comments.length > 0 && (
-            <>
-              <Box paddingY={2}>
-                <Typography variant={'h4'}>
-                  {t('components.discussion.summary', {
-                    comment: totalComments,
-                    contributed: authors.length,
-                  })}
-                </Typography>
-              </Box>
-              <Filter data={comments}>
-                {filteredComments => {
-                  if (filteredComments.length === 0) return null;
-                  return (
-                    <Box marginTop={2}>
-                      <Grid container spacing={3}>
-                        {filteredComments.map((c, i) => (
-                          <Grid item xs={12} key={i}>
-                            <DiscussionComment
-                              comment={c}
-                              canDelete={canDeleteComment(c.author?.id)}
-                              onDelete={onDeleteComment}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Box>
-                  );
-                }}
-              </Filter>
-            </>
-          )}
-        </Grid>
-
-        <Grid item container spacing={2}>
-          <Grid item xs={12}>
-            <Box paddingY={2}>
-              {canPost && <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />}
-              {!canPost && (
-                <Box paddingY={4} display="flex" justifyContent="center">
-                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+          <Grid item>
+            {comments && comments.length > 0 && (
+              <>
+                <Box paddingY={2}>
+                  <Typography variant={'h4'}>
+                    {t('components.discussion.summary', {
+                      comment: totalComments,
+                      contributed: authors.length,
+                    })}
+                  </Typography>
                 </Box>
-              )}
-            </Box>
+                <Filter data={comments}>
+                  {filteredComments => {
+                    if (filteredComments.length === 0) return null;
+                    return (
+                      <Box marginTop={2}>
+                        <Grid container spacing={3}>
+                          {filteredComments.map((c, i) => (
+                            <Grid item xs={12} key={i}>
+                              <DiscussionComment
+                                comment={c}
+                                canDelete={canDeleteComment(c.author?.id)}
+                                onDelete={onDeleteComment}
+                              />
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
+                    );
+                  }}
+                </Filter>
+              </>
+            )}
+          </Grid>
+
+          <Grid item container spacing={2}>
+            <Grid item xs={12}>
+              <Box paddingY={2}>
+                {canPost && <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />}
+                {!canPost && (
+                  <Box paddingY={4} display="flex" justifyContent="center">
+                    <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+                  </Box>
+                )}
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 export default DiscussionView;

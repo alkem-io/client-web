@@ -4,7 +4,6 @@ import React from 'react';
 const NavigationTab = styled((props: TabProps) => {
   return <Tab iconPosition="start" {...props} />;
 })(({ theme }) => ({
-  fontSize: '18px',
   '&.Mui-selected': {
     color: theme.palette.text.primary,
     fontWeight: 'bold',

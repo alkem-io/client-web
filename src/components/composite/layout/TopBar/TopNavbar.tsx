@@ -4,6 +4,8 @@ import { Box, Button, Container, List } from '@mui/material';
 import { styled, alpha, emphasize } from '@mui/material/styles';
 import { RouterLink } from '../../../core/RouterLink';
 import { useUserContext } from '../../../../hooks';
+import { grey } from '@mui/material/colors';
+import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 
 const PREFIX = 'TopNavbar';
 
@@ -21,15 +23,17 @@ const Root = styled('div')(({ theme }) => ({
     borderRadius: 0,
 
     '&:hover': {
-      backgroundColor: emphasize(theme.palette.primary.main, 0.3),
+      backgroundColor: emphasize(theme.palette.primary.main, 0.25),
     },
 
     '&.Mui-disabled': {
-      backgroundColor: alpha(theme.palette.common.white, 0.8),
+      backgroundColor: alpha(grey[800], 0.6),
+      color: theme.palette.common.white,
+      opacity: 0.7,
     },
   },
   [`& .${classes.buttonSelected}`]: {
-    backgroundColor: emphasize(theme.palette.primary.main, 0.5),
+    backgroundColor: emphasize(theme.palette.primary.main, 0.2),
   },
   [`& .${classes.bar}`]: {
     flexGrow: 1,
@@ -47,6 +51,7 @@ type MenuItem = {
 const TopNavbar = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { user, isAuthenticated } = useUserContext();
+  const breakpoint = useCurrentBreakpoint();
 
   const menuItems: MenuItem[] = [
     {
@@ -60,7 +65,7 @@ const TopNavbar = () => {
       disabled: !isAuthenticated,
     },
     {
-      title: 'contributions',
+      title: 'contributors',
       url: '/',
       disabled: true,
     },
@@ -74,14 +79,8 @@ const TopNavbar = () => {
   return (
     <Root>
       <Box className={classes.bar}>
-        <Container maxWidth="xl">
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-            disablePadding
-            dense
-            sx={{ display: 'flex', flexDirection: 'row' }}
-          >
+        <Container maxWidth={breakpoint}>
+          <List component="nav" disablePadding dense sx={{ display: 'flex', flexDirection: 'row' }}>
             {menuItems.map(({ title, url, disabled, hidden }, i) => {
               if (hidden) {
                 return null;
@@ -108,4 +107,17 @@ const TopNavbar = () => {
     </Root>
   );
 };
+
+export const TopNavbarSpacer = () => {
+  return (
+    <Root sx={{ visibility: 'hidden' }}>
+      <Box className={classes.bar}>
+        <List disablePadding dense>
+          <Button className={clsx(classes.button)}>Spacer</Button>
+        </List>
+      </Box>
+    </Root>
+  );
+};
+
 export default TopNavbar;

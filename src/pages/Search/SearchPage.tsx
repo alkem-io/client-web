@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { makeStyles } from '@mui/styles';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ChallengeSearchCard,
@@ -16,7 +16,6 @@ import {
 } from '../../components/composite/search';
 import { Loading } from '../../components/core';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -114,8 +113,13 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { search: params } = useLocation();
   const queryParams = new URLSearchParams(params);
   const queryParam = queryParams.get('terms') ?? '';
-  const termsFromUrl = queryParam ? queryParam?.split(',') : [];
+
+  const termsFromUrl = useMemo(() => queryParam?.split(',').map(x => ({ id: x, name: x })) || [], [queryParam]);
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
+
+  useEffect(() => {
+    setTermsFromQuery(termsFromUrl);
+  }, [termsFromUrl, setTermsFromQuery]);
 
   const [results, setResults] = useState<ResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
@@ -147,24 +151,24 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     },
   });
 
-  const searchQuery = (terms: string[], filters: string[]) => {
-    search({
-      variables: {
-        searchData: {
-          terms,
-          tagsetNames,
-          typesFilter: filters,
+  const searchQuery = useCallback(
+    (terms: string[], filters: string[]) => {
+      search({
+        variables: {
+          searchData: {
+            terms,
+            tagsetNames,
+            typesFilter: filters,
+          },
         },
-      },
-    });
-  };
+      });
+    },
+    [search]
+  );
 
-  if (!termsFromQuery && termsFromUrl.length > 0) {
-    const terms = termsFromUrl.map(x => ({ id: x, name: x }));
-    setTermsFromQuery(terms);
-
-    searchQuery(termsFromUrl, typesFilter.value);
-  }
+  useEffect(() => {
+    searchQuery(termsFromQuery?.map(x => x.name) || [], typesFilter.value);
+  }, [searchQuery, termsFromQuery]);
 
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const typename = event.target.value;
@@ -193,7 +197,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           allowUnknownValues
         />
       </Section>
-      <Divider />
       {isSearching && (
         <Container maxWidth="xl">
           <Loading />

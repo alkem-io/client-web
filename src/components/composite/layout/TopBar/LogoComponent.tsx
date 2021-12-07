@@ -11,14 +11,9 @@ const classes = {
 };
 
 const Root = styled('div')(({ theme }) => ({
+  minWidth: 150,
   [`& .${classes.img}`]: {
     height: theme.spacing(5),
-    [theme.breakpoints.down('xl')]: {
-      height: theme.spacing(4),
-    },
-    [theme.breakpoints.down('md')]: {
-      height: theme.spacing(2),
-    },
   },
 }));
 
