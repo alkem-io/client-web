@@ -30,7 +30,7 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | nul
     const styles = useStyles();
 
     return (
-      <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
+      <Card ref={ref} className={styles.card} square aria-label="profile-card">
         <CardHeader
           className={styles.cardHeader}
           title={

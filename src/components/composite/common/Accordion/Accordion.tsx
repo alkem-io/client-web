@@ -16,7 +16,7 @@ export interface AccordionProps {
 
 export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpText, ariaKey }) => {
   return (
-    <MuiAccordion elevation={0} defaultExpanded={true}>
+    <MuiAccordion defaultExpanded={true}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon sx={{ fontSize: 60, color: 'primary.main' }} />}
         aria-controls={`panel-${ariaKey}-content`}
