@@ -143,7 +143,7 @@ const useMultipleSelectStyles = makeStyles(theme => ({
     },
   },
   input: {
-    width: 285,
+    width: 320,
     border: 'none',
     height: 35,
     padding: '0 15px',
