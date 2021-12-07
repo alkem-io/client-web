@@ -24,7 +24,6 @@ interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
-  onCancel?: () => void;
   onDelete?: (userId: string) => void;
   title?: string;
 }
@@ -33,7 +32,6 @@ export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
   editMode = EditMode.readOnly,
   onSave,
-  onCancel,
   onDelete,
 }) => {
   const { t } = useTranslation();
@@ -189,9 +187,10 @@ export const UserForm: FC<UserProps> = ({
         logger.info(errors);
         return (
           <form noValidate onSubmit={handleSubmit}>
-            <Box marginTop={4}>
-              <Grid container spacing={4} direction="column">
-                <Grid item container spacing={4}>
+            <Box marginTop={4} />
+            <Grid container rowSpacing={4} direction="column">
+              <Grid item xs={12}>
+                <Grid container>
                   <Grid item xs={12} md="auto">
                     <Grid item container justifyContent="center">
                       <EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />
@@ -255,79 +254,63 @@ export const UserForm: FC<UserProps> = ({
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid container item spacing={4}>
-                  <Grid item xs={12}>
-                    <FormikInputField
-                      name={'bio'}
-                      title={'Bio'}
-                      readOnly={isReadOnlyMode}
-                      placeholder={'Bio'}
-                      multiline
-                      rows={5}
-                      disabled={isSubmitting}
-                    />
-                  </Grid>
-                  <TagsetSegment
-                    tagsets={tagsets}
-                    template={tagsetsTemplate}
+              </Grid>
+              <Grid container item spacing={4}>
+                <Grid item xs={12}>
+                  <FormikInputField
+                    name={'bio'}
+                    title={'Bio'}
                     readOnly={isReadOnlyMode}
+                    placeholder={'Bio'}
+                    multiline
+                    rows={5}
                     disabled={isSubmitting}
                   />
-                  <SocialSegment />
-                  {isEditMode && (
-                    <ProfileReferenceSegment
-                      references={references}
-                      readOnly={isReadOnlyMode}
-                      disabled={isSubmitting}
-                      profileId={profileId}
-                    />
-                  )}
+                </Grid>
+                <TagsetSegment
+                  tagsets={tagsets}
+                  template={tagsetsTemplate}
+                  readOnly={isReadOnlyMode}
+                  disabled={isSubmitting}
+                />
+                <SocialSegment />
+                {isEditMode && (
+                  <ProfileReferenceSegment
+                    references={references}
+                    readOnly={isReadOnlyMode}
+                    disabled={isSubmitting}
+                    profileId={profileId}
+                  />
+                )}
 
-                  {isEditMode && (
-                    <Grid container item justifyContent={'flex-end'} spacing={2}>
-                      {onDelete && (
-                        <Grid item>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={() => onDelete(currentUser.id)}
-                            disabled={isSubmitting}
-                          >
-                            {t('buttons.delete')}
-                          </Button>
-                        </Grid>
-                      )}
-                      {onCancel && (
-                        <Grid item>
-                          <Button
-                            variant="outlined"
-                            color={isEditMode ? 'grey' : 'primary'}
-                            onClick={e => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              onCancel();
-                            }}
-                            disabled={isSubmitting}
-                          >
-                            {t(`buttons.${isEditMode ? 'cancel' : 'back'}` as const)}
-                          </Button>
-                        </Grid>
-                      )}
+                {isEditMode && (
+                  <Grid container item justifyContent={'flex-end'} spacing={2}>
+                    {onDelete && (
                       <Grid item>
                         <Button
-                          variant="contained"
-                          type="submit"
-                          // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
-                          disabled={isSubmitting || !isValid}
+                          variant="outlined"
+                          color="error"
+                          onClick={() => onDelete(currentUser.id)}
+                          disabled={isSubmitting}
                         >
-                          {t('buttons.save')}
+                          {t('buttons.delete')}
                         </Button>
                       </Grid>
+                    )}
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
+                        disabled={isSubmitting || !isValid}
+                      >
+                        {t('buttons.save')}
+                      </Button>
                     </Grid>
-                  )}
-                </Grid>
+                  </Grid>
+                )}
               </Grid>
-            </Box>
+            </Grid>
           </form>
         );
       }}

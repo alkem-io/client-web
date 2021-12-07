@@ -125,6 +125,7 @@ const Button: FC<ButtonProps> = forwardRef(
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onClick = () => {},
       text,
+      children,
       ...rest
     },
     ref
@@ -152,7 +153,8 @@ const Button: FC<ButtonProps> = forwardRef(
         disabled={disabled}
         {...props}
       >
-        <span>{text}</span>
+        {text && <span>{text}</span>}
+        {children}
       </MuiButton>
     );
   }

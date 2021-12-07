@@ -233,7 +233,7 @@
   "components": {
     "tags-component": {
       "more": "+{{count}} more",
-      "no-tags": "No tags available"
+      "no-tags": "The {{name}} has not been tagged yet."
     },
     "remove-modal": {
       "title": "Confirm remove"
@@ -266,7 +266,7 @@
     },
     "backdrop": {
       "private": "{{blockName}} are only visible to members.",
-      "authentication": "Please sign in to check out the {{blockName}}."
+      "authentication": "Please sign in to see details about the {{blockName}}."
     },
     "notifications": {
       "error": "Error",
@@ -558,7 +558,8 @@
       }
     },
     "activity": {
-      "title": "{{blockName}} activity",
+      "title": "{{blockName}} Activity",
+      "summary": "A summary of everything that happens on {{blockName}}",
       "ecoverses": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
@@ -574,12 +575,22 @@
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising societies potential. Building a better future, together."
+          "body": "Realising societies potential. Building a better future, together.",
+          "join": "Want to join the community and see more?"
         },
         "ecoverse": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
+        },
+        "community": {
+          "header": "The most active members",
+          "subheader": "Alkemio has over {{count}} registered members",
+          "helpText": "Activity is calculated based on their contribution to challenges, profile completeness, etc."
+        },
+        "organizations": {
+          "header": "Organizations",
+          "subheader": "The entities that want to bring innnovation."
         }
       }
     },

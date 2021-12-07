@@ -1,50 +1,62 @@
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
-import Typography from '../../../../core/Typography';
 import UserCard, { UserCardProps } from '../user-card/UserCard';
 import ConditionalLink from '../../../../core/ConditionalLink';
 
 interface AssociateCardProps extends UserCardProps {}
 
-const useStyles = makeStyles(theme =>
+const useStyles = makeStyles(_ =>
   createStyles({
     avatar: {
-      width: theme.spacing(12),
-      height: theme.spacing(9),
+      height: '100%',
+      width: '100%',
     },
     wrapper: {
-      width: theme.spacing(12),
-      height: theme.spacing(13),
+      minHeight: 64,
+      minWidth: 64,
     },
     text: {
       fontSize: 10,
+    },
+    tooltip: {
+      background: 'transparent',
+    },
+    skeleton: {
+      minHeight: 64,
+      minWidth: 64,
     },
   })
 );
 
 export const AssociateCard: FC<AssociateCardProps> = props => {
   const styles = useStyles();
-  const { displayName, roleName, avatarSrc, url } = props;
+  const { displayName, avatarSrc, url } = props;
+  // roleName - reintroduce the role name
 
   return (
     <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
       <Box className={styles.wrapper}>
-        <Tooltip arrow title={<UserCard {...props} url="" />}>
-          <Avatar variant="square" className={styles.avatar} src={avatarSrc}>
+        <Tooltip arrow title={<UserCard {...props} url="" />} classes={{ tooltip: styles.tooltip }}>
+          <Avatar variant="rounded" className={styles.avatar} src={avatarSrc}>
             {displayName[0]}
           </Avatar>
         </Tooltip>
-        <Typography color="primary" weight="boldLight" className={styles.text} clamp={1}>
-          {displayName}
-        </Typography>
-        {/* TODO Put Icon infornt of the role */}
-        <Typography weight="boldLight" className={styles.text}>
-          {roleName}
-        </Typography>
       </Box>
     </ConditionalLink>
   );
 };
+
+export const AssociateCardSkeleton = () => {
+  const styles = useStyles();
+  return (
+    <Box className={styles.wrapper}>
+      <Avatar variant="rounded" className={styles.avatar}>
+        <Skeleton variant="rectangular" className={styles.skeleton} />
+      </Avatar>
+    </Box>
+  );
+};
+
 export default AssociateCard;

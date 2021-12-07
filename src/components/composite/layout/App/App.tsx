@@ -9,7 +9,7 @@ import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../model
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
-import TopBar from '../TopBar/TopBar';
+import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
 
@@ -56,6 +56,7 @@ const App = ({ children }): React.ReactElement => {
       <div id="main">
         <TopBar />
         <Main>
+          <TopBarSpacer />
           {paths.length > 0 && <Breadcrumbs paths={paths} />}
           {children}
         </Main>

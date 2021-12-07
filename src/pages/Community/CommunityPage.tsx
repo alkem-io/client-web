@@ -14,7 +14,6 @@ import CardFilter from '../../components/core/card-filter/CardFilter';
 import { userTagsValueGetter } from '../../components/core/card-filter/value-getters/user-value-getter';
 import { userWithRoleValueGetter } from '../../components/core/card-filter/value-getters/user-with-role-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import { Image } from '../../components/core/Image';
 import Loading from '../../components/core/Loading/Loading';
@@ -97,7 +96,6 @@ const CommunityPage: FC<Props> = ({
         <SectionHeader text={parentDisplayName} />
         <SubHeader text={parentTagline} />
       </Section>
-      <Divider />
       <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.users')} />
       </Section>
@@ -119,7 +117,6 @@ const CommunityPage: FC<Props> = ({
           </CardContainer>
         )}
       </CardFilter>
-      <Divider />
       {(hostOrganization || leadingOrganizations) && (
         <>
           <Section
@@ -144,7 +141,6 @@ const CommunityPage: FC<Props> = ({
               </>
             )}
           </Section>
-          <Divider />
         </>
       )}
       {leadingOrganizations && (
@@ -180,7 +176,6 @@ const CommunityPage: FC<Props> = ({
           />
         ))}
       </CardContainer>
-      <Divider />
       <Section avatar={<Icon component={ChatDotsIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.updates')} />
       </Section>

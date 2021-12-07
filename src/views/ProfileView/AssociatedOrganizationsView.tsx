@@ -24,7 +24,7 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
 }) => {
   return (
     <ProfileCard {...rest}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {loading && <SkeletonItem dense />}
         {!loading &&
           organizationNameIDs.map((oNameID, i) => (

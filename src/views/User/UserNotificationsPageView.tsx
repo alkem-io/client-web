@@ -69,6 +69,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
                         />
                       }
                       label={p.definition.description}
+                      data-test-id={p.definition.type}
                     />
                   ))}
                 </FormGroup>

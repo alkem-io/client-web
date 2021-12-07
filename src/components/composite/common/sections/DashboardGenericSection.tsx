@@ -43,8 +43,10 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
           <SectionSpacer />
         </>
       )}
-      {children}
-      {secondaryAction}
+      <Box paddingY={1}>
+        {children}
+        {secondaryAction}
+      </Box>
       {navText && navLink && (
         <Box display="flex" justifyContent="end">
           <Link component={RouterLink} to={navLink}>

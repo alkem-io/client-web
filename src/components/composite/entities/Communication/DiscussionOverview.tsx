@@ -2,9 +2,8 @@ import {
   Avatar,
   AvatarGroup,
   Box,
-  Link,
-  ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Typography,
@@ -13,10 +12,9 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Discussion } from '../../../../models/discussion/discussion';
 import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
-import { RouterLink } from '../../../core/RouterLink';
 import DiscussionIcon from './DiscussionIcon';
 
 export interface DiscussionOverviewProps {
@@ -38,20 +36,19 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const { url } = useRouteMatch();
+  const history = useHistory();
 
   const { id, title, createdAt, author, authors = [], totalComments, category } = discussion;
 
   return (
-    <ListItem alignItems="flex-start" disableGutters>
-      <ListItemIcon>
+    <ListItemButton disableGutters onClick={() => history.push(buildDiscussionUrl(url, id))}>
+      <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>
       <ListItemText
         primary={
-          <Typography color="primary" variant="h3">
-            <Link component={RouterLink} to={buildDiscussionUrl(url, id)}>
-              {title}
-            </Link>
+          <Typography color="primary" variant="h4">
+            {title}
           </Typography>
         }
         secondary={
@@ -83,7 +80,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
           </AvatarGroup>
         </ListItemAvatar>
       )}
-    </ListItem>
+    </ListItemButton>
   );
 };
 export default DiscussionOverview;

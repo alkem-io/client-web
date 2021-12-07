@@ -35,7 +35,7 @@ const useCircleTagStyles = makeStyles(theme => ({
   },
   'tagText-small': {
     textAlign: 'center',
-    lineHeight: '20px', // - 2 * 2 borders
+    lineHeight: '1.2rem', // - 2 * 2 borders
     width: '100%',
   },
   small: {

@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import Button from '../../components/core/Button';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { ContentCard } from '../../components/composite/entities/Project/Cards';
@@ -132,7 +131,6 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
           </Formik>
         </ContentCard>
       </Section>
-      <Divider />
     </>
   );
 };

@@ -10,7 +10,11 @@ export const paletteOptions: PaletteOptions = {
   positive: { main: '#00D4B4' },
   negative: { main: '#D40062' },
   neutral: { main: '#181828' },
-  neutralMedium: { main: '#B8BAC8' },
+  neutralMedium: {
+    light: grey[200],
+    main: grey[500],
+    dark: grey[600],
+  },
   neutralLight: { main: '#F9F9F9' },
   background: { default: '#ffffff', paper: '#F9F9F9' },
   divider: '#00BCD440',

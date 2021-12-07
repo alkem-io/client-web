@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Chip from '@mui/material/Chip';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
@@ -47,12 +47,13 @@ const useStyles = makeStyles(theme =>
 
 interface Props {
   tags: string[];
+  tagsFor?: string;
   count?: number;
   className?: any;
   keepInRow?: boolean;
 }
 //  todo move in diff dir
-const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false }) => {
+const TagsComponent: FC<Props> = ({ tags, tagsFor, count, className, keepInRow = false }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -64,6 +65,11 @@ const TagsComponent: FC<Props> = ({ tags, count, className, keepInRow = false })
   return (
     <div className={className}>
       <div className={styles.tagWrapper}>
+        {tags.length === 0 && (
+          <Typography color="neutral.main" variant="subtitle2">
+            {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
+          </Typography>
+        )}
         {tagsToDisplay.map((x, i) => (
           <Tooltip key={i} title={x} arrow placement="bottom">
             <Chip

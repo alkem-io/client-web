@@ -18,19 +18,23 @@ export interface ChallengeCardContainerState {
 }
 
 export interface ChallengeCardContainerProps
-  extends ContainerProps<
-    ChallengeCardContainerEntities,
-    ChallengeCardContainerActions,
-    ChallengeCardContainerState
-    > {
+  extends ContainerProps<ChallengeCardContainerEntities, ChallengeCardContainerActions, ChallengeCardContainerState> {
   ecoverseNameId: string;
   challengeNameId: string;
 }
 
-export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({ children, ecoverseNameId, challengeNameId }) => {
+export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({
+  children,
+  ecoverseNameId,
+  challengeNameId,
+}) => {
   const { user: userMetadata, loading: userLoading } = useUserContext();
 
-  const { data, loading: challengeLoading, error } = useChallengeCardQuery({
+  const {
+    data,
+    loading: challengeLoading,
+    error,
+  } = useChallengeCardQuery({
     variables: {
       ecoverseId: ecoverseNameId,
       challengeId: challengeNameId,
@@ -58,13 +62,5 @@ export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({ childr
 
   const loading = userLoading || challengeLoading;
 
-  return (
-    <>
-      {children(
-        { cardProps },
-        { loading, error },
-        {},
-      )}
-    </>
-  )
+  return <>{children({ cardProps }, { loading, error }, {})}</>;
 };

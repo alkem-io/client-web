@@ -24,7 +24,6 @@ import {
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
 import Button from '../../components/core/Button';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import { RouterLink } from '../../components/core/RouterLink';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -175,7 +174,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           </Box>
         </Box>
       </Section>
-      <Divider />
       <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
         <DiscussionsProvider>
           <OpportunityCommunitySection
@@ -188,7 +186,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           />
         </DiscussionsProvider>
       </AuthenticationBackdrop>
-      <Divider />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
           {options.editActorGroup && entities.availableActorGroupNames.length > 0 && (
@@ -226,8 +223,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           );
         })}
 
-      <Divider />
-
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
           {options.isAuthenticated && !options.isMemberOfOpportunity && (
@@ -242,7 +237,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         <SubHeader text={t('pages.opportunity.sections.potential.subheader')} />
       </Section>
 
-      <Divider />
       {options.isNoRelations ? (
         <Box display={'flex'} justifyContent={{ lg: 'center' }} alignItems={{ lg: 'center' }}>
           <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
@@ -290,7 +284,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         availableActorGroupNames={entities.availableActorGroupNames}
       />
 
-      <Divider />
       <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.solution.header')} />
         <SubHeader text={t('pages.opportunity.sections.solution.subheader')} />
@@ -319,7 +312,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           ))}
         </CardContainer>
       )}
-      <Divider />
 
       <div ref={projectRef} />
     </>

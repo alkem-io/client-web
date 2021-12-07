@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
@@ -72,14 +72,15 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
   return (
     <Grid container spacing={2}>
       <Grid item container>
-        <Paper elevation={0} square className={clsx(titleClasses)}>
-          <Grid container alignItems="center" justifyContent="space-between" wrap="nowrap">
-            <Grid container item alignItems={'center'}>
-              <span className={styles.icon}>{icon}</span>
-              <Typography variant="h1">{title}</Typography>
-            </Grid>
-            {newUrl && (
-              <Grid container item justifyContent={'flex-end'} wrap="nowrap">
+        <Paper square className={clsx(titleClasses)}>
+          <Box display="flex" alignItems={'center'}>
+            <Box alignItems={'center'} display="flex">
+              {icon && <span className={styles.icon}>{icon}</span>}
+              <Typography variant="h3">{title}</Typography>
+            </Box>
+            <Box flexGrow={1}></Box>
+            <Box justifyContent={'flex-end'} flexShrink={0}>
+              {newUrl && (
                 <Button
                   as={RouterLink}
                   text={t('components.discussions-layout.buttons.new-discussion')}
@@ -87,9 +88,9 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
                   to={newUrl}
                   disabled={!canCreateDiscussion}
                 />
-              </Grid>
-            )}
-          </Grid>
+              )}
+            </Box>
+          </Box>
         </Paper>
       </Grid>
       <Grid item container spacing={2}>
