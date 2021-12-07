@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
 import { Container } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import React, { FC } from 'react';
+import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 
 const useMainStyles = makeStyles(() => ({
   main: {
@@ -10,9 +11,10 @@ const useMainStyles = makeStyles(() => ({
 
 export const Main: FC = ({ children }) => {
   const styles = useMainStyles();
+  const breakpoint = useCurrentBreakpoint();
 
   return (
-    <Container maxWidth="xl" className={styles.main}>
+    <Container maxWidth={breakpoint} className={styles.main}>
       <>{children}</>
     </Container>
   );
