@@ -39,7 +39,7 @@ const useUserCardRoleName = (users: User[], resourceId: string): UserWithCardRol
 
   return users
     .map(x => {
-      const roleInfo = getUserCardRoleInfo(resourceId, x.agent);
+      const roleInfo = getUserCardRoleInfo(resourceId, x?.agent);
 
       return {
         ...x,
