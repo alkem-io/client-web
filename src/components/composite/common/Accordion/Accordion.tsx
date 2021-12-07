@@ -14,15 +14,9 @@ export interface AccordionProps {
   ariaKey: string;
 }
 
-export const Accordion: FC<AccordionProps> = ({
-  children,
-  title,
-  subtitle,
-  helpText,
-  ariaKey,
-}) => {
+export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpText, ariaKey }) => {
   return (
-    <MuiAccordion elevation={0} defaultExpanded={true}>
+    <MuiAccordion defaultExpanded={true}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon sx={{ fontSize: 60, color: 'primary.main' }} />}
         aria-controls={`panel-${ariaKey}-content`}
@@ -36,7 +30,7 @@ export const Accordion: FC<AccordionProps> = ({
               sx={{
                 paddingBottom: t => t.spacing(0.5),
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               {title}
@@ -46,9 +40,7 @@ export const Accordion: FC<AccordionProps> = ({
           <Typography variant="subtitle1">{subtitle}</Typography>
         </Box>
       </AccordionSummary>
-      <AccordionDetails>
-        {children}
-      </AccordionDetails>
+      <AccordionDetails>{children}</AccordionDetails>
     </MuiAccordion>
-  )
+  );
 };

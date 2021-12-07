@@ -92,8 +92,8 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
                 </Typography>
               </Grid>
               <Grid container item>
-                <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" />
-                <InfoRow text={location} icon={LocationOnIcon} ariaLabel="Location" />
+                <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" />
+                <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
               <Grid item>
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
@@ -118,7 +118,7 @@ const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel }) => {
 
   return (
     <Grid container alignItems={'center'} className={styles.infoRowHeight}>
-      <Icon fontSize="inherit" className={styles.infoRowHeight} />
+      <Icon className={styles.infoRowHeight} />
       <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel}>
         {text}
       </Typography>

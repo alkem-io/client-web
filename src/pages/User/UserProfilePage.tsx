@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Error404 } from '../';
 import { Loading } from '../../components/core';
+import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 
@@ -27,6 +28,11 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
     isCurrentUser: currentUser?.user.id === userMetadata.user.id || false,
   };
 
-  return <UserProfilePageView entities={{ userMetadata, verified }} options={options} />;
+  return (
+    <>
+      <SectionSpacer />
+      <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
+    </>
+  );
 };
 export default UserProfilePage;

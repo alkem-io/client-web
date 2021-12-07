@@ -1,21 +1,19 @@
-import React, { forwardRef } from 'react';
-import { Grid, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import clsx from 'clsx';
+import React, { forwardRef } from 'react';
 
 const PREFIX = 'User';
 
 const classes = {
-  textPaddingRight: `${PREFIX}-textPaddingRight`,
   cursorPointer: `${PREFIX}-cursorPointer`,
   nameStyle: `${PREFIX}-nameStyle`,
   titleStyle: `${PREFIX}-titleStyle`,
+  textStyle: `${PREFIX}-textStyle`,
 };
 
 const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.textPaddingRight}`]: {
-    paddingRight: theme.spacing(1.5),
-  },
   [`& .${classes.cursorPointer}`]: {
     cursor: 'pointer',
   },
@@ -26,6 +24,10 @@ const Root = styled('div')(({ theme }) => ({
   [`& .${classes.titleStyle}`]: {
     fontWeight: 'medium',
     textTransform: 'uppercase',
+  },
+  [`& .${classes.textStyle}`]: {
+    paddingRight: theme.spacing(1),
+    textAlign: 'end',
   },
 }));
 
@@ -39,23 +41,27 @@ interface UserProps {
 const User = forwardRef<unknown, UserProps>(({ name, title, src, onClick }, ref) => {
   return (
     <Root>
-      <Grid container alignItems="center">
-        <Grid container item direction="column" flexWrap="nowrap" alignItems="end" xs={6}>
-          <Grid item className={classes.textPaddingRight}>
-            <Typography variant="caption" color="neutral.main" noWrap className={classes.nameStyle}>
-              {name}
-            </Typography>
-          </Grid>
-          <Grid item className={classes.textPaddingRight}>
-            <Typography variant="caption" color="neutralMedium.main" noWrap className={classes.titleStyle}>
-              {title}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid item onClick={onClick}>
-          <Avatar src={src} className={classes.cursorPointer} ref={ref as any} />
-        </Grid>
-      </Grid>
+      <Box display="flex" onClick={onClick}>
+        <Box display="flex" flexDirection="column" flexWrap="nowrap">
+          <Typography
+            variant="caption"
+            color="neutral.main"
+            noWrap
+            className={clsx(classes.nameStyle, classes.textStyle)}
+          >
+            {name}
+          </Typography>
+          <Typography
+            variant="caption"
+            color="neutralMedium.main"
+            noWrap
+            className={clsx(classes.titleStyle, classes.textStyle)}
+          >
+            {title}
+          </Typography>
+        </Box>
+        <Avatar src={src} className={classes.cursorPointer} ref={ref as any} />
+      </Box>
     </Root>
   );
 });

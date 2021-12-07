@@ -14,6 +14,7 @@ const MuiTab = (theme: Theme): Components['MuiTab'] | undefined => {
         },
         padding: 0,
         minWidth: 'auto',
+        minHeight: 48,
         marginRight: theme.spacing(2),
       },
       textColorInherit: {

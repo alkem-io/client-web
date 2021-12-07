@@ -23,7 +23,6 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import Icon from '../../components/core/Icon';
 import { Image } from '../../components/core/Image';
@@ -107,7 +106,6 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
           </div>
         </Body>
       </Section>
-      <Divider />
       <MembershipBackdrop show={hideChallenges} blockName={t('pages.ecoverse.sections.challenges.header')}>
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
@@ -179,7 +177,6 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         </EcoverseChallengesContainer>
       </MembershipBackdrop>
 
-      <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
         <DiscussionsProvider>
           <EcoverseCommunitySection
@@ -190,7 +187,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
           />
         </DiscussionsProvider>
       </AuthenticationBackdrop>
-      <Divider />
+
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
         {projects.length > 0 && (
           <>
@@ -206,7 +203,6 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
                 })}
               </CardContainer>
             )}
-            <Divider />
           </>
         )}
       </AuthenticationBackdrop>

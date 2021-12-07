@@ -9,6 +9,8 @@ import MuiIcon from './MuiIcon';
 import MuiLink from './MuiLInk';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
+import type {} from '@mui/lab/themeAugmentation';
+import MuiTabPanel from './MuiTabPanel';
 
 const componentsOverride = (theme: Theme): Components => ({
   MuiAvatar: MuiAvatar(theme),
@@ -21,6 +23,7 @@ const componentsOverride = (theme: Theme): Components => ({
   MuiLink: MuiLink(theme),
   MuiTab: MuiTab(theme),
   MuiSkeleton: MuiSkeleton(theme),
+  MuiTabPanel: MuiTabPanel(theme),
 });
 
 export default componentsOverride;

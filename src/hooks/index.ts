@@ -24,6 +24,7 @@ export * from './useChallenge';
 export * from './useOpportunity';
 
 export * from './useUrlParams';
+export * from './useCurrentBreakpoint';
 
 export * from './operations/useEditReference';
 export * from './useNavigation';
