@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useMemo } from 'react';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
@@ -15,7 +15,7 @@ export const HomePage = () => {
 
   return (
     <>
-      <Box padding={1} />
+      <SectionSpacer />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <WelcomeSection />

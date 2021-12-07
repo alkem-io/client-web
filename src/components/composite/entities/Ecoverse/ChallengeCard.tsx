@@ -40,8 +40,8 @@ const useCardStyles = makeStyles(theme => ({
 }));
 
 // todo: unify in one card props
-interface ChallengeCardProps {
-  id: string | number;
+export interface ChallengeCardProps {
+  id: string;
   displayName?: string;
   context?: {
     tagline: string;
@@ -50,7 +50,7 @@ interface ChallengeCardProps {
     };
   };
   isMember: boolean;
-  activity: Pick<Nvp, 'name' | 'value'>[];
+  activity: Nvp[];
   tags: string[];
   url: string;
 }

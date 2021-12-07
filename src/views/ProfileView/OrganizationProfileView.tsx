@@ -74,7 +74,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
   const styles = useStyles();
   const { t } = useTranslation();
   return (
-    <Card elevation={0} className={styles.card} square>
+    <Card className={styles.card} square>
       <CardMedia className={styles.media} image={entity.banner}>
         <CardHeader
           classes={{

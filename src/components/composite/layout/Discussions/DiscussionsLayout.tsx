@@ -72,7 +72,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
   return (
     <Grid container spacing={2}>
       <Grid item container>
-        <Paper elevation={0} square className={clsx(titleClasses)}>
+        <Paper square className={clsx(titleClasses)}>
           <Grid container alignItems="center" justifyContent="space-between" wrap="nowrap">
             <Grid container item alignItems={'center'}>
               <span className={styles.icon}>{icon}</span>

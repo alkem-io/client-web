@@ -6,6 +6,7 @@ import HelpButton from '../../../../core/HelpButton';
 
 export interface ProfileCardProps {
   title: string;
+  subtitle?: string;
   helpText?: string;
 }
 
@@ -25,11 +26,11 @@ const useStyles = makeStyles(theme =>
 );
 
 export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | null, ProfileCardProps>(
-  ({ title, helpText, children }, ref) => {
+  ({ title, subtitle, helpText, children }, ref) => {
     const styles = useStyles();
 
     return (
-      <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
+      <Card ref={ref} className={styles.card} square aria-label="profile-card">
         <CardHeader
           className={styles.cardHeader}
           title={
@@ -40,6 +41,7 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | nul
               {helpText && <HelpButton helpText={helpText} />}
             </Typography>
           }
+          subheader={subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
         />
         <CardContent className={styles.cardContent}>{children}</CardContent>
       </Card>

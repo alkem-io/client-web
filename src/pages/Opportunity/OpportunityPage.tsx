@@ -23,8 +23,6 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
       {(entities, state, actions) => (
         <OpportunityTabs entities={entities}>
           {({ tabName, tabNames }) => {
-            console.log(tabName);
-            console.log(tabNames);
             return (
               <TabContext value={tabName}>
                 <TabPanel value={tabNames['dashboard']}>
