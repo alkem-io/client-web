@@ -48,11 +48,11 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           tagline={entities?.ecoverse?.context?.tagline}
                           vision={entities?.ecoverse?.context?.vision}
                           ecoverseNameId={entities?.ecoverse?.nameID}
+                          communityId={entities?.ecoverse?.community?.id}
                           organizationNameId={entities?.ecoverse?.host?.nameID}
                           activity={entities.activity}
                           challenges={cEntities.challenges}
                           discussions={entities.discussionList}
-                          updates={[]}
                           members={entities?.ecoverse?.community?.members as User[]}
                           loading={state.loading}
                           isMember={entities.isMember}

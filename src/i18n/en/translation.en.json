@@ -618,11 +618,14 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "updates": "Updates",
+          "updates": {
+            "title": "Updates",
+            "no-data": "No updates available."
+          },
           "discussions": {
             "title": "Discussions",
-            "no-data-create": "No discussions. Create a new discussion",
-            "no-data-join": "No discussions. Please join the community to create a discussion"
+            "no-data-create": "No discussions available. Create a new discussion",
+            "no-data-join": "No discussions available. Please join the community to create a discussion"
           },
           "challenges": {
             "title": "Challenges",

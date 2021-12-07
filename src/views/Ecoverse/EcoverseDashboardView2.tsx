@@ -13,9 +13,11 @@ import { RouterLink } from '../../components/core/RouterLink';
 import { Challenge, User } from '../../models/graphql-schema';
 import ContributionCard from '../../components/composite/common/cards/ContributionCard/ContributionCard';
 import getActivityCount from '../../utils/get-activity-count';
-import { buildChallengeUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { AssociateCard } from '../../components/composite/common/cards';
+import SingleUpdateView from '../Updates/SingleUpdateView';
+import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdates';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
@@ -23,9 +25,9 @@ export interface EcoverseDashboardView2Props {
   tagline?: string;
   vision?: string;
   ecoverseNameId?: string;
+  communityId?: string;
   organizationNameId?: string;
   activity: ActivityItem[];
-  updates: any[];
   discussions: Discussion[];
   organization?: any;
   challenges: Challenge[];
@@ -48,6 +50,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   challenges,
   members = [],
   ecoverseNameId = '',
+  communityId = '',
   organizationNameId,
   activity,
   discussions,
@@ -81,8 +84,39 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             </DashboardGenericSection>
           </Grid>
           <Grid item xs={12}>
-            <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.updates')}>
-              {/*updates*/}
+            <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.updates.title')}>
+              <CommunityUpdatesContainer entities={{ ecoverseId: ecoverseNameId, communityId }}>
+                {entities => {
+                  if (!entities.messages.length) {
+                    return t('pages.ecoverse.sections.dashboard.updates.no-data');
+                  }
+
+                  const messages = [...entities.messages];
+                  const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
+                  const messageSender = {
+                    id: latestMessage.sender,
+                  };
+
+                  return (
+                    <AvatarsProvider users={[messageSender]}>
+                      {populatedUsers => (
+                        <SingleUpdateView
+                          author={{
+                            id: populatedUsers[0].id,
+                            displayName: populatedUsers[0].displayName,
+                            avatarUrl: populatedUsers[0].profile?.avatar ?? '',
+                            firstName: '',
+                            lastName: '',
+                            url: buildUserProfileUrl(populatedUsers[0].nameID),
+                          }}
+                          createdDate={new Date(latestMessage.timestamp)}
+                          content={latestMessage.message}
+                        />
+                      )}
+                    </AvatarsProvider>
+                  );
+                }}
+              </CommunityUpdatesContainer>
             </DashboardGenericSection>
           </Grid>
           <Grid item xs={12}>
@@ -168,7 +202,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
                           avatarSrc={x.profile?.avatar || ''}
                           displayName={x.displayName}
                           tags={[]}
-                          url={''}
+                          url={x.nameID}
                         />
                       </Grid>
                     ))}

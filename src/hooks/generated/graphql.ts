@@ -8986,6 +8986,7 @@ export const UserAvatarsDocument = gql`
   query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
       id
+      nameID
       displayName
       profile {
         id
