@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import { sortBy } from 'lodash';
+import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
 import { useUpdateUserPreferencesMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
@@ -66,7 +67,14 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     });
   };
 
-  const preferences = (data?.user.preferences || []).filter(p => limitNotifcationsTo.includes(p.definition.type));
+  const preferences = useMemo(
+    () =>
+      sortBy(
+        (data?.user.preferences || []).filter(p => limitNotifcationsTo.includes(p.definition.type)),
+        x => x.definition.displayName
+      ),
+    [data]
+  );
 
   return (
     <>
