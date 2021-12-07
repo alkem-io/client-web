@@ -846,6 +846,9 @@ export const EcoverseInfoFragmentDoc = gql`
     community {
       id
       displayName
+      members {
+        id
+      }
     }
   }
   ${EcoverseDetailsFragmentDoc}

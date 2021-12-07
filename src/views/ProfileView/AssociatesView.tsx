@@ -9,10 +9,14 @@ const ASSOCIATE_CARDS_COUNT = 10;
 
 interface AssociatesViewProps {
   associates: UserCardProps[];
+  count?: number;
+  perRow?: 1 | 2 | 3 | 4 | 6 | 12;
 }
 
-export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
+export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT, perRow }) => {
   const { t } = useTranslation();
+
+  const columnWidth = perRow ? 12 / perRow : undefined;
 
   return (
     <ProfileCard
@@ -20,8 +24,8 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates }) => {
       helpText={t('components.associates.help')}
     >
       <Grid item container spacing={2}>
-        {associates.slice(0, ASSOCIATE_CARDS_COUNT).map((x, i) => (
-          <Grid key={i} item>
+        {associates.slice(0, count).map((x, i) => (
+          <Grid key={i} item xs={columnWidth}>
             <AssociateCard {...x} />
           </Grid>
         ))}

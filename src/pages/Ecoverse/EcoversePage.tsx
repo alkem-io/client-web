@@ -1,10 +1,9 @@
-import { TabContext, TabPanel } from '@mui/lab';
-
 import React, { FC } from 'react';
 import { Switch, useRouteMatch } from 'react-router-dom';
+import { TabContext, TabPanel } from '@mui/lab';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse, useUpdateNavigation } from '../../hooks';
-import { AuthorizationCredential } from '../../models/graphql-schema';
+import { AuthorizationCredential, User } from '../../models/graphql-schema';
 import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import EcoverseTabs from '../../routing/ecoverse/EcoverseTabs';
 import RestrictedRoute, { CredentialForResource } from '../../routing/route.extensions';
@@ -54,6 +53,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           challenges={cEntities.challenges}
                           discussions={entities.discussionList}
                           updates={[]}
+                          members={entities?.ecoverse?.community?.members as User[]}
                           loading={state.loading}
                           isMember={entities.isMember}
                         />
@@ -79,7 +79,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                       </RestrictedRoute>
                     </Switch>
                   </TabPanel>
-                  <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
+                  <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
                 </TabContext>
               )}
             </EcoverseTabs>

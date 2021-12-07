@@ -627,7 +627,8 @@
           "challenges": {
             "title": "Challenges",
             "help-text": "This shows the different challenges you can contribute to in this hub."
-          }
+          },
+          "community": "Community"
         },
         "header": {
           "buttons": {

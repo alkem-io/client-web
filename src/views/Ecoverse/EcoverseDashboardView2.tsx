@@ -10,10 +10,12 @@ import { Discussion } from '../../models/discussion/discussion';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
 import Link from '@mui/material/Link';
 import { RouterLink } from '../../components/core/RouterLink';
-import { Challenge } from '../../models/graphql-schema';
+import { Challenge, User } from '../../models/graphql-schema';
 import ContributionCard from '../../components/composite/common/cards/ContributionCard/ContributionCard';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildChallengeUrl } from '../../utils/urlBuilders';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { AssociateCard } from '../../components/composite/common/cards';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
@@ -27,6 +29,7 @@ export interface EcoverseDashboardView2Props {
   discussions: Discussion[];
   organization?: any;
   challenges: Challenge[];
+  members?: User[];
   community?: any;
   loading: boolean;
   isMember?: boolean;
@@ -34,6 +37,7 @@ export interface EcoverseDashboardView2Props {
 
 const DISCUSSIONS_NUMBER_IN_SECTION = 3;
 const CHALLENGES_NUMBER_IN_SECTION = 2;
+const MEMBERS_NUMBER_IN_SECTION = 12;
 const SPACING = 2;
 
 const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
@@ -42,6 +46,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   tagline = '',
   vision = '',
   challenges,
+  members = [],
   ecoverseNameId = '',
   organizationNameId,
   activity,
@@ -149,7 +154,28 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             </DashboardGenericSection>
           </Grid>
           <Grid item xs={12}>
-            {/*community*/}
+            <DashboardGenericSection
+              headerText={t('pages.ecoverse.sections.dashboard.community')}
+              navText={t('buttons.see-all')}
+              navLink={'community'}
+            >
+              <AvatarsProvider users={members} count={MEMBERS_NUMBER_IN_SECTION}>
+                {populated => (
+                  <Grid container spacing={SPACING}>
+                    {populated.map((x, i) => (
+                      <Grid key={i} item xs={3}>
+                        <AssociateCard
+                          avatarSrc={x.profile?.avatar || ''}
+                          displayName={x.displayName}
+                          tags={[]}
+                          url={''}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
+              </AvatarsProvider>
+            </DashboardGenericSection>
           </Grid>
         </Grid>
       </Grid>

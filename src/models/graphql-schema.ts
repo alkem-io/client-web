@@ -263,13 +263,42 @@ export enum AuthorizationPrivilege {
 
 export type Canvas = {
   __typename?: 'Canvas';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The checkout out state of this Canvas. */
+  checkout?: Maybe<CanvasCheckout>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is the Canvas a template? */
+  isTemplate: Scalars['Boolean'];
   /** The name of the Canvas. */
   name: Scalars['String'];
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
 };
+
+export type CanvasCheckout = {
+  __typename?: 'CanvasCheckout';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lifecycle: Lifecycle;
+  /** The id of the user that has checked the entity out. */
+  lockedBy: Scalars['UUID'];
+  /** Checked out status of the Canvas */
+  status: CanvasCheckoutStateEnum;
+};
+
+export type CanvasCheckoutEventInput = {
+  canvasCheckoutID: Scalars['UUID'];
+  eventName: Scalars['String'];
+};
+
+export enum CanvasCheckoutStateEnum {
+  Available = 'AVAILABLE',
+  CheckedOut = 'CHECKED_OUT',
+}
 
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
@@ -466,6 +495,8 @@ export type Context = {
   authorization?: Maybe<Authorization>;
   /** A detailed description of the current situation */
   background?: Maybe<Scalars['String']>;
+  /** The Canvas entities for this Context. */
+  canvases?: Maybe<Array<Canvas>>;
   /** The EcosystemModel for this Context. */
   ecosystemModel?: Maybe<EcosystemModel>;
   /** The ID of the entity */
@@ -509,6 +540,12 @@ export type CreateAspectInput = {
   framing: Scalars['String'];
   parentID: Scalars['UUID'];
   title: Scalars['String'];
+};
+
+export type CreateCanvasOnContextInput = {
+  contextID: Scalars['UUID'];
+  name: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -696,6 +733,10 @@ export type DeleteApplicationInput = {
 };
 
 export type DeleteAspectInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCanvasInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1063,8 +1104,10 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Creates Application for a User to join this Community. */
   createApplication: Application;
-  /** Create a new Aspect on the Opportunity. */
+  /** Create a new Aspect on the Context. */
   createAspect: Aspect;
+  /** Create a new Canvas on the Context. */
+  createCanvasOnContext: Canvas;
   /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -1101,6 +1144,8 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
+  /** Deletes the specified Canvas. */
+  deleteCanvas: Canvas;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1125,6 +1170,8 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
+  /** Trigger an event on the Organization Verification. */
+  eventOnCanvasCheckout: CanvasCheckout;
   /** Trigger an event on the Challenge. */
   eventOnChallenge: Challenge;
   /** Trigger an event on the Opportunity. */
@@ -1171,6 +1218,8 @@ export type Mutation = {
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
+  /** Updates the specified Canvas. */
+  updateCanvas: Canvas;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the specified Discussion. */
@@ -1277,6 +1326,10 @@ export type MutationCreateAspectArgs = {
   aspectData: CreateAspectInput;
 };
 
+export type MutationCreateCanvasOnContextArgs = {
+  canvasData: CreateCanvasOnContextInput;
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeOnEcoverseInput;
 };
@@ -1345,6 +1398,10 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
+export type MutationDeleteCanvasArgs = {
+  deleteData: DeleteCanvasInput;
+};
+
 export type MutationDeleteChallengeArgs = {
   deleteData: DeleteChallengeInput;
 };
@@ -1391,6 +1448,10 @@ export type MutationDeleteUserGroupArgs = {
 
 export type MutationEventOnApplicationArgs = {
   applicationEventData: ApplicationEventInput;
+};
+
+export type MutationEventOnCanvasCheckoutArgs = {
+  canvasCheckoutEventData: CanvasCheckoutEventInput;
 };
 
 export type MutationEventOnChallengeArgs = {
@@ -1483,6 +1544,10 @@ export type MutationUpdateActorArgs = {
 
 export type MutationUpdateAspectArgs = {
   aspectData: UpdateAspectInput;
+};
+
+export type MutationUpdateCanvasArgs = {
+  canvasData: UpdateCanvasDirectInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -2032,7 +2097,15 @@ export type UpdateAuthorizationPolicyInput = {
   anonymousReadAccess: Scalars['Boolean'];
 };
 
+export type UpdateCanvasDirectInput = {
+  ID: Scalars['UUID'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 export type UpdateCanvasInput = {
+  isTemplate?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
@@ -2584,7 +2657,12 @@ export type EcoverseInfoFragment = {
     myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     anonymousReadAccess: boolean;
   }>;
-  community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+  }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
@@ -4975,7 +5053,12 @@ export type EcoverseInfoQuery = {
       myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       anonymousReadAccess: boolean;
     }>;
-    community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
@@ -6649,7 +6732,12 @@ export type EcoversePageQuery = {
       myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
       anonymousReadAccess: boolean;
     }>;
-    community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
@@ -6680,7 +6768,12 @@ export type EcoversePageFragment = {
     myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     anonymousReadAccess: boolean;
   }>;
-  community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+  }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{

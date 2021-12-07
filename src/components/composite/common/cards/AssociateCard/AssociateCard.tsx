@@ -1,11 +1,10 @@
 import { Avatar, Box, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { Link as RouterLink } from 'react-router-dom';
 import React, { FC } from 'react';
-import Link from '@mui/material/Link';
 import Typography from '../../../../core/Typography';
 import UserCard, { UserCardProps } from '../user-card/UserCard';
+import ConditionalLink from '../../../../core/ConditionalLink';
 
 interface AssociateCardProps extends UserCardProps {}
 
@@ -30,7 +29,7 @@ export const AssociateCard: FC<AssociateCardProps> = props => {
   const { displayName, roleName, avatarSrc, url } = props;
 
   return (
-    <Link component={RouterLink} to={url} underline="none" aria-label="associate-card">
+    <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
       <Box className={styles.wrapper}>
         <Tooltip arrow title={<UserCard {...props} url="" />}>
           <Avatar variant="square" className={styles.avatar} src={avatarSrc}>
@@ -45,7 +44,7 @@ export const AssociateCard: FC<AssociateCardProps> = props => {
           {roleName}
         </Typography>
       </Box>
-    </Link>
+    </ConditionalLink>
   );
 };
 export default AssociateCard;
