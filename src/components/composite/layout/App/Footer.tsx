@@ -7,6 +7,7 @@ import Typography from '../../../core/Typography';
 import Image from '../../../core/Image';
 import { useConfig } from '../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
+import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 
 const useFooterStyles = makeStyles(theme => ({
   footer: {
@@ -25,12 +26,13 @@ const useFooterStyles = makeStyles(theme => ({
 const Footer: FC = ({ children }) => {
   const styles = useFooterStyles();
   const { platform } = useConfig();
+  const breakpoint = useCurrentBreakpoint();
 
   return (
     <>
       <Box p={2} />
       <Paper elevation={2}>
-        <Container maxWidth="xl" className={styles.footer}>
+        <Container maxWidth={breakpoint} className={styles.footer}>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={4}>
               <Link component={RouterLink} to={'/about'}>

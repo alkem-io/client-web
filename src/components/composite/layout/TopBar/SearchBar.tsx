@@ -3,6 +3,7 @@ import { useSelector } from '@xstate/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGlobalState, useUserContext } from '../../../../hooks';
+import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
 import { RouterLink } from '../../../core/RouterLink';
 import UserSegment from '../../entities/User/UserSegment';
@@ -12,6 +13,7 @@ import SearchComponent from './SearchComponent';
 const SearchBar = () => {
   const { t } = useTranslation();
   const { user, verified, isAuthenticated } = useUserContext();
+  const breakpoint = useCurrentBreakpoint();
 
   const {
     ui: { userSegmentService },
@@ -22,7 +24,7 @@ const SearchBar = () => {
   });
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth={breakpoint}>
       <Box paddingY={2} display="flex" alignItems="center" justifyContent="space-between">
         <LogoComponent />
         <Hidden mdDown>

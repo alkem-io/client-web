@@ -3,6 +3,7 @@ import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
 import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
+import type {} from '@mui/lab/themeAugmentation';
 
 export const theme: ThemeOptions = {
   palette: paletteOptions,
