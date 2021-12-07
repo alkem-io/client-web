@@ -9,9 +9,9 @@ export interface DashboardGenericSectionProps {
   bannerUrl?: string;
   headerText?: string;
   helpText?: string;
-  primaryAction?: JSX.Element;
+  primaryAction?: React.ReactNode;
   subHeaderText?: string;
-  secondaryAction?: JSX.Element;
+  secondaryAction?: React.ReactNode;
   navText?: string;
   navLink?: string;
 }

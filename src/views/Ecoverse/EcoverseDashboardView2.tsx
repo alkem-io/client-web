@@ -18,12 +18,15 @@ import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { AssociateCard } from '../../components/composite/common/cards';
 import SingleUpdateView from '../Updates/SingleUpdateView';
 import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdates';
+import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
   bannerUrl?: string;
   tagline?: string;
   vision?: string;
+  ecoverseId?: string;
   ecoverseNameId?: string;
   communityId?: string;
   organizationNameId?: string;
@@ -49,6 +52,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   vision = '',
   challenges,
   members = [],
+  ecoverseId = '',
   ecoverseNameId = '',
   communityId = '',
   organizationNameId,
@@ -71,6 +75,17 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             <DashboardGenericSection
               bannerUrl={bannerUrl}
               headerText={title}
+              primaryAction={
+                <ApplicationButtonContainer
+                  entities={{
+                    ecoverseId,
+                    ecoverseNameId,
+                    ecoverseName: title || '',
+                  }}
+                >
+                  {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+                </ApplicationButtonContainer>
+              }
               navText={t('buttons.see-more')}
               navLink={'context'}
             >

@@ -47,6 +47,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           bannerUrl={entities?.ecoverse?.context?.visual?.banner}
                           tagline={entities?.ecoverse?.context?.tagline}
                           vision={entities?.ecoverse?.context?.vision}
+                          ecoverseId={entities?.ecoverse?.id}
                           ecoverseNameId={entities?.ecoverse?.nameID}
                           communityId={entities?.ecoverse?.community?.id}
                           organizationNameId={entities?.ecoverse?.host?.nameID}
