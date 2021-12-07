@@ -619,7 +619,15 @@
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
           "updates": "Updates",
-          "discussions": "Discussions"
+          "discussions": {
+            "title": "Discussions",
+            "no-data-create": "No discussions. Create a new discussion",
+            "no-data-join": "No discussions. Please join the community to create a discussion"
+          },
+          "challenges": {
+            "title": "Challenges",
+            "help-text": "This shows the different challenges you can contribute to in this hub."
+          }
         },
         "header": {
           "buttons": {

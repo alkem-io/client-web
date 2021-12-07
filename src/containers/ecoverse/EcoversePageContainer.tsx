@@ -102,11 +102,6 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
         color: 'primary',
       },
       {
-        name: t('pages.activity.projects'),
-        digit: getActivityCount(_activity, 'projects') || 0,
-        color: 'positive',
-      },
-      {
         name: t('pages.activity.members'),
         digit: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
