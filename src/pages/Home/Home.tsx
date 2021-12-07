@@ -1,29 +1,36 @@
+import { Grid } from '@mui/material';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ReactComponent as Globe } from 'bootstrap-icons/icons/globe2.svg';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Icon from '../../components/core/Icon';
+import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
-import Divider from '../../components/core/Divider';
+import AlkemioActivitySection from './AlkemioActivitySection';
+import CommunitySection from './CommunitySection';
 import EcoversesSection from './EcoversesSection';
+import LoginSection from './LoginSection';
+import OrganizationSection from './OrganizationSection';
 import WelcomeSection from './WelcomeSection';
 
 export const HomePage = () => {
-  const { t } = useTranslation();
-
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
 
   return (
     <>
-      <WelcomeSection />
-      <Divider />
-      <Section avatar={<Icon component={Globe} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.home.sections.ecoverse.header')} />
-        <SubHeader text={t('pages.home.sections.ecoverse.subheader')} />
-        <Body text={t('pages.home.sections.ecoverse.body')} />
-      </Section>
-      <EcoversesSection />
+      <SectionSpacer />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <WelcomeSection />
+          <LoginSection />
+          <SectionSpacer />
+          <EcoversesSection />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <AlkemioActivitySection />
+          <SectionSpacer />
+          <CommunitySection />
+          <SectionSpacer />
+          <OrganizationSection />
+        </Grid>
+      </Grid>
     </>
   );
 };

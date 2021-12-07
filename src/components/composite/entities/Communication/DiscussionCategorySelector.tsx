@@ -71,7 +71,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
           selected={value === DiscussionCategoryExtEnum.All}
           onClick={() => handleSelect(DiscussionCategoryExtEnum.All)}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ justifyContent: !showLabels ? 'center' : 'flex-start' }}>
             <StyledDiscussionIcon
               selected={value === DiscussionCategoryExtEnum.All}
               color="primary"
@@ -96,7 +96,7 @@ export const DiscussionCategorySelector: FC<DiscussionCategorySelectorProps> = (
           title={t(`components.discussion-category-selector.${k}` as const)}
         >
           <StyledListItemButton selected={value === k} disableGutters={!showLabels} onClick={() => handleSelect(k)}>
-            <ListItemIcon>
+            <ListItemIcon sx={{ justifyContent: !showLabels ? 'center' : 'flex-start' }}>
               <StyledDiscussionIcon selected={value === k} color="primary" category={k} />
             </ListItemIcon>
             {showLabels && (

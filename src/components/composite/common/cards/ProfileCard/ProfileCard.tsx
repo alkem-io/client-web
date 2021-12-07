@@ -30,22 +30,18 @@ export const ProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | nul
     const styles = useStyles();
 
     return (
-      <Card ref={ref} elevation={0} className={styles.card} square aria-label="profile-card">
+      <Card ref={ref} className={styles.card} square aria-label="profile-card">
         <CardHeader
           className={styles.cardHeader}
           title={
-            <Typography variant="h3">
+            <Typography variant="h4" alignItems="center" display="flex">
               <Box component="span" fontWeight="bold">
                 {title}
               </Box>
               {helpText && <HelpButton helpText={helpText} />}
             </Typography>
           }
-          subheader={subtitle && (
-            <Typography variant="subtitle1">
-              {subtitle}
-            </Typography>
-          )}
+          subheader={subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
         />
         <CardContent className={styles.cardContent}>{children}</CardContent>
       </Card>

@@ -7,7 +7,6 @@ import ApplicationButton from '../../components/composite/common/ApplicationButt
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
 import Button from '../../components/core/Button';
-import Divider from '../../components/core/Divider';
 import { Image } from '../../components/core/Image';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
@@ -75,7 +74,6 @@ export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities
         </Body>
       </Section>
 
-      <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
         <DiscussionsProvider>
           <EcoverseCommunitySection

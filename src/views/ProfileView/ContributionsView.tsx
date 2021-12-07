@@ -1,7 +1,7 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import {
-  ContributionCard,
+  ContributionCardV2,
   CONTRIBUTION_CARD_HEIGHT_SPACING,
   CONTRIBUTION_CARD_WIDTH_SPACING,
 } from '../../components/composite/common/cards';
@@ -39,7 +39,7 @@ const SkeletonItem = () => (
 export const ContributionsView: FC<ContributionViewProps> = ({ contributions, loading, ...rest }) => {
   return (
     <ProfileCard {...rest}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
         {loading && (
           <>
             <SkeletonItem />
@@ -48,9 +48,20 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
         )}
         {!loading &&
           contributions.map((x, i) => (
-            <Grid item key={i}>
+            <Grid item key={i} flexGrow={1} flexBasis={'50%'}>
               <ContributionDetailsContainer entities={x}>
-                {(entities, state) => <ContributionCard details={entities.details} loading={state.loading} />}
+                {({ details = { name: 'blank', tags: [], url: '' } }, state) => (
+                  <ContributionCardV2
+                    details={{
+                      headerText: details?.name,
+                      labelText: details?.type,
+                      tags: details?.tags,
+                      url: details?.url,
+                      mediaUrl: details?.image,
+                    }}
+                    loading={state.loading}
+                  />
+                )}
               </ContributionDetailsContainer>
             </Grid>
           ))}

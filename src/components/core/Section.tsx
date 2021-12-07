@@ -222,7 +222,7 @@ const Section: FC<SectionProps> = ({
   const styles = useSectionStyles(classes);
 
   return (
-    <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
+    <Container maxWidth="xl" className={clsx(styles.root, className)}>
       <div className={styles.cover} />
       <Grid container spacing={2}>
         {!hideAvatar && (

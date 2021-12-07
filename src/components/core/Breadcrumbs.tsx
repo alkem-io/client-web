@@ -1,10 +1,10 @@
-import { Box, Breadcrumbs as MUIBreadcrumbs, Link, styled } from '@mui/material';
+import { Box, Breadcrumbs as MUIBreadcrumbs, Link, styled, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { Path } from '../../context/NavigationProvider';
 import { RouterLink } from './RouterLink';
 
 const Root = styled('div')(({ theme }) => ({
-  paddingLeft: theme.spacing(2),
+  padding: `${theme.spacing(2)} 0`,
   fontWeight: 'bold',
 }));
 
@@ -17,13 +17,17 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ paths }) => {
     <Root>
       <MUIBreadcrumbs>
         {paths.map((p, i) => {
-          return p.real ? (
+          return p.real && i !== paths.length - 1 ? (
             <Link key={i} component={RouterLink} to={p.value}>
-              {p.name.toUpperCase()}
+              <Typography variant="caption" fontWeight="600">
+                {p.name.toUpperCase()}
+              </Typography>
             </Link>
           ) : (
             <Box key={i} component="span">
-              {p.name.toUpperCase()}
+              <Typography variant="caption" color="neutralMedium.main" fontWeight="600">
+                {p.name.toUpperCase()}
+              </Typography>
             </Box>
           );
         })}

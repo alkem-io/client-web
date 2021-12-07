@@ -5,7 +5,6 @@ import ActivityCard from '../../components/composite/common/ActivityPanel/Activi
 import hexToRGBA from '../../utils/hexToRGBA';
 import Grid from '@mui/material/Grid';
 import Button from '../../components/core/Button';
-import Divider from '../../components/core/Divider';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
 import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
@@ -112,7 +111,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           </div>
         </Body>
       </Section>
-      <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', {
           blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
