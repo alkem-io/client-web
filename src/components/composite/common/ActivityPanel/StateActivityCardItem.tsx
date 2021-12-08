@@ -41,7 +41,7 @@ export interface LifecycleModalProps {
   onHide: () => void;
 }
 
-const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
+export const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
   const styles = useDialogStyles();
   const machine = createMachine(JSON.parse(lifecycle.machineDef));
   const graph = toDirectedGraph(machine);

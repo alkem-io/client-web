@@ -11,6 +11,11 @@ fragment OpportunityPage on Opportunity {
   id
   nameID
   displayName
+  tagset {
+    id
+    name
+    tags
+  }
   activity {
     id
     name

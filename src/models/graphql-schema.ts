@@ -6869,6 +6869,7 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       lifecycle?: Maybe<{
         __typename?: 'Lifecycle';
@@ -6936,6 +6937,7 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   lifecycle?: Maybe<{
     __typename?: 'Lifecycle';

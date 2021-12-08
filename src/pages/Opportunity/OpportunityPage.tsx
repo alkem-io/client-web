@@ -65,17 +65,29 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                   <OpportunityContextView
                     entities={{
                       opportunity: entities.opportunity,
+                      availableActorGroupNames: entities.availableActorGroupNames,
+                      existingAspectNames: entities.existingAspectNames,
                       meme: entities.meme,
                     }}
                     state={{
+                      showActorGroupModal: entities.showActorGroupModal,
                       loading: state.loading,
                       error: state.error,
                     }}
                     actions={{
+                      onAddActorGroupOpen: actions.onAddActorGroupOpen,
+                      onAddActorGroupClose: actions.onAddActorGroupClose,
                       onMemeError: actions.onMemeError,
                     }}
                     options={{
-                      hideMeme: entities.hideMeme,
+                      editAspect: entities.permissions.editAspect,
+                      editActorGroup: entities.permissions.editActorGroup,
+                      editActors: entities.permissions.editActors,
+                      removeRelations: entities.permissions.removeRelations,
+                      isMemberOfOpportunity: entities.permissions.isMemberOfOpportunity,
+                      isNoRelations: entities.permissions.isNoRelations,
+                      isAspectAddAllowed: entities.permissions.isAspectAddAllowed,
+                      isAuthenticated: entities.permissions.isAuthenticated,
                     }}
                   />
                 </TabPanel>
