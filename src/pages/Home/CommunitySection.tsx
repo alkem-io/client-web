@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography/Typography';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardCommunitySection, {
-  DashboardCommunitySectionProps
+  DashboardCommunitySectionProps,
 } from '../../components/composite/common/sections/DashboardCommunitySection';
 import { useUserContext } from '../../hooks';
 import { useUsersQuery } from '../../hooks/generated/graphql';

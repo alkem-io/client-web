@@ -56,7 +56,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
                       headerText: details?.name,
                       labelText: details?.type,
                       tags: details?.tags,
-                      url: details?.url,
+                      url: details?.url || '',
                       mediaUrl: details?.image,
                     }}
                     loading={state.loading}

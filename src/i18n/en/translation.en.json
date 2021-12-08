@@ -23,6 +23,7 @@
     "back": "Back",
     "edit": "Edit",
     "see-more": "See more",
+    "see-all": "See all",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -626,6 +627,24 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "dashboard": {
+          "organization": "Facilitating organization",
+          "activity": "Hub statistics",
+          "updates": {
+            "title": "Updates",
+            "no-data": "No updates available."
+          },
+          "discussions": {
+            "title": "Discussions",
+            "no-data-create": "No discussions available. Create a new discussion",
+            "no-data-join": "No discussions available. Please join the community to create a discussion"
+          },
+          "challenges": {
+            "title": "Challenges",
+            "help-text": "This shows the different challenges you can contribute to in this hub."
+          },
+          "community": "Community"
+        },
         "header": {
           "buttons": {
             "settings": {

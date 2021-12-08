@@ -2,14 +2,18 @@ import React, { FC } from 'react';
 import Section, { SectionSpacer } from '../../../core/Section/Section';
 import SectionHeader from '../../../core/Section/SectionHeader';
 import SectionSubHeader from '../../../core/Section/SectionSubheader';
+import { Box, Link } from '@mui/material';
+import { RouterLink } from '../../../core/RouterLink';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
   headerText?: string;
   helpText?: string;
-  primaryAction?: JSX.Element;
+  primaryAction?: React.ReactNode;
   subHeaderText?: string;
-  secondaryAction?: JSX.Element;
+  secondaryAction?: React.ReactNode;
+  navText?: string;
+  navLink?: string;
 }
 
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
@@ -19,6 +23,8 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   helpText,
   primaryAction,
   secondaryAction,
+  navText,
+  navLink,
   children,
 }) => {
   return (
@@ -37,8 +43,17 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
           <SectionSpacer />
         </>
       )}
-      {children}
-      {secondaryAction}
+      <Box paddingY={1}>
+        {children}
+        {secondaryAction}
+      </Box>
+      {navText && navLink && (
+        <Box display="flex" justifyContent="end">
+          <Link component={RouterLink} to={navLink}>
+            {navText}
+          </Link>
+        </Box>
+      )}
     </Section>
   );
 };

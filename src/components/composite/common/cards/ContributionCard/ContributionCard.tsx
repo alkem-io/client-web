@@ -7,13 +7,18 @@ import { useTranslation } from 'react-i18next';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import { ActivityItem } from '../../ActivityPanel/Activities';
+import ActivitiesV2 from '../../Activities/ActivitiesV2';
 
 export interface ContributionCardDetails {
   name: string;
-  type: 'ecoverse' | 'challenge' | 'opportunity';
+  // todo: merge type & tag to just string
+  type?: 'ecoverse' | 'challenge' | 'opportunity';
+  tag?: string;
+  activity?: ActivityItem[];
   tags: string[];
   image: string;
-  url: string;
+  url?: string;
 }
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
@@ -58,7 +63,7 @@ const useStyles = makeStyles(theme =>
 const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { name = '', type, tags = [], image, url = '' } = details || {};
+  const { name = '', type, tag, tags = [], image, activity = [], url = '' } = details || {};
 
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
@@ -84,16 +89,23 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
                     {name}
                   </Typography>
                 </Grid>
-                <Grid item>
-                  <Box className={styles.entityTypeWrapper}>
-                    <Typography variant="body1" className={styles.entityType}>
-                      {type && t(`common.${type}` as const)}
-                    </Typography>
-                  </Box>
-                </Grid>
+                {(type || tag) && (
+                  <Grid item>
+                    <Box className={styles.entityTypeWrapper}>
+                      <Typography variant="body1" className={styles.entityType}>
+                        {type ? t(`common.${type}` as const) : tag}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )}
               </>
             )}
           </Grid>
+          {activity.length > 0 && (
+            <Grid item container>
+              <ActivitiesV2 activity={activity} />
+            </Grid>
+          )}
           <Grid item container>
             <Grid item xs={12}>
               {loading ? <Skeleton variant="rectangular" animation="wave" /> : <TagsComponent tags={tags} count={4} />}
