@@ -12,6 +12,7 @@ import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboard
 import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView';
 import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOpportunitiesView';
 import { AuthorizationCredential } from '../../models/graphql-schema';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 interface ChallengePageProps extends PageProps {}
 
@@ -24,39 +25,40 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
     : [];
 
   return (
-    <ChallengePageContainer>
-      {(entities, state) => {
-        if (!entities || !state) return null;
-        return (
-          <ChallengeTabs>
-            {({ tabName, tabNames }) => (
-              <TabContext value={tabName}>
-                <TabPanel value={tabNames['dashboard']}>
-                  <ChallengeDashboardView entities={entities} state={state} />
-                </TabPanel>
-                <TabPanel value={tabNames['context']}>
-                  <ChallengeContextView entities={entities} state={state} />
-                </TabPanel>
-                <TabPanel value={tabNames['opportunities']}>
-                  <ChallengeOpportunitiesView entities={entities} state={state} />
-                </TabPanel>
-                <TabPanel value={tabNames['community']}>
-                  <ChallengeCommunityPage paths={paths} />
-                </TabPanel>
-                <TabPanel value={tabNames['discussions']}>
-                  <Switch>
-                    <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
-                      <DiscussionsRoute paths={paths} />
-                    </RestrictedRoute>
-                  </Switch>
-                  <DiscussionsRoute paths={paths} />
-                </TabPanel>
-                <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
-              </TabContext>
-            )}
-          </ChallengeTabs>
-        );
-      }}
-    </ChallengePageContainer>
+    <DiscussionsProvider>
+      <ChallengePageContainer>
+        {(entities, state) => {
+          if (!entities || !state) return null;
+          return (
+            <ChallengeTabs>
+              {({ tabName, tabNames }) => (
+                <TabContext value={tabName}>
+                  <TabPanel value={tabNames['dashboard']}>
+                    <ChallengeDashboardView entities={entities} state={state} />
+                  </TabPanel>
+                  <TabPanel value={tabNames['context']}>
+                    <ChallengeContextView entities={entities} state={state} />
+                  </TabPanel>
+                  <TabPanel value={tabNames['opportunities']}>
+                    <ChallengeOpportunitiesView entities={entities} state={state} />
+                  </TabPanel>
+                  <TabPanel value={tabNames['community']}>
+                    <ChallengeCommunityPage paths={paths} />
+                  </TabPanel>
+                  <TabPanel value={tabNames['discussions']}>
+                    <Switch>
+                      <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
+                        <DiscussionsRoute paths={paths} />
+                      </RestrictedRoute>
+                    </Switch>
+                  </TabPanel>
+                  <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
+                </TabContext>
+              )}
+            </ChallengeTabs>
+          );
+        }}
+      </ChallengePageContainer>
+    </DiscussionsProvider>
   );
 };
