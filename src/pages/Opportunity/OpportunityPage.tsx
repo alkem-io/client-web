@@ -12,6 +12,7 @@ import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboa
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
 import { PageProps } from '../common';
 import OpportunityCommunityPage from '../Community/OpportunityCommunityPage';
+import { ActorWhiteboard } from '../../components/Opportunity/ActorWhiteboard';
 
 interface OpportunityPageProps extends PageProps {}
 
@@ -115,7 +116,12 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                       </RestrictedRoute>
                     </Switch>
                   </TabPanel>
-                  <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
+                  <TabPanel value={tabNames['canvases']}>
+                    <ActorWhiteboard
+                      ecosystemModel={null}
+                      actors={[]}
+                    ></ActorWhiteboard>
+                  </TabPanel>
                 </TabContext>
               );
             }}
