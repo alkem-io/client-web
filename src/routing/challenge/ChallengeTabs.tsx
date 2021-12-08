@@ -15,6 +15,7 @@ import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
 import { useChallenge } from '../../hooks';
 import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
+import { ChallengeContainerEntities } from '../../containers/challenge/ChallengePageContainer';
 
 const routes = {
   discussions: '/community/discussions',
@@ -36,12 +37,13 @@ export interface ChallengeTabsProps {
     tabName: string;
     tabNames: ChallengeRoutesType;
   }) => React.ReactNode;
+  entities: ChallengeContainerEntities;
 }
 const createGetter = function <T>(r: T, url: string) {
   return (key: keyof T) => `${url}${r[key]}`;
 };
 
-const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
+const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
   const { path, url } = useRouteMatch();
   const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
@@ -56,6 +58,8 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
     },
     {} as ChallengeRoutesType
   );
+
+  const { communityReadAccess } = entities.permissions;
 
   return (
     <>
@@ -75,6 +79,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
           to={urlGetter('context')}
         />
         <NavigationTab
+          disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
           component={RouterLink}
@@ -90,12 +95,14 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ children }) => {
         />
         <NavigationTab
           icon={<ForumOutlined />}
+          disabled={!communityReadAccess}
           label={t('common.discussions')}
           component={RouterLink}
           value={pathGetter('discussions')}
           to={urlGetter('discussions')}
         />
         <NavigationTab
+          disabled={!communityReadAccess}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}

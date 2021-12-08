@@ -83,7 +83,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('context')}
         />
         <NavigationTab
-          disabled={communityReadAccess}
+          disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
           component={RouterLink}
@@ -91,7 +91,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('community')}
         />
         <NavigationTab
-          disabled={challengesReadAccess}
+          disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
           label={t('common.challenges')}
           component={RouterLink}
@@ -99,7 +99,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('challenges')}
         />
         <NavigationTab
-          disabled={communityReadAccess}
+          disabled={!communityReadAccess}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           component={RouterLink}
@@ -107,7 +107,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('discussions')}
         />
         <NavigationTab
-          disabled={communityReadAccess}
+          disabled={!communityReadAccess}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}

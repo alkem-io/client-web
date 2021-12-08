@@ -30,7 +30,7 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
         {(entities, state) => {
           if (!entities || !state) return null;
           return (
-            <ChallengeTabs>
+            <ChallengeTabs entities={entities}>
               {({ tabName, tabNames }) => (
                 <TabContext value={tabName}>
                   <TabPanel value={tabNames['dashboard']}>
