@@ -3,9 +3,11 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
+import { Discussion } from '../../models/discussion/discussion';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
@@ -23,6 +25,7 @@ export interface ChallengeContainerEntities {
   };
   isAuthenticated: boolean;
   isMember: boolean;
+  discussions: Discussion[];
 }
 
 export interface ChallengeContainerActions {}
@@ -53,6 +56,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const permissions = {
     canEdit: user?.isChallengeAdmin(ecoverseId, challengeId) || false,
   };
+
+  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const activity: ActivityItem[] = useMemo(() => {
     const _activity = _challenge?.ecoverse.challenge.activity || [];
@@ -116,8 +121,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
           projects,
+          discussions: discussionList,
         },
-        { loading: loading || loadingProfile || loadingEcoverseContext },
+        { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
         {}
       )}
     </>
