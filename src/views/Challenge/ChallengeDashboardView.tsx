@@ -80,7 +80,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             <Markdown children={vision} />
           </DashboardGenericSection>
           <SectionSpacer />
-          <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
+          <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (

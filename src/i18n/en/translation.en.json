@@ -669,8 +669,8 @@
       "sections": {
         "dashboard": {
           "statistics": {
-            "title": "Opportunity statistics",
-            "help-text": "Opportunity statistics"
+            "title": "Challenge statistics",
+            "help-text": "Challenge statistics"
           },
           "opportunities": {
             "title": "Opportunities",
