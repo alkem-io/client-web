@@ -1,5 +1,5 @@
 import { sortBy, uniq } from 'lodash';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { useApolloErrorHandler, useEcoverse, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
@@ -50,7 +50,10 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussionData = data?.ecoverse.community?.communication?.discussion;
 
-  const senders = uniq(discussionData?.messages?.map(m => m.sender) || []);
+  const senders = useMemo(() => {
+    if (!discussionData) return [];
+    return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
+  }, [discussionData]);
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const sortedMessages = sortMessages(discussionData?.messages || []);
