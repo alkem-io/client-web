@@ -97,7 +97,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           <SectionSpacer />
           <DashboardOpportunityStatistics
             headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-            helpText={t('pages.opportunity.sections.dashboard.statistics.help-text')}
             activities={entities.activity}
             lifecycle={lifecycle}
             loading={loading}
