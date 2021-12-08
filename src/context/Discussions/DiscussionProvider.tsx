@@ -12,9 +12,8 @@ import {
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import { Discussion as DiscussionGraphql, Message, MessageDetailsFragment } from '../../models/graphql-schema';
-import { useCommunityContext } from '../CommunityProvider';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
-import { useRouteMatch } from 'react-router-dom';
+import { useCommunityContext } from '../CommunityProvider';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
@@ -39,14 +38,10 @@ interface DiscussionProviderProps {}
 const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(messages, item => item.timestamp);
 
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
-  const { path } = useRouteMatch();
-  console.log(path);
   const handleError = useApolloErrorHandler();
   const { discussionId } = useUrlParams();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
-
-  console.log(communityId, ecoverseNameId, discussionId);
 
   const { data, loading } = useCommunityDiscussionQuery({
     variables: { ecoverseId: ecoverseNameId, communityId: communityId, discussionId: discussionId },
