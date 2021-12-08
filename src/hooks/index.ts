@@ -1,4 +1,3 @@
-export * from './useTheme';
 export * from './user/useUserContext';
 export * from './user/useUserMetadata';
 export * from './user/useUserMetadataWrapper';
@@ -25,6 +24,7 @@ export * from './useChallenge';
 export * from './useOpportunity';
 
 export * from './useUrlParams';
+export * from './useCurrentBreakpoint';
 
 export * from './operations/useEditReference';
 export * from './useNavigation';

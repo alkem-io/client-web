@@ -1,9 +1,12 @@
-import { createStyles, makeStyles, Tooltip } from '@material-ui/core';
-import { Help } from '@material-ui/icons';
+import { Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Help } from '@mui/icons-material';
 import React, { FC } from 'react';
 
 interface HelpButtonProps {
   helpText: string;
+  fontSize?: 'inherit' | 'large' | 'medium' | 'small';
 }
 
 const useStyles = makeStyles(theme =>
@@ -14,11 +17,11 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const HelpButton: FC<HelpButtonProps> = ({ helpText }) => {
+export const HelpButton: FC<HelpButtonProps> = ({ helpText, fontSize = 'small' }) => {
   const styles = useStyles();
   return (
     <Tooltip title={helpText} arrow placement="right">
-      <Help color="primary" className={styles.icon} fontSize="small" />
+      <Help color="primary" className={styles.icon} fontSize={fontSize} />
     </Tooltip>
   );
 };

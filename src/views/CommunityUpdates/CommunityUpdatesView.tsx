@@ -11,15 +11,15 @@ import {
   Grid,
   GridProps,
   IconButton,
-  makeStyles,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Skeleton } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
@@ -186,7 +186,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <Skeleton height={40} />
               </CardContent>
               <CardActions disableSpacing>
-                <IconButton disabled className={clsx(styles.expand)}>
+                <IconButton disabled className={clsx(styles.expand)} size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               </CardActions>
@@ -229,6 +229,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                               reviewed ? ids.filter(id => id !== m.id) : [...ids, m.id]
                             );
                           }}
+                          size="large"
                         >
                           {reviewed ? <FontDownloadOffIcon /> : <FontDownloadIcon />}
                         </IconButton>
@@ -254,13 +255,13 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 {displayCardActions && (
                   <CardActions disableSpacing>
                     {canCopy && (
-                      <Tooltip title="Copy content to clipboard" placement="right">
-                        <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                          <IconButton>
+                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
+                        <Tooltip title="Copy content to clipboard" placement="right">
+                          <IconButton size="large">
                             <FileCopyIcon />
                           </IconButton>
-                        </CopyToClipboard>
-                      </Tooltip>
+                        </Tooltip>
+                      </CopyToClipboard>
                     )}
                     {canRemove && (
                       <Tooltip title="Remove community update" placement="right">
@@ -269,6 +270,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                             setRemovedMessageId(m.id);
                             setShowConfirmationDialog(true);
                           }}
+                          size="large"
                         >
                           <DeleteOutlineIcon />
                         </IconButton>
@@ -283,6 +285,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                           onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
                           aria-expanded={expanded}
                           aria-label="show more"
+                          size="large"
                         >
                           <ExpandMoreIcon />
                         </IconButton>

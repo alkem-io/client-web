@@ -1,4 +1,4 @@
-import { FormControl, Grid, makeStyles, MenuItem, OutlinedInput, Select } from '@material-ui/core';
+import { Grid, MenuItem, TextField } from '@mui/material';
 import { orderBy } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,13 +18,8 @@ type FilterProps<T> = {
   children: (filteredData: T[]) => void;
 };
 
-const useStyles = makeStyles(() => ({
-  select: { margin: 0 },
-}));
-
 export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
-  const styles = useStyles();
   const [filterBy, setFilterBy] = useState('');
   const [sortBy, setSortBy] = useState<sortItem<T> | undefined>(undefined);
 
@@ -69,24 +64,30 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
     <>
       <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
         <Grid item xs={12} lg={sort ? 9 : 12}>
-          <FormControl fullWidth size={'small'}>
-            <OutlinedInput placeholder={placeholder ?? t('components.filter.placeholder')} onChange={handleSearch} />
-          </FormControl>
+          <TextField
+            placeholder={placeholder ?? t('components.filter.placeholder')}
+            onChange={handleSearch}
+            size="small"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
         </Grid>
         {sort && (
           <Grid item xs={12} lg={3}>
-            <FormControl className={styles.select} variant="outlined" fullWidth margin="dense">
-              <Select
-                value={keyFromSortItem(sortBy)}
-                onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
-              >
-                {sort.map((s, i) => (
-                  <MenuItem key={i} value={keyFromSortItem(s)}>
-                    {s.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <TextField
+              fullWidth
+              select
+              value={keyFromSortItem(sortBy)}
+              onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
+              inputProps={{ 'aria-label': 'Discussions sort order' }}
+              size="small"
+            >
+              {sort.map((s, i) => (
+                <MenuItem key={i} value={keyFromSortItem(s)}>
+                  {s.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
         )}
       </Grid>

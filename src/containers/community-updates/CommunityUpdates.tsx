@@ -43,6 +43,7 @@ export interface CommunityUpdatesEntities {
   senders: Pick<User, 'id'>[];
 }
 
+// todo: UpdatesProvider
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
   const { communityId, ecoverseId } = entities;

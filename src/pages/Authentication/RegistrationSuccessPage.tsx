@@ -7,7 +7,7 @@ import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
-import { Box, Link } from '@material-ui/core';
+import { Box, Link } from '@mui/material';
 import { useUserContext } from '../../hooks';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 

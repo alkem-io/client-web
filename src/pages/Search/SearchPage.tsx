@@ -1,31 +1,32 @@
-import { Box, Container, OutlinedInput } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import { Box, Container, OutlinedInput } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Loading } from '../../components/core';
-import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
-import Icon from '../../components/core/Icon';
-import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
-import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Typography from '../../components/core/Typography';
 import {
   ChallengeSearchCard,
   OpportunitySearchCard,
   OrganizationSearchCard,
   UserCard,
 } from '../../components/composite/search';
-import { createStyles, useUpdateNavigation } from '../../hooks';
+import { Loading } from '../../components/core';
+import { CardContainer } from '../../components/core/CardContainer';
+import Icon from '../../components/core/Icon';
+import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
+import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import Typography from '../../components/core/Typography';
+import { useUpdateNavigation } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
+import { useLocation } from 'react-router';
 
-const useStyles = createStyles(() => ({
+const useStyles = makeStyles(() => ({
   formControl: {
     minWidth: 150,
   },
@@ -109,6 +110,17 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const { t } = useTranslation();
   const styles = useStyles();
 
+  const { search: params } = useLocation();
+  const queryParams = new URLSearchParams(params);
+  const queryParam = queryParams.get('terms') ?? '';
+
+  const termsFromUrl = useMemo(() => queryParam?.split(',').map(x => ({ id: x, name: x })) || [], [queryParam]);
+  const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
+
+  useEffect(() => {
+    setTermsFromQuery(termsFromUrl);
+  }, [termsFromUrl, setTermsFromQuery]);
+
   const [results, setResults] = useState<ResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
@@ -131,7 +143,34 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     }
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const [search, { loading: isSearching }] = useSearchLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      const updatedResult = toResultType(data);
+      setResults(updatedResult);
+    },
+  });
+
+  const searchQuery = useCallback(
+    (terms: string[], filters: string[]) => {
+      search({
+        variables: {
+          searchData: {
+            terms,
+            tagsetNames,
+            typesFilter: filters,
+          },
+        },
+      });
+    },
+    [search]
+  );
+
+  useEffect(() => {
+    searchQuery(termsFromQuery?.map(x => x.name) || [], typesFilter.value);
+  }, [searchQuery, termsFromQuery]);
+
+  const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const typename = event.target.value;
     const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
 
@@ -143,26 +182,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     }
   };
 
-  const [search, { loading: isSearching }] = useSearchLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      const updatedResult = toResultType(data);
-      setResults(updatedResult);
-    },
-  });
-
-  const searchQuery = (terms: string[], filters: string[]) => {
-    search({
-      variables: {
-        searchData: {
-          terms,
-          tagsetNames,
-          typesFilter: filters,
-        },
-      },
-    });
-  };
-
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
@@ -170,9 +189,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         <Box marginBottom={2}>
           <SubHeader text={t('search.alternativesubheader')} />
         </Box>
-        <MultipleSelect label={'search for skills'} onChange={handleTermChange} elements={_tags} allowUnknownValues />
+        <MultipleSelect
+          label={'search for skills'}
+          onChange={handleTermChange}
+          defaultValue={termsFromQuery}
+          elements={_tags}
+          allowUnknownValues
+        />
       </Section>
-      <Divider />
       {isSearching && (
         <Container maxWidth="xl">
           <Loading />

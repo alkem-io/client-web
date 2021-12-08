@@ -263,13 +263,42 @@ export enum AuthorizationPrivilege {
 
 export type Canvas = {
   __typename?: 'Canvas';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The checkout out state of this Canvas. */
+  checkout?: Maybe<CanvasCheckout>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is the Canvas a template? */
+  isTemplate: Scalars['Boolean'];
   /** The name of the Canvas. */
   name: Scalars['String'];
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
 };
+
+export type CanvasCheckout = {
+  __typename?: 'CanvasCheckout';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lifecycle: Lifecycle;
+  /** The id of the user that has checked the entity out. */
+  lockedBy: Scalars['UUID'];
+  /** Checked out status of the Canvas */
+  status: CanvasCheckoutStateEnum;
+};
+
+export type CanvasCheckoutEventInput = {
+  canvasCheckoutID: Scalars['UUID'];
+  eventName: Scalars['String'];
+};
+
+export enum CanvasCheckoutStateEnum {
+  Available = 'AVAILABLE',
+  CheckedOut = 'CHECKED_OUT',
+}
 
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
@@ -361,6 +390,10 @@ export type CommunicationAdminOrphanedUsageResult = {
   __typename?: 'CommunicationAdminOrphanedUsageResult';
   /** Rooms in the Communication platform that are not used */
   rooms: Array<CommunicationAdminRoomResult>;
+};
+
+export type CommunicationAdminRemoveOrphanedRoomInput = {
+  roomID: Scalars['String'];
 };
 
 export type CommunicationAdminRoomMembershipResult = {
@@ -462,6 +495,8 @@ export type Context = {
   authorization?: Maybe<Authorization>;
   /** A detailed description of the current situation */
   background?: Maybe<Scalars['String']>;
+  /** The Canvas entities for this Context. */
+  canvases?: Maybe<Array<Canvas>>;
   /** The EcosystemModel for this Context. */
   ecosystemModel?: Maybe<EcosystemModel>;
   /** The ID of the entity */
@@ -505,6 +540,12 @@ export type CreateAspectInput = {
   framing: Scalars['String'];
   parentID: Scalars['UUID'];
   title: Scalars['String'];
+};
+
+export type CreateCanvasOnContextInput = {
+  contextID: Scalars['UUID'];
+  name: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -692,6 +733,10 @@ export type DeleteApplicationInput = {
 };
 
 export type DeleteAspectInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCanvasInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1023,6 +1068,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
+  /** Remove an orphaned room from messaging platform. */
+  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1057,8 +1104,10 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Creates Application for a User to join this Community. */
   createApplication: Application;
-  /** Create a new Aspect on the Opportunity. */
+  /** Create a new Aspect on the Context. */
   createAspect: Aspect;
+  /** Create a new Canvas on the Context. */
+  createCanvasOnContext: Canvas;
   /** Creates a new Challenge within the specified Ecoverse. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -1095,6 +1144,8 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
+  /** Deletes the specified Canvas. */
+  deleteCanvas: Canvas;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1119,6 +1170,8 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
+  /** Trigger an event on the Organization Verification. */
+  eventOnCanvasCheckout: CanvasCheckout;
   /** Trigger an event on the Challenge. */
   eventOnChallenge: Challenge;
   /** Trigger an event on the Opportunity. */
@@ -1165,6 +1218,8 @@ export type Mutation = {
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
+  /** Updates the specified Canvas. */
+  updateCanvas: Canvas;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the specified Discussion. */
@@ -1193,6 +1248,10 @@ export type Mutation = {
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
+};
+
+export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
+  orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -1267,6 +1326,10 @@ export type MutationCreateAspectArgs = {
   aspectData: CreateAspectInput;
 };
 
+export type MutationCreateCanvasOnContextArgs = {
+  canvasData: CreateCanvasOnContextInput;
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeOnEcoverseInput;
 };
@@ -1335,6 +1398,10 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
+export type MutationDeleteCanvasArgs = {
+  deleteData: DeleteCanvasInput;
+};
+
 export type MutationDeleteChallengeArgs = {
   deleteData: DeleteChallengeInput;
 };
@@ -1381,6 +1448,10 @@ export type MutationDeleteUserGroupArgs = {
 
 export type MutationEventOnApplicationArgs = {
   applicationEventData: ApplicationEventInput;
+};
+
+export type MutationEventOnCanvasCheckoutArgs = {
+  canvasCheckoutEventData: CanvasCheckoutEventInput;
 };
 
 export type MutationEventOnChallengeArgs = {
@@ -1473,6 +1544,10 @@ export type MutationUpdateActorArgs = {
 
 export type MutationUpdateAspectArgs = {
   aspectData: UpdateAspectInput;
+};
+
+export type MutationUpdateCanvasArgs = {
+  canvasData: UpdateCanvasDirectInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -2022,7 +2097,15 @@ export type UpdateAuthorizationPolicyInput = {
   anonymousReadAccess: Scalars['Boolean'];
 };
 
+export type UpdateCanvasDirectInput = {
+  ID: Scalars['UUID'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 export type UpdateCanvasInput = {
+  isTemplate?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
@@ -2237,7 +2320,7 @@ export type User = Searchable & {
   phone: Scalars['String'];
   /** The preferences for this user */
   preferences: Array<UserPreference>;
-  /** The profile for this User */
+  /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
 
@@ -2284,10 +2367,10 @@ export type UserPreference = {
   __typename?: 'UserPreference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: UserPreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The preference definition */
-  userPreferenceDefinition: UserPreferenceDefinition;
   /** Value of the preference */
   value: Scalars['String'];
 };
@@ -2403,15 +2486,11 @@ export type ChallengeCardFragment = {
   id: string;
   displayName: string;
   nameID: string;
-  activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   context?: Maybe<{
     __typename?: 'Context';
     id: string;
     tagline?: Maybe<string>;
-    background?: Maybe<string>;
-    vision?: Maybe<string>;
-    impact?: Maybe<string>;
-    who?: Maybe<string>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -2423,6 +2502,11 @@ export type ChallengeInfoFragment = {
   displayName: string;
   nameID: string;
   community?: Maybe<{ __typename?: 'Community'; id: string }>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
   context?: Maybe<{
     __typename?: 'Context';
     id: string;
@@ -2567,9 +2651,24 @@ export type EcoverseInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+  }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';
@@ -2737,6 +2836,11 @@ export type OpportunityInfoFragment = {
     }>
   >;
   activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
 };
 
 export type OrganizationInfoFragment = {
@@ -2879,18 +2983,6 @@ export type OrganizationSearchResultFragment = {
 
 export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
-export type SidebarEcoverseFragment = {
-  __typename?: 'Ecoverse';
-  id: string;
-  nameID: string;
-  displayName: string;
-  context?: Maybe<{
-    __typename?: 'Context';
-    id: string;
-    visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-  }>;
-};
-
 export type UserAgentFragment = {
   __typename?: 'User';
   agent?: Maybe<{
@@ -2964,6 +3056,15 @@ export type UserMembershipDetailsFragment = {
       opportunityID?: Maybe<string>;
     }>
   >;
+};
+
+export type UpdateUserPreferencesMutationVariables = Exact<{
+  input: UpdateUserPreferenceInput;
+}>;
+
+export type UpdateUserPreferencesMutation = {
+  __typename?: 'Mutation';
+  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -3926,15 +4027,11 @@ export type ChallengeCardQuery = {
       id: string;
       displayName: string;
       nameID: string;
-      activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
         tagline?: Maybe<string>;
-        background?: Maybe<string>;
-        vision?: Maybe<string>;
-        impact?: Maybe<string>;
-        who?: Maybe<string>;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -3957,15 +4054,11 @@ export type ChallengeCardsQuery = {
         id: string;
         displayName: string;
         nameID: string;
-        activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+        activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
         context?: Maybe<{
           __typename?: 'Context';
           id: string;
           tagline?: Maybe<string>;
-          background?: Maybe<string>;
-          vision?: Maybe<string>;
-          impact?: Maybe<string>;
-          who?: Maybe<string>;
           visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
         }>;
         tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -4053,6 +4146,11 @@ export type ChallengeInfoQuery = {
       displayName: string;
       nameID: string;
       community?: Maybe<{ __typename?: 'Community'; id: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
       context?: Maybe<{
         __typename?: 'Context';
         id: string;
@@ -4299,6 +4397,11 @@ export type ChallengeProfileQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
         members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -4381,6 +4484,11 @@ export type ChallengeProfileFragment = {
   community?: Maybe<{
     __typename?: 'Community';
     id: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
     members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -4954,9 +5062,24 @@ export type EcoverseInfoQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
+    }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -5409,6 +5532,11 @@ export type OpportunityInfoQuery = {
         }>
       >;
       activity?: Maybe<Array<{ __typename?: 'NVP'; name: string; value: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
     };
   };
 };
@@ -5443,8 +5571,10 @@ export type OpportunityActorGroupsQuery = {
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
+      id: string;
       context?: Maybe<{
         __typename?: 'Context';
+        id: string;
         ecosystemModel?: Maybe<{
           __typename?: 'EcosystemModel';
           id: string;
@@ -5484,9 +5614,13 @@ export type OpportunityAspectsQuery = {
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
+      id: string;
       context?: Maybe<{
         __typename?: 'Context';
-        aspects?: Maybe<Array<{ __typename?: 'Aspect'; title: string; framing: string; explanation: string }>>;
+        id: string;
+        aspects?: Maybe<
+          Array<{ __typename?: 'Aspect'; id: string; title: string; framing: string; explanation: string }>
+        >;
       }>;
     };
   };
@@ -5994,23 +6128,6 @@ export type ServerMetadataQuery = {
   };
 };
 
-export type SidebarEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SidebarEcoversesListQuery = {
-  __typename?: 'Query';
-  ecoverses: Array<{
-    __typename?: 'Ecoverse';
-    id: string;
-    nameID: string;
-    displayName: string;
-    context?: Maybe<{
-      __typename?: 'Context';
-      id: string;
-      visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string }>;
-    }>;
-  }>;
-};
-
 export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
 export type TagsetsTemplateQuery = {
@@ -6072,6 +6189,32 @@ export type UserProfileApplicationsQuery = {
         opportunityID?: Maybe<string>;
       }>
     >;
+  };
+};
+
+export type UserNotificationsPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserNotificationsPreferencesQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    preferences: Array<{
+      __typename?: 'UserPreference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'UserPreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: UserPreferenceType;
+        valueType: UserPreferenceValueType;
+      };
+    }>;
   };
 };
 
@@ -6146,6 +6289,7 @@ export type UserAvatarsQuery = {
   usersById: Array<{
     __typename?: 'User';
     id: string;
+    nameID: string;
     displayName: string;
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   }>;
@@ -6369,6 +6513,32 @@ export type OpportunityContributionDetailsQuery = {
   };
 };
 
+export type ChallengesOverviewPageQueryVariables = Exact<{
+  membershipData: MembershipUserInput;
+}>;
+
+export type ChallengesOverviewPageQuery = {
+  __typename?: 'Query';
+  membershipUser: {
+    __typename?: 'UserMembership';
+    ecoverses: Array<{
+      __typename?: 'MembershipUserResultEntryEcoverse';
+      id: string;
+      ecoverseID: string;
+      nameID: string;
+      displayName: string;
+      challenges: Array<{ __typename?: 'MembershipResultEntry'; id: string }>;
+    }>;
+  };
+};
+
+export type SimpleEcoverseFragment = {
+  __typename?: 'MembershipUserResultEntryEcoverse';
+  ecoverseID: string;
+  nameID: string;
+  displayName: string;
+};
+
 export type CommunityUpdatesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
@@ -6438,6 +6608,17 @@ export type DiscussionDetailsFragment = {
   authorization?: Maybe<{ __typename?: 'Authorization'; myPrivileges?: Maybe<Array<AuthorizationPrivilege>> }>;
 };
 
+export type DiscussionDetailsNoAuthFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  description: string;
+  createdBy: string;
+  timestamp?: Maybe<number>;
+  category: DiscussionCategory;
+  commentsCount: number;
+};
+
 export type CommunityDiscussionQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
@@ -6502,10 +6683,6 @@ export type CommunityDiscussionListQuery = {
             timestamp?: Maybe<number>;
             category: DiscussionCategory;
             commentsCount: number;
-            authorization?: Maybe<{
-              __typename?: 'Authorization';
-              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
-            }>;
           }>
         >;
       }>;
@@ -6570,9 +6747,24 @@ export type EcoversePageQuery = {
     nameID: string;
     displayName: string;
     activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
-    community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
+    }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-    authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
     context?: Maybe<{
       __typename?: 'Context';
@@ -6596,9 +6788,24 @@ export type EcoversePageFragment = {
   nameID: string;
   displayName: string;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
-  community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    displayName: string;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+  }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
-  authorization?: Maybe<{ __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
   context?: Maybe<{
     __typename?: 'Context';
@@ -6692,6 +6899,7 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
       activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
       lifecycle?: Maybe<{
         __typename?: 'Lifecycle';
@@ -6721,7 +6929,9 @@ export type OpportunityPageQuery = {
         impact?: Maybe<string>;
         vision?: Maybe<string>;
         references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
-        aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string }>>;
+        aspects?: Maybe<
+          Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>
+        >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; banner: string }>;
         ecosystemModel?: Maybe<{
           __typename?: 'EcosystemModel';
@@ -6748,6 +6958,16 @@ export type OpportunityPageQuery = {
       projects?: Maybe<
         Array<{ __typename?: 'Project'; id: string; nameID: string; displayName: string; description?: Maybe<string> }>
       >;
+      community?: Maybe<{
+        __typename?: 'Community';
+        id: string;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
+        members?: Maybe<Array<{ __typename?: 'User'; id: string; nameID: string }>>;
+      }>;
     };
   };
 };
@@ -6757,6 +6977,7 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
   lifecycle?: Maybe<{
     __typename?: 'Lifecycle';
@@ -6786,7 +7007,7 @@ export type OpportunityPageFragment = {
     impact?: Maybe<string>;
     vision?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
-    aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string }>>;
+    aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; banner: string }>;
     ecosystemModel?: Maybe<{
       __typename?: 'EcosystemModel';
@@ -6813,6 +7034,16 @@ export type OpportunityPageFragment = {
   projects?: Maybe<
     Array<{ __typename?: 'Project'; id: string; nameID: string; displayName: string; description?: Maybe<string> }>
   >;
+  community?: Maybe<{
+    __typename?: 'Community';
+    id: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+    members?: Maybe<Array<{ __typename?: 'User'; id: string; nameID: string }>>;
+  }>;
 };
 
 export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;

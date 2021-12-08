@@ -157,11 +157,37 @@ export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CanvasKeySpecifier = ('id' | 'name' | 'value' | CanvasKeySpecifier)[];
+export type CanvasKeySpecifier = (
+  | 'authorization'
+  | 'checkout'
+  | 'id'
+  | 'isTemplate'
+  | 'name'
+  | 'value'
+  | CanvasKeySpecifier
+)[];
 export type CanvasFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  checkout?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CanvasCheckoutKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'lifecycle'
+  | 'lockedBy'
+  | 'status'
+  | CanvasCheckoutKeySpecifier
+)[];
+export type CanvasCheckoutFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  lockedBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'activity'
@@ -313,6 +339,7 @@ export type ContextKeySpecifier = (
   | 'aspects'
   | 'authorization'
   | 'background'
+  | 'canvases'
   | 'ecosystemModel'
   | 'id'
   | 'impact'
@@ -327,6 +354,7 @@ export type ContextFieldPolicy = {
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   background?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvases?: FieldPolicy<any> | FieldReadFunction<any>;
   ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -539,6 +567,7 @@ export type MetadataFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
+  | 'adminCommunicationRemoveOrphanedRoom'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
@@ -557,6 +586,7 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createApplication'
   | 'createAspect'
+  | 'createCanvasOnContext'
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
@@ -575,6 +605,7 @@ export type MutationKeySpecifier = (
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteAspect'
+  | 'deleteCanvas'
   | 'deleteChallenge'
   | 'deleteDiscussion'
   | 'deleteEcoverse'
@@ -587,6 +618,7 @@ export type MutationKeySpecifier = (
   | 'deleteUserApplication'
   | 'deleteUserGroup'
   | 'eventOnApplication'
+  | 'eventOnCanvasCheckout'
   | 'eventOnChallenge'
   | 'eventOnOpportunity'
   | 'eventOnOrganizationVerification'
@@ -610,6 +642,7 @@ export type MutationKeySpecifier = (
   | 'sendUpdate'
   | 'updateActor'
   | 'updateAspect'
+  | 'updateCanvas'
   | 'updateChallenge'
   | 'updateDiscussion'
   | 'updateEcosystemModel'
@@ -626,6 +659,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -644,6 +678,7 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -662,6 +697,7 @@ export type MutationFieldPolicy = {
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -674,6 +710,7 @@ export type MutationFieldPolicy = {
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventOnCanvasCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -697,6 +734,7 @@ export type MutationFieldPolicy = {
   sendUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1112,15 +1150,15 @@ export type UserMembershipFieldPolicy = {
 };
 export type UserPreferenceKeySpecifier = (
   | 'authorization'
+  | 'definition'
   | 'id'
-  | 'userPreferenceDefinition'
   | 'value'
   | UserPreferenceKeySpecifier
 )[];
 export type UserPreferenceFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  definition?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  userPreferenceDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserPreferenceDefinitionKeySpecifier = (
@@ -1223,6 +1261,10 @@ export type StrictTypedTypePolicies = {
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
     fields?: CanvasFieldPolicy;
+  };
+  CanvasCheckout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CanvasCheckoutKeySpecifier | (() => undefined | CanvasCheckoutKeySpecifier);
+    fields?: CanvasCheckoutFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);

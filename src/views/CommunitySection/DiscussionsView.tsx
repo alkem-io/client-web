@@ -1,17 +1,17 @@
+import Link from '@mui/material/Link';
+import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import Link from '@material-ui/core/Link';
-import { createStyles } from '../../hooks';
-import { Discussion } from '../../models/discussion/discussion';
+import { useRouteMatch } from 'react-router';
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
-import { RouterLink } from '../../components/core/RouterLink';
-import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
 import ConditionalLink from '../../components/core/ConditionalLink';
+import { RouterLink } from '../../components/core/RouterLink';
+import { Discussion } from '../../models/discussion/discussion';
+import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 
-const useDiscussionsStyles = createStyles(_theme => ({
+const useDiscussionsStyles = makeStyles(_theme => ({
   container: {
     maxHeight: '480px',
     overflow: 'auto',

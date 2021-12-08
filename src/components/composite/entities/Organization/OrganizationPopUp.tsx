@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Dialog from '@material-ui/core/Dialog';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Dialog from '@mui/material/Dialog';
 import { useMembershipOrganizationQuery, useOrganizationDetailsQuery } from '../../../../hooks/generated/graphql';
-import { createStyles } from '../../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Avatar from '../../../core/Avatar';
 import { Loading } from '../../../core';
 import Typography from '../../../core/Typography';
@@ -19,13 +19,13 @@ import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 
-const groupPopUpStyles = createStyles(theme => ({
+const groupPopUpStyles = makeStyles(theme => ({
   header: {
     display: 'flex',
     gap: theme.spacing(4),
     alignItems: 'center',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexWrap: 'wrap',
       gap: theme.spacing(2),
     },
@@ -35,7 +35,7 @@ const groupPopUpStyles = createStyles(theme => ({
     alignItems: 'center',
     gap: theme.spacing(1),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -44,7 +44,7 @@ const groupPopUpStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -69,7 +69,7 @@ const groupPopUpStyles = createStyles(theme => ({
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
   tableScrollable: {

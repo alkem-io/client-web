@@ -3,23 +3,30 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { useChallenge, useUserContext } from '../../hooks';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
-import { ChallengeProfileFragment } from '../../models/graphql-schema';
+import { Discussion } from '../../models/discussion/discussion';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 
 export interface ChallengeContainerEntities {
+  ecoverseId: string;
+  ecoverseNameId: string;
+  ecoverseDisplayName: string;
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
   projects: Project[];
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
+  discussions: Discussion[];
 }
 
 export interface ChallengeContainerActions {}
@@ -36,6 +43,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { t } = useTranslation();
   const history = useHistory();
   const { user, isAuthenticated } = useUserContext();
+  const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengeProfileQuery({
@@ -48,7 +56,12 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(ecoverseId, challengeId) || false,
+    communityReadAccess: (_challenge?.ecoverse?.challenge?.community?.authorization?.myPrivileges || []).some(
+      x => x === AuthorizationPrivilege.Read
+    ),
   };
+
+  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const activity: ActivityItem[] = useMemo(() => {
     const _activity = _challenge?.ecoverse.challenge.activity || [];
@@ -103,14 +116,18 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     <>
       {children(
         {
+          ecoverseId,
+          ecoverseNameId,
+          ecoverseDisplayName: ecoverse?.displayName || '',
           challenge: _challenge?.ecoverse.challenge,
           activity,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
           projects,
+          discussions: discussionList,
         },
-        { loading: loading || loadingProfile },
+        { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
         {}
       )}
     </>

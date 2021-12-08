@@ -2,8 +2,11 @@ query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!
   ecoverse(ID: $ecoverseId) {
     id
     opportunity(ID: $opportunityId) {
+      id
       context {
+        id
         aspects {
+          id
           title
           framing
           explanation

@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Dialog from '@material-ui/core/Dialog';
-import { createStyles } from '../../../hooks/useTheme';
+import Dialog from '@mui/material/Dialog';
+import { makeStyles } from '@mui/styles';
 import Avatar from '../../core/Avatar';
 import Button from '../../core/Button';
 import Typography from '../../core/Typography';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import TagContainer from '../../core/TagContainer';
 import Tag from '../../core/Tag';
 
-const getStyles = createStyles(theme => ({
+const getStyles = makeStyles(theme => ({
   title: {
     textTransform: 'capitalize',
   },
@@ -22,7 +22,7 @@ const getStyles = createStyles(theme => ({
       textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
   divCentered: {

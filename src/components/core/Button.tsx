@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC, forwardRef } from 'react';
-import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@material-ui/core';
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import hexToRGBA from '../../utils/hexToRGBA';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   whiteStatic: {
@@ -68,6 +68,7 @@ const useStyles = makeStyles(theme => ({
 
     '&:hover': {
       color: theme.palette.background.default,
+      borderColor: theme.palette.error.main,
       background: hexToRGBA(theme.palette.error.main, 0.7),
     },
 
@@ -120,11 +121,11 @@ const Button: FC<ButtonProps> = forwardRef(
       small = false,
       block = false,
       disabled = false,
-      children,
       as: Component = 'button',
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onClick = () => {},
       text,
+      children,
       ...rest
     },
     ref
@@ -147,12 +148,13 @@ const Button: FC<ButtonProps> = forwardRef(
         }}
         component={Component as any}
         variant="outlined"
-        color={variant === 'primary' ? 'primary' : 'default'}
+        color={variant === 'primary' ? 'primary' : 'grey'}
         startIcon={startIcon}
         disabled={disabled}
         {...props}
       >
-        {text}
+        {text && <span>{text}</span>}
+        {children}
       </MuiButton>
     );
   }

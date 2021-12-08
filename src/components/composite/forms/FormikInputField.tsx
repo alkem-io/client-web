@@ -1,8 +1,8 @@
-import { TextField, TextFieldProps } from '@material-ui/core';
-import { Omit } from '@material-ui/types';
+import { TextField, TextFieldProps } from '@mui/material';
+import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
-type InputFieldProps = Omit<TextFieldProps, 'variant'> & {
+type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
   required?: boolean;
@@ -21,6 +21,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   type,
   placeholder,
   autoComplete,
+  InputProps,
   ...rest
 }) => {
   const [field, meta] = useField(name);
@@ -42,6 +43,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
       autoComplete={autoComplete}
       fullWidth
       InputProps={{
+        ...InputProps,
         readOnly: readOnly,
       }}
       {...rest}

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
+import { Error404 } from '../';
 import { Loading } from '../../components/core';
+import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
-import { Error404 } from '../';
-import { ThemeProviderV2 } from '../../context/ThemeProvider';
 
 interface UserProfileProps {
   edit?: boolean;
@@ -29,9 +29,10 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
   };
 
   return (
-    <ThemeProviderV2>
+    <>
+      <SectionSpacer />
       <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
-    </ThemeProviderV2>
+    </>
   );
 };
 export default UserProfilePage;

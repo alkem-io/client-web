@@ -31,6 +31,10 @@ fragment ChallengeProfile on Challenge {
   }
   community {
     id
+    authorization{
+      id
+      myPrivileges
+    }
     members {
       id
       displayName

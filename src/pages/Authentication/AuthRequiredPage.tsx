@@ -8,7 +8,7 @@ import Typography from '../../components/core/Typography';
 import { useQueryParams } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 interface AuthRequiredPageProps {}
 

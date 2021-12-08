@@ -1,5 +1,5 @@
-import { Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import React, { FC } from 'react';
 import { useGlobalState } from '../hooks';

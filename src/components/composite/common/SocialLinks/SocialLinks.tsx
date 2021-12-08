@@ -1,9 +1,12 @@
-import { Link } from '@material-ui/core';
-import { Block, GitHub, LinkedIn, Mail, Public, Twitter } from '@material-ui/icons';
-import React, { FC } from 'react';
+import { Link } from '@mui/material';
+import { Block, Mail, Public } from '@mui/icons-material';
+import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../models/enums/SocialNetworks';
 import Typography from '../../../core/Typography';
-
+import GitHub from '../../../core/icons/GitHub';
+import LinkedIn from '../../../core/icons/LinkedIn';
+import Twitter from '../../../core/icons/Twitter';
+import * as yup from 'yup';
 interface ContactDetailsProps {
   title: string;
   items?: SocialLinkItem[];
@@ -16,11 +19,11 @@ const getSocialIcon = (type: SocialNetworkEnum) => {
     case SocialNetworkEnum.email:
       return <Mail fontSize={fontSize} />;
     case SocialNetworkEnum.github:
-      return <GitHub fontSize={fontSize} htmlColor="#000000" />;
+      return <GitHub fontSize={fontSize} />;
     case SocialNetworkEnum.linkedin:
-      return <LinkedIn fontSize={fontSize} htmlColor="#0e76a8" />;
+      return <LinkedIn fontSize={fontSize} />;
     case SocialNetworkEnum.twitter:
-      return <Twitter fontSize={fontSize} htmlColor="#00acee" />;
+      return <Twitter fontSize={fontSize} />;
     case SocialNetworkEnum.website:
       return <Public fontSize={fontSize} />;
     default:
@@ -44,26 +47,33 @@ export interface SocialLinkItem {
   url: string;
 }
 
+const schema = yup.string().url();
+
 export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
+  const filteredSortedItems = useMemo(
+    () =>
+      items
+        ?.filter(i => schema.isValidSync(i.url) && i.url)
+        .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
+    [items]
+  );
   return (
     <>
       <Typography color="primary" weight="boldLight">
         {title}
       </Typography>
 
-      {items
-        ?.sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type])
-        .map((item, i) => (
-          <Link
-            key={i}
-            href={getSocialLinkUrl(item.type, item.url)}
-            rel="noreferrer"
-            tabIndex={0}
-            aria-label="social-link"
-          >
-            {getSocialIcon(item.type)}
-          </Link>
-        ))}
+      {filteredSortedItems.map((item, i) => (
+        <Link
+          key={i}
+          href={getSocialLinkUrl(item.type, item.url)}
+          rel="noreferrer"
+          tabIndex={0}
+          aria-label="social-link"
+        >
+          {getSocialIcon(item.type)}
+        </Link>
+      ))}
     </>
   );
 };

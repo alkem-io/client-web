@@ -1,15 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  createStyles,
-  Grid,
-  Link,
-  makeStyles,
-} from '@material-ui/core';
+import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, Grid, Link } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsButton } from '../../components/composite';
@@ -83,7 +74,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
   const styles = useStyles();
   const { t } = useTranslation();
   return (
-    <Card elevation={0} className={styles.card} square>
+    <Card className={styles.card} square>
       <CardMedia className={styles.media} image={entity.banner}>
         <CardHeader
           classes={{

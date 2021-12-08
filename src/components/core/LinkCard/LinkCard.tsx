@@ -1,4 +1,4 @@
-import { Card, CardProps, Link } from '@material-ui/core';
+import { Card, CardProps, Link } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { RouterLink } from '../RouterLink';
 

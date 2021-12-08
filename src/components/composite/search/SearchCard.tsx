@@ -1,10 +1,10 @@
 import React, { FC, memo, ReactElement, useState } from 'react';
 import { default as CoreCard } from '../../core/Card';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { Activities, ActivityItem } from '../common/ActivityPanel/Activities';
 
-const getStyles = createStyles(theme => ({
+const getStyles = makeStyles(theme => ({
   card: {
     transition: 'box-shadow 0.15s ease-in-out',
     border: `1px solid ${theme.palette.neutralMedium.main}`,
@@ -52,7 +52,7 @@ const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag
         bodyProps={{
           classes: {
             background: theme => hexToRGBA(theme.palette.neutral.main, 0.7),
-            padding: theme => `${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
+            padding: theme => `${theme.spacing(4)} ${theme.spacing(3)} ${theme.spacing(1)}`,
           },
         }}
         primaryTextProps={{

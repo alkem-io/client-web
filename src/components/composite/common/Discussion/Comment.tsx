@@ -1,9 +1,11 @@
+import { DeleteOutlined } from '@mui/icons-material';
+import { Avatar, Box, Paper, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
-import { Avatar, Box, createStyles, makeStyles, Typography, useTheme } from '@material-ui/core';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
-import IconButton from '@material-ui/core/IconButton';
 
 const AVATAR_SIZE = 5;
 
@@ -21,33 +23,46 @@ interface DiscussionCommentProps {
   comment: Comment;
   canDelete: boolean;
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
+  isRootComment?: boolean;
 }
 
-export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete }) => {
+export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete, isRootComment }) => {
   const styles = useStyles();
 
   const { author, body, id } = comment;
-  const theme = useTheme();
 
   return (
-    <Box border={1} borderColor="neutralMedium.main" borderRadius={theme.shape.borderRadius}>
-      <Box padding={1} display="flex" alignItems="center" justifyContent="space-between" bgcolor="neutralMedium.main">
+    <Box
+      component={Paper}
+      elevation={1}
+      bgcolor={isRootComment ? 'background.paper' : 'background.default'}
+      borderRadius={1}
+    >
+      <Box
+        padding={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}
+      >
         <Box display="flex" alignItems="center">
           <Avatar className={styles.avatar} src={author?.avatarUrl} variant="rounded">
             {author?.displayName[0]}
           </Avatar>
           <Box>
-            <Typography>{comment.author?.displayName}</Typography>
-            <Typography>{comment.createdAt.toLocaleString()}</Typography>
+            <Typography variant="body1">{comment.author?.displayName}</Typography>
+            <Typography variant="body2" color="neutralMedium.dark">{`${
+              isRootComment ? 'started the discussion on ' : 'on '
+            }${comment.createdAt.toLocaleString()}`}</Typography>
           </Box>
         </Box>
         {canDelete && onDelete && (
-          <IconButton aria-label="Delete" onClick={() => onDelete(id)}>
-            <DeleteOutlinedIcon fontSize="large" />
+          <IconButton aria-label="Delete" onClick={() => onDelete(id)} size={'large'}>
+            <DeleteOutlined />
           </IconButton>
         )}
       </Box>
-      <Box paddingX={1} paddingY={1.5}>
+      <Box paddingX={1} paddingY={1}>
         <Markdown>{body}</Markdown>
       </Box>
     </Box>

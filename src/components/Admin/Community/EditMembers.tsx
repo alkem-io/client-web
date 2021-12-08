@@ -1,20 +1,51 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
 import { UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
+
+const PREFIX = 'EditMembers';
+
+const classes = {
+  thead: `${PREFIX}-thead`,
+  trow: `${PREFIX}-trow`,
+  iconButtonSuccess: `${PREFIX}-iconButtonSuccess`,
+  iconButtonNegative: `${PREFIX}-iconButtonNegative`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.thead}`]: {
+    background: theme.palette.divider,
+  },
+
+  [`& .${classes.trow}`]: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+
+  [`& .${classes.iconButtonSuccess}`]: {
+    color: theme.palette.success.main,
+  },
+
+  [`& .${classes.iconButtonNegative}`]: {
+    color: theme.palette.negative.main,
+  },
+}));
 
 const TABLE_HEIGHT = 600;
 
@@ -31,23 +62,6 @@ export interface EditMembersProps {
   onRemove?: (member: Member) => void;
 }
 
-const useStyles = makeStyles(theme => ({
-  thead: {
-    background: theme.palette.divider,
-  },
-  trow: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-  iconButtonSuccess: {
-    color: theme.palette.success.main,
-  },
-  iconButtonNegative: {
-    color: theme.palette.negative.main,
-  },
-}));
-
 export const EditMembers: FC<EditMembersProps> = ({
   members,
   availableMembers,
@@ -60,8 +74,6 @@ export const EditMembers: FC<EditMembersProps> = ({
   onAdd,
   onRemove,
 }) => {
-  const styles = useStyles();
-
   const membersData = useMemo<Member[]>(
     () => (loadingMembers ? new Array(3).fill({}) : members),
     [loadingMembers, members]
@@ -74,11 +86,11 @@ export const EditMembers: FC<EditMembersProps> = ({
         Group members:
         <Filter data={membersData}>
           {filteredMembers => (
-            <>
+            <Root>
               <hr />
               <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
                 <Table size="small">
-                  <TableHead className={styles.thead}>
+                  <TableHead className={classes.thead}>
                     <TableRow>
                       <TableCell>Full Name</TableCell>
                       <TableCell>First Name</TableCell>
@@ -91,7 +103,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                     {filteredMembers.map(m => {
                       const disableExecutor = m.id === executor?.id && !deleteExecutor;
                       return (
-                        <TableRow key={m.email} className={styles.trow}>
+                        <TableRow key={m.email} className={classes.trow}>
                           <TableCell>
                             <Cell>{m.displayName}</Cell>
                           </TableCell>
@@ -111,7 +123,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                                   aria-label="Remove"
                                   size="small"
                                   disabled={disableExecutor || addingMember || removingMember}
-                                  className={styles.iconButtonNegative}
+                                  className={classes.iconButtonNegative}
                                   onClick={() => onRemove(m)}
                                 >
                                   <RemoveIcon />
@@ -125,7 +137,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                   </TableBody>
                 </Table>
               </Box>
-            </>
+            </Root>
           )}
         </Filter>
       </Grid>
@@ -134,12 +146,12 @@ export const EditMembers: FC<EditMembersProps> = ({
         <Filter data={availableMembers} limitKeys={['displayName']}>
           {filteredData => {
             return (
-              <>
+              <Root>
                 <hr />
                 <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
                   <TableContainer>
                     <Table size="small" style={{ position: 'relative' }}>
-                      <TableHead className={styles.thead}>
+                      <TableHead className={classes.thead}>
                         <TableRow>
                           <TableCell />
                           <TableCell>Full Name</TableCell>
@@ -158,7 +170,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </Table>
                   </TableContainer>
                 </Box>
-              </>
+              </Root>
             );
           }}
         </Filter>
@@ -181,7 +193,6 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
   addingMember,
   removingMember,
 }) => {
-  const styles = useStyles();
   const { t } = useTranslation();
 
   const membersData = useMemo<Member[]>(
@@ -192,7 +203,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 
   if (availableMembers.length === 0) {
     return (
-      <TableRow className={styles.trow}>
+      <TableRow className={classes.trow}>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.no-available-members')}</Typography>
         </TableCell>
@@ -202,7 +213,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 
   if (membersData.length === 0) {
     return (
-      <TableRow className={styles.trow}>
+      <TableRow className={classes.trow}>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.user-not-found')}</Typography>
         </TableCell>
@@ -213,7 +224,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
   return (
     <>
       {membersData.map((m, i) => (
-        <TableRow key={i} className={styles.trow}>
+        <TableRow key={i} className={classes.trow}>
           {onAdd && (
             <TableCell>
               <Cell>
@@ -221,7 +232,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
                   aria-label="Add"
                   size="small"
                   onClick={() => onAdd(m)}
-                  className={styles.iconButtonSuccess}
+                  className={classes.iconButtonSuccess}
                   disabled={addingMember || removingMember}
                 >
                   <AddIcon />

@@ -1,6 +1,6 @@
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-export const useLoadingStyles = createStyles(theme => ({
+export const useLoadingStyles = makeStyles(theme => ({
   spinner: {
     color: theme.palette.primary.main,
   },

@@ -1,10 +1,9 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
-import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
@@ -155,8 +154,6 @@ const EcoverseEditForm: FC<Props> = ({
 
               <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
             </Grid>
-
-            <Divider />
           </Grid>
         );
       }}

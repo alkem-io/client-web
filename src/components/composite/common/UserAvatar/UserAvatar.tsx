@@ -1,4 +1,4 @@
-import { Avatar, Link, Tooltip } from '@material-ui/core';
+import { Avatar, Link, Tooltip } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { RouterLink } from '../../../core/RouterLink';
 import { UserCard, UserCardProps } from '../cards';

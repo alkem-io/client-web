@@ -1,22 +1,22 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Dialog } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-import Grid from '@material-ui/core/Grid';
+import { Tooltip, Dialog } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+import Grid from '@mui/material/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
-import { createStyles } from '../../../../hooks';
+import { makeStyles } from '@mui/styles';
 import { Lifecycle, Maybe } from '../../../../models/graphql-schema';
 import Typography from '../../../core/Typography';
-import LifecycleVisualizer from '../../../core/Lifecycle';
+import LifecycleVisualizer from '../../../core/LifecycleVisualizer';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 
 export interface ActivityCardItemProps {
   lifecycle?: Maybe<Lifecycle>;
 }
 
-const useCardStyles = createStyles(() => ({
+const useCardStyles = makeStyles(() => ({
   item: {
     display: 'flex',
     alignItems: 'center',
@@ -28,7 +28,7 @@ const useCardStyles = createStyles(() => ({
   },
 }));
 
-const useDialogStyles = createStyles(() => ({
+const useDialogStyles = makeStyles(() => ({
   content: {
     display: 'flex',
     justifyContent: 'center',
@@ -41,7 +41,7 @@ export interface LifecycleModalProps {
   onHide: () => void;
 }
 
-const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
+export const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = false, onHide = () => {} }) => {
   const styles = useDialogStyles();
   const machine = createMachine(JSON.parse(lifecycle.machineDef));
   const graph = toDirectedGraph(machine);
@@ -80,7 +80,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
         <Grid item className={styles.item}>
           <Typography>State</Typography>
           <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-            <IconButton color="primary" onClick={() => setModalVisible(true)}>
+            <IconButton color="primary" onClick={() => setModalVisible(true)} size="large">
               <InfoIcon />
             </IconButton>
           </Tooltip>

@@ -1,15 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  createStyles,
-  Grid,
-  Link,
-  makeStyles,
-  Typography as MUITypography,
-} from '@material-ui/core';
+import { Avatar, Box, Card, CardContent, CardHeader, Grid, Link, Typography as MUITypography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
@@ -67,6 +58,9 @@ const useStyles = makeStyles(theme =>
     headerTitle: {
       display: 'flex',
     },
+    headerAvatar: {
+      flexDirection: 'column',
+    },
     headerAction: {},
   })
 );
@@ -102,26 +96,31 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   }, [references]);
 
   return (
-    <Card elevation={0} className={styles.card}>
+    <Card className={styles.card} square>
       <CardHeader
         classes={{
           action: styles.headerAction,
           title: styles.headerTitle,
+          avatar: styles.headerAvatar,
         }}
         avatar={
-          <>
+          <Box display="flex" flexDirection="column">
             <Avatar variant="square" src={user.profile?.avatar} className={styles.avatar} aria-label="user-avatar">
               {user.firstName[0]}
             </Avatar>
             <Box paddingTop={1}>
               <SocialLinks title="" items={socialLinks} />
             </Box>
-          </>
+          </Box>
         }
         className={styles.header}
         action={
           isCurrentUser && (
-            <SettingsButton color={'primary'} to={`${url}/edit`} tooltip={t('pages.user-profile.tooltips.settings')} />
+            <SettingsButton
+              color={'primary'}
+              to={`${url}/settings/profile`}
+              tooltip={t('pages.user-profile.tooltips.settings')}
+            />
           )
         }
         title={

@@ -1,20 +1,20 @@
+import { Container } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
-import { Container } from '@material-ui/core';
-import { createStyles } from '../../../../hooks/useTheme';
+import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 
-const useMainStyles = createStyles(() => ({
+const useMainStyles = makeStyles(() => ({
   main: {
     flexGrow: 1,
-    padding: '40px 0 0 0',
-    maxWidth: 1380,
   },
 }));
 
 export const Main: FC = ({ children }) => {
   const styles = useMainStyles();
+  const breakpoint = useCurrentBreakpoint();
 
   return (
-    <Container className={styles.main}>
+    <Container maxWidth={breakpoint} className={styles.main}>
       <>{children}</>
     </Container>
   );

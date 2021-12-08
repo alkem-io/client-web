@@ -1,5 +1,6 @@
-import { IconButton, makeStyles, SvgIconProps, Tooltip } from '@material-ui/core';
-import { Settings } from '@material-ui/icons';
+import { IconButton, SvgIconProps, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Settings } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 

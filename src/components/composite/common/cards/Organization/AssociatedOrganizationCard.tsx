@@ -1,5 +1,6 @@
-import { Avatar, CardHeader, createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Avatar, Box, CardHeader, Skeleton, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import CircleTag from '../../../../core/CircleTag';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
@@ -18,6 +19,9 @@ export interface AssociatedOrganizationCardProps {
 
 const useStyles = makeStyles(theme =>
   createStyles({
+    card: {
+      background: theme.palette.background.default,
+    },
     cardHeader: {
       padding: theme.spacing(1),
       alignItems: 'flex-start',
@@ -42,7 +46,13 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
   const styles = useStyles();
 
   return (
-    <LinkCard to={url} aria-label="associated-organization-card">
+    <LinkCard
+      to={url}
+      aria-label="associated-organization-card"
+      classes={{
+        root: styles.card,
+      }}
+    >
       <CardHeader
         className={styles.cardHeader}
         classes={{
@@ -52,7 +62,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           loading ? (
             <Skeleton animation="wave" width="80%" style={{ marginBottom: 2 }} />
           ) : (
-            <Typography variant="h4" color="primary">
+            <Typography variant="h5" color="primary" fontWeight={600}>
               {name}
             </Typography>
           )
@@ -79,28 +89,22 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
         }
         avatar={
           loading ? (
-            <Skeleton animation="wave" variant="rect" width={64} height={64} />
+            <Skeleton animation="wave" variant="rectangular" width={64} height={64} />
           ) : (
-            <Avatar variant="square" src={avatar} style={{ width: '64px', height: '64px' }}>
+            <Avatar variant="rounded" src={avatar} style={{ width: '64px', height: '64px' }}>
               {name[0]}
             </Avatar>
           )
         }
         action={
           !loading && (
-            <Grid container direction="column" spacing={1}>
-              <Grid item container spacing={2} alignItems="center">
-                <Grid item>
-                  <Typography>Members</Typography>
-                </Grid>
-                <Grid item>
-                  <CircleTag text={`${members}`} color="primary" size="small" />
-                </Grid>
-              </Grid>
-              <Grid item>
-                <VerifiedStatus verified={verified} />
-              </Grid>
-            </Grid>
+            <Box display="flex" flexDirection="column" justifyContent="space-between">
+              <Box display="flex">
+                <Typography>Members</Typography>
+                <CircleTag text={`${members}`} color="primary" size="small" />
+              </Box>
+              <VerifiedStatus verified={verified} />
+            </Box>
           )
         }
       />

@@ -1,14 +1,15 @@
-import { Grid, Link } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import Link from '@mui/material/Link';
+import { Grid } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../../../hooks';
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { Loading } from '../../core';
 import Avatar from '../../core/Avatar';
@@ -20,13 +21,13 @@ import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import Typography from '../../core/Typography';
 
-const useUserPopUpStyles = createStyles(theme => ({
+const useUserPopUpStyles = makeStyles(theme => ({
   header: {
     display: 'flex',
     gap: theme.spacing(4),
     alignItems: 'center',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexWrap: 'wrap',
       gap: theme.spacing(2),
     },
@@ -36,7 +37,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     alignItems: 'center',
     gap: theme.spacing(1),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       gap: 0,
       flexGrow: 1,
     },
@@ -45,7 +46,7 @@ const useUserPopUpStyles = createStyles(theme => ({
     whiteSpace: 'nowrap',
     display: 'flex',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexGrow: 1,
       justifyContent: 'center',
     },
@@ -80,7 +81,7 @@ const useUserPopUpStyles = createStyles(theme => ({
       // textAlign: 'center',
     },
     '& td': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
   marginBottom: {

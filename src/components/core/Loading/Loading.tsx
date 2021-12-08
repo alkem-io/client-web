@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React, { FC } from 'react';
 import Typography from '../Typography';
 import { useLoadingStyles } from './Loading.styles';

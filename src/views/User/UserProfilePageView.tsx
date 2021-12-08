@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
@@ -26,7 +26,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
         </Grid>
       </Grid>
       <Grid item xs={12} xl={6}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <ContributionsView
               title={t('pages.user-profile.communities.title')}

@@ -1,16 +1,18 @@
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import { ReactComponent as GemIcon } from 'bootstrap-icons/icons/gem.svg';
 import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
 import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
-import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
 import SettingsButton from '../../components/composite/common/SettingsButton/SettingsButton';
+import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
+import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
+import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import { OrganizationBanners } from '../../components/composite/entities/Organization/OrganizationBanners';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
@@ -20,25 +22,23 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { createStyles, useChallenge, useEcoverse } from '../../hooks';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import { useChallenge, useEcoverse } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { buildAdminChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 interface ChallengeViewProps {
   entities: ChallengeContainerEntities;
   state: ChallengeContainerState;
 }
 
-const useChallengeStyles = createStyles(theme => ({
+const useChallengeStyles = makeStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(1),
@@ -76,7 +76,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
             title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
             items={activity}
             lifecycle={challenge?.lifecycle}
-            classes={{ padding: theme => `${theme.spacing(4)}px` }}
+            classes={{ padding: theme => theme.spacing(4) }}
           />
         }
         classes={{
@@ -149,7 +149,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </div>
         </Body>
       </Section>
-      <Divider />
       <div ref={opportunityRef} />
       <Section avatar={<Icon component={GemIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.challenge.sections.opportunities.header')} />
@@ -186,7 +185,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </CardContainer>
         )}
       </CardFilter>
-      <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', {
           blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
@@ -203,7 +201,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           />
         </DiscussionsProvider>
       </BackdropWithMessage>
-      <Divider />
       <BackdropWithMessage
         message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}
         show={!isAuthenticated}
@@ -225,7 +222,6 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
           </CardContainer>
         )}
       </BackdropWithMessage>
-      <Divider />
     </>
   );
 };

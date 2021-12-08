@@ -1,13 +1,12 @@
+import { Box, Container } from '@mui/material';
+import Grid, { GridSize } from '@mui/material/Grid';
+import { Breakpoints, Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Grid, { GridSize } from '@material-ui/core/Grid';
-import { Theme } from '@material-ui/core/styles';
-import { Box, Container, makeStyles } from '@material-ui/core';
-import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
-import { createStyles } from '../../hooks/useTheme';
 
 interface HeaderProps {
   text?: string;
@@ -19,14 +18,14 @@ interface HeaderProps {
   editComponent?: React.ReactNode;
 }
 
-const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
     display: 'flex',
   },
   header: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: `${theme.spacing(2)}px`,
+    gap: theme.spacing(2),
     alignItems: 'center',
     color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main} !important`,
   },
@@ -77,7 +76,7 @@ export const Header: FC<HeaderProps> = ({
   );
 };
 
-const useSubHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useSubHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   header: {
     color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
   },
@@ -98,7 +97,7 @@ export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, cla
   );
 };
 
-const useBodyStyles = createStyles(() => ({
+const useBodyStyles = makeStyles(() => ({
   bodyWrap: {},
 }));
 
@@ -108,7 +107,7 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
   return (
     <div className={clsx(styles.bodyWrap, className)}>
       {(text || svg) && (
-        <Typography as="p" variant="body" color="neutral" weight="medium">
+        <Typography as="p" variant="body1" color="neutral" weight="medium">
           {text || svg}
         </Typography>
       )}
@@ -117,7 +116,7 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
   );
 };
 
-const useContentStyles = createStyles(theme => ({
+const useContentStyles = makeStyles(theme => ({
   gutters: {
     padding: theme.spacing(4),
   },
@@ -128,7 +127,7 @@ const useContentStyles = createStyles(theme => ({
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },
@@ -171,7 +170,7 @@ const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     background: (props: SectionClassProps) =>
-      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
+      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.default,
     position: 'relative',
   },
   avatar: {
@@ -223,7 +222,7 @@ const Section: FC<SectionProps> = ({
   const styles = useSectionStyles(classes);
 
   return (
-    <Container maxWidth="xl" disableGutters={!gutters.root} className={clsx(styles.root, className)}>
+    <Container maxWidth="xl" className={clsx(styles.root, className)}>
       <div className={styles.cover} />
       <Grid container spacing={2}>
         {!hideAvatar && (

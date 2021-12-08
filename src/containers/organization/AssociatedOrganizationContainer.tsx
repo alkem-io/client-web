@@ -39,6 +39,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     variables: {
       organizationId: organizationNameId,
     },
+    errorPolicy: 'all',
   });
 
   const usersWithRoles = useUserCardRoleName([user?.user] as User[], data?.organization.id || '');

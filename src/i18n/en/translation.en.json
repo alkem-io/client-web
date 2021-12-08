@@ -23,6 +23,7 @@
     "back": "Back",
     "edit": "Edit",
     "see-more": "See more",
+    "see-all": "See all",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -43,7 +44,8 @@
     "settings": "Settings",
     "member": "Member",
     "profile": "Profile",
-    "view-profile": "View Profile"
+    "view-profile": "View Profile",
+    "edit-photo": "Edit Photo"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -55,6 +57,7 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "login": "Login",
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
@@ -97,6 +100,17 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
+    "dashboard": "Dashboard",
+    "context": "Context",
+    "community": "Community",
+    "canvases": "Canvases",
+    "settings": "Settings",
+    "search": "Search",
+    "notifications": "Notifications",
+    "my-profile": "My profile",
+    "my-memberships": "My memberships",
+    "social": "Social",
+    "lifecycle": "Lifecycle",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -220,7 +234,7 @@
   "components": {
     "tags-component": {
       "more": "+{{count}} more",
-      "no-tags": "No tags available"
+      "no-tags": "The {{name}} has not been tagged yet."
     },
     "remove-modal": {
       "title": "Confirm remove"
@@ -253,7 +267,7 @@
     },
     "backdrop": {
       "private": "{{blockName}} are only visible to members.",
-      "authentication": "Please sign in to check out the {{blockName}}."
+      "authentication": "Please sign in to see details about the {{blockName}}."
     },
     "notifications": {
       "error": "Error",
@@ -522,6 +536,22 @@
     }
   },
   "pages": {
+    "challenge-explorer": {
+      "filter": {
+        "title": "Search through challenges",
+        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      },
+      "my": {
+        "title": "My challenges ({{count}})",
+        "subtitle": "This section shows you the challenges you are participating in.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      },
+      "hubs": {
+        "title": "{{name}} challenges ({{count}})",
+        "subtitle": "This section shows you the challenges specific for the {{name}} hub.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      }
+    },
     "lead-organization": {
       "search": {
         "leading-placeholder": "Search in name or tags",
@@ -529,7 +559,8 @@
       }
     },
     "activity": {
-      "title": "{{blockName}} activity",
+      "title": "{{blockName}} Activity",
+      "summary": "A summary of everything that happens on {{blockName}}",
       "ecoverses": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
@@ -545,12 +576,22 @@
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising societies potential. Building a better future, together."
+          "body": "Realising societies potential. Building a better future, together.",
+          "join": "Want to join the community and see more?"
         },
         "ecoverse": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
+        },
+        "community": {
+          "header": "The most active members",
+          "subheader": "Alkemio has over {{count}} registered members",
+          "helpText": "Activity is calculated based on their contribution to challenges, profile completeness, etc."
+        },
+        "organizations": {
+          "header": "Organizations",
+          "subheader": "The entities that want to bring innnovation."
         }
       }
     },
@@ -586,6 +627,15 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "dashboard": {
+          "organization": "Facilitating organization",
+          "activity": "Hub statistics",
+          "challenges": {
+            "title": "Challenges",
+            "help-text": "This shows the different challenges you can contribute to in this hub."
+          },
+          "community": "Community"
+        },
         "header": {
           "buttons": {
             "settings": {
@@ -617,6 +667,20 @@
         "load-more": "And more ..."
       },
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "opportunities": {
+            "title": "Opportunities",
+            "help-text": "Opportunities related to this challenge"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this challenge"
+          }
+        },
         "header": {
           "buttons": {
             "settings": {
@@ -651,6 +715,16 @@
     "opportunity": {
       "title": "Opportunity",
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this opportunity"
+          }
+        },
         "header": {
           "buttons": {
             "settings": {
@@ -851,6 +925,12 @@
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
+    },
+    "user-notfications-settings": {
+      "email-notifications": {
+        "title": "Email notifications",
+        "subheader": "Receive email notifications for the following events:"
+      }
     }
   },
   "operations": {
@@ -868,5 +948,17 @@
     },
     "loading-flow": "Loading flow",
     "loading-error": "Loading error"
+  },
+  "dashboard-updates-section": {
+    "title": "Updates",
+    "no-data": "No updates available."
+  },
+  "dashboard-discussions-section": {
+    "title": "Discussions",
+    "no-data-create": "No discussions available. Create a new discussion",
+    "no-data-join": "No discussions available. Please join the community to create a discussion"
+  },
+  "dashboard-community-section": {
+    "title": "Community"
   }
 }

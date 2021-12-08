@@ -1,24 +1,15 @@
 import clsx from 'clsx';
 import React, { FC, RefObject, useState } from 'react';
 import ReactVisibilitySensor from 'react-visibility-sensor';
-import Grid from '@material-ui/core/Grid';
-import { Container } from '@material-ui/core';
-import { createStyles } from '../../../../hooks/useTheme';
+import Grid from '@mui/material/Grid';
+import { Container } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import hexToRgba from '../../../../utils/hexToRGBA';
 import Toolbar from '../../../core/Toolbar';
 
 const appBarZIndex = 100;
 
-const useHeaderStyles = createStyles(theme => ({
-  earlyAccessAlert: {
-    width: 'calc(100% + 30px)',
-    marginLeft: -15,
-    height: theme.earlyAccessAlert.height,
-    background: theme.palette.primary.main,
-  },
-  alertText: {
-    padding: `0 ${theme.earlyAccessAlert.height}px`,
-  },
+const useHeaderStyles = makeStyles(theme => ({
   root: {
     margin: 'auto',
     maxWidth: '100%',
@@ -37,34 +28,21 @@ const useHeaderStyles = createStyles(theme => ({
     zIndex: appBarZIndex,
     background: hexToRgba(theme.palette.background.paper, 0.8),
   },
-  offsetLeftMax: {
-    left: theme.sidebar.maxWidth,
-  },
-  offsetLeftNone: {
-    left: 0,
-  },
-  offsetLeftMin: {
-    left: theme.sidebar.minWidth,
-  },
   centerContent: {
     alignItems: 'center',
   },
-  link: {
-    textDecoration: 'underline',
-    color: theme.palette.background.paper,
-  },
   toolbar: {
-    padding: `${theme.spacing(4)}px 0`,
+    padding: theme.spacing(0, 0),
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },
   },
   toolbarDense: {
-    padding: `${theme.spacing(2)}px 0`,
+    padding: 0,
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },

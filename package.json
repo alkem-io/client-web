@@ -10,10 +10,13 @@
   "license": "EUPL-1.2",
   "dependencies": {
     "@apollo/client": "^3.4.9",
-    "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "4.0.0-alpha.60",
-    "@mui/x-data-grid": "^4.0.0",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/lab": "^5.0.0-alpha.56",
+    "@mui/material": "^5.2.0",
+    "@mui/styles": "^5.2.0",
+    "@mui/x-data-grid": "^5.0.1",
     "@ory/kratos-client": "^0.7.6-alpha.1",
     "@sentry/react": "^6.9.0",
     "@sentry/tracing": "^6.9.0",
@@ -81,7 +84,12 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "resolutions": {
+    "**/@emotion/styled": "^11.0.0"
   },
   "browserslist": {
     "production": [
@@ -102,6 +110,12 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.1",
     "@graphql-codegen/typescript-operations": "^2.1.1",
     "@graphql-codegen/typescript-react-apollo": "^3.1.1",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/node-logger": "^6.3.12",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.3.12",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/react-copy-to-clipboard": "^5.0.0",
@@ -133,5 +147,17 @@
   "engines": {
     "node": ">=14.17.3",
     "npm": ">=7"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   }
 }

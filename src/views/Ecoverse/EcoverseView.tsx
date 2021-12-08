@@ -1,5 +1,8 @@
 import { Context } from '@apollo/client';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import { ReactComponent as CompassIcon } from 'bootstrap-icons/icons/compass.svg';
 import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
 import React, { FC } from 'react';
@@ -9,6 +12,9 @@ import ActivityCard from '../../components/composite/common/ActivityPanel/Activi
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
+import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
+import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
+import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
 import { Loading } from '../../components/core';
 import Button from '../../components/core/Button';
 import CardFilter from '../../components/core/card-filter/CardFilter';
@@ -17,25 +23,19 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import { CardContainer } from '../../components/core/CardContainer';
-import Divider from '../../components/core/Divider';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import Icon from '../../components/core/Icon';
 import { Image } from '../../components/core/Image';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { SwitchCardComponent } from '../../components/composite/entities/Ecoverse/Cards';
-import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
-import EcoverseCommunitySection from '../../components/composite/entities/Ecoverse/EcoverseCommunitySection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
-import { createStyles, useUserContext } from '../../hooks';
-import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import { useUserContext } from '../../hooks';
+import { buildAdminEcoverseUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(1),
@@ -56,7 +56,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const styles = useStyles();
-  const { ecoverse, permissions, activity, projects, isAuthenticated, hideChallenges } = entities;
+  const { ecoverse, permissions, activity, projects, isAuthenticated } = entities;
   const { displayName: name = '', nameID: ecoverseNameId = '', id: ecoverseId = '', context } = ecoverse || {};
   const ecoverseBanner = ecoverse?.context?.visual?.banner;
   const { tagline = '', impact = '', vision = '', background = '', references = [] } = context || ({} as Context);
@@ -106,8 +106,10 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
           </div>
         </Body>
       </Section>
-      <Divider />
-      <MembershipBackdrop show={hideChallenges} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop
+        show={!permissions.challengesReadAccess}
+        blockName={t('pages.ecoverse.sections.challenges.header')}
+      >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
           <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
           <SubHeader>
@@ -178,7 +180,6 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         </EcoverseChallengesContainer>
       </MembershipBackdrop>
 
-      <Divider />
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
         <DiscussionsProvider>
           <EcoverseCommunitySection
@@ -189,7 +190,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
           />
         </DiscussionsProvider>
       </AuthenticationBackdrop>
-      <Divider />
+
       <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
         {projects.length > 0 && (
           <>
@@ -205,7 +206,6 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
                 })}
               </CardContainer>
             )}
-            <Divider />
           </>
         )}
       </AuthenticationBackdrop>

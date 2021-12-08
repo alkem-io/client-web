@@ -7,22 +7,26 @@ import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
-import { EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { Discussion } from '../../models/discussion/discussion';
 
 export interface EcoverseContainerEntities {
   ecoverse?: EcoversePageFragment;
   isPrivate: boolean;
-  hideChallenges: boolean;
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
+    challengesReadAccess: boolean;
   };
   projects: Project[];
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
   isGlobalAdmin: boolean;
+  discussionList: Discussion[];
 }
 
 export interface EcoverseContainerActions {}
@@ -39,17 +43,18 @@ export interface EcoversePageContainerProps
 export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { ecoverseId, ecoverseNameId, loading } = useEcoverse();
-  const { data: _ecoverse, loading: loadingEcoverse } = useEcoversePageQuery({
+  const { ecoverseId, ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
+  const { data: _ecoverse, loading: loadingEcoverseQuery } = useEcoversePageQuery({
     variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
   });
+  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const { user, isAuthenticated } = useUserContext();
 
-  const permissions = {
-    canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
-  };
+  const communityReadAccess = (_ecoverse?.ecoverse?.community?.authorization?.myPrivileges ?? []).some(
+    x => x === AuthorizationPrivilege.Read
+  );
 
   const { data: _projects, loading: loadingProjects } = useEcoversePageProjectsQuery({
     variables: { ecoverseId: ecoverseNameId },
@@ -98,11 +103,6 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
         color: 'primary',
       },
       {
-        name: t('pages.activity.projects'),
-        digit: getActivityCount(_activity, 'projects') || 0,
-        color: 'positive',
-      },
-      {
         name: t('pages.activity.members'),
         digit: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
@@ -113,15 +113,21 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
   const isMember = user?.ofEcoverse(ecoverseId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const isPrivate = !(_ecoverse?.ecoverse?.authorization?.anonymousReadAccess ?? true);
-  const hideChallenges = isPrivate ? !isMember && !isGlobalAdmin : false;
+
+  const permissions = {
+    canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
+    communityReadAccess,
+    // todo: use privileges instead when authorization on challenges is public
+    challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
+  };
 
   return (
     <>
       {children(
         {
           ecoverse: _ecoverse?.ecoverse,
+          discussionList,
           isPrivate,
-          hideChallenges,
           permissions,
           activity,
           projects,
@@ -130,7 +136,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           isGlobalAdmin,
         },
         {
-          loading: loading || loadingEcoverse,
+          loading: loadingEcoverseQuery || loadingEcoverse || loadingDiscussions,
           loadingProjects,
         },
         {}

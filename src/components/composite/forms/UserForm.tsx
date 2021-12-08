@@ -1,31 +1,29 @@
-import { Grid } from '@material-ui/core';
+import { Box, Button, Grid } from '@mui/material';
 import { Formik } from 'formik';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { COUNTRIES } from '../../../models/constants';
-import { TagsetTemplate } from '../../../models/graphql-schema';
-import { Tagset } from '../../../models/Profile';
-import { defaultUser, UserFromGenerated, UserModel } from '../../../models/User';
-import { logger } from '../../../services/logging/winston/logger';
 import { EditMode } from '../../../models/editMode';
-import { FormikInputField } from './FormikInputField';
-import FormikSelect from './FormikSelect';
+import { SocialNetworkEnum } from '../../../models/enums/SocialNetworks';
+import { TagsetTemplate } from '../../../models/graphql-schema';
+import { Reference, Tagset } from '../../../models/Profile';
+import { defaultUser, UserFormGenerated, UserModel } from '../../../models/User';
+import { logger } from '../../../services/logging/winston/logger';
 import ProfileReferenceSegment from '../../Admin/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
+import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
-import CountrySelect from './CountrySelect';
 import { Loading } from '../../core';
-import Button from '../../core/Button';
-import Section, { Header } from '../../core/Section';
 import EditableAvatar from '../common/EditableAvatar';
+import CountrySelect from './CountrySelect';
+import { FormikInputField } from './FormikInputField';
 
 interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
-  onCancel?: () => void;
   onDelete?: (userId: string) => void;
   title?: string;
 }
@@ -34,17 +32,16 @@ export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
   editMode = EditMode.readOnly,
   onSave,
-  onCancel,
   onDelete,
-  title = 'User',
 }) => {
   const { t } = useTranslation();
 
-  const genders = [
-    { id: '', name: t('common.genders.notSpecified') },
-    { id: 'male', name: t('common.genders.male') },
-    { id: 'female', name: t('common.genders.female') },
-  ];
+  // const genders = [
+  //   { id: '', name: t('common.genders.notSpecified') },
+  //   { id: 'male', name: t('common.genders.male') },
+  //   { id: 'female', name: t('common.genders.female') },
+  // ];
+
   const { data: config, loading } = useTagsetsTemplateQuery();
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -82,18 +79,33 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, tagsetsTemplate]);
 
-  const initialValues: UserFromGenerated = {
+  const twitterRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.twitter), [references]);
+  const githubRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.github), [references]);
+  const linkedinRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.linkedin), [references]);
+
+  const initialValues: UserFormGenerated = {
     displayName: displayName || '',
     firstName: firstName || '',
     lastName: lastName || '',
     email: email || '',
+    linkedin: linkedinRef?.uri || '',
+    twitter: twitterRef?.uri || '',
+    github: githubRef?.uri || '',
     gender: gender || '',
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
     avatar: avatar || '',
     tagsets: tagsets,
-    references: references || '',
+    references:
+      references.filter(
+        x =>
+          ![
+            SocialNetworkEnum.github.toString(),
+            SocialNetworkEnum.linkedin.toString(),
+            SocialNetworkEnum.twitter.toString(),
+          ].includes(x.name)
+      ) || [],
     bio: bio || '',
     profileId: profileId || '',
   };
@@ -109,6 +121,9 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
+    linkedin: yup.string().url('Linkedin url must be a valid URL'),
+    twitter: yup.string().url('Twitter url must be a valid URL'),
+    github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
     bio: yup.string().max(400),
@@ -120,22 +135,42 @@ export const UserForm: FC<UserProps> = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (userData: UserFromGenerated) => {
-    const { tagsets, avatar, references, bio, profileId, country, ...otherData } = userData;
-    const user: UserModel = {
-      ...currentUser,
-      ...otherData,
-      country: country?.code || '',
-      profile: {
-        id: profileId,
-        description: bio,
-        avatar,
-        references,
+  const handleSubmit = useCallback(
+    async (userData: UserFormGenerated) => {
+      const {
         tagsets,
-      },
-    };
-    onSave && (await onSave(user));
-  };
+        avatar,
+        references: newReferences,
+        bio,
+        profileId,
+        country,
+        linkedin,
+        twitter,
+        github,
+        ...otherData
+      } = userData;
+      const finalReferences = [
+        ...newReferences,
+        { ...linkedinRef, uri: linkedin } as Reference,
+        { ...twitterRef, uri: twitter } as Reference,
+        { ...githubRef, uri: github } as Reference,
+      ];
+      const user: UserModel = {
+        ...currentUser,
+        ...otherData,
+        country: country?.code || '',
+        profile: {
+          id: profileId,
+          description: bio,
+          avatar,
+          references: finalReferences,
+          tagsets,
+        },
+      };
+      onSave && (await onSave(user));
+    },
+    [linkedinRef, twitterRef, githubRef]
+  );
 
   if (loading) return <Loading text={'Loading'} />;
 
@@ -152,89 +187,75 @@ export const UserForm: FC<UserProps> = ({
         logger.info(errors);
         return (
           <form noValidate onSubmit={handleSubmit}>
-            <Section
-              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />}
-            >
-              <Header text={title} />
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'displayName'}
-                    title={'Full Name'}
-                    required={true && !isReadOnlyMode}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Full Name'}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
+            <Box marginTop={4} />
+            <Grid container rowSpacing={4} direction="column">
+              <Grid item xs={12}>
+                <Grid container>
+                  <Grid item xs={12} md="auto">
+                    <Grid item container justifyContent="center">
+                      <EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />
+                    </Grid>
+                  </Grid>
+                  <Grid item xs>
+                    <Grid container spacing={4}>
+                      <Grid item xs={12} md={6}>
+                        <FormikInputField
+                          name={'firstName'}
+                          title={'First Name'}
+                          required={true && !isReadOnlyMode}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'First Name'}
+                          disabled={isSubmitting}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <FormikInputField
+                          name={'lastName'}
+                          title={'Last name'}
+                          required={true && !isReadOnlyMode}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'Last name'}
+                          disabled={isSubmitting}
+                        />
+                      </Grid>
 
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'firstName'}
-                    title={'First Name'}
-                    required={true && !isReadOnlyMode}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'First Name'}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'lastName'}
-                    title={'Last name'}
-                    required={true && !isReadOnlyMode}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Last name'}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
+                      <Grid item xs={12} md={6}>
+                        <FormikInputField
+                          name={'displayName'}
+                          title={'Full Name'}
+                          required={true && !isReadOnlyMode}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'Full Name'}
+                          disabled={isSubmitting}
+                        />
+                      </Grid>
 
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'email'}
-                    type={'email'}
-                    title={'Email'}
-                    required={true && !isReadOnlyMode}
-                    readOnly={isReadOnlyMode || (isEditMode && editMode !== EditMode.new)}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Grid item xs={6}>
-                    <FormikSelect
-                      title={'Gender'}
-                      name={'gender'}
-                      readOnly={isReadOnlyMode}
-                      disabled={isReadOnlyMode || isSubmitting}
-                      values={genders}
-                    />
+                      <Grid item xs={12} md={6}>
+                        <FormikInputField
+                          name={'phone'}
+                          title={'Phone'}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'Phone'}
+                          disabled={isSubmitting}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <FormikInputField
+                          name={'city'}
+                          title={'City'}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'City'}
+                          disabled={isSubmitting}
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
-
-                <Grid item xs={6}>
-                  <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
-                </Grid>
-                <Grid item xs={6}>
-                  <FormikInputField
-                    name={'city'}
-                    title={'City'}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'City'}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'phone'}
-                    title={'Phone'}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Phone'}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
-
+              </Grid>
+              <Grid container item spacing={4}>
                 <Grid item xs={12}>
                   <FormikInputField
                     name={'bio'}
@@ -242,16 +263,17 @@ export const UserForm: FC<UserProps> = ({
                     readOnly={isReadOnlyMode}
                     placeholder={'Bio'}
                     multiline
+                    rows={5}
                     disabled={isSubmitting}
                   />
                 </Grid>
-
                 <TagsetSegment
                   tagsets={tagsets}
                   template={tagsetsTemplate}
                   readOnly={isReadOnlyMode}
                   disabled={isSubmitting}
                 />
+                <SocialSegment />
                 {isEditMode && (
                   <ProfileReferenceSegment
                     references={references}
@@ -266,41 +288,29 @@ export const UserForm: FC<UserProps> = ({
                     {onDelete && (
                       <Grid item>
                         <Button
-                          variant={'negative'}
+                          variant="outlined"
+                          color="error"
                           onClick={() => onDelete(currentUser.id)}
                           disabled={isSubmitting}
-                          text={t('buttons.delete')}
-                        />
-                      </Grid>
-                    )}
-                    {onCancel && (
-                      <Grid item>
-                        <Button
-                          variant={isEditMode ? 'default' : 'primary'}
-                          type="button"
-                          onClick={e => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onCancel();
-                          }}
-                          disabled={isSubmitting}
-                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}` as const)}
-                        />
+                        >
+                          {t('buttons.delete')}
+                        </Button>
                       </Grid>
                     )}
                     <Grid item>
                       <Button
-                        variant={'primary'}
+                        variant="contained"
                         type="submit"
                         // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
                         disabled={isSubmitting || !isValid}
-                        text={t('buttons.save')}
-                      />
+                      >
+                        {t('buttons.save')}
+                      </Button>
                     </Grid>
                   </Grid>
                 )}
               </Grid>
-            </Section>
+            </Grid>
           </form>
         );
       }}

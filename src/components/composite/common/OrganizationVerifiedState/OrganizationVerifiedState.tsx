@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Typography from '@material-ui/core/Typography';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
 import { OrganizationVerificationEnum } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 

@@ -1,18 +1,28 @@
-import { Box, CardActionArea, CardContent, CardMedia, createStyles, Grid, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Box, CardActionArea, CardContent, CardMedia, Grid } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import { ActivityItem } from '../../ActivityPanel/Activities';
+import ActivitiesV2 from '../../Activities/ActivitiesV2';
 
 export interface ContributionCardDetails {
   name: string;
-  type: 'ecoverse' | 'challenge' | 'opportunity';
+  // todo: merge type & tag to just string
+  type?: 'ecoverse' | 'challenge' | 'opportunity';
+  tag?: string;
+  activity?: ActivityItem[];
   tags: string[];
   image: string;
-  url: string;
+  url?: string;
 }
+
+export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
+export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface ContributionCardProps {
   details?: ContributionCardDetails;
@@ -23,8 +33,8 @@ const useStyles = makeStyles(theme =>
   createStyles({
     card: {
       height: '100%',
-      minHeight: theme.spacing(18),
-      width: theme.spacing(32),
+      minHeight: theme.spacing(CONTRIBUTION_CARD_HEIGHT_SPACING),
+      width: theme.spacing(CONTRIBUTION_CARD_WIDTH_SPACING),
     },
     cardContent: {
       padding: theme.spacing(1),
@@ -33,7 +43,7 @@ const useStyles = makeStyles(theme =>
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       background: theme.palette.neutralMedium.main,
-      height: theme.spacing(8),
+      height: theme.spacing(10),
       maxHeight: '100%',
     },
     entityType: {
@@ -53,12 +63,12 @@ const useStyles = makeStyles(theme =>
 const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { name = '', type, tags = [], image, url = '' } = details || {};
+  const { name = '', type, tag, tags = [], image, activity = [], url = '' } = details || {};
 
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
       {loading ? (
-        <Skeleton variant="rect" className={styles.cardMedia} animation="wave" />
+        <Skeleton variant="rectangular" className={styles.cardMedia} animation="wave" />
       ) : (
         <CardMedia image={image} className={styles.cardMedia}>
           {/* Workaround console error when image is missing. */}
@@ -70,7 +80,7 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
           <Grid item container justifyContent="space-between" alignItems="flex-start" spacing={2} wrap="nowrap">
             {loading ? (
               <Grid item xs={12}>
-                <Skeleton variant="rect" animation="wave"></Skeleton>
+                <Skeleton variant="rectangular" animation="wave"></Skeleton>
               </Grid>
             ) : (
               <>
@@ -79,23 +89,26 @@ const ContributionCard: FC<ContributionCardProps> = ({ details, loading }) => {
                     {name}
                   </Typography>
                 </Grid>
-                <Grid item>
-                  <Box className={styles.entityTypeWrapper}>
-                    <Typography variant="body" className={styles.entityType}>
-                      {type && t(`common.${type}` as const)}
-                    </Typography>
-                  </Box>
-                </Grid>
+                {(type || tag) && (
+                  <Grid item>
+                    <Box className={styles.entityTypeWrapper}>
+                      <Typography variant="body1" className={styles.entityType}>
+                        {type ? t(`common.${type}` as const) : tag}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )}
               </>
             )}
           </Grid>
+          {activity.length > 0 && (
+            <Grid item container>
+              <ActivitiesV2 activity={activity} />
+            </Grid>
+          )}
           <Grid item container>
             <Grid item xs={12}>
-              {loading ? (
-                <Skeleton variant="rect" animation="wave" />
-              ) : (
-                <TagsComponent tags={tags} count={2} keepInRow />
-              )}
+              {loading ? <Skeleton variant="rectangular" animation="wave" /> : <TagsComponent tags={tags} count={4} />}
             </Grid>
           </Grid>
         </Grid>

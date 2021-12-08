@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@mui/material/Dialog';
 import Button from './Button';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 

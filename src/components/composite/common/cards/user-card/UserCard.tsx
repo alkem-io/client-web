@@ -1,12 +1,12 @@
-import { Avatar, SvgIcon, Typography } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import PersonIcon from '@material-ui/icons/Person';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import { Avatar, SvgIcon, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import TagsComponent from '../../TagsComponent/TagsComponent';
@@ -92,8 +92,8 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
                 </Typography>
               </Grid>
               <Grid container item>
-                <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" />
-                <InfoRow text={location} icon={LocationOnIcon} ariaLabel="Location" />
+                <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" />
+                <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
               <Grid item>
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
@@ -118,7 +118,7 @@ const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel }) => {
 
   return (
     <Grid container alignItems={'center'} className={styles.infoRowHeight}>
-      <Icon fontSize="inherit" className={styles.infoRowHeight} />
+      <Icon className={styles.infoRowHeight} />
       <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel}>
         {text}
       </Typography>

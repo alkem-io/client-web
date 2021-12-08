@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import LinkIcon from '@material-ui/icons/Link';
-import EmailIcon from '@material-ui/icons/MailOutline';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import LinkIcon from '@mui/icons-material/Link';
+import EmailIcon from '@mui/icons-material/MailOutline';
 import { OrganizationInfoFragment } from '../../models/graphql-schema';
 import { OrganizationVerifiedState } from '../../components/composite';
 import { Loading } from '../../components/core';

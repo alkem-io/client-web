@@ -22,9 +22,9 @@ const ActivityCard: FC<ActivityCardProps> = ({
       bodyProps={{
         classes: {
           padding: (theme, { xs, sm, md }) => {
-            return xs || sm || md ? `${theme.spacing(2)}px` : `0 ${theme.spacing(4)}px 0 0`;
+            return xs || sm || md ? theme.spacing(2) : `0 ${theme.spacing(4)} 0 0`;
           },
-          background: theme => theme.palette.background.paper,
+          background: theme => theme.palette.background.default,
           ...classes,
         },
         className: 'h-100',

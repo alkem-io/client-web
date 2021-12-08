@@ -11,6 +11,11 @@ fragment OpportunityPage on Opportunity {
   id
   nameID
   displayName
+  tagset {
+    id
+    name
+    tags
+  }
   activity {
     id
     name
@@ -46,6 +51,8 @@ fragment OpportunityPage on Opportunity {
     aspects {
       id
       title
+      explanation
+      framing
     }
     visual {
       id
@@ -72,6 +79,17 @@ fragment OpportunityPage on Opportunity {
     nameID
     displayName
     description
+  }
+  community {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    members {
+      id
+      nameID
+    }
   }
 }
 

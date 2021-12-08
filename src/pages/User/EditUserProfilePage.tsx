@@ -1,13 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
-import { Loading } from '../../components/core';
 import { UserForm } from '../../components/composite/forms/UserForm';
+import { Loading } from '../../components/core';
 import { useApolloErrorHandler, useNotification, useUrlParams, useUserContext } from '../../hooks';
 import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
+import { EditMode } from '../../models/editMode';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
-import { EditMode } from '../../models/editMode';
 
 interface EditUserProfilePageProps {}
 
@@ -32,8 +31,6 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   const { userId } = useUrlParams();
   const { user: currentUser } = useUserContext();
 
-  const { url } = useRouteMatch();
-  const history = useHistory();
   const { data, loading } = useUserQuery({
     variables: {
       id: userId,
@@ -56,8 +53,6 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
       notify('User updated successfully', 'success');
     },
   });
-
-  const handleCancel = () => history.replace(url.replace('/edit', ''));
 
   const editMode = useMemo(() => {
     if (data?.user.id === currentUser?.user.id) return EditMode.edit;
@@ -91,14 +86,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
     });
   };
 
-  return (
-    <UserForm
-      title={'Profile'}
-      user={{ ...user } as UserModel}
-      editMode={editMode}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    />
-  );
+  return <UserForm title={'Profile'} user={{ ...user } as UserModel} editMode={editMode} onSave={handleSave} />;
 };
+
 export default EditUserProfilePage;

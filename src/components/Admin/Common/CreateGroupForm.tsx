@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   return (
     <Grid container spacing={2} direction={'column'}>
       <Grid item>
-        <Typography variant={'h3'}>Create group</Typography>
+        <Typography variant="h3">Create group</Typography>
       </Grid>
       <Grid item>
         <Formik
@@ -53,7 +53,9 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
                   </Grid>
 
                   <Grid container item justifyContent={'flex-end'}>
-                    <Button type={'submit'} variant={'primary'} disabled={isSubmitting} text={t('buttons.create')} />
+                    <Button type={'submit'} color={'primary'} disabled={isSubmitting}>
+                      {t('buttons.create')}
+                    </Button>
                   </Grid>
                 </Grid>
               </Form>
