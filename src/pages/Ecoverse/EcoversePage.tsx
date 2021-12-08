@@ -70,7 +70,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                   <TabPanel value={tabNames['challenges']}>
                     <EcoverseChallengesView entities={entities} state={state} />
                   </TabPanel>
-                  <TabPanel value={communityReadAccess ? tabNames['community'] : ''}>
+                  <TabPanel value={tabNames['community']}>
                     <EcoverseCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
