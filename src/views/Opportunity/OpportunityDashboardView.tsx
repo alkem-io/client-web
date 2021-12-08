@@ -1,8 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
-import { ReactComponent as NodePlusIcon } from 'bootstrap-icons/icons/node-plus.svg';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
 import clsx from 'clsx';
@@ -13,14 +11,7 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
 import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
 import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
-import ActorGroupCreateModal from '../../components/composite/entities/Opportunity/ActorGroupCreateModal';
-import {
-  ActorCard,
-  AspectCard,
-  NewActorCard,
-  NewAspectCard,
-  RelationCard,
-} from '../../components/composite/entities/Opportunity/Cards';
+import { RelationCard } from '../../components/composite/entities/Opportunity/Cards';
 import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
 import Button from '../../components/core/Button';
 import { CardContainer } from '../../components/core/CardContainer';
@@ -33,7 +24,6 @@ import { useOpportunity } from '../../hooks';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import hexToRGBA from '../../utils/hexToRGBA';
-import { replaceAll } from '../../utils/replaceAll';
 
 const useStyles = makeStyles(theme => ({
   offset: {
@@ -108,11 +98,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const opportunity = entities.opportunity;
   const { id, context, displayName } = opportunity;
-  const contextId = context?.id ?? '';
-  const ecosystemModelId = context?.ecosystemModel?.id ?? '';
-  const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { aspects = [], visual } = context ?? {};
+  const { visual } = context ?? {};
 
   const projectRef = useRef<HTMLDivElement>(null);
 
@@ -186,42 +173,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           />
         </DiscussionsProvider>
       </AuthenticationBackdrop>
-      <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.opportunity.sections.adoption-ecosystem.header')}>
-          {options.editActorGroup && entities.availableActorGroupNames.length > 0 && (
-            <Box marginLeft={3}>
-              <Button
-                text={t('pages.opportunity.sections.adoption-ecosystem.buttons.add-actor-group.text')}
-                onClick={actions.onAddActorGroupOpen}
-              />
-            </Box>
-          )}
-        </SectionHeader>
-        <SubHeader text={t('pages.opportunity.sections.adoption-ecosystem.subheader')} />
-      </Section>
-
-      {actorGroups
-        .filter(ag => ag.name !== 'collaborators') // TODO: remove when collaborators are deleted from actorGroups on server
-        .map(({ id: actorGroupId, actors = [], name }, index) => {
-          const _name = replaceAll('_', ' ', name);
-          return (
-            <CardContainer
-              key={index}
-              cardHeight={260}
-              xs={12}
-              md={6}
-              lg={4}
-              xl={3}
-              title={_name}
-              fullHeight
-              withCreate={<NewActorCard opportunityId={id} text={`Add ${_name}`} actorGroupId={actorGroupId} />}
-            >
-              {actors?.map((props, i) => (
-                <ActorCard key={i} opportunityId={id} isAdmin={options.editActors} {...props} />
-              ))}
-            </CardContainer>
-          );
-        })}
 
       <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
@@ -276,42 +227,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
       )}
 
       <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
-      <ActorGroupCreateModal
-        onHide={actions.onAddActorGroupClose}
-        show={state.showActorGroupModal}
-        opportunityId={id}
-        ecosystemModelId={ecosystemModelId}
-        availableActorGroupNames={entities.availableActorGroupNames}
-      />
-
-      <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.opportunity.sections.solution.header')} />
-        <SubHeader text={t('pages.opportunity.sections.solution.subheader')} />
-      </Section>
-
-      {aspects && (
-        <CardContainer
-          xs={12}
-          md={6}
-          lg={4}
-          xl={3}
-          withCreate={
-            options.isAspectAddAllowed && (
-              <NewAspectCard
-                opportunityId={id}
-                contextId={contextId}
-                text={'Add'}
-                actorGroupId={'12'}
-                existingAspectNames={entities.existingAspectNames}
-              />
-            )
-          }
-        >
-          {aspects?.map((props, i) => (
-            <AspectCard key={i} opportunityId={id} contextId={contextId} isAdmin={options.editAspect} {...props} />
-          ))}
-        </CardContainer>
-      )}
 
       <div ref={projectRef} />
     </>
