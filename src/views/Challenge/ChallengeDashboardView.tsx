@@ -97,7 +97,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             headerText={t('pages.challenge.sections.dashboard.opportunities.title')}
             helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
             navText={t('buttons.see-all')}
-            navLink={'challenges'}
+            navLink={'opportunities'}
           >
             <Grid container item spacing={SPACING}>
               {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
