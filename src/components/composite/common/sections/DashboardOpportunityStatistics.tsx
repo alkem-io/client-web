@@ -1,10 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { Lifecycle as LifecycleModel } from '../../../../models/graphql-schema';
+import ActivityView from '../../../../views/Activity/ActivityView';
 import Section, { SectionSpacer } from '../../../core/Section/Section';
 import SectionHeader from '../../../core/Section/SectionHeader';
-import LifecycleState from '../../entities/Lifecycle/LifecycleState';
-import { Activities, ActivityItem } from '../ActivityPanel/Activities';
+import { ActivityItem } from '../ActivityPanel/Activities';
 
 export interface DashboardOpportunityStatisticsProps {
   headerText: string;
@@ -12,6 +12,7 @@ export interface DashboardOpportunityStatisticsProps {
   bodyText?: string;
   lifecycle?: LifecycleModel;
   activities: ActivityItem[];
+  loading: boolean;
 }
 
 const DashboardOpportunityStatistics: FC<DashboardOpportunityStatisticsProps> = ({
@@ -19,7 +20,8 @@ const DashboardOpportunityStatistics: FC<DashboardOpportunityStatisticsProps> = 
   headerText,
   bodyText,
   activities,
-  lifecycle,
+  lifecycle: _lifecycle,
+  loading,
 }) => {
   return (
     <Section>
@@ -28,10 +30,10 @@ const DashboardOpportunityStatistics: FC<DashboardOpportunityStatisticsProps> = 
       <SectionSpacer />
       <Grid container columnSpacing={2}>
         <Grid item xs={6}>
-          <Activities items={activities} />
+          <ActivityView activity={activities} loading={loading} />
         </Grid>
         <Grid item xs={6}>
-          <LifecycleState lifecycle={lifecycle} />
+          {/* <LifecycleState lifecycle={lifecycle} /> */}
         </Grid>
       </Grid>
     </Section>
