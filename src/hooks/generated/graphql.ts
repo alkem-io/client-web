@@ -727,6 +727,10 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     community {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       members {
         id
         displayName

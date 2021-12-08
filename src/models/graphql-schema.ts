@@ -4397,6 +4397,11 @@ export type ChallengeProfileQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
         members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
       }>;
       tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
@@ -4479,6 +4484,11 @@ export type ChallengeProfileFragment = {
   community?: Maybe<{
     __typename?: 'Community';
     id: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
     members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;

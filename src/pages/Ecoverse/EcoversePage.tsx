@@ -31,6 +31,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
       <EcoversePageContainer>
         {(entities, state) => {
           if (!entities || !state) return null;
+          const communityReadAccess = entities.permissions.communityReadAccess;
           return (
             <EcoverseTabs entities={entities}>
               {({ tabName, tabNames }) => (
@@ -57,7 +58,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           members={entities?.ecoverse?.community?.members as User[]}
                           loading={state.loading}
                           isMember={entities.isMember}
-                          communityReadAccess={entities.permissions.communityReadAccess}
+                          communityReadAccess={communityReadAccess}
                           hideChallenges={entities.isPrivate}
                         />
                       )}
@@ -69,7 +70,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                   <TabPanel value={tabNames['challenges']}>
                     <EcoverseChallengesView entities={entities} state={state} />
                   </TabPanel>
-                  <TabPanel value={tabNames['community']}>
+                  <TabPanel value={communityReadAccess ? tabNames['community'] : ''}>
                     <EcoverseCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
